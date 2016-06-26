@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "Board.h"
 
 
 int main()
