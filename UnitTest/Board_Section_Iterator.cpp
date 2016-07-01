@@ -10,6 +10,7 @@
 #include "TestObjects.h"
 // library
 #include <set>
+#include <numeric>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -70,10 +71,11 @@ public:
 
 		// Forward
 		//	X a; X()		default-constructable
+		// Multi-pass: neither dereferencing nor incrementing affects dereferenceability
 		
 		//TODO end()
 
-		// Multi-pass: neither dereferencing nor incrementing affects dereferenceability
+		// Bidirectional
 		//	--a; a--; *a--
 		
 
@@ -103,23 +105,78 @@ public:
 		int* c = std::addressof(B[0][0]);
 		int* d = B.row(0).addressof(0);
 
-
-		int z = 1;
 	}
-	TEST_METHOD(iterator)
+	TEST_METHOD(range_for_loop)
 	{
-		Sudoku::Board<int, 3> board;
-		try
+		Sudoku::Board<int, 3> B;
+		Test_Boards_1::set_ColNr(B);	// all row 0 1 2 3 4 5 6 7 8 sum = 36
+		size_t total{};
+		for (size_t i = 0; i < 9; ++i)
 		{
-			//Sudoku::Board<int, 3>::Row::iterator iter = board.row(0).begin();
-			//auto iter_end = board.row(0).end();
-			//Assert::IsTrue(*iter == 0, L"iterator derefferencing failed", LINE_INFO());
-			//iter++;
-			//++iter;
-
+			total = 0;
+			try
+			{
+				for (auto& s : B.row(i)) { total += s; }
+			}
+			catch (const std::exception&)
+			{
+				Assert::Fail(L"Section::Row range-for", LINE_INFO());
+			}
+			Assert::IsTrue(total == 36, L"Section::Row range-for incorrect result", LINE_INFO());
 		}
-		catch (const std::exception&) {	Assert::Fail(L"Instantiating failed", LINE_INFO()); }
 		
+		Test_Boards_1::set_RowNr(B);
+		for (size_t i = 0; i < 9; ++i)
+		{
+			total = 0;
+			try
+			{
+				for (auto& s : B.col(i)) { total += s; }
+			}
+			catch (const std::exception&)
+			{
+				Assert::Fail(L"Section::Col range-for", LINE_INFO());
+			}
+			Assert::IsTrue(total == 36, L"Section::Col range-for incorrect result", LINE_INFO());
+		}
+
+		Test_Boards_1::set_BlockNr_X(B);
+		for (size_t i = 0; i < 9; ++i)
+		{
+			total = 0;
+			try
+			{
+				for (auto& s: B.block(i)) { total += s; }
+			}
+			catch (const std::exception&)
+			{
+				Assert::Fail(L"Section::Block range-for", LINE_INFO());
+			}
+			Assert::IsTrue(total == 36, L"Section::Block range-for incorrect result", LINE_INFO());
+		}
+	}
+	TEST_METHOD(manual_loop)
+	{
+		Sudoku::Board<int, 3> B;
+		Test_Boards_1::set_ColNr(B);
+
+		size_t total{};
+		auto section = B.row(5);
+		for (auto itr = section.begin(); itr != section.end(); ++itr)
+		{
+			total += *itr;
+		}
+	}
+	TEST_METHOD(stl_algorithms)
+	{
+		Sudoku::Board<int, 3> B;
+		Test_Boards_1::set_ColNr(B);
+
+		//auto itr = B.row(0).begin();
+		//auto end = B.row(0).end();
+		//size_t total = std::accumulate(itr, end, 0);
+		size_t total = std::accumulate(B.row(0).begin(), B.row(0).end(), 0);
 	}
 };
-}
+
+}	// namespace Sudoku_Test

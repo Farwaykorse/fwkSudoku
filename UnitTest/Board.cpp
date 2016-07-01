@@ -37,17 +37,14 @@ public:
 		const std::set<int> s4{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 		Board<std::set<int>, 3> f4(s4);	// 4 ms
 
-		// Board(self_type&&)
-
-		// Board& operator=(self_type&)
-
-		//Board(const self_type&)
+		// Board(self_type&&)					move constructor
+		Board<int, 3> A(Board<int, 3>(2));
+		// Board& operator=(self_type&&)		move assignment
+		Board<int, 3> B = Board<int, 3>(9);
+		//Board(const self_type&)				copy constructor
 		Sudoku::Board<int, 3> copy(first);
-
-		// Board& operator=(const self_type&)
+		// Board& operator=(const self_type&)	copy assignment
 		Sudoku::Board<int, 3> copy2 = first;
-
-
 
 		analyze_values(first);
 		analyze_values(f2);
@@ -55,11 +52,8 @@ public:
 		Assert::IsTrue(first.at(12) == 0 && first.at(73) == 0,
 					   L"Empty board isn't filled with 0's", LINE_INFO());
 		Assert::IsTrue(first.size() == 81, L"Function Error first.size()", LINE_INFO());
-
-		//Assert::IsTrue(f4.at(43) == s4, L"Options board value set doesn't match input", LINE_INFO());
-
+		Assert::IsTrue(f4.at(43) == s4, L"Options board value set doesn't match input", LINE_INFO());
 		Assert::IsTrue(first == copy, L"copy constructor failure", LINE_INFO());
-
 		Assert::IsTrue(first == copy2, L"copy operation failure 2", LINE_INFO());
 	}
 	TEST_METHOD(element_access)
@@ -102,18 +96,6 @@ public:
 		Assert::IsFalse(board == empty, L"failure operator== (inverse)", LINE_INFO());
 		Assert::IsTrue(board != empty, L"failure operator!=", LINE_INFO());
 	}
-	//TEST_METHOD(location)
-	//{
-	//	Sudoku::Board<int, 3> board;
-	//	Assert::IsTrue(board.location(0, 0) == 0, L"Location failed 0", LINE_INFO());
-	//	Assert::IsTrue(board.location(8, 8) == 80, L"Location failed 1", LINE_INFO());
-	//	Assert::IsTrue(board.location(1, 1) == 10, L"Location failed 2", LINE_INFO());
-	//	Assert::IsTrue(board.block_loc(0, 0) == 0, L"Location block failed 0", LINE_INFO());
-	//	Assert::IsTrue(board.block_loc(8, 8) == 80, L"Location block failed 1", LINE_INFO());
-	//	Assert::IsTrue(board.block_loc(3, 1) == 28, L"Location block failed 2", LINE_INFO());
-	//	Assert::IsTrue(board.block_loc(8, 3) == 69, L"Location block failed 3", LINE_INFO());
-	//	Assert::IsFalse(board.location(1, 1) == 0, L"Location board, test", LINE_INFO());
-	//}
 private:
 	template<size_t N>
 	void analyze_values(Sudoku::Board<int, N> B) const
@@ -126,9 +108,6 @@ private:
 		static_assert(B.elem_size == elem, "elem_size wrong");
 		static_assert(B.full_size == full, "full_size wrong");
 
-		//static_assert(B.elem_size == B.numCols(), "Function Error numCols()");
-		//static_assert(B.elem_size == B.numRows(), "Function Error numRows()");
-		//static_assert(B.elem_size == B.block_size(), "Function Error block_size()");
 		static_assert(B.full_size == B.size(), "Function Error size()");
 	}
 

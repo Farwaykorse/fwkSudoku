@@ -69,30 +69,13 @@ public:
 			}
 			for (size_t i = 1; i < 4; ++i)
 			{
-				Assert::IsTrue(B.col(i+2)[5] == 4-i, L"loop value different", LINE_INFO());
+				Assert::IsTrue(B.col(i + 2)[5] == 4 - i, L"loop value different", LINE_INFO());
 			}
 		}
 		catch (const std::exception&)
 		{
 			Assert::Fail(L"Loop over block failed", LINE_INFO());
 		}
-
-
-		//try
-		//{
-		//	size_t total{};
-		//	const Sudoku::Board<int, 3>::Row& vs = B.row(5);
-		//	//TODO working range-for loop on sections
-		//	//p79
-		//	//for (auto& s : BBoard.row(5) )
-		//	//{
-		//		//total += s;
-		//	//}
-		//}
-		//catch (const std::exception&)
-		//{
-		//	Assert::Fail(L"range-for loop on Section::Row", LINE_INFO());
-		//}
 	}
 private:
 

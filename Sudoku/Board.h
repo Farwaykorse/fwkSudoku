@@ -14,8 +14,6 @@
 #include <iterator>
 #include <algorithm>
 #include <cassert>
-//#include "Sudoku.h"
-//#include "General_functions.h"
 
 namespace Sudoku
 {
@@ -34,8 +32,8 @@ public:
 	using pointer = value_type*;
 
 	using Location = Location<N>;
+	using Block_Loc = Block_Loc<N>;
 	class Section;
-	friend Section;	// direct access to board
 	class Row;
 	class Col;
 	class Block;
@@ -60,9 +58,6 @@ public:
 	/* Query properties */
 	//bool empty() const;
 	static constexpr size_type size() { return full_size; };
-	//static constexpr size_t numRows() { return elem_size; };
-	//static constexpr size_t numCols() { return elem_size; };
-	//static constexpr size_t block_size() { return elem_size; };
 	bool operator==(const self_type&) const;
 	bool operator!=(const self_type& other) const { return !(*this == other); };
 
@@ -82,27 +77,6 @@ public:
 	iterator end();
 	const_iterator cend() const;
 	const_iterator end() const;
-
-	//iterator row_begin(size_t row);
-	//const_iterator row_cbegin(size_t row) const;
-	//const_iterator row_begin(size_t row) const;
-	//iterator row_end(size_t row);
-	//const_iterator row_cend(size_t row) const;
-	//const_iterator row_end(size_t row) const;
-	//iterator col_begin(size_t col);
-	//iterator col_end(size_t col);
-
-	//static constexpr size_t location(size_t row, size_t col)
-	//{
-	//	return row * elem_size + col;
-	//}
-	static constexpr size_t block_loc(size_t id, size_t elem)
-	{
-		return Location((id / base_size) * base_size + elem / base_size,
-			(id % base_size) * base_size + elem % base_size).element();
-	}
-
-
 
 
 
@@ -133,7 +107,11 @@ public:
 		const T& operator[](size_t elem) const { return const_nocheck_at(elem); };
 
 		iterator begin() { return iterator(this, addressof(0), 0); }
-		//iterator end() { return begin()+elem_size; }
+		iterator end()
+		{
+			//return begin() + elem_size;
+			return iterator(this);
+		}
 		//T& begin(); end(); cbegin(); cend(); rbegin(); rend(); crbegin(); crend();
 
 		// information
@@ -158,8 +136,9 @@ public:
 			using size_type = unsigned int;
 			using difference_type = int;
 
-			explicit iterator(Section* sp, size_t elem) : section_{sp}, elem_(elem), ptr_{ sp->addressof(elem) } {}
+			iterator(Section* sp, size_t elem) : section_{sp}, elem_(elem), ptr_{ sp->addressof(elem) } {}
 			iterator(Section* sp, pointer ptr, size_t elem) : section_(sp), ptr_(ptr), elem_(elem) {}
+			iterator(Section* sp) : section_(sp), ptr_(nullptr), elem_(elem_size) {}
 			// All
 			iterator(const self_type&) = default; 
 			self_type& operator=(const self_type& other)
@@ -186,16 +165,13 @@ public:
 			// Input iterator
 			bool operator==(const self_type& other) const
 			{
-				if (elem_ == other.elem_)
+				if (elem_ == other.elem_ && ptr_ == other.ptr_)
 				{
 					return section_ == other.section_;
 				}
 				return false;
 			}
-			bool operator!=(const self_type& other) const
-			{
-				return !(*this == other);
-			}
+			bool operator!=(const self_type& other) const { return !(*this == other); }
 			// In- & output iterator
 			reference operator*() { return *ptr_; }
 			pointer operator->() // member access; equivalent to (*p).m
@@ -205,21 +181,32 @@ public:
 			}
 
 			// Forward
-			iterator() = default;
-			//TODO
+			iterator() : elem_(elem_size), ptr_(nullptr), section_(nullptr) {}
 
 			//Bidirectional
 			//reference operator--();
-			//self_type operator--(int junk);
+			//self_type operator--(int);
 
 			//Random Access
-			//operator+=(difference_type n);	// compount assignment
-			//operator-=(difference_type n);
-			//operator+(difference_type n);
-			//operator-(difference_type n);
+			self_type& operator+=(difference_type n)	// compount assignment
+			{
+				elem_ += n;
+				return move_();
+			}
+			self_type& operator-=(difference_type n) { elem_ -= n; return move_(); }
+			self_type& operator+(difference_type n)
+			{
+				return operator+=(n);
+			}
+			self_type& operator-(difference_type n) { return operator -= n; }
 			//operator+(b);
 			//operator-(b);
-			//operator[](difference_type n); // offset dereference; p+n; equivalent to *(p+n)
+			reference operator[](difference_type n) // offset dereference; p+n; equivalent to *(p+n)
+			{
+				elem_ += n;
+				move_();
+				return *ptr_;
+			}
 			//operator<(b);		// inequality comparisons
 			//operator<=(b);
 			//operator>=(b);
@@ -252,10 +239,10 @@ public:
 			}
 		};
 
-		//constexpr pointer addressof(size_t elem_id) const
 		pointer addressof(size_t elem_id)
 		{
-			//return std::addressof(nocheck_at(elem_id));
+			assert(elem_id <= elem_size);
+			if (elem_id == elem_size) { return nullptr; }
 			return &nocheck_at(elem_id);
 		}
 
@@ -274,10 +261,6 @@ public:
 		{
 			return owner_->board[loc(elem).element()];
 		}
-
-		//TODO pointer/reference usage, + keep original in mind
-		//const T& proxy; // refers to the object with wich it is initialized
-		//T* handle; // refers to its current object
 	};
 
 
@@ -286,8 +269,6 @@ public:
 	public:
 		using Section::Section;	// inherit constructors
 		using iterator = Section::iterator;
-		
-
 
 		/*
 		Pointers and References
@@ -339,16 +320,13 @@ public:
 	private:
 		Location loc(size_t elem) const override
 		{
-			return Location(block_loc(id(), elem));
+			return Location(Block_Loc(id(), elem));
 		}
 	};
-
 
 	Row row(size_t id) { return Row(this, id); }
 	Col col(size_t id) { return Col(this, id); }
 	Block block(size_t id) { return Block(this, id); }
-
-
 
 	/*	Element Selection Operator (using a proxy object)
 	*	usable as [row][col] where col is processed by the (const_)InBetween
@@ -420,7 +398,7 @@ Board<T, N>::Board(const T& def_value) :
 	valid_dimensions();
 }
 
-// copy operator
+// copy constructor
 template<typename T, size_t N>
 inline Board<T, N>& Board<T, N>::operator=(const Board<T, N>& source)
 {
@@ -517,51 +495,6 @@ inline typename Board<T, N>::const_iterator Board<T, N>::end() const
 	return cend();
 }
 
-//template<typename T, size_t N>
-//inline typename Board<T, N>::iterator Board<T, N>::row_begin(size_t row)
-//{
-//	assert(valid_size(row));
-//	return begin() + location(row, 0);
-//}
-//
-//template<typename T, size_t N>
-//inline typename Board<T, N>::const_iterator Board<T, N>::row_cbegin(size_t row) const
-//{
-//	assert(valid_size(row));
-//	return cbegin() + location(row, 0);
-//}
-//
-//template<typename T, size_t N>
-//inline typename Board<T, N>::const_iterator Board<T, N>::row_begin(size_t row) const
-//{
-//	return row_cbegin(row);
-//}
-//
-//template<typename T, size_t N>
-//inline typename Board<T, N>::iterator Board<T, N>::row_end(size_t row)
-//{
-//	return row_begin(row) + elem_size;
-//}
-//
-//template<typename T, size_t N>
-//inline typename Board<T, N>::const_iterator Board<T, N>::row_cend(size_t row) const
-//{
-//	return row_cbegin(row) + elem_size;
-//}
-//
-//template<typename T, size_t N>
-//inline typename Board<T, N>::const_iterator Board<T, N>::row_end(size_t row) const
-//{
-//	return row_cend(row);
-//}
-//
-//template<typename T, size_t N>
-//inline typename Board<T, N>::const_iterator Board<T, N>::cend() const
-//{
-//	return board.cend();
-//}
-
-
 template<typename T, size_t N>
 class Board<T, N>::InBetween
 {
@@ -599,15 +532,6 @@ inline const typename Board<T, N>::const_InBetween Board<T, N>::operator[](size_
 {
 	return const_InBetween(this, row);
 }
-
-
-
-
-
-
-
-
-
 
 template<typename T, size_t N>
 inline T& Board<T, N>::Section::at(size_t elem)
