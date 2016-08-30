@@ -46,20 +46,28 @@ public:
 				  "Board size out of bounds");
 
 	Board();
-	explicit Board(const value_type&);
+	explicit Board(const T&);
 	Board(self_type&&) = default;		// move
 	Board& operator=(self_type&&) = default;
 	Board(const self_type&) = default;	// copy
-	Board& operator=(const self_type&);
+	Board& operator=(const Board&);
 	~Board() = default;
 
 	void clear();
 
 	/* Query properties */
-	//bool empty() const;
+	//bool empty() const	// all elements default value or empty()
+	//TODO empty() for different value types
+	//{
+	//	for (auto& s : board)
+	//	{
+	//		if ( !s.empty() ) { return false; }
+	//	}
+	//	return true;
+	//}
 	static constexpr size_type size() { return full_size; };
-	bool operator==(const self_type&) const;
-	bool operator!=(const self_type& other) const { return !(*this == other); };
+	bool operator==(const Board&) const;
+	bool operator!=(const Board& other) const { return !(*this == other); };
 
 	/* Element access */
 	T& at(size_t row, size_t col);
@@ -73,10 +81,10 @@ public:
 
 	iterator begin();
 	const_iterator cbegin() const;
-	const_iterator begin() const;
+	const_iterator begin() const { return cbegin(); }
 	iterator end();
 	const_iterator cend() const;
-	const_iterator end() const;
+	const_iterator end() const { return cend(); }
 
 
 
@@ -426,7 +434,6 @@ inline T& Board<T, N>::at(size_t row, size_t col)
 		throw std::out_of_range{ "Board::at(size_t row, col)" };
 	}
 	return at(Location(row, col).element());
-	//return Board<T,N>::row(row).at(col);
 }
 
 template<typename T, size_t N>
@@ -474,12 +481,6 @@ inline typename Board<T, N>::iterator Board<T, N>::begin()
 }
 
 template<typename T, size_t N>
-inline typename Board<T, N>::const_iterator Board<T, N>::begin() const
-{
-	return cbegin();
-}
-
-template<typename T, size_t N>
 inline typename Board<T, N>::const_iterator Board<T, N>::cbegin() const
 {
 	return board.cbegin();
@@ -492,9 +493,9 @@ inline typename Board<T, N>::iterator Board<T, N>::end()
 }
 
 template<typename T, size_t N>
-inline typename Board<T, N>::const_iterator Board<T, N>::end() const
+inline typename Board<T, N>::const_iterator Board<T, N>::cend() const
 {
-	return cend();
+	return board.cend();
 }
 
 template<typename T, size_t N>
