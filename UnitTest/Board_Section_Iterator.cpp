@@ -175,7 +175,26 @@ public:
 		//auto itr = B.row(0).begin();
 		//auto end = B.row(0).end();
 		//size_t total = std::accumulate(itr, end, 0);
-		size_t total = std::accumulate(B.row(0).begin(), B.row(0).end(), 0);
+
+		for (size_t i = 0; i < 9; ++i)
+		{
+			size_t total = std::accumulate(B.row(i).begin(), B.row(i).end(), 0);
+			Assert::IsTrue(total == 36, L"Section::Row std::accumulate incorrect result", LINE_INFO());
+		}
+
+		Test_Boards_1::set_RowNr(B);
+		for (size_t i = 0; i < 9; ++i)
+		{
+			size_t total = std::accumulate(B.col(i).begin(), B.col(i).end(), 0);
+			Assert::IsTrue(total == 36, L"Section::Col std::accumulate incorrect result", LINE_INFO());
+		}
+
+		Test_Boards_1::set_BlockNr_X(B);
+		for (size_t i = 0; i < 9; ++i)
+		{
+			size_t total = std::accumulate(B.block(i).begin(), B.block(i).end(), 0);
+			Assert::IsTrue(total == 36, L"Section::Block std::accumulate incorrect result", LINE_INFO());
+		}
 	}
 };
 

@@ -167,7 +167,9 @@ public:
 			{
 				if (elem_ == other.elem_ && ptr_ == other.ptr_)
 				{
-					return section_ == other.section_;
+					return true;
+					//TODO section_ is not dependable
+					//return section_ == other.section_;
 				}
 				return false;
 			}
