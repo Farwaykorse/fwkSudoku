@@ -18,6 +18,9 @@
     <Text Include="ReadMe.txt" />
     <Text Include="Board_access_design.txt" />
     <Text Include="itererator_notes.txt" />
+    <Text Include="Solvers.txt" />
+    <Text Include="..\..\Snake\Sudoku\notes.txt" />
+    <Text Include="Processing.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -32,10 +35,10 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Static_Calc.h">
+    <ClInclude Include="Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Section.h">
+    <ClInclude Include="Sudoku.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -46,5 +49,8 @@
     <ClCompile Include="Sudoku.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

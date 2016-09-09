@@ -8,7 +8,6 @@
 #pragma once
 #include "stdafx.h"
 #include "Location.h"
-#include "Section.h"
 
 #include <vector>
 #include <iterator>
@@ -21,7 +20,7 @@ template<typename T, size_t N = 3>
 class Board
 {
 public:
-	static_assert(N > 1, "Board base_size value too small");
+	static_assert(N > 1, "Board.h base_size value too small");
 
 	using value_type = T;	// stl container conventions
 	using size_type = unsigned int;
@@ -33,25 +32,23 @@ public:
 
 	using Location = Location<N>;
 	using Block_Loc = Block_Loc<N>;
+
+	static const size_t base_size = Location().base_size;	// default 3
+	static const size_t elem_size = Location().elem_size;	// default 9
+	static const size_t full_size = Location().full_size;	// default 81
+
 	class Section;
 	class Row;
 	class Col;
 	class Block;
 
-	static constexpr size_t base_size = N;	// 3 for default 9*9 board
-	static constexpr size_t elem_size = base_size * base_size;
-	static constexpr size_t full_size = elem_size * elem_size;
-
-	static_assert(base_size < elem_size && base_size < full_size && elem_size < full_size,
-				  "Board size out of bounds");
-
 	Board();
 	explicit Board(const T&);
-	Board(self_type&&) = default;		// move
-	Board& operator=(self_type&&) = default;
-	Board(const self_type&) = default;	// copy
+	Board(self_type&&)				= default;	// move
+	Board& operator=(self_type&&)	= default;
+	Board(const self_type&)			= default;	// copy
 	Board& operator=(const Board&);
-	~Board() = default;
+	~Board()						= default;
 
 	void clear();
 
@@ -70,6 +67,8 @@ public:
 	bool operator!=(const Board& other) const { return !(*this == other); };
 
 	/* Element access */
+	T& at(Location loc);
+	const T& at(Location loc) const;
 	T& at(size_t row, size_t col);
 	const T& at(size_t row, size_t col) const;
 	T& at(size_t elem);
@@ -87,13 +86,11 @@ public:
 	const_iterator end() const { return cend(); }
 
 
-
-
 	class Section
 	{
 	public:
 		class iterator;
-		friend class iterator;
+		using section_type = Section;
 		//using value_type = value_type;
 		//using size_type = size_t;
 		//using difference_type = int;
@@ -108,7 +105,7 @@ public:
 
 		Section(Board* owner, size_t id) : owner_(owner), id_(id) {}
 
-		// element access / updates loc_ to new location
+		// element access
 		T& at(size_t);
 		const T& at(size_t) const;
 		T& operator[](size_t elem) { return nocheck_at(elem); };
@@ -124,15 +121,14 @@ public:
 
 		// information
 		static constexpr size_t size() { return elem_size; }
-		constexpr size_t id() const { return id_; }
+		size_t id() const { return id_; }
 		//constexpr size_t id_row() const { return loc_.row(); }
 		//constexpr size_t id_col() const { return loc_.col(); }
 		//constexpr size_t id_block() const { return loc_.block(); }
 
-
 		class iterator
 		{
-			// knows a pointer to an elemend in Board and the Location
+			// knows a pointer to an element in Board and the Location
 			// can be passed to other section types, because Location is usable for all
 		public:
 			using iterator_category = std::forward_iterator_tag;
@@ -144,19 +140,19 @@ public:
 			using size_type = unsigned int;
 			using difference_type = int;
 
-			iterator(Section* sp, size_t elem) : section_{sp}, elem_(elem), ptr_{ sp->addressof(elem) } {}
-			iterator(Section* sp, pointer ptr, size_t elem) : section_(sp), ptr_(ptr), elem_(elem) {}
-			iterator(Section* sp) : section_(sp), ptr_(nullptr), elem_(elem_size) {}
+			iterator(section_type* sp, size_t elem) : section_{sp}, elem_(elem), ptr_{ sp->addressof(elem) } {}
+			iterator(section_type* sp, pointer ptr, size_t elem) : section_(sp), ptr_(ptr), elem_(elem) {}
+			iterator(section_type* sp) : section_(sp), ptr_(nullptr), elem_(elem_size) {}
 			// All
 			iterator(const self_type&) = default; 
-			self_type& operator=(const self_type& other)
-			{
-				//ERROR no difference between row/col/block versions!!
-				section_ = other.section_;
-				elem_ = other.elem_;
-				ptr_ = other.ptr_;
-				return *this&;
-			}
+			//self_type& operator=(const self_type& other)
+			//{
+			//	//ERROR no difference between row/col/block versions!!
+			//	section_ = other.section_;
+			//	elem_ = other.elem_;
+			//	ptr_ = other.ptr_;
+			//	return *this&;		//ERROR in Clang: expect expression
+			//}
 			self_type& operator++()	// pre-increment, returns a reference
 			{
 				++elem_;
@@ -175,9 +171,7 @@ public:
 			{
 				if (elem_ == other.elem_ && ptr_ == other.ptr_)
 				{
-					return true;
-					//TODO section_ is not dependable
-					//return section_ == other.section_;
+					return section() == other.section();
 				}
 				return false;
 			}
@@ -208,7 +202,7 @@ public:
 			{
 				return operator+=(n);
 			}
-			self_type& operator-(difference_type n) { return operator -= n; }
+			self_type& operator-(difference_type n) { return operator -=(n); }
 			//operator+(b);
 			//operator-(b);
 			reference operator[](difference_type n) // offset dereference; p+n; equivalent to *(p+n)
@@ -231,11 +225,11 @@ public:
 			//Location pref(Location); // like prev(p,1)
 
 		private:
-			constexpr size_type section() const { return id(); }
 			size_type elem_{};	// id of the element within the section
-			pointer ptr_{};
-			Section* section_;
+			pointer ptr_{};		// data pointer
+			section_type* section_;
 
+			size_type section() const { return section_->id(); }
 
 			self_type& move_()
 			{
@@ -244,11 +238,13 @@ public:
 			}
 			self_type& move_(size_t to)
 			{
+				assert(to <= elem_size);
 				elem_ = to;
 				return move_();
 			}
 		};
 
+	protected:
 		pointer addressof(size_t elem_id)
 		{
 			assert(elem_id <= elem_size);
@@ -278,7 +274,9 @@ public:
 	{
 	public:
 		using Section::Section;	// inherit constructors
-		using iterator = Section::iterator;
+		using section_type = Row;
+		using iterator = class Section::iterator;
+		using Section::id;
 
 		/*
 		Pointers and References
@@ -319,6 +317,7 @@ public:
 	{
 	public:
 		using Section::Section;	// inherit constructors
+		using Section::id;
 	private:
 		Location loc(size_t elem) const final { return Location(elem, id()); }
 	};
@@ -327,6 +326,7 @@ public:
 	{
 	public:
 		using Section::Section;	// inherit constructors
+		using Section::id;
 	private:
 		Location loc(size_t elem) const override
 		{
@@ -337,6 +337,10 @@ public:
 	Row row(size_t id) { return Row(this, id); }
 	Col col(size_t id) { return Col(this, id); }
 	Block block(size_t id) { return Block(this, id); }
+	//TODO unit tests using Location!!
+	Row row(Location loc) { return Row(this, loc.row()); }
+	Col col(Location loc) { return Col(this, loc.col()); }
+	Block block(Location loc) { return Block(this, loc.block()); }
 
 	/*	Element Selection Operator (using a proxy object)
 	*	usable as [row][col] where col is processed by the (const_)InBetween
@@ -424,6 +428,18 @@ inline bool Board<T, N>::operator==(const Board& other) const
 		return board == other.board;
 	}
 	return false;
+}
+
+template<typename T, size_t N>
+inline T& Board<T, N>::at(Location loc)
+{
+	return at(loc.element());
+}
+
+template<typename T, size_t N>
+inline const T& Board<T, N>::at(Location loc) const
+{
+	return at(loc.element());
 }
 
 template<typename T, size_t N>
