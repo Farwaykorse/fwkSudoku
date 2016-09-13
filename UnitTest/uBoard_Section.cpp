@@ -7,6 +7,7 @@
 // Class under test
 #include "Board.h"
 // aditional
+#include "Location.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -18,6 +19,7 @@ public:
 	TEST_METHOD(properties)
 	{
 		Sudoku::Board<int, 3> A;
+		using Location = Sudoku::Location<3>;
 		Assert::IsTrue(A.row(0).id() == 0 &&
 					   A.row(3).id() == 3 &&
 					   A.row(8).id() == 8, L"Row::id()", LINE_INFO());
@@ -35,6 +37,12 @@ public:
 					   B.col(3).id() == 3 &&
 					   B.block(3).id() == 3, L"Section::id()", LINE_INFO());
 		Assert::IsTrue(B.col(2).size() == 4, L"Section.size() 2", LINE_INFO());
+
+		Assert::IsTrue(A.row(Location(0)).id() == 0, L"Location instantiation", LINE_INFO());
+		Assert::IsTrue(A.row(Location(9)).id() == 1, L"Location instantiation 2", LINE_INFO());
+		Assert::IsTrue(A.row(Location(76)).id() == 8, L"Location instantiation row 3", LINE_INFO());
+		Assert::IsTrue(A.col(Location(5)).id() == 5, L"Location instantiation col", LINE_INFO());
+		Assert::IsTrue(A.block(Location(29)).id() == 3, L"Location instantiation block", LINE_INFO());
 	}
 	TEST_METHOD(section_element_access)
 	{

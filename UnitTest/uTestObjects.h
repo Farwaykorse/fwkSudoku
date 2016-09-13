@@ -7,9 +7,12 @@
 
 namespace Sudoku_Test
 {
+namespace Test_Boards
+{
+
 // Basic value boards, not proper Sudoku's
 // No use of iterators
-namespace Test_Boards_1
+namespace bN_fill_1
 {
 // Requirements: basic class Board<int,N>
 template<size_t N>
@@ -61,6 +64,22 @@ void set_BlockNr_X(Sudoku::Board<int, N>& target)
 	}
 }
 
+}	// namespace sN_fill
 
-}	// namespace Test_Boards_1
+// 4x4 valid boards
+namespace b2_valid
+{
+std::vector<int> full_1
+{
+	1,2,3,4,
+	3,4,1,2,
+	2,1,4,3,
+	4,3,2,1
+};
+
+std::vector<int> two_by_two_1{ 0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+}	// namespace b2_valid
+}	// namespace Test_Boards
+
+
 }	// namespace Sudoku_Test

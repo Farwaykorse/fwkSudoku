@@ -112,11 +112,7 @@ public:
 		const T& operator[](size_t elem) const { return const_nocheck_at(elem); };
 
 		iterator begin() { return iterator(this, addressof(0), 0); }
-		iterator end()
-		{
-			//return begin() + elem_size;
-			return iterator(this);
-		}
+		iterator end() { return iterator(this); }
 		//T& begin(); end(); cbegin(); cend(); rbegin(); rend(); crbegin(); crend();
 
 		// information
@@ -140,9 +136,9 @@ public:
 			using size_type = unsigned int;
 			using difference_type = int;
 
-			iterator(section_type* sp, size_t elem) : section_{sp}, elem_(elem), ptr_{ sp->addressof(elem) } {}
-			iterator(section_type* sp, pointer ptr, size_t elem) : section_(sp), ptr_(ptr), elem_(elem) {}
-			iterator(section_type* sp) : section_(sp), ptr_(nullptr), elem_(elem_size) {}
+			iterator(section_type* sp, size_t elem) : elem_(elem), ptr_{ sp->addressof(elem) }, section_{sp} {}
+			iterator(section_type* sp, pointer ptr, size_t elem) : elem_(elem), ptr_(ptr), section_(sp) {}
+			iterator(section_type* sp) : elem_(elem_size), ptr_(nullptr), section_(sp) {}
 			// All
 			iterator(const self_type&) = default; 
 			//self_type& operator=(const self_type& other)
@@ -224,6 +220,11 @@ public:
 			//Location pref(Location, size_t); // like q=p-n; p at least bidirectional iterator
 			//Location pref(Location); // like prev(p,1)
 
+			/* custom */
+			bool operator==(const Location& loc) const { return location() == loc; }
+			bool operator!=(const Location& loc) const { return !operator==(loc); }
+			Location location() const { return section_->loc(elem_); }
+
 		private:
 			size_type elem_{};	// id of the element within the section
 			pointer ptr_{};		// data pointer
@@ -242,7 +243,7 @@ public:
 				elem_ = to;
 				return move_();
 			}
-		};
+		};	// class Board::Section::iterator
 
 	protected:
 		pointer addressof(size_t elem_id)
@@ -267,7 +268,7 @@ public:
 		{
 			return owner_->board[loc(elem).element()];
 		}
-	};
+	};	// class Board::Section
 
 
 	class Row : public Section
@@ -337,7 +338,6 @@ public:
 	Row row(size_t id) { return Row(this, id); }
 	Col col(size_t id) { return Col(this, id); }
 	Block block(size_t id) { return Block(this, id); }
-	//TODO unit tests using Location!!
 	Row row(Location loc) { return Row(this, loc.row()); }
 	Col col(Location loc) { return Col(this, loc.col()); }
 	Block block(Location loc) { return Block(this, loc.block()); }
@@ -356,7 +356,7 @@ private:
 	void valid_dimensions() const;
 	bool valid_size(const size_t elem) const;
 	bool valid_size(const size_t row, const size_t col) const;
-};
+};	// class Board
 
 
 

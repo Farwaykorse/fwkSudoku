@@ -38,7 +38,7 @@
     <ClInclude Include="Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sudoku.h">
+    <ClInclude Include="SolverBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

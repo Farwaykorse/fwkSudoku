@@ -7,7 +7,7 @@
 // Class under test
 #include "Board.h"
 // helpers
-#include "TestObjects.h"
+#include "uTestObjects.h"
 // library
 #include <set>
 #include <numeric>
@@ -23,7 +23,7 @@ public:
 	{
 		// Set-up
 		Sudoku::Board<int, 3> B;
-		Test_Boards_1::set_ElemNr(B);
+		Test_Boards::bN_fill_1::set_ElemNr(B);
 		auto itr1 = B.row(0).begin();
 
 		Sudoku::Board<std::set<int>, 3> S;
@@ -102,14 +102,14 @@ public:
 
 		//size_t b = S.row(0).begin()->size();
 		//Assert::IsTrue(S.row(0).begin()->size() == 0, L"operator-> failed", LINE_INFO());
-		int* c = std::addressof(B[0][0]);
-		int* d = B.row(0).addressof(0);
+		//int* c = std::addressof(B[0][0]);
+		//int* d = B.row(0).addressof(0);
 
 	}
 	TEST_METHOD(range_for_loop)
 	{
 		Sudoku::Board<int, 3> B;
-		Test_Boards_1::set_ColNr(B);	// all row 0 1 2 3 4 5 6 7 8 sum = 36
+		Test_Boards::bN_fill_1::set_ColNr(B);	// all row 0 1 2 3 4 5 6 7 8 sum = 36
 		size_t total{};
 		for (size_t i = 0; i < 9; ++i)
 		{
@@ -125,7 +125,7 @@ public:
 			Assert::IsTrue(total == 36, L"Section::Row range-for incorrect result", LINE_INFO());
 		}
 		
-		Test_Boards_1::set_RowNr(B);
+		Test_Boards::bN_fill_1::set_RowNr(B);
 		for (size_t i = 0; i < 9; ++i)
 		{
 			total = 0;
@@ -140,7 +140,7 @@ public:
 			Assert::IsTrue(total == 36, L"Section::Col range-for incorrect result", LINE_INFO());
 		}
 
-		Test_Boards_1::set_BlockNr_X(B);
+		Test_Boards::bN_fill_1::set_BlockNr_X(B);
 		for (size_t i = 0; i < 9; ++i)
 		{
 			total = 0;
@@ -158,7 +158,7 @@ public:
 	TEST_METHOD(manual_loop)
 	{
 		Sudoku::Board<int, 3> B;
-		Test_Boards_1::set_ColNr(B);
+		Test_Boards::bN_fill_1::set_ColNr(B);
 
 		size_t total{};
 		auto section = B.row(5);
@@ -170,7 +170,7 @@ public:
 	TEST_METHOD(stl_algorithms)
 	{
 		Sudoku::Board<int, 3> B;
-		Test_Boards_1::set_ColNr(B);
+		Test_Boards::bN_fill_1::set_ColNr(B);
 
 		//auto itr = B.row(0).begin();
 		//auto end = B.row(0).end();
@@ -182,14 +182,14 @@ public:
 			Assert::IsTrue(total == 36, L"Section::Row std::accumulate incorrect result", LINE_INFO());
 		}
 
-		Test_Boards_1::set_RowNr(B);
+		Test_Boards::bN_fill_1::set_RowNr(B);
 		for (size_t i = 0; i < 9; ++i)
 		{
 			size_t total = std::accumulate(B.col(i).begin(), B.col(i).end(), 0);
 			Assert::IsTrue(total == 36, L"Section::Col std::accumulate incorrect result", LINE_INFO());
 		}
 
-		Test_Boards_1::set_BlockNr_X(B);
+		Test_Boards::bN_fill_1::set_BlockNr_X(B);
 		for (size_t i = 0; i < 9; ++i)
 		{
 			size_t total = std::accumulate(B.block(i).begin(), B.block(i).end(), 0);
