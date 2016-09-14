@@ -224,13 +224,13 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="uTestObjects.h" />
+    <ClInclude Include="TestObjects.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="uBoard.cpp" />
-    <ClCompile Include="uBoard_Section.cpp" />
-    <ClCompile Include="uBoard_Section_Iterator.cpp" />
-    <ClCompile Include="uLocation.cpp" />
+    <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Board_Section.cpp" />
+    <ClCompile Include="Board_Section_Iterator.cpp" />
+    <ClCompile Include="Location.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">Create</PrecompiledHeader>
@@ -239,7 +239,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="uSolverBase.cpp" />
+    <ClCompile Include="SolverBase.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
