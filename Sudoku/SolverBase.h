@@ -8,7 +8,6 @@
 
 #include <cassert>
 #include <set>
-#include <string>
 #include <vector>
 #include <stdexcept>
 
@@ -41,7 +40,6 @@ public:
 private:
 	Board<int, N> start;
 	Board<std::set<int>, N> options;
-	//display version, not needed for solver
 
 	static const size_t base_size = Location().base_size;
 	static const size_t elem_size = Location().elem_size;
@@ -63,7 +61,6 @@ private:
 
 	/* Solvers */
 	void single_option(Location loc, int value);
-	void single_option_cascade(Location loc);
 	void solver_unique();	// unique in section
 	void solver_dual();
 	void solver_tripple();
@@ -200,48 +197,6 @@ inline void SolverBase<N>::single_option(Location loc, int value)
 			}
 		}
 	}
-	//std::for_each(options.row(loc).begin(), options.row(loc).end(),
-	//			  [&](std::set<int>& elem) { if (elem.size() > 1) { elem.erase(value); } });
-	//std::for_each(options.col(loc).begin(), options.col(loc).end(),
-	//			  [&](std::set<int>& elem) { if (elem.size() > 1) { elem.erase(value); } });
-	//std::for_each(options.block(loc).begin(), options.block(loc).end(),
-	//			  [&](std::set<int>& elem) { if (elem.size() > 1) { elem.erase(value); } });
-}
-
-//template<size_t N>
-//void SolverBase<N>::related(Location loc, void (*f)(std::set<int>, Location))
-//{
-//	std::for_each(
-//		options.row(loc).begin(),
-//		options.row(loc).end(),
-//		[](std::set<int>& elem) { (*f)(elem, loc); }
-//	);
-//}
-
-
-
-template<size_t N>
-inline void SolverBase<N>::single_option_cascade(Location loc)
-{
-	if (options.at(loc).size() == 1)
-	{
-		single_option(loc, *options.at(loc).cbegin());
-	}
-}
-
-template<size_t N>
-inline void SolverBase<N>::solver_unique()
-{
-	// per section: is element.size() > 1 copy all items to multiset
-	std::multiset<int> cache{};
-	for (auto itr = options.row(i).cbegin(); itr != options.row(i).cend(); ++itr)
-	{
-		if (itr->size() > 1)
-		{
-			std::copy(itr->cbegin(), itr->cend(), cache.begin());
-		}
-	}
-	// is count() = 1 -> unique -> setValue()
 }
 
 }	// namespace Sudoku
