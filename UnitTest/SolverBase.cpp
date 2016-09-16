@@ -101,7 +101,23 @@ public:
 		Assert::IsTrue(answer == V2.getResult(), L"singleValue() cascade failed", LINE_INFO());
 		Board<int, 2> start{};
 	}
-
+	TEST_METHOD(solver_unique)
+	{
+		// test if working on Row(0)
+		static const std::vector<int> v1
+		{
+			0,2, 0,0,	// 1,3	2	1,3	1,3,4
+			4,0, 0,0,
+			0,1, 4,0,
+			0,0, 0,0
+		};
+		Sudoku::SolverBase<2> test1(v1);
+		test1.solver_unique();
+		Sudoku::Board<int, 2> result = test1.getResult();
+		Assert::IsTrue(result.at(3) == 4, L"failed", LINE_INFO());
+		Assert::IsTrue(result.at(1) == 2, L"removed valid answer",LINE_INFO());
+		Assert::IsTrue(result.at(0) == 1 && result.at(2) == 3, L"failed to use single_option() properly", LINE_INFO());
+	}
 	TEST_METHOD(board1)
 	{
 		/*	start board					answer board
