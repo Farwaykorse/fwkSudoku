@@ -11,6 +11,8 @@
 *.userprefs
 
 # Build results
+[Cc]lang/
+[Cc]lang[Dd]ebug/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
