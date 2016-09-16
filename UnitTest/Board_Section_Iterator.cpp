@@ -7,7 +7,7 @@
 // Class under test
 #include "Board.h"
 // helpers
-#include "uTestObjects.h"
+#include "TestObjects.h"
 // library
 #include <set>
 #include <numeric>

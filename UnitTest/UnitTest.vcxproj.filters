@@ -21,7 +21,7 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="uTestObjects.h">
+    <ClInclude Include="TestObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -29,19 +29,19 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="uBoard.cpp">
+    <ClCompile Include="Board.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="uBoard_Section.cpp">
+    <ClCompile Include="Location.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="uBoard_Section_Iterator.cpp">
+    <ClCompile Include="Board_Section.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="uLocation.cpp">
+    <ClCompile Include="Board_Section_Iterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="uSolverBase.cpp">
+    <ClCompile Include="SolverBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
