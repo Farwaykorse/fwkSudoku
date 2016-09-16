@@ -50,12 +50,15 @@ private:
 	static const size_t elem_size = Location().elem_size;
 	static const size_t full_size = Location().full_size;
 
-	std::set<int> characters() const
+	constexpr std::set<int> characters() const
 	{
 		//TODO replace, always same result with template N
-		std::set<int> tmp;
-		for (size_t i = 1; i <= elem_size; ++i) { tmp.insert(i); }
-		return tmp;
+		std::set<int> chars;
+		std::generate_n(
+			std::inserter(chars, chars.begin()), elem_size,
+			[x = 0]()mutable{ return ++x; }
+		);
+		return chars;
 	}
 
 	/* Initiate */
