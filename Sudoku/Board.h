@@ -23,12 +23,15 @@ public:
 	static_assert(N > 1, "Board.h base_size value too small");
 
 	using value_type = T;	// stl container conventions
+	using const_value_type = const value_type;
 	using size_type = unsigned int;
 	using size_t = size_type;
 	using difference_type = int;
 	using self_type = Board<T, N>;
 	using reference = value_type&;
+	using const_reference = const_value_type&;
 	using pointer = value_type*;
+	using const_pointer = const_value_type*;
 
 	using Location = Location<N>;
 	using Block_Loc = Block_Loc<N>;
@@ -90,6 +93,7 @@ public:
 	{
 	public:
 		class iterator;
+		class const_iterator;
 		using section_type = Section;
 		//using value_type = value_type;
 		//using size_type = size_t;
@@ -113,21 +117,22 @@ public:
 
 		iterator begin() { return iterator(this, addressof(0), 0); }
 		iterator end() { return iterator(this); }
-		//T& begin(); end(); cbegin(); cend(); rbegin(); rend(); crbegin(); crend();
+		const_iterator cbegin() const { return const_iterator(this, addressof(0), 0); }
+		const_iterator cend() const { return const_iterator(this); }
+		const_iterator begin() const { return cbegin(); }
+		const_iterator end() const { return cend(); }
+		// rbegin(); rend(); crbegin(); crend();
 
 		// information
 		static constexpr size_t size() { return elem_size; }
 		size_t id() const { return id_; }
-		//constexpr size_t id_row() const { return loc_.row(); }
-		//constexpr size_t id_col() const { return loc_.col(); }
-		//constexpr size_t id_block() const { return loc_.block(); }
 
 		class iterator
 		{
 			// knows a pointer to an element in Board and the Location
 			// can be passed to other section types, because Location is usable for all
 		public:
-			using iterator_category = std::forward_iterator_tag;
+			using iterator_category = std::bidirectional_iterator_tag;
 				// forward_iterator_tag	// bidirectional_iterator_tag	// random_access_iterator_tag
 			using self_type = iterator;
 			using value_type = value_type;
@@ -136,19 +141,20 @@ public:
 			using size_type = unsigned int;
 			using difference_type = int;
 
-			iterator(section_type* sp, size_t elem) : elem_(elem), ptr_{ sp->addressof(elem) }, section_{sp} {}
 			iterator(section_type* sp, pointer ptr, size_t elem) : elem_(elem), ptr_(ptr), section_(sp) {}
+			iterator(section_type* sp, size_t elem) : elem_(elem), ptr_{ sp->addressof(elem) }, section_{sp} {}
 			iterator(section_type* sp) : elem_(elem_size), ptr_(nullptr), section_(sp) {}
-			// All
+
+			/* All iterator categories */
 			iterator(const self_type&) = default; 
-			//self_type& operator=(const self_type& other)
-			//{
-			//	//ERROR no difference between row/col/block versions!!
-			//	section_ = other.section_;
-			//	elem_ = other.elem_;
-			//	ptr_ = other.ptr_;
-			//	return *this&;		//ERROR in Clang: expect expression
-			//}
+			self_type& operator=(const self_type& other)
+			{
+				//ERROR no difference between row/col/block versions!!
+				//TEST never tested
+				section_ = other.section_;
+				elem_ = other.elem_;
+				return move_();
+			}
 			self_type& operator++()	// pre-increment, returns a reference
 			{
 				++elem_;
@@ -172,46 +178,63 @@ public:
 				return false;
 			}
 			bool operator!=(const self_type& other) const { return !(*this == other); }
+
 			// In- & output iterator
 			reference operator*() { return *ptr_; }
-			pointer operator->() // member access; equivalent to (*p).m
-			{
-				//TODO template: only possible for non-simple types (not int)
-				return ptr_;
-			}
+			pointer operator->() { return ptr_; } // member access; equivalent to (*p).m
 
 			// Forward
 			iterator() : elem_(elem_size), ptr_(nullptr), section_(nullptr) {}
 
 			//Bidirectional
-			//reference operator--();
-			//self_type operator--(int);
+			self_type& operator--() { --elem_; return move_(); }
+			self_type operator--(int)
+			{
+				self_type pre = *this;
+				--elem_;
+				move_();
+				return pre;
+			}
 
 			//Random Access
 			self_type& operator+=(difference_type n)	// compount assignment
 			{
+				assert(elem_ + n >= 0);
 				elem_ += n;
 				return move_();
 			}
-			self_type& operator-=(difference_type n) { elem_ -= n; return move_(); }
-			self_type& operator+(difference_type n)
+			self_type& operator-=(difference_type n)
 			{
-				return operator+=(n);
+				assert(elem_ - n >= 0);
+				elem_ -= n;
+				return move_();
 			}
-			self_type& operator-(difference_type n) { return operator -=(n); }
-			//operator+(b);
-			//operator-(b);
+			self_type& operator+(difference_type n) { return operator+=(n); }
+			self_type& operator-(difference_type n) { return operator-=(n); }
+			difference_type operator-(const self_type& other)	// distance
+			{
+				assert(section() == other.section());
+				return elem_ - other.elem_;
+			}
+			size_type operator+() { return elem_; }	//?? allow for int + iterator = int
 			reference operator[](difference_type n) // offset dereference; p+n; equivalent to *(p+n)
 			{
 				elem_ += n;
 				move_();
 				return *ptr_;
 			}
-			//operator<(b);		// inequality comparisons
-			//operator<=(b);
-			//operator>=(b);
-			//operator>(b);
-
+			bool operator<(const self_type& other)	// inequality comparisons
+			{
+				assert(section() == other.section());
+				return elem_ < other.elem_;
+			}
+			bool operator>(const self_type& other)
+			{
+				assert(section() == other.section());
+				return elem_ > other.elem_;
+			}
+			bool operator<=(const self_type& other) { return !operator>(other); }
+			bool operator>=(const self_type& other) { return !operator<(other); }
 
 			//Location& advance(size_t elem);	// like p+=n requires at least an input iterator
 			//size_t distance(Location, Location); // like x=q-p
@@ -245,12 +268,158 @@ public:
 			}
 		};	// class Board::Section::iterator
 
+		class const_iterator : public iterator
+		{
+			// knows a pointer to an element in Board and the Location
+			// can be passed to other section types, because Location is usable for all
+			// const iterators don't support output-iterator properties
+		public:
+			using iterator_category = std::bidirectional_iterator_tag;
+				// forward_iterator_tag	// bidirectional_iterator_tag	// random_access_iterator_tag
+			using self_type = const_iterator;
+			using value_type = value_type;
+			using const_value_type = const value_type;
+			using reference = value_type&;
+			using const_reference = const_value_type&;
+			using pointer = value_type*;
+			using const_pointer = const_value_type*;
+			using size_type = unsigned int;
+			using difference_type = int;
+
+			/* constructors - used */
+			const_iterator(const section_type* sp, const_pointer ptr, size_t elem) : elem_(elem), ptr_(ptr), section_(sp) {}
+			const_iterator(const section_type* sp, size_t elem) : elem_(elem), ptr_{ sp->addressof(elem) }, section_{sp} {}
+			const_iterator(const section_type* sp) : elem_(elem_size), ptr_(nullptr), section_(sp) {}
+
+			/* All iterators categories */
+			const_iterator(const self_type&) = default;
+			self_type& operator=(const self_type& other)
+			{
+				//ERROR no difference between row/col/block versions!!
+				//TEST never tested
+				section_ = other.section_;
+				elem_ = other.elem_;
+				return move_();
+			}
+			self_type& operator++()	// pre-increment, returns a reference
+			{
+				++elem_;
+				return move_();
+			}
+			self_type operator++(int)	// post-increment, returns a copy holding the old value
+			{
+				self_type pre = *this;
+				++elem_;
+				move_();
+				return pre;
+			}
+
+			// Input iterator
+			bool operator==(const self_type& other) const
+			{
+				if (elem_ == other.elem_ && ptr_ == other.ptr_)
+				{
+					return section() == other.section();
+				}
+				return false;
+			}
+			bool operator!=(const self_type& other) const { return !(*this == other); }
+
+			// In- & output iterator
+			const_reference operator*() { return *ptr_; }
+			const_pointer operator->() { return ptr_; }
+
+			// Forward
+			const_iterator() : elem_(elem_size), ptr_(nullptr), section_(nullptr) {}
+
+			//Bidirectional
+			self_type& operator--() { --elem_; return move_(); }
+			self_type operator--(int)
+			{
+				self_type pre = *this;
+				--elem_;
+				move_();
+				return pre;
+			}
+
+			//Random Access
+			self_type& operator+=(difference_type n)
+			{
+				assert(elem_ + n >= 0);
+				elem_ += n;
+				return move_();
+			}
+			self_type& operator-=(difference_type n)
+			{
+				assert(elem_ - n >= 0);
+				elem_ -= n;
+				return move_();
+			}
+			self_type& operator+(difference_type n) { return operator+=(n); }
+			self_type& operator-(difference_type n) { return operator-=(n); }
+			difference_type operator-(const self_type& other)	// distance
+			{
+				assert(section() == other.section());
+				return elem_ - other.elem_;
+			}
+			size_type operator+() { return elem_; }	//?? allow for int + iterator = int
+			const_reference operator[](difference_type n) // offset dereference; p+n; equivalent to *(p+n)
+			{
+				elem_ += n;
+				move_();
+				return *ptr_;
+			}
+			bool operator<(const self_type& other)	// inequality comparisons
+			{
+				assert(section() == other.section());
+				return elem_ < other.elem_;
+			}
+			bool operator>(const self_type& other)
+			{
+				assert(section() == other.section());
+				return elem_ > other.elem_;
+			}
+			bool operator<=(const self_type& other) { return !operator>(other); }
+			bool operator>=(const self_type& other) { return !operator<(other); }
+
+			/* custom */
+			//TEST	create tests for (const_)iterator::location()
+			bool operator==(const Location& loc) const { return location() == loc; }
+			bool operator!=(const Location& loc) const { return !operator==(loc); }
+			Location location() const { return section_->loc(elem_); }
+
+		private:
+			size_type elem_{};		// id of the element within the section
+			const_pointer ptr_{};	// data pointer
+			const section_type* section_;
+
+			size_type section() const { return section_->id(); }
+
+			self_type& move_()
+			{
+				ptr_ = section_->addressof(elem_);
+				return *this;
+			}
+			self_type& move_(size_t to)
+			{
+				assert(to <= elem_size);
+				elem_ = to;
+				return move_();
+			}
+		};	// class Board::Section::const_iterator
+
 	protected:
 		pointer addressof(size_t elem_id)
 		{
 			assert(elem_id <= elem_size);
 			if (elem_id == elem_size) { return nullptr; }
 			return &nocheck_at(elem_id);
+		}
+		const_pointer addressof(size_t elem_id) const
+		{
+			assert(elem_id <= elem_size);
+			if (elem_id == elem_size) { return nullptr; }
+			return &const_nocheck_at(elem_id);
 		}
 
 	private:
@@ -276,7 +445,8 @@ public:
 	public:
 		using Section::Section;	// inherit constructors
 		using section_type = Row;
-		using iterator = class Section::iterator;
+		//using iterator = class Section::iterator;
+		//using const_iterator = class Section::const_iterator;
 		using Section::id;
 
 		/*
