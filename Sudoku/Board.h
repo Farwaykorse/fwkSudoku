@@ -209,19 +209,26 @@ public:
 				elem_ -= n;
 				return move_();
 			}
-			self_type& operator+(difference_type n) { return operator+=(n); }
-			self_type& operator-(difference_type n) { return operator-=(n); }
+			self_type operator+(difference_type n)
+			{
+				self_type itr{ *this };
+				return itr += n;
+			}
+			self_type operator-(difference_type n)
+			{
+				self_type itr{ *this };
+				return itr -= n;
+			}
 			difference_type operator-(const self_type& other)	// distance
 			{
 				assert(section() == other.section());
 				return elem_ - other.elem_;
 			}
-			size_type operator+() { return elem_; }	//?? allow for int + iterator = int
+			//size_type operator+() { return elem_; }	// n + itr == itr+n
 			reference operator[](difference_type n) // offset dereference; p+n; equivalent to *(p+n)
 			{
-				elem_ += n;
-				move_();
-				return *ptr_;
+				self_type tmp{ *this };
+				return *(tmp+= n);
 			}
 			bool operator<(const self_type& other)	// inequality comparisons
 			{
@@ -355,19 +362,26 @@ public:
 				elem_ -= n;
 				return move_();
 			}
-			self_type& operator+(difference_type n) { return operator+=(n); }
-			self_type& operator-(difference_type n) { return operator-=(n); }
+			self_type operator+(difference_type n)
+			{
+				self_type tmp{ *this };
+				return tmp += n;
+			}
+			self_type operator-(difference_type n)
+			{
+				self_type tmp{ *this };
+				return tmp -= n;
+			}
 			difference_type operator-(const self_type& other)	// distance
 			{
 				assert(section() == other.section());
 				return elem_ - other.elem_;
 			}
-			size_type operator+() { return elem_; }	//?? allow for int + iterator = int
+			//size_type operator+() { return elem_; }	//?? allow for int + iterator = int
 			const_reference operator[](difference_type n) // offset dereference; p+n; equivalent to *(p+n)
 			{
-				elem_ += n;
-				move_();
-				return *ptr_;
+				self_type tmp{ *this };
+				return *(tmp += n);
 			}
 			bool operator<(const self_type& other)	// inequality comparisons
 			{

@@ -8,9 +8,11 @@
 #include "Board.h"
 // helpers
 #include "TestObjects.h"
+#include "Location.h"
 // library
 #include <set>
 #include <numeric>
+#include <iterator>	// distance()
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -113,25 +115,41 @@ public:
 		itr2 = itr1;
 		itr3 = itr1;
 		Assert::IsTrue(itr2+1 == ++itr3, L"a+n failed", LINE_INFO());
-		Assert::IsFalse(itr2 == itr1, L"a+1 didn't change a, it should!", LINE_INFO());
-		Assert::IsTrue((itr2+=3) == itr3+3, L"a+=n failed", LINE_INFO());
-		Assert::IsTrue(itr2[2] == *(itr3+2), L"a[n] failed", LINE_INFO());
-		Assert::IsTrue(itr2-1 == --itr3, L"a-n failed", LINE_INFO());
-		Assert::IsTrue((itr2-=3) == itr3-3, L"a-=n failed", LINE_INFO());
-		Assert::IsTrue(itr2[-2] == *(itr3-2), L"a[-n] failed", LINE_INFO());
-		Assert::IsTrue(itr2 == itr1, L"movements didn't match", LINE_INFO());
-		Assert::IsTrue(itr3+B.elem_size == B.row(2).end(), L"movement to end failed", LINE_INFO());
+		// itr3 = 1
+		Assert::IsTrue(itr2 == itr1, L"a+1 shouldn't change a!", LINE_INFO());
+		Assert::IsTrue((itr2+=3) == itr1+3, L"a+=n failed", LINE_INFO());
+		// itr2 = 3
+		Assert::IsTrue(itr2 == itr1+3, L"a+=n changes a", LINE_INFO());
+		Assert::IsTrue(itr3[2] == *(itr1+3), L"a[n] failed", LINE_INFO());
+		Assert::IsTrue(itr3 == itr1+1, L"a[n] shouldn't change a", LINE_INFO());
+		Assert::IsTrue(itr2-3 == itr1, L"a-n failed", LINE_INFO());
+		Assert::IsTrue(itr2 == itr1+3, L"a-n shouldn't change a", LINE_INFO());
+		Assert::IsTrue((itr2-=3) == itr1, L"a-=n failed", LINE_INFO());
+		// itr2 = 0
+		Assert::IsTrue(itr2 == itr1, L"a-=n changes a", LINE_INFO());
+		Assert::IsTrue(itr3[-1] == *(itr1), L"a[-n] failed", LINE_INFO());
+		Assert::IsTrue(itr1+B.elem_size == B.row(2).end(), L"movement to end failed", LINE_INFO());
 
-		itr1 = B.row(2).begin();
-		itr2 = B.row(2).begin()+2;
-		itr3 = B.row(2).end();
+		itr1 = B.row(2).begin();	// 0
+		itr2 = B.row(2).begin()+2;	// 2
+		itr3 = B.row(2).end();		// 9
 		Assert::IsTrue(itr1 - itr2 == -2, L"distance failed", LINE_INFO());
-		Assert::IsTrue(5 + itr2.operator+() == 7, L"sum with number failed", LINE_INFO());
+		//TODO int + iterator, returns same result as itr + int
+		//Assert::IsTrue(5 + itr2 == itr2+5, L"sum with number failed", LINE_INFO());
 		Assert::IsTrue(itr1 < itr2, L"a < b failed", LINE_INFO());
 		Assert::IsTrue(itr2 > itr1, L"a > b failed", LINE_INFO());
 		Assert::IsTrue(itr1 <= itr2 && itr1 <= B.row(2).begin(), L"a <= b failed", LINE_INFO());
 		Assert::IsTrue(itr2 >= itr1 && itr1 >= B.row(2).begin(), L"a >= b failed", LINE_INFO());
 
+		// Custom functions
+		Assert::IsTrue(itr1.location() == Sudoku::Location<3>(2,0), L"location() failed", LINE_INFO());
+		Assert::IsTrue(itr1.location().row() == 2, L"location().row() failed", LINE_INFO());
+		Assert::IsTrue(itr3.location().element() == 27, L"location().elemen() of end() failed", LINE_INFO());
+
+		// Other
+		Assert::IsTrue(
+			std::distance(B.row(0).begin(), B.row(0).end()) == B.elem_size,
+			L"std::distance failed", LINE_INFO());
 	}
 	TEST_METHOD(const_iterator)
 	{
@@ -181,7 +199,7 @@ public:
 		Assert::IsTrue(*itr3 == B[0][1], L"operator++(int) failed", LINE_INFO());
 
 		auto itr5 = B.row(0).cbegin();
-		for (size_t i = 0; i<B.elem_size-1; ++i) { ++itr5; }
+		for (size_t i = 0; i<B.elem_size - 1; ++i) { ++itr5; }
 		Assert::IsTrue(*itr5 == 8, L"moving forward to last element failed", LINE_INFO());
 		Assert::IsTrue(++itr5 == B.row(0).cend(), L"moving forward to end() failed", LINE_INFO());
 
@@ -214,25 +232,33 @@ public:
 		itr1 = B.row(2).cbegin();
 		itr2 = itr1;
 		itr3 = itr1;
-		Assert::IsTrue(itr2+1 == ++itr3, L"a+n failed", LINE_INFO());
-		Assert::IsFalse(itr2 == itr1, L"a+1 didn't change a, it should!", LINE_INFO());
-		Assert::IsTrue((itr2+=3) == itr3+3, L"a+=n failed", LINE_INFO());
-		Assert::IsTrue(itr2[2] == *(itr3+2), L"a[n] failed", LINE_INFO());
-		Assert::IsTrue(itr2-1 == --itr3, L"a-n failed", LINE_INFO());
-		Assert::IsTrue((itr2-=3) == itr3-3, L"a-=n failed", LINE_INFO());
-		Assert::IsTrue(itr2[-2] == *(itr3-2), L"a[-n] failed", LINE_INFO());
-		Assert::IsTrue(itr2 == itr1, L"movements didn't match", LINE_INFO());
-		Assert::IsTrue(itr3+B.elem_size == B.row(2).cend(), L"movement to end failed", LINE_INFO());
+		Assert::IsTrue(itr2 + 1 == ++itr3, L"a+n failed", LINE_INFO());
+		// itr3 = 1
+		Assert::IsTrue(itr2 == itr1, L"a+1 shouldn't change a!", LINE_INFO());
+		Assert::IsTrue((itr2 += 3) == itr1 + 3, L"a+=n failed", LINE_INFO());
+		// itr2 = 3
+		Assert::IsTrue(itr2 == itr1 + 3, L"a+=n changes a", LINE_INFO());
+		Assert::IsTrue(itr3[2] == *(itr1 + 3), L"a[n] failed", LINE_INFO());
+		Assert::IsTrue(itr3 == itr1 + 1, L"a[n] shouldn't change a", LINE_INFO());
+		Assert::IsTrue(itr2 - 3 == itr1, L"a-n failed", LINE_INFO());
+		Assert::IsTrue(itr2 == itr1 + 3, L"a-n shouldn't change a", LINE_INFO());
+		Assert::IsTrue((itr2 -= 3) == itr1, L"a-=n failed", LINE_INFO());
+		// itr2 = 0
+		Assert::IsTrue(itr2 == itr1, L"a-=n changes a", LINE_INFO());
+		Assert::IsTrue(itr3[-1] == *(itr1), L"a[-n] failed", LINE_INFO());
+		Assert::IsTrue(itr1 + B.elem_size == B.row(2).cend(), L"movement to end failed", LINE_INFO());
 
-		itr1 = B.row(2).cbegin();
-		itr2 = B.row(2).cbegin()+2;
-		itr3 = B.row(2).cend();
+		itr1 = B.row(2).cbegin();	// 0
+		itr2 = B.row(2).cbegin() + 2;	// 2
+		itr3 = B.row(2).cend();		// 9
 		Assert::IsTrue(itr1 - itr2 == -2, L"distance failed", LINE_INFO());
-		Assert::IsTrue(5 + itr2.operator+() == 7, L"sum with number failed", LINE_INFO());
+		//TODO int + iterator, returns same result as itr + int
+		//Assert::IsTrue(5 + itr2 == itr2+5, L"sum with number failed", LINE_INFO());
 		Assert::IsTrue(itr1 < itr2, L"a < b failed", LINE_INFO());
 		Assert::IsTrue(itr2 > itr1, L"a > b failed", LINE_INFO());
 		Assert::IsTrue(itr1 <= itr2 && itr1 <= B.row(2).cbegin(), L"a <= b failed", LINE_INFO());
 		Assert::IsTrue(itr2 >= itr1 && itr1 >= B.row(2).cbegin(), L"a >= b failed", LINE_INFO());
+
 
 		/* for-loop */
 		int sum{};
@@ -242,9 +268,15 @@ public:
 		}
 		Assert::IsTrue(sum == 36, L"const_iterator failed in for-loop", LINE_INFO());
 
-		/* stl algorithm */
-		size_t total = std::accumulate(B.row(2).cbegin(), B.row(2).cend(), 0);
-		Assert::IsTrue(total == 36, L"Section::Row std::accumulate incorrect result using cbegin()", LINE_INFO());
+		// Custom functions
+		Assert::IsTrue(itr1.location() == Sudoku::Location<3>(2, 0), L"location() failed", LINE_INFO());
+		Assert::IsTrue(itr1.location().row() == 2, L"location().row() failed", LINE_INFO());
+		Assert::IsTrue(itr3.location().element() == 27, L"location().elemen() of end() failed", LINE_INFO());
+
+		// Other
+		Assert::IsTrue(
+			std::distance(B.row(0).cbegin(), B.row(0).cend()) == B.elem_size,
+			L"std::distance failed", LINE_INFO());
 	}
 	TEST_METHOD(range_for_loop)
 	{
