@@ -253,7 +253,7 @@ public:
 		itr3 = B.row(2).cend();		// 9
 		Assert::IsTrue(itr1 - itr2 == -2, L"distance failed", LINE_INFO());
 		//TODO int + iterator, returns same result as itr + int
-		//Assert::IsTrue(5 + itr2 == itr2+5, L"sum with number failed", LINE_INFO());
+		// https://msdn.microsoft.com/en-us/library/d56eb4y4.aspx
 		Assert::IsTrue(itr1 < itr2, L"a < b failed", LINE_INFO());
 		Assert::IsTrue(itr2 > itr1, L"a > b failed", LINE_INFO());
 		Assert::IsTrue(itr1 <= itr2 && itr1 <= B.row(2).cbegin(), L"a <= b failed", LINE_INFO());
@@ -351,7 +351,7 @@ public:
 		// accumulate requires an input iterator
 		for (size_t i = 0; i < 9; ++i)
 		{
-			size_t total = std::accumulate(B.row(i).begin(), B.row(i).end(), 0);
+			size_t total = std::accumulate(B.row(i).cbegin(), B.row(i).cend(), 0);
 			Assert::IsTrue(total == 36, L"Section::Row std::accumulate incorrect result", LINE_INFO());
 		}
 
@@ -369,23 +369,22 @@ public:
 			Assert::IsTrue(total == 36, L"Section::Block std::accumulate incorrect result", LINE_INFO());
 		}
 
-
+		Test_Boards::bN_fill_1::set_ColNr(B);
 		// upper_bound requires a forward iterator
-		auto first_higher = std::upper_bound(B.row(5).begin(), B.row(5).end(), 6);
+		auto first_higher = std::upper_bound(B.row(5).cbegin(), B.row(5).cend(), 6);
+		Assert::IsTrue(*first_higher == 7, L"std::upper_bound() failed", LINE_INFO());
 		// fill requires a forward iterator
-		std::fill(B.block(3).begin(), B.block(3).end(), 3);
-
+		std::fill(B.block(2).begin(), B.block(2).end(), 3);
+		Assert::IsTrue(
+			B.at(7) == 3 && B.at(8) ==3 && B.at(17) == 3 && B.at(25) == 3,
+			L"std::fill() failed", LINE_INFO()
+		);
 		// next_permutation(start, stop) requires a Bidirectional iterator
-		bool success = std::next_permutation(B.col(2).begin(), B.col(2).end());
-
+		bool success = std::next_permutation(B.row(2).begin(), B.row(2).end());
 
 		// random_shuffle(start, stop) requires a random iterator
-		//ERROR goes out of bounds
-		//std::random_shuffle(B.row(7).begin(), B.row(7).end());
+		std::random_shuffle(B.row(8).begin(), B.row(8).end());
 
-		/* write to Board, to force use non-const iterator*/
-		//TODO write to board
 	}
 };
-
 }	// namespace Sudoku_Test
