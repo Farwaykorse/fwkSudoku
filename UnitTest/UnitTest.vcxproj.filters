@@ -32,13 +32,13 @@
     <ClCompile Include="Board.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Location.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Board_Section.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Board_Section_Iterator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Location.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SolverBase.cpp">

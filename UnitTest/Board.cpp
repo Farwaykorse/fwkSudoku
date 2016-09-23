@@ -7,6 +7,7 @@
 // Class under test
 #include "Board.h"
 // helpers
+#include "Location.h"
 
 // library
 #include <set>
@@ -139,8 +140,20 @@ public:
 		}
 		Assert::IsTrue(board3[8][8] == 9, L"reading with operator[row][col] failed", LINE_INFO());
 
+		Sudoku::Board<int, 3> board4;
+		try
+		{
+			set_Value(board4);
+		}
+		catch (const std::exception&)
+		{
+			Assert::Fail(L"writing with operator[Location] filed", LINE_INFO());
+		}
+		Assert::IsTrue(board4[Sudoku::Location<3>(80)] == 9, L"reading with operator[Location] failed", LINE_INFO());
+
+
 		// operator==() / operator!=()
-		// NOTE repeat from TEST_METHOD(properties)
+		// repeat from TEST_METHOD(properties)
 		Assert::IsTrue(board == board2, L"failure operator==", LINE_INFO());
 		Assert::IsFalse(board == empty, L"failure operator== (inverse)", LINE_INFO());
 		Assert::IsTrue(board != empty, L"failure operator!=", LINE_INFO());
@@ -191,6 +204,16 @@ private:
 			{
 				target.at(row, col) = col + 1;
 			}
+		}
+	}
+
+	template<size_t N>
+	void set_Value_2(Sudoku::Board<int, N>& target)
+	{
+		constexpr size_t elem{ N*N };
+		for (size_t i = 0; i < target.size(); ++i)
+		{
+			target[Location(i)] = i % elem + 1;
 		}
 	}
 };

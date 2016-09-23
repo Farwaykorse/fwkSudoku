@@ -8,7 +8,6 @@
 
 #include <cassert>
 #include <set>
-#include <string>
 #include <vector>
 #include <stdexcept>
 
@@ -44,7 +43,6 @@ public:
 private:
 	Board<int, N> start;
 	Board<std::set<int>, N> options;
-	//display version, not needed for solver
 
 	static const size_t base_size = Location().base_size;
 	static const size_t elem_size = Location().elem_size;
@@ -206,12 +204,6 @@ inline void SolverBase<N>::single_option(Location loc, int value)
 			}
 		}
 	}
-	//std::for_each(options.row(loc).begin(), options.row(loc).end(),
-	//			  [&](std::set<int>& elem) { if (elem.size() > 1) { elem.erase(value); } });
-	//std::for_each(options.col(loc).begin(), options.col(loc).end(),
-	//			  [&](std::set<int>& elem) { if (elem.size() > 1) { elem.erase(value); } });
-	//std::for_each(options.block(loc).begin(), options.block(loc).end(),
-	//			  [&](std::set<int>& elem) { if (elem.size() > 1) { elem.erase(value); } });
 }
 
 //template<size_t N>
@@ -223,8 +215,6 @@ inline void SolverBase<N>::single_option(Location loc, int value)
 //		[](std::set<int>& elem) { (*f)(elem, loc); }
 //	);
 //}
-
-
 
 template<size_t N>
 inline void SolverBase<N>::single_option_cascade(Location loc)
