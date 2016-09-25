@@ -106,10 +106,11 @@ public:
 		using Section::Section;	// inherit constructors
 		using Section::id;
 	private:
-		Location loc(size_t elem) const final
+		Location loc(size_t elem) const final 
 		{
 			return Location(id(), elem);
 		}
+		size_t element(Location loc) const final { return loc.col(); }
 	};
 
 	class Col : public Section
@@ -119,6 +120,7 @@ public:
 		using Section::id;
 	private:
 		Location loc(size_t elem) const final { return Location(elem, id()); }
+		size_t element(Location loc) const final { return loc.row(); }
 	};
 
 	class Block : public Section
@@ -132,6 +134,7 @@ public:
 		{
 			return Location(Block_Loc(id(), elem));
 		}
+		size_t element(Location loc) const override { return loc.block_elem(); }
 	};
 
 	Row row(size_t id) { return Row(this, id); }

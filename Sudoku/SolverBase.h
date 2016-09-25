@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "Board.h"
 #include "Location.h"
+#include "Solver.h"
 
 #include <cassert>
 #include <set>
@@ -18,7 +19,6 @@ template<size_t N = 3> class SolverBase
 {
 public:
 	using Location = Location<N>;
-	using Block_Loc = Block_Loc<N>;
 
 	SolverBase();
 	SolverBase(const Board<int, N>&);
@@ -38,6 +38,7 @@ public:
 	Board<std::set<int>, N> getOptions() const;
 
 	/* tmp */
+	void single_option(Location loc, int value);
 	void solver_unique();
 
 private:
@@ -48,7 +49,7 @@ private:
 	static const size_t elem_size = Location().elem_size;
 	static const size_t full_size = Location().full_size;
 
-	constexpr std::set<int> characters() const
+	static std::set<int> characters()
 	{
 		//TODO replace, always same result with template N
 		std::set<int> chars;
@@ -66,8 +67,8 @@ private:
 	void setValue(Location loc, int value);
 
 	/* Solvers */
-	void single_option(Location loc, int value);
-	void single_option_cascade(Location loc);
+	//void single_option(Location loc, int value);
+	//void single_option_section(Board<int,N>::Row::iterator begin, Section::iterator end, Location loc, int value);
 	//void solver_unique();	// unique in section
 	void solver_dual();
 	void solver_tripple();
@@ -170,71 +171,27 @@ single_option(loc, value);
 
 /// remove value from other elements in current row/col/block
 /// won't detect a conflict
-template<size_t N>
-inline void SolverBase<N>::single_option(Location loc, int value)
+template<size_t N> inline
+void SolverBase<N>::single_option(const Location loc, const int value)
 {
 	assert(options.at(loc).size() == 1);
-	for (auto itr = options.row(loc).begin(); itr != options.row(loc).end(); ++itr)
-	{
-		if (itr != loc)
-		{
-			if (itr->erase(value))
-			{
-				if (itr->size() == 1) single_option(itr.location(), *(itr->cbegin()));
-			}
-		}
-	}
-	for (auto itr = options.col(loc).begin(); itr != options.col(loc).end(); ++itr)
-	{
-		if (itr != loc)
-		{
-			if (itr->erase(value))
-			{
-				if (itr->size() == 1) single_option(itr.location(), *(itr->cbegin()));
-			}
-		}
-	}
-	for (auto itr = options.block(loc).begin(); itr != options.block(loc).end(); ++itr)
-	{
-		if (itr != loc)
-		{
-			if (itr->erase(value))
-			{
-				if (itr->size() == 1) single_option(itr.location(), *(itr->cbegin()));
-			}
-		}
-	}
-}
-
-//template<size_t N>
-//void SolverBase<N>::related(Location loc, void (*f)(std::set<int>, Location))
-//{
-//	std::for_each(
-//		options.row(loc).begin(),
-//		options.row(loc).end(),
-//		[](std::set<int>& elem) { (*f)(elem, loc); }
-//	);
-//}
-
-template<size_t N>
-inline void SolverBase<N>::single_option_cascade(Location loc)
-{
-	if (options.at(loc).size() == 1)
-	{
-		single_option(loc, *options.at(loc).cbegin());
-	}
+	assert(*options.at(loc).cbegin() == value);
+	Solver::single_option(options, loc);
 }
 
 template<size_t N>
 inline void SolverBase<N>::solver_unique()
 {
+	//TODO assert()
+	//Solver::unique();
+
 	//TODO for Col and Block
 	size_t i = 0;
 	//TODO for all elements in section
 
 	//TODO make a function: name(const itr begin, const itr end) {
-	const auto begin = options.row(i).begin();
-	const auto end = options.row(i).end();
+	const auto begin = options.row(i).cbegin();
+	const auto end = options.row(i).cend();
 	//TODO const_iterator versions; Board::Section
 	std::multiset<int> cache{};
 	// copy available options
@@ -262,7 +219,7 @@ inline void SolverBase<N>::solver_unique()
 				end,
 				[itr](std::set<int> elem) { return (elem.count(*itr) == 1); }
 			);
-			assert(found != options.row(i).end());	// cache <-> options out of sync
+			assert(found != end);	// cache <-> options out of sync
 			// update Board options
 			// not if already done by single_option's cascade
 			if (found->size() != 1) { setValue(found.location(), *itr); }

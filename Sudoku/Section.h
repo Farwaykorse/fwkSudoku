@@ -119,13 +119,13 @@ public:
 		//Random Access
 		self_type& operator+=(difference_type n)	// compount assignment
 		{
-			assert(elem_ + n >= 0);
+			assert(element() + n >= 0);
 			elem_ += n;
 			return move_();
 		}
 		self_type& operator-=(difference_type n)
 		{
-			assert(elem_ - n >= 0);
+			assert(element() - n >= 0);
 			elem_ -= n;
 			return move_();
 		}
@@ -142,7 +142,7 @@ public:
 		difference_type operator-(const self_type& other)	// distance
 		{
 			assert(section() == other.section());
-			return elem_ - other.elem_;
+			return element() - other.element();
 		}
 		//TODO move/reverse_iterator<RandomIterator> operator+(difference_type, const move_iterator<RandomIterator>&)
 		reference operator[](difference_type n) // offset dereference; p+n; equivalent to *(p+n)
@@ -150,15 +150,19 @@ public:
 			self_type tmp{ *this };
 			return *(tmp += n);
 		}
+		reference operator[](Location loc)
+		{
+			return operator[](element(loc)-element());
+		}
 		bool operator<(const self_type& other)	// inequality comparisons
 		{
 			assert(section() == other.section());
-			return elem_ < other.elem_;
+			return element() < other.element();
 		}
 		bool operator>(const self_type& other)
 		{
 			assert(section() == other.section());
-			return elem_ > other.elem_;
+			return element() > other.element();
 		}
 		bool operator<=(const self_type& other) { return !operator>(other); }
 		bool operator>=(const self_type& other) { return !operator<(other); }
@@ -166,7 +170,9 @@ public:
 		/* custom */
 		bool operator==(const Location& loc) const { return location() == loc; }
 		bool operator!=(const Location& loc) const { return !operator==(loc); }
-		Location location() const { return section_->loc(elem_); }
+		Location location() const { return section_->loc(element()); }
+		size_t element() const { return elem_; }
+		size_t element(Location loc) const { return section_->element(loc); }
 
 	private:
 		size_type elem_{};	// id of the element within the section
@@ -282,7 +288,7 @@ public:
 		difference_type operator-(const self_type& other)	// distance
 		{
 			assert(section() == other.section());
-			return elem_ - other.elem_;
+			return element() - other.element();
 		}
 		//TODO move/reverse_iterator<RandomIterator> operator+(difference_type, const move_iterator<RandomIterator>&)
 		const_reference operator[](difference_type n) // offset dereference; p+n; equivalent to *(p+n)
@@ -290,15 +296,20 @@ public:
 			self_type tmp{ *this };
 			return *(tmp += n);
 		}
+		const_reference operator[](Location loc)
+		{
+			return operator[](element(loc) - element());
+		}
+
 		bool operator<(const self_type& other)	// inequality comparisons
 		{
 			assert(section() == other.section());
-			return elem_ < other.elem_;
+			return element() < other.element();
 		}
 		bool operator>(const self_type& other)
 		{
 			assert(section() == other.section());
-			return elem_ > other.elem_;
+			return element() > other.element();
 		}
 		bool operator<=(const self_type& other) { return !operator>(other); }
 		bool operator>=(const self_type& other) { return !operator<(other); }
@@ -307,6 +318,8 @@ public:
 		bool operator==(const Location& loc) const { return location() == loc; }
 		bool operator!=(const Location& loc) const { return !operator==(loc); }
 		Location location() const { return section_->loc(elem_); }
+		size_t element() const { return elem_; }
+		size_t element(Location loc) const { return section_->element(loc); }
 
 	private:
 		size_type elem_{};		// id of the element within the section
@@ -347,6 +360,7 @@ private:
 	const size_t id_;
 
 	virtual Location loc(size_t) const = 0;	// section type specific movement
+	virtual size_t element(Location) const = 0;	// inverse of loc(size_t)
 	//NOTE templates as alternative instead of virtual, //tem2//
 
 	T& nocheck_at(size_t elem)
