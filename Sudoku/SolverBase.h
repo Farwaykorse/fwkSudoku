@@ -68,13 +68,10 @@ private:
 
 	/* Solvers */
 	//void single_option(Location loc, int value);
-	//void single_option_section(Board<int,N>::Row::iterator begin, Section::iterator end, Location loc, int value);
 	//void solver_unique();	// unique in section
 	void solver_dual();
 	void solver_tripple();
 	void solver_dual_hidden();	// pair of values appear 2 times
-
-	void related(Location, void (*f)(std::set<int>, Location));
 };
 
 template<size_t N>
@@ -154,19 +151,16 @@ inline void SolverBase<N>::process_new(const Board<int, N>& board)
 
 /* Options process answer value */
 template<size_t N>
-inline void SolverBase<N>::setValue(Location loc, int value)
+inline void SolverBase<N>::setValue(const Location loc, const int value)
 {
 	// valid input
 	assert(value > 0);	// not for inverse (solver only)
 	assert(value <= elem_size);
 	if (value > elem_size) { throw std::out_of_range{ "value in setValue(loc, value)" }; }
 	assert(options.at(loc).count(value) == 1);	// value is not an available option, invalid board
-if (options.at(loc).count(value) == 0) { throw std::invalid_argument{ "value conflict" }; }
-options.at(loc).clear();
-options.at(loc).insert(value);
+	if (options.at(loc).count(value) == 0) { throw std::invalid_argument{ "value conflict" }; }
 
-// process row / col / block
-single_option(loc, value);
+	Solver::setValue(options, loc, value);
 }
 
 /// remove value from other elements in current row/col/block
@@ -179,70 +173,19 @@ void SolverBase<N>::single_option(const Location loc, const int value)
 	Solver::single_option(options, loc);
 }
 
-template<size_t N>
-inline void SolverBase<N>::solver_unique()
+template<size_t N> inline
+void SolverBase<N>::solver_unique()
 {
-	//TODO assert()
-	//Solver::unique();
-
-	//TODO for Col and Block
-	size_t i = 0;
-	//TODO for all elements in section
-
-	//TODO make a function: name(const itr begin, const itr end) {
-	const auto begin = options.row(i).cbegin();
-	const auto end = options.row(i).cend();
-	//TODO const_iterator versions; Board::Section
-	std::multiset<int> cache{};
-	// copy available options
-	std::for_each(
-		begin, end,
-		[&cache](const std::set<int>& elem)
+	size_t found{ 1 };
+	while (found > 0)
 	{
-		if (elem.size() > 1)	// = available
+		found = 0;
+		for (size_t i = 0; i < elem_size; ++i)
 		{
-			std::copy(elem.cbegin(), elem.cend(), std::inserter(cache, cache.end()));
-		}
-	}
-	);
-
-	// find and process all unique options in cache
-	for (
-		std::multiset<int>::const_iterator itr = cache.lower_bound(1);
-		itr != cache.cend();
-		++itr)
-	{
-		if (cache.count(*itr) == 1)	// = unique
-		{
-			auto found = std::find_if(
-				begin,
-				end,
-				[itr](std::set<int> elem) { return (elem.count(*itr) == 1); }
-			);
-			assert(found != end);	// cache <-> options out of sync
-			// update Board options
-			// not if already done by single_option's cascade
-			if (found->size() != 1) { setValue(found.location(), *itr); }
-		}
-	}
-
-	if (cache.size() > 0)	// section not solved
-	{
-		int value{ 0 };
-		while (value < elem_size)
-		{
-			value = *cache.lower_bound(value);
-			if (cache.count(value) == 1)
-			{
-				std::find_if(
-					options.row(i).begin(),
-					options.row(i).end(),
-					[&value](std::set<int> elem) { return (elem.count(value) == 1); }
-				);
-			}
-			++value;
+			found += Solver::unique_section(options, options.row(i).cbegin(), options.row(i).cend());
+			found += Solver::unique_section(options, options.col(i).cbegin(), options.col(i).cend());
+			found += Solver::unique_section(options, options.block(i).cbegin(), options.block(i).cend());
 		}
 	}
 }
-
 }	// namespace Sudoku

@@ -158,7 +158,11 @@ public:
 		};
 		Sudoku::Board<int, 3> start;
 		std::copy(b1.cbegin(), b1.cend(), start.begin());
+		Sudoku::Board<int, 3> answer;
+		std::copy(b1a.cbegin(), b1a.cend(), answer.begin());
 		Sudoku::SolverBase<3> first(start);
+		first.solver_unique();
+		Assert::IsTrue(first.getResult()  == answer, L"solver_unique() failed", LINE_INFO());
 		int a = 1;
 	}
 };
