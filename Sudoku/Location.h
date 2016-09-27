@@ -74,8 +74,7 @@ public:
 
 	// change
 	//NOTE functional programming won't allow changing, it would create a new object
-	//		might this be doable? would it offer an advantage?
 private:
-	size_t id_;
+	const size_t id_;
 };
 }	// namespace Sudoku

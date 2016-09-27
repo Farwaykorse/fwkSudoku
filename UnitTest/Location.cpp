@@ -31,9 +31,6 @@ public:
 		Assert::IsTrue(L4.element() == 2, L"Move constructor", LINE_INFO());
 		Location<3> L5 = Location<3>(18);
 		Assert::IsTrue(L5.element() == 18, L"Move assignment", LINE_INFO());
-		std::swap(L4, L5);
-		Assert::IsTrue(L5.element() == 2 && L4.element() == 18,
-					   L"std::swap() failed", LINE_INFO());
 	}
 	TEST_METHOD(information_size_3)
 	{
