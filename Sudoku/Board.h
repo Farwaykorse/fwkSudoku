@@ -144,15 +144,15 @@ public:
 private:
 	std::vector<T> board{};
 
-	void valid_dimensions() const;
-	bool valid_size(const size_t elem) const;
-	bool valid_size(const size_t row, const size_t col) const;
+	constexpr void valid_dimensions() const;
+	constexpr bool valid_size(const size_t elem) const;
+	constexpr bool valid_size(const size_t row, const size_t col) const;
 };	// class Board
 
 // #################################################################################
 // Board - memberfunctions
-template<typename T, size_t N>
-inline void Board<T, N>::valid_dimensions() const
+template<typename T, size_t N> inline
+constexpr void Board<T, N>::valid_dimensions() const
 {
 	// input check
 	static_assert(base_size > 0, "base_size too small");
@@ -167,20 +167,16 @@ inline void Board<T, N>::valid_dimensions() const
 	static_assert(base_size*base_size == elem_size && elem_size*elem_size == full_size, "size calculation broken");
 }
 
-template<typename T, size_t N>
-inline bool Board<T, N>::valid_size(const size_t elem) const
+template<typename T, size_t N> inline
+constexpr bool Board<T, N>::valid_size(const size_t elem) const
 {
 	return elem < full_size;
 }
 
-template<typename T, size_t N>
-inline bool Board<T, N>::valid_size(const size_t row, const size_t col) const
+template<typename T, size_t N> inline
+constexpr bool Board<T, N>::valid_size(const size_t row, const size_t col) const
 {
-	if (row < elem_size)
-	{
-		return col < elem_size;
-	}
-	return false;
+	return (row < elem_size && col < elem_size);
 }
 
 template<typename T, size_t N>
@@ -208,11 +204,7 @@ inline Board<T, N>& Board<T, N>::operator=(const Board<T, N>& source)
 template<typename T, size_t N>
 inline bool Board<T, N>::operator==(const Board& other) const
 {
-	if (base_size == other.base_size)
-	{
-		return board == other.board;
-	}
-	return false;
+	return board == other.board;
 }
 
 template<typename T, size_t N>
@@ -230,7 +222,7 @@ inline const T& Board<T, N>::at(Location loc) const
 template<typename T, size_t N>
 inline T& Board<T, N>::at(size_t row, size_t col)
 {
-	if (row >= elem_size || col >= elem_size)
+	if (!valid_size(row, col))
 	{
 		throw std::out_of_range{ "Board::at(size_t row, col)" };
 	}
@@ -240,7 +232,7 @@ inline T& Board<T, N>::at(size_t row, size_t col)
 template<typename T, size_t N>
 inline const T& Board<T, N>::at(size_t row, size_t col) const
 {
-	if (row >= elem_size || col >= elem_size)
+	if (!valid_size(row, col))
 	{
 		throw std::out_of_range{ "Board::at(row, col) const" };
 	}
@@ -250,7 +242,7 @@ inline const T& Board<T, N>::at(size_t row, size_t col) const
 template<typename T, size_t N>
 inline T& Board<T, N>::at(const size_t elem)
 {
-	if (elem >= size())
+	if (!valid_size(elem))
 	{
 		throw std::out_of_range{ "Board::at(size_t)" };
 	}
@@ -260,7 +252,7 @@ inline T& Board<T, N>::at(const size_t elem)
 template<typename T, size_t N>
 inline const T& Board<T, N>::at(const size_t elem) const
 {
-	if (elem >= size())
+	if (!valid_size(elem))
 	{
 		throw std::out_of_range{ "Board::at(size_t) const" };
 	}
