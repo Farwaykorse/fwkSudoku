@@ -61,6 +61,9 @@ public:
 		Assert::IsFalse(itr1 == B.row(0).end(), L"operator== didn't fail", LINE_INFO());
 		Assert::IsFalse(itr1 != B.row(0).begin(), L"operator!= failed", LINE_INFO());
 		Assert::IsTrue(itr1 != B.row(0).end(), L"operator!= didn't fail", LINE_INFO());
+
+		//Assert::IsFalse(B.row(0).begin() == B.col(0).begin(), L"should fail");
+
 		Assert::IsTrue(*itr1 == B[0][0], L"operator* failed", LINE_INFO());
 		S[3][0].insert({ 9, 8, 6 });
 		Assert::IsTrue(itr_S1->size() == 3, L"operator-> failed", LINE_INFO());
@@ -91,6 +94,13 @@ public:
 
 		// Forward
 		//	X a; X()		default-constructable
+		//TEST is forward iterator
+		static_assert(std::is_default_constructible<Row::iterator>(), "");
+		static_assert(std::is_default_constructible<Col::iterator>(), "");
+		static_assert(std::is_default_constructible<Block::iterator>(), "");
+		Assert::IsTrue(
+			std::is_default_constructible<Sudoku::Board<int,2>::Row::iterator>(),
+			L"An forward iterator requires to be default constructable", LINE_INFO());
 		// Multi-pass: neither dereferencing nor incrementing affects dereferenceability
 
 		// Bidirectional
@@ -209,6 +219,12 @@ public:
 
 		// Forward
 		//	X a; X()		default-constructable
+		static_assert(std::is_default_constructible<Row::const_iterator>(), "");
+		static_assert(std::is_default_constructible<Col::const_iterator>(), "");
+		static_assert(std::is_default_constructible<Block::const_iterator>(), "");
+		Assert::IsTrue(
+			std::is_default_constructible<Sudoku::Board<int, 2>::Row::const_iterator>(),
+			L"An forward iterator requires to be default constructable", LINE_INFO());
 		// Multi-pass: neither dereferencing nor incrementing affects dereferenceability
 
 		// Bidirectional

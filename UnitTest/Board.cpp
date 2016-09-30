@@ -11,6 +11,7 @@
 
 // library
 #include <set>
+#include <bitset>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -26,17 +27,24 @@ public:
 		using namespace Sudoku;
 		// Board()
 		// different sizes
-		Board<int, 2> f2;
-		Board<int, 3> f3;
-		Board<int, 10> f10; // 1 ms
+		static const Board<int, 2> f2;
+		static const Board<int, 3> f3;
+		compiler_checks(f2);
+		compiler_checks(f3);
+		compiler_checks(Board<int,10>());
+		static_assert(f2.size() == 16, "size() value error[f2]");
+		static_assert(f3.size() == 81, "size() value error[f3]");
 		// different types
-		Board<size_t, 3> b_size_t;
-		Board<std::set<int>, 3> b_set; // 1 ms
+		compiler_checks(Board<size_t, 3>());
+		compiler_checks(Board<std::set<int>, 2>());
+		compiler_checks(Board<std::bitset<9>,3>());
 
-		// Board(const value_type&)
-		Board<int, 3> vat1(2);
-		const std::set<int> s4{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-		Board<std::set<int>, 3> f4(s4);	// 4 ms
+		// default element value : Board(const value_type&)
+		compiler_checks(Board<int, 3>(2));
+		static const std::set<int> s4{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+		static const Board<std::set<int>, 3> f4(s4);	// 4 ms (2 ms using static const)
+		compiler_checks(f4);
+		static_assert(f4.size() == 81, "size() value error[f4]");
 
 		// Board(self_type&&)					move constructor
 		Board<int, 3> A(Board<int, 3>(2));
@@ -45,16 +53,15 @@ public:
 		//Board(const self_type&)				copy constructor
 		Sudoku::Board<int, 3> copy(f3);
 		// Board& operator=(const self_type&)	copy assignment
+		//TEST not triggered: copy assignment
 		Sudoku::Board<int, 3> copy2 = f3;
 
-		// Checks
-		analyze_values(f3);
-		analyze_values(f2);
-
+		// using at(elem_id) !
 		Assert::IsTrue(f3.at(12) == 0 && f3.at(73) == 0,
-					   L"Empty board isn't filled with 0's", LINE_INFO());
-		Assert::IsTrue(f3.size() == 81, L"Function Error first.size()", LINE_INFO());
+						L"Empty board isn't filled with 0's", LINE_INFO());
 		Assert::IsTrue(f4.at(43) == s4, L"Options board value set doesn't match input", LINE_INFO());
+		Assert::IsTrue(A.at(21) == 2, L"move constructor value doesn't match input", LINE_INFO());
+		Assert::IsTrue(B.at(39) == 9, L"move assignment, value doesn't match input", LINE_INFO());
 		Assert::IsTrue(f3 == copy, L"copy constructor failure", LINE_INFO());
 		Assert::IsTrue(f3 == copy2, L"copy operation failure 2", LINE_INFO());
 	}
@@ -103,6 +110,14 @@ public:
 		Assert::IsTrue(board != empty, L"failure operator!=", LINE_INFO());
 		Assert::IsFalse(board != board, L"failure operator!= on self", LINE_INFO());
 		Assert::IsFalse(board != board2, L"failure operator!=", LINE_INFO());
+
+		Sudoku::Board<int,2> B;
+		Assert::IsTrue(B.base_size == 2, L"base_size error", LINE_INFO());
+		Assert::IsTrue(B.elem_size == 4, L"elem_size error", LINE_INFO());
+		Assert::IsTrue(B.full_size == 16, L"full_size error", LINE_INFO());
+
+		//TEST	valid_size(size_t elem);
+		//TEST	valid_size(size_t row, size_t col);
 	}
 	TEST_METHOD(element_access)
 	{
@@ -151,25 +166,26 @@ public:
 		}
 		Assert::IsTrue(board4[Sudoku::Location<3>(80)] == 9, L"reading with operator[Location] failed", LINE_INFO());
 
-
 		// operator==() / operator!=()
 		// repeat from TEST_METHOD(properties)
 		Assert::IsTrue(board == board2, L"failure operator==", LINE_INFO());
 		Assert::IsFalse(board == empty, L"failure operator== (inverse)", LINE_INFO());
 		Assert::IsTrue(board != empty, L"failure operator!=", LINE_INFO());
 	}
+	TEST_METHOD(iterator_access)
+	{
+		//TEST Board iterator / const_iterator access ...
+		// begin / cbegin / const begin
+	}
 private:
-	template<size_t N>
-	void analyze_values(Sudoku::Board<int, N> B) const
+	template<typename T, size_t N>
+	constexpr void compiler_checks(const Sudoku::Board<T, N>& B) const
 	{
 		// independend size calculations
 		static_assert(N > 0 && N < 11, "Size out of bounds, for testing a 10'000 elements board should be enough.");
-		constexpr size_t elem{ N*N };
-		constexpr size_t full{ elem*elem };
 		static_assert(B.base_size == N, "base_size wrong");
-		static_assert(B.elem_size == elem, "elem_size wrong");
-		static_assert(B.full_size == full, "full_size wrong");
-
+		static_assert(B.elem_size == N*N, "elem_size wrong");
+		static_assert(B.full_size == B.elem_size*B.elem_size, "full_size wrong");
 		static_assert(B.full_size == B.size(), "Function Error size()");
 	}
 
