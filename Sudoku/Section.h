@@ -3,6 +3,8 @@
 #include "Board.h"
 #include "Location.h"
 
+#include <iterator>
+
 namespace Sudoku
 {
 template<typename T, size_t N, typename _Board>
