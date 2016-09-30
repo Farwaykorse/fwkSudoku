@@ -137,11 +137,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <EnablePREfast>false</EnablePREfast>
+      <AdditionalOptions>-Wextra -Wconversion -Wcast-align -Wformat=2 -fno-common -Woverloaded-virtual -Wreorder -pedantic -Wc++14-compat %(AdditionalOptions)</AdditionalOptions>
+      <CppLanguageStandard>c++1y</CppLanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -217,6 +219,9 @@
     <Text Include="Solvers.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Snake\experiment\Matrix.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Board.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Location.h" />
