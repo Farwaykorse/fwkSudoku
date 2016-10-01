@@ -1,6 +1,5 @@
 #pragma once
 #include "Board.h"
-//#include "SolverBase.h"
 #include "Location.h"
 
 #include <cassert>
@@ -26,22 +25,44 @@ void setValue(
 	single_option(board, loc);
 }
 
+template<size_t N, typename _InItr> inline
+void setValue(
+	Board<std::set<int>, N>& board,
+	_InItr begin, _InItr end)
+{
+	//ERROR assumes start with a new board with all options available
+	assert(end - begin == board.full_size);
+	size_t n{ 0 };
+	for (auto itr = begin; itr != end; ++itr)
+	{
+		Location<N> loc(n++);
+		if (*itr > 0)
+		{
+			if (board.at(loc).size() > 1) { setValue(board, loc, *itr); }
+			else
+			{
+				assert(*(board.at(loc).cbegin()) == *itr);
+			}
+		}
+	}
+}
+
 template<typename _Data, size_t N> inline
 void single_option(_Data& options, const Location<N> loc)
 {
-	single_option_section(
+	remove_option_section(
 		options,
 		options.row(loc).begin(),
 		options.row(loc).end(),
 		loc
 	);
-	single_option_section(
+	remove_option_section(
 		options,
 		options.col(loc).begin(),
 		options.col(loc).end(),
 		loc
 	);
-	single_option_section(
+	remove_option_section(
 		options,
 		options.block(loc).begin(),
 		options.block(loc).end(),
@@ -50,11 +71,11 @@ void single_option(_Data& options, const Location<N> loc)
 }
 
 template<typename _InItr, size_t N> inline
-void single_option_section(
+void remove_option_section(
 	Board<std::set<int>, N>& Board,
 	_InItr begin,
 	const _InItr end,
-	const Location<N> loc)
+	const Location<N> loc)	// ingnore loc
 {
 	assert(Board[loc].size() == 1);
 	const int value = *(begin[loc].cbegin());
@@ -74,7 +95,7 @@ void single_option_section(
 }
 
 template<typename _Data, typename _InItr> inline
-std::multiset<int> section_options(_Data& board, const _InItr begin, const _InItr end)
+std::multiset<int> section_options(_Data&, const _InItr begin, const _InItr end)
 {
 	std::multiset<int> cache{};
 	// copy available options to cache
