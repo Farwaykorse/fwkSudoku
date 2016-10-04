@@ -1,5 +1,5 @@
 /**	SolverBase
- *	Sudoku solver implementation using Board<std::set<int>>
+ *	Sudoku solver implementation using Board<Options>
  */
 #pragma once
 #include "stdafx.h"
@@ -8,21 +8,25 @@
 #include "Solver.h"
 
 #include <cassert>
-#include <set>
 #include <vector>
 #include <stdexcept>
+
+using val_t = unsigned int;
 
 namespace Sudoku
 {
 /* Main object */
 template<size_t N = 3> class SolverBase
 {
-public:
 	using Location = Location<N>;
+	static const size_t base_size = Location().base_size;
+	static const size_t elem_size = Location().elem_size;
+	static const size_t full_size = Location().full_size;
 
+public:
 	SolverBase();
-	SolverBase(const Board<int, N>&);
-	SolverBase(const std::vector<int>& board);	// needed?? only Board might be enough, added value?
+	SolverBase(const Board<val_t, N>&);
+	SolverBase(const std::vector<val_t>& board);	// needed?? only Board might be enough, added value?
 	SolverBase(SolverBase&&)			= default;	// move
 	SolverBase& operator=(SolverBase&&)	= default;
 	SolverBase(SolverBase const&)		= default;	// copy
@@ -30,41 +34,26 @@ public:
 	~SolverBase()					= default;
 
 	/* Input */
-	void setBoard(const Board<int, N>& board);
+	void setBoard(const Board<val_t, N>& board);
 
 	/* Output */
-	Board<int, N> getStart() const;
-	Board<int, N> getResult() const;
-	Board<std::set<int>, N> getOptions() const;
+	Board<val_t, N> getStart() const;
+	Board<val_t, N> getResult() const;
+	Board<Options<elem_size>, N> getOptions() const;
 
 	/* tmp */
-	void single_option(Location loc, int value);
+	void single_option(Location loc, val_t value);
 	void solver_unique();
 
 private:
-	Board<int, N> start;
-	Board<std::set<int>, N> options;
-
-	static const size_t base_size = Location().base_size;
-	static const size_t elem_size = Location().elem_size;
-	static const size_t full_size = Location().full_size;
-
-	static std::set<int> characters()
-	{
-		//TODO replace, always same result with template N
-		std::set<int> chars;
-		std::generate_n(
-			std::inserter(chars, chars.begin()), elem_size,
-			[x = 0]()mutable{ return ++x; }
-		);
-		return chars;
-	}
+	Board<val_t, N> start;
+	Board<Options<elem_size>, N> options;
 
 	/* Initiate */
-	void process_new(const Board<int, N>&);
+	void process_new(const Board<val_t, N>&);
 
 	/* General functions */
-	void setValue(Location loc, int value);
+	void setValue(Location loc, val_t value);
 
 	/* Solvers */
 	//void single_option(Location loc, int value);
@@ -76,27 +65,24 @@ private:
 
 template<size_t N>
 inline SolverBase<N>::SolverBase() :
-	start(0),
-	options(characters())
+	start(0)
 {
 	// empty constructor
 }
 
 template<size_t N>
-inline SolverBase<N>::SolverBase(const Board<int, N>& input) :
-	start(input),
-	options(characters())
+inline SolverBase<N>::SolverBase(const Board<val_t, N>& input) :
+	start(input)
 {
 	process_new(input);	// setValue for all elements on options
 }
 
 template<size_t N>
-inline SolverBase<N>::SolverBase(const std::vector<int>& input) :
-	start(0),
-	options(characters())
+inline SolverBase<N>::SolverBase(const std::vector<val_t>& input) :
+	start(0)
 {
 	if (input.size() != full_size) { throw std::length_error("input length_error"); }
-	if (std::find_if(start.cbegin(), start.cend(), [&](int V) { return V > elem_size || V < 0; }) != start.cend())
+	if (std::find_if(start.cbegin(), start.cend(), [&](val_t V) { return V > elem_size || V < 0; }) != start.cend())
 	{
 		throw std::invalid_argument("elements out of bounds");
 	}
@@ -105,7 +91,7 @@ inline SolverBase<N>::SolverBase(const std::vector<int>& input) :
 }
 
 template<size_t N>
-inline void SolverBase<N>::setBoard(const Board<int, N>& board)
+inline void SolverBase<N>::setBoard(const Board<val_t, N>& board)
 {
 	start = board;
 	process_new(board);
@@ -114,62 +100,65 @@ inline void SolverBase<N>::setBoard(const Board<int, N>& board)
 }
 
 template<size_t N>
-inline Board<int, N> SolverBase<N>::getStart() const
+inline Board<val_t, N> SolverBase<N>::getStart() const
 {
 	return start;
 }
 
 template<size_t N>
-inline Board<int, N> SolverBase<N>::getResult() const
+inline Board<val_t, N> SolverBase<N>::getResult() const
 {
-	Board<int, N> result{};
+	Board<val_t, N> result{};
 	for (size_t i = 0; i < full_size; ++i)
 	{
-		if (options.at(i).size() == 1)
+		if (options.at(i).is_answer())
 		{
-			result.at(i) = *options.at(i).cbegin();
+			result.at(i) = options.at(i).answer();
 		}
 	}
 	return result;
 }
 
-template<size_t N>
-inline Board<std::set<int>, N> SolverBase<N>::getOptions() const
-{
-	return options;
-}
+//template<size_t N>
+//inline Board<Options<elem_size>, N> SolverBase<N>::getOptions() const
+//{
+//	return options;
+//}
 
 template<size_t N>
-inline void SolverBase<N>::process_new(const Board<int, N>& board)
+inline void SolverBase<N>::process_new(const Board<val_t, N>& board)
 {
 	for (size_t i = 0; i<full_size; ++i)
 	{
-		auto& value = board.at(i);
+		val_t value = board.at(i);
 		if (value > 0) { setValue(Location(i), value); }
 	}
 }
 
 /* Options process answer value */
 template<size_t N>
-inline void SolverBase<N>::setValue(const Location loc, const int value)
+inline void SolverBase<N>::setValue(const Location loc, const val_t value)
 {
 	// valid input
-	assert(value > 0);	// not for inverse (solver only)
 	assert(value <= elem_size);
 	if (value > elem_size) { throw std::out_of_range{ "value in setValue(loc, value)" }; }
-	assert(options.at(loc).count(value) == 1);	// value is not an available option, invalid board
-	if (options.at(loc).count(value) == 0) { throw std::invalid_argument{ "value conflict" }; }
-
-	Solver::setValue(options, loc, value);
+	if (options.at(loc).is_option(value))
+	{
+		Solver::setValue<N, elem_size>(options, loc, value);
+	}
+	else if (!options.at(loc).is_answer(value))
+	{ 
+		throw std::invalid_argument{ "not an available option, invalid board" };
+	}
 }
 
 /// remove value from other elements in current row/col/block
 /// won't detect a conflict
 template<size_t N> inline
-void SolverBase<N>::single_option(const Location loc, const int value)
+void SolverBase<N>::single_option(const Location loc, const val_t value)
 {
-	assert(options.at(loc).size() == 1);
-	assert(*options.at(loc).cbegin() == value);
+	assert(options.at(loc).count() == 1);
+	assert(options.at(loc).is_options(value));
 	Solver::single_option(options, loc);
 }
 
