@@ -94,6 +94,34 @@ void remove_option_section(
 	}
 }
 
+/*
+template<typename _InItr, size_t N> inline
+void remove_option_section(
+	Board<std::set<int>, N>& Board,
+	_InItr begin,
+	const _InItr end,
+	const std::vector<Location<N>> loc,	// ignore elements in loc
+	const int value)
+{
+	for (auto itr = begin; itr != end; ++itr)
+	{
+		if (loc.cend() == std::find_if(
+			loc.cbegin(),
+			loc.cend(),
+			[itr](Location<N> loc) { return itr != loc; }))
+		{
+			if (itr->erase(value))
+			{
+				if (itr->size() == 1)	// cascade
+				{
+					Solver::single_option(Board, itr.location());
+				}
+			}
+		}
+	}
+}
+*/
+
 template<typename _Data, typename _InItr> inline
 std::multiset<int> section_options(_Data&, const _InItr begin, const _InItr end)
 {
@@ -152,6 +180,59 @@ int unique_section(_Data& board, const _InItr begin, const _InItr end)
 	}
 	return result;
 }
+
+/*
+2x in block + zelfde block-row/col
+=> remove from rest row/col
+*/
+/*template<typename _InItr, size_t N> inline
+void block_exclusive(Board<std::set<int>,N> board, _InItr begin, _InItr end)
+{
+	std::multiset<int> cache{ section_options(board, begin, end) };
+
+	for (
+		std::multiset<int>::const_iterator itr = cache.lower_bound(1);
+		itr != cache.cend();
+		++itr)
+	{
+		if (cache.count(*itr) == 1)	// = unique
+		{
+			unique(board, begin, end, itr);
+		}
+		else if (cache.count(*itr) <= N)
+		{
+			auto lambda = [itr](std::set<int> elem) {return (elem.count(*itr) == 1); };
+			// check if all in same row or col
+			std::vector<Location<N>> items{};
+			auto found = std::find_if(begin, end, lambda);
+			items.push_back(found.location());
+			for (size_t i = 1; i < cache.count(*itr); ++i)
+			{
+				found = std::find_if(found, end, lambda);
+				items.push_back(found.location());
+			}
+			bool is_row{ true };
+			bool is_col{ true };
+			for (Location<N>& loc : items)
+			{
+				if (loc.row() != items[1].row()) { is_row = false; }
+				if (loc.col() != items[1].col()) { is_col = false; }
+			}
+			assert( !(is_row && is_col) );	// can't both be true
+			if (is_row)
+			{
+				//setValue(board, items);
+				remove_option_section(
+					board,
+					board.row(items[0]).begin(),
+					board.row(items[0]).end(),
+					items, *itr); 
+			}
+			// if is_col
+		}
+	}
+}
+*/
 
 }	// namespace Sudoku::Solver
 }	// namespace Sudoku
