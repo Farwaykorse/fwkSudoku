@@ -56,7 +56,7 @@ public:
 	void clear();
 
 	/* Query properties */
-	//bool empty() const	// all elements default value or empty()
+	bool is_empty() const;	// all elements default value or empty()
 	//TODO empty() for different value types
 	//{
 	//	for (auto& s : board)
