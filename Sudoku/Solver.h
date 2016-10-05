@@ -5,14 +5,13 @@
 
 #include <cassert>
 #include <bitset>
-//#include <set>
 
 namespace Sudoku
 {
 namespace Solver
 {
-template<typename _Data, size_t N> void single_option(_Data& options, const Location<N> loc, const val_t value);
-template<typename _InItr, size_t N, size_t elem_size> void remove_option_section(Board<Options<elem_size>, N>& Board, _InItr begin, const _InItr end, const Location<N> loc, const val_t value);
+template<typename Data_, size_t N> void single_option(Data_& options, const Location<N> loc, const val_t value);
+template<typename InItr_, size_t N, size_t elem_size> void remove_option_section(Board<Options<elem_size>, N>& Board, InItr_ begin, const InItr_ end, const Location<N> loc, const val_t value);
 
 ///	Make [value] the answer for [loc] and process
 template<size_t base_size, size_t elem_size> inline
@@ -37,7 +36,6 @@ void setValue(
 	InItr_ begin, InItr_ end)
 {
 	static_assert(elem_size == N*N, "setValue<N,E,itr>(board, begin, end) N:E size mismatch");
-	//ERROR assumes start with a new board with all options available
 	assert(end - begin == board.full_size);
 	size_t n{ 0 };
 	for (auto itr = begin; itr != end; ++itr)
@@ -124,83 +122,17 @@ Options<elem_size> section_options(Data_&, const InItr_ begin, const InItr_ end)
 	return available;
 }
 
-/* old code example
-template<typename _Data, typename _InItr> inline
-std::multiset<int> section_options(_Data&, const _InItr begin, const _InItr end)
-{
-	std::multiset<int> cache{};
-	// copy available options to cache
-	std::for_each(
-		begin, end,
-		[&cache](const std::set<int>& elem)
-	{
-		if (elem.size() > 1)	// = available
-		{
-			std::copy(elem.cbegin(), elem.cend(), std::inserter(cache, cache.end()));
-		}
-	}
-	);
-	return cache;
-}
-*/
-
-/* old code example
-template<typename _Data, typename _InItr> inline
-void unique(
-	_Data& board,
-	const _InItr begin,
-	const _InItr end,
-	std::multiset<int>::const_iterator itr)
-{
-	auto found = std::find_if(
-		begin,
-		end,
-		[itr](std::set<int> elem) { return (elem.count(*itr) == 1); }
-	);
-	assert(found != end);	// cache <-> options out of sync
-	if (found->count() != 1)	// not if already done by single_option's cascade
-	{
-		setValue(board, found.location(), *itr);	// update Board options
-	}
-}
-*/
-
-/* old code example
-template<typename _Data, typename _InItr> inline
-unsigned int unique_section(_Data& board, const _InItr begin, const _InItr end)
-{
-	unsigned int result{ 0 };
-	std::multiset<unsigned int> cache{ section_options(board, begin, end) };
-	if (cache.size() < 1) { return 0; }
-
-	// find and process all unique options in cache
-	for (
-		std::multiset<unsigned int>::const_iterator itr = cache.lower_bound(1);
-		itr != cache.cend();
-		++itr)
-	{
-		if (cache.count(*itr) == 1)	// = unique
-		{
-			unique(board, begin, end, itr);
-			++result;
-		}
-	}
-	return result;
-}
-*/
-
 template<size_t N, size_t E, typename InItr_> inline
 val_t unique_section(Board<Options<E>,N>& board, const InItr_ begin, const InItr_ end)
 {
 	static_assert(E == N*N, "invalid sizes");
-	Options<E> sum(0);
-	Options<E> worker(0);
+	Options<E> sum(0);		// helper all used
+	Options<E> worker(0);	// multiple uses OR answer
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		if (itr->is_answer())
 		{
-			//worker.add(itr->answer());	//NOTE inefficiënt
-			worker = *itr + worker;	// bypasses not summing answers check
+			worker = *itr + worker;
 		}
 		else
 		{
@@ -208,8 +140,9 @@ val_t unique_section(Board<Options<E>,N>& board, const InItr_ begin, const InItr
 			sum += *itr;
 		}
 	}
-	worker.flip();
-	
+	worker.flip();	// multiple uses -> single-use
+	worker.add(0);	// set answer flag for correct behaviour count()
+
 	// process uniques
 	const size_t count = worker.count();
 	if (count > 0)

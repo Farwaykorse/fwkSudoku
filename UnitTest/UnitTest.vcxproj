@@ -234,6 +234,8 @@
     <ClCompile Include="Board_Section.cpp" />
     <ClCompile Include="Board_Section_Iterator.cpp" />
     <ClCompile Include="Location.cpp" />
+    <ClCompile Include="Options.cpp" />
+    <ClCompile Include="Solver.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">Create</PrecompiledHeader>

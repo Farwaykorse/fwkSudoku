@@ -2,6 +2,8 @@
  *	===
  *	Data object containing and managing available options.
  *	Template with element size.
+ *	
+ *	set(0)	->	is_answer() = true ; is_answer(0) = false ; count() = 0;
  */
 #pragma once
 
@@ -24,10 +26,12 @@ public:
 	Options& operator=(const Options&) = default;
 	Options(Options&&) = default;
 	Options& operator=(Options&&) = default;
-	explicit Options(const std::bitset<E + 1>&);
-	explicit Options(val_t value);
+	Options(const std::bitset<E + 1>&);	// 0th bit is last in input
+	Options(std::bitset<E + 1>&&);
+	Options(val_t value);
 	Options& operator=(val_t value);
-	Options& operator=(std::bitset<E + 1>);
+	Options& operator=(const std::bitset<E + 1>&) noexcept;
+	Options& operator=(std::bitset<E + 1>&&) noexcept;
 	~Options() = default;
 
 	Options& clear() noexcept;			// remove all options
@@ -48,18 +52,19 @@ public:
 	val_t answer() const noexcept;		// return answer or 0
 	std::vector<val_t> available() const;	// return available options
 
-	constexpr bool operator[](const val_t value) const noexcept;
-	//auto operator[](val_t value) noexcept;	//ERROR crashes Clang
+	constexpr bool operator[](val_t value) const noexcept;
+	//auto operator[](val_t value) noexcept;	//ERROR crashes Clang compiler
 
 	bool operator==(const Options<E>&) const noexcept;
 	bool operator!=(const Options<E>&) const noexcept;
-	bool operator< (const Options<E>&) const noexcept;	//TODO allow sorting
+	bool operator< (const Options<E>&) const noexcept;	//TODO allow sorting; usecase?
+	/// shorthand for is_answer(val_t)
+	bool operator==(val_t) const;
 	// combine available options
 	Options& operator+=(const Options&) noexcept;
 	Options operator+(const Options&) const noexcept;
 	// return difference
-	Options operator-(const Options&) const noexcept;
-	Options& operator&=(const Options&) noexcept;		//NOTE might be risky while unused
+	Options operator-(const Options&) const noexcept;	//TODO difference; usecase?
 	// return shared options
 	Options operator&(const Options&) const noexcept;
 
@@ -69,6 +74,7 @@ private:
 
 	size_t read_next() const noexcept;
 	size_t read_next(val_t) const noexcept;
+	Options& operator&=(const Options&) noexcept;	//NOTE might be risky while unused; private?
 };
 
 /// default constructor
@@ -81,6 +87,13 @@ Options<E>::Options() noexcept
 template<size_t E> inline
 Options<E>::Options(const std::bitset<E + 1>& other) :
 	m_data(other)
+{
+	// empty constructor
+}
+
+template<size_t E>
+inline Options<E>::Options(std::bitset<E + 1>&& other) :
+	m_data{ other }
 {
 	// empty constructor
 }
@@ -101,9 +114,18 @@ Options<E>& Options<E>::operator=(val_t value)
 }
 
 template<size_t E> inline
-Options<E>& Options<E>::operator=(std::bitset<E + 1> other)
+Options<E>& Options<E>::operator=(const std::bitset<E + 1>& other) noexcept
 {
+	//TEST not triggered
 	return Options(other);
+}
+
+template<size_t E> inline
+Options<E>& Options<E>::operator=(std::bitset<E + 1>&& other) noexcept
+{
+	//TEST not triggered
+	std::swap(m_data, other);
+	return *this;
 }
 
 /// remove all options
@@ -125,6 +147,9 @@ Options<E>& Options<E>::reset() noexcept
 template<size_t E> inline
 Options<E>& Options<E>::flip() noexcept
 {
+	// retain answer flag value
+	if (m_data[0]) { m_data.flip(0); }
+
 	m_data.flip();
 	return *this;
 }
@@ -155,7 +180,7 @@ template<size_t E> inline
 Options<E>& Options<E>::set(val_t value)
 {
 	clear();
-	add(value);
+	add(value);	// if 0: -> not answer = [0] = true
 	return *this;
 }
 
@@ -179,6 +204,8 @@ inline bool Options<E>::test(val_t value) const
 template<size_t E> inline
 bool Options<E>::is_answer() const noexcept
 {
+	//NOTE	edge case: will return true on empty
+	// might be useful to support partial boards
 	return !(m_data[0]);
 }
 
@@ -193,6 +220,7 @@ bool Options<E>::is_answer(val_t value) const
 template<size_t E> inline
 bool Options<E>::is_option(val_t value) const
 {
+	assert(value != 0);
 	return (!is_answer() && test(value));
 }
 
@@ -221,9 +249,9 @@ std::vector<val_t> Options<E>::available() const
 {
 	std::vector<size_t> values{};
 	values.reserve(count());
-	if (!is_answer())
+	if (!is_answer() && !is_empty())
 	{
-		size_t loc{ 1 };
+		val_t loc{ 0 };
 		for (size_t i = 0; i < count(); ++i)
 		{
 			loc = read_next(loc);
@@ -237,7 +265,7 @@ std::vector<val_t> Options<E>::available() const
 template<size_t E> inline
 constexpr bool Options<E>::operator[](val_t value) const noexcept
 {
-	static_assert(std::is_unsigned<val_t>(), "use unsigned to prefent undefined behaviour");
+	static_assert(std::is_unsigned<val_t>(), "use unsigned to prevent undefined behaviour");
 	assert(value <= E);
 	return m_data[value];
 }
@@ -246,7 +274,7 @@ constexpr bool Options<E>::operator[](val_t value) const noexcept
 //template<size_t E> inline
 //auto Options<E>::operator[](val_t value) noexcept
 //{
-//	assert(value >= 0);
+//	static_assert(std::is_unsigned<val_t>(), "use unsigned to prevent undefined behaviour");
 //	assert(value <= E);
 //	return m_data[value];
 //}
@@ -254,7 +282,7 @@ constexpr bool Options<E>::operator[](val_t value) const noexcept
 template<size_t E> inline
 bool Options<E>::operator==(const Options<E>& other) const noexcept
 {
-	//?? how about the 0th 'is answer' bit?
+	//?? what about the 0th 'is answer' bit?
 	return m_data == other.m_data;
 }
 
@@ -262,6 +290,12 @@ template<size_t E> inline
 bool Options<E>::operator!=(const Options<E>& other) const noexcept
 {
 	return !(*this==other);
+}
+
+template<size_t E> inline
+bool Options<E>::operator==(val_t value) const
+{
+	return is_answer(value);
 }
 
 ///	available options, won't add an answer
@@ -299,14 +333,14 @@ Options<E> Options<E>::operator&(const Options& other) const noexcept
 template<size_t E> inline
 val_t Options<E>::read_next() const noexcept
 {
-	return read_next(1);
+	return read_next(0);
 }
 
 ///	return next option in data
 template<size_t E> inline
 val_t Options<E>::read_next(val_t start) const noexcept
 {
-	if (start == 0) { ++start; }
+	++start;
 	for (val_t i = start; i <= E; ++i)
 	{
 		if (m_data[i]) { return i; }
