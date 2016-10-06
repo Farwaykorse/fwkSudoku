@@ -7,7 +7,6 @@
 // Class under test
 #include "SolverBase.h"
 // helpers
-//#include "uTestObjects.h"
 
 // library
 #include <set>
@@ -65,43 +64,43 @@ public:
 		// getOptions
 		// getResults
 	}
-/*	TEST_METHOD(single_option)
+	/*	TEST_METHOD(single_option)
 	{
-		using namespace Sudoku;
-		std::vector<val_t> v1{ 0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-		SolverBase<2> V1(v1);
-		Board<Options<4>, 2> options = V1.getOptions();
-		Assert::IsTrue(options.at(1).count() == 0, L"setValue() clear()&insert() failed", LINE_INFO());
-		Assert::IsTrue(
-			options.at(0).count() == 3 &&
-			options.at(2).count() == 3 &&
-			options.at(3).count() == 3,
-			L"single_option() failed for Row", LINE_INFO()
-		);
-		Assert::IsTrue(options.at(4).count() == 3, L"singleValue() failed for Block", LINE_INFO());
-		Assert::IsTrue(options.at(9).count() == 3, L"singleValue() failed for Row", LINE_INFO());
-		Assert::IsTrue(options.at(15).count() == 4, L"singleValue() error", LINE_INFO());
+	using namespace Sudoku;
+	std::vector<val_t> v1{ 0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+	SolverBase<2> V1(v1);
+	Board<Options<4>, 2> options = V1.getOptions();
+	Assert::IsTrue(options.at(1).count() == 0, L"setValue() clear()&insert() failed", LINE_INFO());
+	Assert::IsTrue(
+	options.at(0).count() == 3 &&
+	options.at(2).count() == 3 &&
+	options.at(3).count() == 3,
+	L"single_option() failed for Row", LINE_INFO()
+	);
+	Assert::IsTrue(options.at(4).count() == 3, L"singleValue() failed for Block", LINE_INFO());
+	Assert::IsTrue(options.at(9).count() == 3, L"singleValue() failed for Row", LINE_INFO());
+	Assert::IsTrue(options.at(15).count() == 4, L"singleValue() error", LINE_INFO());
 
-		// single_option cascading
-		std::vector<val_t> v2
-		{
-			0,2, 0,0,
-			4,0, 0,0,
-			0,1, 0,0,
-			0,0, 0,0
-		};
-		std::vector<val_t> v2a
-		{
-			1,2, 0,0,
-			4,3, 0,0,
-			0,1, 0,0,
-			0,4, 0,0
-		};
-		SolverBase<2> V2(v2);
-		Board<val_t, 2> answer{};
-		std::copy(v2a.cbegin(), v2a.cend(), answer.begin());
-		Assert::IsTrue(answer == V2.getResult(), L"singleValue() cascade failed", LINE_INFO());
-		Board<val_t, 2> start{};
+	// single_option cascading
+	std::vector<val_t> v2
+	{
+	0,2, 0,0,
+	4,0, 0,0,
+	0,1, 0,0,
+	0,0, 0,0
+	};
+	std::vector<val_t> v2a
+	{
+	1,2, 0,0,
+	4,3, 0,0,
+	0,1, 0,0,
+	0,4, 0,0
+	};
+	SolverBase<2> V2(v2);
+	Board<val_t, 2> answer{};
+	std::copy(v2a.cbegin(), v2a.cend(), answer.begin());
+	Assert::IsTrue(answer == V2.getResult(), L"singleValue() cascade failed", LINE_INFO());
+	Board<val_t, 2> start{};
 	}
 	//TEST_METHOD(solver_unique)
 	//{
@@ -120,7 +119,7 @@ public:
 	//	Assert::IsTrue(result.at(1) == 2, L"removed valid answer",LINE_INFO());
 	//	Assert::IsTrue(result.at(0) == 1 && result.at(2) == 3, L"failed to use single_option() properly", LINE_INFO());
 	//}
-*/
+	*/
 	TEST_METHOD(board1)
 	{
 		/*	start board					answer board
@@ -159,14 +158,22 @@ public:
 			2, 8, 7,	3, 5, 6,	1, 4, 9,
 			3, 5, 1,	9, 4, 7,	6, 2, 8
 		};
-		//Sudoku::Board<int, 3> start;
-		//std::copy(b1.cbegin(), b1.cend(), start.begin());
-		//Sudoku::Board<int, 3> answer;
-		//std::copy(b1a.cbegin(), b1a.cend(), answer.begin());
-		//Sudoku::SolverBase<3> first(start);
-		//first.solver_unique();
-		//Assert::IsTrue(first.getResult()  == answer, L"solver_unique() failed", LINE_INFO());
-		//int a = 1;
+
+		//TODO temporary SolverBase should accept input
+		Sudoku::Board<val_t, 3> start;
+		std::copy(b1.cbegin(), b1.cend(), start.begin());
+		// answer to compare to
+		Sudoku::Board<val_t, 3> answer;
+		std::copy(b1a.cbegin(), b1a.cend(), answer.begin());
+
+		// working object:
+		Sudoku::SolverBase<3> other;
+		// setup: generate options & find single options
+		Sudoku::SolverBase<3> first(start);
+		// find uniques (should solve this board)
+		first.solver_unique();
+
+		Assert::IsTrue(first.getResult()  == answer, L"solver_unique() failed", LINE_INFO());
 	}
 };
 }

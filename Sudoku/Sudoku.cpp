@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+
 #include "SolverBase.h"
 
 #include <iostream>
@@ -32,15 +33,22 @@ int main()
 		2, 8, 7,	3, 5, 6,	1, 4, 9,
 		3, 5, 1,	9, 4, 7,	6, 2, 8
 	};
+
 	Sudoku::Board<val_t, 3> start;
 	std::copy(b1.cbegin(), b1.cend(), start.begin());
 	Sudoku::Board<val_t, 3> answer;
 	std::copy(b1a.cbegin(), b1a.cend(), answer.begin());
-	Sudoku::Options<9> option{};
+
+	// working object:
 	Sudoku::SolverBase<3> other;
+	// setup: generate options & find single options
 	Sudoku::SolverBase<3> first(start);	//ERROR core-guidelines
+	// find uniques (should solve this board)
 	first.solver_unique();
+
+	Sudoku::Board<val_t, 3> result = first.getResult();
+	if (result == answer) { std::cout << " : ) Found the answer!\n"; }
+	else { std::cout << ":{ bugs ...\n"; }
 
 	return 0;
 }
-
