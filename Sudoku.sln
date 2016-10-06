@@ -20,8 +20,10 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5EDC58D2-7FD0-47B1-AD5A-D5DBDA76139F}.ClangDebug|x64.ActiveCfg = Debug Clang|x64
+		{5EDC58D2-7FD0-47B1-AD5A-D5DBDA76139F}.ClangDebug|x64.ActiveCfg = Debug|x64
+		{5EDC58D2-7FD0-47B1-AD5A-D5DBDA76139F}.ClangDebug|x64.Build.0 = Debug|x64
 		{5EDC58D2-7FD0-47B1-AD5A-D5DBDA76139F}.ClangDebug|x86.ActiveCfg = Debug|Win32
+		{5EDC58D2-7FD0-47B1-AD5A-D5DBDA76139F}.ClangDebug|x86.Build.0 = Debug|Win32
 		{5EDC58D2-7FD0-47B1-AD5A-D5DBDA76139F}.Debug|x64.ActiveCfg = Debug|x64
 		{5EDC58D2-7FD0-47B1-AD5A-D5DBDA76139F}.Debug|x64.Build.0 = Debug|x64
 		{5EDC58D2-7FD0-47B1-AD5A-D5DBDA76139F}.Debug|x86.ActiveCfg = Debug|Win32
