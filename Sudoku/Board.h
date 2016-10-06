@@ -56,15 +56,7 @@ public:
 	void clear();
 
 	/* Query properties */
-	//bool empty() const	// all elements default value or empty()
-	//TODO empty() for different value types
-	//{
-	//	for (auto& s : board)
-	//	{
-	//		if ( !s.empty() ) { return false; }
-	//	}
-	//	return true;
-	//}
+	bool is_empty() const;	// all elements default value or empty()
 	static constexpr size_type size() { return full_size; };
 	bool operator==(const Board&) const;
 	bool operator!=(const Board& other) const { return !(*this == other); };
@@ -106,10 +98,11 @@ public:
 		using Section::Section;	// inherit constructors
 		using Section::id;
 	private:
-		Location loc(size_t elem) const final
+		Location loc(size_t elem) const final 
 		{
 			return Location(id(), elem);
 		}
+		size_t element(Location loc) const final { return loc.col(); }
 	};
 
 	class Col : public Section
@@ -119,6 +112,7 @@ public:
 		using Section::id;
 	private:
 		Location loc(size_t elem) const final { return Location(elem, id()); }
+		size_t element(Location loc) const final { return loc.row(); }
 	};
 
 	class Block : public Section
@@ -132,6 +126,7 @@ public:
 		{
 			return Location(Block_Loc(id(), elem));
 		}
+		size_t element(Location loc) const override { return loc.block_elem(); }
 	};
 
 	Row row(size_t id) { return Row(this, id); }
