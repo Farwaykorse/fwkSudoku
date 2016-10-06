@@ -62,10 +62,6 @@ public:
 
 		// default element value : Board(const value_type&)
 		compiler_checks(Board<int, 3>(2));
-		//static const std::set<int> s4{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-		//static const Board<std::set<int>, 3> f4(s4);	// 4 ms (2 ms using static const)
-		//compiler_checks(f4);
-		//static_assert(f4.size() == 81, "size() value error[f4]");
 
 		// Board(self_type&&)					move constructor
 		Board<int, 3> A(Board<int, 3>(2));
@@ -80,7 +76,6 @@ public:
 		// using at(elem_id) !
 		Assert::IsTrue(f3.at(12) == 0 && f3.at(73) == 0,
 						L"Empty board isn't filled with 0's", LINE_INFO());
-		//Assert::IsTrue(f4.at(43) == s4, L"Options board value set doesn't match input", LINE_INFO());
 		Assert::IsTrue(A.at(21) == 2, L"move constructor value doesn't match input", LINE_INFO());
 		Assert::IsTrue(B.at(39) == 9, L"move assignment, value doesn't match input", LINE_INFO());
 		Assert::IsTrue(f3 == copy, L"copy constructor failure", LINE_INFO());
@@ -101,7 +96,6 @@ public:
 
 		// empty()
 		//Assert::IsTrue(empty.empty(), L"failure empty() on int", LINE_INFO());
-		//Assert::IsTrue(b_set0.empty(), L"failure empty() on set", LINE_INFO());
 
 		// operator==()
 		Assert::IsTrue(board == board, L"failure operator== on self", LINE_INFO());
@@ -147,16 +141,13 @@ public:
 		try { set_Value(board3); }
 		catch (const std::exception&) { Assert::Fail(L"writing with operator[row][col] filed", LINE_INFO()); }
 		Assert::IsTrue(board3[8][8] == 9, L"reading with operator[row][col] failed", LINE_INFO());
-		//try { if (board3[11][4]) { Assert::Fail(L"at[row][col] should fail with out-of-bound", LINE_INFO()); } }
-		//catch (const std::exception&) { }
-		//catch (...) { Assert::Fail(L"unknown error", LINE_INFO()); }
 
 		Sudoku::Board<int, 3> board4;
 		try { set_Value(board4); }
 		catch (const std::exception&) { Assert::Fail(L"writing with operator[Location] failed", LINE_INFO()); }
 		Assert::IsTrue(board4[Sudoku::Location<3>(80)] == 9, L"reading with operator[Location] failed", LINE_INFO());
 
-				// operator==() / operator!=()
+		// operator==() / operator!=()
 		// repeat from TEST_METHOD(properties)
 		Assert::IsTrue(board == board2, L"failure operator==", LINE_INFO());
 		Assert::IsFalse(board == empty, L"failure operator== (inverse)", LINE_INFO());

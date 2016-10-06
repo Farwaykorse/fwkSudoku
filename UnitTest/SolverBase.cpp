@@ -64,62 +64,6 @@ public:
 		// getOptions
 		// getResults
 	}
-	/*	TEST_METHOD(single_option)
-	{
-	using namespace Sudoku;
-	std::vector<val_t> v1{ 0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-	SolverBase<2> V1(v1);
-	Board<Options<4>, 2> options = V1.getOptions();
-	Assert::IsTrue(options.at(1).count() == 0, L"setValue() clear()&insert() failed", LINE_INFO());
-	Assert::IsTrue(
-	options.at(0).count() == 3 &&
-	options.at(2).count() == 3 &&
-	options.at(3).count() == 3,
-	L"single_option() failed for Row", LINE_INFO()
-	);
-	Assert::IsTrue(options.at(4).count() == 3, L"singleValue() failed for Block", LINE_INFO());
-	Assert::IsTrue(options.at(9).count() == 3, L"singleValue() failed for Row", LINE_INFO());
-	Assert::IsTrue(options.at(15).count() == 4, L"singleValue() error", LINE_INFO());
-
-	// single_option cascading
-	std::vector<val_t> v2
-	{
-	0,2, 0,0,
-	4,0, 0,0,
-	0,1, 0,0,
-	0,0, 0,0
-	};
-	std::vector<val_t> v2a
-	{
-	1,2, 0,0,
-	4,3, 0,0,
-	0,1, 0,0,
-	0,4, 0,0
-	};
-	SolverBase<2> V2(v2);
-	Board<val_t, 2> answer{};
-	std::copy(v2a.cbegin(), v2a.cend(), answer.begin());
-	Assert::IsTrue(answer == V2.getResult(), L"singleValue() cascade failed", LINE_INFO());
-	Board<val_t, 2> start{};
-	}
-	//TEST_METHOD(solver_unique)
-	//{
-	//	// test if working on Row(0)
-	//	static const std::vector<int> v1
-	//	{
-	//		0,2, 0,0,	// 1,3	2	1,3	1,3,4
-	//		4,0, 0,0,
-	//		0,1, 4,0,
-	//		0,0, 0,0
-	//	};
-	//	Sudoku::SolverBase<2> test1(v1);
-	//	test1.solver_unique();
-	//	Sudoku::Board<int, 2> result = test1.getResult();
-	//	Assert::IsTrue(result.at(3) == 4, L"failed", LINE_INFO());
-	//	Assert::IsTrue(result.at(1) == 2, L"removed valid answer",LINE_INFO());
-	//	Assert::IsTrue(result.at(0) == 1 && result.at(2) == 3, L"failed to use single_option() properly", LINE_INFO());
-	//}
-	*/
 	TEST_METHOD(board1)
 	{
 		/*	start board					answer board

@@ -38,7 +38,6 @@ public:
 	Options& reset() noexcept;			// set all options
 	Options& flip() noexcept;
 	bool remove(val_t value);			// remove single option, return if needed
-	//Options& remove(size_t value, ...); // TODO remove mentioned
 	Options& add(val_t value);			// add single option
 	Options& set(val_t value);			// set to answer
 
@@ -53,7 +52,6 @@ public:
 	std::vector<val_t> available() const;	// return available options
 
 	constexpr bool operator[](val_t value) const noexcept;
-	//auto operator[](val_t value) noexcept;	//ERROR crashes Clang compiler
 
 	bool operator==(const Options<E>&) const noexcept;
 	bool operator!=(const Options<E>&) const noexcept;
@@ -269,15 +267,6 @@ constexpr bool Options<E>::operator[](val_t value) const noexcept
 	assert(value <= E);
 	return m_data[value];
 }
-
-///// no-check access
-//template<size_t E> inline
-//auto Options<E>::operator[](val_t value) noexcept
-//{
-//	static_assert(std::is_unsigned<val_t>(), "use unsigned to prevent undefined behaviour");
-//	assert(value <= E);
-//	return m_data[value];
-//}
 
 template<size_t E> inline
 bool Options<E>::operator==(const Options<E>& other) const noexcept
