@@ -179,10 +179,9 @@ size_t Solver<N>::unique_section(Board& board, const InItr_ begin, const InItr_ 
 		}
 	}
 	worker.flip();	// multiple uses -> single-use
-	worker.add(0);	// set answer flag for correct behaviour count()
 
 	// process uniques
-	const size_t count = worker.count();
+	const size_t count = worker.count_all();
 	if (count > 0)
 	{
 		std::vector<val_t> uniques{};

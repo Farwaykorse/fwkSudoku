@@ -43,6 +43,7 @@ public:
 	Options& set(val_t value);			// set to answer
 
 	size_t count() const noexcept;		// count available options
+	size_t count_all() const noexcept;	// count all options (incl answer)
 	bool test(val_t value) const;		// if an option, or answer
 	bool is_answer() const noexcept;	// is set to answer
 	bool is_answer(val_t value) const;	// is set to answer value
@@ -72,8 +73,8 @@ private:
 	/// 0th bit is true IF not yet set as answer
 	std::bitset<E + 1> m_data{};
 
-	size_t read_next() const noexcept;
-	size_t read_next(val_t) const noexcept;
+	val_t read_next() const noexcept;
+	val_t read_next(val_t) const noexcept;
 	Options& operator&=(const Options&) noexcept;	//NOTE might be risky while unused; private?
 };
 
@@ -191,6 +192,14 @@ size_t Options<E>::count() const noexcept
 {
 	if (m_data[0]) { return m_data.count() - 1; }
 	return 0;
+}
+
+///	(!) counts options, including set answers
+template<size_t E> inline
+size_t Options<E>::count_all() const noexcept
+{
+	if (m_data[0]) { return m_data.count() -1; }
+	return m_data.count();
 }
 
 /// if an options, or the answer

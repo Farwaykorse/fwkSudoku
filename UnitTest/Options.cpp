@@ -76,6 +76,16 @@ public:
 		static_assert(noexcept(O_1.count()), "count() should be noexcept");
 		Assert::IsTrue(O_1.count() == 9, L"count() failed", LINE_INFO());
 		Assert::IsTrue(O_3.count() == 0, L"count() failed on answer", LINE_INFO());
+		Assert::IsTrue(O_4.count() == 2, L"count() failed_2", LINE_INFO());
+		Assert::IsTrue(E_1.count() == 0, L"count() failed on empty", LINE_INFO());
+		Assert::IsTrue(E_2.count() == 0, L"count() failed on empty_2", LINE_INFO());
+
+		static_assert(noexcept(O_1.count_all()), "count_all() should be noexcept");
+		Assert::IsTrue(O_1.count_all() == 9, L"count_all() failed", LINE_INFO());
+		Assert::IsTrue(O_3.count_all() == 1, L"count_all() failed on answer", LINE_INFO());
+		Assert::IsTrue(O_4.count_all() == 2, L"count_all() failed_2", LINE_INFO());
+		Assert::IsTrue(E_1.count_all() == 0, L"count_all() failed on empty", LINE_INFO());
+		Assert::IsTrue(E_2.count_all() == 0, L"count_all() failed on empty_2", LINE_INFO());
 
 		static_assert(!noexcept(O_1.test(2)), "test() is NOT noexcept");
 		Assert::IsTrue(O_1.test(2), L"test(value) failed", LINE_INFO());
