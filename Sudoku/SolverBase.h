@@ -136,15 +136,15 @@ inline void SolverBase<N>::process_new(const Board<val_t, N>& board)
 }
 
 /* Options process answer value */
-template<size_t N>
-inline void SolverBase<N>::setValue(const Location loc, const val_t value)
+template<size_t N> inline
+void SolverBase<N>::setValue(const Location loc, const val_t value)
 {
 	// valid input
 	assert(value <= elem_size);
 	if (value > elem_size) { throw std::out_of_range{ "value in setValue(loc, value)" }; }
 	if (options.at(loc).is_option(value))
 	{
-		Solver::setValue<N, elem_size>(options, loc, value);
+		Solver<N>::setValue(options, loc, value);
 	}
 	else if (!options.at(loc).is_answer(value))
 	{ 
@@ -159,7 +159,7 @@ void SolverBase<N>::single_option(const Location loc, const val_t value)
 {
 	assert(options.at(loc).count() == 1);
 	assert(options.at(loc).is_options(value));
-	Solver::single_option(options, loc);
+	Solver<N>::single_option(options, loc);
 }
 
 template<size_t N> inline
@@ -171,9 +171,9 @@ void SolverBase<N>::solver_unique()
 		found = 0;
 		for (size_t i = 0; i < elem_size; ++i)
 		{
-			found += Solver::unique_section(options, options.row(i).cbegin(), options.row(i).cend());
-			found += Solver::unique_section(options, options.col(i).cbegin(), options.col(i).cend());
-			found += Solver::unique_section(options, options.block(i).cbegin(), options.block(i).cend());
+			found += Solver<N>::unique_section(options, options.row(i).cbegin(), options.row(i).cend());
+			found += Solver<N>::unique_section(options, options.col(i).cbegin(), options.col(i).cend());
+			found += Solver<N>::unique_section(options, options.block(i).cbegin(), options.block(i).cend());
 		}
 	}
 }

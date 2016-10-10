@@ -1,3 +1,5 @@
+/**	Container class for solver functions
+ */
 #pragma once
 #include "Board.h"
 #include "Location.h"
@@ -8,19 +10,39 @@
 
 namespace Sudoku
 {
-namespace Solver
+template<size_t N>
+class Solver
 {
-template<typename Data_, size_t N> void single_option(Data_& options, const Location<N> loc, const val_t value);
-template<typename InItr_, size_t N, size_t elem_size> void remove_option_section(Board<Options<elem_size>, N>& Board, InItr_ begin, const InItr_ end, const Location<N> loc, const val_t value);
+	static const size_t base_size = N;
+	static const size_t elem_size = N*N;
+
+	using Location = Location<N>;
+	using Options = Options<elem_size>;
+	using Board = Sudoku::Board<Options, base_size>;
+public:
+	static void setValue(Board& board, const Location, const val_t);
+	template<typename InItr_>
+	static void setValue(Board& board, InItr_ begin, InItr_ end);
+
+	template<typename InItr_>
+	static void remove_option_section(Board& Board, InItr_ begin, const InItr_ end, const Location loc, const val_t value);
+
+	template<typename InItr_>
+	static size_t unique_section(Board& board, const InItr_ begin, const InItr_ end);
+
+private:
+	static void single_option(Board& options, const Location loc, const val_t value);
+
+	//Options section_options(Board&, const InItr_ begin, const InItr_ end);
+};
 
 ///	Make [value] the answer for [loc] and process
-template<size_t base_size, size_t elem_size> inline
-void setValue(
-	Board<Options<elem_size>, base_size>& board,
-	const Location<base_size> loc,
+template<size_t N> inline
+void Solver<N>::setValue(
+	Board& board,
+	const Location loc,
 	const val_t value)
 {
-	static_assert(elem_size == Location<base_size>().elem_size, "setValue<B,E> B & E don't match");
 	assert(value <= board.elem_size);
 	assert(board.at(loc)[value] == true);	// check if available option, if not invalid board
 	board.at(loc).set(value);
@@ -30,17 +52,18 @@ void setValue(
 }
 
 ///	set board using a vector of values
-template<size_t N, size_t elem_size, typename InItr_> inline
-void setValue(
-	Board<Options<elem_size>, N>& board,
-	InItr_ begin, InItr_ end)
+template<size_t N>
+template<typename InItr_> inline
+void Solver<N>::setValue(
+	Board& board,
+	InItr_ begin,
+	InItr_ end)
 {
-	static_assert(elem_size == N*N, "setValue<N,E,itr>(board, begin, end) N:E size mismatch");
 	assert(end - begin == board.full_size);
 	size_t n{ 0 };
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		Location<N> loc(n++);
+		Location loc(n++);
 		if (*itr > 0)
 		{
 			if (board.at(loc).count() > 1) { setValue(board, loc, *itr); }
@@ -53,8 +76,8 @@ void setValue(
 }
 
 ///	Process answer from [loc], update board options
-template<typename Data_, size_t N> inline
-void single_option(Data_& options, const Location<N> loc, const val_t value)
+template<size_t N> inline
+void Solver<N>::single_option(Board& options, const Location loc, const val_t value)
 {
 	assert(loc.element() < loc.full_size);	// loc inside board
 	assert(options.at(loc).is_answer());		// contains anwer
@@ -83,15 +106,15 @@ void single_option(Data_& options, const Location<N> loc, const val_t value)
 }
 
 /// remove [value] in [loc] from other elements in section
-template<typename InItr_, size_t N, size_t elem_size> inline
-void remove_option_section(
-	Board<Options<elem_size>, N>& Board,
+template<size_t N>
+template<typename InItr_> inline
+void Solver<N>::remove_option_section(
+	Board& Board,
 	InItr_ begin,
 	const InItr_ end,
-	const Location<N> loc,
+	const Location loc,
 	const val_t value)	// ingnore loc
 {
-	static_assert(elem_size == Location<N>().elem_size, "remove_option_section<if, N, E> N & E mismatch");
 	assert(Board[loc].is_answer(value));
 
 	for (auto itr = begin; itr != end; ++itr)
@@ -137,25 +160,12 @@ void remove_option_section(
 }
 */
 
-/// available options in a section
-template<typename Data_, typename InItr_, size_t elem_size> inline
-Options<elem_size> section_options(Data_&, const InItr_ begin, const InItr_ end)
+template<size_t N>
+template<typename InItr_> inline
+size_t Solver<N>::unique_section(Board& board, const InItr_ begin, const InItr_ end)
 {
-	Options<elem_size> available{};
-	available.clear();
-	for (InItr_ itr = begin; itr != end; ++itr)
-	{
-		available += *itr;
-	}
-	return available;
-}
-
-template<size_t N, size_t E, typename InItr_> inline
-val_t unique_section(Board<Options<E>,N>& board, const InItr_ begin, const InItr_ end)
-{
-	static_assert(E == N*N, "invalid sizes");
-	Options<E> sum(0);		// helper all used
-	Options<E> worker(0);	// multiple uses OR answer
+	Options sum(0);		// helper all used
+	Options worker(0);	// multiple uses OR answer
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		if (itr->is_answer())
@@ -178,11 +188,11 @@ val_t unique_section(Board<Options<E>,N>& board, const InItr_ begin, const InItr
 		std::vector<val_t> uniques{};
 		uniques.reserve(count);
 		uniques = worker.available();
-		for (val_t value : uniques)
+		for (auto value : uniques)
 		{
-			Location<N> loc = std::find_if(
+			Location loc = std::find_if(
 				begin, end,
-				[value](Options<E> O) { return O.is_option(value); }
+				[value](Options O) { return O.is_option(value); }
 			).location();
 			setValue(board, loc, value);
 		}
@@ -191,11 +201,10 @@ val_t unique_section(Board<Options<E>,N>& board, const InItr_ begin, const InItr
 }
 
 /*
-2x in block + zelfde block-row/col
-=> remove from rest row/col
-*/
-/*template<typename _InItr, size_t N> inline
-void block_exclusive(Board<std::set<int>,N> board, _InItr begin, _InItr end)
+// 2x in block + zelfde block-row/col
+// => remove from rest row/col
+template<typename InItr_, size_t N> inline
+void block_exclusive(Board<std::set<int>,N> board, InItr_ begin, InItr_ end)
 {
 	std::multiset<int> cache{ section_options(board, begin, end) };
 
@@ -242,6 +251,4 @@ void block_exclusive(Board<std::set<int>,N> board, _InItr begin, _InItr end)
 	}
 }
 */
-
-}	// namespace Sudoku::Solver
 }	// namespace Sudoku

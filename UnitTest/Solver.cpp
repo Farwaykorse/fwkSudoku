@@ -33,7 +33,7 @@ public:
 		};
 		Board<Options<4>, 2> board;
 		Assert::IsTrue(board.at(5) == Options<4>{}, L"incorrect instantiation", LINE_INFO());
-		try { Solver::setValue(board, v1.cbegin(), v1.cend()); }
+		try { Solver<2>::setValue(board, v1.cbegin(), v1.cend()); }
 		catch (std::exception&) { Assert::Fail(L"setValue failed in copying from vector", LINE_INFO()); }
 		Assert::IsTrue(
 			board[0][1] == 2 &&
@@ -66,10 +66,10 @@ public:
 			0,0, 0,0	// 2,3	4	1,2	1,2,
 		};
 		Board<Options<4>, 2> B1;
-		Solver::setValue(B1, v1.cbegin(), v1.cend());
+		Solver<2>::setValue(B1, v1.cbegin(), v1.cend());
 		const Board<Options<4>, 2> cB1{ B1 };	// copy to compare with
 		// single row
-		Solver::unique_section(B1, B1.row(0).cbegin(), B1.row(0).cend());
+		Solver<2>::unique_section(B1, B1.row(0).cbegin(), B1.row(0).cend());
 		Assert::IsTrue(B1 == cB1, L"row 0 was completely fixed by setValue", LINE_INFO());
 
 		static const std::vector<val_t> v2
@@ -81,20 +81,20 @@ public:
 			0,0, 0,0	// 12.4	134	134	134
 		};
 		Board<Options<4>, 2> B2{};
-		Solver::setValue(B2, v2.cbegin(), v2.cend());
+		Solver<2>::setValue(B2, v2.cbegin(), v2.cend());
 		const Board<Options<4>, 2> cB2{ B2 };
 		// single row 0
-		Solver::unique_section(B2, B2.row(0).cbegin(), B2.row(0).cend());
+		Solver<2>::unique_section(B2, B2.row(0).cbegin(), B2.row(0).cend());
 		Assert::IsTrue(B2 == cB2, L"row 0 was completely fixed by setValue", LINE_INFO());
 		// single row 1
-		Solver::unique_section(B2, B2.row(1).cbegin(), B2.row(1).cend());
+		Solver<2>::unique_section(B2, B2.row(1).cbegin(), B2.row(1).cend());
 		Assert::IsTrue(B2 != cB2, L"row 1 should have changed", LINE_INFO());
 		// full board
 		try
 		{
 			for (size_t i = 0; i < B2.elem_size; ++i)
 			{
-				Solver::unique_section(B2, B2.row(i).cbegin(), B2.row(i).cend());
+				Solver<2>::unique_section(B2, B2.row(i).cbegin(), B2.row(i).cend());
 			}
 		}
 		catch (std::exception&) { Assert::Fail(L"unique_section() threw an exception"); }
@@ -152,15 +152,15 @@ public:
 		Board<int, 3> answer;
 		std::copy(b1a.cbegin(), b1a.cend(), answer.begin());
 		Board<Options<9>, 3> options{};
-		Solver::setValue(options, b1.cbegin(), b1.cend());
+		Solver<3>::setValue(options, b1.cbegin(), b1.cend());
 		for (size_t i = 0; i < options.elem_size; ++i)
 		{
-			Solver::unique_section(options, options.row(i).cbegin(), options.row(i).cend());
+			Solver<3>::unique_section(options, options.row(i).cbegin(), options.row(i).cend());
 		}
 	}
 /*	TEST_METHOD(block_exclusive)
-	{
-		static const std::vector<int> b1
+		{
+		static const std::vector<val_t> B1
 		{
 			0, 0, 0,	0, 0, 0,	0, 1, 2,
 			0, 0, 0,	0, 3, 5,	0, 0, 0,
@@ -172,13 +172,13 @@ public:
 			0, 8, 0,	0, 0, 0,	0, 4, 0,
 			0, 5, 0,	0, 0, 0,	6, 0, 0
 		};
-		std::set<int> chars{ 1,2,3,4,5,6,7,8,9 };
-		Sudoku::Board<std::set<int>, 3> options(chars);
+		Sudoku::Board<Options<9>, 3> options{};
+		Solver<3>::setValue(options, B1.cbegin(), B1.cend());
 		for (size_t i = 0; i < options.elem_size; ++i)
 		{
-			Sudoku::Solver::block_exclusive(options, options.block(i).cbegin(), options.block(i).cend());
+			Sudoku::Solver<3>::block_exclusive(options, options.block(i).cbegin(), options.block(i).cend());
 		}
-	
+
 	}*/
 };
 }	// namespace Sudoku_Test
