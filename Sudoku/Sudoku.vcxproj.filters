@@ -16,26 +16,21 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
-    <Text Include="Board_access_design.txt" />
-    <Text Include="itererator_notes.txt" />
-    <Text Include="Solvers.txt" />
-    <Text Include="..\..\Snake\Sudoku\notes.txt" />
-    <Text Include="Processing.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Location.h">
+    <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Board.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="Location.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SolverBase.h">
+    <ClInclude Include="Options.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Section.h">
@@ -44,10 +39,7 @@
     <ClInclude Include="Solver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Snake\experiment\Matrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Options.h">
+    <ClInclude Include="SolverBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
