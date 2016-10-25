@@ -14,8 +14,6 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-using val_t = unsigned int;
-
 namespace Sudoku_Test
 {
 TEST_CLASS(Class_SolverBase)
@@ -26,14 +24,14 @@ public:
 	TEST_METHOD(initialize)
 	{
 		//std::vector<int> two_by_two = Test_Boards::b2_valid::full_1;
-		std::vector<val_t> two_by_two
+		std::vector<int> two_by_two
 		{
 			1,2,3,4,
 			3,4,1,2,
 			2,1,4,3,
 			4,3,2,1
 		};
-		std::vector<val_t> two_by_two_1{ 0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+		std::vector<int> two_by_two_1{ 0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
 		/* empty start */
 		//Sudoku::SolverBase<1> T0;	// won't compile (useless dimension)
@@ -41,7 +39,7 @@ public:
 		Sudoku::SolverBase<3> T2;
 
 		/* initlize using a Board */
-		Sudoku::Board<val_t, 2> board1;
+		Sudoku::Board<int, 2> board1;
 		std::copy(two_by_two.cbegin(), two_by_two.cend(), board1.begin());
 		Sudoku::SolverBase<2> B1(board1);
 
@@ -67,7 +65,7 @@ public:
 	/*	TEST_METHOD(single_option)
 	{
 	using namespace Sudoku;
-	std::vector<val_t> v1{ 0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+	std::vector<int> v1{ 0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 	SolverBase<2> V1(v1);
 	Board<Options<4>, 2> options = V1.getOptions();
 	Assert::IsTrue(options.at(1).count() == 0, L"setValue() clear()&insert() failed", LINE_INFO());
@@ -82,14 +80,14 @@ public:
 	Assert::IsTrue(options.at(15).count() == 4, L"singleValue() error", LINE_INFO());
 
 	// single_option cascading
-	std::vector<val_t> v2
+	std::vector<int> v2
 	{
 	0,2, 0,0,
 	4,0, 0,0,
 	0,1, 0,0,
 	0,0, 0,0
 	};
-	std::vector<val_t> v2a
+	std::vector<int> v2a
 	{
 	1,2, 0,0,
 	4,3, 0,0,
@@ -97,10 +95,10 @@ public:
 	0,4, 0,0
 	};
 	SolverBase<2> V2(v2);
-	Board<val_t, 2> answer{};
+	Board<int, 2> answer{};
 	std::copy(v2a.cbegin(), v2a.cend(), answer.begin());
 	Assert::IsTrue(answer == V2.getResult(), L"singleValue() cascade failed", LINE_INFO());
-	Board<val_t, 2> start{};
+	Board<int, 2> start{};
 	}
 	//TEST_METHOD(solver_unique)
 	//{
@@ -134,7 +132,7 @@ public:
 		*	|   8	|		|   4	|	| 2 8 7	| 3 5 6	| 1 4 9	|
 		*	|_ _5_ _|_ _ _ _|_6_ _ _|	|_3_5_1_|_9_4_7_|_6_2_8_|
 		*/
-		static const std::vector<val_t> b1
+		static const std::vector<int> b1
 		{
 			0, 0, 0,	0, 0, 0,	0, 1, 2,
 			0, 0, 0,	0, 3, 5,	0, 0, 0,
@@ -146,7 +144,7 @@ public:
 			0, 8, 0,	0, 0, 0,	0, 4, 0,
 			0, 5, 0,	0, 0, 0,	6, 0, 0
 		};
-		static const std::vector<val_t> b1a
+		static const std::vector<int> b1a
 		{
 			6, 7, 3,	8, 9, 4,	5, 1, 2,
 			9, 1, 2,	7, 3, 5,	4, 8, 6,
@@ -160,10 +158,10 @@ public:
 		};
 
 		//TODO temporary SolverBase should accept input
-		Sudoku::Board<val_t, 3> start;
+		Sudoku::Board<int, 3> start;
 		std::copy(b1.cbegin(), b1.cend(), start.begin());
 		// answer to compare to
-		Sudoku::Board<val_t, 3> answer;
+		Sudoku::Board<int, 3> answer;
 		std::copy(b1a.cbegin(), b1a.cend(), answer.begin());
 
 		// working object:

@@ -71,11 +71,11 @@ public:
 		auto block_unit = B.block(4);
 		try
 		{
-			for (size_t i = 0; i < 9; ++i)
+			for (int i = 0; i < 9; ++i)
 			{
 				block_unit[i] = 9 - i;
 			}
-			for (size_t i = 1; i < 4; ++i)
+			for (int i = 1; i < 4; ++i)
 			{
 				Assert::IsTrue(B.col(i + 2)[5] == 4 - i, L"loop value different", LINE_INFO());
 			}

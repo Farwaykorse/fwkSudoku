@@ -7,15 +7,14 @@
 
 namespace Sudoku
 {
-template<typename T, size_t N, typename _Board>
+template<typename T, int N, typename _Board>
 class Section
 {
 public:
 	using section_type = Section;
 	using value_type = T;
 	using const_value_type = const value_type;
-	using size_type = unsigned int;
-	using size_t = size_type;
+	using size_type = int;
 	using difference_type = int;
 	using self_type = Section;
 	using reference = value_type&;
@@ -25,9 +24,9 @@ public:
 
 	using Location = Location<N>;
 
-	static const size_t base_size = Location().base_size;	// default 3
-	static const size_t elem_size = Location().elem_size;	// default 9
-	static const size_t full_size = Location().full_size;	// default 81
+	static const int base_size = Location().base_size;	// default 3
+	static const int elem_size = Location().elem_size;	// default 9
+	static const int full_size = Location().full_size;	// default 81
 
 	class iterator;
 	class const_iterator;
@@ -35,13 +34,13 @@ public:
 
 	// TODO shared code for derived classes: col, row and block
 	// CPL: H3.2.2/3 / H20, p 577 / H21
-	Section(_Board* owner, size_t id) : owner_(owner), id_(id) {}
+	Section(_Board* owner, int id) : owner_(owner), id_(id) {}
 
 	// element access
-	T& at(size_t);
-	const T& at(size_t) const;
-	T& operator[](size_t elem) { return nocheck_at(elem); };
-	const T& operator[](size_t elem) const { return const_nocheck_at(elem); };
+	T& at(int);
+	const T& at(int) const;
+	T& operator[](int elem) { return nocheck_at(elem); };
+	const T& operator[](int elem) const { return const_nocheck_at(elem); };
 
 	iterator begin() { return iterator(this, addressof(0), 0); }
 	iterator end() { return iterator(this); }
@@ -52,10 +51,16 @@ public:
 	// rbegin(); rend(); crbegin(); crend();
 
 	// information
-	static constexpr size_t size() { return elem_size; }
-	size_t id() const { return id_; }
+	static constexpr int size() { return elem_size; }
+	int id() const { return id_; }
 
-	class iterator
+	class iterator :
+		public std::iterator<
+		std::random_access_iterator_tag,
+		value_type,
+		int,
+		value_type*,
+		value_type&>
 	{
 		// knows a pointer to an element in Board and the Location
 		// can be passed to other section types, because Location is usable for all
@@ -66,11 +71,10 @@ public:
 		using value_type = value_type;
 		using reference = value_type&;
 		using pointer = value_type*;
-		using size_type = unsigned int;
 		using difference_type = int;
 
-		iterator(section_type* sp, pointer ptr, size_t elem) : elem_(elem), ptr_(ptr), section_(sp) {}
-		iterator(section_type* sp, size_t elem) : elem_(elem), ptr_{ sp->addressof(elem) }, section_{ sp } {}
+		iterator(section_type* sp, pointer ptr, int elem) : elem_(elem), ptr_(ptr), section_(sp) {}
+		iterator(section_type* sp, int elem) : elem_(elem), ptr_{ sp->addressof(elem) }, section_{ sp } {}
 		iterator(section_type* sp) : elem_(elem_size), ptr_(nullptr), section_(sp) {}
 
 		/* All iterator categories */
@@ -173,22 +177,22 @@ public:
 		bool operator==(const Location& loc) const { return location() == loc; }
 		bool operator!=(const Location& loc) const { return !operator==(loc); }
 		Location location() const { return section_->loc(element()); }
-		size_t element() const { return elem_; }
-		size_t element(Location loc) const { return section_->element(loc); }
+		int element() const { return elem_; }
+		int element(Location loc) const { return section_->element(loc); }
 
 	private:
-		size_type elem_{};	// id of the element within the section
+		int elem_{};	// id of the element within the section
 		pointer ptr_{};		// data pointer
 		section_type* section_;
 
-		size_type section() const { return section_->id(); }
+		int section() const { return section_->id(); }
 
 		self_type& move_()
 		{
 			ptr_ = section_->addressof(elem_);
 			return *this;
 		}
-		self_type& move_(size_t to)
+		self_type& move_(int to)
 		{
 			assert(to <= elem_size);
 			elem_ = to;
@@ -211,12 +215,11 @@ public:
 		using const_reference = const_value_type&;
 		using pointer = value_type*;
 		using const_pointer = const_value_type*;
-		using size_type = unsigned int;
 		using difference_type = int;
 
 		/* constructors - used */
-		const_iterator(const section_type* sp, const_pointer ptr, size_t elem) : elem_(elem), ptr_(ptr), section_(sp) {}
-		const_iterator(const section_type* sp, size_t elem) : elem_(elem), ptr_{ sp->addressof(elem) }, section_(sp) {}
+		const_iterator(const section_type* sp, const_pointer ptr, int elem) : elem_(elem), ptr_(ptr), section_(sp) {}
+		const_iterator(const section_type* sp, int elem) : elem_(elem), ptr_{ sp->addressof(elem) }, section_(sp) {}
 		const_iterator(const section_type* sp) : elem_(elem_size), ptr_(nullptr), section_(sp) {}
 
 		/* All iterators categories */
@@ -320,22 +323,22 @@ public:
 		bool operator==(const Location& loc) const { return location() == loc; }
 		bool operator!=(const Location& loc) const { return !operator==(loc); }
 		Location location() const { return section_->loc(elem_); }
-		size_t element() const { return elem_; }
-		size_t element(Location loc) const { return section_->element(loc); }
+		int element() const { return elem_; }
+		int element(Location loc) const { return section_->element(loc); }
 
 	private:
-		size_type elem_{};		// id of the element within the section
+		int elem_{};		// id of the element within the section
 		const_pointer ptr_{};	// data pointer
 		const section_type* section_;
 
-		size_type section() const { return section_->id(); }
+		int section() const { return section_->id(); }
 
 		self_type& move_()
 		{
 			ptr_ = section_->addressof(elem_);
 			return *this;
 		}
-		self_type& move_(size_t to)
+		self_type& move_(int to)
 		{
 			assert(to <= elem_size);
 			elem_ = to;
@@ -344,13 +347,13 @@ public:
 	};	// class Board::Section::const_iterator
 
 protected:
-	pointer addressof(size_t elem_id)
+	pointer addressof(int elem_id)
 	{
 		assert(elem_id <= elem_size);
 		if (elem_id == elem_size) { return nullptr; }
 		return &nocheck_at(elem_id);
 	}
-	const_pointer addressof(size_t elem_id) const
+	const_pointer addressof(int elem_id) const
 	{
 		assert(elem_id <= elem_size);
 		if (elem_id == elem_size) { return nullptr; }
@@ -359,17 +362,17 @@ protected:
 
 private:
 	_Board* const owner_;
-	const size_t id_;
+	const int id_;
 
-	virtual Location loc(size_t) const = 0;	// section type specific movement
-	virtual size_t element(Location) const = 0;	// inverse of loc(size_t)
+	virtual Location loc(int) const = 0;	// section type specific movement
+	virtual int element(Location) const = 0;	// inverse of loc(int)
 	//NOTE templates as alternative instead of virtual, //tem2//
 
-	T& nocheck_at(size_t elem)
+	T& nocheck_at(int elem)
 	{
 		return owner_->operator[](loc(elem));
 	}
-	const T& const_nocheck_at(size_t elem) const
+	const T& const_nocheck_at(int elem) const
 	{
 		return owner_->operator[](loc(elem));
 	}
@@ -377,22 +380,22 @@ private:
 
 // #################################################################################
 // Section
-template<typename T, size_t N, typename B>
-inline T& Section<T, N, B>::at(size_t elem)
+template<typename T, int N, typename B>
+inline T& Section<T, N, B>::at(int elem)
 {
 	if (elem >= size())
 	{
-		throw std::out_of_range{ "Section::at(size_t)" };
+		throw std::out_of_range{ "Section::at(int)" };
 	}
 	return nocheck_at(elem);
 }
 
-template<typename T, size_t N, typename B>
-inline const T& Section<T, N, B>::at(size_t elem) const
+template<typename T, int N, typename B>
+inline const T& Section<T, N, B>::at(int elem) const
 {
 	if (elem >= size())
 	{
-		throw std::out_of_range{ "Section::at(size_t) const" };
+		throw std::out_of_range{ "Section::at(int) const" };
 	}
 	return const_nocheck_at(elem);
 }

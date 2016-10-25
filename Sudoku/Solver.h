@@ -1,121 +1,141 @@
 /**	Container class for solver functions
- */
+*/
 #pragma once
 #include "Board.h"
 #include "Location.h"
 #include "Options.h"
 
 #include <cassert>
-#include <bitset>
+#include <array>
+#include <vector>
 
 namespace Sudoku
 {
-template<size_t N>
+template<int N>
 class Solver
 {
-	static const size_t base_size = N;
-	static const size_t elem_size = N*N;
+	static const int base_size = N;
+	static const int elem_size = N*N;
 
-	using Location = Location<N>;
-	using Options = Options<elem_size>;
-	using Board = Sudoku::Board<Options, base_size>;
+	using Location	= Location<N>;
+	using Options	= Options<elem_size>;
+	using Board		= Sudoku::Board<Options, base_size>;
+	using Row		= typename Board::Row;
+	using Col		= typename Board::Col;
+	using Block		= typename Board::Block;
 public:
-	static void setValue(Board& board, const Location, const val_t);
+	Solver(Board&);
+
+	void setValue(const Location, const int);
 	template<typename InItr_>
-	static void setValue(Board& board, InItr_ begin, InItr_ end);
+	void setValue(InItr_ begin, InItr_ end);
 
 	template<typename InItr_>
-	static void remove_option_section(Board& Board, InItr_ begin, const InItr_ end, const Location loc, const val_t value);
+	void remove_option_section(InItr_ begin, const InItr_ end, const Location loc, const int value);
 
 	template<typename InItr_>
-	static size_t unique_section(Board& board, const InItr_ begin, const InItr_ end);
+	size_t unique_section(const InItr_ begin, const InItr_ end);
+
+	template<typename InItr_>
+	size_t block_exclusive(InItr_ begin, InItr_ end); // redundant
+	//TODO simplify calling
+	size_t block_exclusive(Block);
 
 private:
-	static void single_option(Board& options, const Location loc, const val_t value);
+	Board& board_;
 
-	//Options section_options(Board&, const InItr_ begin, const InItr_ end);
+
+	void single_option(const Location loc, const int value);
+
+	template<typename InItr_>
+	size_t uniques(InItr_ begin, InItr_ end, Options& worker);
+
+	template<typename InItr_> inline
+	auto appearance_sets(InItr_ begin, InItr_ end);
 };
 
-///	Make [value] the answer for [loc] and process
-template<size_t N> inline
-void Solver<N>::setValue(
-	Board& board,
-	const Location loc,
-	const val_t value)
+template<int N> inline
+Solver<N>::Solver(Board& options) : board_(options)
 {
-	assert(value <= board.elem_size);
-	assert(board.at(loc)[value] == true);	// check if available option, if not invalid board
-	board.at(loc).set(value);
-
-	// process row / col / block
-	single_option(board, loc, value);
+	// empty constructor
 }
 
-///	set board using a vector of values
-template<size_t N>
+///	Make [value] the answer for [loc] and process
+template<int N> inline
+void Solver<N>::setValue(
+	const Location loc,
+	const int value)
+{
+	assert(value <= board_.elem_size);
+	assert(board_.at(loc)[value] == true);	// check if available option, if not invalid board_
+	board_.at(loc).set(value);
+
+	// process row / col / block
+	single_option(loc, value);
+}
+
+///	set board_ using a vector of values
+template<int N>
 template<typename InItr_> inline
 void Solver<N>::setValue(
-	Board& board,
 	InItr_ begin,
 	InItr_ end)
 {
-	assert(end - begin == board.full_size);
-	size_t n{ 0 };
+	assert(end - begin == board_.full_size);
+	int n{ 0 };
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		Location loc(n++);
 		if (*itr > 0)
 		{
-			if (board.at(loc).count() > 1) { setValue(board, loc, *itr); }
+			if (board_.at(loc).count() > 1) { setValue(loc, *itr); }
 			else
 			{
-				assert(board.at(loc).is_answer(*itr));
+				assert(board_.at(loc).is_answer(*itr));
 			}
 		}
 	}
 }
 
-///	Process answer from [loc], update board options
-template<size_t N> inline
-void Solver<N>::single_option(Board& options, const Location loc, const val_t value)
+///	Process answer from [loc], update board_ options
+template<int N> inline
+void Solver<N>::single_option(
+	const Location loc,
+	const int value)
 {
-	assert(loc.element() < loc.full_size);	// loc inside board
-	assert(options.at(loc).is_answer());		// contains anwer
-	assert(options.at(loc).is_answer(value));	// answer and correct value
+	assert(loc.element() < loc.full_size);	// loc inside board_
+	assert(board_.at(loc).is_answer());		// contains anwer
+	assert(board_.at(loc).is_answer(value));	// answer and correct value
 	remove_option_section(
-		options,
-		options.row(loc).begin(),
-		options.row(loc).end(),
+		board_.row(loc).begin(),
+		board_.row(loc).end(),
 		loc,
 		value
 	);
 	remove_option_section(
-		options,
-		options.col(loc).begin(),
-		options.col(loc).end(),
+		board_.col(loc).begin(),
+		board_.col(loc).end(),
 		loc,
 		value
 	);
 	remove_option_section(
-		options,
-		options.block(loc).begin(),
-		options.block(loc).end(),
+		board_.block(loc).begin(),
+		board_.block(loc).end(),
 		loc,
 		value
 	);
 }
 
 /// remove [value] in [loc] from other elements in section
-template<size_t N>
+template<int N>
 template<typename InItr_> inline
 void Solver<N>::remove_option_section(
-	Board& Board,
 	InItr_ begin,
 	const InItr_ end,
 	const Location loc,
-	const val_t value)	// ingnore loc
+	const int value)	// ingnore loc
 {
-	assert(Board[loc].is_answer(value));
+	assert(board_[loc].is_answer(value));
 
 	for (auto itr = begin; itr != end; ++itr)
 	{
@@ -125,7 +145,7 @@ void Solver<N>::remove_option_section(
 			{
 				if (itr->count() == 1)	// new answer found=>cascade
 				{
-					Solver::setValue(Board, itr.location(), itr->answer());
+					Solver::setValue(itr.location(), itr->answer());
 				}
 			}
 		}
@@ -133,7 +153,7 @@ void Solver<N>::remove_option_section(
 }
 
 /*
-template<typename _InItr, size_t N> inline
+template<typename _InItr, int N> inline
 void remove_option_section(
 	Board<std::set<int>, N>& Board,
 	_InItr begin,
@@ -160,9 +180,11 @@ void remove_option_section(
 }
 */
 
-template<size_t N>
+template<int N>
 template<typename InItr_> inline
-size_t Solver<N>::unique_section(Board& board, const InItr_ begin, const InItr_ end)
+size_t Solver<N>::unique_section(
+	const InItr_ begin,
+	const InItr_ end)
 {
 	Options sum(0);		// helper all used
 	Options worker(0);	// multiple uses OR answer
@@ -181,73 +203,213 @@ size_t Solver<N>::unique_section(Board& board, const InItr_ begin, const InItr_ 
 	worker.flip();	// multiple uses -> single-use
 
 	// process uniques
-	const size_t count = worker.count_all();
+	return uniques(begin, end, worker);
+}
+
+/*
+input			|	[0]			|	[1]			|	[2]			|	[3]
+1	100 000 001	|	100	000	001	|	000	000	000	|				|	
+2	110 100 010	|	110	100	011	|	100	000	000	|	000	000	000	|	
+3	010 000 011	|	110	100	011	|	110	000	011	|	000	000	000	|	000	000	000
+4	000 000 011	|	110	100	011	|	110	000	011	|	000	000	011	|	000	000	000
+5	101 100	111	|	111	100	111	|	110	100	011	|	100	000	011	|	000	000	011
+6 A	000	001	000	|	111	101	111	|	110	101	011	|	100	001	011	|	000	001	011
+7	101	100	110	|	111	101	111	|	111	101	111	|	100	101	011	|	100	001	011
+8	100	110	010	|	111	111	111	|	111	101	111	|	100	101	011	|	100	101	011
+9	010	000	101	|				|	111	101	111	|	110	101	111	|	100	101	011
+inv				|	000	000	000	|	000	010	000	|	001	010	000	|	011	010	100
+	532	419	365		0 keer			1x				<=2x			<=3x
+- [n-1]								000	010	000	|	001	000	000	|	010	000	100
+													==2x			==3x
+What about the answer bit?
+*/
+template<int N>
+template<typename InItr_> inline
+size_t Solver<N>::block_exclusive(InItr_ begin, InItr_ end)
+{
+	//TODO ensure it's a block?
+	//TODO type-checking on board_
+
+	size_t found{};	// performance counter
+
+	auto appearing = appearance_sets(begin, end);
+	// 1: unique in block
+	found += uniques(begin, end, appearing[1]);
+
+	auto worker = appearing;	//TODO make function
+	// n times in block
+	for (int n{ 1 }; n <= N; ++n)
+	{
+		size_t count = worker[n].count_all();
+		//TODO specialization if count == 1
+		if (count > 0)
+		{
+			std::vector<int> uniques{};
+			uniques.reserve(count);
+			uniques = worker[n].available();
+			for (const int& value : uniques)
+			{
+				// find_locations
+				// std::vector<Location> find_locations(InItr_ begin, InItr_ end, int value, int count) const
+				//TODO specialization if n = 1 -> unique ?? no vector, just only in a single location
+				std::vector<Location> locations{};
+				locations.reserve(n);
+				auto last = begin;
+				for (int i{ 0 }; i < n; ++i)
+				{
+					last = std::find_if(
+						last, end,
+						[value](Options O) { return O.is_option(value); }
+					);
+					assert(last != end);
+					locations.push_back(last.location());
+				}
+				// shared section
+				// for each value check if appearing in same row/col
+				if (locations.cend() == std::find_if_not(
+					locations.cbegin(), locations.cend(),
+					[&locations](auto L) { return L.row() == locations[0].row(); }))
+				{
+					// all in same row
+				}
+				else if (locations.cend() == std::find_if_not(
+					locations.cbegin(), locations.cend(),
+					[&locations](auto L) { return L.col() == locations[0].col(); }))
+				{
+					// all in same col
+				}
+				else
+				{
+					// not in same row/col
+				}
+
+				// remove value from rest of row OR col
+
+			} // end uniques
+		}
+	}
+	return found;
+
+	//TODO can this be added/used?
+	// 2 values only appear in 2 cells -> remove rest from cells
+}
+
+template<int N>
+template<typename InItr_> inline
+size_t Solver<N>::uniques(InItr_ begin, InItr_ end, Options& worker)
+{
+	size_t count = worker.count_all();
 	if (count > 0)
 	{
-		std::vector<val_t> uniques{};
+		std::vector<int> uniques{};
 		uniques.reserve(count);
 		uniques = worker.available();
-		for (auto value : uniques)
+		for (int value : uniques)
 		{
 			Location loc = std::find_if(
 				begin, end,
 				[value](Options O) { return O.is_option(value); }
 			).location();
-			setValue(board, loc, value);
+			setValue(loc, value);
 		}
 	}
 	return count;
 }
 
+template<int N>
+template<typename InItr_> inline
+auto Solver<N>::appearance_sets(InItr_ begin, InItr_ end)
+{
+	std::array<Options, N + 1> worker{};
+	for (int i{ 0 }; i <= N; ++i) { worker[i].clear(); }
+	//	Collect options by appearence count
+	//	worker[n] contains options appearing more than n times (or answer)
+	for (auto elem_itr = begin; elem_itr != end; ++elem_itr)
+	{
+		if (elem_itr->is_answer())
+		{
+			// add answer to all
+			for (int i{ N }; i > 0; --i)
+			{
+				worker[i] = *elem_itr + worker[i];
+			}
+		}
+		else
+		{
+			for (int i{ N }; i > 0; --i)
+			{
+				//TEST faster/slower when useing this test?
+				//if (!worker[i].all())
+				//{
+					worker[i] += (worker[i - 1] & *elem_itr);
+				//}
+			}
+			worker[0] += *elem_itr;
+		}
+	}
+	//	flip -> worker[n] contains options appearing n times or less
+	for (int i{ 1 }; i <= N; ++i)
+	{
+		worker[i].flip();
+	}
+	//	xor -> worker[n] options appearing n times
+	//TODO xor isn't a natural interface, is it really more efficiënt?
+	for (int i{ N }; i > 1; --i)
+	{
+		worker[i] ^= worker[i - 1];
+	}
+	return worker;
+}
+
 /*
 // 2x in block + zelfde block-row/col
 // => remove from rest row/col
-template<typename InItr_, size_t N> inline
-void block_exclusive(Board<std::set<int>,N> board, InItr_ begin, InItr_ end)
+template<typename InItr_, int N> inline
+void block_exclusive(Board<std::set<int>,N> board_, InItr_ begin, InItr_ end)
 {
-	std::multiset<int> cache{ section_options(board, begin, end) };
+	std::multiset<int> cache{ section_options(board_, begin, end) };
 
 	for (
 		std::multiset<int>::const_iterator itr = cache.lower_bound(1);
 		itr != cache.cend();
 		++itr)
 	{
-		if (cache.count(*itr) == 1)	// = unique
-		{
-			unique(board, begin, end, itr);
-		}
-		else if (cache.count(*itr) <= N)
-		{
-			auto lambda = [itr](std::set<int> elem) {return (elem.count(*itr) == 1); };
-			// check if all in same row or col
-			std::vector<Location<N>> items{};
-			auto found = std::find_if(begin, end, lambda);
-			items.push_back(found.location());
-			for (size_t i = 1; i < cache.count(*itr); ++i)
-			{
-				found = std::find_if(found, end, lambda);
-				items.push_back(found.location());
-			}
-			bool is_row{ true };
-			bool is_col{ true };
-			for (Location<N>& loc : items)
-			{
-				if (loc.row() != items[1].row()) { is_row = false; }
-				if (loc.col() != items[1].col()) { is_col = false; }
-			}
-			assert( !(is_row && is_col) );	// can't both be true
-			if (is_row)
-			{
-				//setValue(board, items);
-				remove_option_section(
-					board,
-					board.row(items[0]).begin(),
-					board.row(items[0]).end(),
-					items, *itr); 
-			}
-			// if is_col
-		}
+	if (cache.count(*itr) == 1)	// = unique
+	{
+		unique(board_, begin, end, itr);
 	}
+	else if (cache.count(*itr) <= N)
+	{
+		auto lambda = [itr](std::set<int> elem) {return (elem.count(*itr) == 1); };
+		// check if all in same row or col
+		std::vector<Location<N>> items{};
+		auto found = std::find_if(begin, end, lambda);
+		items.push_back(found.location());
+		for (int i = 1; i < cache.count(*itr); ++i)
+		{
+			found = std::find_if(found, end, lambda);
+			items.push_back(found.location());
+		}
+		bool is_row{ true };
+		bool is_col{ true };
+		for (Location<N>& loc : items)
+		{
+			if (loc.row() != items[1].row()) { is_row = false; }
+			if (loc.col() != items[1].col()) { is_col = false; }
+		}
+		assert( !(is_row && is_col) );	// can't both be true
+		if (is_row)
+		{
+			//setValue(board_, items);
+			remove_option_section(
+				board_,
+				board_.row(items[0]).begin(),
+				board_.row(items[0]).end(),
+				items, *itr);
+		}
+		// if is_col
+	}
+}
 }
 */
 }	// namespace Sudoku

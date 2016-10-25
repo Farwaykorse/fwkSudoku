@@ -55,7 +55,7 @@ public:
 		static_assert(f2.size() == 16, "size() value error[f2]");
 		static_assert(f3.size() == 81, "size() value error[f3]");
 		// different types
-		compiler_checks(Board<size_t, 3>());
+		compiler_checks(Board<int, 3>());
 		compiler_checks(Board<std::set<int>, 2>());
 		compiler_checks(Board<std::bitset<9>,3>());
 		compiler_checks(Board<Options<9>,3>());
@@ -121,8 +121,8 @@ public:
 		Assert::IsTrue(B.elem_size == 4, L"elem_size error", LINE_INFO());
 		Assert::IsTrue(B.full_size == 16, L"full_size error", LINE_INFO());
 
-		//TEST	valid_size(size_t elem);
-		//TEST	valid_size(size_t row, size_t col);
+		//TEST	valid_size(int elem);
+		//TEST	valid_size(int row, int col);
 	}
 	TEST_METHOD(T3_element_access)
 	{
@@ -196,7 +196,7 @@ public:
 		Assert::IsTrue(b_set.at(8).empty(), L"clear() not removing values", LINE_INFO());
 	}
 private:
-	template<typename T, size_t N>
+	template<typename T, int N>
 	constexpr void compiler_checks(const Sudoku::Board<T, N>& B) const
 	{
 		// independend size calculations
@@ -207,45 +207,45 @@ private:
 		static_assert(B.full_size == B.size(), "Function Error size()");
 	}
 
-	template<size_t N>
+	template<int N>
 	void set_atValue(Sudoku::Board<int, N>& target)
 	{
-		constexpr size_t elem{ N*N };
-		for (size_t i = 0; i < target.size(); ++i)
+		constexpr int elem{ N*N };
+		for (int i = 0; i < target.size(); ++i)
 		{
 			target.at(i) = i % elem + 1;
 		}
 	}
 
-	template<size_t N>
+	template<int N>
 	void set_Value(Sudoku::Board<int, N>& target)
 	{
-		for (size_t row = 0; row < target.col(0).size(); ++row)
+		for (int row = 0; row < target.col(0).size(); ++row)
 		{
-			for (size_t col = 0; col < target.row(0).size(); ++col)
+			for (int col = 0; col < target.row(0).size(); ++col)
 			{
 				target[row][col] = col + 1;
 			}
 		}
 	}
 
-	template<size_t N>
+	template<int N>
 	void set_atValue_2(Sudoku::Board<int, N>& target)
 	{
-		for (size_t row = 0; row < target.col(0).size(); ++row)
+		for (int row = 0; row < target.col(0).size(); ++row)
 		{
-			for (size_t col = 0; col < target.row(0).size(); ++col)
+			for (int col = 0; col < target.row(0).size(); ++col)
 			{
 				target.at(row, col) = col + 1;
 			}
 		}
 	}
 
-	template<size_t N>
+	template<int N>
 	void set_Value_2(Sudoku::Board<int, N>& target)
 	{
-		constexpr size_t elem{ N*N };
-		for (size_t i = 0; i < target.size(); ++i)
+		constexpr int elem{ N*N };
+		for (int i = 0; i < target.size(); ++i)
 		{
 			target[Location(i)] = i % elem + 1;
 		}

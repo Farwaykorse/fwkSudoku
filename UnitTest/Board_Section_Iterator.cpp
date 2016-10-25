@@ -299,7 +299,7 @@ public:
 		Sudoku::Board<int, 3> B;
 		Test_Boards::bN_fill_1::set_ColNr(B);	// all row 0 1 2 3 4 5 6 7 8 sum = 36
 		size_t total{};
-		for (size_t i = 0; i < 9; ++i)
+		for (int i = 0; i < 9; ++i)
 		{
 			total = 0;
 			try
@@ -314,7 +314,7 @@ public:
 		}
 
 		Test_Boards::bN_fill_1::set_RowNr(B);
-		for (size_t i = 0; i < 9; ++i)
+		for (int i = 0; i < 9; ++i)
 		{
 			total = 0;
 			try
@@ -329,7 +329,7 @@ public:
 		}
 
 		Test_Boards::bN_fill_1::set_BlockNr_X(B);
-		for (size_t i = 0; i < 9; ++i)
+		for (int i = 0; i < 9; ++i)
 		{
 			total = 0;
 			try
@@ -365,21 +365,21 @@ public:
 		//size_t total = std::accumulate(itr, end, 0);
 
 		// accumulate requires an input iterator
-		for (size_t i = 0; i < 9; ++i)
+		for (int i = 0; i < 9; ++i)
 		{
 			size_t total = std::accumulate(B.row(i).cbegin(), B.row(i).cend(), 0);
 			Assert::IsTrue(total == 36, L"Section::Row std::accumulate incorrect result", LINE_INFO());
 		}
 
 		Test_Boards::bN_fill_1::set_RowNr(B);
-		for (size_t i = 0; i < 9; ++i)
+		for (int i = 0; i < 9; ++i)
 		{
 			size_t total = std::accumulate(B.col(i).begin(), B.col(i).end(), 0);
 			Assert::IsTrue(total == 36, L"Section::Col std::accumulate incorrect result", LINE_INFO());
 		}
 
 		Test_Boards::bN_fill_1::set_BlockNr_X(B);
-		for (size_t i = 0; i < 9; ++i)
+		for (int i = 0; i < 9; ++i)
 		{
 			size_t total = std::accumulate(B.block(i).begin(), B.block(i).end(), 0);
 			Assert::IsTrue(total == 36, L"Section::Block std::accumulate incorrect result", LINE_INFO());
