@@ -40,6 +40,7 @@ public:
 	Options& add(int value);			// add single option
 	Options& set(int value);			// set to answer
 
+	constexpr size_t size() const noexcept;
 	size_t count() const noexcept;		// count available options
 	size_t count_all() const noexcept;	// count all options (incl answer)
 	int all() const noexcept;
@@ -160,9 +161,9 @@ Options<E>& Options<E>::flip() noexcept
 template<int E> inline
 bool Options<E>::remove(int value)
 {
-	assert(!is_answer());	// don't apply on answers
 	if (m_data[value])
 	{
+		assert(!is_answer());	// don't apply on answers
 		m_data.reset(value);
 		return true;
 	}
@@ -184,6 +185,12 @@ Options<E>& Options<E>::set(int value)
 	clear();
 	add(value);	// if 0: -> not answer = [0] = true
 	return *this;
+}
+
+template<int E> inline
+constexpr size_t Options<E>::size() const noexcept
+{
+	return m_data.size();
 }
 
 /// available options

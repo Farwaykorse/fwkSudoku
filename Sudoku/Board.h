@@ -171,13 +171,13 @@ constexpr void Board<T, N>::valid_dimensions() const
 template<typename T, int N> inline
 constexpr bool Board<T, N>::valid_size(const int elem) const
 {
-	return elem < full_size;
+	return (elem >= 0 && elem < full_size);
 }
 
 template<typename T, int N> inline
 constexpr bool Board<T, N>::valid_size(const int row, const int col) const
 {
-	return (row < elem_size && col < elem_size);
+	return (row >= 0 && row < elem_size && col >= 0 && col < elem_size);
 }
 
 template<typename T, int N>

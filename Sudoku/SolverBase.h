@@ -42,6 +42,10 @@ public:
 	/* tmp */
 	void single_option(Location loc, int value);
 	void solver_unique();
+	int unique_row(int i);
+	int unique_col(int i);
+	int unique_block(int i);
+	int solver_block(int i);
 
 private:
 	Board<int, N> start;
@@ -165,7 +169,7 @@ template<int N> inline
 void SolverBase<N>::solver_unique()
 {
 	Solver<N> S(options);
-	size_t found{ 1 };
+	int found{ 1 };
 	while (found > 0)
 	{
 		found = 0;
@@ -174,7 +178,37 @@ void SolverBase<N>::solver_unique()
 			found += S.unique_section(options.row(i).cbegin(), options.row(i).cend());
 			found += S.unique_section(options.col(i).cbegin(), options.col(i).cend());
 			found += S.unique_section(options.block(i).cbegin(), options.block(i).cend());
+			//found += S.block_exclusive(options.block(i).cbegin(), options.block(i).cend());
 		}
 	}
 }
+
+template<int N> inline
+int SolverBase<N>::unique_row(int i)
+{
+	Solver<N> S(options);
+	return S.unique_section(options.row(i).cbegin(), options.row(i).cend());
+}
+
+template<int N> inline
+int SolverBase<N>::unique_col(int i)
+{
+	Solver<N> S(options);
+	return S.unique_section(options.col(i).cbegin(), options.col(i).cend());
+}
+
+template<int N> inline
+int SolverBase<N>::unique_block(int i)
+{
+	Solver<N> S(options);
+	return S.unique_section(options.block(i).cbegin(), options.block(i).cend());
+}
+
+template<int N> inline
+int SolverBase<N>::solver_block(int i)
+{
+	Solver<N> S(options);
+	return S.block_exclusive(options.block(i).cbegin(), options.block(i).cend());
+}
+
 }	// namespace Sudoku

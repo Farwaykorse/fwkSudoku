@@ -158,16 +158,9 @@ public:
 			Solver<3>(options).unique_section(options.row(i).cbegin(), options.row(i).cend());
 		}
 	}
-	TEST_METHOD(block_exclusive)
+	TEST_METHOD(T4_block_exclusive)
 	{
 		using namespace Sudoku;
-		//TEST	1. no change
-		//			empty start
-		//Board<Options<4>, 2> B0{};
-		//Solver<2>::block_exclusive(B0, B0.block(0).cbegin(), B0.block(0).cend());
-		//TEST	2. reproduce results of unique
-		//TEST	3. ...
-
 
 		// reproduce functionality of unique
 		static const std::vector<int> V1
@@ -181,48 +174,62 @@ public:
 		Board<Options<4>, 2> B1{};
 		//Solver<2>::setValue(B1, V1.cbegin(), V1.cend());
 		Solver<2>(B1).setValue(V1.cbegin(), V1.cend());
-		Solver<2>(B1).block_exclusive(B1.block(3).cbegin(), B1.block(3).cend());
+		Assert::IsTrue(
+			1 == Solver<2>(B1).block_exclusive(B1.block(3).cbegin(), B1.block(3).cend()),
+			L"block_exclusive() should find 1 value", LINE_INFO());
 		Assert::IsTrue(B1[3][3] == 1, L"block_exclusive() unique value failed",LINE_INFO());
+		int found1{ 0 };
+		for (int i{ 0 }; i < B1.elem_size; ++i)
+		{
+			found1 += Solver<2>(B1).block_exclusive(B1.block(i).cbegin(), B1.block(i).cend());
+		}
+		Assert::IsTrue(found1 == 0, L"shouldn't find any others",LINE_INFO());
 
 		const std::vector<int> V2
 		{
-			// start	// setValue
-			0,0, 0,0,	//	
-			3,4, 0,0,	//	
-			0,0, 0,0,	//	
-			0,0, 0,0	//	
-		};
-		Sudoku::Board<Options<4>, 2> B2{};
-		//Solver<2>::setValue(B2, V2.cbegin(), V2.cend());
-		Solver<2>(B2).setValue(V2.cbegin(), V2.cend());
-		Solver<2>(B2).block_exclusive(B2.block(0).cbegin(), B2.block(0).cend());
-		Assert::IsFalse(B2[0][0].is_answer());
-		Assert::IsTrue(B2[0][1].count() == 2);
-		Assert::IsTrue(B2[0][2].is_option(3));
-		Assert::IsTrue(B2[0][2].is_option(4));
-
-		/*
-		const std::vector<int> B1
-		{
-		0, 0, 0,	0, 0, 0,	0, 1, 2,
-		0, 0, 0,	0, 3, 5,	0, 0, 0,
-		0, 0, 0,	6, 0, 0,	0, 7, 0,
-		7, 0, 0,	0, 0, 0,	3, 0, 0,
-		0, 0, 0,	4, 0, 0,	8, 0, 0,
-		1, 0, 0,	0, 0, 0,	0, 0, 0,
-		0, 0, 0,	1, 2, 0,	0, 0, 0,
-		0, 8, 0,	0, 0, 0,	0, 4, 0,
-		0, 5, 0,	0, 0, 0,	6, 0, 0
-		};
-
-		Sudoku::Board<Options<9>, 3> options{};
-		Solver<3>(options).setValue(B1.cbegin(), B1.cend());
-
-		for (int i = 0; i < options.elem_size; ++i)
-		{
-		Sudoku::Solver<3>(options).block_exclusive(options, options.block(i).cbegin(), options.block(i).cend());
-		}
+		/*	start board					answer board
+		*	 _ _ _ _ _ _ _ _ _ _ _ _	 _ _ _ _ _ _ _ _ _ _ _ _
+		*	|		| 		|   1 2 |	| 6 7 3	| 8 9 4	| 5 1 2 |
+		*	|		|	3 5 |		|	| 9 1 2	| 7 3 5 | 4 8 6	|
+		*	| _ _ _ | 6 _ _ | _ 7 _ |	|_8_4_5_|_6_1_2_|_9_7_3_|
+		*	| 7		|		| 3		|	| 7 9 8	| 2 6 1	| 3 5 4 |
+		*	|		| 4		| 8		|	| 5 2 6	| 4 7 3	| 8 9 1	|
+		*	| 1 _ _ | _ _ _	| _ _ _ |	|_1_3_4_|_5_8_9_|_2_6_7_|
+		*	| 		| 1 2	|		|	| 4 6 9	| 1 2 8 | 7 3 5	|
+		*	|	8	|		|	4	|	| 2 8 7	| 3 5 6	| 1 4 9	|
+		*	|_ _5_ _|_ _ _ _|_6_ _ _|	|_3_5_1_|_9_4_7_|_6_2_8_|
 		*/
+			0, 0, 0,	0, 0, 0,	0, 1, 2,	//	
+			0, 0, 0,	0, 3, 5,	0, 0, 0,	//	. . .	2 . .
+			0, 0, 0,	6, 0, 0,	0, 7, 0,	//	. . .	. 1 12	0 . [3]
+
+			7, 0, 0,	0, 0, 0,	3, 0, 0,	//
+			0, 0, 0,	4, 0, 0,	8, 0, 0,	//
+			1, 0, 0,	0, 0, 0,	0, 0, 0,	//
+
+			0, 0, 0,	1, 2, 0,	0, 0, 0,
+			0, 8, 0,	0, 0, 0,	0, 4, 0,	//	
+			0, 5, 0,	0, 0, 0,	6, 0, 0		//	. 5 [1] |	
+		};
+		Sudoku::Board<Options<9>, 3> B2{};
+		Solver<3>(B2).setValue(V2.cbegin(), V2.cend());
+		// block 0
+		//		nothing
+		// block 1
+		//		double: 1 in row 2;	2 not paired
+		// block 2
+		//		unique: 9=3
+		int count_s = Solver<3>(B2).block_exclusive(B2.block(2).cbegin(), B2.block(2).cend());
+
+		Assert::IsTrue(
+			count_s >= 1,
+			L"block_exclusive() should find at least 1 value", LINE_INFO());
+		Assert::IsTrue(B2[2][8] == 3, L"block_exclusive() unique value failed N=3",LINE_INFO());
+
+		for (int i = 0; i < B2.elem_size; ++i)
+		{
+			Solver<3>(B2).block_exclusive(B2.block(i).cbegin(), B2.block(i).cend());
+		}
 	}
 };
 }	// namespace Sudoku_Test
