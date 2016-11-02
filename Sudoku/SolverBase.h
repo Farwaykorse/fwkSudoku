@@ -37,7 +37,7 @@ public:
 	/* Output */
 	Board<int, N> getStart() const;
 	Board<int, N> getResult() const;
-	Board<Options<elem_size>, N> getOptions() const;
+	const Board<Options<N*N>, N>& getOptions() const;
 
 	/* tmp */
 	void single_option(Location loc, int value);
@@ -65,22 +65,22 @@ private:
 	void solver_dual_hidden();	// pair of values appear 2 times
 };
 
-template<int N>
-inline SolverBase<N>::SolverBase() :
+template<int N> inline
+SolverBase<N>::SolverBase() :
 	start(0)
 {
 	// empty constructor
 }
 
-template<int N>
-inline SolverBase<N>::SolverBase(const Board<int, N>& input) :
+template<int N> inline
+SolverBase<N>::SolverBase(const Board<int, N>& input) :
 	start(input)
 {
 	process_new(input);	// setValue for all elements on options
 }
 
-template<int N>
-inline SolverBase<N>::SolverBase(const std::vector<int>& input) :
+template<int N> inline
+SolverBase<N>::SolverBase(const std::vector<int>& input) :
 	start(0)
 {
 	if (input.size() != full_size) { throw std::length_error("input length_error"); }
@@ -92,8 +92,8 @@ inline SolverBase<N>::SolverBase(const std::vector<int>& input) :
 	process_new(start);
 }
 
-template<int N>
-inline void SolverBase<N>::setBoard(const Board<int, N>& board)
+template<int N> inline
+void SolverBase<N>::setBoard(const Board<int, N>& board)
 {
 	start = board;
 	process_new(board);
@@ -101,14 +101,14 @@ inline void SolverBase<N>::setBoard(const Board<int, N>& board)
 	//return getResult();
 }
 
-template<int N>
-inline Board<int, N> SolverBase<N>::getStart() const
+template<int N> inline
+Board<int, N> SolverBase<N>::getStart() const
 {
 	return start;
 }
 
-template<int N>
-inline Board<int, N> SolverBase<N>::getResult() const
+template<int N> inline
+Board<int, N> SolverBase<N>::getResult() const
 {
 	Board<int, N> result{};
 	for (int i = 0; i < full_size; ++i)
@@ -121,14 +121,14 @@ inline Board<int, N> SolverBase<N>::getResult() const
 	return result;
 }
 
-//template<int N>
-//inline Board<Options<elem_size>, N> SolverBase<N>::getOptions() const
-//{
-//	return options;
-//}
+template<int N> inline
+const Board<Options<N*N>, N>& SolverBase<N>::getOptions() const
+{
+	return options;
+}
 
-template<int N>
-inline void SolverBase<N>::process_new(const Board<int, N>& board)
+template<int N> inline
+void SolverBase<N>::process_new(const Board<int, N>& board)
 {
 	for (int i = 0; i<full_size; ++i)
 	{

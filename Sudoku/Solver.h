@@ -31,7 +31,7 @@ public:
 	void setValue(InItr_ begin, InItr_ end);
 
 	template<typename InItr_>
-	void remove_option_section(InItr_ begin, const InItr_ end, const Location loc, const int value);
+	int remove_option_section(InItr_ begin, const InItr_ end, const Location loc, const int value);
 
 	template<typename InItr_>
 	int unique_section(const InItr_ begin, const InItr_ end);
@@ -58,7 +58,7 @@ private:
 	auto find_locations(InItr_ begin, const InItr_ end, const int rep_count, const size_t value);
 
 	template<typename InItr_>
-	void remove_option_outside_block(InItr_ begin, const InItr_ end, const Location block, const int value);
+	int remove_option_outside_block(InItr_ begin, const InItr_ end, const Location block, const int value);
 };
 
 template<int N> inline
@@ -136,7 +136,7 @@ void Solver<N>::single_option(
 /// remove [value] in [loc] from other elements in section
 template<int N>
 template<typename InItr_> inline
-void Solver<N>::remove_option_section(
+int Solver<N>::remove_option_section(
 	InItr_ begin,
 	const InItr_ end,
 	const Location loc,
@@ -144,6 +144,7 @@ void Solver<N>::remove_option_section(
 {
 	assert(board_[loc].is_answer(value));
 
+	int found{ 0 };
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		if ( !(itr->is_answer()) )
@@ -154,19 +155,22 @@ void Solver<N>::remove_option_section(
 				{
 					Solver::setValue(itr.location(), itr->answer());
 				}
+				++found;
 			}
 		}
 	}
+	return found;
 }
 
 template<int N>
 template<typename InItr_> inline
-void Solver<N>::remove_option_outside_block(
+int Solver<N>::remove_option_outside_block(
 	InItr_ begin,
 	const InItr_ end,
 	const Location block,
 	const int value)
 {
+	int found{ 0 };
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		if (!(itr->is_answer()))
@@ -179,10 +183,12 @@ void Solver<N>::remove_option_outside_block(
 					{
 						Solver::setValue(itr.location(), itr->answer());
 					}
+					++found;
 				}
 			}
 		}
 	}
+	return found;
 }
 
 /*
@@ -293,7 +299,7 @@ int Solver<N>::set_block_locals(InItr_ begin, const InItr_ end, const int rep_co
 				locations.cbegin(), locations.cend(),
 				[&locations](auto L) { return L.row() == locations[0].row(); }))
 			{
-				remove_option_outside_block(
+				found += remove_option_outside_block(
 					board_.row(locations[0]).begin(),
 					board_.row(locations[0]).end(),
 					locations[0],
@@ -303,7 +309,7 @@ int Solver<N>::set_block_locals(InItr_ begin, const InItr_ end, const int rep_co
 				locations.cbegin(), locations.cend(),
 				[&locations](auto L) { return L.col() == locations[0].col(); }))
 			{
-				remove_option_outside_block(
+				found += remove_option_outside_block(
 					board_.col(locations[0]).begin(),
 					board_.col(locations[0]).end(),
 					locations[0],
@@ -421,55 +427,8 @@ auto Solver<N>::find_locations(InItr_ begin, const InItr_ end, const int rep_cou
 	return locations;
 }
 
-/*
-// 2x in block + zelfde block-row/col
-// => remove from rest row/col
-template<typename InItr_, int N> inline
-void block_exclusive(Board<std::set<int>,N> board_, InItr_ begin, InItr_ end)
-{
-	std::multiset<int> cache{ section_options(board_, begin, end) };
+// cell containing 2 options
+//		IF pair in same row/col -> remove values from rest row/col
+//			IF same block -> remove values from rest block
 
-	for (
-		std::multiset<int>::const_iterator itr = cache.lower_bound(1);
-		itr != cache.cend();
-		++itr)
-	{
-	if (cache.count(*itr) == 1)	// = unique
-	{
-		unique(board_, begin, end, itr);
-	}
-	else if (cache.count(*itr) <= N)
-	{
-		auto lambda = [itr](std::set<int> elem) {return (elem.count(*itr) == 1); };
-		// check if all in same row or col
-		std::vector<Location<N>> items{};
-		auto found = std::find_if(begin, end, lambda);
-		items.push_back(found.location());
-		for (int i = 1; i < cache.count(*itr); ++i)
-		{
-			found = std::find_if(found, end, lambda);
-			items.push_back(found.location());
-		}
-		bool is_row{ true };
-		bool is_col{ true };
-		for (Location<N>& loc : items)
-		{
-			if (loc.row() != items[1].row()) { is_row = false; }
-			if (loc.col() != items[1].col()) { is_col = false; }
-		}
-		assert( !(is_row && is_col) );	// can't both be true
-		if (is_row)
-		{
-			//setValue(board_, items);
-			remove_option_section(
-				board_,
-				board_.row(items[0]).begin(),
-				board_.row(items[0]).end(),
-				items, *itr);
-		}
-		// if is_col
-	}
-}
-}
-*/
 }	// namespace Sudoku
