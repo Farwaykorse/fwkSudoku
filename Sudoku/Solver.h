@@ -14,8 +14,9 @@ namespace Sudoku
 template<int N>
 class Solver
 {
-	static const int base_size = N;
-	static const int elem_size = N*N;
+	static const int base_size{ N };
+	static const int elem_size{ N*N };
+	static const int full_size{ elem_size * elem_size };
 
 	using Location	= Location<N>;
 	using Options	= Options<elem_size>;
@@ -52,7 +53,7 @@ public:
 private:
 	Board& board_;
 
-	void single_option(Location loc, int value);
+	int single_option(Location loc, int value);
 	int dual_option(Location);
 
 	template<typename InItr_>
@@ -83,8 +84,8 @@ void Solver<N>::setValue(
 	const Location loc,
 	const int value)
 {
-	assert(value <= board_.elem_size);
-	assert(board_.at(loc)[value] == true);	// check if available option, if not invalid board_
+	assert(value > 0 && value <= elem_size);
+	assert(board_.at(loc).test(value));	// check if available option, if not invalid board_
 	board_.at(loc).set(value);
 
 	// process row / col / block
@@ -94,18 +95,19 @@ void Solver<N>::setValue(
 ///	set board_ using a vector of values
 template<int N>
 template<typename InItr_> inline
-void Solver<N>::setValue(
-	InItr_ begin,
-	InItr_ end)
+void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 {
-	assert(end - begin == board_.full_size);
+	assert(end - begin == full_size);
 	int n{ 0 };
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		Location loc(n++);
 		if (*itr > 0)
 		{
-			if (board_.at(loc).count() > 1) { setValue(loc, *itr); }
+			if (board_.at(loc).is_option(*itr))
+			{
+				setValue(loc, *itr);
+			}
 			else
 			{
 				assert(board_.at(loc).is_answer(*itr));
@@ -116,37 +118,43 @@ void Solver<N>::setValue(
 
 ///	Process answer from [loc], update board_ options
 template<int N> inline
-void Solver<N>::single_option(
-	const Location loc,
-	const int value)
+int Solver<N>::single_option(const Location loc, const int value)
 {
-	assert(loc.element() < loc.full_size);	// loc inside board_
-	assert(board_.at(loc).is_answer());		// contains anwer
-	assert(board_.at(loc).is_answer(value));	// answer and correct value
-	remove_option_section(
-		board_.row(loc).begin(),
-		board_.row(loc).end(),
-		loc,
-		value
-	);
-	remove_option_section(
-		board_.col(loc).begin(),
-		board_.col(loc).end(),
-		loc,
-		value
-	);
-	remove_option_section(
-		board_.block(loc).begin(),
-		board_.block(loc).end(),
-		loc,
-		value
-	);
+	assert(loc.element() >= 0 && loc.element() < full_size);	// loc inside board_
+	assert(board_.at(loc).test(value));
+
+	if (board_.at(loc).count() == 1 &&
+		board_.at(loc).is_option(value)) { setValue(loc, value); }
+	else if (board_.at(loc).is_answer())
+	{
+		int found{};
+		found += remove_option_section(
+			board_.row(loc).begin(),
+			board_.row(loc).end(),
+			loc,
+			value
+		);
+		found += remove_option_section(
+			board_.col(loc).begin(),
+			board_.col(loc).end(),
+			loc,
+			value
+		);
+		found += remove_option_section(
+			board_.block(loc).begin(),
+			board_.block(loc).end(),
+			loc,
+			value
+		);
+		return found;
+	}
+	return 0;
 }
 
 template<int N> inline
 int Solver<N>::dual_option(const Location loc)
 {
-	assert(loc.element() < loc.full_size);	// loc inside board_
+	assert(loc.element() < full_size);	// loc inside board_
 	assert(board_[loc].count() == 2);		// shouldn't have been called
 	//TODO find exact same in row
 		//TODO remove BOTH values from rest row
@@ -165,7 +173,7 @@ int Solver<N>::remove_option_section(
 	const Location loc,
 	const int value)
 {
-	assert(board_[loc].is_answer(value));
+	assert(board_.at(loc).is_answer(value));
 
 	int found{ 0 };
 	for (auto itr = begin; itr != end; ++itr)
@@ -173,11 +181,8 @@ int Solver<N>::remove_option_section(
 		if ( !(itr->is_answer()) &&
 			itr->remove(value))		// true if applied
 		{
-			if (itr->count() == 1)	// new answer found=>cascade
-			{
-				Solver::setValue(itr.location(), itr->answer());
-			}
 			++found;
+			found += single_option(itr.location(), itr->answer());	// new answer found -> cascade
 		}
 	}
 	return found;
@@ -199,11 +204,8 @@ int Solver<N>::remove_option_outside_block(
 		else if (itr.location().block() == block.block()) { continue; }
 		else if (itr->remove(value))
 		{
-			if (itr->count() == 1)
-			{
-				setValue(itr.location(), itr->answer());
-			}
 			++found;
+			found += single_option(itr.location(), itr->answer());
 		}
 	}
 	return found;
@@ -229,11 +231,8 @@ int Solver<N>::remove_option_section(
 		{
 			if (itr->remove(value))
 			{
-				if (itr->size() == 1)	// cascade
-				{
-					setValue(itr.location(), itr->answer());
-				}
 				++found;
+				found += single_option(itr.location(), itr->answer());	// cascade
 			}
 		}
 	}
@@ -262,11 +261,8 @@ int Solver<N>::remove_option_section(
 			{
 				if (itr->remove(v))
 				{
-					if (itr->size() == 1)	// cascade
-					{
-						setValue(itr.location(), itr->answer());
-					}
 					++found;
+					found += single_option(itr.location(), itr->answer());	// cascade
 				}
 			}
 		}
@@ -277,9 +273,7 @@ int Solver<N>::remove_option_section(
 
 template<int N>
 template<typename InItr_> inline
-int Solver<N>::unique_section(
-	const InItr_ begin,
-	const InItr_ end)
+int Solver<N>::unique_section(const InItr_ begin, const InItr_ end)
 {
 	Options sum(0);		// helper all used
 	Options worker(0);	// multiple uses OR answer
@@ -319,6 +313,7 @@ auto Solver<N>::set_uniques(InItr_ begin, InItr_ end, const Options& worker)
 				);
 				assert(itr != end); // doesn't exist
 				setValue(itr.location(), value);
+				found += single_option(itr.location(), value);
 				++found;
 			}
 		}
@@ -390,7 +385,11 @@ int Solver<N>::block_exclusive(const InItr_ begin, const InItr_ end)
 
 template<int N>
 template<typename InItr_> inline
-int Solver<N>::set_section_locals(const InItr_ begin, const InItr_ end, const int rep_count, const Options& worker)
+int Solver<N>::set_section_locals(
+	const InItr_ begin,
+	const InItr_ end,
+	const int rep_count,
+	const Options& worker)
 {
 	const size_t count = worker.count_all();
 	assert(count > 0);		// should have been cought by caller
@@ -525,7 +524,11 @@ auto Solver<N>::appearance_sets(const InItr_ begin, const InItr_ end) const
 
 template<int N>
 template<typename InItr_> inline
-auto Solver<N>::find_locations(const InItr_ begin, const InItr_ end, const int rep_count, const int value) const
+auto Solver<N>::find_locations(
+	const InItr_ begin,
+	const InItr_ end,
+	const int rep_count,
+	const int value				) const
 {
 	assert(value > 0 && value <= elem_size);
 	assert(rep_count > 0 && rep_count <= board_.full_size);
