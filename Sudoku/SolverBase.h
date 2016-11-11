@@ -46,6 +46,8 @@ public:
 	int unique_col(int i);
 	int unique_block(int i);
 	int solver_block(int i);
+	int solver_row(int i);
+	int solver_col(int i);
 
 private:
 	Board<int, N> start;
@@ -130,11 +132,8 @@ const Board<Options<N*N>, N>& SolverBase<N>::getOptions() const
 template<int N> inline
 void SolverBase<N>::process_new(const Board<int, N>& board)
 {
-	for (int i = 0; i<full_size; ++i)
-	{
-		int value = board.at(i);
-		if (value > 0) { setValue(Location(i), value); }
-	}
+	Solver<N> S(options);
+	S.setValue(board.cbegin(), board.cend());
 }
 
 /* Options process answer value */
@@ -209,6 +208,20 @@ int SolverBase<N>::solver_block(int i)
 {
 	Solver<N> S(options);
 	return S.block_exclusive(options.block(i).cbegin(), options.block(i).cend());
+}
+
+template<int N> inline
+int SolverBase<N>::solver_row(int i)
+{
+	Solver<N> S(options);
+	return S.section_exclusive(options.row(i).begin(), options.row(i).end());
+}
+
+template<int N> inline
+int SolverBase<N>::solver_col(int i)
+{
+	Solver<N> S(options);
+	return S.section_exclusive(options.col(i).cbegin(), options.col(i).cend());
 }
 
 }	// namespace Sudoku
