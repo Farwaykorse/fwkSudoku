@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\VisualCppTools.14.0.24612-Pre\build\native\VisualCppTools.props" Condition="Exists('..\packages\VisualCppTools.14.0.24612-Pre\build\native\VisualCppTools.props')" />
+  <Import Project="..\packages\VisualCppTools.14.0.25010-Pre\build\native\VisualCppTools.props" Condition="Exists('..\packages\VisualCppTools.14.0.25010-Pre\build\native\VisualCppTools.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="ClangDebug|Win32">
       <Configuration>ClangDebug</Configuration>
@@ -94,6 +94,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)Sudoku;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -128,7 +129,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(VCInstallDir)..\..\..\Auxiliary\VS\UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Sudoku\Debug;$(VCInstallDir)..\..\..\Auxiliary\VS\UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -196,6 +197,6 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\VisualCppTools.14.0.24612-Pre\build\native\VisualCppTools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\VisualCppTools.14.0.24612-Pre\build\native\VisualCppTools.props'))" />
+    <Error Condition="!Exists('..\packages\VisualCppTools.14.0.25010-Pre\build\native\VisualCppTools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\VisualCppTools.14.0.25010-Pre\build\native\VisualCppTools.props'))" />
   </Target>
 </Project>
