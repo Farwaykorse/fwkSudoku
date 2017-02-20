@@ -11,8 +11,10 @@
 #include "Location.h"
 // library
 #include <set>
-#include <numeric>
+#include <algorithm>
 #include <iterator>	// distance()
+#include <numeric>
+#include <random>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -398,9 +400,10 @@ public:
 		// next_permutation(start, stop) requires a Bidirectional iterator
 		bool success = std::next_permutation(B.row(2).begin(), B.row(2).end());
 
-		// random_shuffle(start, stop) requires a random iterator
-		std::random_shuffle(B.row(8).begin(), B.row(8).end());
-
+		// shuffle(start, stop) requires a random iterator
+		std::random_device rd;		// non-deterministic generator
+		std::mt19937 urng(rd());	// to seed mersenne twister
+		std::shuffle(B.row(8).begin(), B.row(8).end(), urng);
 	}
 };
 }	// namespace Sudoku_Test
