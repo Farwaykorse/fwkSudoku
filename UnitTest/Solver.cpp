@@ -31,25 +31,37 @@ public:
 			0,1, 4,0,	// 2,3	1	4	2,3
 			0,0, 0,0	// 2,3	4	1,2	1,2,
 		};
+		// Set single value
 		Board<Options<4>, 2> board;
 		Assert::IsTrue(board.at(5) == Options<4>{}, L"incorrect instantiation", LINE_INFO());
-		try { Solver<2>(board).setValue(v1.cbegin(), v1.cend()); }
+		try { Solver<2>(board).setValue(Location<2>(2), 3); }
+		catch (std::exception&) { Assert::Fail(L"setValue failed", LINE_INFO()); }
+		Assert::IsTrue(board[0][2] == 3, L"setValue failed to set the value", LINE_INFO());
+		Solver<2>(board).setValue(Location<2>(0), 4);
+		Solver<2>(board).setValue(Location<2>(15), 4);
+		Assert::IsTrue(board[3][3] == 4 && board[0][0] == 4, L"setValue failed to set extremes", LINE_INFO());
+		//Solver<2>(board).setValue(Location<2>(2), 4);
+		//Assert::IsTrue(board[0][2] == 4, L"setValue failed to overwrite", LINE_INFO());
+
+		// Copy data from vector
+		Board<Options<4>, 2> board1;
+		try { Solver<2>(board1).setValue(v1.cbegin(), v1.cend()); }
 		catch (std::exception&) { Assert::Fail(L"setValue failed in copying from vector", LINE_INFO()); }
 		Assert::IsTrue(
-			board[0][1] == 2 &&
-			board[1][0] == 4 &&
-			board[2][1] == 1 && board[2][2] == 4,
+			board1[0][1] == 2 &&
+			board1[1][0] == 4 &&
+			board1[2][1] == 1 && board1[2][2] == 4,
 			L"setValue() from vector didn't copy data", LINE_INFO()
 		);
 		Assert::IsTrue(
-			board[0][3] == 4 &&
-			board[3][1] == 4,
+			board1[0][3] == 4 &&
+			board1[3][1] == 4,
 			L"setValue() from vector didn't process single option cells", LINE_INFO()
 		);
 		Assert::IsTrue(
-			board[0][0] == 1 && board[0][2] == 3 &&
-			board[1][1] == 3 &&
-			board[3][1] == 4,
+			board1[0][0] == 1 && board1[0][2] == 3 &&
+			board1[1][1] == 3 &&
+			board1[3][1] == 4,
 			L"setValue() from vector didn't cascade over single option cells", LINE_INFO()
 		);
 	}
@@ -66,10 +78,13 @@ public:
 			0,0, 0,0	// 2,3	4	1,2	1,2,
 		};
 		Board<Options<4>, 2> B1;
+		Assert::IsTrue(B1.at(0) == Options<4>{} && B1.at(15) == Options<4>{}, L"incorrect instantiation", LINE_INFO());
 		Solver<2>(B1).setValue(v1.cbegin(), v1.cend());
 		const Board<Options<4>, 2> cB1{ B1 };	// copy to compare with
-												// single row
-		Solver<2>(B1).unique_section(B1.row(0).cbegin(), B1.row(0).cend());
+		Assert::IsTrue(B1.at(1) == 2 && B1.at(4) == 4 && B1.at(10) == 4, L"setup error", LINE_INFO());
+		Assert::IsTrue(B1 == cB1, L"copy error", LINE_INFO());
+		// single row
+		Solver<2>(B1).unique_in_section(B1.row(0).cbegin(), B1.row(0).cend());
 		Assert::IsTrue(B1 == cB1, L"row 0 was completely fixed by setValue", LINE_INFO());
 
 		static const std::vector<int> v2
@@ -84,20 +99,20 @@ public:
 		Solver<2>(B2).setValue(v2.cbegin(), v2.cend());
 		const Board<Options<4>, 2> cB2{ B2 };
 		// single row 0
-		Solver<2>(B2).unique_section(B2.row(0).cbegin(), B2.row(0).cend());
+		Solver<2>(B2).unique_in_section(B2.row(0).cbegin(), B2.row(0).cend());
 		Assert::IsTrue(B2 == cB2, L"row 0 was completely fixed by setValue", LINE_INFO());
 		// single row 1
-		Solver<2>(B2).unique_section(B2.row(1).cbegin(), B2.row(1).cend());
+		Solver<2>(B2).unique_in_section(B2.row(1).cbegin(), B2.row(1).cend());
 		Assert::IsTrue(B2 != cB2, L"row 1 should have changed", LINE_INFO());
 		// full board
 		try
 		{
 			for (int i = 0; i < B2.elem_size; ++i)
 			{
-				Solver<2>(B2).unique_section(B2.row(i).cbegin(), B2.row(i).cend());
+				Solver<2>(B2).unique_in_section(B2.row(i).cbegin(), B2.row(i).cend());
 			}
 		}
-		catch (std::exception&) { Assert::Fail(L"unique_section() threw an exception"); }
+		catch (std::exception&) { Assert::Fail(L"unique_in_section() threw an exception"); }
 		Assert::IsTrue(
 			B2[0][0] == 3 && B2[0][1] == 2 &&
 			B2[2][2] == 2,
@@ -155,7 +170,7 @@ public:
 		Solver<3>(options).setValue(b1.cbegin(), b1.cend());
 		for (int i = 0; i < options.elem_size; ++i)
 		{
-			Solver<3>(options).unique_section(options.row(i).cbegin(), options.row(i).cend());
+			Solver<3>(options).unique_in_section(options.row(i).cbegin(), options.row(i).cend());
 		}
 	}
 	TEST_METHOD(T4_block_exclusive)

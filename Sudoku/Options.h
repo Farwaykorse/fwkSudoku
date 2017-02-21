@@ -3,7 +3,8 @@
 *	Data object containing and managing available options.
 *	Template with element size.
 *
-*	set(0)	->	is_answer() = true ; is_answer(0) = false ; count() = 0;
+*	Note: the 0-bit is the inverse answer-bit. if [0]==0 the answer is set.
+*
 */
 #pragma once
 
@@ -35,32 +36,32 @@ public:
 	Options& clear() noexcept;			// remove all options
 	Options& reset() noexcept;			// set all options
 	Options& flip() noexcept;
-	bool remove(int value);			// remove single option, return if needed
-	//Options& remove(int value, ...); // TODO remove mentioned
+	bool remove(int value);				// remove single option, return if needed
+	//TODO Options& remove(int value, ...);	// remove mentioned
 	Options& add(int value);			// add single option
 	Options& set(int value);			// set to answer
 
 	constexpr size_t size() const noexcept;
 	size_t count() const noexcept;		// count available options
 	size_t count_all() const noexcept;	// count all options (incl answer)
-	int all() const noexcept;
-	bool test(int value) const;		// if an option, or answer
+	bool all() const noexcept;			// if all options available = all bits set
+	bool test(int value) const;			// if an option, or answer
 	bool is_answer() const noexcept;	// is set to answer
 	bool is_answer(int value) const;	// is set to answer value
 	bool is_option(int value) const;	// is an option
 	constexpr bool is_empty() const noexcept;
 
-	int answer() const noexcept;		// return answer or 0
+	int get_answer() const noexcept;	// return answer or 0 (use with is_answer())
 	std::vector<int> available() const;	// return available options
 
 	constexpr bool operator[](int value) const noexcept;
-	//auto operator[](int value) noexcept;	//ERROR crashes Clang compiler
+	//ERROR auto operator[](int value) noexcept;	//ERROR crashes Clang compiler
 
+	bool operator==(int) const;			// shorthand for is_answer(int)
 	bool operator==(const Options<E>&) const noexcept;
 	bool operator!=(const Options<E>&) const noexcept;
 	bool operator< (const Options<E>&) const noexcept;	//TODO allow sorting; usecase?
-	/// shorthand for is_answer(int)
-	bool operator==(int) const;
+
 	// combine available options
 	Options& operator+=(const Options&) noexcept;
 	Options operator+(const Options&) const noexcept;
@@ -72,7 +73,7 @@ public:
 	Options operator&(const Options&) const noexcept;
 
 private:
-	/// 0th bit is true IF not yet set as answer
+	// 0th bit is "need to solve": false if answer has been set = inverse of answer
 	std::bitset<E + 1> m_data{};
 
 	int read_next() const noexcept;
@@ -210,8 +211,9 @@ size_t Options<E>::count_all() const noexcept
 	return m_data.count();
 }
 
+// Test if all bits are set
 template<int E> inline
-int Options<E>::all() const noexcept
+bool Options<E>::all() const noexcept
 {
 	return m_data.all();
 }
@@ -227,9 +229,7 @@ inline bool Options<E>::test(int value) const
 template<int E> inline
 bool Options<E>::is_answer() const noexcept
 {
-	//NOTE	edge case: will return true on empty
-	// might be useful to support partial boards
-	return !(m_data[0]);
+	return !(m_data[0] || m_data.none());
 }
 
 /// check if set to answer value
@@ -247,15 +247,17 @@ bool Options<E>::is_option(int value) const
 	return (!is_answer() && test(value));
 }
 
+// Test if no options or answers available
 template<int E> inline
 constexpr bool Options<E>::is_empty() const noexcept
 {
 	return (m_data.none() || (m_data.count() == 1 && m_data[0] == true));
 }
 
-/// determine the anser value
+// determine the answer value, even if not marked
+// use with is_answer() to determine if flaged as anwer
 template<int E> inline
-int Options<E>::answer() const noexcept
+int Options<E>::get_answer() const noexcept
 {
 	//TODO	microbench simpler/faster way to read single value from m_data
 	//		constexpr? 
@@ -338,6 +340,7 @@ Options<E> Options<E>::operator+(const Options& other) const noexcept
 	return tmp += other;
 }
 
+// per element xor
 template<int E> inline
 Options<E>& Options<E>::operator^=(const Options& other) noexcept
 {

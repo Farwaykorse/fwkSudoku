@@ -5,8 +5,8 @@
 #include "Location.h"
 #include "Options.h"
 
-#include <cassert>
 #include <array>
+#include <cassert>
 #include <vector>
 
 namespace Sudoku
@@ -27,10 +27,12 @@ class Solver
 public:
 	Solver(Board&);
 
+	// Edit Board
 	void setValue(Location, int);
 	template<typename InItr_>
 	void setValue(InItr_ begin, InItr_ end);
 
+	int remove_option(Location, int value);
 	template<typename InItr_>
 	int remove_option_section(InItr_ begin, InItr_ end, Location ignore, int value);
 	template<typename InItr_>
@@ -38,8 +40,18 @@ public:
 	template<typename InItr_>
 	int remove_option_section(InItr_ begin, InItr_ end, const std::vector<Location>& ignore, const std::vector<int>& value);
 
+	// Solvers
+	int single_option(Location);
+	int single_option(Location, int value);
+	//TODO dual_option implementation
+	int dual_option(Location);
+
 	template<typename InItr_>
-	int unique_section(InItr_ begin, InItr_ end);
+	int unique_in_section(InItr_ begin, InItr_ end);
+	template<typename InItr_>
+	Options find_unique_in_section(InItr_ begin, InItr_ end);
+	template<typename InItr_>
+	auto set_uniques(InItr_ begin, InItr_ end, const Options& worker);
 
 	template<typename InItr_>
 	int section_exclusive(InItr_ begin, InItr_ end);
@@ -53,13 +65,6 @@ public:
 private:
 	Board& board_;
 
-	int remove_option(Location, int value);
-	int single_option(Location);
-	int single_option(Location, int value);
-	int dual_option(Location);
-
-	template<typename InItr_>
-	auto set_uniques(InItr_ begin, InItr_ end, const Options& worker);
 	template<typename InItr_>
 	int set_section_locals(InItr_ begin, InItr_ end, int rep_count, const Options& worker);
 	template<typename InItr_>
@@ -73,6 +78,9 @@ private:
 	template<typename InItr_>
 	int remove_option_outside_block(InItr_ begin, InItr_ end, Location block, int value);
 };
+
+
+
 
 template<int N> inline
 Solver<N>::Solver(Board& options) : board_(options)
@@ -92,7 +100,7 @@ void Solver<N>::setValue(const Location loc, const int value)
 	//single_option(loc, value);
 }
 
-///	set board_ using a transferable container of values
+//	set board_ using a transferable container of values
 template<int N>
 template<typename InItr_> inline
 void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
@@ -132,14 +140,14 @@ int Solver<N>::remove_option(const Location loc, const int value)
 template<int N> inline
 int Solver<N>::single_option(const Location loc)
 {
-	const int answer{ board_.at(loc).answer() };
+	const int answer{ board_.at(loc).get_answer() };
 	if (answer)
 	{
 		return single_option(loc, answer);
 	}
 	return 0;
 }
-	
+
 ///	Process answer from [loc], update board_ options
 template<int N> inline
 int Solver<N>::single_option(const Location loc, const int value)
@@ -194,7 +202,7 @@ int Solver<N>::dual_option(const Location loc)
 	return 0;
 }
 
-/// remove [value] in [loc] from other elements in section
+// remove [value] in [loc] from other elements in section
 template<int N>
 template<typename InItr_> inline
 int Solver<N>::remove_option_section(
@@ -216,7 +224,7 @@ int Solver<N>::remove_option_section(
 	return changes;
 }
 
-/// remove [value] from element if not [block]
+// remove [value] from element if not part of [block]
 template<int N>
 template<typename InItr_> inline
 int Solver<N>::remove_option_outside_block(
@@ -236,7 +244,7 @@ int Solver<N>::remove_option_outside_block(
 	return changes;
 }
 
-/// remove [value] from [section] if not part of [loc]s
+// remove [value] from [section] if not part of [loc]s
 template<int N>
 template<typename InItr_> inline
 int Solver<N>::remove_option_section(
@@ -258,7 +266,7 @@ int Solver<N>::remove_option_section(
 	return changes;
 }
 
-/// remove [value]s from [section] if not part of [loc]s
+// remove [value]s from [section] if not part of [loc]s
 template<int N>
 template<typename InItr_> inline
 int Solver<N>::remove_option_section(
@@ -284,9 +292,19 @@ int Solver<N>::remove_option_section(
 }
 
 
+// Solver: Find and process options appearing only once in a section (row/col/block)
 template<int N>
 template<typename InItr_> inline
-int Solver<N>::unique_section(const InItr_ begin, const InItr_ end)
+int Solver<N>::unique_in_section(const InItr_ begin, const InItr_ end)
+{
+	const auto& worker = find_unique_in_section(begin, end);
+	return set_uniques(begin, end, worker);
+}
+
+//	return a mask for values with a single appearance
+template<int N>
+template<typename InItr_> inline
+typename Solver<N>::Options Solver<N>::find_unique_in_section(const InItr_ begin, const InItr_ end)
 {
 	Options sum(0);		// helper all used
 	Options worker(0);	// multiple uses OR answer
@@ -302,12 +320,10 @@ int Solver<N>::unique_section(const InItr_ begin, const InItr_ end)
 			sum += *itr;
 		}
 	}
-	worker.flip();	// multiple uses -> single-use
-
-	// process uniques
-	return set_uniques(begin, end, worker);
+	return worker.flip();	// multiple uses -> single-use
 }
 
+//	process unique values in section
 template<int N>
 template<typename InItr_> inline
 auto Solver<N>::set_uniques(InItr_ begin, InItr_ end, const Options& worker)
@@ -333,6 +349,10 @@ auto Solver<N>::set_uniques(InItr_ begin, InItr_ end, const Options& worker)
 	}
 	return changes;
 }
+
+
+
+
 
 // value appearing 2x or 3x in row/col:
 //		IF all in same block -> remove from rest of block

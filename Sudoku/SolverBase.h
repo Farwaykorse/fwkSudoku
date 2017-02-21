@@ -117,7 +117,7 @@ Board<int, N> SolverBase<N>::getResult() const
 	{
 		if (options.at(i).is_answer())
 		{
-			result.at(i) = options.at(i).answer();
+			result.at(i) = options.at(i).get_answer();
 		}
 	}
 	return result;
@@ -174,9 +174,9 @@ void SolverBase<N>::solver_unique()
 		found = 0;
 		for (int i = 0; i < elem_size; ++i)
 		{
-			found += S.unique_section(options.row(i).cbegin(), options.row(i).cend());
-			found += S.unique_section(options.col(i).cbegin(), options.col(i).cend());
-			found += S.unique_section(options.block(i).cbegin(), options.block(i).cend());
+			found += S.unique_in_section(options.row(i).cbegin(), options.row(i).cend());
+			found += S.unique_in_section(options.col(i).cbegin(), options.col(i).cend());
+			found += S.unique_in_section(options.block(i).cbegin(), options.block(i).cend());
 			//found += S.block_exclusive(options.block(i).cbegin(), options.block(i).cend());
 		}
 	}
@@ -186,21 +186,21 @@ template<int N> inline
 int SolverBase<N>::unique_row(int i)
 {
 	Solver<N> S(options);
-	return S.unique_section(options.row(i).cbegin(), options.row(i).cend());
+	return S.unique_in_section(options.row(i).cbegin(), options.row(i).cend());
 }
 
 template<int N> inline
 int SolverBase<N>::unique_col(int i)
 {
 	Solver<N> S(options);
-	return S.unique_section(options.col(i).cbegin(), options.col(i).cend());
+	return S.unique_in_section(options.col(i).cbegin(), options.col(i).cend());
 }
 
 template<int N> inline
 int SolverBase<N>::unique_block(int i)
 {
 	Solver<N> S(options);
-	return S.unique_section(options.block(i).cbegin(), options.block(i).cend());
+	return S.unique_in_section(options.block(i).cbegin(), options.block(i).cend());
 }
 
 template<int N> inline
