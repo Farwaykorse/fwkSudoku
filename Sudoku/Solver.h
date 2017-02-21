@@ -332,7 +332,7 @@ auto Solver<N>::set_uniques(InItr_ begin, InItr_ end, const Options& worker)
 	int changes{ 0 };
 	if (count > 0)
 	{
-		for (size_t value{ 1 }; value < worker.size(); ++value)
+		for (int value{ 1 }; value < worker.size(); ++value)
 		{
 			if (worker.test(value))
 			{
@@ -464,7 +464,7 @@ int Solver<N>::set_block_locals(
 	assert(count > 0);		// should have been cought by caller
 
 	int changes{ 0 };
-	for (size_t value{ 1 }; value < worker.size(); ++value)
+	for (int value{ 1 }; value < worker.size(); ++value)
 	{
 		if (worker.test(value))
 		{
