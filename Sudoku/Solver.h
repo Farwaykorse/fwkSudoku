@@ -328,9 +328,8 @@ template<int N>
 template<typename InItr_> inline
 auto Solver<N>::set_uniques(InItr_ begin, InItr_ end, const Options& worker)
 {
-	const size_t count = worker.count_all();
 	int changes{ 0 };
-	if (count > 0)
+	if (worker.count_all() > 0)
 	{
 		for (int value{ 1 }; value < worker.size(); ++value)
 		{

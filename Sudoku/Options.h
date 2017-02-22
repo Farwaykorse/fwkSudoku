@@ -41,9 +41,9 @@ public:
 	Options& add(int value);			// add single option
 	Options& set(int value);			// set to answer
 
-	constexpr size_t size() const noexcept;
-	size_t count() const noexcept;		// count available options
-	size_t count_all() const noexcept;	// count all options (incl answer)
+	constexpr int size() const noexcept;
+	int count() const noexcept;			// count available options
+	int count_all() const noexcept;		// count all options (incl answer)
 	bool all() const noexcept;			// if all options available = all bits set
 	bool test(int value) const;			// if an option, or answer
 	bool is_answer() const noexcept;	// is set to answer
@@ -189,15 +189,15 @@ Options<E>& Options<E>::set(int value)
 }
 
 template<int E> inline
-constexpr size_t Options<E>::size() const noexcept
+constexpr int Options<E>::size() const noexcept
 {
-	return m_data.size();
+	return m_data.size();	// bits
 }
 
 /// available options
 /// if 1, a not processed answer
 template<int E> inline
-size_t Options<E>::count() const noexcept
+int Options<E>::count() const noexcept
 {
 	if (m_data[0]) { return m_data.count() - 1; }
 	return 0;
@@ -205,7 +205,7 @@ size_t Options<E>::count() const noexcept
 
 ///	(!) counts options, including set answers
 template<int E> inline
-size_t Options<E>::count_all() const noexcept
+int Options<E>::count_all() const noexcept
 {
 	if (m_data[0]) { return m_data.count() - 1; }
 	return m_data.count();
@@ -218,7 +218,7 @@ bool Options<E>::all() const noexcept
 	return m_data.all();
 }
 
-/// if an options, or the answer
+// if an option, or the answer
 template<int E>
 inline bool Options<E>::test(int value) const
 {
@@ -277,7 +277,7 @@ std::vector<int> Options<E>::available() const
 	if (!is_answer() && !is_empty())
 	{
 		int loc{ 0 };
-		for (size_t i = 0; i < count(); ++i)
+		for (int i = 0; i < count(); ++i)
 		{
 			loc = read_next(loc);
 			values.emplace_back(loc);
