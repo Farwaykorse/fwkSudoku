@@ -57,7 +57,7 @@ public:
 	constexpr bool operator[](int value) const noexcept;
 	//ERROR auto operator[](int value) noexcept;	//ERROR crashes Clang compiler
 
-	bool operator==(int) const;			// shorthand for is_answer(int)
+	bool operator==(int) const noexcept;// shorthand for is_answer(int)
 	bool operator==(const Options<E>&) const noexcept;
 	bool operator!=(const Options<E>&) const noexcept;
 	bool operator< (const Options<E>&) const noexcept;	//TODO allow sorting; usecase?
@@ -211,7 +211,7 @@ int Options<E>::count_all() const noexcept
 	return m_data.count();
 }
 
-// Test if all bits are set
+//_Test if all bits are set
 template<int E> inline
 bool Options<E>::all() const noexcept
 {
@@ -307,7 +307,7 @@ constexpr bool Options<E>::operator[](int value) const noexcept
 template<int E> inline
 bool Options<E>::operator==(const Options<E>& other) const noexcept
 {
-	//?? what about the 0th 'is answer' bit?
+	//?? operator== what about the 0th 'is answer' bit?
 	return m_data == other.m_data;
 }
 
@@ -318,7 +318,7 @@ bool Options<E>::operator!=(const Options<E>& other) const noexcept
 }
 
 template<int E> inline
-bool Options<E>::operator==(int value) const
+bool Options<E>::operator==(int value) const noexcept
 {
 	return is_answer(value);
 }
@@ -340,7 +340,7 @@ Options<E> Options<E>::operator+(const Options& other) const noexcept
 	return tmp += other;
 }
 
-// per element xor
+// Per element XOR, exclusive OR
 template<int E> inline
 Options<E>& Options<E>::operator^=(const Options& other) noexcept
 {
@@ -348,13 +348,14 @@ Options<E>& Options<E>::operator^=(const Options& other) noexcept
 	return *this;
 }
 
+// Retain only shared options
 template<int E> inline
 Options<E>& Options<E>::operator&=(const Options& other) noexcept
 {
 	m_data &= other.m_data;
 	return *this;
 }
-
+// Shared options
 template<int E> inline
 Options<E> Options<E>::operator&(const Options& other) const noexcept
 {
