@@ -5,6 +5,7 @@
 
 #include "SolverBase.h"
 
+#include <algorithm>	// min
 #include <iostream>
 #include <chrono>
 
@@ -42,17 +43,40 @@ int main()
 
 	// working object:
 	Sudoku::SolverBase<3> other;
-	// setup: generate options & find single options
-	Sudoku::SolverBase<3> first(start);	//ERROR core-guidelines
-	// find uniques (should solve this board)
-	auto t0 = std::chrono::steady_clock::now();
-	first.solver_unique();
-	auto t1 = std::chrono::steady_clock::now();
 
-	std::cout << std::chrono::nanoseconds{ t1 - t0 }.count() << "ns\n";
-	Sudoku::Board<int, 3> result = first.getResult();
+	const size_t repeat{ 1000 };
+	Sudoku::SolverBase<3> test_board{};
+	using time = std::chrono::time_point<std::chrono::steady_clock>;
+	using duration = std::chrono::duration<long long, std::nano>;
+	time t0{};
+	time t1{};
+	time t2{};
+	duration tLoad{ duration::max() };
+	duration tSolver{ duration::max() };
+	duration tTotal{ duration::max() };
+
+	// find uniques (should solve this board)
+	for (size_t i{}; i < repeat; ++i)
+	{
+		t0 = std::chrono::steady_clock::now();
+		test_board = start;
+		t1 = std::chrono::steady_clock::now();
+		test_board.solver_unique();
+		t2 = std::chrono::steady_clock::now();
+
+		tLoad = std::min(tLoad, t1 - t0);
+		tTotal = std::min(tTotal, t2 - t0);
+		tSolver = std::min(tSolver, tTotal - tLoad);
+	}
+
+	auto time_in_microsec = [](duration t_in)
+	{
+		return std::chrono::duration_cast<std::chrono::microseconds>(t_in).count();
+	};
+	std::cout << "Load:\t" << time_in_microsec(tLoad) << " us\n";
+	std::cout << "Solve:\t" << time_in_microsec(tSolver) << " us\n";
+	std::cout << "Total:\t" << time_in_microsec(tTotal) << " us\n";
+	Sudoku::Board<int, 3> result = test_board.getResult();
 	if (result == answer) { std::cout << " : ) Found the answer!\n"; }
 	else { std::cout << ":{ bugs ...\n"; }
-
-	return 0;
 }
