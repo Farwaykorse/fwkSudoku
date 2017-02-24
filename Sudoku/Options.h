@@ -41,7 +41,7 @@ public:
 	Options& add(int value);			// add single option
 	Options& set(int value);			// set to answer
 
-	constexpr int size() const noexcept;
+	constexpr size_t size() const noexcept;
 	int count() const noexcept;			// count available options
 	int count_all() const noexcept;		// count all options (incl answer)
 	bool all() const noexcept;			// if all options available = all bits set
@@ -49,9 +49,9 @@ public:
 	bool is_answer() const noexcept;	// is set to answer
 	bool is_answer(int value) const;	// is set to answer value
 	bool is_option(int value) const;	// is an option
-	constexpr bool is_empty() const noexcept;
+	bool is_empty() const noexcept;
 
-	int get_answer() const noexcept;	// return answer or 0 (use with is_answer())
+	int get_answer() const noexcept;	// return answer or 0 (won't confirm is_answer())
 	std::vector<int> available() const;	// return available options
 
 	constexpr bool operator[](int value) const noexcept;
@@ -66,15 +66,15 @@ public:
 	Options& operator+=(const Options&) noexcept;
 	Options operator+(const Options&) const noexcept;
 	// xor
-	Options& operator^=(const Options&) noexcept;
+	Options& operator^=(const Options&) noexcept;		//?? unclear replace with XOR(a) and XOR(a,b)?
 	// return difference
 	Options operator-(const Options&) const noexcept;	//TODO difference; usecase?
 	// return shared options
-	Options operator&(const Options&) const noexcept;
+	Options operator&(const Options&) const noexcept;	//?? unclear? add shared(a,b)?
 
 private:
 	// 0th bit is "need to solve": false if answer has been set = inverse of answer
-	std::bitset<E + 1> m_data{};
+	std::bitset<E + 1> data_{};
 
 	int read_next() const noexcept;
 	int read_next(int) const noexcept;
@@ -85,19 +85,19 @@ private:
 template<int E>
 Options<E>::Options() noexcept
 {
-	m_data.set(); // all true
+	data_.set(); // all true
 }
 
 template<int E> inline
 Options<E>::Options(const std::bitset<E + 1>& other) :
-	m_data(other)
+	data_(other)
 {
 	// empty constructor
 }
 
 template<int E>
 inline Options<E>::Options(std::bitset<E + 1>&& other) :
-	m_data{ other }
+	data_{ other }
 {
 	// empty constructor
 }
@@ -128,7 +128,7 @@ template<int E> inline
 Options<E>& Options<E>::operator=(std::bitset<E + 1>&& other) noexcept
 {
 	//TEST not triggered
-	std::swap(m_data, other);
+	std::swap(data_, other);
 	return *this;
 }
 
@@ -136,7 +136,7 @@ Options<E>& Options<E>::operator=(std::bitset<E + 1>&& other) noexcept
 template<int E> inline
 Options<E>& Options<E>::clear() noexcept
 {
-	m_data.reset(); // all false
+	data_.reset(); // all false
 	return *this;
 }
 
@@ -144,7 +144,7 @@ Options<E>& Options<E>::clear() noexcept
 template<int E> inline
 Options<E>& Options<E>::reset() noexcept
 {
-	m_data.set(); // all true
+	data_.set(); // all true
 	return *this;
 }
 
@@ -152,9 +152,9 @@ template<int E> inline
 Options<E>& Options<E>::flip() noexcept
 {
 	// retain answer flag value
-	if (m_data[0]) { m_data.flip(0); }
+	if (data_[0]) { data_.flip(0); }
 
-	m_data.flip();
+	data_.flip();
 	return *this;
 }
 
@@ -162,10 +162,10 @@ Options<E>& Options<E>::flip() noexcept
 template<int E> inline
 bool Options<E>::remove(int value)
 {
-	if (m_data[value])
+	if (data_[value])
 	{
 		assert(!is_answer());	// don't apply on answers
-		m_data.reset(value);
+		data_.reset(value);
 		return true;
 	}
 	return false;
@@ -175,7 +175,7 @@ bool Options<E>::remove(int value)
 template<int E> inline
 Options<E>& Options<E>::add(int value)
 {
-	m_data.set(value, true);
+	data_.set(value, true);
 	return *this;
 }
 
@@ -189,9 +189,9 @@ Options<E>& Options<E>::set(int value)
 }
 
 template<int E> inline
-constexpr int Options<E>::size() const noexcept
+constexpr size_t Options<E>::size() const noexcept
 {
-	return m_data.size();	// bits
+	return data_.size();	// bits
 }
 
 /// available options
@@ -199,7 +199,7 @@ constexpr int Options<E>::size() const noexcept
 template<int E> inline
 int Options<E>::count() const noexcept
 {
-	if (m_data[0]) { return m_data.count() - 1; }
+	if (data_[0]) { return data_.count() - 1; }
 	return 0;
 }
 
@@ -207,29 +207,29 @@ int Options<E>::count() const noexcept
 template<int E> inline
 int Options<E>::count_all() const noexcept
 {
-	if (m_data[0]) { return m_data.count() - 1; }
-	return m_data.count();
+	if (data_[0]) { return data_.count() - 1; }
+	return data_.count();
 }
 
 //_Test if all bits are set
 template<int E> inline
 bool Options<E>::all() const noexcept
 {
-	return m_data.all();
+	return data_.all();
 }
 
 // if an option, or the answer
 template<int E>
 inline bool Options<E>::test(int value) const
 {
-	return m_data.test(value);
+	return data_.test(value);
 }
 
 /// check if set to answer
 template<int E> inline
 bool Options<E>::is_answer() const noexcept
 {
-	return !(m_data[0] || m_data.none());
+	return !(data_[0] || data_.none());
 }
 
 /// check if set to answer value
@@ -249,9 +249,9 @@ bool Options<E>::is_option(int value) const
 
 // Test if no options or answers available
 template<int E> inline
-constexpr bool Options<E>::is_empty() const noexcept
+bool Options<E>::is_empty() const noexcept
 {
-	return (m_data.none() || (m_data.count() == 1 && m_data[0] == true));
+	return (data_.none() || (data_.count() == 1 && data_[0] == true));
 }
 
 // determine the answer value, even if not marked
@@ -259,7 +259,7 @@ constexpr bool Options<E>::is_empty() const noexcept
 template<int E> inline
 int Options<E>::get_answer() const noexcept
 {
-	//TODO	microbench simpler/faster way to read single value from m_data
+	//TODO	microbench simpler/faster way to read single value from data_
 	//		constexpr? 
 	//		bit operations?
 	if (is_answer() || count() == 1)
@@ -292,7 +292,7 @@ constexpr bool Options<E>::operator[](int value) const noexcept
 {
 	//?? static_assert(std::is_unsigned<int>(), "use unsigned to prevent undefined behaviour");
 	assert(value <= E);
-	return m_data[value];
+	return data_[value];
 }
 
 ///// no-check access
@@ -301,14 +301,14 @@ constexpr bool Options<E>::operator[](int value) const noexcept
 //{
 //	static_assert(std::is_unsigned<int>(), "use unsigned to prevent undefined behaviour");
 //	assert(value <= E);
-//	return m_data[value];
+//	return data_[value];
 //}
 
 template<int E> inline
 bool Options<E>::operator==(const Options<E>& other) const noexcept
 {
 	//?? operator== what about the 0th 'is answer' bit?
-	return m_data == other.m_data;
+	return data_ == other.data_;
 }
 
 template<int E> inline
@@ -329,7 +329,7 @@ Options<E>& Options<E>::operator+=(const Options& other) noexcept
 {
 	if (!other.is_answer())
 	{
-		m_data |= (other.m_data);
+		data_ |= (other.data_);
 	}
 	return *this;
 }
@@ -344,7 +344,7 @@ Options<E> Options<E>::operator+(const Options& other) const noexcept
 template<int E> inline
 Options<E>& Options<E>::operator^=(const Options& other) noexcept
 {
-	m_data ^= other.m_data;
+	data_ ^= other.data_;
 	return *this;
 }
 
@@ -352,7 +352,7 @@ Options<E>& Options<E>::operator^=(const Options& other) noexcept
 template<int E> inline
 Options<E>& Options<E>::operator&=(const Options& other) noexcept
 {
-	m_data &= other.m_data;
+	data_ &= other.data_;
 	return *this;
 }
 // Shared options
@@ -377,7 +377,7 @@ int Options<E>::read_next(int start) const noexcept
 	++start;
 	for (int i = start; i <= E; ++i)
 	{
-		if (m_data[i]) { return i; }
+		if (data_[i]) { return i; }
 	}
 	return 0;
 }
