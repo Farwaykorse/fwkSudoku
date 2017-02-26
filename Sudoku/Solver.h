@@ -549,10 +549,9 @@ auto Solver<N>::appearance_sets(const InItr_ begin, const InItr_ end) const
 	}
 	assert(worker[0].is_empty());	// fails if not all options exist
 	//	xor -> worker[n] options appearing n times
-	//TODO xor isn't a natural interface, is it really more efficiënt?
 	for (int i{ N }; i > 1; --i)
 	{
-		worker[i] ^= worker[i - 1];
+		worker[i].XOR(worker[i - 1]);
 	}
 	return worker;
 }

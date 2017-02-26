@@ -250,11 +250,12 @@ public:
 
 		///// non-const operators /////
 		//TEST constexpr bool operator[](int)
-		//Options& operator^=(Options&)			XOR
-		static_assert(noexcept(TMP.operator^=(O_3)), "operator^= should be noexcept");
+		//Options& XOR(Options&)			XOR
+		static_assert(noexcept(TMP.XOR(O_3)), "XOR() should be noexcept");
 		TMP = E_3;
-		Assert::IsTrue((TMP ^= A_2) == O_3, L"operation^= failed", LINE_INFO());
-		Assert::IsTrue((TMP ^= A_2) == E_3, L"operation^= failed", LINE_INFO());
+		Assert::IsTrue(TMP.XOR(A_2) == O_3, L"XOR() failed", LINE_INFO());
+		Assert::IsTrue(XOR(E_3, A_2) == O_3, L"XOR(A,B) failed", LINE_INFO());
+		Assert::IsTrue((TMP.XOR(A_2)) == E_3, L"XOR() failed", LINE_INFO());
 		//Options& operator+=(Options&)			combine options
 		static_assert(noexcept(TMP += O_2), "operator+= should be noexcept");
 		TMP = E_2;

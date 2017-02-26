@@ -66,7 +66,7 @@ public:
 	Options& operator+=(const Options&) noexcept;
 	Options operator+(const Options&) const noexcept;
 	// xor
-	Options& operator^=(const Options&) noexcept;		//?? unclear replace with XOR(a) and XOR(a,b)?
+	Options& XOR(const Options&) noexcept;
 	// return difference
 	Options operator-(const Options&) const noexcept;	//TODO difference; usecase?
 	// return shared options
@@ -342,10 +342,17 @@ Options<E> Options<E>::operator+(const Options& other) const noexcept
 
 // Per element XOR, exclusive OR
 template<int E> inline
-Options<E>& Options<E>::operator^=(const Options& other) noexcept
+Options<E>& Options<E>::XOR(const Options& other) noexcept
 {
 	data_ ^= other.data_;
 	return *this;
+}
+
+template<int E> inline
+Options<E> XOR(const Options<E>& A, const Options<E>& B) noexcept
+{
+	Options<E> tmp{ A };
+	return tmp.XOR(B);
 }
 
 // Retain only shared options
