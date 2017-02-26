@@ -1,28 +1,12 @@
-// Determine location within a board
-
+// Calculate locations within a board
 #pragma once
 #include <cassert>
+#include <limits>
 
 namespace Sudoku
 {
 template<int N>
-class Block_Loc
-{
-	static_assert(N > 1, "Location.h (Block_Loc): base_size value too small");
-
-	static constexpr int base_size = N;
-	static constexpr int block_elem(int row, int col)
-	{
-		assert(row < base_size && col < base_size);
-		return row * base_size + col;
-	}
-public:
-	constexpr Block_Loc(int id, int elem) : id(id), elem(elem) {}
-	constexpr Block_Loc(int id, int row, int col) : id(id), elem(block_elem(row, col)) {}
-	
-	const int id{};
-	const int elem{};
-};
+class Block_Loc;	// pre-declare for use in Location
 
 template<int N>
 class Location
@@ -30,26 +14,15 @@ class Location
 	static_assert(N > 1, "Location.h: base_size value too small");
 
 	using Block_Loc = Block_Loc<N>;
-
-	static constexpr int location(int row, int col) { return row * elem_size + col; }
-	static constexpr int block_loc(int id, int elem)
-	{
-		return location((id / base_size) * base_size + elem / base_size,
-			(id % base_size) * base_size + elem % base_size);
-	}
-	static constexpr int block_loc(Block_Loc B) { return block_loc(B.id, B.elem); }
-
-public:
 	using self_type = Location;
 	using value_type = int;
 	using difference_type = int;
 
-	// constructors
-	constexpr Location() : id_(0) {}
-	explicit constexpr Location(int elem) : id_(elem) {}
-	constexpr Location(int row, int col) : id_(location(row, col)) {}
-	constexpr Location(Block_Loc block) : id_(block_loc(block)) {}
-
+	static constexpr int location(int row, int col) noexcept
+	{
+		return row * elem_size + col;
+	}
+public:
 	// size definition
 	static constexpr int base_size = N;						// 3 for default 9*9 board
 	static constexpr int elem_size = base_size * base_size;	// 9 for default
@@ -58,6 +31,17 @@ public:
 		base_size < elem_size && base_size < full_size && elem_size < full_size,
 		"class Location: Board size out of bounds"
 	);
+	static_assert(
+		N < std::numeric_limits<int>::max() / base_size &&
+		N < std::numeric_limits<int>::max() / elem_size &&
+		N < std::numeric_limits<int>::max() / elem_size / base_size,
+		"class Location: Board size to big for size system integer");
+
+	// constructors
+	constexpr Location() : id_(0) {}
+	Location& operator=(const Location&);
+	explicit constexpr Location(int elem) : id_(elem) {}
+	constexpr Location(int row, int col) : id_(location(row, col)) {}
 
 	// information
 	constexpr int element() const { return id_; }			// default [0,81)
@@ -72,8 +56,43 @@ public:
 	bool operator==(const self_type& other) const { return id_ == other.id_; }
 	bool operator<(const self_type& other) const { return id_ < other.id_; }
 
-	// change
-	//NOTE functional programming won't allow changing, it would create a new object
+private:
+	const int id_;
+};
+
+template<int N>
+class Block_Loc
+{
+	static_assert(N > 1, "Location.h (Block_Loc): base_size value too small");
+
+	using Location = Location<N>;
+	using self_type = Location;
+	static constexpr auto base_size = Location().base_size;
+	static constexpr auto elem_size = Location().elem_size;
+	static constexpr auto full_size = Location().full_size;
+
+	static constexpr int location(int row, int col) { return row * elem_size + col; }
+	static constexpr int block_elem(int row, int col) { return row * base_size + col; }
+	static constexpr int block_loc(int id, int elem)
+	{
+		return location((id / base_size) * base_size + elem / base_size,
+			(id % base_size) * base_size + elem % base_size);
+	}
+	static constexpr int block_loc(int id, int row, int col)
+	{
+		return block_loc(id, block_elem(row, col));
+	}
+public:
+	constexpr Block_Loc(Location loc) : id_(loc.element()) {}
+	constexpr Block_Loc(int id, int elem) : id_(block_loc(id, elem)) {}
+	constexpr Block_Loc(int id, int row, int col) : id_(block_loc(id, row, col)) {}
+
+	constexpr int id() const { return Location(id_).block(); }
+	constexpr int element() const { return Location(id_).block_elem(); }
+	constexpr int row() const { return Location(id_).block_row(); }
+	constexpr int col() const { return Location(id_).block_row(); }
+
+	constexpr operator Location() { return Location(id_); }
 private:
 	const int id_;
 };
