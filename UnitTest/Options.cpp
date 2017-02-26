@@ -22,10 +22,10 @@ public:
 		static_assert(std::is_class<Options<9>>(), "should be a class, hiding datarepresentation");
 		static_assert(!std::is_empty<Options<9>>(), "memberdata missing");
 		static_assert(std::is_standard_layout<Options<9>>(), "should have standard layout");
-		//C++17 static_assert(std::has_unique_object_representations<Options<9>>(), "");
-		static_assert(std::is_trivially_copyable<Options<9>>(), "should be trivially copyable");
+		//static_assert(std::has_unique_object_representations<Options<9>>(), "");	//C++17
+		static_assert(std::is_trivially_copyable<Options<9>>(), "should be trivialy copyable");
 		static_assert(std::is_default_constructible<Options<9>>(), "default constructor");
-		//static_assert(std::is_trivially_default_constructible<Options<9>>(), "not using the default constructor");
+		static_assert(!std::is_trivially_default_constructible<Options<9>>(), "not using the default constructor");
 		static_assert(std::is_nothrow_default_constructible<Options<9>>(), "notrow default constructor");
 		static_assert(std::is_copy_constructible<Options<9>>(), "copy constructor");
 		static_assert(std::is_trivially_copy_constructible<Options<9>>(), "trivially copy constructor");
@@ -44,19 +44,18 @@ public:
 		static_assert(std::is_nothrow_destructible<Options<9>>(), "nothrow destructable");
 		static_assert(std::is_swappable<Options<9>>(), "swappable");			//C++17
 		static_assert(std::is_nothrow_swappable<Options<9>>(), "swappable");	//C++17 
-		//C++17 static_assert(std::is_swappable_with<Options<9>, std::bitset<10>>(), "");
-		//C++17 static_assert(std::is_nothrow_swappable_with<Options<9>, std::bitset<10>>(), "");
+		static_assert(! std::is_swappable_with<Options<9>, std::bitset<10>>(), "");	//C++17
+		static_assert(! std::is_nothrow_swappable_with<Options<9>, std::bitset<10>>(), "");	//C++17
 
 		// type construction
 		static_assert(std::is_constructible<Options<3>, const std::bitset<4>&>(), "construct from const std::bitset&");
 		static_assert(!std::is_constructible<Options<3>, const std::bitset<3>&>(), "shouldn't accept non matching dimensions_1");
-		static_assert(!std::is_constructible<Options<3>, const std::bitset<2>&>(), "shouldn't accept non matching dimensions_2");
 		static_assert(std::is_assignable<Options<3>, std::bitset<4>>(), "assign from std::bitset");
-		static_assert(!std::is_assignable<Options<3>, std::bitset<3>>(), "shouldn't accept non matching dimensions_3");
-		static_assert(!std::is_assignable<Options<3>, std::bitset<2>>(), "shouldn't accept non matching dimensions_4");
+		static_assert(!std::is_assignable<Options<3>, std::bitset<3>>(), "shouldn't accept non matching dimensions_2");
 		static_assert(std::is_constructible<Options<3>, int>(), "construct from int");
 		static_assert(std::is_constructible<Options<3>, unsigned int>(), "construct from unsigned int");
 		static_assert(std::is_assignable<Options<3>, int>(), "assign from int");
+		static_assert(std::is_assignable<Options<3>, unsigned int>(), "assign from int");
 
 		Sudoku::Options<9> two{};
 		Sudoku::Options<4> O_3{std::bitset<5>()};
@@ -254,7 +253,6 @@ public:
 		static_assert(noexcept(TMP.XOR(O_3)), "XOR() should be noexcept");
 		TMP = E_3;
 		Assert::IsTrue(TMP.XOR(A_2) == O_3, L"XOR() failed", LINE_INFO());
-		Assert::IsTrue(XOR(E_3, A_2) == O_3, L"XOR(A,B) failed", LINE_INFO());
 		Assert::IsTrue((TMP.XOR(A_2)) == E_3, L"XOR() failed", LINE_INFO());
 		//Options& operator+=(Options&)			combine options
 		static_assert(noexcept(TMP += O_2), "operator+= should be noexcept");
@@ -286,6 +284,28 @@ public:
 		static_assert(noexcept(TMP.operator=(std::bitset<5>())), "operator= should be noexcept_2");
 		Sudoku::Options<4> O_6 = std::bitset<5>{};	// "00000"
 		Assert::IsTrue(O_6 == E_2, L"copy-assign failed", LINE_INFO());
+	}
+	TEST_METHOD(T4_external)
+	{
+		const Sudoku::Options<4> O_1{};								// all options
+		const Sudoku::Options<4> O_2{ std::bitset<5>{"11111"} };	// all options
+		const Sudoku::Options<4> O_3{ std::bitset<5>{"00101"} };	// single option 2
+		const Sudoku::Options<4> E_1{ 0 };							// empty answer "00001"
+		const Sudoku::Options<4> E_2{ std::bitset<5>{"00000"} };	// empty
+		const Sudoku::Options<4> E_3{ std::bitset<5>{"00001"} };	// empty option
+		const Sudoku::Options<4> A_1{ 1 };							// answer 1
+		const Sudoku::Options<4> A_2{ std::bitset<5>{"00100"} };	// answer 2
+		//XOR(a,b)
+		static_assert(noexcept(XOR(O_3, O_3)), "XOR() should be noexcept");
+		Assert::IsTrue(XOR(E_3, A_2) == O_3, L"XOR(A,B) failed", LINE_INFO());
+		Assert::IsTrue(XOR(XOR(E_3, A_2),A_2) == E_3, L"XOR(A,B) failed_2", LINE_INFO());
+		//shared(a,b)
+		static_assert(noexcept(shared(O_1, O_2), "share(a,b) should be noexcept"));
+		Assert::IsTrue(shared(O_2, O_3) == O_3, L"shared(a,b) failed_1", LINE_INFO());
+		Assert::IsTrue(shared(O_1, O_2) == O_1, L"shared(a,b) failed_2", LINE_INFO());
+		Assert::IsTrue(shared(O_2, E_2) == E_2, L"shared(a,b) failed_3", LINE_INFO());
+		Assert::IsTrue(shared(O_3, A_2) == A_2, L"shared(a,b) failed_4", LINE_INFO());
+		Assert::IsTrue(shared(E_3, A_2) == E_2, L"shared(a,b) failed_5", LINE_INFO());
 	}
 };
 }	//namespace Sudoku_Test

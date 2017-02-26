@@ -70,7 +70,7 @@ public:
 	// return difference
 	Options operator-(const Options&) const noexcept;	//TODO difference; usecase?
 	// return shared options
-	Options operator&(const Options&) const noexcept;	//?? unclear? add shared(a,b)?
+	Options operator&(const Options&) const noexcept;
 
 private:
 	// 0th bit is "need to solve": false if answer has been set = inverse of answer
@@ -247,7 +247,7 @@ bool Options<E>::is_option(int value) const
 	return (!is_answer() && test(value));
 }
 
-// Test if no options or answers available
+//_Test if no options or answers available
 template<int E> inline
 bool Options<E>::is_empty() const noexcept
 {
@@ -290,7 +290,6 @@ std::vector<int> Options<E>::available() const
 template<int E> inline
 constexpr bool Options<E>::operator[](int value) const noexcept
 {
-	//?? static_assert(std::is_unsigned<int>(), "use unsigned to prevent undefined behaviour");
 	assert(value <= E);
 	return data_[value];
 }
@@ -348,13 +347,6 @@ Options<E>& Options<E>::XOR(const Options& other) noexcept
 	return *this;
 }
 
-template<int E> inline
-Options<E> XOR(const Options<E>& A, const Options<E>& B) noexcept
-{
-	Options<E> tmp{ A };
-	return tmp.XOR(B);
-}
-
 // Retain only shared options
 template<int E> inline
 Options<E>& Options<E>::operator&=(const Options& other) noexcept
@@ -388,4 +380,26 @@ int Options<E>::read_next(int start) const noexcept
 	}
 	return 0;
 }
+
+//////////////////////////////
+///// external functions /////
+//////////////////////////////
+
+// Exclusive OR
+template<int E> inline
+Options<E> XOR(const Options<E>& A, const Options<E>& B) noexcept
+{
+	Options<E> tmp{ A };
+	return tmp.XOR(B);
+}
+
+// Shared options
+template<int E> inline
+Options<E> shared(const Options<E>& A, const Options<E>& B) noexcept
+{
+	return A & B;
+}
+
+
+
 }	// namespace Sudoku
