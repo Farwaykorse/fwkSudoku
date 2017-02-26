@@ -41,7 +41,7 @@ public:
 	Options& add(int value);			// add single option
 	Options& set(int value);			// set to answer
 
-	constexpr size_t size() const noexcept;
+	constexpr int size() const noexcept;
 	int count() const noexcept;			// count available options
 	int count_all() const noexcept;		// count all options (incl answer)
 	bool all() const noexcept;			// if all options available = all bits set
@@ -162,10 +162,10 @@ Options<E>& Options<E>::flip() noexcept
 template<int E> inline
 bool Options<E>::remove(int value)
 {
-	if (data_[value])
+	if (data_[static_cast<size_t>(value)])
 	{
 		assert(!is_answer());	// don't apply on answers
-		data_.reset(value);
+		data_.reset(static_cast<size_t>(value));
 		return true;
 	}
 	return false;
@@ -175,7 +175,7 @@ bool Options<E>::remove(int value)
 template<int E> inline
 Options<E>& Options<E>::add(int value)
 {
-	data_.set(value, true);
+	data_.set(static_cast<size_t>(value), true);
 	return *this;
 }
 
@@ -189,9 +189,9 @@ Options<E>& Options<E>::set(int value)
 }
 
 template<int E> inline
-constexpr size_t Options<E>::size() const noexcept
+constexpr int Options<E>::size() const noexcept
 {
-	return data_.size();	// bits
+	return static_cast<int>(data_.size());	// bits
 }
 
 /// available options
@@ -199,7 +199,7 @@ constexpr size_t Options<E>::size() const noexcept
 template<int E> inline
 int Options<E>::count() const noexcept
 {
-	if (data_[0]) { return data_.count() - 1; }
+	if (data_[0]) { return static_cast<int>(data_.count()) - 1; }
 	return 0;
 }
 
@@ -207,8 +207,8 @@ int Options<E>::count() const noexcept
 template<int E> inline
 int Options<E>::count_all() const noexcept
 {
-	if (data_[0]) { return data_.count() - 1; }
-	return data_.count();
+	if (data_[0]) { return static_cast<int>(data_.count()) - 1; }
+	return static_cast<int>(data_.count());
 }
 
 //_Test if all bits are set
@@ -222,7 +222,7 @@ bool Options<E>::all() const noexcept
 template<int E>
 inline bool Options<E>::test(int value) const
 {
-	return data_.test(value);
+	return data_.test(static_cast<size_t>(value));
 }
 
 /// check if set to answer
@@ -377,7 +377,7 @@ int Options<E>::read_next(int start) const noexcept
 	++start;
 	for (int i = start; i <= E; ++i)
 	{
-		if (data_[i]) { return i; }
+		if (data_[static_cast<size_t>(i)]) { return i; }
 	}
 	return 0;
 }

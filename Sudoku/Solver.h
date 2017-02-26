@@ -14,11 +14,10 @@ namespace Sudoku
 template<int N>
 class Solver
 {
-	static const int base_size{ N };
-	static const int elem_size{ N*N };
-	static const int full_size{ elem_size * elem_size };
-
 	using Location	= Location<N>;
+	static constexpr int base_size = Location().base_size;	// default 3
+	static constexpr int elem_size = Location().elem_size; // default 9
+	static constexpr int full_size = Location().full_size; // default 81
 	using Options	= Options<elem_size>;
 	using Board		= Sudoku::Board<Options, base_size>;
 	using Row		= typename Board::Row;
@@ -335,7 +334,7 @@ auto Solver<N>::set_uniques(InItr_ begin, InItr_ end, const Options& worker)
 		{
 			if (worker.test(value))
 			{
-				auto itr = std::find_if(
+				const auto itr = std::find_if(
 					begin, end,
 					[value](Options O) { return O.is_option(value); }
 				);

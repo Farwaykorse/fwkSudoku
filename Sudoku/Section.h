@@ -24,9 +24,9 @@ public:
 
 	using Location = Location<N>;
 
-	static const int base_size = Location().base_size;	// default 3
-	static const int elem_size = Location().elem_size;	// default 9
-	static const int full_size = Location().full_size;	// default 81
+	static constexpr int base_size = Location().base_size;	// default 3
+	static constexpr int elem_size = Location().elem_size;	// default 9
+	static constexpr int full_size = Location().full_size;	// default 81
 
 	class iterator;
 	class const_iterator;
