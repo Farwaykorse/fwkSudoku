@@ -57,7 +57,7 @@ public:
 	bool is_empty() const;	// all elements default value or empty()
 	//TODO empty() for different value types
 	//{
-	//	for (auto& s : board)
+	//	for (auto& s : board_)
 	//	{
 	//		if ( !s.empty() ) { return false; }
 	//	}
@@ -143,7 +143,7 @@ public:
 	Block block(Location loc) { return Block(this, loc.block()); }
 
 private:
-	std::vector<T> board{};
+	std::vector<T> board_{};
 
 	constexpr void valid_dimensions() const;
 	constexpr bool valid_size(const int elem) const;
@@ -182,14 +182,14 @@ constexpr bool Board<T, N>::valid_size(const int row, const int col) const
 
 template<typename T, int N>
 Board<T, N>::Board() :
-	board(full_size)
+	board_(full_size)
 {
 	valid_dimensions();
 }
 
 template<typename T, int N>
 Board<T, N>::Board(const T& def_value) :
-	board(full_size, def_value)
+	board_(full_size, def_value)
 {
 	valid_dimensions();
 }
@@ -198,14 +198,14 @@ Board<T, N>::Board(const T& def_value) :
 template<typename T, int N>
 inline Board<T, N>& Board<T, N>::operator=(const Board<T, N>& source)
 {
-	std::copy(source.board.cbegin(), source.board.cend(), board.begin());
+	std::copy(source.board_.cbegin(), source.board_.cend(), board_.begin());
 	return *this;
 }
 
 template<typename T, int N>
 inline bool Board<T, N>::operator==(const Board& other) const
 {
-	return board == other.board;
+	return board_ == other.board_;
 }
 
 template<typename T, int N>
@@ -247,7 +247,7 @@ inline T& Board<T, N>::at(const int elem)
 	{
 		throw std::out_of_range{ "Board::at(int)" };
 	}
-	return board.at(elem);
+	return board_.at(static_cast<size_t>(elem));
 }
 
 template<typename T, int N>
@@ -257,51 +257,51 @@ inline const T& Board<T, N>::at(const int elem) const
 	{
 		throw std::out_of_range{ "Board::at(int) const" };
 	}
-	return board.at(elem);
+	return board_.at(static_cast<size_t>(elem));
 }
 
 template<typename T, int N>
 inline T& Board<T, N>::operator[](Location loc)
 {
-	return board[loc.element()];
+	return board_[loc.element()];
 }
 
 template<typename T, int N>
 inline const T& Board<T, N>::operator[](Location loc) const
 {
-	return board[loc.element()];
+	return board_[loc.element()];
 }
 
 template<typename T, int N>
 inline void Board<T, N>::clear()
 {
 	/* all elements to the empty value */
-	board.clear();
-	board.resize(full_size);
+	board_.clear();
+	board_.resize(full_size);
 }
 
 template<typename T, int N>
 inline typename Board<T, N>::iterator Board<T, N>::begin()
 {
-	return board.begin();
+	return board_.begin();
 }
 
 template<typename T, int N>
 inline typename Board<T, N>::const_iterator Board<T, N>::cbegin() const
 {
-	return board.cbegin();
+	return board_.cbegin();
 }
 
 template<typename T, int N>
 inline typename Board<T, N>::iterator Board<T, N>::end()
 {
-	return board.end();
+	return board_.end();
 }
 
 template<typename T, int N>
 inline typename Board<T, N>::const_iterator Board<T, N>::cend() const
 {
-	return board.cend();
+	return board_.cend();
 }
 // Board - memberfunctions
 
