@@ -14,6 +14,7 @@
 #include <iterator>
 #include <algorithm>
 #include <cassert>
+#include <limits>	// numeric_limits
 
 namespace Sudoku
 {
@@ -35,9 +36,9 @@ public:
 
 	using Location = Location<N>;
 
-	static const int base_size = Location().base_size;	// default 3
-	static const int elem_size = Location().elem_size;	// default 9
-	static const int full_size = Location().full_size;	// default 81
+	static constexpr int base_size = Location().base_size; // default 3
+	static constexpr int elem_size = Location().elem_size;	// default 9
+	static constexpr int full_size = Location().full_size;	// default 81
 
 	class Row;
 	class Col;
@@ -47,8 +48,8 @@ public:
 	explicit Board(const T&);
 	Board(self_type&&)				= default;	// move
 	Board& operator=(self_type&&)	= default;
-	Board(const self_type&)			= default;	// copy
-	Board& operator=(const Board&);
+	Board(const self_type&)			= default;	// copy construct
+	Board& operator=(const Board&);				// copy assign
 	~Board()						= default;
 
 	void clear();
@@ -69,34 +70,34 @@ public:
 
 	/* Element access */
 	// Checked
-	T& at(Location loc);
-	const T& at(Location loc) const;
+	T& at(Location);
+	const T& at(Location) const;
 	T& at(int row, int col);
 	const T& at(int row, int col) const;
 	T& at(int elem);
 	const T& at(int elem) const;
 	// Unchecked
-	T& operator[](Location);
-	const T& operator[](Location) const;
+	T& operator[](Location) noexcept;
+	const T& operator[](Location) const noexcept;
 
 	/*	Element Selection Operator (using a proxy object)
 	*	usable as [row][col] where col is processed by the (const_)InBetween
 	*/
 	class InBetween;
-	InBetween operator [] (int row);
+	InBetween operator [] (int row) noexcept;
 	class const_InBetween;
-	const const_InBetween operator [] (int row) const;
+	const const_InBetween operator [] (int row) const noexcept;
 
 	/* Iterators */
 	typedef typename std::vector<T>::iterator iterator;
 	typedef typename std::vector<T>::const_iterator const_iterator;
 
-	iterator begin();
-	const_iterator cbegin() const;
-	const_iterator begin() const { return cbegin(); }
-	iterator end();
-	const_iterator cend() const;
-	const_iterator end() const { return cend(); }
+	iterator begin() noexcept;
+	const_iterator cbegin() const noexcept;
+	const_iterator begin() const noexcept { return cbegin(); }
+	iterator end() noexcept;
+	const_iterator cend() const noexcept;
+	const_iterator end() const noexcept { return cend(); }
 
 	class Row : public Section
 	{
@@ -104,11 +105,11 @@ public:
 		using Section::Section;	// inherit constructors
 		using Section::id;
 	private:
-		Location loc(int elem) const final 
+		Location loc(int elem) const noexcept final
 		{
 			return Location(id(), elem);
 		}
-		int element(Location loc) const final { return loc.col(); }
+		int element(Location loc) const noexcept final { return Location(loc).col(); }
 	};
 
 	class Col : public Section
@@ -117,8 +118,8 @@ public:
 		using Section::Section;	// inherit constructors
 		using Section::id;
 	private:
-		Location loc(int elem) const final { return Location(elem, id()); }
-		int element(Location loc) const final { return loc.row(); }
+		Location loc(int elem) const noexcept final { return Location(elem, id()); }
+		int element(Location loc) const noexcept final { return Location(loc).row(); }
 	};
 
 	class Block : public Section
@@ -128,11 +129,11 @@ public:
 		using Section::Section;	// inherit constructors
 		using Section::id;
 	private:
-		Location loc(int elem) const override
+		Location loc(int elem) const noexcept override
 		{
 			return Location(Block_Loc(id(), elem));
 		}
-		int element(Location loc) const override { return loc.block_elem(); }
+		int element(Location loc) const noexcept override { return loc.block_elem(); }
 	};
 
 	Row row(int id) { return Row(this, id); }
@@ -261,15 +262,15 @@ inline const T& Board<T, N>::at(const int elem) const
 }
 
 template<typename T, int N>
-inline T& Board<T, N>::operator[](Location loc)
+inline T& Board<T, N>::operator[](Location loc) noexcept
 {
-	return board_[loc.element()];
+	return board_[static_cast<size_t>(loc.element())];
 }
 
 template<typename T, int N>
-inline const T& Board<T, N>::operator[](Location loc) const
+inline const T& Board<T, N>::operator[](Location loc) const noexcept
 {
-	return board_[loc.element()];
+	return board_[static_cast<size_t>(loc.element())];
 }
 
 template<typename T, int N>
@@ -281,25 +282,25 @@ inline void Board<T, N>::clear()
 }
 
 template<typename T, int N>
-inline typename Board<T, N>::iterator Board<T, N>::begin()
+inline typename Board<T, N>::iterator Board<T, N>::begin() noexcept
 {
 	return board_.begin();
 }
 
 template<typename T, int N>
-inline typename Board<T, N>::const_iterator Board<T, N>::cbegin() const
+inline typename Board<T, N>::const_iterator Board<T, N>::cbegin() const noexcept
 {
 	return board_.cbegin();
 }
 
 template<typename T, int N>
-inline typename Board<T, N>::iterator Board<T, N>::end()
+inline typename Board<T, N>::iterator Board<T, N>::end() noexcept
 {
 	return board_.end();
 }
 
 template<typename T, int N>
-inline typename Board<T, N>::const_iterator Board<T, N>::cend() const
+inline typename Board<T, N>::const_iterator Board<T, N>::cend() const noexcept
 {
 	return board_.cend();
 }
@@ -333,14 +334,14 @@ private:
 };
 
 template<typename T, int N>
-inline typename Board<T, N>::InBetween Board<T, N>::operator[](int row)
+inline typename Board<T, N>::InBetween Board<T, N>::operator[](int row) noexcept
 {
 	// Element Selection Operator (using a proxy object)
 	return InBetween(this, row);
 }
 
 template<typename T, int N>
-inline const typename Board<T, N>::const_InBetween Board<T, N>::operator[](int row) const
+inline const typename Board<T, N>::const_InBetween Board<T, N>::operator[](int row) const noexcept
 {
 	return const_InBetween(this, row);
 }

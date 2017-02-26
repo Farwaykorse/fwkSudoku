@@ -27,24 +27,41 @@ public:
 	{
 		using namespace Sudoku;
 		// Board
+		static_assert(std::is_class<Board<int, 3>>(), "should be a class, hiding datarepresentation");
+		static_assert(!std::is_empty<Board<int, 3>>(), "memberdata missing");
+		static_assert(! std::is_standard_layout<Board<int, 3>>(), "should have standard layout");
+		//static_assert(std::has_unique_object_representations<Board<int, 3>>(), "");	//C++17
+		static_assert(! std::is_trivially_copyable<Board<int, 3>>(), "should be trivially copyable");
+		static_assert(! std::is_trivially_constructible<Board<int, 3>>(), "default constructor");
 		static_assert(std::is_default_constructible<Board<int, 3>>(), "default constructor");
-		//static_assert(std::is_trivially_constructible<Board<int, 3>>(), "default constructor");
-		//static_assert(std::is_nothrow_default_constructible<Board<int, 3>>(), "notrow default constructor");
+		static_assert(! std::is_trivially_default_constructible<Board<int, 3>>(), "not using the default constructor");
+		static_assert(! std::is_nothrow_default_constructible<Board<int, 3>>(), "notrow default constructor");
 		static_assert(std::is_copy_constructible<Board<int, 3>>(), "copy constructor");
-		//static_assert(std::is_trivially_copy_constructible<Board<int, 3>>(), "trivially copy constructor");
-		//static_assert(std::is_nothrow_copy_constructible<Board<int, 3>>(), "notrow copy constructor");
+		static_assert(! std::is_trivially_copy_constructible<Board<int, 3>>(), "trivially copy constructor");
+		static_assert(! std::is_nothrow_copy_constructible<Board<int, 3>>(), "notrow copy constructor");
 		static_assert(std::is_move_constructible<Board<int, 3>>(), "move constructor");
-		//static_assert(std::is_trivially_move_constructible<Board<int, 3>>(), "trivially move constructor");
+		static_assert(! std::is_trivially_move_constructible<Board<int, 3>>(), "trivially move constructor");
 		static_assert(std::is_nothrow_move_constructible<Board<int, 3>>(), "nothrow move constructor");
 		static_assert(std::is_copy_assignable<Board<int, 3>>(), "copy assignable");
-		//static_assert(std::is_trivially_copy_assignable<Board<int, 3>>(), "trivially copy assignable");
-		//static_assert(std::is_nothrow_copy_assignable<Board<int, 3>>(), "notrow copy assignable");
+		static_assert(! std::is_trivially_copy_assignable<Board<int, 3>>(), "trivially copy assignable");
+		static_assert(! std::is_nothrow_copy_assignable<Board<int, 3>>(), "notrow copy assignable");
 		static_assert(std::is_move_assignable<Board<int, 3>>(), "move assignable");
-		//static_assert(std::is_trivially_move_assignable<Board<int, 3>>(), "trivially move assignable");
+		static_assert(! std::is_trivially_move_assignable<Board<int, 3>>(), "trivially move assignable");
 		static_assert(std::is_nothrow_move_assignable<Board<int, 3>>(), "move assignable");
 		static_assert(std::is_destructible<Board<int, 3>>(), "destructable");
-		//static_assert(std::is_trivially_destructible<Board<int, 3>>(), "trivially destructable");
+		static_assert(! std::is_trivially_destructible<Board<int, 3>>(), "trivially destructable");
 		static_assert(std::is_nothrow_destructible<Board<int, 3>>(), "nothrow destructable");
+		static_assert(std::is_swappable<Board<int, 3>>(), "swappable");			//C++17
+		static_assert(std::is_nothrow_swappable<Board<int, 3>>(), "swappable");	//C++17 
+		static_assert(! std::is_swappable_with<Board<int, 3>, std::vector<int>>(), "");	//C++17
+		static_assert(! std::is_nothrow_swappable_with<Board<int, 3>, std::vector<int>>(), "");	//C++17
+		//is_constructible from different types
+		static_assert(std::is_constructible<Board<int, 3>, int>(), "should construct from int");
+		static_assert(std::is_constructible<Board<int, 3>, unsigned int>(), "");
+		static_assert(std::is_constructible<Board<int, 3>, size_t>(), "");
+		static_assert(std::is_constructible<Board<Options<10>, 3>, Options<10>>(), "should construct from Options");
+		static_assert(! std::is_assignable<Board<int, 3>, int>(), "");
+		static_assert(std::is_assignable<Board<int, 3>, Board<int, 3>>(), "");
 
 		// different sizes
 		static const Board<int, 2> f2;
