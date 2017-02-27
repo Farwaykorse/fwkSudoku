@@ -40,6 +40,8 @@ public:
 	//TODO Options& remove(int value, ...);	// remove mentioned
 	Options& add(int value);			// add single option
 	Options& set(int value);			// set to answer
+	Options& add_nocheck(int value) noexcept;	// add single option
+	Options& set_nocheck(int value) noexcept;	// set to answer
 
 	constexpr int size() const noexcept;
 	int count() const noexcept;			// count available options
@@ -55,7 +57,7 @@ public:
 	std::vector<int> available() const;	// return available options
 
 	constexpr bool operator[](int value) const noexcept;
-	//ERROR auto operator[](int value) noexcept;	//ERROR crashes Clang compiler
+	auto operator[](int value) noexcept;
 
 	bool operator==(int) const noexcept;// shorthand for is_answer(int)
 	bool operator==(const Options<E>&) const noexcept;
@@ -179,6 +181,21 @@ Options<E>& Options<E>::add(int value)
 	return *this;
 }
 
+template<int E>
+inline Options<E>& Options<E>::add_nocheck(int value) noexcept
+{
+	operator[](value) = true;
+	return *this;
+}
+
+template<int E>
+inline Options<E>& Options<E>::set_nocheck(int value) noexcept
+{
+	clear();
+	add_nocheck(value);
+	return *this;
+}
+
 /// set to answer
 template<int E> inline
 Options<E>& Options<E>::set(int value)
@@ -290,18 +307,17 @@ std::vector<int> Options<E>::available() const
 template<int E> inline
 constexpr bool Options<E>::operator[](int value) const noexcept
 {
-	assert(value <= E);
-	return data_[value];
+	assert(value >= 0 && value <= E);
+	return data_[static_cast<size_t>(value)];
 }
 
-///// no-check access
-//template<int E> inline
-//auto Options<E>::operator[](int value) noexcept
-//{
-//	static_assert(std::is_unsigned<int>(), "use unsigned to prevent undefined behaviour");
-//	assert(value <= E);
-//	return data_[value];
-//}
+// no-check access
+template<int E> inline
+auto Options<E>::operator[](int value) noexcept
+{
+	assert(value >= 0 && value <= E);
+	return data_[static_cast<size_t>(value)];
+}
 
 template<int E> inline
 bool Options<E>::operator==(const Options<E>& other) const noexcept

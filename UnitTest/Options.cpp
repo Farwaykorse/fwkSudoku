@@ -70,6 +70,7 @@ public:
 		const Sudoku::Options<4> O_4{ std::bitset<5>{"01011"} };	// 2 options 1 & 3
 		const Sudoku::Options<4> E_1{ std::bitset<5>{"00000"} };	// empty
 		const Sudoku::Options<4> E_2{ std::bitset<5>{"00001"} };	// empty, no answer
+		Sudoku::Options<9> TMP{};
 
 		///// Const Memberfunctions /////
 		// size() const
@@ -205,6 +206,13 @@ public:
 		Assert::IsTrue(O_1.set(1).is_answer(1), L"set(int) failed when changing", LINE_INFO());
 		Assert::IsFalse(O_1.is_answer(4), L"set(int) failed to remove value", LINE_INFO());
 		Assert::IsTrue(O_1.set(0).is_empty(), L"set(0) should remove all values", LINE_INFO());
+		//add_noexcept(int)
+		TMP.clear();
+		static_assert(noexcept(TMP.add_nocheck(1)), "add_noexcept(int) should be noexcept");
+		Assert::IsTrue(TMP.add_nocheck(4)[4], L"add_noexcept(int) failed", LINE_INFO());
+		//set_noexcept(int)
+		static_assert(noexcept(O_1.set_nocheck(2)), "set_noexcept(int) should be noexcept");
+		Assert::IsTrue(O_1.set_nocheck(2).is_answer(2), L"set_noexcept(int) failed", LINE_INFO());
 	}
 	TEST_METHOD(T3_operators)
 	{
@@ -249,6 +257,12 @@ public:
 
 		///// non-const operators /////
 		//TEST constexpr bool operator[](int)
+		static_assert(noexcept(TMP.operator[](0)=true), "operator[] should be noexcept");
+		TMP.clear();
+		Assert::IsTrue(TMP[0] = true, L"operator[] write");
+		Assert::IsTrue(TMP[0] == true, L"operator[] read");
+		Assert::IsFalse(TMP[0].flip(), L"operator[] flip");
+		Assert::IsTrue(TMP[0] == false, L"operator[] read");
 		//Options& XOR(Options&)			XOR
 		static_assert(noexcept(TMP.XOR(O_3)), "XOR() should be noexcept");
 		TMP = E_3;
