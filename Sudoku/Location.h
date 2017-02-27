@@ -18,10 +18,7 @@ class Location
 	using value_type = int;
 	using difference_type = int;
 
-	static constexpr int location(int row, int col) noexcept
-	{
-		return row * elem_size + col;
-	}
+	static constexpr int location(int row, int col) noexcept { return row * elem_size + col; }
 public:
 	// size definition
 	static constexpr int base_size = N;						// 3 for default 9*9 board
@@ -39,7 +36,6 @@ public:
 
 	// constructors
 	constexpr Location() : id_(0) {}
-	Location& operator=(const Location&);
 	explicit constexpr Location(int elem) : id_(elem) {}
 	constexpr Location(int row, int col) : id_(location(row, col)) {}
 
@@ -53,9 +49,9 @@ public:
 	constexpr int block_elem() const { return block_row() * base_size + block_col(); }// default [0,9)
 
 	// comparison
-	bool operator==(const self_type& other) const { return id_ == other.id_; }
-	bool operator<(const self_type& other) const { return id_ < other.id_; }
-
+	bool operator==(const self_type& other) const noexcept { return id_ == other.id_; }
+	bool operator==(const Block_Loc& other) const noexcept { return id_ == Location(other).element(); }
+	bool operator<(const self_type& other) const noexcept { return id_ < other.id_; }
 private:
 	const int id_;
 };
@@ -66,19 +62,18 @@ class Block_Loc
 	static_assert(N > 1, "Location.h (Block_Loc): base_size value too small");
 
 	using Location = Location<N>;
-	using self_type = Location;
 	static constexpr auto base_size = Location().base_size;
 	static constexpr auto elem_size = Location().elem_size;
 	static constexpr auto full_size = Location().full_size;
 
-	static constexpr int location(int row, int col) { return row * elem_size + col; }
-	static constexpr int block_elem(int row, int col) { return row * base_size + col; }
-	static constexpr int block_loc(int id, int elem)
+	static constexpr int block_elem(int row, int col) noexcept { return row * base_size + col; }
+	static constexpr int block_loc(int id, int elem) noexcept
 	{
-		return location((id / base_size) * base_size + elem / base_size,
-			(id % base_size) * base_size + elem % base_size);
+		return Location(
+			(id / base_size) * base_size + elem / base_size,
+			(id % base_size) * base_size + elem % base_size).element();
 	}
-	static constexpr int block_loc(int id, int row, int col)
+	static constexpr int block_loc(int id, int row, int col) noexcept
 	{
 		return block_loc(id, block_elem(row, col));
 	}
@@ -92,7 +87,15 @@ public:
 	constexpr int row() const { return Location(id_).block_row(); }
 	constexpr int col() const { return Location(id_).block_row(); }
 
-	constexpr operator Location() { return Location(id_); }
+	constexpr operator Location() const { return Location(id_); }
+
+	// comparison
+	bool operator==(const Block_Loc& other) const noexcept { return id_ == other.id_; }
+	bool operator==(const Location& other) const noexcept { return id_ == other.element(); }
+	bool operator<(const Block_Loc& other) const noexcept
+	{ 
+		return ( (id() < other.id()) ? true : (id_ < other.id_) );
+	}
 private:
 	const int id_;
 };

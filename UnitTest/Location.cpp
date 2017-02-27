@@ -17,7 +17,7 @@ namespace Sudoku_Test
 TEST_CLASS(Class_Location)
 {
 public:
-	TEST_METHOD(T0_initialize)
+	TEST_METHOD(T0_initialize_Location)
 	{
 		static_assert(std::is_class<Location<3>>(), "should be a class, hiding datarepresentation");
 		static_assert(! std::is_empty<Location<3>>(), "memberdata missing");
@@ -33,16 +33,16 @@ public:
 		static_assert(std::is_move_constructible<Location<3>>(), "move constructor");
 		static_assert(std::is_trivially_move_constructible<Location<3>>(), "trivially move constructor");
 		static_assert(std::is_nothrow_move_constructible<Location<3>>(), "nothrow move constructor");
-		static_assert(std::is_copy_assignable<Location<3>>(), "copy assignable");
+		static_assert(! std::is_copy_assignable<Location<3>>(), "copy assignable");
 		static_assert(! std::is_trivially_copy_assignable<Location<3>>(), "trivially copy assignable");
 		static_assert(! std::is_nothrow_copy_assignable<Location<3>>(), "notrow copy assignable");
-		static_assert(std::is_move_assignable<Location<3>>(), "move assignable");
+		static_assert(! std::is_move_assignable<Location<3>>(), "move assignable");
 		static_assert(! std::is_trivially_move_assignable<Location<3>>(), "trivially move assignable");
 		static_assert(! std::is_nothrow_move_assignable<Location<3>>(), "move assignable");
 		static_assert(std::is_destructible<Location<3>>(), "destructable");
 		static_assert(std::is_trivially_destructible<Location<3>>(), "trivially destructable");
 		static_assert(std::is_nothrow_destructible<Location<3>>(), "nothrow destructable");
-		static_assert(std::is_swappable<Location<3>>(), "swappable");			//C++17
+		static_assert(! std::is_swappable<Location<3>>(), "swappable");			//C++17
 		static_assert(! std::is_nothrow_swappable<Location<3>>(), "swappable");	//C++17
 		static_assert(! std::is_swappable_with<Location<3>, Block_Loc<3>>(), "");	//C++17
 		static_assert(! std::is_nothrow_swappable_with<Location<3>, Block_Loc<3>>(), "");	//C++17
@@ -52,10 +52,10 @@ public:
 		static_assert(std::is_constructible<Location<3>, unsigned int>(), "construct from unsigned int");
 		static_assert(std::is_constructible<Location<3>, size_t>(), "construct from size_t");
 		static_assert(std::is_constructible<Location<3>, Block_Loc<3>>(), "should construct from Block_Loc");
-		static_assert(!std::is_constructible<Location<3>, Block_Loc<2>>(), "shouldn't accept non matching dimensions_1");
-		static_assert(std::is_assignable<Location<3>, Location<3>>(), "");
-		static_assert(std::is_assignable<Location<3>, Block_Loc<3>>(), "");
-		static_assert(!std::is_assignable<Location<3>, int>(), "shouldn't be assignable from int, requires explicit!!");
+		static_assert(! std::is_constructible<Location<3>, Block_Loc<2>>(), "shouldn't accept non matching dimensions_1");
+		static_assert(! std::is_assignable<Location<3>, Location<3>>(), "");
+		static_assert(! std::is_assignable<Location<3>, Block_Loc<3>>(), "");
+		static_assert(! std::is_assignable<Location<3>, int>(), "shouldn't be assignable from int, requires explicit!!");
 
 		Location<3> L1(52);
 		Assert::IsTrue(L1.element() == 52, L"element location", LINE_INFO());
@@ -64,11 +64,48 @@ public:
 		Location<3> L2(L1);
 		Assert::IsTrue(L2.element() == 52, L"Copy constructor", LINE_INFO());
 		Location<3> L3 = L1;
-		Assert::IsTrue(L3.element() == 52, L"Copy Assignment", LINE_INFO());
+		Assert::IsTrue(L3.element() == 52, L"Copy", LINE_INFO());
 		Location<3> L4(Location<3>(2));
 		Assert::IsTrue(L4.element() == 2, L"Move constructor", LINE_INFO());
 		Location<3> L5 = Location<3>(18);
-		Assert::IsTrue(L5.element() == 18, L"Move assignment", LINE_INFO());
+		Assert::IsTrue(L5.element() == 18, L"Move", LINE_INFO());
+	}
+	TEST_METHOD(T01_initialize_Block_Loc)
+	{
+		static_assert(std::is_class<Block_Loc<3>>(), "should be a class, hiding datarepresentation");
+		static_assert(! std::is_empty<Block_Loc<3>>(), "memberdata missing");
+		static_assert(std::is_standard_layout<Block_Loc<3>>(), "should have standard layout");
+		//static_assert(std::has_unique_object_representations<Block_Loc<3>>(), "");	//C++17
+		static_assert(! std::is_trivially_copyable<Block_Loc<3>>(), "should be trivially copyable");
+		static_assert(! std::is_default_constructible<Block_Loc<3>>(), "default constructor");
+		static_assert(! std::is_trivially_default_constructible<Block_Loc<3>>(), "not using the default constructor");
+		static_assert(! std::is_nothrow_default_constructible<Block_Loc<3>>(), "notrow default constructor");
+		static_assert(std::is_copy_constructible<Block_Loc<3>>(), "copy constructor");
+		static_assert(std::is_trivially_copy_constructible<Block_Loc<3>>(), "trivially copy constructor");
+		static_assert(std::is_nothrow_copy_constructible<Block_Loc<3>>(), "notrow copy constructor");
+		static_assert(std::is_move_constructible<Block_Loc<3>>(), "move constructor");
+		static_assert(std::is_trivially_move_constructible<Block_Loc<3>>(), "trivially move constructor");
+		static_assert(std::is_nothrow_move_constructible<Block_Loc<3>>(), "nothrow move constructor");
+		static_assert(! std::is_copy_assignable<Block_Loc<3>>(), "copy assignable");
+		static_assert(! std::is_trivially_copy_assignable<Block_Loc<3>>(), "trivially copy assignable");
+		static_assert(! std::is_nothrow_copy_assignable<Block_Loc<3>>(), "notrow copy assignable");
+		static_assert(! std::is_move_assignable<Block_Loc<3>>(), "move assignable");
+		static_assert(! std::is_trivially_move_assignable<Block_Loc<3>>(), "trivially move assignable");
+		static_assert(! std::is_nothrow_move_assignable<Block_Loc<3>>(), "move assignable");
+		static_assert(std::is_destructible<Block_Loc<3>>(), "destructable");
+		static_assert(std::is_trivially_destructible<Block_Loc<3>>(), "trivially destructable");
+		static_assert(std::is_nothrow_destructible<Block_Loc<3>>(), "nothrow destructable");
+		static_assert(! std::is_swappable<Block_Loc<3>>(), "swappable");			//C++17
+		static_assert(! std::is_nothrow_swappable<Block_Loc<3>>(), "swappable");	//C++17
+		static_assert(! std::is_swappable_with<Block_Loc<3>, Location<3>>(), "");	//C++17
+		static_assert(! std::is_nothrow_swappable_with<Block_Loc<3>, Location<3>>(), "");	//C++17
+
+		// type construction
+		static_assert(! std::is_constructible<Block_Loc<3>, int>(), "should construct from int");
+		static_assert(std::is_constructible<Block_Loc<3>, Location<3>>(), "should construct from Block_Loc");
+		static_assert(! std::is_constructible<Block_Loc<3>, Block_Loc<2>>(), "shouldn't accept non matching dimensions_1");
+		static_assert(! std::is_assignable<Block_Loc<3>, int>(), "shouldn't be assignable from int, requires explicit!!");
+		static_assert(! std::is_assignable<Block_Loc<3>, Location<3>>(), "");
 
 		Block_Loc<3> B1(8, 8);
 		Assert::IsTrue(B1.element() == 8, L"block element", LINE_INFO());
@@ -77,11 +114,14 @@ public:
 		Block_Loc<3> B2(B1);
 		Assert::IsTrue(B2.element() == 8, L"Copy constructor", LINE_INFO());
 		Block_Loc<3> B3 = B1;
-		Assert::IsTrue(B3.element() == 8, L"Copy Assignment", LINE_INFO());
+		Assert::IsTrue(B3.element() == 8, L"Copy", LINE_INFO());
 		Block_Loc<3> B4(Block_Loc<3>(0, 2));
 		Assert::IsTrue(B4.element() == 2, L"Move constructor", LINE_INFO());
 		Block_Loc<3> B5 = Block_Loc<3>(8, 8);
-		Assert::IsTrue(B5.element() == 8, L"Move assignment", LINE_INFO());
+		Assert::IsTrue(B5.element() == 8, L"Move", LINE_INFO());
+		// back and forth
+		Assert::IsTrue(Block_Loc<3>{ Location<3>{12} }.id() == 1, L"", LINE_INFO());
+		Assert::IsTrue(Location<3>{Block_Loc<3>{8, 8}}.element() == 80, L"", LINE_INFO());
 	}
 	TEST_METHOD(T1_information)
 	{
@@ -132,14 +172,19 @@ public:
 	//TODO other size: Location<2>
 	TEST_METHOD(T2_comparisson)
 	{
-		Assert::IsTrue(Location<3>(4) == Location<3>(4),
-					   L"", LINE_INFO());
-		Assert::IsFalse(Location<3>(0) == Location<3>(13),
-						L"", LINE_INFO());
-		Assert::IsTrue(Location<3>(0, 5) < Location<3>(3, 2),
-					   L"", LINE_INFO());
-		Assert::IsFalse(Location<3>(80) < Location<3>(8, 3),
-						L"", LINE_INFO());
+		Assert::IsTrue(Location<3>(4) == Location<3>(4), L"", LINE_INFO());
+		Assert::IsFalse(Location<3>(0) == Location<3>(13), L"", LINE_INFO());
+		Assert::IsTrue(Location<3>(0, 5) < Location<3>(3, 2), L"", LINE_INFO());
+		Assert::IsFalse(Location<3>(80) < Location<3>(8, 3), L"", LINE_INFO());
+
+		Assert::IsTrue(Block_Loc<3>(0,0) == Block_Loc<3>(0,0,0), L"", LINE_INFO());
+		Assert::IsFalse(Block_Loc<3>(4,3) == Block_Loc<3>(4,4), L"", LINE_INFO());
+		Assert::IsTrue(Block_Loc<3>(0, 5) < Block_Loc<3>(3, 2), L"", LINE_INFO());
+		Assert::IsFalse(Block_Loc<3>(0, 5) < Block_Loc<3>(0, 2), L"", LINE_INFO());
+		Assert::IsFalse(Block_Loc<3>(8,2,2) < Block_Loc<3>(8, 8), L"", LINE_INFO());
+
+		Assert::IsTrue(Block_Loc<3>(0,0) == Location<3>(0), L"", LINE_INFO());
+		Assert::IsTrue(Location<3>(1) == Block_Loc<3>(0, 1), L"", LINE_INFO());
 	}
 	TEST_METHOD(T3_helper_Block_Loc)
 	{
