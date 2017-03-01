@@ -19,27 +19,30 @@ namespace Sudoku
 template<int E>
 class Options
 {
+	using bitset = std::bitset<E + 1>;
 public:
 	Options() noexcept;
 	Options(const Options&) = default;
 	Options& operator=(const Options&) = default;
 	Options(Options&&) = default;
 	Options& operator=(Options&&) = default;
-	Options(const std::bitset<E + 1>&);	// 0th bit is last in input
-	Options(std::bitset<E + 1>&&);
+	Options(const bitset&);	// 0th bit is last in input
+	Options(bitset&&);
 	Options(int value);
 	Options& operator=(int value);
-	Options& operator=(const std::bitset<E + 1>&) noexcept;
-	Options& operator=(std::bitset<E + 1>&&) noexcept;
+	Options& operator=(const bitset&) noexcept;
+	Options& operator=(bitset&&) noexcept;
 	~Options() = default;
 
 	Options& clear() noexcept;			// remove all options
 	Options& reset() noexcept;			// set all options
 	Options& flip() noexcept;
-	bool remove(int value);				// remove single option, return if needed
-	//TODO Options& remove(int value, ...);	// remove mentioned
+	bool remove_option(int value);				// remove single option, return if needed
+	//TODO Options& remove_option(int value, ...);	// remove mentioned
 	Options& add(int value);			// add single option
 	Options& set(int value);			// set to answer
+	Options& add_nocheck(int value) noexcept;	// add single option
+	Options& set_nocheck(int value) noexcept;	// set to answer
 
 	constexpr int size() const noexcept;
 	int count() const noexcept;			// count available options
@@ -47,17 +50,17 @@ public:
 	bool all() const noexcept;			// if all options available = all bits set
 	bool test(int value) const;			// if an option, or answer
 	bool is_answer() const noexcept;	// is set to answer
-	bool is_answer(int value) const;	// is set to answer value
-	bool is_option(int value) const;	// is an option
+	bool is_answer(int value) const noexcept;	// is set to answer value
+	bool is_option(int value) const noexcept;	// is an option
 	bool is_empty() const noexcept;
 
 	int get_answer() const noexcept;	// return answer or 0 (won't confirm is_answer())
 	std::vector<int> available() const;	// return available options
 
 	constexpr bool operator[](int value) const noexcept;
-	//ERROR auto operator[](int value) noexcept;	//ERROR crashes Clang compiler
+	auto operator[](int value) noexcept;
 
-	bool operator==(int) const noexcept;// shorthand for is_answer(int)
+	bool operator==(int) const noexcept;	// shorthand for is_answer(int)
 	bool operator==(const Options<E>&) const noexcept;
 	bool operator!=(const Options<E>&) const noexcept;
 	bool operator< (const Options<E>&) const noexcept;	//TODO allow sorting; usecase?
@@ -66,15 +69,16 @@ public:
 	Options& operator+=(const Options&) noexcept;
 	Options operator+(const Options&) const noexcept;
 	// xor
-	Options& operator^=(const Options&) noexcept;		//?? unclear replace with XOR(a) and XOR(a,b)?
+	Options& XOR(const Options&) noexcept;
+	[[deprecated]] Options& operator^=(const Options& other) noexcept { return XOR(other); }
 	// return difference
 	Options operator-(const Options&) const noexcept;	//TODO difference; usecase?
 	// return shared options
-	Options operator&(const Options&) const noexcept;	//?? unclear? add shared(a,b)?
+	Options operator&(const Options&) const noexcept;
 
 private:
 	// 0th bit is "need to solve": false if answer has been set = inverse of answer
-	std::bitset<E + 1> data_{};
+	bitset data_{};
 
 	int read_next() const noexcept;
 	int read_next(int) const noexcept;
@@ -89,14 +93,14 @@ Options<E>::Options() noexcept
 }
 
 template<int E> inline
-Options<E>::Options(const std::bitset<E + 1>& other) :
+Options<E>::Options(const bitset& other) :
 	data_(other)
 {
 	// empty constructor
 }
 
 template<int E>
-inline Options<E>::Options(std::bitset<E + 1>&& other) :
+inline Options<E>::Options(bitset&& other) :
 	data_{ other }
 {
 	// empty constructor
@@ -118,16 +122,16 @@ Options<E>& Options<E>::operator=(int value)
 }
 
 template<int E> inline
-Options<E>& Options<E>::operator=(const std::bitset<E + 1>& other) noexcept
+Options<E>& Options<E>::operator=(const bitset& other) noexcept
 {
-	//TEST not triggered
+	//NEEDTEST not triggered
 	return Options(other);
 }
 
 template<int E> inline
-Options<E>& Options<E>::operator=(std::bitset<E + 1>&& other) noexcept
+Options<E>& Options<E>::operator=(bitset&& other) noexcept
 {
-	//TEST not triggered
+	//NEEDTEST not triggered
 	std::swap(data_, other);
 	return *this;
 }
@@ -160,15 +164,22 @@ Options<E>& Options<E>::flip() noexcept
 
 /// remove single option
 template<int E> inline
-bool Options<E>::remove(int value)
+bool Options<E>::remove_option(const int value)
 {
-	if (data_[static_cast<size_t>(value)])
+	if (test(value))	// contains range-check
+	//if (operator[](value))
 	{
 		assert(!is_answer());	// don't apply on answers
-		data_.reset(static_cast<size_t>(value));
+		data_[static_cast<size_t>(value)] = false;
+		//operator[](value) = false;
 		return true;
 	}
 	return false;
+
+	//ERROR compiler error VC++ only
+	// C3779 'Sudoku::Options<9>::operator[]': a function that returns 'auto' cannot be used before it is defined
+	// can't reproduce in any other memberfunction
+	// Triggerd by use in Solver::remove_Option(Location, int)
 }
 
 /// add single option
@@ -176,6 +187,21 @@ template<int E> inline
 Options<E>& Options<E>::add(int value)
 {
 	data_.set(static_cast<size_t>(value), true);
+	return *this;
+}
+
+template<int E>
+inline Options<E>& Options<E>::add_nocheck(int value) noexcept
+{
+	operator[](value) = true;
+	return *this;
+}
+
+template<int E>
+inline Options<E>& Options<E>::set_nocheck(int value) noexcept
+{
+	clear();
+	add_nocheck(value);
 	return *this;
 }
 
@@ -232,22 +258,26 @@ bool Options<E>::is_answer() const noexcept
 	return !(data_[0] || data_.none());
 }
 
-/// check if set to answer value
+// check if set to answer value
+// ! no input checks!
 template<int E> inline
-bool Options<E>::is_answer(int value) const
+bool Options<E>::is_answer(int value) const noexcept
 {
-	return (is_answer() && test(value));
+	//return (is_answer() && test(value));
+	return (is_answer() && operator[](value));
 }
 
-/// check if an option
+// check if option available
+// ! no input checks!
 template<int E> inline
-bool Options<E>::is_option(int value) const
+bool Options<E>::is_option(int value) const noexcept
 {
 	assert(value != 0);
-	return (!is_answer() && test(value));
+	//return (!is_answer() && test(value));
+	return (!is_answer() && operator[](value));
 }
 
-// Test if no options or answers available
+//_Test if no options or answers available
 template<int E> inline
 bool Options<E>::is_empty() const noexcept
 {
@@ -269,6 +299,7 @@ int Options<E>::get_answer() const noexcept
 	return 0;
 }
 
+// all available options
 template<int E> inline
 std::vector<int> Options<E>::available() const
 {
@@ -286,33 +317,31 @@ std::vector<int> Options<E>::available() const
 	return values;
 }
 
-/// no-check access read only
+// no-check access read only
 template<int E> inline
 constexpr bool Options<E>::operator[](int value) const noexcept
 {
-	//?? static_assert(std::is_unsigned<int>(), "use unsigned to prevent undefined behaviour");
-	assert(value <= E);
-	return data_[value];
+	assert(value >= 0 && value <= E);
+	return data_[static_cast<size_t>(value)];
 }
 
-///// no-check access
-//template<int E> inline
-//auto Options<E>::operator[](int value) noexcept
-//{
-//	static_assert(std::is_unsigned<int>(), "use unsigned to prevent undefined behaviour");
-//	assert(value <= E);
-//	return data_[value];
-//}
+// no-check access
+template<int E> inline
+auto Options<E>::operator[](int value) noexcept
+{
+	assert(value >= 0 && value <= E);
+	return data_[static_cast<size_t>(value)];
+}
 
 template<int E> inline
-bool Options<E>::operator==(const Options<E>& other) const noexcept
+bool Options<E>::operator==(const Options& other) const noexcept
 {
 	//?? operator== what about the 0th 'is answer' bit?
 	return data_ == other.data_;
 }
 
 template<int E> inline
-bool Options<E>::operator!=(const Options<E>& other) const noexcept
+bool Options<E>::operator!=(const Options& other) const noexcept
 {
 	return !(*this == other);
 }
@@ -342,7 +371,7 @@ Options<E> Options<E>::operator+(const Options& other) const noexcept
 
 // Per element XOR, exclusive OR
 template<int E> inline
-Options<E>& Options<E>::operator^=(const Options& other) noexcept
+Options<E>& Options<E>::XOR(const Options& other) noexcept
 {
 	data_ ^= other.data_;
 	return *this;
@@ -381,4 +410,26 @@ int Options<E>::read_next(int start) const noexcept
 	}
 	return 0;
 }
+
+//////////////////////////////
+///// external functions /////
+//////////////////////////////
+
+// Exclusive OR
+template<int E> inline
+Options<E> XOR(const Options<E>& A, const Options<E>& B) noexcept
+{
+	Options<E> tmp{ A };
+	return tmp.XOR(B);
+}
+
+// Shared options
+template<int E> inline
+Options<E> shared(const Options<E>& A, const Options<E>& B) noexcept
+{
+	return A & B;
+}
+
+
+
 }	// namespace Sudoku

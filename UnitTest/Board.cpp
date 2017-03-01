@@ -27,39 +27,50 @@ public:
 	{
 		using namespace Sudoku;
 		// Board
-		static_assert(std::is_class<Board<int, 3>>(), "should be a class, hiding datarepresentation");
-		static_assert(!std::is_empty<Board<int, 3>>(), "memberdata missing");
-		static_assert(! std::is_standard_layout<Board<int, 3>>(), "should have standard layout");
-		//static_assert(std::has_unique_object_representations<Board<int, 3>>(), "");	//C++17
-		static_assert(! std::is_trivially_copyable<Board<int, 3>>(), "should be trivially copyable");
-		static_assert(! std::is_trivially_constructible<Board<int, 3>>(), "default constructor");
-		static_assert(std::is_default_constructible<Board<int, 3>>(), "default constructor");
-		static_assert(! std::is_trivially_default_constructible<Board<int, 3>>(), "not using the default constructor");
-		static_assert(! std::is_nothrow_default_constructible<Board<int, 3>>(), "notrow default constructor");
-		static_assert(std::is_copy_constructible<Board<int, 3>>(), "copy constructor");
-		static_assert(! std::is_trivially_copy_constructible<Board<int, 3>>(), "trivially copy constructor");
-		static_assert(! std::is_nothrow_copy_constructible<Board<int, 3>>(), "notrow copy constructor");
-		static_assert(std::is_move_constructible<Board<int, 3>>(), "move constructor");
-		static_assert(! std::is_trivially_move_constructible<Board<int, 3>>(), "trivially move constructor");
-		static_assert(std::is_nothrow_move_constructible<Board<int, 3>>(), "nothrow move constructor");
-		static_assert(std::is_copy_assignable<Board<int, 3>>(), "copy assignable");
-		static_assert(! std::is_trivially_copy_assignable<Board<int, 3>>(), "trivially copy assignable");
-		static_assert(! std::is_nothrow_copy_assignable<Board<int, 3>>(), "notrow copy assignable");
-		static_assert(std::is_move_assignable<Board<int, 3>>(), "move assignable");
-		static_assert(! std::is_trivially_move_assignable<Board<int, 3>>(), "trivially move assignable");
-		static_assert(std::is_nothrow_move_assignable<Board<int, 3>>(), "move assignable");
-		static_assert(std::is_destructible<Board<int, 3>>(), "destructable");
-		static_assert(! std::is_trivially_destructible<Board<int, 3>>(), "trivially destructable");
-		static_assert(std::is_nothrow_destructible<Board<int, 3>>(), "nothrow destructable");
-		static_assert(std::is_swappable<Board<int, 3>>(), "swappable");			//C++17
-		static_assert(std::is_nothrow_swappable<Board<int, 3>>(), "swappable");	//C++17 
-		static_assert(! std::is_swappable_with<Board<int, 3>, std::vector<int>>(), "");	//C++17
-		static_assert(! std::is_nothrow_swappable_with<Board<int, 3>, std::vector<int>>(), "");	//C++17
+		using typeT = Board<Options<9>, 3>;
+		static_assert(std::is_class<typeT>(), "a class, hiding datarepresentation");
+		static_assert(! std::is_empty<typeT>(), "no datamembers");
+		static_assert(! std::is_standard_layout<typeT>(), "standard layout");
+		static_assert(! std::is_trivial<typeT>(), "not user-provided, no virtuals");
+		static_assert(! std::is_pod<typeT>(), "Plain Old Data, both trivial and standard-layout");
+		//static_assert(std::has_unique_object_representations<typeT>(), "");	//C++17
+
+		static_assert(std::is_default_constructible<typeT>(), "default constructor");
+		static_assert(! std::is_nothrow_default_constructible<typeT>(), "notrow default constructor");
+		static_assert(! std::is_trivially_default_constructible<typeT>(), "tribial default constructor");
+
+		static_assert(std::is_destructible<typeT>(), "destructable");
+		static_assert(std::is_nothrow_destructible<typeT>(), "nothrow destructable");
+		static_assert(! std::is_trivially_destructible<typeT>(), "trivially destructable");
+
+		static_assert(std::is_copy_constructible<typeT>(), "copy constructor");
+		static_assert(! std::is_nothrow_copy_constructible<typeT>(), "notrow copy constructor");
+		static_assert(! std::is_trivially_copy_constructible<typeT>(), "trivially copy constructor");
+
+		static_assert(std::is_move_constructible<typeT>(), "move constructor");
+		static_assert(std::is_nothrow_move_constructible<typeT>(), "nothrow move constructor");
+		static_assert(! std::is_trivially_move_constructible<typeT>(), "trivially move constructor");
+
+		static_assert(std::is_copy_assignable<typeT>(), "copy assignable");
+		static_assert(! std::is_nothrow_copy_assignable<typeT>(), "notrow copy assignable");
+		static_assert(! std::is_trivially_copy_assignable<typeT>(), "trivially copy assignable");
+
+		static_assert(std::is_move_assignable<typeT>(), "move assignable");
+		static_assert(std::is_nothrow_move_assignable<typeT>(), "move assignable");
+		static_assert(! std::is_trivially_move_assignable<typeT>(), "trivially move assignable");
+
+		static_assert(! std::is_trivially_copyable<typeT>(), "trivially copyable");
+		static_assert(std::is_swappable<typeT>(), "swappable");			//C++17
+		static_assert(std::is_nothrow_swappable<typeT>(), "swappable");	//C++17
+
+		static_assert(! std::is_swappable_with<typeT, Options<9>>(), "");	//C++17
+		static_assert(! std::is_nothrow_swappable_with<typeT, Options<9>>(), "");	//C++17
+
 		//is_constructible from different types
 		static_assert(std::is_constructible<Board<int, 3>, int>(), "should construct from int");
 		static_assert(std::is_constructible<Board<int, 3>, unsigned int>(), "");
 		static_assert(std::is_constructible<Board<int, 3>, size_t>(), "");
-		static_assert(std::is_constructible<Board<Options<10>, 3>, Options<10>>(), "should construct from Options");
+		static_assert(std::is_constructible<Board<Options<9>, 3>, Options<9>>(), "should construct from Options");
 		static_assert(! std::is_assignable<Board<int, 3>, int>(), "");
 		static_assert(std::is_assignable<Board<int, 3>, Board<int, 3>>(), "");
 
@@ -91,7 +102,7 @@ public:
 		//Board(const self_type&)				copy constructor
 		Sudoku::Board<int, 3> copy(f3);
 		// Board& operator=(const self_type&)	copy assignment
-		//TEST not triggered: copy assignment
+		//NEEDTEST not triggered: copy assignment
 		Sudoku::Board<int, 3> copy2 = f3;
 
 		// using at(elem_id) !
@@ -138,8 +149,8 @@ public:
 		Assert::IsTrue(B.elem_size == 4, L"elem_size error", LINE_INFO());
 		Assert::IsTrue(B.full_size == 16, L"full_size error", LINE_INFO());
 
-		//TEST	valid_size(int elem);
-		//TEST	valid_size(int row, int col);
+		//NEEDTEST	valid_size(int elem);
+		//NEEDTEST	valid_size(int row, int col);
 	}
 	TEST_METHOD(T3_element_access)
 	{
@@ -189,7 +200,7 @@ public:
 		Assert::IsTrue(*(B1.end() -1) == 0, L"cbegin() failed", LINE_INFO());
 		Assert::IsTrue(*(B1.cend() -1) == 0, L"cbegin() failed", LINE_INFO());
 
-		//TEST Board iterator / const_iterator access ...
+		//NEEDTEST Board iterator / const_iterator access ...
 		// begin / cbegin / const begin
 	}
 	TEST_METHOD(T5_clear)

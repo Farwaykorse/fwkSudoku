@@ -96,7 +96,7 @@ public:
 
 		// Forward
 		//	X a; X()		default-constructable
-		//TEST is forward iterator
+		//NEEDTEST is forward iterator
 		static_assert(std::is_default_constructible<Row::iterator>(), "");
 		static_assert(std::is_default_constructible<Col::iterator>(), "");
 		static_assert(std::is_default_constructible<Block::iterator>(), "");
