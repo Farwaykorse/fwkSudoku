@@ -100,7 +100,7 @@ public:
 	Assert::IsTrue(answer == V2.getResult(), L"singleValue() cascade failed", LINE_INFO());
 	Board<int, 2> start{};
 	}
-	//TEST_METHOD(solver_unique)
+	//NEEDTEST_METHOD(solver_unique)
 	//{
 	//	// test if working on Row(0)
 	//	static const std::vector<int> v1

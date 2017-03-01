@@ -82,7 +82,7 @@ public:
 		self_type& operator=(const self_type& other)
 		{
 			//ERROR no difference between row/col/block versions!!
-			//TEST never tested
+			//NEEDTEST never tested
 			section_ = other.section_;
 			elem_ = other.elem_;
 			return move_();
@@ -227,7 +227,7 @@ public:
 		self_type& operator=(const self_type& other)
 		{
 			//ERROR no difference between row/col/block versions!!
-			//TEST never tested
+			//NEEDTEST never tested
 			section_ = other.section_;
 			elem_ = other.elem_;
 			return move_();
