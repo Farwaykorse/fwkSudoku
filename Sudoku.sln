@@ -10,6 +10,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTe
 		{14B76E47-7B5D-43C1-B056-A82FCA671CC5} = {14B76E47-7B5D-43C1-B056-A82FCA671CC5}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5FE296CB-7F95-44A2-A544-4009EF24F251}"
+	ProjectSection(SolutionItems) = preProject
+		About.txt = About.txt
+		TODO.txt = TODO.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		ClangDebug|x64 = ClangDebug|x64
