@@ -19,31 +19,42 @@ TEST_CLASS(Class_Options)
 public:
 	TEST_METHOD(T0_initialize)
 	{
-		static_assert(std::is_class<Options<9>>(), "should be a class, hiding datarepresentation");
-		static_assert(!std::is_empty<Options<9>>(), "memberdata missing");
-		static_assert(std::is_standard_layout<Options<9>>(), "should have standard layout");
-		//static_assert(std::has_unique_object_representations<Options<9>>(), "");	//C++17
-		static_assert(std::is_trivially_copyable<Options<9>>(), "should be trivialy copyable");
-		static_assert(std::is_default_constructible<Options<9>>(), "default constructor");
-		static_assert(!std::is_trivially_default_constructible<Options<9>>(), "not using the default constructor");
-		static_assert(std::is_nothrow_default_constructible<Options<9>>(), "notrow default constructor");
-		static_assert(std::is_copy_constructible<Options<9>>(), "copy constructor");
-		static_assert(std::is_trivially_copy_constructible<Options<9>>(), "trivially copy constructor");
-		static_assert(std::is_nothrow_copy_constructible<Options<9>>(), "notrow copy constructor");
-		static_assert(std::is_move_constructible<Options<9>>(), "move constructor");
-		static_assert(std::is_trivially_move_constructible<Options<9>>(), "trivially move constructor");
-		static_assert(std::is_nothrow_move_constructible<Options<9>>(), "nothrow move constructor");
-		static_assert(std::is_copy_assignable<Options<9>>(), "copy assignable");
-		static_assert(std::is_trivially_copy_assignable<Options<9>>(), "trivially copy assignable");
-		static_assert(std::is_nothrow_copy_assignable<Options<9>>(), "notrow copy assignable");
-		static_assert(std::is_move_assignable<Options<9>>(), "move assignable");
-		static_assert(std::is_trivially_move_assignable<Options<9>>(), "trivially move assignable");
-		static_assert(std::is_nothrow_move_assignable<Options<9>>(), "move assignable");
-		static_assert(std::is_destructible<Options<9>>(), "destructable");
-		static_assert(std::is_trivially_destructible<Options<9>>(), "trivially destructable");
-		static_assert(std::is_nothrow_destructible<Options<9>>(), "nothrow destructable");
-		static_assert(std::is_swappable<Options<9>>(), "swappable");			//C++17
-		static_assert(std::is_nothrow_swappable<Options<9>>(), "swappable");	//C++17 
+		using typeT = Sudoku::Options<9>;
+		static_assert(std::is_class<typeT>(), "a class, hiding datarepresentation");
+		static_assert(! std::is_empty<typeT>(), "no datamembers");
+		static_assert(std::is_standard_layout<typeT>(), "standard layout");
+		static_assert(! std::is_trivial<typeT>(), "not user-provided, no virtuals");
+		static_assert(! std::is_pod<typeT>(), "Plain Old Data, both trivial and standard-layout");
+		//static_assert(std::has_unique_object_representations<typeT>(), "");	//C++17
+
+		static_assert(std::is_default_constructible<typeT>(), "default constructor");
+		static_assert(std::is_nothrow_default_constructible<typeT>(), "notrow default constructor");
+		static_assert(! std::is_trivially_default_constructible<typeT>(), "tribial default constructor");
+
+		static_assert(std::is_destructible<typeT>(), "destructable");
+		static_assert(std::is_nothrow_destructible<typeT>(), "nothrow destructable");
+		static_assert(std::is_trivially_destructible<typeT>(), "trivially destructable");
+
+		static_assert(std::is_copy_constructible<typeT>(), "copy constructor");
+		static_assert(std::is_nothrow_copy_constructible<typeT>(), "notrow copy constructor");
+		static_assert(std::is_trivially_copy_constructible<typeT>(), "trivially copy constructor");
+
+		static_assert(std::is_move_constructible<typeT>(), "move constructor");
+		static_assert(std::is_nothrow_move_constructible<typeT>(), "nothrow move constructor");
+		static_assert(std::is_trivially_move_constructible<typeT>(), "trivially move constructor");
+
+		static_assert(std::is_copy_assignable<typeT>(), "copy assignable");
+		static_assert(std::is_nothrow_copy_assignable<typeT>(), "notrow copy assignable");
+		static_assert(std::is_trivially_copy_assignable<typeT>(), "trivially copy assignable");
+
+		static_assert(std::is_move_assignable<typeT>(), "move assignable");
+		static_assert(std::is_nothrow_move_assignable<typeT>(), "move assignable");
+		static_assert(std::is_trivially_move_assignable<typeT>(), "trivially move assignable");
+
+		static_assert(std::is_trivially_copyable<typeT>(), "trivially copyable");
+		static_assert(std::is_swappable<typeT>(), "swappable");			//C++17
+		static_assert(std::is_nothrow_swappable<typeT>(), "swappable");	//C++17
+
 		static_assert(! std::is_swappable_with<Options<9>, std::bitset<10>>(), "");	//C++17
 		static_assert(! std::is_nothrow_swappable_with<Options<9>, std::bitset<10>>(), "");	//C++17
 
@@ -58,8 +69,12 @@ public:
 		static_assert(std::is_assignable<Options<3>, unsigned int>(), "assign from int");
 
 		Sudoku::Options<9> two{};
-		Sudoku::Options<4> O_3{std::bitset<5>()};
-		Sudoku::Options<4> O_4{ 2 };
+		try { Sudoku::Options<4> O_3{ std::bitset<5>() }; }
+		catch (std::exception&) { Assert::Fail(L"Construction with bitset()", LINE_INFO()); }
+		try { Sudoku::Options<4> O_3{ std::bitset<5>{"00100"} }; }
+		catch (std::exception&) { Assert::Fail(L"Construction with bitset with data", LINE_INFO()); }
+		try { Sudoku::Options<4> O_4{ 2 }; }
+		catch (std::exception&) { Assert::Fail(L"Construction with int", LINE_INFO()); }
 	}
 	TEST_METHOD(T1_memberfunctions)
 	{
@@ -112,27 +127,21 @@ public:
 		Assert::IsFalse(O_4.is_answer(), L"is_answer() inverse failed_2", LINE_INFO());
 		Assert::IsFalse(E_2.is_answer(), L"is_answer() inverse failed_4", LINE_INFO());
 		// is_answer(int) const
-		static_assert(!noexcept(O_1.is_answer(1)), "is_answer(int) is NOT noexcept");
+		static_assert(noexcept(O_1.is_answer(1)), "is_answer(int) is NOT noexcept");
 		Assert::IsTrue(O_3.is_answer(2), L"is_answer(answer) failed", LINE_INFO());
 		Assert::IsFalse(O_3.is_answer(1), L"is_answer(int) failed", LINE_INFO());
 		Assert::IsFalse(O_1.is_answer(2), L"is_answer(random) failed", LINE_INFO());
 		Assert::IsFalse(O_1.is_answer(17), L"is_answer(high_value) failed", LINE_INFO());
 		Assert::IsFalse(O_1.is_answer(0), L"is_answer(0) failed", LINE_INFO());
 		Assert::IsFalse(O_1.is_answer(-1), L"is_answer(-1) failed", LINE_INFO());
-		try { if (O_3.is_answer(17) || true) { Assert::Fail(L"is_answer() out-of-range expected", LINE_INFO()); } }
-		catch (const std::out_of_range&) {} // caught
-		catch (const std::exception&) { Assert::Fail(L"is_answer() unexpected exception", LINE_INFO()); }
 		// empty with answer flag
 		Assert::IsFalse(E_1.is_answer(), L"is_answer() on 0 answer", LINE_INFO());
 		Assert::IsFalse(E_1.is_answer(0), L"is_answer(0) returned true", LINE_INFO());
 		// is_option(int) const
-		static_assert(!noexcept(O_1.is_option(2)), "is_option(int) is NOT noexept");
+		static_assert(noexcept(O_1.is_option(2)), "is_option(int) is NOT noexept");
 		Assert::IsTrue(O_1.is_option(1), L"is_option(int) failed", LINE_INFO());
 		Assert::IsFalse(O_3.is_option(1), L"is_option(int) inverse failed", LINE_INFO());
 		Assert::IsFalse(O_3.is_option(2), L"is_option(int) inverse failed_2", LINE_INFO());
-		try { if (O_1.is_option(17) || true) { Assert::Fail(L"is_option(high) out-of-range expected", LINE_INFO()); } }
-		catch (const std::out_of_range&) {} // caught
-		catch (const std::exception&) { Assert::Fail(L"is_option() unexpected exception", LINE_INFO()); }
 		// is_empty() const
 		//constexpr bool is_empty() const noexcept;
 		static_assert(noexcept(O_1.is_empty()), "is_empty() should be noexcept");
@@ -185,11 +194,12 @@ public:
 		O_2.flip();
 		Assert::IsTrue(O_2.is_empty(), L"flip() failed", LINE_INFO());
 		Assert::IsTrue(O_2.count_all() == 0, L"flip() failed on count_all()", LINE_INFO());
-		// remove(int)
-		static_assert(!noexcept(O_1.remove(3)), "remove(int) should be noexcept");
-		Assert::IsTrue(O_1.remove(3), L"remove(int) failed", LINE_INFO());
-		Assert::IsTrue(O_1.count() == 8, L"remove(int) failed_2", LINE_INFO());
-		Assert::IsFalse(O_1.remove(3), L"remove(int) on false should return false", LINE_INFO());
+		// remove_option(int)
+		TMP.reset();
+		static_assert(!noexcept(TMP.remove_option(3)), "remove_option(int) should be noexcept");
+		Assert::IsTrue(TMP.remove_option(3), L"remove_option(int) failed", LINE_INFO());
+		Assert::IsTrue(TMP.count() == 8, L"remove_option(int) failed_2", LINE_INFO());
+		Assert::IsFalse(TMP.remove_option(3), L"remove_option(int) on false should return false", LINE_INFO());
 		// add(int)
 		//Options& add(int value);			// add single option
 		static_assert(!noexcept(O_1.add(4)), "add(int) should NOT be noexcept");
@@ -209,7 +219,11 @@ public:
 		//add_noexcept(int)
 		TMP.clear();
 		static_assert(noexcept(TMP.add_nocheck(1)), "add_noexcept(int) should be noexcept");
-		Assert::IsTrue(TMP.add_nocheck(4)[4], L"add_noexcept(int) failed", LINE_INFO());
+		TMP.add_nocheck(3);
+		Assert::IsFalse(TMP.is_empty(), L"no options or answer set", LINE_INFO());
+		Assert::IsFalse(TMP.count_all() == 0, L"no options set", LINE_INFO());
+		Assert::IsTrue(TMP.test(3), L"failed to add option", LINE_INFO());
+		Assert::IsTrue(TMP.add_nocheck(4).test(4), L"add_noexcept(int) failed", LINE_INFO());
 		//set_noexcept(int)
 		static_assert(noexcept(O_1.set_nocheck(2)), "set_noexcept(int) should be noexcept");
 		Assert::IsTrue(O_1.set_nocheck(2).is_answer(2), L"set_noexcept(int) failed", LINE_INFO());
@@ -240,7 +254,7 @@ public:
 		static_assert(noexcept(O_1 != O_2), "operator!= should be noexcept");
 		Assert::IsTrue(O_1 != E_1, L"operator!= failed", LINE_INFO());
 		Assert::IsFalse(O_1 != O_2, L"operator!= failed", LINE_INFO());
-		//TEST bool operator< (Options<E>&) const				sorting
+		//NEEDTEST bool operator< (Options<E>&) const			sorting
 		//Options operator&(Options&) const						shared options
 		static_assert(noexcept(O_1 & O_2), "operator& should be noexcept");
 		Assert::IsTrue((O_2 & O_3) == O_3, L"operation& failed_1", LINE_INFO());
@@ -256,7 +270,7 @@ public:
 		Assert::IsTrue(A_2[1] == false, L"reading with operator[int] failed_3", LINE_INFO());
 
 		///// non-const operators /////
-		//TEST constexpr bool operator[](int)
+		//NEEDTEST constexpr bool operator[](int)
 		static_assert(noexcept(TMP.operator[](0)=true), "operator[] should be noexcept");
 		TMP.clear();
 		Assert::IsTrue(TMP[0] = true, L"operator[] write");

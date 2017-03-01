@@ -16,8 +16,8 @@ class Solver
 {
 	using Location	= Location<N>;
 	static constexpr int base_size = Location().base_size;	// default 3
-	static constexpr int elem_size = Location().elem_size; // default 9
-	static constexpr int full_size = Location().full_size; // default 81
+	static constexpr int elem_size = Location().elem_size;	// default 9
+	static constexpr int full_size = Location().full_size;	// default 81
 	using Options	= Options<elem_size>;
 	using Board		= Sudoku::Board<Options, base_size>;
 	using Row		= typename Board::Row;
@@ -127,7 +127,7 @@ int Solver<N>::remove_option(const Location loc, const int value)
 	assert(!board_.at(loc).is_answer());
 
 	int changes{};
-	if (board_.at(loc).remove(value))	// true if applied
+	if (board_.at(loc).remove_option(value))	// true if applied
 	{
 		++changes;
 		changes += single_option(loc);
@@ -155,12 +155,12 @@ int Solver<N>::single_option(const Location loc, const int value)
 	assert(board_.at(loc).test(value));
 	assert(value > 0 && value <= elem_size);
 
-	if (board_.at(loc).count() == 1 &&
-		board_.at(loc).is_option(value))
+	if (board_[loc].count() == 1 &&
+		board_[loc].is_option(value))
 	{
 		setValue(loc, value);
 	}
-	if (board_.at(loc).is_answer(value))
+	if (board_[loc].is_answer(value))
 	{
 		int changes{};
 		changes += remove_option_section(
