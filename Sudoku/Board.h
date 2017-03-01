@@ -89,8 +89,8 @@ public:
 	const const_InBetween operator [] (int row) const noexcept;
 
 	/* Iterators */
-	typedef typename std::vector<T>::iterator iterator;
-	typedef typename std::vector<T>::const_iterator const_iterator;
+	using iterator = typename std::vector<T>::iterator;
+	using const_iterator = typename std::vector<T>::const_iterator;
 
 	iterator begin() noexcept;
 	const_iterator cbegin() const noexcept;
@@ -139,9 +139,9 @@ public:
 	Row row(int id) { return Row(this, id); }
 	Col col(int id) { return Col(this, id); }
 	Block block(int id) { return Block(this, id); }
-	Row row(Location loc) { return Row(this, loc.row()); }
-	Col col(Location loc) { return Col(this, loc.col()); }
-	Block block(Location loc) { return Block(this, loc.block()); }
+	Row row(Location loc) { return Row(this, loc.row()); }	//TODO should just except a Location
+	Col col(Location loc) { return Col(this, loc.col()); }	// as above
+	Block block(Location loc) { return Block(this, loc.block()); }	// as above
 
 private:
 	std::vector<T> board_{};
