@@ -19,6 +19,46 @@ namespace Sudoku_Test
 TEST_CLASS(NS_Solver)
 {
 public:
+	TEST_METHOD(T0_initialization)
+	{
+		using typeT = Sudoku::Solver<3>;
+		static_assert(std::is_class<typeT>(), "a class, hiding datarepresentation");
+		static_assert(! std::is_empty<typeT>(), "no datamembers");
+		static_assert(! std::is_standard_layout<typeT>(), "standard layout");
+		static_assert(! std::is_trivial<typeT>(), "not user-provided, no virtuals");
+		static_assert(! std::is_pod<typeT>(), "Plain Old Data, both trivial and standard-layout");
+		//static_assert(std::has_unique_object_representations<typeT>(), "");	//C++17
+
+		static_assert(! std::is_default_constructible<typeT>(), "default constructor");
+		static_assert(! std::is_nothrow_default_constructible<typeT>(), "notrow default constructor");
+		static_assert(! std::is_trivially_default_constructible<typeT>(), "tribial default constructor");
+
+		static_assert(std::is_destructible<typeT>(), "destructable");
+		static_assert(std::is_nothrow_destructible<typeT>(), "nothrow destructable");
+		static_assert(std::is_trivially_destructible<typeT>(), "trivially destructable");
+
+		static_assert(std::is_copy_constructible<typeT>(), "copy constructor");
+		static_assert(std::is_nothrow_copy_constructible<typeT>(), "notrow copy constructor");
+		static_assert(std::is_trivially_copy_constructible<typeT>(), "trivially copy constructor");
+
+		static_assert(std::is_move_constructible<typeT>(), "move constructor");
+		static_assert(std::is_nothrow_move_constructible<typeT>(), "nothrow move constructor");
+		static_assert(std::is_trivially_move_constructible<typeT>(), "trivially move constructor");
+
+		static_assert(! std::is_copy_assignable<typeT>(), "copy assignable");
+		static_assert(! std::is_nothrow_copy_assignable<typeT>(), "notrow copy assignable");
+		static_assert(! std::is_trivially_copy_assignable<typeT>(), "trivially copy assignable");
+
+		static_assert(! std::is_move_assignable<typeT>(), "move assignable");
+		static_assert(! std::is_nothrow_move_assignable<typeT>(), "move assignable");
+		static_assert(! std::is_trivially_move_assignable<typeT>(), "trivially move assignable");
+
+		static_assert(! std::is_trivially_copyable<typeT>(), "trivially copyable");
+		static_assert(! std::is_swappable<typeT>(), "swappable");			//C++17
+		static_assert(! std::is_nothrow_swappable<typeT>(), "swappable");	//C++17
+		static_assert(! std::is_swappable_with<typeT, typeT>(), "");	//C++17
+		static_assert(! std::is_nothrow_swappable_with<typeT, typeT>(), "");	//C++17
+	}
 	TEST_METHOD(T1_setValue)
 	{
 		using namespace Sudoku;

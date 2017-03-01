@@ -19,43 +19,54 @@ TEST_CLASS(Class_Location)
 public:
 	TEST_METHOD(T0_initialize_Location)
 	{
-		static_assert(std::is_class<Location<3>>(), "should be a class, hiding datarepresentation");
-		static_assert(! std::is_empty<Location<3>>(), "memberdata missing");
-		static_assert(std::is_standard_layout<Location<3>>(), "should have standard layout");
-		//static_assert(std::has_unique_object_representations<Location<3>>(), "");	//C++17
-		static_assert(! std::is_trivially_copyable<Location<3>>(), "should be trivially copyable");
-		static_assert(std::is_default_constructible<Location<3>>(), "default constructor");
-		static_assert(! std::is_trivially_default_constructible<Location<3>>(), "not using the default constructor");
-		static_assert(! std::is_nothrow_default_constructible<Location<3>>(), "notrow default constructor");
-		static_assert(std::is_copy_constructible<Location<3>>(), "copy constructor");
-		static_assert(std::is_trivially_copy_constructible<Location<3>>(), "trivially copy constructor");
-		static_assert(std::is_nothrow_copy_constructible<Location<3>>(), "notrow copy constructor");
-		static_assert(std::is_move_constructible<Location<3>>(), "move constructor");
-		static_assert(std::is_trivially_move_constructible<Location<3>>(), "trivially move constructor");
-		static_assert(std::is_nothrow_move_constructible<Location<3>>(), "nothrow move constructor");
-		static_assert(! std::is_copy_assignable<Location<3>>(), "copy assignable");
-		static_assert(! std::is_trivially_copy_assignable<Location<3>>(), "trivially copy assignable");
-		static_assert(! std::is_nothrow_copy_assignable<Location<3>>(), "notrow copy assignable");
-		static_assert(! std::is_move_assignable<Location<3>>(), "move assignable");
-		static_assert(! std::is_trivially_move_assignable<Location<3>>(), "trivially move assignable");
-		static_assert(! std::is_nothrow_move_assignable<Location<3>>(), "move assignable");
-		static_assert(std::is_destructible<Location<3>>(), "destructable");
-		static_assert(std::is_trivially_destructible<Location<3>>(), "trivially destructable");
-		static_assert(std::is_nothrow_destructible<Location<3>>(), "nothrow destructable");
-		static_assert(! std::is_swappable<Location<3>>(), "swappable");			//C++17
-		static_assert(! std::is_nothrow_swappable<Location<3>>(), "swappable");	//C++17
-		static_assert(! std::is_swappable_with<Location<3>, Block_Loc<3>>(), "");	//C++17
-		static_assert(! std::is_nothrow_swappable_with<Location<3>, Block_Loc<3>>(), "");	//C++17
+		using typeT = Location<3>;
+		static_assert(std::is_class<typeT>(), "a class, hiding datarepresentation");
+		static_assert(! std::is_empty<typeT>(), "no datamembers");
+		static_assert(std::is_standard_layout<typeT>(), "standard layout");
+		static_assert(! std::is_trivial<typeT>(), "not user-provided, no virtuals");
+		static_assert(! std::is_pod<typeT>(), "Plain Old Data, both trivial and standard-layout");
+		//static_assert(std::has_unique_object_representations<typeT>(), "");	//C++17
+
+		static_assert(std::is_default_constructible<typeT>(), "default constructor");
+		static_assert(! std::is_nothrow_default_constructible<typeT>(), "notrow default constructor");
+		static_assert(! std::is_trivially_default_constructible<typeT>(), "tribial default constructor");
+
+		static_assert(std::is_destructible<typeT>(), "destructable");
+		static_assert(std::is_nothrow_destructible<typeT>(), "nothrow destructable");
+		static_assert(std::is_trivially_destructible<typeT>(), "trivially destructable");
+
+		static_assert(std::is_copy_constructible<typeT>(), "copy constructor");
+		static_assert(std::is_nothrow_copy_constructible<typeT>(), "notrow copy constructor");
+		static_assert(std::is_trivially_copy_constructible<typeT>(), "trivially copy constructor");
+
+		static_assert(std::is_move_constructible<typeT>(), "move constructor");
+		static_assert(std::is_nothrow_move_constructible<typeT>(), "nothrow move constructor");
+		static_assert(std::is_trivially_move_constructible<typeT>(), "trivially move constructor");
+
+		static_assert(! std::is_copy_assignable<typeT>(), "copy assignable");
+		static_assert(! std::is_nothrow_copy_assignable<typeT>(), "notrow copy assignable");
+		static_assert(! std::is_trivially_copy_assignable<typeT>(), "trivially copy assignable");
+
+		static_assert(! std::is_move_assignable<typeT>(), "move assignable");
+		static_assert(! std::is_nothrow_move_assignable<typeT>(), "move assignable");
+		static_assert(! std::is_trivially_move_assignable<typeT>(), "trivially move assignable");
+
+		static_assert(! std::is_trivially_copyable<typeT>(), "trivially copyable");
+		static_assert(! std::is_swappable<typeT>(), "swappable");			//C++17
+		static_assert(! std::is_nothrow_swappable<typeT>(), "swappable");	//C++17
+
+		static_assert(! std::is_swappable_with<typeT, Block_Loc<3>>(), "");	//C++17
+		static_assert(! std::is_nothrow_swappable_with<typeT, Block_Loc<3>>(), "");	//C++17
 
 		// type construction
-		static_assert(std::is_constructible<Location<3>, int>(), "should construct from int");
-		static_assert(std::is_constructible<Location<3>, unsigned int>(), "construct from unsigned int");
-		static_assert(std::is_constructible<Location<3>, size_t>(), "construct from size_t");
-		static_assert(std::is_constructible<Location<3>, Block_Loc<3>>(), "should construct from Block_Loc");
-		static_assert(! std::is_constructible<Location<3>, Block_Loc<2>>(), "shouldn't accept non matching dimensions_1");
-		static_assert(! std::is_assignable<Location<3>, Location<3>>(), "");
-		static_assert(! std::is_assignable<Location<3>, Block_Loc<3>>(), "");
-		static_assert(! std::is_assignable<Location<3>, int>(), "shouldn't be assignable from int, requires explicit!!");
+		static_assert(std::is_constructible<typeT, int>(), "should construct from int");
+		static_assert(std::is_constructible<typeT, unsigned int>(), "construct from unsigned int");
+		static_assert(std::is_constructible<typeT, size_t>(), "construct from size_t");
+		static_assert(std::is_constructible<typeT, Block_Loc<3>>(), "should construct from Block_Loc");
+		static_assert(! std::is_constructible<typeT, Block_Loc<2>>(), "shouldn't accept non matching dimensions_1");
+		static_assert(! std::is_assignable<typeT, typeT>(), "");
+		static_assert(! std::is_assignable<typeT, Block_Loc<3>>(), "");
+		static_assert(! std::is_assignable<typeT, int>(), "shouldn't be assignable from int, requires explicit!!");
 
 		Location<3> L1(52);
 		Assert::IsTrue(L1.element() == 52, L"element location", LINE_INFO());
@@ -72,33 +83,44 @@ public:
 	}
 	TEST_METHOD(T01_initialize_Block_Loc)
 	{
-		static_assert(std::is_class<Block_Loc<3>>(), "should be a class, hiding datarepresentation");
-		static_assert(! std::is_empty<Block_Loc<3>>(), "memberdata missing");
-		static_assert(std::is_standard_layout<Block_Loc<3>>(), "should have standard layout");
-		//static_assert(std::has_unique_object_representations<Block_Loc<3>>(), "");	//C++17
-		static_assert(! std::is_trivially_copyable<Block_Loc<3>>(), "should be trivially copyable");
-		static_assert(! std::is_default_constructible<Block_Loc<3>>(), "default constructor");
-		static_assert(! std::is_trivially_default_constructible<Block_Loc<3>>(), "not using the default constructor");
-		static_assert(! std::is_nothrow_default_constructible<Block_Loc<3>>(), "notrow default constructor");
-		static_assert(std::is_copy_constructible<Block_Loc<3>>(), "copy constructor");
-		static_assert(std::is_trivially_copy_constructible<Block_Loc<3>>(), "trivially copy constructor");
-		static_assert(std::is_nothrow_copy_constructible<Block_Loc<3>>(), "notrow copy constructor");
-		static_assert(std::is_move_constructible<Block_Loc<3>>(), "move constructor");
-		static_assert(std::is_trivially_move_constructible<Block_Loc<3>>(), "trivially move constructor");
-		static_assert(std::is_nothrow_move_constructible<Block_Loc<3>>(), "nothrow move constructor");
-		static_assert(! std::is_copy_assignable<Block_Loc<3>>(), "copy assignable");
-		static_assert(! std::is_trivially_copy_assignable<Block_Loc<3>>(), "trivially copy assignable");
-		static_assert(! std::is_nothrow_copy_assignable<Block_Loc<3>>(), "notrow copy assignable");
-		static_assert(! std::is_move_assignable<Block_Loc<3>>(), "move assignable");
-		static_assert(! std::is_trivially_move_assignable<Block_Loc<3>>(), "trivially move assignable");
-		static_assert(! std::is_nothrow_move_assignable<Block_Loc<3>>(), "move assignable");
-		static_assert(std::is_destructible<Block_Loc<3>>(), "destructable");
-		static_assert(std::is_trivially_destructible<Block_Loc<3>>(), "trivially destructable");
-		static_assert(std::is_nothrow_destructible<Block_Loc<3>>(), "nothrow destructable");
-		static_assert(! std::is_swappable<Block_Loc<3>>(), "swappable");			//C++17
-		static_assert(! std::is_nothrow_swappable<Block_Loc<3>>(), "swappable");	//C++17
-		static_assert(! std::is_swappable_with<Block_Loc<3>, Location<3>>(), "");	//C++17
-		static_assert(! std::is_nothrow_swappable_with<Block_Loc<3>, Location<3>>(), "");	//C++17
+		using typeT = Block_Loc<3>;
+		static_assert(std::is_class<typeT>(), "a class, hiding datarepresentation");
+		static_assert(! std::is_empty<typeT>(), "no datamembers");
+		static_assert(std::is_standard_layout<typeT>(), "standard layout");
+		static_assert(! std::is_trivial<typeT>(), "not user-provided, no virtuals");
+		static_assert(! std::is_pod<typeT>(), "Plain Old Data, both trivial and standard-layout");
+		//static_assert(std::has_unique_object_representations<typeT>(), "");	//C++17
+
+		static_assert(! std::is_default_constructible<typeT>(), "default constructor");
+		static_assert(! std::is_nothrow_default_constructible<typeT>(), "notrow default constructor");
+		static_assert(! std::is_trivially_default_constructible<typeT>(), "tribial default constructor");
+
+		static_assert(std::is_destructible<typeT>(), "destructable");
+		static_assert(std::is_nothrow_destructible<typeT>(), "nothrow destructable");
+		static_assert(std::is_trivially_destructible<typeT>(), "trivially destructable");
+
+		static_assert(std::is_copy_constructible<typeT>(), "copy constructor");
+		static_assert(std::is_nothrow_copy_constructible<typeT>(), "notrow copy constructor");
+		static_assert(std::is_trivially_copy_constructible<typeT>(), "trivially copy constructor");
+
+		static_assert(std::is_move_constructible<typeT>(), "move constructor");
+		static_assert(std::is_nothrow_move_constructible<typeT>(), "nothrow move constructor");
+		static_assert(std::is_trivially_move_constructible<typeT>(), "trivially move constructor");
+
+		static_assert(! std::is_copy_assignable<typeT>(), "copy assignable");
+		static_assert(! std::is_nothrow_copy_assignable<typeT>(), "notrow copy assignable");
+		static_assert(! std::is_trivially_copy_assignable<typeT>(), "trivially copy assignable");
+
+		static_assert(! std::is_move_assignable<typeT>(), "move assignable");
+		static_assert(! std::is_nothrow_move_assignable<typeT>(), "move assignable");
+		static_assert(! std::is_trivially_move_assignable<typeT>(), "trivially move assignable");
+
+		static_assert(! std::is_trivially_copyable<typeT>(), "trivially copyable");
+		static_assert(! std::is_swappable<typeT>(), "swappable");			//C++17
+		static_assert(! std::is_nothrow_swappable<typeT>(), "swappable");	//C++17
+
+		static_assert(! std::is_swappable_with<typeT, Location<3>>(), "");	//C++17
+		static_assert(! std::is_nothrow_swappable_with<typeT, Location<3>>(), "");	//C++17
 
 		// type construction
 		static_assert(! std::is_constructible<Block_Loc<3>, int>(), "should construct from int");
