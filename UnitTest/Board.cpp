@@ -160,28 +160,27 @@ public:
 
 		// Writing
 		try { set_atValue(board); }
-		catch (const std::exception&) { Assert::Fail(L"writing with atValue(elem) failed", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"writing with atValue(elem) failed", LINE_INFO()); }
 		Assert::IsTrue(board.at(80) == 9, L"reading with atValue(elem) failed", LINE_INFO());
 		try { if (board.at(100)) { Assert::Fail(L"at(elem) should give out-of-bounds", LINE_INFO()); } }
-		catch (const std::exception&) { } // caught
+		catch (...) { } // caught
 
 		try { set_atValue_2(board2); }
-		catch (const std::exception&) { Assert::Fail(L"writing with atValue(row, col) failed", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"writing with atValue(row, col) failed", LINE_INFO()); }
 		Assert::IsTrue(board2.at(8, 8) == 9, L"reading with atValue(row, col) failed", LINE_INFO());
 		try { if (board2.at(11, 4)) { Assert::Fail(L"at(row, col) should fail with out-of-bound", LINE_INFO()); } }
-		catch (const std::exception&) { }
+		catch (...) { }
 
 		Sudoku::Board<int, 3> board3;
 		try { set_Value(board3); }
-		catch (const std::exception&) { Assert::Fail(L"writing with operator[row][col] filed", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"writing with operator[row][col] filed", LINE_INFO()); }
 		Assert::IsTrue(board3[8][8] == 9, L"reading with operator[row][col] failed", LINE_INFO());
 		//try { if (board3[11][4]) { Assert::Fail(L"at[row][col] should fail with out-of-bound", LINE_INFO()); } }
-		//catch (const std::exception&) { }
 		//catch (...) { Assert::Fail(L"unknown error", LINE_INFO()); }
 
 		Sudoku::Board<int, 3> board4;
 		try { set_Value(board4); }
-		catch (const std::exception&) { Assert::Fail(L"writing with operator[Location] failed", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"writing with operator[Location] failed", LINE_INFO()); }
 		Assert::IsTrue(board4[Sudoku::Location<3>(80)] == 9, L"reading with operator[Location] failed", LINE_INFO());
 
 				// operator==() / operator!=()

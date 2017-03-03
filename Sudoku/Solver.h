@@ -6,8 +6,9 @@
 #include "Options.h"
 
 #include <array>
-#include <cassert>
 #include <vector>
+#include <algorithm>
+#include <cassert>
 
 namespace Sudoku
 {
@@ -257,7 +258,7 @@ int Solver<N>::remove_option_section(
 	{
 		if (itr->is_option(value) &&
 			ignore.cend() == std::find_if(ignore.cbegin(), ignore.cend(),
-				[itr](Location loc) { return itr == loc; }))
+				[itr](Location loc) { return itr == loc; }))	// <algorithm>
 		{
 			changes += remove_option(itr.location(), value);
 		}
@@ -279,7 +280,7 @@ int Solver<N>::remove_option_section(
 	{
 		if ( !(itr->is_answer()) &&
 			ignore.cend() == std::find_if(ignore.cbegin(), ignore.cend(),
-				[itr](Location loc) { return itr == loc; }))
+				[itr](Location loc) { return itr == loc; }))	// <algorithm>
 		{
 			for (auto v : values)
 			{
@@ -337,7 +338,7 @@ auto Solver<N>::set_uniques(InItr_ begin, InItr_ end, const Options& worker)
 				const auto itr = std::find_if(
 					begin, end,
 					[value](Options O) { return O.is_option(value); }
-				);
+				);	// <algorithm>
 				assert(itr != end); // doesn't exist
 				setValue(itr.location(), value);
 				changes += single_option(itr.location(), value);

@@ -75,7 +75,7 @@ public:
 		Board<Options<4>, 2> board;
 		Assert::IsTrue(board.at(5) == Options<4>{}, L"incorrect instantiation", LINE_INFO());
 		try { Solver<2>(board).setValue(Location<2>(2), 3); }
-		catch (std::exception&) { Assert::Fail(L"setValue failed", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"setValue failed", LINE_INFO()); }
 		Assert::IsTrue(board[0][2] == 3, L"setValue failed to set the value", LINE_INFO());
 		Solver<2>(board).setValue(Location<2>(0), 4);
 		Solver<2>(board).setValue(Location<2>(15), 4);
@@ -86,7 +86,7 @@ public:
 		// Copy data from vector
 		Board<Options<4>, 2> board1;
 		try { Solver<2>(board1).setValue(v1.cbegin(), v1.cend()); }
-		catch (std::exception&) { Assert::Fail(L"setValue failed in copying from vector", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"setValue failed in copying from vector", LINE_INFO()); }
 		Assert::IsTrue(
 			board1[0][1] == 2 &&
 			board1[1][0] == 4 &&
@@ -152,7 +152,7 @@ public:
 				Solver<2>(B2).unique_in_section(B2.row(i).cbegin(), B2.row(i).cend());
 			}
 		}
-		catch (std::exception&) { Assert::Fail(L"unique_in_section() threw an exception"); }
+		catch (...) { Assert::Fail(L"unique_in_section() threw an exception"); }
 		Assert::IsTrue(
 			B2[0][0] == 3 && B2[0][1] == 2 &&
 			B2[2][2] == 2,

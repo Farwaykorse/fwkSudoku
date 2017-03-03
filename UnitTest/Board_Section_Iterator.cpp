@@ -308,7 +308,7 @@ public:
 			{
 				for (auto& s : B.row(i)) { total += s; }
 			}
-			catch (const std::exception&)
+			catch (...)
 			{
 				Assert::Fail(L"Section::Row range-for", LINE_INFO());
 			}
@@ -323,7 +323,7 @@ public:
 			{
 				for (auto& s : B.col(i)) { total += s; }
 			}
-			catch (const std::exception&)
+			catch (...)
 			{
 				Assert::Fail(L"Section::Col range-for", LINE_INFO());
 			}
@@ -338,7 +338,7 @@ public:
 			{
 				for (auto& s: B.block(i)) { total += s; }
 			}
-			catch (const std::exception&)
+			catch (...)
 			{
 				Assert::Fail(L"Section::Block range-for", LINE_INFO());
 			}

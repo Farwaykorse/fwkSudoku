@@ -3,7 +3,9 @@
 #include "Board.h"
 #include "Location.h"
 
+#include <cassert>
 #include <iterator>
+#include <stdexcept>
 
 namespace Sudoku
 {

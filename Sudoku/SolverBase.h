@@ -7,8 +7,8 @@
 #include "Location.h"
 #include "Solver.h"
 
-#include <cassert>
 #include <vector>
+#include <cassert>
 #include <stdexcept>
 
 namespace Sudoku

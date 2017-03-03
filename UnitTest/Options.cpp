@@ -7,7 +7,6 @@
 // Class under test
 #include "Options.h"
 // additional
-#include <exception>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Sudoku;
@@ -70,11 +69,11 @@ public:
 
 		Sudoku::Options<9> two{};
 		try { Sudoku::Options<4> O_3{ std::bitset<5>() }; }
-		catch (std::exception&) { Assert::Fail(L"Construction with bitset()", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"Construction with bitset()", LINE_INFO()); }
 		try { Sudoku::Options<4> O_3{ std::bitset<5>{"00100"} }; }
-		catch (std::exception&) { Assert::Fail(L"Construction with bitset with data", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"Construction with bitset with data", LINE_INFO()); }
 		try { Sudoku::Options<4> O_4{ 2 }; }
-		catch (std::exception&) { Assert::Fail(L"Construction with int", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"Construction with int", LINE_INFO()); }
 	}
 	TEST_METHOD(T1_memberfunctions)
 	{
@@ -119,7 +118,7 @@ public:
 		catch (const std::out_of_range&) {} // caught
 		try { if (O_1.test(-1) || true) { Assert::Fail(L"test(-1) out-of-range expected", LINE_INFO()); } }
 		catch (const std::out_of_range&) {} // caught
-		catch (const std::exception&) { Assert::Fail(L"test() unexpected exception"); }
+		catch (...) { Assert::Fail(L"test() unexpected exception"); }
 		// is_answer() const
 		static_assert(noexcept(O_1.is_answer()), "is_answer() should be noexcept");
 		Assert::IsTrue(O_3.is_answer(), L"is_answer() failed", LINE_INFO());
@@ -153,15 +152,15 @@ public:
 		static_assert(!noexcept(O_1.available()), "available() should NOT be noexcept");
 		std::vector<int> result{};
 		try { result = O_4.available(); }
-		catch (const std::exception&) { Assert::Fail(L"available() failed", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"available() failed", LINE_INFO()); }
 		Assert::IsTrue(result.size() == 2, L"available() failed_2", LINE_INFO());
 		Assert::IsTrue(result[0] == 1, L"available() failed_3", LINE_INFO());
 		Assert::IsTrue(result[1] == 3, L"available() failed_4", LINE_INFO());
 		try { result = E_1.available(); }
-		catch (const std::exception&) { Assert::Fail(L"available() on empty failed", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"available() on empty failed", LINE_INFO()); }
 		Assert::IsTrue(result.size() == 0, L"available() when none available", LINE_INFO());
 		try { result = E_2.available(); }
-		catch (const std::exception&) { Assert::Fail(L"available() on empty failed_2", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"available() on empty failed_2", LINE_INFO()); }
 		Assert::IsTrue(result.size() == 0, L"available() when none available_2", LINE_INFO());
 		// get_answer() const
 		//int get_answer() const noexcept;		// return get_answer or 0
@@ -204,10 +203,10 @@ public:
 		//Options& add(int value);			// add single option
 		static_assert(!noexcept(O_1.add(4)), "add(int) should NOT be noexcept");
 		try { O_1.add(4); }
-		catch (std::exception&) { Assert::Fail(L"add(int) failed"); }
+		catch (...) { Assert::Fail(L"add(int) failed"); }
 		try { O_1.add(12); }
 		catch (const std::out_of_range&) {} // caught
-		catch (const std::exception&) { Assert::Fail(L"add(high val) exception wasn't caught"); }
+		catch (...) { Assert::Fail(L"add(high val) exception wasn't caught"); }
 		// set(int)
 		static_assert(!noexcept(O_1.set(4)), "set(int) should NOT be noexcept");
 		Assert::IsTrue(O_1.set(4).is_answer(), L"set(int) failed", LINE_INFO());

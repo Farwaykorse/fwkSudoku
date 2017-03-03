@@ -11,10 +11,11 @@
 #include "Section.h"
 
 #include <vector>
-#include <iterator>
 #include <algorithm>
 #include <cassert>
-#include <limits>	// numeric_limits
+#include <iterator>
+#include <limits>		// numeric_limits
+#include <stdexcept>	// out_of_range
 
 namespace Sudoku
 {
@@ -153,7 +154,7 @@ private:
 
 // #################################################################################
 // Board - memberfunctions
-template<typename T, int N> inline
+template<typename T, int N>
 constexpr void Board<T, N>::valid_dimensions() const
 {
 	// input check
@@ -161,7 +162,7 @@ constexpr void Board<T, N>::valid_dimensions() const
 	static_assert(base_size == 1 ||
 		(base_size < elem_size &&
 		 elem_size <= full_size &&
-		 base_size < std::numeric_limits<int>::max() &&
+		 base_size < std::numeric_limits<int>::max() &&	// <limits>
 		 elem_size < std::numeric_limits<int>::max() &&
 		 full_size < std::numeric_limits<int>::max()
 		 ), "board size out of bounds");
@@ -169,13 +170,13 @@ constexpr void Board<T, N>::valid_dimensions() const
 	static_assert(base_size*base_size == elem_size && elem_size*elem_size == full_size, "size calculation broken");
 }
 
-template<typename T, int N> inline
+template<typename T, int N>
 constexpr bool Board<T, N>::valid_size(const int elem) const
 {
 	return (elem >= 0 && elem < full_size);
 }
 
-template<typename T, int N> inline
+template<typename T, int N>
 constexpr bool Board<T, N>::valid_size(const int row, const int col) const
 {
 	return (row >= 0 && row < elem_size && col >= 0 && col < elem_size);
@@ -226,7 +227,7 @@ inline T& Board<T, N>::at(int row, int col)
 {
 	if (!valid_size(row, col))
 	{
-		throw std::out_of_range{ "Board::at(int row, col)" };
+		throw std::out_of_range{ "Board::at(int row, col)" };	// <stdexcept>
 	}
 	return at(Location(row, col).element());
 }

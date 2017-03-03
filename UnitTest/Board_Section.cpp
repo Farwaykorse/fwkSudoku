@@ -51,12 +51,12 @@ public:
 		Assert::IsTrue(B.row(0).size() == 9, L"...");
 		Assert::IsTrue(B.row(0).at(0) == 0, L"");
 		try { B.row(5).at(3) = 8; }
-		catch (const std::exception&)
+		catch (...)
 		{
 			Assert::Fail(L"Write to row with at() failed", LINE_INFO());
 		}
 		try { B.row(8)[8] = 2; }
-		catch (const std::exception&)
+		catch (...)
 		{
 			Assert::Fail(L"Write to row section with [] failed", LINE_INFO());
 		}
@@ -80,7 +80,7 @@ public:
 				Assert::IsTrue(B.col(i + 2)[5] == 4 - i, L"loop value different", LINE_INFO());
 			}
 		}
-		catch (const std::exception&)
+		catch (...)
 		{
 			Assert::Fail(L"Loop over block failed", LINE_INFO());
 		}

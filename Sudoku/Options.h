@@ -10,9 +10,10 @@
 
 #include "Location.h"
 
-#include <cassert>
 #include <bitset>
 #include <vector>
+#include <cassert>
+#include <utility>
 
 namespace Sudoku
 {
@@ -132,7 +133,7 @@ template<int E> inline
 Options<E>& Options<E>::operator=(bitset&& other) noexcept
 {
 	//NEEDTEST not triggered
-	std::swap(data_, other);
+	std::swap(data_, other);	//<utility>
 	return *this;
 }
 
