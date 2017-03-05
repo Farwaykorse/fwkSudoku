@@ -18,6 +18,7 @@ TEST_CLASS(Class_Options)
 public:
 	TEST_METHOD(T0_initialize)
 	{
+		// Class property testing
 		using typeT = Sudoku::Options<9>;
 		static_assert(std::is_class<typeT>(), "a class, hiding datarepresentation");
 		static_assert(! std::is_empty<typeT>(), "no datamembers");
@@ -54,8 +55,8 @@ public:
 		static_assert(std::is_swappable<typeT>(), "swappable");			//C++17
 		static_assert(std::is_nothrow_swappable<typeT>(), "swappable");	//C++17
 
-		static_assert(! std::is_swappable_with<Options<9>, std::bitset<10>>(), "");	//C++17
-		static_assert(! std::is_nothrow_swappable_with<Options<9>, std::bitset<10>>(), "");	//C++17
+		static_assert(! std::is_swappable_with<typeT, std::bitset<10>>(), "");	//C++17
+		static_assert(! std::is_nothrow_swappable_with<typeT, std::bitset<10>>(), "");	//C++17
 
 		// type construction
 		static_assert(std::is_constructible<Options<3>, const std::bitset<4>&>(), "construct from const std::bitset&");

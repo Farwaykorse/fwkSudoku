@@ -35,7 +35,7 @@ public:
 		"class Location: Board size to big for size system integer");
 
 	// constructors
-	constexpr Location() : id_(0) {}
+	constexpr Location() = default;
 	explicit constexpr Location(int elem) : id_(elem) {}
 	constexpr Location(int row, int col) : id_(location(row, col)) {}
 
@@ -49,11 +49,13 @@ public:
 	constexpr int block_elem() const { return block_row() * base_size + block_col(); }// default [0,9)
 
 	// comparison
-	bool operator==(const self_type& other) const noexcept { return id_ == other.id_; }
-	bool operator==(const Block_Loc& other) const noexcept { return id_ == Location(other).element(); }
-	bool operator<(const self_type& other) const noexcept { return id_ < other.id_; }
+	constexpr bool operator==(const self_type& other) const { return id_ == other.id_; }
+	constexpr bool operator==(const Block_Loc& other) const { return id_ == Location(other).element(); }
+	constexpr bool operator<(const self_type& other) const { return id_ < other.id_; }
+
+	constexpr bool operator!=(const Location& other) const { return !(*this == other); }
 private:
-	const int id_;
+	int id_{};
 };
 
 template<int N>
@@ -90,13 +92,13 @@ public:
 	constexpr operator Location() const { return Location(id_); }
 
 	// comparison
-	bool operator==(const Block_Loc& other) const noexcept { return id_ == other.id_; }
-	bool operator==(const Location& other) const noexcept { return id_ == other.element(); }
-	bool operator<(const Block_Loc& other) const noexcept
-	{ 
+	constexpr bool operator==(const Block_Loc& other) const noexcept { return id_ == other.id_; }
+	constexpr bool operator==(const Location& other) const noexcept { return id_ == other.element(); }
+	constexpr bool operator<(const Block_Loc& other) const noexcept
+	{
 		return ( (id() < other.id()) ? true : (id_ < other.id_) );
 	}
 private:
-	const int id_;
+	int id_;
 };
 }	// namespace Sudoku
