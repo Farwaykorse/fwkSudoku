@@ -63,7 +63,7 @@ public:
 	{
 		using namespace Sudoku;
 
-		static const std::vector<int> v1
+		const std::vector<int> v1
 		{
 			// start	// after setValue
 			0,2, 0,0,	// 1	2	3	4
@@ -109,7 +109,7 @@ public:
 	{
 		using namespace Sudoku;
 
-		static const std::vector<int> v1
+		const std::vector<int> v1
 		{
 			// start	// after setValue
 			0,2, 0,0,	// 1	2	3	4
@@ -127,13 +127,13 @@ public:
 		Solver<2>(B1).unique_in_section(B1.row(0).cbegin(), B1.row(0).cend());
 		Assert::IsTrue(B1 == cB1, L"row 0 was completely fixed by setValue", LINE_INFO());
 
-		static const std::vector<int> v2
+		const std::vector<int> v2
 		{
 			//start		// after setValue
-			3,2, 0,0,	// 3	2	14	14
-			0,0, 0,0,	// 14	14	134	12.34
-			0,0, 2,0,	// 14	134	2	134
-			0,0, 0,0	// 12.4	134	134	134
+			3,2, 0,0,	// 3	2	14	14		3	2	14	14
+			0,0, 0,0,	// 14	14	3	2		14	14	3	2
+			0,0, 2,0,	// 14	134	2	134		14	134	2	134
+			0,0, 0,0	// 12.4	134	134	134		2	134	14	134
 		};
 		Board<Options<4>, 2> B2{};
 		Solver<2>(B2).setValue(v2.cbegin(), v2.cend());
@@ -142,8 +142,8 @@ public:
 		Solver<2>(B2).unique_in_section(B2.row(0).cbegin(), B2.row(0).cend());
 		Assert::IsTrue(B2 == cB2, L"row 0 was completely fixed by setValue", LINE_INFO());
 		// single row 1
-		Solver<2>(B2).unique_in_section(B2.row(1).cbegin(), B2.row(1).cend());
-		Assert::IsTrue(B2 != cB2, L"row 1 should have changed", LINE_INFO());
+		//Solver<2>(B2).unique_in_section(B2.row(3).cbegin(), B2.row(3).cend());
+		//Assert::IsTrue(B2 != cB2, L"row 3 should have changed", LINE_INFO());
 		// full board
 		try
 		{
@@ -178,7 +178,7 @@ public:
 		*	|	8	|		|	4	|	| 2 8 7	| 3 5 6	| 1 4 9	|
 		*	|_ _5_ _|_ _ _ _|_6_ _ _|	|_3_5_1_|_9_4_7_|_6_2_8_|
 		*/
-		static const std::vector<int> b1
+		const std::vector<int> b1
 		{
 			0, 0, 0,	0, 0, 0,	0, 1, 2,
 			0, 0, 0,	0, 3, 5,	0, 0, 0,
@@ -190,7 +190,7 @@ public:
 			0, 8, 0,	0, 0, 0,	0, 4, 0,
 			0, 5, 0,	0, 0, 0,	6, 0, 0
 		};
-		static const std::vector<int> b1a
+		const std::vector<int> b1a
 		{
 			6, 7, 3,	8, 9, 4,	5, 1, 2,
 			9, 1, 2,	7, 3, 5,	4, 8, 6,
@@ -285,6 +285,88 @@ public:
 		{
 			Solver<3>(B2).block_exclusive(B2.block(i).cbegin(), B2.block(i).cend());
 		}
+	}
+	//TEST_METHOD(T5_single_option)
+	//{
+	//TESTNEEDED single_option
+	//	const std::vector<int> b1a
+	//	{
+	//		0, 0, 0,	0, 0, 0,	0, 0, 0,
+	//		0, 0, 0,	0, 0, 0,	0, 0, 0,
+	//		0, 0, 0,	0, 0, 0,	0, 0, 0,
+	//		0, 0, 0,	0, 0, 0,	0, 0, 0,
+	//		0, 0, 0,	0, 0, 0,	0, 0, 0,
+	//		0, 0, 0,	0, 0, 0,	0, 0, 0,
+	//		0, 0, 0,	0, 0, 0,	0, 0, 0,
+	//		0, 0, 0,	0, 0, 0,	0, 0, 0,
+	//		0, 0, 0,	0, 0, 0,	0, 0, 0
+	//	};
+	//}
+	TEST_METHOD(T6_dual_option)
+	{
+		using namespace Sudoku;
+		/*	start board				
+		*	 _ _ _ _ _ _ _ _ _ _ _ _
+		*	|     3 |      	| - 1,2 |	test for row
+		*	| 4 5 6 |       |       |
+		*	|_7_8_9_|_ _ _ _|_ _ _ _|	
+		*	|   	|       |   	|	
+		*	|	    |   all |       |	
+		*	|_ _ _ _|_ _ _ _|_ _ _ _|	
+		*	| 		|    	| 1 2 3 |	
+		*	|	    |	    | 4 5   |	test for col
+		*	|_ _ _ _|_ _ _ _|_7_8_ _|	
+		*	before: 0,8: contains 1,2,4,5,6,7,8,9 (all except 3)
+		*	after:  0,8: contains only 4,5,7,8
+		*	after:	8,0: contains all except 4,7,8
+		*	after:  block 4 contains all options in all cells
+		*/
+		const std::vector<int> b1
+		{
+			0, 0, 3,	0, 0, 0,	0, 0, 0,
+			4, 5, 6,	0, 0, 0,	0, 0, 0,
+			7, 8, 9,	0, 0, 0,	0, 0, 0,
+			0, 0, 0,	0, 0, 0,	0, 0, 0,
+			0, 0, 0,	0, 0, 0,	0, 0, 0,
+			0, 0, 0,	0, 0, 0,	0, 0, 0,
+			0, 0, 0,	0, 0, 0,	1, 2, 3,
+			0, 0, 0,	0, 0, 0,	4, 5, 0,
+			0, 0, 0,	0, 0, 0,	7, 8, 0
+		};
+		Board<Options<9>, 3> B1;
+		Solver<3> Run1(B1);
+		try { Run1.setValue(b1.cbegin(), b1.cend()); }
+		catch (...) { Assert::Fail(L"setValue failed in copying from vector"); }
+		Assert::IsTrue(B1[0][0].count() == 2, L"dual_option before 1");
+		Assert::IsTrue(B1[0][8].count() == 8, L"dual_option before 2");
+		Assert::IsTrue(B1[4][4].count() == 9, L"dual_option before 3");
+		Assert::IsTrue(B1[8][0].count() == 6, L"dual_option before 4");
+		try { Run1.dual_option(Location<3>(0)); }
+		catch (...) { Assert::Fail(L"dual_option failed"); }
+		Assert::IsTrue(B1[0][0].count() == 2, L"dual_option 1"); // unchanged
+		Assert::IsTrue(B1[0][8].count() == 6, L"dual_option 2");
+		Assert::IsTrue(B1[4][4].count() == 9, L"dual_option 3"); // unchanged
+		Assert::IsTrue(B1[8][0].count() == 6, L"dual_option 4"); // unchanged
+		try { Run1.dual_option(Location<3>(1)); }
+		catch (...) { Assert::Fail(L"dual_option failed"); }
+		Assert::IsTrue(B1[0][0].count() == 2, L"dual_option 5"); // unchanged
+		Assert::IsTrue(B1[0][8].count() == 6, L"dual_option 6"); // unchanged
+		Assert::IsTrue(B1[4][4].count() == 9, L"dual_option 7"); // unchanged
+		Assert::IsTrue(B1[8][0].count() == 6, L"dual_option 8"); // unchangedtry { Run1.dual_option(Location<3>(0)); }
+		try { Run1.dual_option(Location<3>(80)); }
+		catch (...) { Assert::Fail(L"dual_option failed"); }
+		Assert::IsTrue(B1[0][0].count() == 2, L"dual_option 9"); // unchanged
+		Assert::IsTrue(B1[0][8].count() == 4, L"dual_option 10");
+		Assert::IsTrue(B1[4][4].count() == 9, L"dual_option 11"); // unchanged
+		Assert::IsTrue(B1[8][0].count() == 6, L"dual_option 12"); // unchanged
+
+
+
+
+
+
+
+
 	}
 };
 }	// namespace Sudoku_Test

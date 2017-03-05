@@ -305,7 +305,7 @@ template<int E> inline
 std::vector<int> Options<E>::available() const
 {
 	std::vector<int> values{};
-	values.reserve(count());
+	values.reserve(static_cast<size_t>(count()));
 	if (!is_answer() && !is_empty())
 	{
 		int loc{ 0 };

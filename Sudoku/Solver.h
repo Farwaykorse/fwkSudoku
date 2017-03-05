@@ -10,6 +10,12 @@
 #include <algorithm>
 #include <cassert>
 
+/* experiment flags */
+// DO #undef at end of file!
+// activate algorithms on removing option
+#define DUAL_ON_REMOVE		0
+
+
 namespace Sudoku
 {
 template<int N>
@@ -32,6 +38,7 @@ public:
 	template<typename InItr_>
 	void setValue(InItr_ begin, InItr_ end);
 
+	// remove an option: triggers solvers single_option()
 	int remove_option(Location, int value);
 	template<typename InItr_>
 	int remove_option_section(InItr_ begin, InItr_ end, Location ignore, int value);
@@ -43,7 +50,6 @@ public:
 	// Solvers
 	int single_option(Location);
 	int single_option(Location, int value);
-	//TODO dual_option implementation
 	int dual_option(Location);
 
 	template<typename InItr_>
@@ -93,7 +99,8 @@ template<int N> inline
 void Solver<N>::setValue(const Location loc, const int value)
 {
 	assert(value > 0 && value <= elem_size);
-	assert(board_.at(loc).test(value));	// check if available option, if not invalid board_
+	//TODO better exception type
+	if (!board_.at(loc).test(value)) { throw("invalid board"); }
 	board_.at(loc).set(value);
 
 	// process row / col / block
@@ -125,14 +132,16 @@ void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 template<int N> inline
 int Solver<N>::remove_option(const Location loc, const int value)
 {
-	assert(!board_.at(loc).is_answer());
+	assert(!board_.at(loc).is_answer(value));
 
 	int changes{};
 	if (board_.at(loc).remove_option(value))	// true if applied
 	{
 		++changes;
 		changes += single_option(loc);
+#if DUAL_ON_REMOVE == true
 		changes += dual_option(loc);
+#endif	// dual
 	}
 	return changes;
 }
@@ -184,6 +193,9 @@ int Solver<N>::single_option(const Location loc, const int value)
 	return 0;
 }
 
+// if 2 options in element:
+// find exact pair in section:
+// remove form other elements in section
 template<int N> inline
 int Solver<N>::dual_option(const Location loc)
 {
@@ -192,11 +204,40 @@ int Solver<N>::dual_option(const Location loc)
 	if (board_.at(loc).count() == 2)
 	{
 		int changes{};
-		//TODO find exact same in row
-			//TODO remove BOTH values from rest row
-		//TODO find exact same in col
-		//TODO find exact same in block
-
+		const Options& item{ board_[loc] };
+		for (int i{}; i < full_size; ++i)
+		{
+			// find exact same in board
+			if (board_[Location(i)] == item && Location(i) != loc)
+			{
+				// Remove values for rest of shared elements
+				if (shared_row(loc, Location(i)))
+				{
+					changes += remove_option_section(
+						board_.row(loc).begin(), board_.row(loc).end(),
+						std::vector<Location>{loc, Location(i)},
+						item.available()
+					);
+				}
+				if (shared_col(loc, Location(i)))
+				{
+					changes += remove_option_section(
+						board_.col(loc).begin(), board_.col(loc).end(),
+						std::vector<Location>{loc, Location(i)},
+						item.available()
+					);
+				}
+				if (shared_block(loc, Location(i)))
+				{
+				//NOTE this is slow
+					changes += remove_option_section(
+						board_.block(loc).begin(), board_.block(loc).end(),
+						std::vector<Location>{loc, Location(i)},
+						item.available()
+					);
+				}
+			}
+		}
 		return changes;
 	}
 	return 0;
@@ -258,6 +299,7 @@ int Solver<N>::remove_option_section(
 	{
 		if (itr->is_option(value) &&
 			ignore.cend() == std::find_if(ignore.cbegin(), ignore.cend(),
+		//	std::binary_search(ignore.cbegin(), ignore.cend(),
 				[itr](Location loc) { return itr == loc; }))	// <algorithm>
 		{
 			changes += remove_option(itr.location(), value);
@@ -267,6 +309,7 @@ int Solver<N>::remove_option_section(
 }
 
 // remove [value]s from [section] if not part of [loc]s
+// the ignore Location vector must be sorted
 template<int N>
 template<typename InItr_> inline
 int Solver<N>::remove_option_section(
@@ -280,7 +323,8 @@ int Solver<N>::remove_option_section(
 	{
 		if ( !(itr->is_answer()) &&
 			ignore.cend() == std::find_if(ignore.cbegin(), ignore.cend(),
-				[itr](Location loc) { return itr == loc; }))	// <algorithm>
+		//	std::binary_search(ignore.cbegin(), ignore.cend(),			// requires sorted data
+				[itr](Location loc) { return itr.location() == loc; }))	// <algorithm>
 		{
 			for (auto v : values)
 			{
@@ -605,7 +649,7 @@ auto Solver<N>::find_locations(
 
 
 
-
-
+/*	Remove local macros */
+#undef DUAL_ON_REMOVE
 
 }	// namespace Sudoku

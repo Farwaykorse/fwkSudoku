@@ -297,5 +297,17 @@ public:
 		Assert::IsTrue(noexcept(Location<2>().element()));
 		Assert::IsFalse(noexcept(Location<4>().element()));
 	}
+	TEST_METHOD(T5_external)
+	{
+		Assert::IsTrue(noexcept(shared_row(Location<3>(0), Location<3>(8))));
+		Assert::IsTrue(noexcept(shared_col(Location<3>(0), Location<3>(8))));
+		Assert::IsTrue(noexcept(shared_block(Location<3>(0), Location<3>(8))));
+		Assert::IsTrue(shared_row(Location<3>(0), Location<3>(8)));
+		Assert::IsFalse(shared_row(Location<3>(9), Location<3>(8)));
+		Assert::IsTrue(shared_col(Location<3>(0), Location<3>(18)));
+		Assert::IsFalse(shared_col(Location<3>(9), Location<3>(8)));
+		Assert::IsTrue(shared_block(Location<3>(0), Location<3>(11)));
+		Assert::IsFalse(shared_block(Location<3>(9), Location<3>(8)));
+	}
 };
 }

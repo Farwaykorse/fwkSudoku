@@ -101,4 +101,22 @@ public:
 private:
 	int id_;
 };
+
+template<int N> inline
+constexpr bool shared_row(Location<N> left, Location<N> right)
+{
+	return left.row() == right.row();
+}
+
+template<int N> inline
+constexpr bool shared_col(Location<N> left, Location<N> right)
+{
+	return left.col() == right.col();
+}
+template<int N> inline
+constexpr bool shared_block(Location<N> left, Location<N> right)
+{
+	return left.block() == right.block();
+}
+
 }	// namespace Sudoku
