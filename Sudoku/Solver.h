@@ -219,7 +219,7 @@ int Solver<N>::dual_option(const Location loc)
 						item.available()
 					);
 				}
-				if (shared_col(loc, Location(i)))
+				else if (shared_col(loc, Location(i)))
 				{
 					changes += remove_option_section(
 						board_.col(loc).begin(), board_.col(loc).end(),
