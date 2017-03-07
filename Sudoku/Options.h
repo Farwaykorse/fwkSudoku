@@ -252,11 +252,11 @@ inline bool Options<E>::test(int value) const
 	return data_.test(static_cast<size_t>(value));
 }
 
-/// check if set to answer
+// check if set to answer
 template<int E> inline
 bool Options<E>::is_answer() const noexcept
 {
-	return !(data_[0] || data_.none());
+	return data_.count() == 1 && !data_[0];
 }
 
 // check if set to answer value
