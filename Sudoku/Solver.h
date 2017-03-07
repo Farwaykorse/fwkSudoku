@@ -14,6 +14,7 @@
 // DO #undef at end of file!
 // activate algorithms on removing option
 #define DUAL_ON_REMOVE		0
+#define MULTIPLE_ON_REMOVE	0
 
 
 namespace Sudoku
@@ -51,6 +52,7 @@ public:
 	int single_option(Location);
 	int single_option(Location, int value);
 	int dual_option(Location);
+	int multi_option(Location);
 
 	template<typename InItr_>
 	int unique_in_section(InItr_ begin, InItr_ end);
@@ -77,9 +79,9 @@ private:
 	int set_block_locals(InItr_ begin, InItr_ end, int rep_count, const Options& worker);
 
 	template<typename InItr_> inline
-	auto appearance_sets(InItr_ begin, InItr_ end) const;
+		auto appearance_sets(InItr_ begin, InItr_ end) const;
 	template<typename InItr_> inline
-	auto find_locations(InItr_ begin, InItr_ end, int rep_count, int value) const;
+		auto find_locations(InItr_ begin, InItr_ end, int rep_count, int value) const;
 
 	template<typename InItr_>
 	int remove_option_outside_block(InItr_ begin, InItr_ end, Location block, int value);
@@ -142,6 +144,9 @@ int Solver<N>::remove_option(const Location loc, const int value)
 #if DUAL_ON_REMOVE == true
 		changes += dual_option(loc);
 #endif	// dual
+#if MULTIPLE_ON_REMOVE == true
+		changes += multi_option(loc);
+#endif	// multiple
 	}
 	return changes;
 }
@@ -229,13 +234,96 @@ int Solver<N>::dual_option(const Location loc)
 				}
 				if (shared_block(loc, Location(i)))
 				{
-				//NOTE this is slow
+					//NOTE this is slow
 					changes += remove_option_section(
 						board_.block(loc).begin(), board_.block(loc).end(),
 						std::vector<Location>{loc, Location(i)},
 						item.available()
 					);
 				}
+			}
+		}
+		return changes;
+	}
+	return 0;
+}
+
+// finds equal sets in section:
+// removes form others in section
+template<int N> inline
+int Solver<N>::multi_option(const Location loc)
+{
+	assert(loc.element() >= 0 && loc.element() < full_size);	// loc inside board_
+
+	const size_t count = board_.at(loc).count();
+	constexpr auto specialize = 2;				// use specialization below and including
+	constexpr auto max_size = elem_size / 2;	//?? Assumption, Proof needed
+	if (specialize < count && count <= max_size)
+	{
+		int changes{};	// performance counter
+		const Options& item{ board_[loc] };	// input item, to find matches to
+		std::vector<Location> list{};		// potential matches
+		// traverse whole board
+		for (int i{}; i < full_size; ++i)
+		{
+			const auto &other = board_[Location(i)];
+			// find exact same in board
+			//TODO rework to also pick-up cels containing [2,n) values from these n
+			if (other.count() > 0 &&	// include not processed answers
+				other.count() <= base_size &&
+				( other == item || (item & other).count() == other.count() )
+				)
+			{
+				list.push_back(Location(i));
+			}
+		}
+		///*
+		//	This algorithm is supprizingly robust
+		//	Example, showing operation if no specializations where applied
+		//			start	end	/	start	end		/	start	end
+		//	item =	1,2,3	3	/	1,2,3	1,2,3	/	1,2,3	1,2,3
+		//	list1	1,2		1	/	1,2,3	1,2,3	/	1,2		1,2
+		//	list2	2		2	/	1,2		1,2		/	1,2		1,2
+		//	extern	1,2,3,4	4	/	1,2,3,4	4		/	1,2,3,4	4
+		//	
+		//	item	1,2,3,4		1,2,3,4
+		//	list1	1,2,3		1,2,3
+		//	list2	1,2,3		1,2,3
+		//	list3	1,2,3		1,2,3
+		//	other	1,2,3,4,5	5
+		//	Only the 2nd example could only be processed by this method
+		//*/
+		if (list.size() >= count)
+		{
+			// find if: count amount of items share an element
+			auto in_row{ shared_row(loc, list) };
+			auto in_col{ shared_col(loc, list) };
+			auto in_block{ shared_block(loc, list) };
+			// Remove values for rest of shared elements
+			if (in_row.size() == count)
+			{
+				changes += remove_option_section(
+					board_.row(loc).begin(), board_.row(loc).end(),
+					in_row,
+					item.available()
+				);
+			}
+			if (in_col.size() == count)
+			{
+				changes += remove_option_section(
+					board_.col(loc).begin(), board_.col(loc).end(),
+					in_col,
+					item.available()
+				);
+			}
+			if (in_block.size() == count)
+			{
+				//NOTE this is slow
+				changes += remove_option_section(
+					board_.block(loc).begin(), board_.block(loc).end(),
+					in_block,
+					item.available()
+				);
 			}
 		}
 		return changes;
@@ -299,7 +387,7 @@ int Solver<N>::remove_option_section(
 	{
 		if (itr->is_option(value) &&
 			ignore.cend() == std::find_if(ignore.cbegin(), ignore.cend(),
-		//	std::binary_search(ignore.cbegin(), ignore.cend(),
+				//	std::binary_search(ignore.cbegin(), ignore.cend(),
 				[itr](Location loc) { return itr == loc; }))	// <algorithm>
 		{
 			changes += remove_option(itr.location(), value);
@@ -321,7 +409,7 @@ int Solver<N>::remove_option_section(
 	int changes{ 0 };
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		if ( !(itr->is_answer()) &&
+		if ( !(itr->is_answer() ) &&
 			ignore.cend() == std::find_if(ignore.cbegin(), ignore.cend(),
 		//	std::binary_search(ignore.cbegin(), ignore.cend(),			// requires sorted data
 				[itr](Location loc) { return itr.location() == loc; }))	// <algorithm>
@@ -479,7 +567,7 @@ int Solver<N>::set_section_locals(
 			assert(locations.size() <= N);	// no use won't fit in a single block-row/col (too much data gathered!)
 			assert(locations.size() > 1);	// use the set_uniques specialization
 
-			// for each value check if appearing in same block
+											// for each value check if appearing in same block
 			if (locations.cend() == std::find_if_not(
 				locations.cbegin(), locations.cend(),
 				[&locations](auto L) { return L.block() == locations[0].block(); }))
@@ -515,7 +603,7 @@ int Solver<N>::set_block_locals(
 			assert(locations.size() <= N);	// no use won't fit in a single block-row/col
 			assert(locations.size() > 1);	// use the set_uniques specialization
 
-			// for each value check if appearing in same row/col
+											// for each value check if appearing in same row/col
 			if (locations.cend() == std::find_if_not(
 				locations.cbegin(), locations.cend(),
 				[&locations](auto L) { return L.row() == locations[0].row(); }))
@@ -545,8 +633,8 @@ int Solver<N>::set_block_locals(
 
 /*
 input			|	[0]			|	[1]			|	[2]			|	[3]
-1	100 000 001	|	100	000	001	|	000	000	000	|				|	
-2	110 100 010	|	110	100	011	|	100	000	000	|	000	000	000	|	
+1	100 000 001	|	100	000	001	|	000	000	000	|				|
+2	110 100 010	|	110	100	011	|	100	000	000	|	000	000	000	|
 3	010 000 011	|	110	100	011	|	110	000	011	|	000	000	000	|	000	000	000
 4	000 000 011	|	110	100	011	|	110	000	011	|	000	000	011	|	000	000	000
 5	101 100	111	|	111	100	111	|	110	100	011	|	100	000	011	|	000	000	011
@@ -555,9 +643,9 @@ input			|	[0]			|	[1]			|	[2]			|	[3]
 8	100	110	010	|	111	111	111	|	111	101	111	|	100	101	011	|	100	101	011
 9	010	000	101	|				|	111	101	111	|	110	101	111	|	100	101	011
 inv				|	000	000	000	|	000	010	000	|	001	010	000	|	011	010	100
-	532	419	365		0 keer			1x				<=2x			<=3x
+532	419	365		0 keer			1x				<=2x			<=3x
 - [n-1]								000	010	000	|	001	000	000	|	010	000	100
-													==2x			==3x
+==2x			==3x
 What about the answer bit?
 */
 template<int N>
@@ -593,7 +681,7 @@ auto Solver<N>::appearance_sets(const InItr_ begin, const InItr_ end) const
 		worker[i].flip();
 	}
 	assert(worker[0].is_empty());	// fails if not all options exist
-	//	xor -> worker[n] options appearing n times
+									//	xor -> worker[n] options appearing n times
 	for (int i{ N }; i > 1; --i)
 	{
 		worker[i].XOR(worker[i - 1]);
@@ -651,5 +739,6 @@ auto Solver<N>::find_locations(
 
 /*	Remove local macros */
 #undef DUAL_ON_REMOVE
+#undef MULTIPLE_ON_REMOVE
 
 }	// namespace Sudoku
