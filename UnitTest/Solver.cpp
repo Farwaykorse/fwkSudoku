@@ -342,31 +342,155 @@ public:
 		Assert::IsTrue(B1[4][4].count() == 9, L"dual_option before 3");
 		Assert::IsTrue(B1[8][0].count() == 6, L"dual_option before 4");
 		try { Run1.dual_option(Location<3>(0)); }
-		catch (...) { Assert::Fail(L"dual_option failed"); }
+		catch (...) { Assert::Fail(L"dual_option failed 1"); }
 		Assert::IsTrue(B1[0][0].count() == 2, L"dual_option 1"); // unchanged
 		Assert::IsTrue(B1[0][8].count() == 6, L"dual_option 2");
 		Assert::IsTrue(B1[4][4].count() == 9, L"dual_option 3"); // unchanged
 		Assert::IsTrue(B1[8][0].count() == 6, L"dual_option 4"); // unchanged
 		try { Run1.dual_option(Location<3>(1)); }
-		catch (...) { Assert::Fail(L"dual_option failed"); }
+		catch (...) { Assert::Fail(L"dual_option failed 2"); }
 		Assert::IsTrue(B1[0][0].count() == 2, L"dual_option 5"); // unchanged
 		Assert::IsTrue(B1[0][8].count() == 6, L"dual_option 6"); // unchanged
 		Assert::IsTrue(B1[4][4].count() == 9, L"dual_option 7"); // unchanged
 		Assert::IsTrue(B1[8][0].count() == 6, L"dual_option 8"); // unchangedtry { Run1.dual_option(Location<3>(0)); }
 		try { Run1.dual_option(Location<3>(80)); }
-		catch (...) { Assert::Fail(L"dual_option failed"); }
+		catch (...) { Assert::Fail(L"dual_option failed 3"); }
 		Assert::IsTrue(B1[0][0].count() == 2, L"dual_option 9"); // unchanged
 		Assert::IsTrue(B1[0][8].count() == 4, L"dual_option 10");
 		Assert::IsTrue(B1[4][4].count() == 9, L"dual_option 11"); // unchanged
 		Assert::IsTrue(B1[8][0].count() == 6, L"dual_option 12"); // unchanged
+	}
+	TEST_METHOD(T7_multi_option)
+	{
+		using namespace Sudoku;
+		/*	start board				
+		*	 _ _ _ _ _ _ _ _ _ _ _ _
+		*	|       |      	|       |	test for row
+		*	| 4 5 6 |       |       |
+		*	|_7_8_9_|_ _ _ _|_ _ _ _|	
+		*	|   	|       |   	|	
+		*	|	    |   all |       |	
+		*	|_ _ _ _|_ _ _ _|_ _ _ _|	
+		*	| 		|    	| 1 2   |	
+		*	|	    |	    | 4 5   |	test for col
+		*	|_ _ _ _|_ _ _ _|_7_8_ _|	
+		*	before: 0,8: contains all
+		*	after:  0,8: contains only 4,5,7,8 (not 1,2,3,6,9)
+		*	no change:  block 4 contains all options in all cells
+		*/
+		const std::vector<int> b1
+		{
+			0, 0, 0,	0, 0, 0,	0, 0, 0,
+			4, 5, 6,	0, 0, 0,	0, 0, 0,
+			7, 8, 9,	0, 0, 0,	0, 0, 0,
+			0, 0, 0,	0, 0, 0,	0, 0, 0,
+			0, 0, 0,	0, 0, 0,	0, 0, 0,
+			0, 0, 0,	0, 0, 0,	0, 0, 0,
+			0, 0, 0,	0, 0, 0,	1, 2, 0,
+			0, 0, 0,	0, 0, 0,	4, 5, 0,
+			0, 0, 0,	0, 0, 0,	7, 8, 0
+		};
+		Board<Options<9>, 3> B1;
+		Solver<3> Run1(B1);
+		try { Run1.setValue(b1.cbegin(), b1.cend()); }
+		catch (...) { Assert::Fail(L"setValue failed in copying from vector"); }
+		Assert::IsTrue(B1[0][0].count() == 3, L"before 1");
+		Assert::IsTrue(B1[0][8].count() == 9, L"before 2");
+		Assert::IsTrue(B1[4][4].count() == 9, L"before 3");
+		Assert::IsTrue(B1[8][8].count() == 3, L"before 4");
+		// run for row
+		try { Run1.multi_option(Location<3>(2)); }
+		catch (...) { Assert::Fail(L"multi_option failed 1"); }
+		Assert::IsTrue(B1[0][0].count() == 3, L"after 1"); // unchanged
+		Assert::IsTrue(B1[0][8].count() == 6, L"after 2");
+		Assert::IsTrue(B1[4][4].count() == 9, L"after 3"); // unchanged
+		Assert::IsTrue(B1[0][8].available() == std::vector<int>{4,5,6,7,8,9}, L"after 4");
+		// run for col
+		try { Run1.multi_option(Location<3>{6, 8}); }
+		catch (...) { Assert::Fail(L"multi_option failed 2"); }
+		Assert::IsTrue(B1[0][0].count() == 3, L"after 21"); // unchanged
+		Assert::IsTrue(B1[8][8].count() == 3, L"after 22"); // unchanged
+		Assert::IsTrue(B1[0][8].count() == 4, L"after 23");
+		Assert::IsTrue(B1[4][4].count() == 9, L"after 24"); // unchanged
+		Assert::IsTrue(B1[0][8].available() == std::vector<int>{4,5,7,8}, L"after 25");
+		// run for block
+		const std::vector<int> b2
+		{										//	 _ _ _ _ _ _ _ _ _ _ _ _
+			0, 0, 3,	0, 0, 0,	7, 0, 0,	//	|     3 |       | 7     |	diagonal: 1,5,9
+			4, 0, 6,	2, 7, 0,	0, 0, 0,	//	| 4   6 | 2 7   |       |
+			0, 8, 0,	0, 0, 0,	0, 0, 0,	//	|_ _8_ _|_ _ _ _|_ _ _ _|	
+			2, 0, 0,	0, 0, 0,	0, 0, 0,	//	| 2     |       |       |	
+			0, 0, 7,	0, 0, 0,	0, 0, 0,	//	|     7 |       |       |	
+			0, 0, 0,	0, 0, 0,	0, 0, 0,	//	|_ _ _ _|_ _ _ _|_ _ _ _|	
+			0, 0, 2,	0, 0, 0,	0, 0, 0,	//	|     2 |       |       |	
+			0, 0, 0,	0, 0, 0,	0, 0, 0,	//	|       |       |       |	test for col
+			0, 0, 0,	0, 0, 0,	0, 0, 0		//	|_ _ _ _|_ _ _ _|_ _ _ _|	
+		};
+		Board<Options<9>, 3> B2;
+		Solver<3> Run2(B2);
+		try { Run2.setValue(b2.cbegin(), b2.cend()); }
+		catch (...) { Assert::Fail(L"setValue failed in copying from vector 3"); }
+		Assert::IsTrue(B2[0][0].count() == 3, L"before 31");
+		Assert::IsTrue(B2[1][1].count() == 3, L"before 32");
+		Assert::IsTrue(B2[2][2].count() == 3, L"before 33");
+		Assert::IsTrue(B2[0][1].count() == 4, L"before 34");
+		Assert::IsTrue(B2[2][0].count() == 4, L"before 35");
+		Assert::IsTrue(B2[0][0].available() == std::vector<int>{1,5,9}, L"before 36");
+		Assert::IsTrue(B2[2][0].available() == std::vector<int>{1,5,7,9}, L"before 37");
+		Assert::IsTrue(B2[8][8].count() == 9, L"before 38");
+		Assert::IsTrue(B2[2][5].count() == 6, L"before 39");
+		Assert::IsTrue(B2[2][5].available() == std::vector<int>{1,3,4,5,6,9}, L"before 310");
+		try { Run2.multi_option(Location<3>(0)); }
+		catch (...) { Assert::Fail(L"multi_option failed 3"); }
+		Assert::IsTrue(B2[0][0].count() == 3, L"after 31");
+		Assert::IsTrue(B2[1][1].count() == 3, L"after 32");
+		Assert::IsTrue(B2[2][2].count() == 3, L"after 33");
+		Assert::IsTrue(B2[0][1].is_answer(2), L"after 34");
+		Assert::IsTrue(B2[2][0].is_answer(7), L"after 35");
+		Assert::IsTrue(B2[0][0].available() == std::vector<int>{1,5,9}, L"after 36");
+		Assert::IsTrue(B2[8][8].count() == 9, L"after 38");
+		Assert::IsTrue(B2[2][5].count() == 6, L"after 39");
+		Assert::IsTrue(B2[2][5].available() == std::vector<int>{1,3,4,5,6,9}, L"after 310");
 
-
-
-
-
-
-
-
+		//NEEDTEST 9*9 partials forming a set: 3 cels containing (123,12,13)
+		const std::vector<int> b3
+		{										//	 _ _ _ _ _ _ _ _ _ _ _ _
+			0, 0, 0,	0, 0, 0,	0, 0, 0,	//	|       |       |       |	row: 1,2; 1,2,3; 1,2,3
+			4, 5, 6,	0, 0, 0,	0, 0, 0,	//	| 4 5 6 |       |       |
+			7, 8, 9,	0, 0, 0,	0, 0, 0,	//	|_7_8_9_|_ _ _ _|_ _ _ _|	
+			0, 0, 0,	0, 2, 3,	0, 0, 0,	//	| 3     |   2 3 |       |	
+			3, 0, 0,	4, 0, 6,	0, 0, 0,	//	|       | 4   6 |       |	
+			0, 0, 0,	7, 8, 0,	0, 0, 0,	//	|_ _ _ _|_7_8_ _|_ _ _ _|	
+			0, 0, 0,	0, 9, 0,	1, 2, 0,	//	|       |   9   | 1 2   |		 3,6
+			0, 0, 0,	0, 3, 0,	4, 5, 0,	//	|       |   3 1 | 4 5   |	col: 6,9
+			0, 0, 0,	0, 0, 0,	7, 8, 0		//	|_ _ _ _|_ _ _5_|_7_8_ _|		 3,6,9
+		};
+		Board<Options<9>, 3> B3;
+		Solver<3> Run3(B3);
+		try { Run3.setValue(b3.cbegin(), b3.cend()); }
+		catch (...) { Assert::Fail(L"setValue failed in copying from vector 3"); }
+		Assert::IsTrue(B3[0][0].count() == 2, L"before 41");
+		Assert::IsTrue(B3[0][1].count() == 3, L"before 42");
+		Assert::IsTrue(B3[0][2].count() == 3, L"before 43");
+		Assert::IsTrue(B3[0][3].count() == 7, L"before 44");
+		//Assert::IsTrue(B3[5][1].count() == 6, L"before 45");
+		Assert::IsTrue(B3[0][1].available() == std::vector<int>{1,2,3}, L"before 46");
+		Assert::IsTrue(B3[6][8].count() == 2, L"before 47");
+		Assert::IsTrue(B3[7][8].count() == 2, L"before 48");
+		Assert::IsTrue(B3[8][8].count() == 3, L"before 49");
+		Assert::IsTrue(B3[8][8].available() == std::vector<int>{3,6,9}, L"before 410");
+		try { Run3.multi_option(Location<3>(1)); }
+		catch (...) { Assert::Fail(L"multi_option failed 4"); }
+		// row:
+		Assert::IsTrue(B3[0][0].count() == 2, L"after 41");	// unchanged
+		Assert::IsTrue(B3[0][1].count() == 3, L"after 42");	// unchanged
+		Assert::IsTrue(B3[0][2].count() == 3, L"after 43"); // unchanged
+		Assert::IsTrue(B3[0][3].count() == 4, L"after 44");
+		//Assert::IsTrue(B3[5][1].count() == 6, L"after 45"); // unchanged
+		Assert::IsTrue(B3[0][0].available() == std::vector<int>{1,2}, L"after 46");
+		Assert::IsTrue(B3[0][1].available() == std::vector<int>{1,2,3}, L"after 47");
+		Assert::IsTrue(B3[0][3].available() == std::vector<int>{5,6,8,9}, L"after 48");
+	
 	}
 };
 }	// namespace Sudoku_Test
