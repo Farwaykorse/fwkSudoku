@@ -308,8 +308,8 @@ std::vector<int> Options<E>::available() const
 	values.reserve(static_cast<size_t>(count()));
 	if (!is_answer() && !is_empty())
 	{
-		int loc{ 0 };
-		for (int i = 0; i < count(); ++i)
+		auto loc{ 0 };
+		for (auto i{ 0 }; i < count(); ++i)
 		{
 			loc = read_next(loc);
 			values.emplace_back(loc);
