@@ -55,7 +55,7 @@ public:
 
 	constexpr bool operator!=(const Location& other) const { return !(*this == other); }
 private:
-	int id_{};
+	const int id_{};
 };
 
 template<int N>
@@ -99,7 +99,7 @@ public:
 		return ( (id() < other.id()) ? true : (id_ < other.id_) );
 	}
 private:
-	int id_;
+	const int id_;
 };
 
 template<int N> inline
