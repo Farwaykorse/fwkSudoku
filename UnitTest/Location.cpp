@@ -23,7 +23,7 @@ public:
 		using typeT = Location<3>;
 		static_assert(std::is_class<typeT>(), "-- a class, hiding datarepresentation");
 		static_assert(! std::is_trivial<typeT>(), "trivial default constructors & trivially copyable");
-		static_assert(std::is_trivially_copyable<typeT>(), "-- compatible with std::memcpy & binary copy from/to files");
+		static_assert(!std::is_trivially_copyable<typeT>(), "-- compatible with std::memcpy & binary copy from/to files");
 		static_assert(std::is_standard_layout<typeT>(), "-- StandardLayoutType");	// can be converted with reinterpret_cast
 		static_assert(! std::is_pod<typeT>(), "++ Plain Old Data, both trivial and standard-layout, C compatible");
 		//static_assert(std::has_unique_object_representations<typeT>(), "");	//C++17	trivially_copyable same object representation
@@ -48,28 +48,28 @@ public:
 		static_assert(std::is_trivially_move_constructible<typeT>(), "-- trivially move constructor");
 
 		// copy assingment
-		static_assert(std::is_copy_assignable<typeT>(), "-- copy assignable");
-		static_assert(std::is_nothrow_copy_assignable<typeT>(), "-- notrow copy assignable");
-		static_assert(std::is_trivially_copy_assignable<typeT>(), "-- trivially copy assignable");
+		static_assert(!std::is_copy_assignable<typeT>(), "-- copy assignable");
+		static_assert(!std::is_nothrow_copy_assignable<typeT>(), "-- notrow copy assignable");
+		static_assert(!std::is_trivially_copy_assignable<typeT>(), "-- trivially copy assignable");
 
-		static_assert(std::is_move_assignable<typeT>(), "-- move assignable");
-		static_assert(std::is_nothrow_move_assignable<typeT>(), "-- move assignable");
-		static_assert(std::is_trivially_move_assignable<typeT>(), "-- trivially move assignable");
+		static_assert(!std::is_move_assignable<typeT>(), "-- move assignable");
+		static_assert(!std::is_nothrow_move_assignable<typeT>(), "-- move assignable");
+		static_assert(!std::is_trivially_move_assignable<typeT>(), "-- trivially move assignable");
 
 		static_assert(std::is_destructible<typeT>(), "-- destructable");
 		static_assert(std::is_nothrow_destructible<typeT>(), "-- nothrow destructable");
 		static_assert(std::is_trivially_destructible<typeT>(), "-- trivially destructable");
 		static_assert(!std::has_virtual_destructor<typeT>(), "-- virtual destructor");
 
-		static_assert(std::is_swappable<typeT>(), "-- swappable");			//C++17
-		static_assert(std::is_nothrow_swappable<typeT>(), "-- nothrow swappable");	//C++17
+		static_assert(!std::is_swappable<typeT>(), "-- swappable");			//C++17
+		static_assert(!std::is_nothrow_swappable<typeT>(), "-- nothrow swappable");	//C++17
 		// other types
 		static_assert(std::is_constructible<typeT, int>(), "-- should construct from int");
 		static_assert(std::is_constructible<typeT, unsigned int>(), "-- construct from unsigned int");
 		static_assert(std::is_constructible<typeT, size_t>(), "-- construct from size_t");
 		static_assert(std::is_constructible<typeT, Block_Loc<3>>(), "-- should construct from Block_Loc");
 		static_assert(!std::is_constructible<typeT, Block_Loc<2>>(), "-- shouldn't accept non matching dimensions_1");
-		static_assert(std::is_assignable<typeT, Block_Loc<3>>(), "--");
+		static_assert(!std::is_assignable<typeT, Block_Loc<3>>(), "--");
 		static_assert(! std::is_assignable<typeT, int>(), "-- shouldn't be assignable from int, prevent with explicit!!");
 
 		static_assert(! std::is_swappable_with<typeT, Block_Loc<3>>(), "++");	//C++17
@@ -88,7 +88,7 @@ public:
 		using typeT = Block_Loc<3>;
 		static_assert(std::is_class<typeT>(), "-- a class, hiding datarepresentation");
 		static_assert(! std::is_trivial<typeT>(), "trivial default constructors & trivially copyable");
-		static_assert(std::is_trivially_copyable<typeT>(), "-- compatible with std::memcpy & binary copy from/to files");
+		static_assert(!std::is_trivially_copyable<typeT>(), "-- compatible with std::memcpy & binary copy from/to files");
 		static_assert(std::is_standard_layout<typeT>(), "-- StandardLayoutType");	// can be converted with reinterpret_cast
 		static_assert(! std::is_pod<typeT>(), "++ Plain Old Data, both trivial and standard-layout, C compatible");
 		//static_assert(std::has_unique_object_representations<typeT>(), "");	//C++17	trivially_copyable same object representation
@@ -113,28 +113,28 @@ public:
 		static_assert(std::is_trivially_move_constructible<typeT>(), "-- trivially move constructor");
 
 		// copy assingment
-		static_assert(std::is_copy_assignable<typeT>(), "-- copy assignable");
-		static_assert(std::is_nothrow_copy_assignable<typeT>(), "-- notrow copy assignable");
-		static_assert(std::is_trivially_copy_assignable<typeT>(), "-- trivially copy assignable");
+		static_assert(!std::is_copy_assignable<typeT>(), "-- copy assignable");
+		static_assert(!std::is_nothrow_copy_assignable<typeT>(), "-- notrow copy assignable");
+		static_assert(!std::is_trivially_copy_assignable<typeT>(), "-- trivially copy assignable");
 
-		static_assert(std::is_move_assignable<typeT>(), "-- move assignable");
-		static_assert(std::is_nothrow_move_assignable<typeT>(), "-- move assignable");
-		static_assert(std::is_trivially_move_assignable<typeT>(), "-- trivially move assignable");
+		static_assert(!std::is_move_assignable<typeT>(), "-- move assignable");
+		static_assert(!std::is_nothrow_move_assignable<typeT>(), "-- move assignable");
+		static_assert(!std::is_trivially_move_assignable<typeT>(), "-- trivially move assignable");
 
 		static_assert(std::is_destructible<typeT>(), "-- destructable");
 		static_assert(std::is_nothrow_destructible<typeT>(), "-- nothrow destructable");
 		static_assert(std::is_trivially_destructible<typeT>(), "-- trivially destructable");
 		static_assert(!std::has_virtual_destructor<typeT>(), "-- virtual destructor");
 
-		static_assert(std::is_swappable<typeT>(), "-- swappable");			//C++17
-		static_assert(std::is_nothrow_swappable<typeT>(), "-- nothrow swappable");	//C++17
+		static_assert(!std::is_swappable<typeT>(), "-- swappable");			//C++17
+		static_assert(!std::is_nothrow_swappable<typeT>(), "-- nothrow swappable");	//C++17
 		// other types
 		static_assert(! std::is_constructible<typeT, int>(), "-- should not construct from int");
 		static_assert(std::is_constructible<typeT, Location<3>>(), "-- should construct from Location");
 		static_assert(! std::is_constructible<typeT, Block_Loc<2>>(), "-- shouldn't accept non matching dimensions_1");
 		static_assert(! std::is_constructible<typeT, Location<2>>(), "-- should not construct from non matching Location");
 
-		static_assert(std::is_assignable<typeT, Location<3>>(), "-- assignable from Location");
+		static_assert(!std::is_assignable<typeT, Location<3>>(), "-- assignable from Location");
 		static_assert(! std::is_assignable<typeT, Block_Loc<2>>(), "-- assignable wrong size");
 		static_assert(! std::is_assignable<typeT, Location<2>>(), "-- assignable Location wrong size");
 		static_assert(! std::is_assignable<typeT, int>(), "-- shouldn't be assignable from int, prevent with explicit!!");

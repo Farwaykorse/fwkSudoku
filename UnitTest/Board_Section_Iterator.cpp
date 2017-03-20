@@ -398,7 +398,7 @@ public:
 			L"std::fill() failed", LINE_INFO()
 		);
 		// next_permutation(start, stop) requires a Bidirectional iterator
-		bool success = std::next_permutation(B.row(2).begin(), B.row(2).end());
+		Assert::IsTrue(std::next_permutation(B.row(2).begin(), B.row(2).end()));
 
 		// shuffle(start, stop) requires a random iterator
 		std::random_device rd;		// non-deterministic generator
