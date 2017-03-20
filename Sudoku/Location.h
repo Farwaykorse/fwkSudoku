@@ -55,7 +55,7 @@ public:
 
 	constexpr bool operator!=(const Location& other) const { return !(*this == other); }
 private:
-	int id_{};
+	const int id_{};
 };
 
 template<int N>
@@ -87,7 +87,7 @@ public:
 	constexpr int id() const { return Location(id_).block(); }
 	constexpr int element() const { return Location(id_).block_elem(); }
 	constexpr int row() const { return Location(id_).block_row(); }
-	constexpr int col() const { return Location(id_).block_row(); }
+	constexpr int col() const { return Location(id_).block_col(); }
 
 	constexpr operator Location() const { return Location(id_); }
 
@@ -99,7 +99,7 @@ public:
 		return ( (id() < other.id()) ? true : (id_ < other.id_) );
 	}
 private:
-	int id_;
+	const int id_;
 };
 
 template<int N> inline
