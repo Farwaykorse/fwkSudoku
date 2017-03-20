@@ -6,7 +6,6 @@
 *	no processing functionality
 */
 #pragma once
-#include "stdafx.h"
 #include "Location.h"
 #include "Section.h"
 

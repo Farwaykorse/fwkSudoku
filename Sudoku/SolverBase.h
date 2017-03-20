@@ -2,7 +2,6 @@
  *	Sudoku solver implementation using Board<Options>
  */
 #pragma once
-#include "stdafx.h"
 #include "Board.h"
 #include "Location.h"
 #include "Solver.h"
