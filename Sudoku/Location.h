@@ -87,7 +87,7 @@ public:
 	constexpr int id() const { return Location(id_).block(); }
 	constexpr int element() const { return Location(id_).block_elem(); }
 	constexpr int row() const { return Location(id_).block_row(); }
-	constexpr int col() const { return Location(id_).block_row(); }
+	constexpr int col() const { return Location(id_).block_col(); }
 
 	constexpr operator Location() const { return Location(id_); }
 
