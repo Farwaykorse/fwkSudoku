@@ -221,16 +221,18 @@ constexpr int Options<E>::size() const noexcept
 	return static_cast<int>(data_.size());	// bits
 }
 
-/// available options
-/// if 1, a not processed answer
+//	available options
+//	if 1, a not processed answer
 template<int E> inline
 int Options<E>::count() const noexcept
 {
 	if (data_[0]) { return static_cast<int>(data_.count()) - 1; }
-	return 0;
+	return 0;	// NO protection vs incorrect answer bit
 }
 
-///	(!) counts options, including set answers
+//	(!) counts options, including set answers == ingores answer-bit
+//	Returns 1 if {1 option, set as answer} || {1 option, not set as anwer}
+//	Returns 0 if {empty} || {no option, but not set as answer}
 template<int E> inline
 int Options<E>::count_all() const noexcept
 {
@@ -291,9 +293,9 @@ template<int E> inline
 int Options<E>::get_answer() const noexcept
 {
 	//TODO	microbench simpler/faster way to read single value from data_
-	//		constexpr? 
+	//		constexpr?
 	//		bit operations?
-	if (is_answer() || count() == 1)
+	if (count_all() == 1)
 	{
 		return read_next();
 	}
@@ -409,7 +411,7 @@ int Options<E>::read_next(int start) const noexcept
 	{
 		if (data_[static_cast<size_t>(i)]) { return i; }
 	}
-	return 0;
+	return 0;	// never triggered
 }
 
 //////////////////////////////
