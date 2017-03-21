@@ -7,7 +7,7 @@
 #include "../Sudoku/Location.h"
 // aditional
 #include <type_traits>
-
+#include <vector>
 
 namespace SudokuTests::LocationTest
 {
@@ -443,6 +443,26 @@ TEST(Location, external)
 	EXPECT_FALSE(shared_col(Location<3>(9), Location<3>(8)));
 	EXPECT_TRUE(shared_block(Location<3>(0), Location<3>(11)));
 	EXPECT_FALSE(shared_block(Location<3>(9), Location<3>(8)));
+	//NEEDTEST shared_row / col / block
+	//return vector<Location<N>>
+	//
+	std::vector<Location<3>> list1{};
+	//std::vector<Location<3>> list2{};
+	std::vector<Location<3>> list3{};
+	for (int i{}; i < 9; ++i)
+	{
+		list1.push_back(Location<3>{i});
+		//list2.push_back(Location<3>{i*3});
+		list3.push_back(Location<3>{i*9});
+	}
+	EXPECT_FALSE(noexcept(shared_row(Location<3>(0), list1)));
+	EXPECT_FALSE(noexcept(shared_col(Location<3>(0), list1)));
+	EXPECT_FALSE(noexcept(shared_block(Location<3>(0), list1)));
+	EXPECT_EQ(shared_row(Location<3>(0), list1), list1);
+	EXPECT_EQ(shared_row(Location<3>(0), list1).size(), 9) << "vector length";
+	EXPECT_EQ(shared_col(Location<3>(0), list3), list3);
+	EXPECT_EQ(shared_col(Location<3>(0), list3).size(), 9) << "vector length";
+	EXPECT_EQ(shared_block(Location<3>(0), list1).size(), 3) << "vector length";
 }
 
 TEST(Block_Loc, is_constexpr)
