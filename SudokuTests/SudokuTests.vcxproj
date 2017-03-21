@@ -227,6 +227,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Location.cpp" />
+    <ClCompile Include="Options.cpp" />
     <ClCompile Include="SudokuTests.cpp" />
   </ItemGroup>
   <ItemGroup>

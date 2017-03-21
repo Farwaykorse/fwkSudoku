@@ -9,9 +9,10 @@
 #include <type_traits>
 #include <vector>
 
+using namespace Sudoku;
+
 namespace SudokuTests::LocationTest
 {
-using namespace Sudoku;
 namespace compiletime_Location
 {
 	// Type properties
