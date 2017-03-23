@@ -77,6 +77,7 @@ public:
 	// return shared options
 	Options operator&(const Options&) const noexcept;
 
+	std::string DebugString() const;
 private:
 	// 0th bit is "need to solve": false if answer has been set = inverse of answer
 	bitset data_{};
@@ -125,14 +126,13 @@ Options<E>& Options<E>::operator=(int value)
 template<int E> inline
 Options<E>& Options<E>::operator=(const bitset& other) noexcept
 {
-	//NEEDTEST not triggered
-	return Options(other);
+	data_ = other;
+	return *this;
 }
 
 template<int E> inline
 Options<E>& Options<E>::operator=(bitset&& other) noexcept
 {
-	//NEEDTEST not triggered
 	std::swap(data_, other);	//<utility>
 	return *this;
 }
@@ -393,6 +393,12 @@ Options<E> Options<E>::operator&(const Options& other) const noexcept
 {
 	Options<E> tmp(*this);
 	return tmp &= other;
+}
+
+template<int E>
+inline std::string Options<E>::DebugString() const
+{
+	return data_.to_string();
 }
 
 ///	return next option in data

@@ -1,77 +1,338 @@
 ﻿/**	Unit tests for the template class Sudoku::Options
 *
 */
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 // Class under test
 #include "../Sudoku/Options.h"
 // additional
+#include <bitset>
+#include <vector>
 #include <type_traits>
+#include <ostream>
+
+// Teaching gTest how to print Options
+namespace Sudoku
+{
+	template<int N>
+	std::ostream& operator<<(std::ostream& os, const Options<N>& Options)
+	{
+		return os << Options.DebugString();
+	}
+}
 
 using namespace Sudoku;
 
 namespace SudokuTests::Sudoku_Test
 {
-namespace compiletime_Location
+TEST(Options, compiletime)
 {
 // Class properties
-using typeT = Sudoku::Options<9>;
-static_assert(std::is_class<typeT>(), "a class, hiding datarepresentation");
-static_assert(!std::is_empty<typeT>(), "no datamembers");
-static_assert(std::is_standard_layout<typeT>(), "standard layout");
-static_assert(!std::is_trivial<typeT>(), "not user-provided, no virtuals");
-static_assert(!std::is_pod<typeT>(), "Plain Old Data, both trivial and standard-layout");
-//static_assert(std::has_unique_object_representations<typeT>(), "");	//C++17
+	using typeT = Sudoku::Options<9>;
+	static_assert(std::is_class<typeT>(), "a class, hiding datarepresentation");
+	static_assert(!std::is_empty<typeT>(), "no datamembers");
+	static_assert(std::is_standard_layout<typeT>(), "standard layout");
+	static_assert(!std::is_trivial<typeT>(), "not user-provided, no virtuals");
+	static_assert(!std::is_pod<typeT>(), "Plain Old Data, both trivial and standard-layout");
+	//static_assert(std::has_unique_object_representations<typeT>(), "");	//C++17
 
-static_assert(std::is_default_constructible<typeT>(), "default constructor");
-static_assert(std::is_nothrow_default_constructible<typeT>(), "notrow default constructor");
-static_assert(!std::is_trivially_default_constructible<typeT>(), "tribial default constructor");
+	static_assert(std::is_default_constructible<typeT>(), "default constructor");
+	static_assert(std::is_nothrow_default_constructible<typeT>(), "notrow default constructor");
+	static_assert(!std::is_trivially_default_constructible<typeT>(), "tribial default constructor");
 
-static_assert(std::is_destructible<typeT>(), "destructable");
-static_assert(std::is_nothrow_destructible<typeT>(), "nothrow destructable");
-static_assert(std::is_trivially_destructible<typeT>(), "trivially destructable");
+	static_assert(std::is_destructible<typeT>(), "destructable");
+	static_assert(std::is_nothrow_destructible<typeT>(), "nothrow destructable");
+	static_assert(std::is_trivially_destructible<typeT>(), "trivially destructable");
 
-static_assert(std::is_copy_constructible<typeT>(), "copy constructor");
-static_assert(std::is_nothrow_copy_constructible<typeT>(), "notrow copy constructor");
-static_assert(std::is_trivially_copy_constructible<typeT>(), "trivially copy constructor");
+	static_assert(std::is_copy_constructible<typeT>(), "copy constructor");
+	static_assert(std::is_nothrow_copy_constructible<typeT>(), "notrow copy constructor");
+	static_assert(std::is_trivially_copy_constructible<typeT>(), "trivially copy constructor");
 
-static_assert(std::is_move_constructible<typeT>(), "move constructor");
-static_assert(std::is_nothrow_move_constructible<typeT>(), "nothrow move constructor");
-static_assert(std::is_trivially_move_constructible<typeT>(), "trivially move constructor");
+	static_assert(std::is_move_constructible<typeT>(), "move constructor");
+	static_assert(std::is_nothrow_move_constructible<typeT>(), "nothrow move constructor");
+	static_assert(std::is_trivially_move_constructible<typeT>(), "trivially move constructor");
 
-static_assert(std::is_copy_assignable<typeT>(), "copy assignable");
-static_assert(std::is_nothrow_copy_assignable<typeT>(), "notrow copy assignable");
-static_assert(std::is_trivially_copy_assignable<typeT>(), "trivially copy assignable");
+	static_assert(std::is_copy_assignable<typeT>(), "copy assignable");
+	static_assert(std::is_nothrow_copy_assignable<typeT>(), "notrow copy assignable");
+	static_assert(std::is_trivially_copy_assignable<typeT>(), "trivially copy assignable");
 
-static_assert(std::is_move_assignable<typeT>(), "move assignable");
-static_assert(std::is_nothrow_move_assignable<typeT>(), "move assignable");
-static_assert(std::is_trivially_move_assignable<typeT>(), "trivially move assignable");
+	static_assert(std::is_move_assignable<typeT>(), "move assignable");
+	static_assert(std::is_nothrow_move_assignable<typeT>(), "move assignable");
+	static_assert(std::is_trivially_move_assignable<typeT>(), "trivially move assignable");
 
-static_assert(std::is_trivially_copyable<typeT>(), "trivially copyable");
-static_assert(std::is_swappable<typeT>(), "swappable");			//C++17
-static_assert(std::is_nothrow_swappable<typeT>(), "swappable");	//C++17
+	static_assert(std::is_trivially_copyable<typeT>(), "trivially copyable");
+	static_assert(std::is_swappable<typeT>(), "swappable");			//C++17
+	static_assert(std::is_nothrow_swappable<typeT>(), "swappable");	//C++17
 
-static_assert(!std::is_swappable_with<typeT, std::bitset<10>>(), "");	//C++17
-static_assert(!std::is_nothrow_swappable_with<typeT, std::bitset<10>>(), "");	//C++17
+	static_assert(!std::is_swappable_with<typeT, std::bitset<10>>(), "");	//C++17
+	static_assert(!std::is_nothrow_swappable_with<typeT, std::bitset<10>>(), "");	//C++17
 
-																				// type construction
-static_assert(std::is_constructible<Options<3>, const std::bitset<4>&>(), "construct from const std::bitset&");
-static_assert(!std::is_constructible<Options<3>, const std::bitset<3>&>(), "shouldn't accept non matching dimensions_1");
-static_assert(std::is_assignable<Options<3>, std::bitset<4>>(), "assign from std::bitset");
-static_assert(!std::is_assignable<Options<3>, std::bitset<3>>(), "shouldn't accept non matching dimensions_2");
-static_assert(std::is_constructible<Options<3>, int>(), "construct from int");
-static_assert(std::is_constructible<Options<3>, unsigned int>(), "construct from unsigned int");
-static_assert(std::is_assignable<Options<3>, int>(), "assign from int");
-static_assert(std::is_assignable<Options<3>, unsigned int>(), "assign from int");
+	// type construction
+	static_assert(std::is_constructible<Options<3>, const std::bitset<4>&>(), "construct from const std::bitset&");
+	static_assert(!std::is_constructible<Options<3>, const std::bitset<3>&>(), "shouldn't accept non matching dimensions_1");
+	static_assert(std::is_assignable<Options<3>, std::bitset<4>>(), "assign from std::bitset");
+	static_assert(!std::is_assignable<Options<3>, std::bitset<3>>(), "shouldn't accept non matching dimensions_2");
+	static_assert(std::is_constructible<Options<3>, int>(), "construct from int");
+	static_assert(std::is_constructible<Options<3>, unsigned int>(), "construct from unsigned int");
+	static_assert(std::is_assignable<Options<3>, int>(), "assign from int");
+	static_assert(std::is_assignable<Options<3>, unsigned int>(), "assign from int");
+	SUCCEED();
 }
 TEST(Options, Construction)
 {
-	EXPECT_NO_THROW(Sudoku::Options<9> two{});
-	EXPECT_NO_THROW(Sudoku::Options<4> O_3{ std::bitset<5>() });
-	EXPECT_NO_THROW(Sudoku::Options<4> O_3{ std::bitset<5>{"00100"} });
-	EXPECT_NO_THROW(Sudoku::Options<4> O_4{ 2 });
+	const Options<4> D_0{};
+	{
+		SCOPED_TRACE("Default Constructor : Options()");
+		const Options<4> D;
+		EXPECT_EQ(D_0.size(), 5);
+		EXPECT_EQ(D_0, D_0)	<< "operator== failed, required";
+		EXPECT_EQ(D_0, D);
+		EXPECT_EQ(D_0, std::bitset<5>{"11111"}); // operator == // Options(const bitset&)
+	}
+	{
+		SCOPED_TRACE("Copy Constructor : Options(const Options&)");
+		const Options<4> Opt(D_0);
+		EXPECT_EQ(Opt.size(), 5);
+		EXPECT_EQ(Opt, D_0);
+	}
+	{
+		SCOPED_TRACE("Copy Assignment : Options& operator=(const Options&)");
+		const Options<4> Opt = D_0;
+		EXPECT_EQ(Opt.size(), 5);
+		EXPECT_EQ(Opt, D_0);
+	}
+	{
+		SCOPED_TRACE("Move Constructor : Options(Options&&)");
+		const Options<4> Opt{ D_0 };
+		EXPECT_EQ(Opt.size(), 5);
+		EXPECT_EQ(Opt, D_0);
+	}
+	{
+		SCOPED_TRACE("Move Assignment : Options& operator=(Options&&)");
+		const Options<4> Opt = Options<4>{};
+		EXPECT_EQ(Opt.size(), 5);
+		EXPECT_EQ(Opt, D_0);
+	}
+	{
+		SCOPED_TRACE("Options(const bitset&) : used in tests");	// 0th bit is last in input
+		const std::bitset<5> b_all{ "11111" };
+		const Options<4> Opt{ b_all };
+		EXPECT_EQ(Opt.size(), 5);
+		EXPECT_EQ(Opt, D_0);
+		EXPECT_EQ(Opt, b_all);
+	}
+	{
+		SCOPED_TRACE("Options(bitset&&)");
+		const Options<4> A_0{ std::bitset<5>{"01000"} };
+		EXPECT_EQ(A_0.size(), 5);
+		EXPECT_EQ(A_0, std::bitset<5>{"01000"}) << "Options(bitset&&)";
+	}
+	{
+		SCOPED_TRACE("Options(int value)");
+		const Options<4> A_1{ 2 };		// set() // clear() // add()
+		const Options<4> A_2 = 2;
+		EXPECT_EQ(A_1, std::bitset<5>{"00100"});
+		EXPECT_EQ(A_2, std::bitset<5>{"00100"});
+		EXPECT_EQ(Options<4>{0}, std::bitset<5>{"00001"});	//TODO change this
+		EXPECT_EQ(Options<4>{4}, std::bitset<5>{"10000"});
+		EXPECT_EQ(Options<4>{4}, std::bitset<5>{"10000"});
+#ifndef _DEBUG
+		EXPECT_THROW(Options<4>{5}, std::out_of_range);
+		EXPECT_THROW(Options<4>{-5}, std::out_of_range);
+#endif // _DEBUG
+	}
+	{
+		SCOPED_TRACE("Options& operator=(int value)");
+		Options<4> TMP{};
+		TMP = 1;						// set() // clear() // add()
+		EXPECT_EQ(TMP, std::bitset<5>{"00010"});
+		EXPECT_EQ(TMP = 3, std::bitset<5>{"01000"});
+		EXPECT_EQ(TMP = 0, std::bitset<5>{"00001"});	// TODO change this
+		EXPECT_THROW(TMP = 6, std::out_of_range);
+		EXPECT_THROW(TMP = -6, std::out_of_range);
+	}
+	{
+		SCOPED_TRACE("Options& operator=(const bitset&)");
+		Options<4> B_0{};
+		std::bitset<5> bit{ "11011" };
+		B_0 = bit;
+		EXPECT_EQ(B_0, std::bitset<5>{"11011"});
+	}
+	{
+		SCOPED_TRACE("Options& operator=(bitset&&)");
+		Options<4> B_1{};
+		B_1 = std::bitset<5>{ "11011" };
+		EXPECT_EQ(B_1, std::bitset<5>{ "11011" });
+	}
 }
-TEST(Options, MemberFunctions)
+
+struct TestElements
+{
+	const Options<9> D_0{};								// default
+	const Options<4> D_1{};								// default
+	const Options<4> A_1{ std::bitset<5>{"00010"} };	// answer = 1
+	const Options<4> A_2{ std::bitset<5>{"00100"} };	// answer = 2
+	const Options<4> O_1{ std::bitset<5>{"00101"} };	// answer = 2, unanswered
+	const Options<4> O_2{ std::bitset<5>{"01011"} };	// 2 options 1 & 3
+	const Options<4> O_3{ std::bitset<5>{"11101"} };	// 3 options 2,3,4
+	const Options<4> O_4{ std::bitset<5>{"11111"} };	// all options
+	const Options<4> E_1{ std::bitset<5>{"00000"} };	// empty
+	const Options<4> E_2{ std::bitset<5>{"00001"} };	// empty, no answer
+	const Options<4> X_0{ std::bitset<5>{"11110"} };	// answered, alle options
+	const Options<4> X_1{ std::bitset<5>{"10100"} };	// answered, 2 options
+};
+TestElements TE;
+
+TEST(Options, mf_counting)
+{
+	static_assert(noexcept(TE.D_0.size()), "size() should be noexcept");
+	EXPECT_EQ(TE.D_0.size(), 10);
+	EXPECT_EQ(TE.D_1.size(), 5);
+	EXPECT_EQ(TE.O_1.size(), 5);
+	EXPECT_EQ(TE.E_1.size(), 5);
+	static_assert(noexcept(TE.O_1.count()), "count() should be noexcept");
+	static_assert(noexcept(TE.O_1.count_all()), "count_all() should be noexcept");
+	EXPECT_EQ(TE.D_0.count(),		9);
+	EXPECT_EQ(TE.D_0.count_all(),	9);
+	EXPECT_EQ(TE.A_2.count(),		0);	// different
+	EXPECT_EQ(TE.A_2.count_all(),	1);	//
+	EXPECT_EQ(TE.O_1.count(),		1);
+	EXPECT_EQ(TE.O_1.count_all(),	1);
+	EXPECT_EQ(TE.O_2.count(),		2);
+	EXPECT_EQ(TE.O_2.count_all(),	2);
+	EXPECT_EQ(TE.O_3.count(),		3);
+	EXPECT_EQ(TE.O_3.count_all(),	3);
+	EXPECT_EQ(TE.E_1.count(),		0);
+	EXPECT_EQ(TE.E_1.count_all(),	0);
+	EXPECT_EQ(TE.E_2.count(),		0);
+	EXPECT_EQ(TE.E_2.count_all(),	0);
+	static_assert(noexcept(TE.O_1.all()), "all() should be noexcept");
+	EXPECT_TRUE(TE.D_1.all());
+	EXPECT_FALSE(TE.O_3.all());
+	EXPECT_TRUE(TE.O_4.all());
+	EXPECT_FALSE(TE.E_1.all());
+	EXPECT_FALSE(TE.X_0.all());
+	static_assert(noexcept(TE.O_1.is_empty()), "is_empty() should be noexcept");
+	EXPECT_TRUE(TE.E_1.is_empty());
+	EXPECT_TRUE(TE.E_2.is_empty());
+	EXPECT_FALSE(TE.D_1.is_empty());
+	EXPECT_FALSE(TE.O_1.is_empty());
+	EXPECT_FALSE(TE.X_1.is_empty());
+}
+TEST(Options, mf_boolRequest)
+{
+	static_assert(!noexcept(TE.O_1.test(2)), "test() is NOT noexcept");
+	EXPECT_THROW(TE.O_1.test(15), std::out_of_range);
+	EXPECT_THROW(TE.O_1.test(-1), std::out_of_range);
+	EXPECT_TRUE(TE.O_1.test(2));
+	EXPECT_TRUE(TE.O_3.test(2));
+	EXPECT_FALSE(TE.O_3.test(1));
+	EXPECT_FALSE(TE.E_1.test(1));
+	EXPECT_TRUE(TE.X_0.test(1));
+	static_assert(noexcept(TE.O_1.is_answer()), "is_answer() should be noexcept");
+	EXPECT_TRUE(TE.A_1.is_answer());
+	EXPECT_TRUE(TE.A_2.is_answer());
+	EXPECT_FALSE(TE.O_1.is_answer());
+	EXPECT_FALSE(TE.O_4.is_answer());
+	EXPECT_FALSE(TE.E_1.is_answer());
+	EXPECT_FALSE(TE.E_2.is_answer());
+	EXPECT_FALSE(TE.X_0.is_answer());
+	EXPECT_FALSE(TE.X_1.is_answer());
+	static_assert(noexcept(TE.O_1.is_answer(1)), "is_answer(int) is noexcept");
+	static_assert(noexcept(TE.A_1.is_answer(100)), "is_answer(int) is noexcept");
+#ifndef _DEBUG	// undefined behaviour / crash in debug-mode
+	EXPECT_NO_THROW(TE.A_1.is_answer(15));
+	EXPECT_NO_THROW(TE.A_1.is_answer(-5));
+#endif // _DEBUG
+	EXPECT_NO_THROW(TE.O_1.is_answer(15));	// defined behaviour = false
+	EXPECT_NO_THROW(TE.O_1.is_answer(-1));	// defined behaviour = false
+	EXPECT_TRUE(TE.A_2.is_answer(2));
+	EXPECT_FALSE(TE.A_2.is_answer(3));
+	EXPECT_FALSE(TE.A_1.is_answer(0));
+	EXPECT_FALSE(TE.O_1.is_answer(2));
+	EXPECT_FALSE(TE.O_1.is_answer(2));
+	EXPECT_FALSE(TE.E_1.is_answer(0));
+	static_assert(noexcept(TE.O_1.is_option(2)), "is_option(int) is noexept");
+#ifndef _DEBUG	// undefined behaviour / crash in debug-mode
+	EXPECT_NO_THROW(TE.O_1.is_option(15));
+	EXPECT_NO_THROW(TE.O_1.is_option(-5));
+#endif // _DEBUG
+	EXPECT_NO_THROW(TE.A_1.is_option(15));	// defined == false
+	EXPECT_NO_THROW(TE.A_1.is_option(-5));	// defined == false
+	EXPECT_TRUE(TE.D_1.is_option(4));
+	EXPECT_TRUE(TE.O_1.is_option(2));
+	EXPECT_FALSE(TE.A_2.is_option(2));
+	EXPECT_FALSE(TE.O_3.is_option(1));
+	EXPECT_TRUE(TE.O_3.is_option(2));
+	EXPECT_TRUE(TE.X_0.is_option(2));	// works by incorrect answer-flag
+}
+TEST(Options, mf_dataRequest)
+{
+	std::vector<int> result{};
+	//std::vector<int> available() const;	// return available options
+	static_assert(!noexcept(TE.O_1.available()), "available() should NOT be noexcept");
+	ASSERT_NO_THROW(result = TE.O_2.available());
+	EXPECT_EQ(result.size(), 2);
+	EXPECT_EQ(result[0], 1);
+	EXPECT_EQ(result[1], 3);
+	ASSERT_NO_THROW(result = TE.E_1.available());
+	EXPECT_EQ(result.size(), 0);
+	ASSERT_NO_THROW(result = TE.E_2.available());
+	EXPECT_EQ(result.size(), 0);
+	ASSERT_NO_THROW(result = TE.X_1.available());
+	EXPECT_EQ(result.size(), 0);	//?? won't work for is_option() ...
+	//int get_answer() const noexcept;		// return get_answer or 0
+	static_assert(noexcept(TE.O_1.get_answer()), "get_answer() should be noexcept");
+	EXPECT_EQ(TE.A_1.get_answer(), 1);
+	EXPECT_EQ(TE.O_1.get_answer(), 2);
+	EXPECT_EQ(TE.O_2.get_answer(), 0);
+	EXPECT_EQ(TE.E_1.get_answer(), 0);
+	EXPECT_EQ(TE.E_2.get_answer(), 0);
+	EXPECT_EQ(TE.X_0.get_answer(), 0);
+	EXPECT_EQ(TE.X_1.get_answer(), 0);
+}
+TEST(Options, mf_changeAll)
+{
+	// Setup
+	Sudoku::Options<4> TMP{};
+	ASSERT_EQ(TMP.size(), 5)	<< "Invalid object";
+	ASSERT_TRUE(TMP.all())		<< "All options should be available";
+	EXPECT_EQ(TMP.count(), 4);
+	EXPECT_EQ(TMP.count_all(), 4);
+	ASSERT_EQ(TMP, TE.D_1)		<< "Default set D_1 is not complete";
+
+	static_assert(noexcept(TMP.clear()), "clear() should be noexcept");
+	TMP = TE.D_1;	// reset testdata
+	ASSERT_EQ(TMP, TE.D_1)		<< "Reset testdata failed";
+	TMP.clear();
+	EXPECT_TRUE(TMP.is_empty());
+	EXPECT_EQ(TMP.count(), 0);
+	EXPECT_EQ(TMP.count_all(), 0);
+	TMP = TE.D_1;
+	EXPECT_TRUE(TMP.clear().is_empty());
+	static_assert(noexcept(TMP.reset()), "reset() should be noexcept");
+	ASSERT_TRUE(TE.E_1.is_empty())	<< "E_1 should be empty";
+	TMP = TE.E_1;
+	ASSERT_EQ(TMP, TE.E_1)		<< "Reset testdata failed";
+	TMP.reset();
+	EXPECT_FALSE(TMP.is_empty());
+	EXPECT_EQ(TMP.count(), 4);
+	EXPECT_EQ(TMP.count_all(), 4);
+	EXPECT_TRUE(TMP.is_option(2));
+	EXPECT_TRUE(TMP.all());
+	TMP = TE.D_1;
+	EXPECT_TRUE(TMP.reset().all());
+	static_assert(noexcept(TMP.flip()), "flip() should be noexcept");
+	TMP = TE.D_1;
+	ASSERT_TRUE(TMP.all())		<< "Reset testdata failed";
+	TMP.flip();
+	EXPECT_TRUE(TMP.is_empty());
+	EXPECT_EQ(TMP.count_all(), 0);
+	TMP.flip();
+	EXPECT_TRUE(TMP.all());
+	EXPECT_EQ(TMP.count_all(), 4);
+}
+TEST(Options, mf_editMemberFunctions)
 {
 	// _test-data
 	Sudoku::Options<9> O_1{};
@@ -80,120 +341,17 @@ TEST(Options, MemberFunctions)
 	const Sudoku::Options<4> O_4{ std::bitset<5>{"01011"} };	// 2 options 1 & 3
 	const Sudoku::Options<4> E_1{ std::bitset<5>{"00000"} };	// empty
 	const Sudoku::Options<4> E_2{ std::bitset<5>{"00001"} };	// empty, no answer
-	Sudoku::Options<9> TMP{};
-
-	///// Const Memberfunctions /////
-	// size() const
-	static_assert(noexcept(O_1.size()), "size() should be noexcept");
-	EXPECT_TRUE(O_1.size() == 10);
-	EXPECT_TRUE(E_1.size() == 5);
-	// count() const
-	static_assert(noexcept(O_1.count()), "count() should be noexcept");
-	EXPECT_TRUE(O_1.count() == 9);
-	EXPECT_TRUE(O_3.count() == 0);
-	EXPECT_TRUE(O_4.count() == 2);
-	EXPECT_TRUE(E_1.count() == 0);
-	EXPECT_TRUE(E_2.count() == 0);
-	// count_all() const
-	static_assert(noexcept(O_1.count_all()), "count_all() should be noexcept");
-	EXPECT_TRUE(O_1.count_all() == 9);
-	EXPECT_TRUE(O_3.count_all() == 1);
-	EXPECT_TRUE(O_4.count_all() == 2);
-	EXPECT_TRUE(E_1.count_all() == 0);
-	EXPECT_TRUE(E_2.count_all() == 0);
-	// all() const
-	static_assert(noexcept(O_1.all()), "all() should be noexcept");
-	EXPECT_TRUE(O_1.all());
-	EXPECT_FALSE(O_3.all());
-	//_test(int) const
-	static_assert(!noexcept(O_1.test(2)), "test() is NOT noexcept");
-	EXPECT_TRUE(O_1.test(2));
-	EXPECT_TRUE(O_3.test(2));
-	EXPECT_FALSE(O_3.test(1));
-	try { if (O_1.test(15) || true) { FAIL(); } }
-	catch (const std::out_of_range&) {} // caught
-	try { if (O_1.test(-1) || true) { FAIL() << "test(-1) out-of-range expected"; } }
-	catch (const std::out_of_range&) {} // caught
-	catch (...) { FAIL() << "test() unexpected exception"; }
-	// is_answer() const
-	static_assert(noexcept(O_1.is_answer()), "is_answer() should be noexcept");
-	EXPECT_TRUE(O_3.is_answer());
-	EXPECT_FALSE(O_1.is_answer());
-	EXPECT_FALSE(O_4.is_answer());
-	EXPECT_FALSE(E_2.is_answer());
-	// is_answer(int) const
-	static_assert(noexcept(O_1.is_answer(1)), "is_answer(int) is NOT noexcept");
-	EXPECT_TRUE(O_3.is_answer(2));
-	EXPECT_FALSE(O_3.is_answer(1));
-	EXPECT_FALSE(O_1.is_answer(2));
-	EXPECT_FALSE(O_1.is_answer(17));
-	EXPECT_FALSE(O_1.is_answer(0));
-	EXPECT_FALSE(O_1.is_answer(-1));
-	// empty with answer flag
-	EXPECT_FALSE(E_1.is_answer());
-	EXPECT_FALSE(E_1.is_answer(0));
-	// is_option(int) const
-	static_assert(noexcept(O_1.is_option(2)), "is_option(int) is NOT noexept");
-	EXPECT_TRUE(O_1.is_option(1));
-	EXPECT_FALSE(O_3.is_option(1));
-	EXPECT_FALSE(O_3.is_option(2));
-	// is_empty() const
-	//constexpr bool is_empty() const noexcept;
-	static_assert(noexcept(O_1.is_empty()), "is_empty() should be noexcept");
-	EXPECT_TRUE(E_1.is_empty());
-	EXPECT_FALSE(O_1.is_empty());
-	EXPECT_TRUE(E_2.is_empty());
-	// available() const
-	//std::vector<int> available() const;	// return available options
-	static_assert(!noexcept(O_1.available()), "available() should NOT be noexcept");
-	std::vector<int> result{};
-	try { result = O_4.available(); }
-	catch (...) { FAIL() << "available() failed"; }
-	EXPECT_TRUE(result.size() == 2);
-	EXPECT_TRUE(result[0] == 1);
-	EXPECT_TRUE(result[1] == 3);
-	try { result = E_1.available(); }
-	catch (...) { FAIL() << "available() on empty failed"; }
-	EXPECT_TRUE(result.size() == 0);
-	try { result = E_2.available(); }
-	catch (...) { FAIL() << "available() on empty failed_2"; }
-	EXPECT_TRUE(result.size() == 0);
-	// get_answer() const
-	//int get_answer() const noexcept;		// return get_answer or 0
-	static_assert(noexcept(O_1.get_answer()), "get_answer() should be noexcept");
-	EXPECT_TRUE(O_3.get_answer() == 2);
-	EXPECT_TRUE(O_2.get_answer() == 0);
-	EXPECT_TRUE(E_1.get_answer() == 0);
+	Sudoku::Options<4> TMP{};
 
 	///// NON-CONST Memberfunctions /////
-	// clear()
-	static_assert(noexcept(O_1.clear()), "clear() should be noexcept");
-	O_2.clear();
-	EXPECT_TRUE(O_2.is_empty());
-	EXPECT_TRUE(O_2.count() == 0);
-	EXPECT_FALSE(O_2.is_answer());
-	EXPECT_FALSE(O_2.is_answer(2));
-	EXPECT_FALSE(O_2.is_option(2));
-	// reset()
-	static_assert(noexcept(O_1.reset()), "reset() should be noexcept");
-	O_2.reset();
-	EXPECT_FALSE(O_2.is_empty());
-	EXPECT_TRUE(O_2.count() == 9);
-	EXPECT_TRUE(O_2.count_all() == 9);
-	EXPECT_FALSE(O_2.is_answer());
-	EXPECT_FALSE(O_2.is_answer(2));
-	EXPECT_TRUE(O_2.is_option(2));
-	EXPECT_TRUE(O_2.all());
-	// flip()
-	static_assert(noexcept(O_1.flip()), "flip() should be noexcept");
-	O_2.flip();
-	EXPECT_TRUE(O_2.is_empty());
-	EXPECT_TRUE(O_2.count_all() == 0);
 	// remove_option(int)
-	TMP.reset();
-	static_assert(!noexcept(TMP.remove_option(3)), "remove_option(int) should be noexcept");
+	static_assert(!noexcept(TMP.remove_option(3)), "remove_option(int) should NOT be noexcept");
+	EXPECT_THROW(TMP.remove_option(15), std::out_of_range);
+	EXPECT_THROW(TMP.remove_option(-5), std::out_of_range);
+	ASSERT_TRUE(TMP.reset().all())	<< "Reset testdata failed";
+	ASSERT_EQ(TMP.size(), 5)		<< "Test requires Options<4> object";
 	EXPECT_TRUE(TMP.remove_option(3));
-	EXPECT_TRUE(TMP.count() == 8);
+	EXPECT_EQ(TMP.count(), 3);
 	EXPECT_FALSE(TMP.remove_option(3));
 	// add(int)
 	//Options& add(int value);			// add single option
@@ -204,13 +362,16 @@ TEST(Options, MemberFunctions)
 	catch (const std::out_of_range&) {} // caught
 	catch (...) { FAIL() << "add(high val) exception wasn't caught"; }
 	// set(int)
-	static_assert(!noexcept(O_1.set(4)), "set(int) should NOT be noexcept");
-	EXPECT_TRUE(O_1.set(4).is_answer());
-	EXPECT_TRUE(O_1.is_answer(4));
-	EXPECT_TRUE(O_1.count() == 0);
-	EXPECT_TRUE(O_1.set(1).is_answer(1));
-	EXPECT_FALSE(O_1.is_answer(4));
-	EXPECT_TRUE(O_1.set(0).is_empty());
+	TMP.reset();
+	static_assert(!noexcept(TMP.set(4)), "set(int) should NOT be noexcept");
+	EXPECT_TRUE(TMP.set(4).is_answer());
+	EXPECT_TRUE(TMP.is_answer(4));
+	EXPECT_EQ(TMP.count(), 0);
+	EXPECT_TRUE(TMP.set(1).is_answer(1));
+	EXPECT_FALSE(TMP.is_answer(4));
+	EXPECT_TRUE(TMP.set(0).is_empty());
+	EXPECT_EQ(TMP.count_all(), 0);
+	EXPECT_EQ(TMP, std::bitset<5>{"00001"});
 	//add_noexcept(int)
 	TMP.clear();
 	static_assert(noexcept(TMP.add_nocheck(1)), "add_noexcept(int) should be noexcept");
@@ -223,111 +384,110 @@ TEST(Options, MemberFunctions)
 	static_assert(noexcept(O_1.set_nocheck(2)), "set_noexcept(int) should be noexcept");
 	EXPECT_TRUE(O_1.set_nocheck(2).is_answer(2));
 }
-	TEST(Options, Operators)
-	{
-		// _test-data
-		const Sudoku::Options<4> O_1{};								// all options
-		const Sudoku::Options<4> O_2{ std::bitset<5>{"11111"} };	// all options
-		const Sudoku::Options<4> O_3{ std::bitset<5>{"00101"} };	// single option 2
-		const Sudoku::Options<4> E_1{ 0 };							// empty answer "00001"
-		const Sudoku::Options<4> E_2{ std::bitset<5>{"00000"} };	// empty
-		const Sudoku::Options<4> E_3{ std::bitset<5>{"00001"} };	// empty option
-		const Sudoku::Options<4> A_1{ 1 };							// answer 1
-		const Sudoku::Options<4> A_2{ std::bitset<5>{"00100"} };	// answer 2
-		Sudoku::Options<4> TMP{};									// per test, reset this option
+TEST(Options, Operators)
+{
+	// _test-data
+	const Sudoku::Options<4> O_1{};								// all options
+	const Sudoku::Options<4> O_2{ std::bitset<5>{"11111"} };	// all options
+	const Sudoku::Options<4> O_3{ std::bitset<5>{"00101"} };	// single option 2
+	const Sudoku::Options<4> E_1{ 0 };							// empty answer "00001"
+	const Sudoku::Options<4> E_2{ std::bitset<5>{"00000"} };	// empty
+	const Sudoku::Options<4> E_3{ std::bitset<5>{"00001"} };	// empty option
+	const Sudoku::Options<4> A_1{ 1 };							// answer 1
+	const Sudoku::Options<4> A_2{ std::bitset<5>{"00100"} };	// answer 2
+	Sudoku::Options<4> TMP{};									// per test, reset this option
 
-																	///// CONST operators /////
-																	// operator==(int) const
-		static_assert(noexcept(A_1 == 1), "operator==(int) should be noexcept");
-		EXPECT_TRUE(A_1 == 1);
-		EXPECT_TRUE(A_2 == 2);
-		//bool operator==(Options<E>&) const
-		static_assert(noexcept(O_1 == O_2), "operator== should be noexcept");
-		EXPECT_TRUE(O_1 == O_2);
-		EXPECT_FALSE(O_1 == E_1);
-		//bool operator!=(Options<E>&) const
-		static_assert(noexcept(O_1 != O_2), "operator!= should be noexcept");
-		EXPECT_TRUE(O_1 != E_1);
-		EXPECT_FALSE(O_1 != O_2);
-		//NEEDTEST bool operator< (Options<E>&) const			sorting
-		//Options operator&(Options&) const						shared options
-		static_assert(noexcept(O_1 & O_2), "operator& should be noexcept");
-		EXPECT_TRUE((O_2 & O_3) == O_3);
-		EXPECT_TRUE((O_1 & O_2) == O_1);
-		EXPECT_TRUE((O_2 & E_2) == E_2);
-		EXPECT_TRUE((O_3 & A_2) == A_2);
-		EXPECT_TRUE((E_3 & A_2) == E_2);
-		//constexpr bool operator[](int) const
-		static_assert(noexcept(O_1[2]), "operator[int] should be no except for reading");
-		static_assert(noexcept(O_1[14]), "operator[out of range] should not throw an exception");
-		EXPECT_TRUE(O_1[2]);
-		EXPECT_TRUE(A_2[2]);
-		EXPECT_TRUE(A_2[1] == false);
+	///// CONST operators /////
+	// operator==(int) const
+	static_assert(noexcept(A_1 == 1), "operator==(int) should be noexcept");
+	EXPECT_EQ(A_1, 1);
+	EXPECT_EQ(A_2, 2);
+	//bool operator==(Options<E>&) const
+	static_assert(noexcept(O_1 == O_2), "operator== should be noexcept");
+	EXPECT_EQ(O_1, O_2);
+	EXPECT_FALSE(O_1 == E_1);
+	//bool operator!=(Options<E>&) const
+	static_assert(noexcept(O_1 != O_2), "operator!= should be noexcept");
+	EXPECT_NE(O_1, E_1);
+	EXPECT_FALSE(O_1 != O_2);
+	//NEEDTEST bool operator< (Options<E>&) const			sorting
+	//Options operator&(Options&) const						shared options
+	static_assert(noexcept(O_1 & O_2), "operator& should be noexcept");
+	EXPECT_EQ((O_2 & O_3), O_3);
+	EXPECT_TRUE((O_1 & O_2) == O_1);
+	EXPECT_TRUE((O_2 & E_2) == E_2);
+	EXPECT_TRUE((O_3 & A_2) == A_2);
+	EXPECT_TRUE((E_3 & A_2) == E_2);
+	//constexpr bool operator[](int) const
+	static_assert(noexcept(O_1[2]), "operator[int] should be no except for reading");
+	static_assert(noexcept(O_1[14]), "operator[out of range] should not throw an exception");
+	EXPECT_TRUE(O_1[2]);
+	EXPECT_TRUE(A_2[2]);
+	EXPECT_TRUE(A_2[1] == false);
 
-		///// non-const operators /////
-		//NEEDTEST constexpr bool operator[](int)
-		static_assert(noexcept(TMP.operator[](0) = true), "operator[] should be noexcept");
-		TMP.clear();
-		EXPECT_TRUE(TMP[0] = true);
-		EXPECT_TRUE(TMP[0] == true);
-		EXPECT_FALSE(TMP[0].flip());
-		EXPECT_TRUE(TMP[0] == false);
-		//Options& XOR(Options&)			XOR
-		static_assert(noexcept(TMP.XOR(O_3)), "XOR() should be noexcept");
-		TMP = E_3;
-		EXPECT_TRUE(TMP.XOR(A_2) == O_3);
-		EXPECT_TRUE((TMP.XOR(A_2)) == E_3);
-		//Options& operator+=(Options&)			combine options
-		static_assert(noexcept(TMP += O_2), "operator+= should be noexcept");
-		TMP = E_2;
-		TMP += O_2;
-		EXPECT_TRUE(O_1 == O_2);
-		// others tested by using operator+()
-		//Options operator+(Options&) const		combine options
-		static_assert(noexcept(O_1 + O_2), "operator+ should be noexcept");
-		EXPECT_TRUE(O_1 + O_2 == O_1);
-		EXPECT_TRUE(E_1 + O_1 == O_1);
-		EXPECT_TRUE(A_2 + E_3 == O_3);
-		EXPECT_FALSE(E_1 + A_2 == O_3);
-		//Options operator-(Options&) const		difference
-		static_assert(noexcept(O_1 - O_2), "operator- should be noexcept");
+	///// non-const operators /////
+	//NEEDTEST constexpr bool operator[](int)
+	static_assert(noexcept(TMP.operator[](0) = true), "operator[] should be noexcept");
+	TMP.clear();
+	EXPECT_TRUE(TMP[0] = true);
+	EXPECT_TRUE(TMP[0] == true);
+	EXPECT_FALSE(TMP[0].flip());
+	EXPECT_TRUE(TMP[0] == false);
+	//Options& XOR(Options&)			XOR
+	static_assert(noexcept(TMP.XOR(O_3)), "XOR() should be noexcept");
+	TMP = E_3;
+	EXPECT_TRUE(TMP.XOR(A_2) == O_3);
+	EXPECT_TRUE((TMP.XOR(A_2)) == E_3);
+	//Options& operator+=(Options&)			combine options
+	static_assert(noexcept(TMP += O_2), "operator+= should be noexcept");
+	TMP = E_2;
+	TMP += O_2;
+	EXPECT_TRUE(O_1 == O_2);
+	// others tested by using operator+()
+	//Options operator+(Options&) const		combine options
+	static_assert(noexcept(O_1 + O_2), "operator+ should be noexcept");
+	EXPECT_TRUE(O_1 + O_2 == O_1);
+	EXPECT_TRUE(E_1 + O_1 == O_1);
+	EXPECT_TRUE(A_2 + E_3 == O_3);
+	EXPECT_FALSE(E_1 + A_2 == O_3);
+	//Options operator-(Options&) const		difference
+	static_assert(noexcept(O_1 - O_2), "operator- should be noexcept");
 
 
-		///// testing the constructors /////
-		EXPECT_TRUE(E_1 == E_3);
-		// copy-assign
-		static_assert(noexcept(TMP.operator=(O_2)), "operator= should be noexcept");
-		static_assert(!noexcept(TMP.operator=(1)), "operator=(int) IS NOT noexcept");
-		Sudoku::Options<4> TMP1 = A_2;
-		EXPECT_TRUE(TMP1.is_answer(2));
-		EXPECT_TRUE(TMP1 == A_2);
-		Sudoku::Options<4> TMP2 = 3;
-		EXPECT_TRUE(TMP2.is_answer(3));
-		// move-assign
-		static_assert(noexcept(TMP.operator=(std::bitset<5>())), "operator= should be noexcept_2");
-		Sudoku::Options<4> O_6 = std::bitset<5>{};	// "00000"
-		EXPECT_TRUE(O_6 == E_2);
-	}
-	TEST(Options, External)
-	{
-		const Sudoku::Options<4> O_1{};								// all options
-		const Sudoku::Options<4> O_2{ std::bitset<5>{"11111"} };	// all options
-		const Sudoku::Options<4> O_3{ std::bitset<5>{"00101"} };	// single option 2
-		const Sudoku::Options<4> E_1{ 0 };							// empty answer "00001"
-		const Sudoku::Options<4> E_2{ std::bitset<5>{"00000"} };	// empty
-		const Sudoku::Options<4> E_3{ std::bitset<5>{"00001"} };	// empty option
-		const Sudoku::Options<4> A_1{ 1 };							// answer 1
-		const Sudoku::Options<4> A_2{ std::bitset<5>{"00100"} };	// answer 2
-																	//XOR(a,b)
-		static_assert(noexcept(XOR(O_3, O_3)), "XOR() should be noexcept");
-		EXPECT_TRUE(XOR(E_3, A_2) == O_3);
-		EXPECT_TRUE(XOR(XOR(E_3, A_2), A_2) == E_3);
-		//shared(a,b)
-		static_assert(noexcept(shared(O_1, O_2), "share(a,b) should be noexcept"));
-		EXPECT_TRUE(shared(O_2, O_3) == O_3);
-		EXPECT_TRUE(shared(O_1, O_2) == O_1);
-		EXPECT_TRUE(shared(O_2, E_2) == E_2);
-		EXPECT_TRUE(shared(O_3, A_2) == A_2);
-		EXPECT_TRUE(shared(E_3, A_2) == E_2);
-	}
+	///// testing the constructors /////
+	EXPECT_TRUE(E_1 == E_3);
+	// copy-assign
+	static_assert(noexcept(TMP.operator=(O_2)), "operator= should be noexcept");
+	static_assert(!noexcept(TMP.operator=(1)), "operator=(int) IS NOT noexcept");
+	Sudoku::Options<4> TMP1 = A_2;
+	EXPECT_TRUE(TMP1.is_answer(2));
+	EXPECT_TRUE(TMP1 == A_2);
+	Sudoku::Options<4> TMP2 = 3;
+	EXPECT_TRUE(TMP2.is_answer(3));
+	// move-assign
+	static_assert(noexcept(TMP.operator=(std::bitset<5>())), "operator= should be noexcept_2");
+	Sudoku::Options<4> O_6 = std::bitset<5>{};	// "00000"
+	EXPECT_TRUE(O_6 == E_2);
+}
+TEST(Options, External)
+{
+	const Options<4> O_3{ std::bitset<5>{"00101"} };	// single option 2
+	const Options<4> E_1{ 0 };							// empty answer "00001"
+	const Options<4> E_2{ std::bitset<5>{"00000"} };	// empty
+	const Options<4> E_3{ std::bitset<5>{"00001"} };	// empty option
+	const Options<4> A_1{ 1 };							// answer 1
+	const Options<4> A_2{ std::bitset<5>{"00100"} };	// answer 2
+	//XOR(a,b)
+	static_assert(noexcept(XOR(O_3, O_3)), "XOR() should be noexcept");
+	EXPECT_EQ(XOR(E_3, A_2), O_3);
+	EXPECT_EQ(XOR(XOR(E_3, A_2), A_2), E_3);
+	//shared(a,b)
+	static_assert(noexcept(shared(TE.D_1, TE.O_4), "share(a,b) should be noexcept"));
+	EXPECT_EQ(shared(TE.O_4, O_3), O_3);
+	EXPECT_EQ(shared(TE.D_1, TE.O_4), TE.D_1);
+	EXPECT_EQ(shared(TE.O_4, E_2), E_2);
+	EXPECT_EQ(shared(O_3, A_2), A_2);
+	EXPECT_EQ(shared(E_3, A_2), E_2);
+}
+
 }	//namespace Sudoku_Test

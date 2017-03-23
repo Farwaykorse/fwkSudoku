@@ -1,7 +1,7 @@
 /**	Unit tests for the template class Sudoku::Location
 *
 */
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 // Class under test
 #include "../Sudoku/Location.h"
@@ -13,7 +13,7 @@ using namespace Sudoku;
 
 namespace SudokuTests::LocationTest
 {
-namespace compiletime_Location
+TEST(Location, compiletime)
 {
 	// Type properties
 	using typeT = Location<3>;
@@ -72,7 +72,7 @@ namespace compiletime_Location
 	static_assert(!std::is_nothrow_swappable_with<typeT, Block_Loc<3>>(), "++");	//C++17
 }
 
-namespace compiletime_Block_Loc
+TEST(Block_Loc, compiletime)
 {
 	// Type properties
 	using typeT = Block_Loc<3>;
@@ -444,9 +444,7 @@ TEST(Location, external)
 	EXPECT_FALSE(shared_col(Location<3>(9), Location<3>(8)));
 	EXPECT_TRUE(shared_block(Location<3>(0), Location<3>(11)));
 	EXPECT_FALSE(shared_block(Location<3>(9), Location<3>(8)));
-	//NEEDTEST shared_row / col / block
-	//return vector<Location<N>>
-	//
+
 	std::vector<Location<3>> list1{};
 	//std::vector<Location<3>> list2{};
 	std::vector<Location<3>> list3{};
