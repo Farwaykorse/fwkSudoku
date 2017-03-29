@@ -5,7 +5,7 @@
 #include "CppUnitTest.h"
 
 // Class under test
-#include "Location.h"
+#include "../Sudoku/Location.h"
 // aditional
 
 
@@ -143,20 +143,20 @@ public:
 		static_assert(! std::is_nothrow_swappable_with<typeT, Location<3>>(), "++");	//C++17
 
 		Block_Loc<3> B1(8, 8);
-		Assert::IsTrue(B1.element() == 8, L"block element", LINE_INFO());
+		Assert::IsTrue(B1.element() == 8, L"block element");
 		Block_Loc<3> B6{0, 0, 2};
-		Assert::IsTrue(B6.element() == 2, L"block row-col", LINE_INFO());
+		Assert::IsTrue(B6.element() == 2, L"block row-col");
 		Block_Loc<3> B2(B1);
-		Assert::IsTrue(B2.element() == 8, L"Copy constructor", LINE_INFO());
+		Assert::IsTrue(B2.element() == 8, L"Copy constructor");
 		Block_Loc<3> B3 = B1;
-		Assert::IsTrue(B3.element() == 8, L"Copy", LINE_INFO());
+		Assert::IsTrue(B3.element() == 8, L"Copy");
 		Block_Loc<3> B4(Block_Loc<3>(0, 2));
-		Assert::IsTrue(B4.element() == 2, L"Move constructor", LINE_INFO());
+		Assert::IsTrue(B4.element() == 2, L"Move constructor");
 		Block_Loc<3> B5 = Block_Loc<3>(8, 8);
-		Assert::IsTrue(B5.element() == 8, L"Move", LINE_INFO());
+		Assert::IsTrue(B5.element() == 8, L"Move");
 		// back and forth
-		Assert::IsTrue(Block_Loc<3>{ Location<3>{12} }.id() == 1, L"", LINE_INFO());
-		Assert::IsTrue(Location<3>{Block_Loc<3>{8, 8}}.element() == 80, L"", LINE_INFO());
+		Assert::IsTrue(Block_Loc<3>{ Location<3>{12} }.id() == 1, L"");
+		Assert::IsTrue(Location<3>{Block_Loc<3>{8, 8}}.element() == 80, L"");
 	}
 	TEST_METHOD(T1_information)
 	{
@@ -169,63 +169,63 @@ public:
 		Assert::IsTrue(Location<3>().full_size == 81);
 
 		Sudoku::Location<3> loc1(52);
-		Assert::IsTrue(loc1.element() == 52, L"element()", LINE_INFO());
-		Assert::IsTrue(loc1.row() == 5, L"row()", LINE_INFO());
-		Assert::IsTrue(loc1.col() == 7, L"col()", LINE_INFO());
-		Assert::IsTrue(loc1.block() == 5, L"block()", LINE_INFO());
-		Assert::IsTrue(loc1.block_row() == 2, L"block_row()", LINE_INFO());
-		Assert::IsTrue(loc1.block_col() == 1, L"block_col()", LINE_INFO());
-		Assert::IsTrue(loc1.block_elem() == 7, L"block_elem()", LINE_INFO());
+		Assert::IsTrue(loc1.element() == 52, L"element()");
+		Assert::IsTrue(loc1.row() == 5, L"row()");
+		Assert::IsTrue(loc1.col() == 7, L"col()");
+		Assert::IsTrue(loc1.block() == 5, L"block()");
+		Assert::IsTrue(loc1.block_row() == 2, L"block_row()");
+		Assert::IsTrue(loc1.block_col() == 1, L"block_col()");
+		Assert::IsTrue(loc1.block_elem() == 7, L"block_elem()");
 
 		Sudoku::Location<3> loc2(3, 2);
-		Assert::IsTrue(loc2.element() == 29, L"element()", LINE_INFO());
-		Assert::IsTrue(loc2.row() == 3, L"row()", LINE_INFO());
-		Assert::IsTrue(loc2.col() == 2, L"col()", LINE_INFO());
-		Assert::IsTrue(loc2.block() == 3, L"block()", LINE_INFO());
-		Assert::IsTrue(loc2.block_row() == 0, L"block_row()", LINE_INFO());
-		Assert::IsTrue(loc2.block_col() == 2, L"block_col()", LINE_INFO());
-		Assert::IsTrue(loc2.block_elem() == 2, L"block_elem()", LINE_INFO());
+		Assert::IsTrue(loc2.element() == 29, L"element()");
+		Assert::IsTrue(loc2.row() == 3, L"row()");
+		Assert::IsTrue(loc2.col() == 2, L"col()");
+		Assert::IsTrue(loc2.block() == 3, L"block()");
+		Assert::IsTrue(loc2.block_row() == 0, L"block_row()");
+		Assert::IsTrue(loc2.block_col() == 2, L"block_col()");
+		Assert::IsTrue(loc2.block_elem() == 2, L"block_elem()");
 
 		Sudoku::Location<3> loc3(0);
-		Assert::IsTrue(loc3.element() == 0, L"element()", LINE_INFO());
-		Assert::IsTrue(loc3.row() == 0, L"row()", LINE_INFO());
-		Assert::IsTrue(loc3.col() == 0, L"col()", LINE_INFO());
-		Assert::IsTrue(loc3.block() == 0, L"block()", LINE_INFO());
-		Assert::IsTrue(loc3.block_row() == 0, L"block_row()", LINE_INFO());
-		Assert::IsTrue(loc3.block_col() == 0, L"block_col()", LINE_INFO());
-		Assert::IsTrue(loc3.block_elem() == 0, L"block_elem()", LINE_INFO());
+		Assert::IsTrue(loc3.element() == 0, L"element()");
+		Assert::IsTrue(loc3.row() == 0, L"row()");
+		Assert::IsTrue(loc3.col() == 0, L"col()");
+		Assert::IsTrue(loc3.block() == 0, L"block()");
+		Assert::IsTrue(loc3.block_row() == 0, L"block_row()");
+		Assert::IsTrue(loc3.block_col() == 0, L"block_col()");
+		Assert::IsTrue(loc3.block_elem() == 0, L"block_elem()");
 
 		Sudoku::Location<3> loc4(80);
-		Assert::IsTrue(loc4.element() == 80, L"element()", LINE_INFO());
-		Assert::IsTrue(loc4.row() == 8, L"row()", LINE_INFO());
-		Assert::IsTrue(loc4.col() == 8, L"col()", LINE_INFO());
-		Assert::IsTrue(loc4.block() == 8, L"block()", LINE_INFO());
-		Assert::IsTrue(loc4.block_row() == 2, L"block_row()", LINE_INFO());
-		Assert::IsTrue(loc4.block_col() == 2, L"block_col()", LINE_INFO());
-		Assert::IsTrue(loc4.block_elem() == 8, L"block_elem()", LINE_INFO());
+		Assert::IsTrue(loc4.element() == 80, L"element()");
+		Assert::IsTrue(loc4.row() == 8, L"row()");
+		Assert::IsTrue(loc4.col() == 8, L"col()");
+		Assert::IsTrue(loc4.block() == 8, L"block()");
+		Assert::IsTrue(loc4.block_row() == 2, L"block_row()");
+		Assert::IsTrue(loc4.block_col() == 2, L"block_col()");
+		Assert::IsTrue(loc4.block_elem() == 8, L"block_elem()");
 	}
 	//TODO other size: Location<2>
 	TEST_METHOD(T2_comparisson)
 	{
-		Assert::IsTrue(Location<3>(4) == Location<3>(4), L"", LINE_INFO());
-		Assert::IsFalse(Location<3>(0) == Location<3>(13), L"", LINE_INFO());
-		Assert::IsTrue(Location<3>(0, 5) < Location<3>(3, 2), L"", LINE_INFO());
-		Assert::IsFalse(Location<3>(80) < Location<3>(8, 3), L"", LINE_INFO());
+		Assert::IsTrue(Location<3>(4) == Location<3>(4), L"");
+		Assert::IsFalse(Location<3>(0) == Location<3>(13), L"");
+		Assert::IsTrue(Location<3>(0, 5) < Location<3>(3, 2), L"");
+		Assert::IsFalse(Location<3>(80) < Location<3>(8, 3), L"");
 
-		Assert::IsTrue(Block_Loc<3>(0,0) == Block_Loc<3>(0,0,0), L"", LINE_INFO());
-		Assert::IsFalse(Block_Loc<3>(4,3) == Block_Loc<3>(4,4), L"", LINE_INFO());
-		Assert::IsTrue(Block_Loc<3>(0, 5) < Block_Loc<3>(3, 2), L"", LINE_INFO());
-		Assert::IsFalse(Block_Loc<3>(0, 5) < Block_Loc<3>(0, 2), L"", LINE_INFO());
-		Assert::IsFalse(Block_Loc<3>(8,2,2) < Block_Loc<3>(8, 8), L"", LINE_INFO());
+		Assert::IsTrue(Block_Loc<3>(0,0) == Block_Loc<3>(0,0,0), L"");
+		Assert::IsFalse(Block_Loc<3>(4,3) == Block_Loc<3>(4,4), L"");
+		Assert::IsTrue(Block_Loc<3>(0, 5) < Block_Loc<3>(3, 2), L"");
+		Assert::IsFalse(Block_Loc<3>(0, 5) < Block_Loc<3>(0, 2), L"");
+		Assert::IsFalse(Block_Loc<3>(8,2,2) < Block_Loc<3>(8, 8), L"");
 
-		Assert::IsTrue(Block_Loc<3>(0,0) == Location<3>(0), L"", LINE_INFO());
-		Assert::IsTrue(Location<3>(1) == Block_Loc<3>(0, 1), L"", LINE_INFO());
+		Assert::IsTrue(Block_Loc<3>(0,0) == Location<3>(0), L"");
+		Assert::IsTrue(Location<3>(1) == Block_Loc<3>(0, 1), L"");
 	}
 	TEST_METHOD(T3_helper_Block_Loc)
 	{
 		Block_Loc<3> B1(2, 6);
-		Assert::IsTrue(B1.element() == 6, L"Block_Loc.elem", LINE_INFO());
-		Assert::IsTrue(B1.id() == 2, L"Block_loc.id", LINE_INFO());
+		Assert::IsTrue(B1.element() == 6, L"Block_Loc.elem");
+		Assert::IsTrue(B1.id() == 2, L"Block_loc.id");
 		Location<3> L1(B1);
 		Assert::IsTrue(L1.block() == B1.id());
 		Assert::IsTrue(L1.block_elem() == B1.element());

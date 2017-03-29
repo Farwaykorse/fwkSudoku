@@ -5,10 +5,10 @@
 #include "CppUnitTest.h"
 
 // Class under test
-#include "Board.h"
+#include "../Sudoku/Board.h"
 // helpers
 #include "TestObjects.h"
-#include "Location.h"
+#include "../Sudoku/Location.h"
 // library
 #include <set>
 #include <algorithm>
@@ -59,40 +59,40 @@ public:
 		// Input
 		//	a == b; a != b
 		//	*a; a->m		rvalue dereference
-		Assert::IsTrue(itr1 == B.row(0).begin(), L"operator== failed", LINE_INFO());
-		Assert::IsFalse(itr1 == B.row(0).end(), L"operator== didn't fail", LINE_INFO());
-		Assert::IsFalse(itr1 != B.row(0).begin(), L"operator!= failed", LINE_INFO());
-		Assert::IsTrue(itr1 != B.row(0).end(), L"operator!= didn't fail", LINE_INFO());
+		Assert::IsTrue(itr1 == B.row(0).begin(), L"operator== failed");
+		Assert::IsFalse(itr1 == B.row(0).end(), L"operator== didn't fail");
+		Assert::IsFalse(itr1 != B.row(0).begin(), L"operator!= failed");
+		Assert::IsTrue(itr1 != B.row(0).end(), L"operator!= didn't fail");
 
 		//Assert::IsFalse(B.row(0).begin() == B.col(0).begin(), L"should fail");
 
-		Assert::IsTrue(*itr1 == B[0][0], L"operator* failed", LINE_INFO());
+		Assert::IsTrue(*itr1 == B[0][0], L"operator* failed");
 		S[3][0].insert({ 9, 8, 6 });
-		Assert::IsTrue(itr_S1->size() == 3, L"operator-> failed", LINE_INFO());
+		Assert::IsTrue(itr_S1->size() == 3, L"operator-> failed");
 		// check operations from under All categories:
-		Assert::IsTrue(*itr2 == B[0][1], L"operator++() failed", LINE_INFO());
-		Assert::IsTrue(*itr3 == B[0][1], L"operator++(int) failed", LINE_INFO());
+		Assert::IsTrue(*itr2 == B[0][1], L"operator++() failed");
+		Assert::IsTrue(*itr3 == B[0][1], L"operator++(int) failed");
 
 		auto itr5 = B.row(0).begin();
 		for (size_t i = 0; i<B.elem_size-1; ++i) { ++itr5; }
-		Assert::IsTrue(*itr5 == 8, L"moving forward to last element failed", LINE_INFO());
-		Assert::IsTrue(++itr5 == B.row(0).end(), L"moving forward to end() failed", LINE_INFO());
+		Assert::IsTrue(*itr5 == 8, L"moving forward to last element failed");
+		Assert::IsTrue(++itr5 == B.row(0).end(), L"moving forward to end() failed");
 
 		// Output
 		//	*a = t; *a++ = t
 		*itr1 = 5;	// change from 0 to 5
-		Assert::IsTrue(B[0][0] == 5, L"Row: Output: *a = t failed", LINE_INFO());
+		Assert::IsTrue(B[0][0] == 5, L"Row: Output: *a = t failed");
 		*itr1++ = 8;	// change from 5 to 8 move to element 1
-		Assert::IsFalse(B[0][1] == 8, L"Row: Output: *a++ =t moved before setting the value", LINE_INFO());
-		Assert::IsTrue(B[0][0] == 8, L"Row: Output: *a++ = t failed", LINE_INFO());
-		Assert::IsTrue(*itr1 == B[0][1], L"Row: Output: *a++ = t didn't move after setting the value", LINE_INFO());
+		Assert::IsFalse(B[0][1] == 8, L"Row: Output: *a++ =t moved before setting the value");
+		Assert::IsTrue(B[0][0] == 8, L"Row: Output: *a++ = t failed");
+		Assert::IsTrue(*itr1 == B[0][1], L"Row: Output: *a++ = t didn't move after setting the value");
 		*++itr1 = 7;	// move to element 2, change value from 2 to 7
-		Assert::IsTrue(*itr1 == B[0][2], L"*++a failed to move", LINE_INFO());
-		Assert::IsFalse(B[0][1] == 7, L"*++a set value before moving", LINE_INFO());
-		Assert::IsTrue(*itr1 == 7, L"*++a failed to set value", LINE_INFO());
+		Assert::IsTrue(*itr1 == B[0][2], L"*++a failed to move");
+		Assert::IsFalse(B[0][1] == 7, L"*++a set value before moving");
+		Assert::IsTrue(*itr1 == 7, L"*++a failed to set value");
 
 		itr_S2->insert({ 1, 2 });
-		Assert::IsTrue(S[3][2].size() == 2, L"operator-> failed", LINE_INFO());
+		Assert::IsTrue(S[3][2].size() == 2, L"operator-> failed");
 
 		// Forward
 		//	X a; X()		default-constructable
@@ -102,7 +102,7 @@ public:
 		static_assert(std::is_default_constructible<Block::iterator>(), "");
 		Assert::IsTrue(
 			std::is_default_constructible<Sudoku::Board<int,2>::Row::iterator>(),
-			L"An forward iterator requires to be default constructable", LINE_INFO());
+			L"An forward iterator requires to be default constructable");
 		// Multi-pass: neither dereferencing nor incrementing affects dereferenceability
 
 		// Bidirectional
@@ -110,14 +110,14 @@ public:
 		itr1 = B.row(1).end();
 		itr2 = itr1;
 		itr3 = itr1;
-		Assert::IsTrue(itr1 == B.row(1).end(), L"Setup-error", LINE_INFO());
-		Assert::IsFalse(--itr2 == itr1, L"--itr failed", LINE_INFO());
-		Assert::IsTrue(*itr2 == B[1][8], L"--itr failed", LINE_INFO());
-		Assert::IsTrue(itr3-- == itr1, L"itr-- failed to dereference before moving", LINE_INFO());
-		Assert::IsTrue(itr3 == itr2, L"itr-- failed to move at all", LINE_INFO());
-		Assert::IsTrue(*--itr2 == 7, L"*--itr failed", LINE_INFO());
-		Assert::IsTrue(*itr3-- == 8, L"*itr-- failed in start position", LINE_INFO());
-		Assert::IsTrue(*itr3 == 7, L"*itr-- failed for new position", LINE_INFO());
+		Assert::IsTrue(itr1 == B.row(1).end(), L"Setup-error");
+		Assert::IsFalse(--itr2 == itr1, L"--itr failed");
+		Assert::IsTrue(*itr2 == B[1][8], L"--itr failed");
+		Assert::IsTrue(itr3-- == itr1, L"itr-- failed to dereference before moving");
+		Assert::IsTrue(itr3 == itr2, L"itr-- failed to move at all");
+		Assert::IsTrue(*--itr2 == 7, L"*--itr failed");
+		Assert::IsTrue(*itr3-- == 8, L"*itr-- failed in start position");
+		Assert::IsTrue(*itr3 == 7, L"*itr-- failed for new position");
 
 		// Random Access
 		//	a + n; a+=n, a[n], a - n; a-=n; a[-n]
@@ -126,42 +126,42 @@ public:
 		itr1 = B.row(2).begin();
 		itr2 = itr1;
 		itr3 = itr1;
-		Assert::IsTrue(itr2+1 == ++itr3, L"a+n failed", LINE_INFO());
+		Assert::IsTrue(itr2+1 == ++itr3, L"a+n failed");
 		// itr3 = 1
-		Assert::IsTrue(itr2 == itr1, L"a+1 shouldn't change a!", LINE_INFO());
-		Assert::IsTrue((itr2+=3) == itr1+3, L"a+=n failed", LINE_INFO());
+		Assert::IsTrue(itr2 == itr1, L"a+1 shouldn't change a!");
+		Assert::IsTrue((itr2+=3) == itr1+3, L"a+=n failed");
 		// itr2 = 3
-		Assert::IsTrue(itr2 == itr1+3, L"a+=n changes a", LINE_INFO());
-		Assert::IsTrue(itr3[2] == *(itr1+3), L"a[n] failed", LINE_INFO());
-		Assert::IsTrue(itr3 == itr1+1, L"a[n] shouldn't change a", LINE_INFO());
-		Assert::IsTrue(itr2-3 == itr1, L"a-n failed", LINE_INFO());
-		Assert::IsTrue(itr2 == itr1+3, L"a-n shouldn't change a", LINE_INFO());
-		Assert::IsTrue((itr2-=3) == itr1, L"a-=n failed", LINE_INFO());
+		Assert::IsTrue(itr2 == itr1+3, L"a+=n changes a");
+		Assert::IsTrue(itr3[2] == *(itr1+3), L"a[n] failed");
+		Assert::IsTrue(itr3 == itr1+1, L"a[n] shouldn't change a");
+		Assert::IsTrue(itr2-3 == itr1, L"a-n failed");
+		Assert::IsTrue(itr2 == itr1+3, L"a-n shouldn't change a");
+		Assert::IsTrue((itr2-=3) == itr1, L"a-=n failed");
 		// itr2 = 0
-		Assert::IsTrue(itr2 == itr1, L"a-=n changes a", LINE_INFO());
-		Assert::IsTrue(itr3[-1] == *(itr1), L"a[-n] failed", LINE_INFO());
-		Assert::IsTrue(itr1+B.elem_size == B.row(2).end(), L"movement to end failed", LINE_INFO());
+		Assert::IsTrue(itr2 == itr1, L"a-=n changes a");
+		Assert::IsTrue(itr3[-1] == *(itr1), L"a[-n] failed");
+		Assert::IsTrue(itr1+B.elem_size == B.row(2).end(), L"movement to end failed");
 
 		itr1 = B.row(2).begin();	// 0
 		itr2 = B.row(2).begin()+2;	// 2
 		itr3 = B.row(2).end();		// 9
-		Assert::IsTrue(itr1 - itr2 == -2, L"distance failed", LINE_INFO());
+		Assert::IsTrue(itr1 - itr2 == -2, L"distance failed");
 		//TODO int + iterator, returns same result as itr + int
-		//Assert::IsTrue(5 + itr2 == itr2+5, L"sum with number failed", LINE_INFO());
-		Assert::IsTrue(itr1 < itr2, L"a < b failed", LINE_INFO());
-		Assert::IsTrue(itr2 > itr1, L"a > b failed", LINE_INFO());
-		Assert::IsTrue(itr1 <= itr2 && itr1 <= B.row(2).begin(), L"a <= b failed", LINE_INFO());
-		Assert::IsTrue(itr2 >= itr1 && itr1 >= B.row(2).begin(), L"a >= b failed", LINE_INFO());
+		//Assert::IsTrue(5 + itr2 == itr2+5, L"sum with number failed");
+		Assert::IsTrue(itr1 < itr2, L"a < b failed");
+		Assert::IsTrue(itr2 > itr1, L"a > b failed");
+		Assert::IsTrue(itr1 <= itr2 && itr1 <= B.row(2).begin(), L"a <= b failed");
+		Assert::IsTrue(itr2 >= itr1 && itr1 >= B.row(2).begin(), L"a >= b failed");
 
 		// Custom functions
-		Assert::IsTrue(itr1.location() == Sudoku::Location<3>(2,0), L"location() failed", LINE_INFO());
-		Assert::IsTrue(itr1.location().row() == 2, L"location().row() failed", LINE_INFO());
-		Assert::IsTrue(itr3.location().element() == 27, L"location().elemen() of end() failed", LINE_INFO());
+		Assert::IsTrue(itr1.location() == Sudoku::Location<3>(2,0), L"location() failed");
+		Assert::IsTrue(itr1.location().row() == 2, L"location().row() failed");
+		Assert::IsTrue(itr3.location().element() == 27, L"location().elemen() of end() failed");
 
 		// Other
 		Assert::IsTrue(
 			std::distance(B.row(0).begin(), B.row(0).end()) == B.elem_size,
-			L"std::distance failed", LINE_INFO());
+			L"std::distance failed");
 	}
 	TEST_METHOD(const_iterator)
 	{
@@ -199,21 +199,21 @@ public:
 		// Input
 		//	a == b; a != b
 		//	*a; a->m		rvalue dereference
-		Assert::IsTrue(itr1 == B.row(0).cbegin(), L"operator== failed", LINE_INFO());
-		Assert::IsFalse(itr1 == B.row(0).cend(), L"operator== didn't fail", LINE_INFO());
-		Assert::IsFalse(itr1 != B.row(0).cbegin(), L"operator!= failed", LINE_INFO());
-		Assert::IsTrue(itr1 != B.row(0).cend(), L"operator!= didn't fail", LINE_INFO());
-		Assert::IsTrue(*itr1 == B[0][0], L"operator* failed", LINE_INFO());
+		Assert::IsTrue(itr1 == B.row(0).cbegin(), L"operator== failed");
+		Assert::IsFalse(itr1 == B.row(0).cend(), L"operator== didn't fail");
+		Assert::IsFalse(itr1 != B.row(0).cbegin(), L"operator!= failed");
+		Assert::IsTrue(itr1 != B.row(0).cend(), L"operator!= didn't fail");
+		Assert::IsTrue(*itr1 == B[0][0], L"operator* failed");
 		S[3][0].insert({ 9, 8, 6 });
-		Assert::IsTrue(itr_S1->size() == 3, L"operator-> failed", LINE_INFO());
+		Assert::IsTrue(itr_S1->size() == 3, L"operator-> failed");
 		// check operations from under All categories:
-		Assert::IsTrue(*itr2 == B[0][1], L"operator++() failed", LINE_INFO());
-		Assert::IsTrue(*itr3 == B[0][1], L"operator++(int) failed", LINE_INFO());
+		Assert::IsTrue(*itr2 == B[0][1], L"operator++() failed");
+		Assert::IsTrue(*itr3 == B[0][1], L"operator++(int) failed");
 
 		auto itr5 = B.row(0).cbegin();
 		for (size_t i = 0; i<B.elem_size - 1; ++i) { ++itr5; }
-		Assert::IsTrue(*itr5 == 8, L"moving forward to last element failed", LINE_INFO());
-		Assert::IsTrue(++itr5 == B.row(0).cend(), L"moving forward to end() failed", LINE_INFO());
+		Assert::IsTrue(*itr5 == 8, L"moving forward to last element failed");
+		Assert::IsTrue(++itr5 == B.row(0).cend(), L"moving forward to end() failed");
 
 		// Output
 		//	*a = t; *a++ = t
@@ -226,7 +226,7 @@ public:
 		static_assert(std::is_default_constructible<Block::const_iterator>(), "");
 		Assert::IsTrue(
 			std::is_default_constructible<Sudoku::Board<int, 2>::Row::const_iterator>(),
-			L"An forward iterator requires to be default constructable", LINE_INFO());
+			L"An forward iterator requires to be default constructable");
 		// Multi-pass: neither dereferencing nor incrementing affects dereferenceability
 
 		// Bidirectional
@@ -234,14 +234,14 @@ public:
 		itr1 = B.row(1).cend();
 		itr2 = itr1;
 		itr3 = itr1;
-		Assert::IsTrue(itr1 == B.row(1).cend(), L"Setup-error", LINE_INFO());
-		Assert::IsFalse(--itr2 == itr1, L"--itr failed", LINE_INFO());
-		Assert::IsTrue(*itr2 == B[1][8], L"--itr failed", LINE_INFO());
-		Assert::IsTrue(itr3-- == itr1, L"itr-- failed to dereference before moving", LINE_INFO());
-		Assert::IsTrue(itr3 == itr2, L"itr-- failed to move at all", LINE_INFO());
-		Assert::IsTrue(*--itr2 == 7, L"*--itr failed", LINE_INFO());
-		Assert::IsTrue(*itr3-- == 8, L"*itr-- failed in start position", LINE_INFO());
-		Assert::IsTrue(*itr3 == 7, L"*itr-- failed for new position", LINE_INFO());
+		Assert::IsTrue(itr1 == B.row(1).cend(), L"Setup-error");
+		Assert::IsFalse(--itr2 == itr1, L"--itr failed");
+		Assert::IsTrue(*itr2 == B[1][8], L"--itr failed");
+		Assert::IsTrue(itr3-- == itr1, L"itr-- failed to dereference before moving");
+		Assert::IsTrue(itr3 == itr2, L"itr-- failed to move at all");
+		Assert::IsTrue(*--itr2 == 7, L"*--itr failed");
+		Assert::IsTrue(*itr3-- == 8, L"*itr-- failed in start position");
+		Assert::IsTrue(*itr3 == 7, L"*itr-- failed for new position");
 
 		// Random Access
 		//	a + n; a+=n, a[n], a - n; a-=n; a[-n]
@@ -250,32 +250,32 @@ public:
 		itr1 = B.row(2).cbegin();
 		itr2 = itr1;
 		itr3 = itr1;
-		Assert::IsTrue(itr2 + 1 == ++itr3, L"a+n failed", LINE_INFO());
+		Assert::IsTrue(itr2 + 1 == ++itr3, L"a+n failed");
 		// itr3 = 1
-		Assert::IsTrue(itr2 == itr1, L"a+1 shouldn't change a!", LINE_INFO());
-		Assert::IsTrue((itr2 += 3) == itr1 + 3, L"a+=n failed", LINE_INFO());
+		Assert::IsTrue(itr2 == itr1, L"a+1 shouldn't change a!");
+		Assert::IsTrue((itr2 += 3) == itr1 + 3, L"a+=n failed");
 		// itr2 = 3
-		Assert::IsTrue(itr2 == itr1 + 3, L"a+=n changes a", LINE_INFO());
-		Assert::IsTrue(itr3[2] == *(itr1 + 3), L"a[n] failed", LINE_INFO());
-		Assert::IsTrue(itr3 == itr1 + 1, L"a[n] shouldn't change a", LINE_INFO());
-		Assert::IsTrue(itr2 - 3 == itr1, L"a-n failed", LINE_INFO());
-		Assert::IsTrue(itr2 == itr1 + 3, L"a-n shouldn't change a", LINE_INFO());
-		Assert::IsTrue((itr2 -= 3) == itr1, L"a-=n failed", LINE_INFO());
+		Assert::IsTrue(itr2 == itr1 + 3, L"a+=n changes a");
+		Assert::IsTrue(itr3[2] == *(itr1 + 3), L"a[n] failed");
+		Assert::IsTrue(itr3 == itr1 + 1, L"a[n] shouldn't change a");
+		Assert::IsTrue(itr2 - 3 == itr1, L"a-n failed");
+		Assert::IsTrue(itr2 == itr1 + 3, L"a-n shouldn't change a");
+		Assert::IsTrue((itr2 -= 3) == itr1, L"a-=n failed");
 		// itr2 = 0
-		Assert::IsTrue(itr2 == itr1, L"a-=n changes a", LINE_INFO());
-		Assert::IsTrue(itr3[-1] == *(itr1), L"a[-n] failed", LINE_INFO());
-		Assert::IsTrue(itr1 + B.elem_size == B.row(2).cend(), L"movement to end failed", LINE_INFO());
+		Assert::IsTrue(itr2 == itr1, L"a-=n changes a");
+		Assert::IsTrue(itr3[-1] == *(itr1), L"a[-n] failed");
+		Assert::IsTrue(itr1 + B.elem_size == B.row(2).cend(), L"movement to end failed");
 
 		itr1 = B.row(2).cbegin();	// 0
 		itr2 = B.row(2).cbegin() + 2;	// 2
 		itr3 = B.row(2).cend();		// 9
-		Assert::IsTrue(itr1 - itr2 == -2, L"distance failed", LINE_INFO());
+		Assert::IsTrue(itr1 - itr2 == -2, L"distance failed");
 		//TODO int + iterator, returns same result as itr + int
 		// https://msdn.microsoft.com/en-us/library/d56eb4y4.aspx
-		Assert::IsTrue(itr1 < itr2, L"a < b failed", LINE_INFO());
-		Assert::IsTrue(itr2 > itr1, L"a > b failed", LINE_INFO());
-		Assert::IsTrue(itr1 <= itr2 && itr1 <= B.row(2).cbegin(), L"a <= b failed", LINE_INFO());
-		Assert::IsTrue(itr2 >= itr1 && itr1 >= B.row(2).cbegin(), L"a >= b failed", LINE_INFO());
+		Assert::IsTrue(itr1 < itr2, L"a < b failed");
+		Assert::IsTrue(itr2 > itr1, L"a > b failed");
+		Assert::IsTrue(itr1 <= itr2 && itr1 <= B.row(2).cbegin(), L"a <= b failed");
+		Assert::IsTrue(itr2 >= itr1 && itr1 >= B.row(2).cbegin(), L"a >= b failed");
 
 
 		/* for-loop */
@@ -284,17 +284,17 @@ public:
 		{
 			sum += *itr;
 		}
-		Assert::IsTrue(sum == 36, L"const_iterator failed in for-loop", LINE_INFO());
+		Assert::IsTrue(sum == 36, L"const_iterator failed in for-loop");
 
 		// Custom functions
-		Assert::IsTrue(itr1.location() == Sudoku::Location<3>(2, 0), L"location() failed", LINE_INFO());
-		Assert::IsTrue(itr1.location().row() == 2, L"location().row() failed", LINE_INFO());
-		Assert::IsTrue(itr3.location().element() == 27, L"location().elemen() of end() failed", LINE_INFO());
+		Assert::IsTrue(itr1.location() == Sudoku::Location<3>(2, 0), L"location() failed");
+		Assert::IsTrue(itr1.location().row() == 2, L"location().row() failed");
+		Assert::IsTrue(itr3.location().element() == 27, L"location().elemen() of end() failed");
 
 		// Other
 		Assert::IsTrue(
 			std::distance(B.row(0).cbegin(), B.row(0).cend()) == B.elem_size,
-			L"std::distance failed", LINE_INFO());
+			L"std::distance failed");
 	}
 	TEST_METHOD(range_for_loop)
 	{
@@ -310,9 +310,9 @@ public:
 			}
 			catch (...)
 			{
-				Assert::Fail(L"Section::Row range-for", LINE_INFO());
+				Assert::Fail(L"Section::Row range-for");
 			}
-			Assert::IsTrue(total == 36, L"Section::Row range-for incorrect result", LINE_INFO());
+			Assert::IsTrue(total == 36, L"Section::Row range-for incorrect result");
 		}
 
 		Test_Boards::bN_fill_1::set_RowNr(B);
@@ -325,9 +325,9 @@ public:
 			}
 			catch (...)
 			{
-				Assert::Fail(L"Section::Col range-for", LINE_INFO());
+				Assert::Fail(L"Section::Col range-for");
 			}
-			Assert::IsTrue(total == 36, L"Section::Col range-for incorrect result", LINE_INFO());
+			Assert::IsTrue(total == 36, L"Section::Col range-for incorrect result");
 		}
 
 		Test_Boards::bN_fill_1::set_BlockNr_X(B);
@@ -340,9 +340,9 @@ public:
 			}
 			catch (...)
 			{
-				Assert::Fail(L"Section::Block range-for", LINE_INFO());
+				Assert::Fail(L"Section::Block range-for");
 			}
-			Assert::IsTrue(total == 36, L"Section::Block range-for incorrect result", LINE_INFO());
+			Assert::IsTrue(total == 36, L"Section::Block range-for incorrect result");
 		}
 	}
 	TEST_METHOD(manual_loop)
@@ -370,32 +370,32 @@ public:
 		for (int i = 0; i < 9; ++i)
 		{
 			size_t total = std::accumulate(B.row(i).cbegin(), B.row(i).cend(), 0);
-			Assert::IsTrue(total == 36, L"Section::Row std::accumulate incorrect result", LINE_INFO());
+			Assert::IsTrue(total == 36, L"Section::Row std::accumulate incorrect result");
 		}
 
 		Test_Boards::bN_fill_1::set_RowNr(B);
 		for (int i = 0; i < 9; ++i)
 		{
 			size_t total = std::accumulate(B.col(i).begin(), B.col(i).end(), 0);
-			Assert::IsTrue(total == 36, L"Section::Col std::accumulate incorrect result", LINE_INFO());
+			Assert::IsTrue(total == 36, L"Section::Col std::accumulate incorrect result");
 		}
 
 		Test_Boards::bN_fill_1::set_BlockNr_X(B);
 		for (int i = 0; i < 9; ++i)
 		{
 			size_t total = std::accumulate(B.block(i).begin(), B.block(i).end(), 0);
-			Assert::IsTrue(total == 36, L"Section::Block std::accumulate incorrect result", LINE_INFO());
+			Assert::IsTrue(total == 36, L"Section::Block std::accumulate incorrect result");
 		}
 
 		Test_Boards::bN_fill_1::set_ColNr(B);
 		// upper_bound requires a forward iterator
 		auto first_higher = std::upper_bound(B.row(5).cbegin(), B.row(5).cend(), 6);
-		Assert::IsTrue(*first_higher == 7, L"std::upper_bound() failed", LINE_INFO());
+		Assert::IsTrue(*first_higher == 7, L"std::upper_bound() failed");
 		// fill requires a forward iterator
 		std::fill(B.block(2).begin(), B.block(2).end(), 3);
 		Assert::IsTrue(
 			B.at(7) == 3 && B.at(8) ==3 && B.at(17) == 3 && B.at(25) == 3,
-			L"std::fill() failed", LINE_INFO()
+			L"std::fill() failed"
 		);
 		// next_permutation(start, stop) requires a Bidirectional iterator
 		Assert::IsTrue(std::next_permutation(B.row(2).begin(), B.row(2).end()));

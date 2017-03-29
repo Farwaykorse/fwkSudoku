@@ -5,10 +5,10 @@
 #include "CppUnitTest.h"
 
 // Class under test
-#include "Board.h"
+#include "../Sudoku/Board.h"
 // helpers
-#include "Location.h"
-#include "Options.h"
+#include "../Sudoku/Location.h"
+#include "../Sudoku/Options.h"
 
 // library
 #include <set>
@@ -107,12 +107,12 @@ public:
 
 		// using at(elem_id) !
 		Assert::IsTrue(f3.at(12) == 0 && f3.at(73) == 0,
-						L"Empty board isn't filled with 0's", LINE_INFO());
-		//Assert::IsTrue(f4.at(43) == s4, L"Options board value set doesn't match input", LINE_INFO());
-		Assert::IsTrue(A.at(21) == 2, L"move constructor value doesn't match input", LINE_INFO());
-		Assert::IsTrue(B.at(39) == 9, L"move assignment, value doesn't match input", LINE_INFO());
-		Assert::IsTrue(f3 == copy, L"copy constructor failure", LINE_INFO());
-		Assert::IsTrue(f3 == copy2, L"copy operation failure 2", LINE_INFO());
+						L"Empty board isn't filled with 0's");
+		//Assert::IsTrue(f4.at(43) == s4, L"Options board value set doesn't match input");
+		Assert::IsTrue(A.at(21) == 2, L"move constructor value doesn't match input");
+		Assert::IsTrue(B.at(39) == 9, L"move assignment, value doesn't match input");
+		Assert::IsTrue(f3 == copy, L"copy constructor failure");
+		Assert::IsTrue(f3 == copy2, L"copy operation failure 2");
 	}
 	TEST_METHOD(T2_properties)
 	{
@@ -128,26 +128,26 @@ public:
 		Board<Options<9>, 3> O_2(O_1);
 
 		// empty()
-		//Assert::IsTrue(empty.empty(), L"failure empty() on int", LINE_INFO());
-		//Assert::IsTrue(b_set0.empty(), L"failure empty() on set", LINE_INFO());
+		//Assert::IsTrue(empty.empty(), L"failure empty() on int");
+		//Assert::IsTrue(b_set0.empty(), L"failure empty() on set");
 
 		// operator==()
-		Assert::IsTrue(board == board, L"failure operator== on self", LINE_INFO());
-		Assert::IsTrue(board == board2, L"failure operator==", LINE_INFO());
-		Assert::IsFalse(board == empty, L"failure operator== (inverse)", LINE_INFO());
-		Assert::IsTrue(b_set1 == b_set2, L"failure operator== for set", LINE_INFO());
-		Assert::IsFalse(b_set0 == b_set1, L"failure operator== for set (inverse)", LINE_INFO());
-		Assert::IsTrue(O_1 == O_2, L"failure operator== for Options", LINE_INFO());
+		Assert::IsTrue(board == board, L"failure operator== on self");
+		Assert::IsTrue(board == board2, L"failure operator==");
+		Assert::IsFalse(board == empty, L"failure operator== (inverse)");
+		Assert::IsTrue(b_set1 == b_set2, L"failure operator== for set");
+		Assert::IsFalse(b_set0 == b_set1, L"failure operator== for set (inverse)");
+		Assert::IsTrue(O_1 == O_2, L"failure operator== for Options");
 
 		// operator!=()
-		Assert::IsTrue(board != empty, L"failure operator!=", LINE_INFO());
-		Assert::IsFalse(board != board, L"failure operator!= on self", LINE_INFO());
-		Assert::IsFalse(board != board2, L"failure operator!=", LINE_INFO());
+		Assert::IsTrue(board != empty, L"failure operator!=");
+		Assert::IsFalse(board != board, L"failure operator!= on self");
+		Assert::IsFalse(board != board2, L"failure operator!=");
 
 		Sudoku::Board<int,2> B;
-		Assert::IsTrue(B.base_size == 2, L"base_size error", LINE_INFO());
-		Assert::IsTrue(B.elem_size == 4, L"elem_size error", LINE_INFO());
-		Assert::IsTrue(B.full_size == 16, L"full_size error", LINE_INFO());
+		Assert::IsTrue(B.base_size == 2, L"base_size error");
+		Assert::IsTrue(B.elem_size == 4, L"elem_size error");
+		Assert::IsTrue(B.full_size == 16, L"full_size error");
 
 		//NEEDTEST	valid_size(int elem);
 		//NEEDTEST	valid_size(int row, int col);
@@ -160,44 +160,44 @@ public:
 
 		// Writing
 		try { set_atValue(board); }
-		catch (...) { Assert::Fail(L"writing with atValue(elem) failed", LINE_INFO()); }
-		Assert::IsTrue(board.at(80) == 9, L"reading with atValue(elem) failed", LINE_INFO());
-		try { if (board.at(100)) { Assert::Fail(L"at(elem) should give out-of-bounds", LINE_INFO()); } }
+		catch (...) { Assert::Fail(L"writing with atValue(elem) failed"); }
+		Assert::IsTrue(board.at(80) == 9, L"reading with atValue(elem) failed");
+		try { if (board.at(100)) { Assert::Fail(L"at(elem) should give out-of-bounds"); } }
 		catch (...) { } // caught
 
 		try { set_atValue_2(board2); }
-		catch (...) { Assert::Fail(L"writing with atValue(row, col) failed", LINE_INFO()); }
-		Assert::IsTrue(board2.at(8, 8) == 9, L"reading with atValue(row, col) failed", LINE_INFO());
-		try { if (board2.at(11, 4)) { Assert::Fail(L"at(row, col) should fail with out-of-bound", LINE_INFO()); } }
+		catch (...) { Assert::Fail(L"writing with atValue(row, col) failed"); }
+		Assert::IsTrue(board2.at(8, 8) == 9, L"reading with atValue(row, col) failed");
+		try { if (board2.at(11, 4)) { Assert::Fail(L"at(row, col) should fail with out-of-bound"); } }
 		catch (...) { }
 
 		Sudoku::Board<int, 3> board3;
 		try { set_Value(board3); }
-		catch (...) { Assert::Fail(L"writing with operator[row][col] filed", LINE_INFO()); }
-		Assert::IsTrue(board3[8][8] == 9, L"reading with operator[row][col] failed", LINE_INFO());
-		//try { if (board3[11][4]) { Assert::Fail(L"at[row][col] should fail with out-of-bound", LINE_INFO()); } }
-		//catch (...) { Assert::Fail(L"unknown error", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"writing with operator[row][col] filed"); }
+		Assert::IsTrue(board3[8][8] == 9, L"reading with operator[row][col] failed");
+		//try { if (board3[11][4]) { Assert::Fail(L"at[row][col] should fail with out-of-bound"); } }
+		//catch (...) { Assert::Fail(L"unknown error"); }
 
 		Sudoku::Board<int, 3> board4;
 		try { set_Value(board4); }
-		catch (...) { Assert::Fail(L"writing with operator[Location] failed", LINE_INFO()); }
-		Assert::IsTrue(board4[Sudoku::Location<3>(80)] == 9, L"reading with operator[Location] failed", LINE_INFO());
+		catch (...) { Assert::Fail(L"writing with operator[Location] failed"); }
+		Assert::IsTrue(board4[Sudoku::Location<3>(80)] == 9, L"reading with operator[Location] failed");
 
 				// operator==() / operator!=()
 		// repeat from TEST_METHOD(properties)
-		Assert::IsTrue(board == board2, L"failure operator==", LINE_INFO());
-		Assert::IsFalse(board == empty, L"failure operator== (inverse)", LINE_INFO());
-		Assert::IsTrue(board != empty, L"failure operator!=", LINE_INFO());
+		Assert::IsTrue(board == board2, L"failure operator==");
+		Assert::IsFalse(board == empty, L"failure operator== (inverse)");
+		Assert::IsTrue(board != empty, L"failure operator!=");
 	}
 	TEST_METHOD(T4_iterator_access)
 	{
 		using namespace Sudoku;
 
 		Board<int, 2> B1{};
-		Assert::IsTrue(*B1.begin() == 0, L"begin() failed", LINE_INFO());
-		Assert::IsTrue(*B1.cbegin() == 0, L"cbegin() failed", LINE_INFO());
-		Assert::IsTrue(*(B1.end() -1) == 0, L"cbegin() failed", LINE_INFO());
-		Assert::IsTrue(*(B1.cend() -1) == 0, L"cbegin() failed", LINE_INFO());
+		Assert::IsTrue(*B1.begin() == 0, L"begin() failed");
+		Assert::IsTrue(*B1.cbegin() == 0, L"cbegin() failed");
+		Assert::IsTrue(*(B1.end() -1) == 0, L"cbegin() failed");
+		Assert::IsTrue(*(B1.cend() -1) == 0, L"cbegin() failed");
 
 		//NEEDTEST Board iterator / const_iterator access ...
 		// begin / cbegin / const begin
@@ -217,10 +217,10 @@ public:
 		f3.clear();
 		b_set.clear();
 		// check result
-		Assert::IsTrue(f3.size() == 81, L"clear() not retaining size", LINE_INFO());
-		Assert::IsTrue(f3.at(17) == 0, L"clear() not removing values", LINE_INFO());
-		Assert::IsTrue(b_set.size() == 16, L"clear() not retaining board size", LINE_INFO());
-		Assert::IsTrue(b_set.at(8).empty(), L"clear() not removing values", LINE_INFO());
+		Assert::IsTrue(f3.size() == 81, L"clear() not retaining size");
+		Assert::IsTrue(f3.at(17) == 0, L"clear() not removing values");
+		Assert::IsTrue(b_set.size() == 16, L"clear() not retaining board size");
+		Assert::IsTrue(b_set.at(8).empty(), L"clear() not removing values");
 	}
 private:
 	template<typename T, int N>

@@ -5,7 +5,7 @@
 #include "CppUnitTest.h"
 
 // Class under test
-#include "Options.h"
+#include "../Sudoku/Options.h"
 // additional
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -70,11 +70,11 @@ public:
 
 		Sudoku::Options<9> two{};
 		try { Sudoku::Options<4> O_3{ std::bitset<5>() }; }
-		catch (...) { Assert::Fail(L"Construction with bitset()", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"Construction with bitset()"); }
 		try { Sudoku::Options<4> O_3{ std::bitset<5>{"00100"} }; }
-		catch (...) { Assert::Fail(L"Construction with bitset with data", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"Construction with bitset with data"); }
 		try { Sudoku::Options<4> O_4{ 2 }; }
-		catch (...) { Assert::Fail(L"Construction with int", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"Construction with int"); }
 	}
 	TEST_METHOD(T1_memberfunctions)
 	{
@@ -90,116 +90,116 @@ public:
 		///// Const Memberfunctions /////
 		// size() const
 		static_assert(noexcept(O_1.size()), "size() should be noexcept");
-		Assert::IsTrue(O_1.size() == 10, L"size() failed", LINE_INFO());
-		Assert::IsTrue(E_1.size() == 5, L"size() failed on empty", LINE_INFO());
+		Assert::IsTrue(O_1.size() == 10, L"size() failed");
+		Assert::IsTrue(E_1.size() == 5, L"size() failed on empty");
 		// count() const
 		static_assert(noexcept(O_1.count()), "count() should be noexcept");
-		Assert::IsTrue(O_1.count() == 9, L"count() failed", LINE_INFO());
-		Assert::IsTrue(O_3.count() == 0, L"count() failed on answer", LINE_INFO());
-		Assert::IsTrue(O_4.count() == 2, L"count() failed_2", LINE_INFO());
-		Assert::IsTrue(E_1.count() == 0, L"count() failed on empty", LINE_INFO());
-		Assert::IsTrue(E_2.count() == 0, L"count() failed on empty_2", LINE_INFO());
+		Assert::IsTrue(O_1.count() == 9, L"count() failed");
+		Assert::IsTrue(O_3.count() == 0, L"count() failed on answer");
+		Assert::IsTrue(O_4.count() == 2, L"count() failed_2");
+		Assert::IsTrue(E_1.count() == 0, L"count() failed on empty");
+		Assert::IsTrue(E_2.count() == 0, L"count() failed on empty_2");
 		// count_all() const
 		static_assert(noexcept(O_1.count_all()), "count_all() should be noexcept");
-		Assert::IsTrue(O_1.count_all() == 9, L"count_all() failed", LINE_INFO());
-		Assert::IsTrue(O_3.count_all() == 1, L"count_all() failed on answer", LINE_INFO());
-		Assert::IsTrue(O_4.count_all() == 2, L"count_all() failed_2", LINE_INFO());
-		Assert::IsTrue(E_1.count_all() == 0, L"count_all() failed on empty", LINE_INFO());
-		Assert::IsTrue(E_2.count_all() == 0, L"count_all() failed on empty_2", LINE_INFO());
+		Assert::IsTrue(O_1.count_all() == 9, L"count_all() failed");
+		Assert::IsTrue(O_3.count_all() == 1, L"count_all() failed on answer");
+		Assert::IsTrue(O_4.count_all() == 2, L"count_all() failed_2");
+		Assert::IsTrue(E_1.count_all() == 0, L"count_all() failed on empty");
+		Assert::IsTrue(E_2.count_all() == 0, L"count_all() failed on empty_2");
 		// all() const
 		static_assert(noexcept(O_1.all()), "all() should be noexcept");
-		Assert::IsTrue(O_1.all(), L"all() failed", LINE_INFO());
-		Assert::IsFalse(O_3.all(), L"all() failed", LINE_INFO());
+		Assert::IsTrue(O_1.all(), L"all() failed");
+		Assert::IsFalse(O_3.all(), L"all() failed");
 		//_test(int) const
 		static_assert(!noexcept(O_1.test(2)), "test() is NOT noexcept");
-		Assert::IsTrue(O_1.test(2), L"test(value) failed", LINE_INFO());
-		Assert::IsTrue(O_3.test(2), L"test(value) failed_2", LINE_INFO());
-		Assert::IsFalse(O_3.test(1), L"test(value) inverse failed", LINE_INFO());
-		try { if (O_1.test(15) || true) { Assert::Fail(L"test(high) out-of-range expected", LINE_INFO()); } }
+		Assert::IsTrue(O_1.test(2), L"test(value) failed");
+		Assert::IsTrue(O_3.test(2), L"test(value) failed_2");
+		Assert::IsFalse(O_3.test(1), L"test(value) inverse failed");
+		try { if (O_1.test(15) || true) { Assert::Fail(L"test(high) out-of-range expected"); } }
 		catch (const std::out_of_range&) {} // caught
-		try { if (O_1.test(-1) || true) { Assert::Fail(L"test(-1) out-of-range expected", LINE_INFO()); } }
+		try { if (O_1.test(-1) || true) { Assert::Fail(L"test(-1) out-of-range expected"); } }
 		catch (const std::out_of_range&) {} // caught
 		catch (...) { Assert::Fail(L"test() unexpected exception"); }
 		// is_answer() const
 		static_assert(noexcept(O_1.is_answer()), "is_answer() should be noexcept");
-		Assert::IsTrue(O_3.is_answer(), L"is_answer() failed", LINE_INFO());
-		Assert::IsFalse(O_1.is_answer(), L"is_answer() inverse failed", LINE_INFO());
-		Assert::IsFalse(O_4.is_answer(), L"is_answer() inverse failed_2", LINE_INFO());
-		Assert::IsFalse(E_2.is_answer(), L"is_answer() inverse failed_4", LINE_INFO());
+		Assert::IsTrue(O_3.is_answer(), L"is_answer() failed");
+		Assert::IsFalse(O_1.is_answer(), L"is_answer() inverse failed");
+		Assert::IsFalse(O_4.is_answer(), L"is_answer() inverse failed_2");
+		Assert::IsFalse(E_2.is_answer(), L"is_answer() inverse failed_4");
 		// is_answer(int) const
 		static_assert(noexcept(O_1.is_answer(1)), "is_answer(int) is NOT noexcept");
-		Assert::IsTrue(O_3.is_answer(2), L"is_answer(answer) failed", LINE_INFO());
-		Assert::IsFalse(O_3.is_answer(1), L"is_answer(int) failed", LINE_INFO());
-		Assert::IsFalse(O_1.is_answer(2), L"is_answer(random) failed", LINE_INFO());
-		Assert::IsFalse(O_1.is_answer(17), L"is_answer(high_value) failed", LINE_INFO());
-		Assert::IsFalse(O_1.is_answer(0), L"is_answer(0) failed", LINE_INFO());
-		Assert::IsFalse(O_1.is_answer(-1), L"is_answer(-1) failed", LINE_INFO());
+		Assert::IsTrue(O_3.is_answer(2), L"is_answer(answer) failed");
+		Assert::IsFalse(O_3.is_answer(1), L"is_answer(int) failed");
+		Assert::IsFalse(O_1.is_answer(2), L"is_answer(random) failed");
+		Assert::IsFalse(O_1.is_answer(17), L"is_answer(high_value) failed");
+		Assert::IsFalse(O_1.is_answer(0), L"is_answer(0) failed");
+		Assert::IsFalse(O_1.is_answer(-1), L"is_answer(-1) failed");
 		// empty with answer flag
-		Assert::IsFalse(E_1.is_answer(), L"is_answer() on 0 answer", LINE_INFO());
-		Assert::IsFalse(E_1.is_answer(0), L"is_answer(0) returned true", LINE_INFO());
+		Assert::IsFalse(E_1.is_answer(), L"is_answer() on 0 answer");
+		Assert::IsFalse(E_1.is_answer(0), L"is_answer(0) returned true");
 		// is_option(int) const
 		static_assert(noexcept(O_1.is_option(2)), "is_option(int) is NOT noexept");
-		Assert::IsTrue(O_1.is_option(1), L"is_option(int) failed", LINE_INFO());
-		Assert::IsFalse(O_3.is_option(1), L"is_option(int) inverse failed", LINE_INFO());
-		Assert::IsFalse(O_3.is_option(2), L"is_option(int) inverse failed_2", LINE_INFO());
+		Assert::IsTrue(O_1.is_option(1), L"is_option(int) failed");
+		Assert::IsFalse(O_3.is_option(1), L"is_option(int) inverse failed");
+		Assert::IsFalse(O_3.is_option(2), L"is_option(int) inverse failed_2");
 		// is_empty() const
 		//constexpr bool is_empty() const noexcept;
 		static_assert(noexcept(O_1.is_empty()), "is_empty() should be noexcept");
-		Assert::IsTrue(E_1.is_empty(), L"is_empty() failed", LINE_INFO());
-		Assert::IsFalse(O_1.is_empty(), L"is_empty() inverse failed", LINE_INFO());
-		Assert::IsTrue(E_2.is_empty(), L"is_empty() failed on special case", LINE_INFO());
+		Assert::IsTrue(E_1.is_empty(), L"is_empty() failed");
+		Assert::IsFalse(O_1.is_empty(), L"is_empty() inverse failed");
+		Assert::IsTrue(E_2.is_empty(), L"is_empty() failed on special case");
 		// available() const
 		//std::vector<int> available() const;	// return available options
 		static_assert(!noexcept(O_1.available()), "available() should NOT be noexcept");
 		std::vector<int> result{};
 		try { result = O_4.available(); }
-		catch (...) { Assert::Fail(L"available() failed", LINE_INFO()); }
-		Assert::IsTrue(result.size() == 2, L"available() failed_2", LINE_INFO());
-		Assert::IsTrue(result[0] == 1, L"available() failed_3", LINE_INFO());
-		Assert::IsTrue(result[1] == 3, L"available() failed_4", LINE_INFO());
+		catch (...) { Assert::Fail(L"available() failed"); }
+		Assert::IsTrue(result.size() == 2, L"available() failed_2");
+		Assert::IsTrue(result[0] == 1, L"available() failed_3");
+		Assert::IsTrue(result[1] == 3, L"available() failed_4");
 		try { result = E_1.available(); }
-		catch (...) { Assert::Fail(L"available() on empty failed", LINE_INFO()); }
-		Assert::IsTrue(result.size() == 0, L"available() when none available", LINE_INFO());
+		catch (...) { Assert::Fail(L"available() on empty failed"); }
+		Assert::IsTrue(result.size() == 0, L"available() when none available");
 		try { result = E_2.available(); }
-		catch (...) { Assert::Fail(L"available() on empty failed_2", LINE_INFO()); }
-		Assert::IsTrue(result.size() == 0, L"available() when none available_2", LINE_INFO());
+		catch (...) { Assert::Fail(L"available() on empty failed_2"); }
+		Assert::IsTrue(result.size() == 0, L"available() when none available_2");
 		// get_answer() const
 		//int get_answer() const noexcept;		// return get_answer or 0
 		static_assert(noexcept(O_1.get_answer()), "get_answer() should be noexcept");
-		Assert::IsTrue(O_3.get_answer() == 2, L"get_answer() failed", LINE_INFO());
-		Assert::IsTrue(O_2.get_answer() == 0, L"get_answer() failed_2", LINE_INFO());
-		Assert::IsTrue(E_1.get_answer() == 0, L"get_answer() when empty with 0th bit set", LINE_INFO());
+		Assert::IsTrue(O_3.get_answer() == 2, L"get_answer() failed");
+		Assert::IsTrue(O_2.get_answer() == 0, L"get_answer() failed_2");
+		Assert::IsTrue(E_1.get_answer() == 0, L"get_answer() when empty with 0th bit set");
 
 		///// NON-CONST Memberfunctions /////
 		// clear()
 		static_assert(noexcept(O_1.clear()), "clear() should be noexcept");
 		O_2.clear();
-		Assert::IsTrue(O_2.is_empty(), L"clear() failed", LINE_INFO());
-		Assert::IsTrue(O_2.count() == 0, L"count() failed on empty", LINE_INFO());
-		Assert::IsFalse(O_2.is_answer(), L"is_answer() failed on empty", LINE_INFO());
-		Assert::IsFalse(O_2.is_answer(2), L"is_answer(int) failed on empty", LINE_INFO());
-		Assert::IsFalse(O_2.is_option(2), L"is_option(int) failed on empty", LINE_INFO());
+		Assert::IsTrue(O_2.is_empty(), L"clear() failed");
+		Assert::IsTrue(O_2.count() == 0, L"count() failed on empty");
+		Assert::IsFalse(O_2.is_answer(), L"is_answer() failed on empty");
+		Assert::IsFalse(O_2.is_answer(2), L"is_answer(int) failed on empty");
+		Assert::IsFalse(O_2.is_option(2), L"is_option(int) failed on empty");
 		// reset()
 		static_assert(noexcept(O_1.reset()), "reset() should be noexcept");
 		O_2.reset();
-		Assert::IsFalse(O_2.is_empty(), L"reset() failed", LINE_INFO());
-		Assert::IsTrue(O_2.count() == 9, L"count() failed after reset()", LINE_INFO());
-		Assert::IsTrue(O_2.count_all() == 9, L"count_all() failed after reset()", LINE_INFO());
-		Assert::IsFalse(O_2.is_answer(), L"is_answer() failed after reset()", LINE_INFO());
-		Assert::IsFalse(O_2.is_answer(2), L"is_answer(int) failed after reset", LINE_INFO());
-		Assert::IsTrue(O_2.is_option(2), L"is_option(int) failed after reset", LINE_INFO());
-		Assert::IsTrue(O_2.all(), L"reset() failed with all()", LINE_INFO());
+		Assert::IsFalse(O_2.is_empty(), L"reset() failed");
+		Assert::IsTrue(O_2.count() == 9, L"count() failed after reset()");
+		Assert::IsTrue(O_2.count_all() == 9, L"count_all() failed after reset()");
+		Assert::IsFalse(O_2.is_answer(), L"is_answer() failed after reset()");
+		Assert::IsFalse(O_2.is_answer(2), L"is_answer(int) failed after reset");
+		Assert::IsTrue(O_2.is_option(2), L"is_option(int) failed after reset");
+		Assert::IsTrue(O_2.all(), L"reset() failed with all()");
 		// flip()
 		static_assert(noexcept(O_1.flip()), "flip() should be noexcept");
 		O_2.flip();
-		Assert::IsTrue(O_2.is_empty(), L"flip() failed", LINE_INFO());
-		Assert::IsTrue(O_2.count_all() == 0, L"flip() failed on count_all()", LINE_INFO());
+		Assert::IsTrue(O_2.is_empty(), L"flip() failed");
+		Assert::IsTrue(O_2.count_all() == 0, L"flip() failed on count_all()");
 		// remove_option(int)
 		TMP.reset();
 		static_assert(!noexcept(TMP.remove_option(3)), "remove_option(int) should be noexcept");
-		Assert::IsTrue(TMP.remove_option(3), L"remove_option(int) failed", LINE_INFO());
-		Assert::IsTrue(TMP.count() == 8, L"remove_option(int) failed_2", LINE_INFO());
-		Assert::IsFalse(TMP.remove_option(3), L"remove_option(int) on false should return false", LINE_INFO());
+		Assert::IsTrue(TMP.remove_option(3), L"remove_option(int) failed");
+		Assert::IsTrue(TMP.count() == 8, L"remove_option(int) failed_2");
+		Assert::IsFalse(TMP.remove_option(3), L"remove_option(int) on false should return false");
 		// add(int)
 		//Options& add(int value);			// add single option
 		static_assert(!noexcept(O_1.add(4)), "add(int) should NOT be noexcept");
@@ -210,23 +210,23 @@ public:
 		catch (...) { Assert::Fail(L"add(high val) exception wasn't caught"); }
 		// set(int)
 		static_assert(!noexcept(O_1.set(4)), "set(int) should NOT be noexcept");
-		Assert::IsTrue(O_1.set(4).is_answer(), L"set(int) failed", LINE_INFO());
-		Assert::IsTrue(O_1.is_answer(4), L"set(int) failed_2", LINE_INFO());
-		Assert::IsTrue(O_1.count() == 0, L"count() failed after set(int)", LINE_INFO());
-		Assert::IsTrue(O_1.set(1).is_answer(1), L"set(int) failed when changing", LINE_INFO());
-		Assert::IsFalse(O_1.is_answer(4), L"set(int) failed to remove value", LINE_INFO());
-		Assert::IsTrue(O_1.set(0).is_empty(), L"set(0) should remove all values", LINE_INFO());
+		Assert::IsTrue(O_1.set(4).is_answer(), L"set(int) failed");
+		Assert::IsTrue(O_1.is_answer(4), L"set(int) failed_2");
+		Assert::IsTrue(O_1.count() == 0, L"count() failed after set(int)");
+		Assert::IsTrue(O_1.set(1).is_answer(1), L"set(int) failed when changing");
+		Assert::IsFalse(O_1.is_answer(4), L"set(int) failed to remove value");
+		Assert::IsTrue(O_1.set(0).is_empty(), L"set(0) should remove all values");
 		//add_noexcept(int)
 		TMP.clear();
 		static_assert(noexcept(TMP.add_nocheck(1)), "add_noexcept(int) should be noexcept");
 		TMP.add_nocheck(3);
-		Assert::IsFalse(TMP.is_empty(), L"no options or answer set", LINE_INFO());
-		Assert::IsFalse(TMP.count_all() == 0, L"no options set", LINE_INFO());
-		Assert::IsTrue(TMP.test(3), L"failed to add option", LINE_INFO());
-		Assert::IsTrue(TMP.add_nocheck(4).test(4), L"add_noexcept(int) failed", LINE_INFO());
+		Assert::IsFalse(TMP.is_empty(), L"no options or answer set");
+		Assert::IsFalse(TMP.count_all() == 0, L"no options set");
+		Assert::IsTrue(TMP.test(3), L"failed to add option");
+		Assert::IsTrue(TMP.add_nocheck(4).test(4), L"add_noexcept(int) failed");
 		//set_noexcept(int)
 		static_assert(noexcept(O_1.set_nocheck(2)), "set_noexcept(int) should be noexcept");
-		Assert::IsTrue(O_1.set_nocheck(2).is_answer(2), L"set_noexcept(int) failed", LINE_INFO());
+		Assert::IsTrue(O_1.set_nocheck(2).is_answer(2), L"set_noexcept(int) failed");
 	}
 	TEST_METHOD(T3_operators)
 	{
@@ -244,30 +244,30 @@ public:
 		///// CONST operators /////
 		// operator==(int) const
 		static_assert(noexcept(A_1 == 1), "operator==(int) should be noexcept");
-		Assert::IsTrue(A_1 == 1, L"operator==(int) should behave like is_answer(int)", LINE_INFO());
-		Assert::IsTrue(A_2 == 2, L"operator==(int) should behave like is_answer(int)_2", LINE_INFO());
+		Assert::IsTrue(A_1 == 1, L"operator==(int) should behave like is_answer(int)");
+		Assert::IsTrue(A_2 == 2, L"operator==(int) should behave like is_answer(int)_2");
 		//bool operator==(Options<E>&) const
 		static_assert(noexcept(O_1 == O_2), "operator== should be noexcept");
-		Assert::IsTrue(O_1 == O_2, L"operator== failed", LINE_INFO());
-		Assert::IsFalse(O_1 == E_1, L"operator== inverse failed", LINE_INFO());
+		Assert::IsTrue(O_1 == O_2, L"operator== failed");
+		Assert::IsFalse(O_1 == E_1, L"operator== inverse failed");
 		//bool operator!=(Options<E>&) const
 		static_assert(noexcept(O_1 != O_2), "operator!= should be noexcept");
-		Assert::IsTrue(O_1 != E_1, L"operator!= failed", LINE_INFO());
-		Assert::IsFalse(O_1 != O_2, L"operator!= failed", LINE_INFO());
+		Assert::IsTrue(O_1 != E_1, L"operator!= failed");
+		Assert::IsFalse(O_1 != O_2, L"operator!= failed");
 		//NEEDTEST bool operator< (Options<E>&) const			sorting
 		//Options operator&(Options&) const						shared options
 		static_assert(noexcept(O_1 & O_2), "operator& should be noexcept");
-		Assert::IsTrue((O_2 & O_3) == O_3, L"operation& failed_1", LINE_INFO());
-		Assert::IsTrue((O_1 & O_2) == O_1, L"operation& failed_2", LINE_INFO());
-		Assert::IsTrue((O_2 & E_2) == E_2, L"operation& failed_3", LINE_INFO());
-		Assert::IsTrue((O_3 & A_2) == A_2, L"operation& failed_4", LINE_INFO());
-		Assert::IsTrue((E_3 & A_2) == E_2, L"operation& failed_5", LINE_INFO());
+		Assert::IsTrue((O_2 & O_3) == O_3, L"operation& failed_1");
+		Assert::IsTrue((O_1 & O_2) == O_1, L"operation& failed_2");
+		Assert::IsTrue((O_2 & E_2) == E_2, L"operation& failed_3");
+		Assert::IsTrue((O_3 & A_2) == A_2, L"operation& failed_4");
+		Assert::IsTrue((E_3 & A_2) == E_2, L"operation& failed_5");
 		//constexpr bool operator[](int) const
 		static_assert(noexcept(O_1[2]), "operator[int] should be no except for reading");
 		static_assert(noexcept(O_1[14]), "operator[out of range] should not throw an exception");
-		Assert::IsTrue(O_1[2], L"reading with operator[int] failed", LINE_INFO());
-		Assert::IsTrue(A_2[2], L"reading with operator[int] failed_2", LINE_INFO());
-		Assert::IsTrue(A_2[1] == false, L"reading with operator[int] failed_3", LINE_INFO());
+		Assert::IsTrue(O_1[2], L"reading with operator[int] failed");
+		Assert::IsTrue(A_2[2], L"reading with operator[int] failed_2");
+		Assert::IsTrue(A_2[1] == false, L"reading with operator[int] failed_3");
 
 		///// non-const operators /////
 		//NEEDTEST constexpr bool operator[](int)
@@ -280,38 +280,38 @@ public:
 		//Options& XOR(Options&)			XOR
 		static_assert(noexcept(TMP.XOR(O_3)), "XOR() should be noexcept");
 		TMP = E_3;
-		Assert::IsTrue(TMP.XOR(A_2) == O_3, L"XOR() failed", LINE_INFO());
-		Assert::IsTrue((TMP.XOR(A_2)) == E_3, L"XOR() failed", LINE_INFO());
+		Assert::IsTrue(TMP.XOR(A_2) == O_3, L"XOR() failed");
+		Assert::IsTrue((TMP.XOR(A_2)) == E_3, L"XOR() failed");
 		//Options& operator+=(Options&)			combine options
 		static_assert(noexcept(TMP += O_2), "operator+= should be noexcept");
 		TMP = E_2;
 		TMP += O_2;
-		Assert::IsTrue(O_1 == O_2, L"operator+= failed", LINE_INFO());
+		Assert::IsTrue(O_1 == O_2, L"operator+= failed");
 			// others tested by using operator+()
 		//Options operator+(Options&) const		combine options
 		static_assert(noexcept(O_1 + O_2), "operator+ should be noexcept");
-		Assert::IsTrue(O_1 + O_2 == O_1, L"operation+ failed", LINE_INFO());
-		Assert::IsTrue(E_1 + O_1 == O_1, L"operation+ failed", LINE_INFO());
-		Assert::IsTrue(A_2 + E_3 == O_3, L"operation+= ans+=other failed", LINE_INFO());
-		Assert::IsFalse(E_1 + A_2 == O_3, L"operation+= other+=ans failed", LINE_INFO());
+		Assert::IsTrue(O_1 + O_2 == O_1, L"operation+ failed");
+		Assert::IsTrue(E_1 + O_1 == O_1, L"operation+ failed");
+		Assert::IsTrue(A_2 + E_3 == O_3, L"operation+= ans+=other failed");
+		Assert::IsFalse(E_1 + A_2 == O_3, L"operation+= other+=ans failed");
 		//Options operator-(Options&) const		difference
 		static_assert(noexcept(O_1 - O_2), "operator- should be noexcept");
 
 
 		///// testing the constructors /////
-		Assert::IsTrue(E_1 == E_3, L"Options{ 0 } the 0th bit is true", LINE_INFO());
+		Assert::IsTrue(E_1 == E_3, L"Options{ 0 } the 0th bit is true");
 		// copy-assign
 		static_assert(noexcept(TMP.operator=(O_2)), "operator= should be noexcept");
 		static_assert(!noexcept(TMP.operator=(1)), "operator=(int) IS NOT noexcept");
 		Sudoku::Options<4> TMP1 = A_2;
-		Assert::IsTrue(TMP1.is_answer(2), L"copy-assign failed", LINE_INFO());
-		Assert::IsTrue(TMP1 == A_2, L"copy-assign failed", LINE_INFO());
+		Assert::IsTrue(TMP1.is_answer(2), L"copy-assign failed");
+		Assert::IsTrue(TMP1 == A_2, L"copy-assign failed");
 		Sudoku::Options<4> TMP2 = 3;
-		Assert::IsTrue(TMP2.is_answer(3), L"copy-assign operator=(int) failed", LINE_INFO());
+		Assert::IsTrue(TMP2.is_answer(3), L"copy-assign operator=(int) failed");
 		// move-assign
 		static_assert(noexcept(TMP.operator=(std::bitset<5>())), "operator= should be noexcept_2");
 		Sudoku::Options<4> O_6 = std::bitset<5>{};	// "00000"
-		Assert::IsTrue(O_6 == E_2, L"copy-assign failed", LINE_INFO());
+		Assert::IsTrue(O_6 == E_2, L"copy-assign failed");
 	}
 	TEST_METHOD(T4_external)
 	{
@@ -325,15 +325,15 @@ public:
 		const Sudoku::Options<4> A_2{ std::bitset<5>{"00100"} };	// answer 2
 		//XOR(a,b)
 		static_assert(noexcept(XOR(O_3, O_3)), "XOR() should be noexcept");
-		Assert::IsTrue(XOR(E_3, A_2) == O_3, L"XOR(A,B) failed", LINE_INFO());
-		Assert::IsTrue(XOR(XOR(E_3, A_2),A_2) == E_3, L"XOR(A,B) failed_2", LINE_INFO());
+		Assert::IsTrue(XOR(E_3, A_2) == O_3, L"XOR(A,B) failed");
+		Assert::IsTrue(XOR(XOR(E_3, A_2),A_2) == E_3, L"XOR(A,B) failed_2");
 		//shared(a,b)
 		static_assert(noexcept(shared(O_1, O_2), "share(a,b) should be noexcept"));
-		Assert::IsTrue(shared(O_2, O_3) == O_3, L"shared(a,b) failed_1", LINE_INFO());
-		Assert::IsTrue(shared(O_1, O_2) == O_1, L"shared(a,b) failed_2", LINE_INFO());
-		Assert::IsTrue(shared(O_2, E_2) == E_2, L"shared(a,b) failed_3", LINE_INFO());
-		Assert::IsTrue(shared(O_3, A_2) == A_2, L"shared(a,b) failed_4", LINE_INFO());
-		Assert::IsTrue(shared(E_3, A_2) == E_2, L"shared(a,b) failed_5", LINE_INFO());
+		Assert::IsTrue(shared(O_2, O_3) == O_3, L"shared(a,b) failed_1");
+		Assert::IsTrue(shared(O_1, O_2) == O_1, L"shared(a,b) failed_2");
+		Assert::IsTrue(shared(O_2, E_2) == E_2, L"shared(a,b) failed_3");
+		Assert::IsTrue(shared(O_3, A_2) == A_2, L"shared(a,b) failed_4");
+		Assert::IsTrue(shared(E_3, A_2) == E_2, L"shared(a,b) failed_5");
 	}
 };
 }	//namespace Sudoku_Test

@@ -5,7 +5,7 @@
 #include "CppUnitTest.h"
 
 // File under test
-#include "Solver.h"
+#include "../Sudoku/Solver.h"
 // helpers
 
 // library
@@ -73,36 +73,36 @@ public:
 		};
 		// Set single value
 		Board<Options<4>, 2> board;
-		Assert::IsTrue(board.at(5) == Options<4>{}, L"incorrect instantiation", LINE_INFO());
+		Assert::IsTrue(board.at(5) == Options<4>{}, L"incorrect instantiation");
 		try { Solver<2>(board).setValue(Location<2>(2), 3); }
-		catch (...) { Assert::Fail(L"setValue failed", LINE_INFO()); }
-		Assert::IsTrue(board[0][2] == 3, L"setValue failed to set the value", LINE_INFO());
+		catch (...) { Assert::Fail(L"setValue failed"); }
+		Assert::IsTrue(board[0][2] == 3, L"setValue failed to set the value");
 		Solver<2>(board).setValue(Location<2>(0), 4);
 		Solver<2>(board).setValue(Location<2>(15), 4);
-		Assert::IsTrue(board[3][3] == 4 && board[0][0] == 4, L"setValue failed to set extremes", LINE_INFO());
+		Assert::IsTrue(board[3][3] == 4 && board[0][0] == 4, L"setValue failed to set extremes");
 		//Solver<2>(board).setValue(Location<2>(2), 4);
-		//Assert::IsTrue(board[0][2] == 4, L"setValue failed to overwrite", LINE_INFO());
+		//Assert::IsTrue(board[0][2] == 4, L"setValue failed to overwrite");
 
 		// Copy data from vector
 		Board<Options<4>, 2> board1;
 		try { Solver<2>(board1).setValue(v1.cbegin(), v1.cend()); }
-		catch (...) { Assert::Fail(L"setValue failed in copying from vector", LINE_INFO()); }
+		catch (...) { Assert::Fail(L"setValue failed in copying from vector"); }
 		Assert::IsTrue(
 			board1[0][1] == 2 &&
 			board1[1][0] == 4 &&
 			board1[2][1] == 1 && board1[2][2] == 4,
-			L"setValue() from vector didn't copy data", LINE_INFO()
+			L"setValue() from vector didn't copy data"
 		);
 		Assert::IsTrue(
 			board1[0][3] == 4 &&
 			board1[3][1] == 4,
-			L"setValue() from vector didn't process single option cells", LINE_INFO()
+			L"setValue() from vector didn't process single option cells"
 		);
 		Assert::IsTrue(
 			board1[0][0] == 1 && board1[0][2] == 3 &&
 			board1[1][1] == 3 &&
 			board1[3][1] == 4,
-			L"setValue() from vector didn't cascade over single option cells", LINE_INFO()
+			L"setValue() from vector didn't cascade over single option cells"
 		);
 	}
 	TEST_METHOD(T2_unique)
@@ -118,14 +118,14 @@ public:
 			0,0, 0,0	// 2,3	4	1,2	1,2,
 		};
 		Board<Options<4>, 2> B1;
-		Assert::IsTrue(B1.at(0) == Options<4>{} && B1.at(15) == Options<4>{}, L"incorrect instantiation", LINE_INFO());
+		Assert::IsTrue(B1.at(0) == Options<4>{} && B1.at(15) == Options<4>{}, L"incorrect instantiation");
 		Solver<2>(B1).setValue(v1.cbegin(), v1.cend());
 		const Board<Options<4>, 2> cB1{ B1 };	// copy to compare with
-		Assert::IsTrue(B1.at(1) == 2 && B1.at(4) == 4 && B1.at(10) == 4, L"setup error", LINE_INFO());
-		Assert::IsTrue(B1 == cB1, L"copy error", LINE_INFO());
+		Assert::IsTrue(B1.at(1) == 2 && B1.at(4) == 4 && B1.at(10) == 4, L"setup error");
+		Assert::IsTrue(B1 == cB1, L"copy error");
 		// single row
 		Solver<2>(B1).unique_in_section(B1.row(0).cbegin(), B1.row(0).cend());
-		Assert::IsTrue(B1 == cB1, L"row 0 was completely fixed by setValue", LINE_INFO());
+		Assert::IsTrue(B1 == cB1, L"row 0 was completely fixed by setValue");
 
 		const std::vector<int> v2
 		{
@@ -140,10 +140,10 @@ public:
 		const Board<Options<4>, 2> cB2{ B2 };
 		// single row 0
 		Solver<2>(B2).unique_in_section(B2.row(0).cbegin(), B2.row(0).cend());
-		Assert::IsTrue(B2 == cB2, L"row 0 was completely fixed by setValue", LINE_INFO());
+		Assert::IsTrue(B2 == cB2, L"row 0 was completely fixed by setValue");
 		// single row 1
 		//Solver<2>(B2).unique_in_section(B2.row(3).cbegin(), B2.row(3).cend());
-		//Assert::IsTrue(B2 != cB2, L"row 3 should have changed", LINE_INFO());
+		//Assert::IsTrue(B2 != cB2, L"row 3 should have changed");
 		// full board
 		try
 		{
@@ -156,11 +156,11 @@ public:
 		Assert::IsTrue(
 			B2[0][0] == 3 && B2[0][1] == 2 &&
 			B2[2][2] == 2,
-			L"input values are lost", LINE_INFO()
+			L"input values are lost"
 		);
 		Assert::IsTrue(
 			B2[1][3] == 2 && B2[3][0] == 2,
-			L"not all uniques found in rows", LINE_INFO()
+			L"not all uniques found in rows"
 		);
 	}
 	TEST_METHOD(T3_solve_board)
@@ -231,14 +231,14 @@ public:
 		Solver<2>(B1).setValue(V1.cbegin(), V1.cend());
 		Assert::IsTrue(
 			1 == Solver<2>(B1).block_exclusive(B1.block(3).cbegin(), B1.block(3).cend()),
-			L"block_exclusive() should find 1 value", LINE_INFO());
-		Assert::IsTrue(B1[3][3] == 1, L"block_exclusive() unique value failed",LINE_INFO());
+			L"block_exclusive() should find 1 value");
+		Assert::IsTrue(B1[3][3] == 1, L"block_exclusive() unique value failed");
 		int found1{ 0 };
 		for (int i{ 0 }; i < B1.elem_size; ++i)
 		{
 			found1 += Solver<2>(B1).block_exclusive(B1.block(i).cbegin(), B1.block(i).cend());
 		}
-		Assert::IsTrue(found1 == 0, L"shouldn't find any others",LINE_INFO());
+		Assert::IsTrue(found1 == 0, L"shouldn't find any others");
 
 		const std::vector<int> V2
 		{
@@ -278,8 +278,8 @@ public:
 
 		Assert::IsTrue(
 			count_s >= 1,
-			L"block_exclusive() should find at least 1 value", LINE_INFO());
-		Assert::IsTrue(B2[2][8] == 3, L"block_exclusive() unique value failed N=3",LINE_INFO());
+			L"block_exclusive() should find at least 1 value");
+		Assert::IsTrue(B2[2][8] == 3, L"block_exclusive() unique value failed N=3");
 
 		for (int i = 0; i < B2.elem_size; ++i)
 		{
