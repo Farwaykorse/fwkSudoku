@@ -12,8 +12,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5FE296CB-7F95-44A2-A544-4009EF24F251}"
 	ProjectSection(SolutionItems) = preProject
-		About.txt = About.txt
-		TODO.txt = TODO.txt
+		About.md = About.md
+		TODO.md = TODO.md
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Console", "Console\Console.vcxproj", "{98C80F78-1DEC-4651-A336-996A027E11FE}"
@@ -54,9 +54,7 @@ Global
 		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.ClangDebug|x64.ActiveCfg = Debug|x64
 		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.ClangDebug|x86.ActiveCfg = Debug|Win32
 		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.ClangRelease|x64.ActiveCfg = Release|x64
-		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.ClangRelease|x64.Build.0 = Release|x64
 		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.ClangRelease|x86.ActiveCfg = Release|Win32
-		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.ClangRelease|x86.Build.0 = Release|Win32
 		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.Debug|x64.ActiveCfg = Debug|x64
 		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.Debug|x64.Build.0 = Debug|x64
 		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.Debug|x86.ActiveCfg = Debug|Win32
@@ -80,13 +78,9 @@ Global
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Release|x86.ActiveCfg = Release|Win32
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Release|x86.Build.0 = Release|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangDebug|x64.ActiveCfg = ClangDebug|x64
-		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangDebug|x64.Build.0 = ClangDebug|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangDebug|x86.ActiveCfg = ClangDebug|Win32
-		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangDebug|x86.Build.0 = ClangDebug|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x64.ActiveCfg = ClangRelease|x64
-		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x64.Build.0 = ClangRelease|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x86.ActiveCfg = ClangRelease|Win32
-		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x86.Build.0 = ClangRelease|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x64.ActiveCfg = Debug|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x64.Build.0 = Debug|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x86.ActiveCfg = Debug|Win32

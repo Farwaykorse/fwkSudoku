@@ -2,8 +2,8 @@
 //
 #pragma once
 #include "stdafx.h"
-#include "Board.h"
-#include "Location.h"
+#include "../Sudoku/Board.h"
+#include "../Sudoku/Board.h"
 
 #include <vector>
 
