@@ -2,7 +2,6 @@
 #pragma once
 #include <vector>	// shared functions
 
-#include <cassert>
 #include <limits>
 
 namespace Sudoku
@@ -82,7 +81,7 @@ class Block_Loc
 		return block_loc(id, block_elem(row, col));
 	}
 public:
-	constexpr Block_Loc(Location loc) : id_(loc.element()) {}
+	explicit constexpr Block_Loc(Location loc) : id_(loc.element()) {}
 	constexpr Block_Loc(int id, int elem) : id_(block_loc(id, elem)) {}
 	constexpr Block_Loc(int id, int row, int col) : id_(block_loc(id, row, col)) {}
 
@@ -91,7 +90,7 @@ public:
 	constexpr int row() const { return Location(id_).block_row(); }
 	constexpr int col() const { return Location(id_).block_col(); }
 
-	constexpr operator Location() const { return Location(id_); }
+	explicit constexpr operator Location() const { return Location(id_); }
 
 	// comparison
 	constexpr bool operator==(const Block_Loc& other) const noexcept { return id_ == other.id_; }
@@ -108,12 +107,13 @@ private:
 
 
 
-template<int N> inline
+template<int N>
 constexpr bool shared_row(Location<N> left, Location<N> right)
 {
 	return left.row() == right.row();
 }
-template<int N> inline
+
+template<int N>
 std::vector<Location<N>> shared_row(Location<N> left, std::vector<Location<N>> right)
 {
 	std::vector<Location<N>> tmp_{};
@@ -124,12 +124,13 @@ std::vector<Location<N>> shared_row(Location<N> left, std::vector<Location<N>> r
 	return tmp_;
 }
 
-template<int N> inline
+template<int N>
 constexpr bool shared_col(Location<N> left, Location<N> right)
 {
 	return left.col() == right.col();
 }
-template<int N> inline
+
+template<int N>
 std::vector<Location<N>> shared_col(Location<N> left, std::vector<Location<N>> right)
 {
 	std::vector<Location<N>> tmp_{};
@@ -139,12 +140,14 @@ std::vector<Location<N>> shared_col(Location<N> left, std::vector<Location<N>> r
 	}
 	return tmp_;
 }
-template<int N> inline
+
+template<int N>
 constexpr bool shared_block(Location<N> left, Location<N> right)
 {
 	return left.block() == right.block();
 }
-template<int N> inline
+
+template<int N>
 std::vector<Location<N>> shared_block(Location<N> left, std::vector<Location<N>> right)
 {
 	std::vector<Location<N>> tmp_{};
