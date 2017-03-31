@@ -29,53 +29,53 @@ namespace compiletime
 {
 // Class properties
 	using typeT = Sudoku::Options<9>;
-	static_assert(std::is_class<typeT>(), "a class, hiding datarepresentation");
-	static_assert(!std::is_empty<typeT>(), "no datamembers");
-	static_assert(std::is_standard_layout<typeT>(), "standard layout");
-	static_assert(!std::is_trivial<typeT>(), "not user-provided, no virtuals");
-	static_assert(!std::is_pod<typeT>(), "Plain Old Data, both trivial and standard-layout");
-	//static_assert(std::has_unique_object_representations<typeT>(), "");	//C++17
+	static_assert(std::is_class<typeT>::value, "a class, hiding datarepresentation");
+	static_assert(!std::is_empty<typeT>::value, "no datamembers");
+	static_assert(std::is_standard_layout<typeT>::value, "standard layout");
+	static_assert(!std::is_trivial<typeT>::value, "not user-provided, no virtuals");
+	static_assert(!std::is_pod<typeT>::value, "Plain Old Data, both trivial and standard-layout");
+	//static_assert(std::has_unique_object_representations<typeT>::value, "");	//C++17
 
-	static_assert(std::is_default_constructible<typeT>(), "default constructor");
-	static_assert(std::is_nothrow_default_constructible<typeT>(), "notrow default constructor");
-	static_assert(!std::is_trivially_default_constructible<typeT>(), "tribial default constructor");
+	static_assert(std::is_default_constructible<typeT>::value, "default constructor");
+	static_assert(std::is_nothrow_default_constructible<typeT>::value, "notrow default constructor");
+	static_assert(!std::is_trivially_default_constructible<typeT>::value, "tribial default constructor");
 
-	static_assert(std::is_destructible<typeT>(), "destructable");
-	static_assert(std::is_nothrow_destructible<typeT>(), "nothrow destructable");
-	static_assert(std::is_trivially_destructible<typeT>(), "trivially destructable");
+	static_assert(std::is_destructible<typeT>::value, "destructable");
+	static_assert(std::is_nothrow_destructible<typeT>::value, "nothrow destructable");
+	static_assert(std::is_trivially_destructible<typeT>::value, "trivially destructable");
 
-	static_assert(std::is_copy_constructible<typeT>(), "copy constructor");
-	static_assert(std::is_nothrow_copy_constructible<typeT>(), "notrow copy constructor");
-	static_assert(std::is_trivially_copy_constructible<typeT>(), "trivially copy constructor");
+	static_assert(std::is_copy_constructible<typeT>::value, "copy constructor");
+	static_assert(std::is_nothrow_copy_constructible<typeT>::value, "notrow copy constructor");
+	static_assert(std::is_trivially_copy_constructible<typeT>::value, "trivially copy constructor");
 
-	static_assert(std::is_move_constructible<typeT>(), "move constructor");
-	static_assert(std::is_nothrow_move_constructible<typeT>(), "nothrow move constructor");
-	static_assert(std::is_trivially_move_constructible<typeT>(), "trivially move constructor");
+	static_assert(std::is_move_constructible<typeT>::value, "move constructor");
+	static_assert(std::is_nothrow_move_constructible<typeT>::value, "nothrow move constructor");
+	static_assert(std::is_trivially_move_constructible<typeT>::value, "trivially move constructor");
 
-	static_assert(std::is_copy_assignable<typeT>(), "copy assignable");
-	static_assert(std::is_nothrow_copy_assignable<typeT>(), "notrow copy assignable");
-	static_assert(std::is_trivially_copy_assignable<typeT>(), "trivially copy assignable");
+	static_assert(std::is_copy_assignable<typeT>::value, "copy assignable");
+	static_assert(std::is_nothrow_copy_assignable<typeT>::value, "notrow copy assignable");
+	static_assert(std::is_trivially_copy_assignable<typeT>::value, "trivially copy assignable");
 
-	static_assert(std::is_move_assignable<typeT>(), "move assignable");
-	static_assert(std::is_nothrow_move_assignable<typeT>(), "move assignable");
-	static_assert(std::is_trivially_move_assignable<typeT>(), "trivially move assignable");
+	static_assert(std::is_move_assignable<typeT>::value, "move assignable");
+	static_assert(std::is_nothrow_move_assignable<typeT>::value, "move assignable");
+	static_assert(std::is_trivially_move_assignable<typeT>::value, "trivially move assignable");
 
-	static_assert(std::is_trivially_copyable<typeT>(), "trivially copyable");
-	static_assert(std::is_swappable<typeT>(), "swappable");			//C++17
-	static_assert(std::is_nothrow_swappable<typeT>(), "swappable");	//C++17
+	static_assert(std::is_trivially_copyable<typeT>::value, "trivially copyable");
+	static_assert(std::is_swappable<typeT>::value, "swappable");			//C++17
+	static_assert(std::is_nothrow_swappable<typeT>::value, "swappable");	//C++17
 
-	static_assert(!std::is_swappable_with<typeT, std::bitset<10>>(), "");	//C++17
-	static_assert(!std::is_nothrow_swappable_with<typeT, std::bitset<10>>(), "");	//C++17
+	static_assert(!std::is_swappable_with<typeT, std::bitset<10>>::value, "");	//C++17
+	static_assert(!std::is_nothrow_swappable_with<typeT, std::bitset<10>>::value, "");	//C++17
 
 	// type construction
-	static_assert(std::is_constructible<Options<3>, const std::bitset<4>&>(), "construct from const std::bitset&");
-	static_assert(!std::is_constructible<Options<3>, const std::bitset<3>&>(), "shouldn't accept non matching dimensions_1");
-	static_assert(std::is_assignable<Options<3>, std::bitset<4>>(), "assign from std::bitset");
-	static_assert(!std::is_assignable<Options<3>, std::bitset<3>>(), "shouldn't accept non matching dimensions_2");
-	static_assert(std::is_constructible<Options<3>, int>(), "construct from int");
-	static_assert(std::is_constructible<Options<3>, unsigned int>(), "construct from unsigned int");
-	static_assert(std::is_assignable<Options<3>, int>(), "assign from int");
-	static_assert(std::is_assignable<Options<3>, unsigned int>(), "assign from int");
+	static_assert(std::is_constructible<Options<3>, const std::bitset<4>&>::value, "construct from const std::bitset&");
+	static_assert(!std::is_constructible<Options<3>, const std::bitset<3>&>::value, "shouldn't accept non matching dimensions_1");
+	static_assert(std::is_assignable<Options<3>, std::bitset<4>>::value, "assign from std::bitset");
+	static_assert(!std::is_assignable<Options<3>, std::bitset<3>>::value, "shouldn't accept non matching dimensions_2");
+	static_assert(std::is_constructible<Options<3>, int>::value, "construct from int");
+	static_assert(std::is_constructible<Options<3>, unsigned int>::value, "construct from unsigned int");
+	static_assert(std::is_assignable<Options<3>, int>::value, "assign from int");
+	static_assert(std::is_assignable<Options<3>, unsigned int>::value, "assign from int");
 }
 TEST(Options, Construction)
 {
@@ -469,7 +469,6 @@ TEST(Options, Operators)
 	const Options<4> A_2{ std::bitset<5>{"00100"} };	// answer 2
 	Options<4> TMP{};									// per test, reset this option
 
-	///// CONST operators /////
 	///// non-const operators /////
 	//NEEDTEST constexpr bool operator[](int)
 	static_assert(noexcept(TMP.operator[](0) = true), "operator[] should be noexcept");
@@ -504,14 +503,14 @@ TEST(Options, Operators)
 	// copy-assign
 	static_assert(noexcept(TMP.operator=(O_2)), "operator= should be noexcept");
 	static_assert(!noexcept(TMP.operator=(1)), "operator=(int) IS NOT noexcept");
-	Sudoku::Options<4> TMP1 = A_2;
+	Options<4> TMP1 = A_2;
 	EXPECT_TRUE(TMP1.is_answer(2));
 	EXPECT_TRUE(TMP1 == A_2);
-	Sudoku::Options<4> TMP2 = 3;
+	Options<4> TMP2 = 3;
 	EXPECT_TRUE(TMP2.is_answer(3));
 	// move-assign
 	static_assert(noexcept(TMP.operator=(std::bitset<5>())), "operator= should be noexcept_2");
-	Sudoku::Options<4> O_6 = std::bitset<5>{};	// "00000"
+	Options<4> O_6 = std::bitset<5>{};	// "00000"
 	EXPECT_TRUE(O_6 == E_2);
 }
 TEST(Options, External)
@@ -527,7 +526,7 @@ TEST(Options, External)
 	EXPECT_EQ(XOR(E_3, A_2), O_3);
 	EXPECT_EQ(XOR(XOR(E_3, A_2), A_2), E_3);
 	//shared(a,b)
-	static_assert(noexcept(shared(TE.D_1, TE.O_4), "share(a,b) should be noexcept"));
+	static_assert(noexcept(shared(TE.D_1, TE.O_4)), "share(a,b) should be noexcept");
 	EXPECT_EQ(shared(TE.O_4, O_3), O_3);
 	EXPECT_EQ(shared(TE.D_1, TE.O_4), TE.D_1);
 	EXPECT_EQ(shared(TE.O_4, E_2), E_2);
