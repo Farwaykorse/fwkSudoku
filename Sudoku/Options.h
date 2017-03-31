@@ -77,6 +77,7 @@ public:
 	// return shared options
 	Options operator&(const Options&) const noexcept;
 
+	// Debug Use Only, don't trust it's result
 	std::string DebugString() const;
 private:
 	// 0th bit is "need to solve": false if answer has been set = inverse of answer
@@ -108,7 +109,7 @@ inline Options<E>::Options(bitset&& other) :
 	// empty constructor
 }
 
-/// construct with single option set
+// construct with single option set to answer
 template<int E>
 Options<E>::Options(int value)
 {

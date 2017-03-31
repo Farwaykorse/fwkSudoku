@@ -17,4 +17,10 @@ Console project called: SudokuTest(s)
 	$(VcpkgRoot)lib\manual-link\gtest_main.lib				if no custom main()
 
 
+<!---------------------------------------------------------------->
+Catch debug assert() from <cassert> with:
+
+    EXPECT_DEBUG_DEATH({ [statement]; }, "Assertion failed: .*");
+
+
 [top](#top)
