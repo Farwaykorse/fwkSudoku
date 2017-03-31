@@ -26,9 +26,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="GoogleTest.txt" />
+    <None Include="Coverage\coverage.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Coverage\coverage.ps1" />
+    <Text Include="GoogleTest.md" />
   </ItemGroup>
 </Project>

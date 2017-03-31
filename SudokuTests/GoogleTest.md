@@ -1,10 +1,13 @@
-Using the GoogleTest Unit-testing framework
+<!----------------------------------------------------------------><a id="top"></a>
+# Using the GoogleTest Unit-testing framework #
+<!---------------------------------------------------------------->
 
-Usage:
 Testing Sudoku.lib
 Console project called: SudokuTest(s)
 
-Settings:
+<!----------------------------------------------------------------><a id="vs_settings"></a>
+## Visual Studio Settings ##
+<!---------------------------------------------------------------->
 - Console Project, No precompiled headers
 - Add reference to the project under test (context menu)
 - Add: Configuration Properties > Linker > Input > Additional Dependencies:
@@ -12,3 +15,6 @@ Settings:
 	$(VcpkgRoot)debug\lib\manual-link\gtest_main.lib		if no custom main()
 	$(VcpkgRoot)lib\manual-link\gtest.lib				release-mode
 	$(VcpkgRoot)lib\manual-link\gtest_main.lib				if no custom main()
+
+
+[top](#top)

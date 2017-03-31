@@ -231,7 +231,7 @@
     <ClCompile Include="SudokuTests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="GoogleTest.txt" />
+    <Text Include="GoogleTest.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sudoku\Sudoku.vcxproj">
