@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Board.h"
 #include "Location.h"
 
 #include <cassert>
@@ -349,6 +348,8 @@ public:
 	};	// class Board::Section::const_iterator
 
 protected:
+	~Section() = default;
+
 	pointer addressof(int elem_id)
 	{
 		assert(elem_id <= elem_size);

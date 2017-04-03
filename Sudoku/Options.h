@@ -8,8 +8,6 @@
 */
 #pragma once
 
-#include "Location.h"
-
 #include <bitset>
 #include <vector>
 #include <cassert>
