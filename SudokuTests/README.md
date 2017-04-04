@@ -1,6 +1,10 @@
 <!----------------------------------------------------------------><a id="top"></a>
-# Using the GoogleTest Unit-testing framework #
+# Unit Testing for Sudoku.lib #
 <!---------------------------------------------------------------->
+Using the GoogleTest Unit-testing framework
+
+[gTest repository](https://github.com/google/googletest/)
+
 
 Testing Sudoku.lib
 Console project called: SudokuTest(s)

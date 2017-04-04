@@ -35,11 +35,11 @@
     <None Include="Coverage\coverage.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="GoogleTest.md" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="precompiled.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="README.md" />
   </ItemGroup>
 </Project>
