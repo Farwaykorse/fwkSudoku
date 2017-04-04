@@ -42,11 +42,16 @@ public:
 	// remove an option: triggers solvers single_option()
 	int remove_option(Location, int value);
 	template<typename InItr_>
-	int remove_option_section(InItr_ begin, InItr_ end, Location ignore, int value);
+	int remove_option_section(
+		InItr_ begin, InItr_ end, Location ignore, int value);
 	template<typename InItr_>
-	int remove_option_section(InItr_ begin, InItr_ end, const std::vector<Location>& ignore, int value);
+	int remove_option_section(
+		InItr_ begin, InItr_ end,
+		const std::vector<Location>& ignore, int value);
 	template<typename InItr_>
-	int remove_option_section(InItr_ begin, InItr_ end, const std::vector<Location>& ignore, const std::vector<int>& value);
+	int remove_option_section(
+		InItr_ begin, InItr_ end,
+		const std::vector<Location>& ignore, const std::vector<int>& value);
 
 	// Solvers
 	int single_option(Location);
@@ -74,17 +79,21 @@ private:
 	Board& board_;
 
 	template<typename InItr_>
-	int set_section_locals(InItr_ begin, InItr_ end, int rep_count, const Options& worker);
+	int set_section_locals(
+		InItr_ begin, InItr_ end, int rep_count, const Options& worker);
 	template<typename InItr_>
-	int set_block_locals(InItr_ begin, InItr_ end, int rep_count, const Options& worker);
+	int set_block_locals(
+		InItr_ begin, InItr_ end, int rep_count, const Options& worker);
 
 	template<typename InItr_> inline
 		auto appearance_sets(InItr_ begin, InItr_ end) const;
 	template<typename InItr_> inline
-		auto find_locations(InItr_ begin, InItr_ end, int rep_count, int value) const;
+		auto find_locations(
+			InItr_ begin, InItr_ end, int rep_count, int value) const;
 
 	template<typename InItr_>
-	int remove_option_outside_block(InItr_ begin, InItr_ end, Location block, int value);
+	int remove_option_outside_block(
+		InItr_ begin, InItr_ end, Location block, int value);
 };
 
 

@@ -61,36 +61,40 @@ private:
 
 };
 
+inline
 Console::Console() :
 	d(display)
 {
 	// empty constructor
 }
 
+inline
 Console::Console(delimiter del) :
 	d(del)
 {
 	// empty constructor
 }
 
-inline int Console::charsize(int in) const
+inline
+int Console::charsize(int in) const
 {
 	assert(in >= 0);
 	if (in < 10) { return 1; }
 	return charsize(in, 2);
 }
 
+inline
 int Console::charsize(int in, int length) const
 {
-	if (in < std::pow(10, length))
+	if (in < pow(10, length))
 	{
 		return length;
 	}
-	else ++length;
+	++length;
 	return charsize(in, length);
 }
 
-template<int N> inline
+template<int N>
 std::stringstream Console::print_row(const Board<int,N>& input, int row) const
 {
 	std::stringstream stream;

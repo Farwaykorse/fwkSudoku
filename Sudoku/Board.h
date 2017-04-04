@@ -55,15 +55,6 @@ public:
 	void clear();
 
 	/* Query properties */
-	bool is_empty() const;	// all elements default value or empty()
-	//TODO empty() for different value types
-	//{
-	//	for (auto& s : board_)
-	//	{
-	//		if ( !s.empty() ) { return false; }
-	//	}
-	//	return true;
-	//}
 	static constexpr int size() { return full_size; };
 	bool operator==(const Board&) const;
 	bool operator!=(const Board& other) const { return !(*this == other); };
@@ -136,25 +127,25 @@ public:
 		int element(Location loc) const noexcept override { return loc.block_elem(); }
 	};
 
-	Row row(int id) { return Row(this, id); }
-	Col col(int id) { return Col(this, id); }
-	Block block(int id) { return Block(this, id); }
-	Row row(Location loc) { return Row(this, loc.row()); }	//TODO should just except a Location
-	Col col(Location loc) { return Col(this, loc.col()); }	// as above
-	Block block(Location loc) { return Block(this, loc.block()); }	// as above
+	Row		row(int id)			{ return Row(this, id); }
+	Col		col(int id)			{ return Col(this, id); }
+	Block	block(int id)		{ return Block(this, id); }
+	Row		row(Location loc)	{ return Row(this, loc.row()); }	//TODO should just except a Location
+	Col		col(Location loc)	{ return Col(this, loc.col()); }	// as above
+	Block	block(Location loc)	{ return Block(this, loc.block()); }// as above
 
 private:
 	std::vector<T> board_{};
 
-	constexpr void valid_dimensions() const;
-	constexpr bool valid_size(const int elem) const;
-	constexpr bool valid_size(const int row, const int col) const;
+	static constexpr void valid_dimensions();
+	static constexpr bool valid_size(int elem);
+	static constexpr bool valid_size(int row, int col);
 };	// class Board
 
-// #################################################################################
+// ############################################################################
 // Board - memberfunctions
 template<typename T, int N>
-constexpr void Board<T, N>::valid_dimensions() const
+constexpr void Board<T, N>::valid_dimensions()
 {
 	// input check
 	static_assert(base_size > 0, "base_size too small");
@@ -170,13 +161,13 @@ constexpr void Board<T, N>::valid_dimensions() const
 }
 
 template<typename T, int N>
-constexpr bool Board<T, N>::valid_size(const int elem) const
+constexpr bool Board<T, N>::valid_size(const int elem)
 {
 	return (elem >= 0 && elem < full_size);
 }
 
 template<typename T, int N>
-constexpr bool Board<T, N>::valid_size(const int row, const int col) const
+constexpr bool Board<T, N>::valid_size(const int row, const int col)
 {
 	return (row >= 0 && row < elem_size && col >= 0 && col < elem_size);
 }
@@ -306,7 +297,7 @@ inline typename Board<T, N>::const_iterator Board<T, N>::cend() const noexcept
 }
 // Board - memberfunctions
 
-// #################################################################################
+// ############################################################################
 // InBetween
 template<typename T, int N>
 class Board<T, N>::InBetween

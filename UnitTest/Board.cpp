@@ -100,10 +100,10 @@ public:
 		// Board& operator=(self_type&&)		move assignment
 		Board<int, 3> B = Board<int, 3>(9);
 		//Board(const self_type&)				copy constructor
-		Sudoku::Board<int, 3> copy(f3);
+		Board<int, 3> copy(f3);
 		// Board& operator=(const self_type&)	copy assignment
 		//NEEDTEST not triggered: copy assignment
-		Sudoku::Board<int, 3> copy2 = f3;
+		Board<int, 3> copy2 = f3;
 
 		// using at(elem_id) !
 		Assert::IsTrue(f3.at(12) == 0 && f3.at(73) == 0,
@@ -144,7 +144,7 @@ public:
 		Assert::IsFalse(board != board, L"failure operator!= on self");
 		Assert::IsFalse(board != board2, L"failure operator!=");
 
-		Sudoku::Board<int,2> B;
+		Board<int,2> B;
 		Assert::IsTrue(B.base_size == 2, L"base_size error");
 		Assert::IsTrue(B.elem_size == 4, L"elem_size error");
 		Assert::IsTrue(B.full_size == 16, L"full_size error");
@@ -224,7 +224,7 @@ public:
 	}
 private:
 	template<typename T, int N>
-	constexpr void compiler_checks(const Sudoku::Board<T, N>& B) const
+	static constexpr void compiler_checks(const Sudoku::Board<T, N>& B)
 	{
 		// independend size calculations
 		static_assert(N > 0 && N < 11, "Size out of bounds, for testing a 10'000 elements board should be enough.");
@@ -235,7 +235,7 @@ private:
 	}
 
 	template<int N>
-	void set_atValue(Sudoku::Board<int, N>& target)
+	static void set_atValue(Sudoku::Board<int, N>& target)
 	{
 		constexpr int elem{ N*N };
 		for (int i = 0; i < target.size(); ++i)
@@ -245,7 +245,7 @@ private:
 	}
 
 	template<int N>
-	void set_Value(Sudoku::Board<int, N>& target)
+	static void set_Value(Sudoku::Board<int, N>& target)
 	{
 		for (int row = 0; row < target.col(0).size(); ++row)
 		{
@@ -257,7 +257,7 @@ private:
 	}
 
 	template<int N>
-	void set_atValue_2(Sudoku::Board<int, N>& target)
+	static void set_atValue_2(Sudoku::Board<int, N>& target)
 	{
 		for (int row = 0; row < target.col(0).size(); ++row)
 		{
