@@ -29,53 +29,53 @@ namespace compiletime
 {
 // Class properties
 	using typeT = Sudoku::Options<9>;
-	static_assert(std::is_class<typeT>::value, "a class, hiding datarepresentation");
-	static_assert(!std::is_empty<typeT>::value, "no datamembers");
-	static_assert(std::is_standard_layout<typeT>::value, "standard layout");
-	static_assert(!std::is_trivial<typeT>::value, "not user-provided, no virtuals");
-	static_assert(!std::is_pod<typeT>::value, "Plain Old Data, both trivial and standard-layout");
-	//static_assert(std::has_unique_object_representations<typeT>::value, "");	//C++17
+	static_assert(std::is_class_v<typeT>, "a class, hiding datarepresentation");
+	static_assert(!std::is_empty_v<typeT>, "no datamembers");
+	static_assert(std::is_standard_layout_v<typeT>, "standard layout");
+	static_assert(!std::is_trivial_v<typeT>, "not user-provided, no virtuals");
+	static_assert(!std::is_pod_v<typeT>, "Plain Old Data, both trivial and standard-layout");
+	//static_assert(std::has_unique_object_representations_v<typeT>, "");	//C++17
 
-	static_assert(std::is_default_constructible<typeT>::value, "default constructor");
-	static_assert(std::is_nothrow_default_constructible<typeT>::value, "notrow default constructor");
-	static_assert(!std::is_trivially_default_constructible<typeT>::value, "tribial default constructor");
+	static_assert(std::is_default_constructible_v<typeT>, "default constructor");
+	static_assert(std::is_nothrow_default_constructible_v<typeT>, "notrow default constructor");
+	static_assert(!std::is_trivially_default_constructible_v<typeT>, "tribial default constructor");
 
-	static_assert(std::is_destructible<typeT>::value, "destructable");
-	static_assert(std::is_nothrow_destructible<typeT>::value, "nothrow destructable");
-	static_assert(std::is_trivially_destructible<typeT>::value, "trivially destructable");
+	static_assert(std::is_destructible_v<typeT>, "destructable");
+	static_assert(std::is_nothrow_destructible_v<typeT>, "nothrow destructable");
+	static_assert(std::is_trivially_destructible_v<typeT>, "trivially destructable");
 
-	static_assert(std::is_copy_constructible<typeT>::value, "copy constructor");
-	static_assert(std::is_nothrow_copy_constructible<typeT>::value, "notrow copy constructor");
-	static_assert(std::is_trivially_copy_constructible<typeT>::value, "trivially copy constructor");
+	static_assert(std::is_copy_constructible_v<typeT>, "copy constructor");
+	static_assert(std::is_nothrow_copy_constructible_v<typeT>, "notrow copy constructor");
+	static_assert(std::is_trivially_copy_constructible_v<typeT>, "trivially copy constructor");
 
-	static_assert(std::is_move_constructible<typeT>::value, "move constructor");
-	static_assert(std::is_nothrow_move_constructible<typeT>::value, "nothrow move constructor");
-	static_assert(std::is_trivially_move_constructible<typeT>::value, "trivially move constructor");
+	static_assert(std::is_move_constructible_v<typeT>, "move constructor");
+	static_assert(std::is_nothrow_move_constructible_v<typeT>, "nothrow move constructor");
+	static_assert(std::is_trivially_move_constructible_v<typeT>, "trivially move constructor");
 
-	static_assert(std::is_copy_assignable<typeT>::value, "copy assignable");
-	static_assert(std::is_nothrow_copy_assignable<typeT>::value, "notrow copy assignable");
-	static_assert(std::is_trivially_copy_assignable<typeT>::value, "trivially copy assignable");
+	static_assert(std::is_copy_assignable_v<typeT>, "copy assignable");
+	static_assert(std::is_nothrow_copy_assignable_v<typeT>, "notrow copy assignable");
+	static_assert(std::is_trivially_copy_assignable_v<typeT>, "trivially copy assignable");
 
-	static_assert(std::is_move_assignable<typeT>::value, "move assignable");
-	static_assert(std::is_nothrow_move_assignable<typeT>::value, "move assignable");
-	static_assert(std::is_trivially_move_assignable<typeT>::value, "trivially move assignable");
+	static_assert(std::is_move_assignable_v<typeT>, "move assignable");
+	static_assert(std::is_nothrow_move_assignable_v<typeT>, "move assignable");
+	static_assert(std::is_trivially_move_assignable_v<typeT>, "trivially move assignable");
 
-	static_assert(std::is_trivially_copyable<typeT>::value, "trivially copyable");
-	static_assert(std::is_swappable<typeT>::value, "swappable");			//C++17
-	static_assert(std::is_nothrow_swappable<typeT>::value, "swappable");	//C++17
+	static_assert(std::is_trivially_copyable_v<typeT>, "trivially copyable");
+	static_assert(std::is_swappable_v<typeT>, "swappable");			//C++17
+	static_assert(std::is_nothrow_swappable_v<typeT>, "swappable");	//C++17
 
 	static_assert(!std::is_swappable_with<typeT, std::bitset<10>>::value, "");	//C++17
-	static_assert(!std::is_nothrow_swappable_with<typeT, std::bitset<10>>::value, "");	//C++17
+	static_assert(!std::is_nothrow_swappable_with_v<typeT, std::bitset<10>>, "");	//C++17
 
 	// type construction
-	static_assert(std::is_constructible<Options<3>, const std::bitset<4>&>::value, "construct from const std::bitset&");
-	static_assert(!std::is_constructible<Options<3>, const std::bitset<3>&>::value, "shouldn't accept non matching dimensions_1");
-	static_assert(std::is_assignable<Options<3>, std::bitset<4>>::value, "assign from std::bitset");
-	static_assert(!std::is_assignable<Options<3>, std::bitset<3>>::value, "shouldn't accept non matching dimensions_2");
-	static_assert(std::is_constructible<Options<3>, int>::value, "construct from int");
-	static_assert(std::is_constructible<Options<3>, unsigned int>::value, "construct from unsigned int");
-	static_assert(std::is_assignable<Options<3>, int>::value, "assign from int");
-	static_assert(std::is_assignable<Options<3>, unsigned int>::value, "assign from int");
+	static_assert(std::is_constructible_v<Options<3>, const std::bitset<4>&>, "construct from const std::bitset&");
+	static_assert(!std::is_constructible_v<Options<3>, const std::bitset<3>&>, "shouldn't accept non matching dimensions_1");
+	static_assert(std::is_assignable_v<Options<3>, std::bitset<4>>, "assign from std::bitset");
+	static_assert(!std::is_assignable_v<Options<3>, std::bitset<3>>, "shouldn't accept non matching dimensions_2");
+	static_assert(std::is_constructible_v<Options<3>, int>, "construct from int");
+	static_assert(std::is_constructible_v<Options<3>, unsigned int>, "construct from unsigned int");
+	static_assert(std::is_assignable_v<Options<3>, int>, "assign from int");
+	static_assert(std::is_assignable_v<Options<3>, unsigned int>, "assign from int");
 }
 TEST(Options, Construction)
 {
@@ -138,7 +138,7 @@ TEST(Options, Construction)
 		EXPECT_EQ(Options<4>{0}.DebugString(), "00001");	//TODO change this
 		EXPECT_EQ(Options<4>{4}.DebugString(), "10000");
 		EXPECT_EQ(Options<4>{4}.DebugString(), "10000");
-		EXPECT_DEBUG_DEATH({ Options<3>{5}; }, "Assertion failed: .*");
+	// assertion see deathtests
 #ifndef _DEBUG	// debug contains assert( <= )
 		EXPECT_THROW(Options<4>{5}, std::out_of_range);
 #endif // _DEBUG
@@ -244,8 +244,7 @@ TEST(Options, mf_boolRequest)
 
 	static_assert(noexcept(TE.O_1.is_answer(1)), "is_answer(int) is noexcept");
 	static_assert(noexcept(TE.A_1.is_answer(100)), "is_answer(int) is noexcept");
-	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(15); }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(-5); }, "Assertion failed: .*");
+	// assertion see deathtests
 #ifndef _DEBUG
 	EXPECT_NO_THROW(TE.A_1.is_answer(15));	// undefined behaviour
 	EXPECT_NO_THROW(TE.A_1.is_answer(-5));
@@ -260,8 +259,7 @@ TEST(Options, mf_boolRequest)
 	EXPECT_FALSE(TE.E_1.is_answer(0));
 
 	static_assert(noexcept(TE.O_1.is_option(2)), "is_option(int) is noexept");
-	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(15); }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(-5); }, "Assertion failed: .*");
+	// assertion see deathtests
 #ifndef _DEBUG
 	EXPECT_NO_THROW(TE.O_1.is_option(15));	// undefined behaviour
 	EXPECT_NO_THROW(TE.O_1.is_option(-5));
@@ -377,8 +375,11 @@ TEST(Options, mf_add)
 	//add_noexcept(int)
 	Options<4> TMP{ std::bitset<5>{"00000"} };
 	static_assert(noexcept(TMP.add_nocheck(1)), "add_noexcept(int) should be noexcept");
-	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(5); }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(-5); }, "Assertion failed: .*");
+	// assertion see deathtests
+#ifndef _DEBUG
+	EXPECT_NO_THROW(TMP.add_nocheck(6));
+	EXPECT_NO_THROW(TMP.add_nocheck(-1));
+#endif // !_DEBUG
 	EXPECT_NO_THROW(TMP.add_nocheck(3));
 	EXPECT_EQ(TMP.DebugString(), "01000");
 	EXPECT_FALSE(TMP.count_all() == 0);
@@ -409,11 +410,14 @@ TEST(Options, mf_set)
 	EXPECT_NO_THROW(TMP.set_nocheck(1));
 	EXPECT_EQ(TMP.DebugString(), "00010");
 	EXPECT_TRUE(TMP.set_nocheck(2).is_answer(2));
-	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(15); }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(-5); }, "Assertion failed: .*");
+	// assertion see deathtests
+#ifndef _DEBUG
+	EXPECT_NO_THROW(TMP.set_nocheck(15));
+	EXPECT_NO_THROW(TMP.set_nocheck(-5));
+#endif	// _DEBUG
 	EXPECT_NO_THROW(TMP.set_nocheck(0));
 }
-TEST(Options, mf_constOperators)
+TEST(Options, mf_booleanComparison)
 {
 	// operator==(int) const
 	static_assert(noexcept(TE.A_1 == 1), "operator==(int) should be noexcept");
@@ -431,8 +435,46 @@ TEST(Options, mf_constOperators)
 	EXPECT_NE(TE.O_1, TE.E_1);
 	EXPECT_FALSE(TE.O_1 != TE.O_1);
 
-	//NEEDTEST bool operator< (Options<E>&) const			sorting
-
+for (int i{}; i < 9000; ++i)
+{
+	static_assert(noexcept(TE.O_1 < TE.O_4), "operator< should be noexcept");
+	EXPECT_FALSE(TE.D_1 < TE.O_4) << "both full";
+	EXPECT_FALSE(TE.E_1 < std::bitset<5>{"00000"}) << "both empty";
+	EXPECT_LT(TE.E_1, TE.D_1) << "empty vs default";
+	EXPECT_FALSE(TE.D_1 < TE.E_1) << "empty vs default";
+	EXPECT_LT(TE.E_1, TE.A_1) << "empty vs answer";
+	EXPECT_FALSE(TE.A_1 < TE.E_1) << "empty vs answer";
+	EXPECT_LT(TE.E_1, TE.O_1) << "empty vs options";
+	EXPECT_FALSE(TE.O_1 < TE.E_1) << "empty vs options";
+	EXPECT_LT(TE.E_1, TE.E_2) << "empty vs unanswered empty";
+	EXPECT_FALSE(TE.E_2 < TE.E_1) << "empty vs unanswered empty";
+	EXPECT_LT(TE.E_1, TE.O_1) << "empty vs answered options";
+	EXPECT_FALSE(TE.O_1 < TE.E_1) << "empty vs answered options";
+	EXPECT_LT(TE.E_1, TE.X_0) << "empty vs answered all options";
+	EXPECT_FALSE(TE.X_0 < TE.E_1) << "empty vs answered all options";
+	EXPECT_LT(TE.E_1, TE.X_1) << "empty vs answered 2 options";
+	EXPECT_FALSE(TE.X_1 < TE.E_1) << "empty vs answered 2 options";
+	EXPECT_LT(TE.A_2, TE.D_1) << "answer vs default";
+	EXPECT_FALSE(TE.D_1 < TE.A_2) << "answer vs default";
+	EXPECT_LT(TE.A_1, TE.A_2) << "answer vs answer";
+	EXPECT_FALSE(TE.A_2 < TE.A_1) << "answer vs answer";
+	EXPECT_LT(TE.A_2, TE.X_0) << "answer vs answered all options";
+	EXPECT_FALSE(TE.X_0 < TE.A_2) << "answer vs answered all options";
+	EXPECT_LT(TE.A_2, TE.X_1) << "answer vs answered 2 options";
+	EXPECT_FALSE(TE.A_2 < TE.A_1) << "both answered";
+	EXPECT_LT(TE.O_2, std::bitset<5>{"10011"}) << "compare values";
+	EXPECT_LT(Options<6>{std::bitset<7>{"0111111"}}, std::bitset<7>{"1011111"});
+	EXPECT_FALSE(Options<6>{std::bitset<7>{"1011111"}} < std::bitset<7>{"0111111"});
+	EXPECT_LT(TE.A_2, TE.O_2) << "answer vs unanswered";
+	EXPECT_FALSE(TE.O_2 < TE.A_2) << "answer vs unanswered";
+	EXPECT_LT(TE.A_2, TE.O_2) << "answer vs unanswered";
+	EXPECT_FALSE(TE.O_2 < TE.A_2) << "answer vs unanswered";
+	EXPECT_LT(TE.O_3, TE.X_0);
+	EXPECT_FALSE(TE.X_0 < TE.O_3);
+	}
+}
+TEST(Options, mf_constOperators)
+{
 	//Options operator&(Options&) const						shared options
 	static_assert(noexcept(TE.O_1 & TE.O_2), "operator& should be noexcept");
 	EXPECT_EQ((TE.D_1 & TE.O_3), TE.O_3);
@@ -445,8 +487,7 @@ TEST(Options, mf_constOperators)
 	static_assert(noexcept(TE.O_1[2]), "operator[int] should be no except for reading");
 	EXPECT_NO_THROW(TE.O_3[2]);
 	EXPECT_NO_THROW(TE.O_3[0]);
-	EXPECT_DEBUG_DEATH({ TE.O_3[9]; }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ TE.O_3[-1]; }, "Assertion failed: .*");
+	// assertion see deathtests
 #ifndef _DEBUG
 	EXPECT_NO_THROW(TE.O_3[9]);
 	EXPECT_NO_THROW(TE.O_3[-1]);
@@ -533,5 +574,28 @@ TEST(Options, External)
 	EXPECT_EQ(shared(O_3, A_2), A_2);
 	EXPECT_EQ(shared(E_3, A_2), E_2);
 }
+TEST(Options, deathtests)
+{
 
+	Options<4> TMP{};
+	// Construction
+	EXPECT_DEBUG_DEATH({ Options<3>{5}; }, "Assertion failed: .*");
+	// mf_boolRequest
+	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(15); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(-5); }, "Assertion failed: .*");
+	// 
+	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(15); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(-5); }, "Assertion failed: .*");
+	// mf_add
+	Options<4> Opt{ std::bitset<5>{"00000"} };
+	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(5); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(-5); }, "Assertion failed: .*");
+	// mf_set
+	EXPECT_TRUE(TMP.clear().is_empty());
+	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(15); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(-5); }, "Assertion failed: .*");
+	// mf_constOperators
+	EXPECT_DEBUG_DEATH({ TE.O_3[9]; }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TE.O_3[-1]; }, "Assertion failed: .*");
+}
 }	//namespace Sudoku_Test

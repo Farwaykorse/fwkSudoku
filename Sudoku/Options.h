@@ -62,7 +62,7 @@ public:
 	bool operator==(int) const noexcept;	// shorthand for is_answer(int)
 	bool operator==(const Options<E>&) const noexcept;
 	bool operator!=(const Options<E>&) const noexcept;
-	bool operator< (const Options<E>&) const noexcept;	//TODO allow sorting; usecase?
+	bool operator< (const Options<E>&) const noexcept;
 
 	// combine available options
 	Options& operator+=(const Options&) noexcept;
@@ -75,18 +75,19 @@ public:
 	// return shared options
 	Options operator&(const Options&) const noexcept;
 
-	// Debug Use Only, don't trust it's result
+	// Debug Use Only, don't depend on it's result
 	std::string DebugString() const;
 private:
 	// 0th bit is "need to solve": false if answer has been set = inverse of answer
 	bitset data_{};
 
 	int read_next() const noexcept;
-	int read_next(int) const noexcept;
+	int read_next(int start) const noexcept;
 	Options& operator&=(const Options&) noexcept;	//NOTE might be risky while unused; private?
 };
 
-/// default constructor
+
+// default constructor
 template<int E>
 Options<E>::Options() noexcept
 {
@@ -218,6 +219,11 @@ template<int E> inline
 constexpr int Options<E>::size() const noexcept
 {
 	return static_cast<int>(data_.size());	// bits
+	//??? size() -1 better?
+	// The current implementation works with size() being 1 past the last element
+	// But the usage allows for size()-1 options to be stored
+	// Where the direct value to location implementation is just convenient
+	// The 0th element in this immplementation is just a flag (more could be added)
 }
 
 //	available options
@@ -354,7 +360,14 @@ bool Options<E>::operator==(int value) const noexcept
 	return is_answer(value);
 }
 
-///	available options, won't add an answer
+// Basis for sorting
+template <int E>
+bool Options<E>::operator<(const Options<E>& other) const noexcept
+{
+	return data_.to_ulong() < other.data_.to_ulong();
+}
+
+//	available options, won't add an answer
 template<int E> inline
 Options<E>& Options<E>::operator+=(const Options& other) noexcept
 {
