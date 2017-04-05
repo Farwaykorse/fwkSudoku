@@ -3,12 +3,13 @@
 ###############################################################################
 * text=auto
 
-*.cpp		eol=lf
-*.h			eol=lf
-*.sln		eol=crlf
-*.vcxproj	eol=crlf
-.git		eol=lf
-.gitattributes	eol=lf
+*.cpp				eol=lf
+*.h					eol=lf
+*.sln				eol=crlf
+*.vcxproj			eol=crlf
+*.vcxproj.filters	eol=crlf
+.git				eol=lf
+.gitattributes		eol=lf
 
 ###############################################################################
 # Set the merge driver for project and solution files
