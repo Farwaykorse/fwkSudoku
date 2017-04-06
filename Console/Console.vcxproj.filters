@@ -15,33 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Board.h">
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Location.h">
+    <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Options.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Solver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SolverBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="precompiled.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Board_Section.h">
+    <ClInclude Include="Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sudoku.cpp">
+    <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="precompiled.cpp">
+    <ClCompile Include="Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

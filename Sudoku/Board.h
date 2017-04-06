@@ -6,18 +6,19 @@
 *	no processing functionality
 */
 #pragma once
-#include "stdafx.h"
 #include "Location.h"
-#include "Section.h"
+#include "Board_Section.h"
 
 #include <vector>
-#include <iterator>
 #include <algorithm>
 #include <cassert>
+#include <iterator>
+#include <limits>		// numeric_limits
+#include <stdexcept>	// out_of_range
 
 namespace Sudoku
 {
-template<typename T, size_t N = 3>
+template<typename T, int N = 3>
 class Board
 {
 	using Section = Sudoku::Section<T, N, Board<T,N>>;
@@ -26,8 +27,6 @@ public:
 
 	using value_type = T;	// stl container conventions
 	using const_value_type = const value_type;
-	using size_type = unsigned int;
-	using size_t = size_type;
 	using difference_type = int;
 	using self_type = Board<T, N>;
 	using reference = value_type&;
@@ -37,9 +36,9 @@ public:
 
 	using Location = Location<N>;
 
-	static const size_t base_size = Location().base_size;	// default 3
-	static const size_t elem_size = Location().elem_size;	// default 9
-	static const size_t full_size = Location().full_size;	// default 81
+	static constexpr int base_size = Location().base_size; // default 3
+	static constexpr int elem_size = Location().elem_size;	// default 9
+	static constexpr int full_size = Location().full_size;	// default 81
 
 	class Row;
 	class Col;
@@ -49,56 +48,47 @@ public:
 	explicit Board(const T&);
 	Board(self_type&&)				= default;	// move
 	Board& operator=(self_type&&)	= default;
-	Board(const self_type&)			= default;	// copy
-	Board& operator=(const Board&);
+	Board(const self_type&)			= default;	// copy construct
+	Board& operator=(const Board&);				// copy assign
 	~Board()						= default;
 
 	void clear();
 
 	/* Query properties */
-	bool is_empty() const;	// all elements default value or empty()
-	//TODO empty() for different value types
-	//{
-	//	for (auto& s : board)
-	//	{
-	//		if ( !s.empty() ) { return false; }
-	//	}
-	//	return true;
-	//}
-	static constexpr size_type size() { return full_size; };
+	static constexpr int size() { return full_size; }
 	bool operator==(const Board&) const;
-	bool operator!=(const Board& other) const { return !(*this == other); };
+	bool operator!=(const Board& other) const { return !(*this == other); }
 
 	/* Element access */
 	// Checked
-	T& at(Location loc);
-	const T& at(Location loc) const;
-	T& at(size_t row, size_t col);
-	const T& at(size_t row, size_t col) const;
-	T& at(size_t elem);
-	const T& at(size_t elem) const;
+	T& at(Location);
+	const T& at(Location) const;
+	T& at(int row, int col);
+	const T& at(int row, int col) const;
+	T& at(int elem);
+	const T& at(int elem) const;
 	// Unchecked
-	T& operator[](Location);
-	const T& operator[](Location) const;
+	T& operator[](Location) noexcept;
+	const T& operator[](Location) const noexcept;
 
 	/*	Element Selection Operator (using a proxy object)
 	*	usable as [row][col] where col is processed by the (const_)InBetween
 	*/
 	class InBetween;
-	InBetween operator [] (size_t row);
+	InBetween operator [] (int row) noexcept;
 	class const_InBetween;
-	const const_InBetween operator [] (size_t row) const;
+	const const_InBetween operator [] (int row) const noexcept;
 
 	/* Iterators */
-	typedef typename std::vector<T>::iterator iterator;
-	typedef typename std::vector<T>::const_iterator const_iterator;
+	using iterator = typename std::vector<T>::iterator;
+	using const_iterator = typename std::vector<T>::const_iterator;
 
-	iterator begin();
-	const_iterator cbegin() const;
-	const_iterator begin() const { return cbegin(); }
-	iterator end();
-	const_iterator cend() const;
-	const_iterator end() const { return cend(); }
+	iterator begin() noexcept;
+	const_iterator cbegin() const noexcept;
+	const_iterator begin() const noexcept { return cbegin(); }
+	iterator end() noexcept;
+	const_iterator cend() const noexcept;
+	const_iterator end() const noexcept { return cend(); }
 
 	class Row : public Section
 	{
@@ -106,11 +96,11 @@ public:
 		using Section::Section;	// inherit constructors
 		using Section::id;
 	private:
-		Location loc(size_t elem) const final 
+		Location loc(int elem) const noexcept final
 		{
 			return Location(id(), elem);
 		}
-		size_t element(Location loc) const final { return loc.col(); }
+		int element(Location loc) const noexcept final { return Location(loc).col(); }
 	};
 
 	class Col : public Section
@@ -119,50 +109,50 @@ public:
 		using Section::Section;	// inherit constructors
 		using Section::id;
 	private:
-		Location loc(size_t elem) const final { return Location(elem, id()); }
-		size_t element(Location loc) const final { return loc.row(); }
+		Location loc(int elem) const noexcept final { return Location(elem, id()); }
+		int element(Location loc) const noexcept final { return Location(loc).row(); }
 	};
 
 	class Block : public Section
 	{
-		using Block_Loc = Block_Loc<N>;
+		using Block_Loc = Location_Block<N>;
 	public:
 		using Section::Section;	// inherit constructors
 		using Section::id;
 	private:
-		Location loc(size_t elem) const override
+		Location loc(int elem) const noexcept override
 		{
 			return Location(Block_Loc(id(), elem));
 		}
-		size_t element(Location loc) const override { return loc.block_elem(); }
+		int element(Location loc) const noexcept override { return loc.block_elem(); }
 	};
 
-	Row row(size_t id) { return Row(this, id); }
-	Col col(size_t id) { return Col(this, id); }
-	Block block(size_t id) { return Block(this, id); }
-	Row row(Location loc) { return Row(this, loc.row()); }
-	Col col(Location loc) { return Col(this, loc.col()); }
-	Block block(Location loc) { return Block(this, loc.block()); }
+	Row		row(int id)			{ return Row(this, id); }
+	Col		col(int id)			{ return Col(this, id); }
+	Block	block(int id)		{ return Block(this, id); }
+	Row		row(Location loc)	{ return Row(this, loc.row()); }	//TODO should just except a Location
+	Col		col(Location loc)	{ return Col(this, loc.col()); }	// as above
+	Block	block(Location loc)	{ return Block(this, loc.block()); }// as above
 
 private:
-	std::vector<T> board{};
+	std::vector<T> board_{};
 
-	constexpr void valid_dimensions() const;
-	constexpr bool valid_size(const size_t elem) const;
-	constexpr bool valid_size(const size_t row, const size_t col) const;
+	static constexpr void valid_dimensions();
+	static constexpr bool valid_size(int elem);
+	static constexpr bool valid_size(int row, int col);
 };	// class Board
 
-// #################################################################################
+// ############################################################################
 // Board - memberfunctions
-template<typename T, size_t N> inline
-constexpr void Board<T, N>::valid_dimensions() const
+template<typename T, int N>
+constexpr void Board<T, N>::valid_dimensions()
 {
 	// input check
 	static_assert(base_size > 0, "base_size too small");
 	static_assert(base_size == 1 ||
 		(base_size < elem_size &&
 		 elem_size <= full_size &&
-		 base_size < std::numeric_limits<int>::max() &&
+		 base_size < std::numeric_limits<int>::max() &&	// <limits>
 		 elem_size < std::numeric_limits<int>::max() &&
 		 full_size < std::numeric_limits<int>::max()
 		 ), "board size out of bounds");
@@ -170,70 +160,70 @@ constexpr void Board<T, N>::valid_dimensions() const
 	static_assert(base_size*base_size == elem_size && elem_size*elem_size == full_size, "size calculation broken");
 }
 
-template<typename T, size_t N> inline
-constexpr bool Board<T, N>::valid_size(const size_t elem) const
+template<typename T, int N>
+constexpr bool Board<T, N>::valid_size(const int elem)
 {
-	return elem < full_size;
+	return (elem >= 0 && elem < full_size);
 }
 
-template<typename T, size_t N> inline
-constexpr bool Board<T, N>::valid_size(const size_t row, const size_t col) const
+template<typename T, int N>
+constexpr bool Board<T, N>::valid_size(const int row, const int col)
 {
-	return (row < elem_size && col < elem_size);
+	return (row >= 0 && row < elem_size && col >= 0 && col < elem_size);
 }
 
-template<typename T, size_t N>
+template<typename T, int N>
 Board<T, N>::Board() :
-	board(full_size)
+	board_(full_size)
 {
 	valid_dimensions();
 }
 
-template<typename T, size_t N>
+template<typename T, int N>
 Board<T, N>::Board(const T& def_value) :
-	board(full_size, def_value)
+	board_(full_size, def_value)
 {
 	valid_dimensions();
 }
 
 // copy constructor
-template<typename T, size_t N>
+template<typename T, int N>
 inline Board<T, N>& Board<T, N>::operator=(const Board<T, N>& source)
 {
-	std::copy(source.board.cbegin(), source.board.cend(), board.begin());
+	std::copy(source.board_.cbegin(), source.board_.cend(), board_.begin());
 	return *this;
 }
 
-template<typename T, size_t N>
+template<typename T, int N>
 inline bool Board<T, N>::operator==(const Board& other) const
 {
-	return board == other.board;
+	return board_ == other.board_;
 }
 
-template<typename T, size_t N>
+template<typename T, int N>
 inline T& Board<T, N>::at(Location loc)
 {
 	return at(loc.element());
 }
 
-template<typename T, size_t N>
+template<typename T, int N>
 inline const T& Board<T, N>::at(Location loc) const
 {
 	return at(loc.element());
 }
 
-template<typename T, size_t N>
-inline T& Board<T, N>::at(size_t row, size_t col)
+template<typename T, int N>
+inline T& Board<T, N>::at(int row, int col)
 {
 	if (!valid_size(row, col))
 	{
-		throw std::out_of_range{ "Board::at(size_t row, col)" };
+		throw std::out_of_range{ "Board::at(int row, col)" };	// <stdexcept>
 	}
 	return at(Location(row, col).element());
 }
 
-template<typename T, size_t N>
-inline const T& Board<T, N>::at(size_t row, size_t col) const
+template<typename T, int N>
+inline const T& Board<T, N>::at(int row, int col) const
 {
 	if (!valid_size(row, col))
 	{
@@ -242,107 +232,107 @@ inline const T& Board<T, N>::at(size_t row, size_t col) const
 	return at(Location(row, col).element());
 }
 
-template<typename T, size_t N>
-inline T& Board<T, N>::at(const size_t elem)
+template<typename T, int N>
+inline T& Board<T, N>::at(const int elem)
 {
 	if (!valid_size(elem))
 	{
-		throw std::out_of_range{ "Board::at(size_t)" };
+		throw std::out_of_range{ "Board::at(int)" };
 	}
-	return board.at(elem);
+	return board_.at(static_cast<size_t>(elem));
 }
 
-template<typename T, size_t N>
-inline const T& Board<T, N>::at(const size_t elem) const
+template<typename T, int N>
+inline const T& Board<T, N>::at(const int elem) const
 {
 	if (!valid_size(elem))
 	{
-		throw std::out_of_range{ "Board::at(size_t) const" };
+		throw std::out_of_range{ "Board::at(int) const" };
 	}
-	return board.at(elem);
+	return board_.at(static_cast<size_t>(elem));
 }
 
-template<typename T, size_t N>
-inline T& Board<T, N>::operator[](Location loc)
+template<typename T, int N>
+inline T& Board<T, N>::operator[](Location loc) noexcept
 {
-	return board[loc.element()];
+	return board_[static_cast<size_t>(loc.element())];
 }
 
-template<typename T, size_t N>
-inline const T& Board<T, N>::operator[](Location loc) const
+template<typename T, int N>
+inline const T& Board<T, N>::operator[](Location loc) const noexcept
 {
-	return board[loc.element()];
+	return board_[static_cast<size_t>(loc.element())];
 }
 
-template<typename T, size_t N>
+template<typename T, int N>
 inline void Board<T, N>::clear()
 {
 	/* all elements to the empty value */
-	board.clear();
-	board.resize(full_size);
+	board_.clear();
+	board_.resize(full_size);
 }
 
-template<typename T, size_t N>
-inline typename Board<T, N>::iterator Board<T, N>::begin()
+template<typename T, int N>
+inline typename Board<T, N>::iterator Board<T, N>::begin() noexcept
 {
-	return board.begin();
+	return board_.begin();
 }
 
-template<typename T, size_t N>
-inline typename Board<T, N>::const_iterator Board<T, N>::cbegin() const
+template<typename T, int N>
+inline typename Board<T, N>::const_iterator Board<T, N>::cbegin() const noexcept
 {
-	return board.cbegin();
+	return board_.cbegin();
 }
 
-template<typename T, size_t N>
-inline typename Board<T, N>::iterator Board<T, N>::end()
+template<typename T, int N>
+inline typename Board<T, N>::iterator Board<T, N>::end() noexcept
 {
-	return board.end();
+	return board_.end();
 }
 
-template<typename T, size_t N>
-inline typename Board<T, N>::const_iterator Board<T, N>::cend() const
+template<typename T, int N>
+inline typename Board<T, N>::const_iterator Board<T, N>::cend() const noexcept
 {
-	return board.cend();
+	return board_.cend();
 }
 // Board - memberfunctions
 
-// #################################################################################
+// ############################################################################
 // InBetween
-template<typename T, size_t N>
+template<typename T, int N>
 class Board<T, N>::InBetween
 {
 public:
 	friend class Board<T,N>;
-	T& operator[] (size_t col) { return owner->operator[](Location(row, col)); };
+	T& operator[] (int col) { return owner->operator[](Location(row, col)); }
 private:
-	InBetween(Board* owner, size_t row) :	// private constructor prevents creation out of class
+	InBetween(Board* owner, int row) :	// private constructor prevents creation out of class
 		owner(owner), row(row) {}
 	Board* const owner; // const-pointer
-	const size_t row;
+	const int row;
 };
 
-template<typename T, size_t N>
+template<typename T, int N>
 class Board<T, N>::const_InBetween
 {
 public:
 	friend class Board<T,N>;
-	const T& operator[] (size_t col) const { return owner->operator[](Location(row, col)); };
+	const T& operator[] (int col) const { return owner->operator[](Location(row, col)); }
 private:
-	const_InBetween(const Board* owner, size_t row) : owner(owner), row(row) {}
+	const_InBetween(const Board* owner, int row) : owner(owner), row(row) {}
 	const Board* const owner; // const pointer-to-const
-	const size_t row{};
+	const int row{};
 };
 
-template<typename T, size_t N>
-inline typename Board<T, N>::InBetween Board<T, N>::operator[](size_t row)
+template<typename T, int N>
+inline typename Board<T, N>::InBetween Board<T, N>::operator[](int row) noexcept
 {
 	// Element Selection Operator (using a proxy object)
 	return InBetween(this, row);
 }
 
-template<typename T, size_t N>
-inline const typename Board<T, N>::const_InBetween Board<T, N>::operator[](size_t row) const
+template<typename T, int N>
+inline const typename Board<T, N>::const_InBetween Board<T, N>::operator[](int row) const noexcept
 {
 	return const_InBetween(this, row);
 }

@@ -1,80 +1,161 @@
-// Determine location within a board
-
+// Calculate locations within a board
 #pragma once
-#include <cassert>
+#include <vector>	// shared functions
+
+#include <limits>
 
 namespace Sudoku
 {
-template<size_t N>
-class Block_Loc
-{
-	static_assert(N > 1, "Location.h (Block_Loc): base_size value too small");
+template<int N>
+class Location_Block;	// pre-declare for use in Location
 
-	static constexpr size_t base_size = N;
-	static constexpr size_t block_elem(size_t row, size_t col)
-	{
-		assert(row < base_size && col < base_size);
-		return row * base_size + col;
-	}
-public:
-	constexpr Block_Loc(size_t id, size_t elem) : id(id), elem(elem) {}
-	constexpr Block_Loc(size_t id, size_t row, size_t col) : id(id), elem(block_elem(row, col)) {}
-	
-	const size_t id{};
-	const size_t elem{};
-};
-
-template<size_t N>
+template<int N>
 class Location
 {
 	static_assert(N > 1, "Location.h: base_size value too small");
 
-	using Block_Loc = Block_Loc<N>;
-
-	static constexpr size_t location(size_t row, size_t col) { return row * elem_size + col; }
-	static constexpr size_t block_loc(size_t id, size_t elem)
-	{
-		return location((id / base_size) * base_size + elem / base_size,
-			(id % base_size) * base_size + elem % base_size);
-	}
-	static constexpr size_t block_loc(Block_Loc B) { return block_loc(B.id, B.elem); }
-
-public:
+	using Location_Block = Location_Block<N>;
 	using self_type = Location;
-	using value_type = size_t;
+	using value_type = int;
 	using difference_type = int;
 
-	// constructors
-	constexpr Location() : id_(0) {}
-	explicit constexpr Location(size_t elem) : id_(elem) {}
-	constexpr Location(size_t row, size_t col) : id_(location(row, col)) {}
-	constexpr Location(Block_Loc block) : id_(block_loc(block)) {}
-
+	static constexpr int location(int row, int col) noexcept { return row * elem_size + col; }
+public:
 	// size definition
-	static constexpr size_t base_size = N;						// 3 for default 9*9 board
-	static constexpr size_t elem_size = base_size * base_size;	// 9 for default
-	static constexpr size_t full_size = elem_size * elem_size;	// 81 for default
+	static constexpr int base_size = N;						// 3 for default 9*9 board
+	static constexpr int elem_size = base_size * base_size;	// 9 for default
+	static constexpr int full_size = elem_size * elem_size;	// 81 for default
 	static_assert(
 		base_size < elem_size && base_size < full_size && elem_size < full_size,
 		"class Location: Board size out of bounds"
 	);
+	static_assert(
+		N < std::numeric_limits<int>::max() / base_size &&
+		N < std::numeric_limits<int>::max() / elem_size &&
+		N < std::numeric_limits<int>::max() / elem_size / base_size,
+		"class Location: Board size to big for size system integer");
+
+	// constructors
+	constexpr Location() = default;
+	explicit constexpr Location(int elem) : id_(elem) {}
+	constexpr Location(int row, int col) : id_(location(row, col)) {}
 
 	// information
-	constexpr size_t element() const { return id_; }			// default [0,81)
-	constexpr size_t row() const { return id_ / elem_size; }	// default [0,9)
-	constexpr size_t col() const { return id_ % elem_size; }	// default [0,9)
-	constexpr size_t block() const { return row() / base_size * base_size + col() / base_size; }// default [0,9)
-	constexpr size_t block_row() const { return row() % base_size; }	// default [0,3)
-	constexpr size_t block_col() const { return col() % base_size; }	// default [0,3)
-	constexpr size_t block_elem() const { return block_row() * base_size + block_col(); }// default [0,9)
+	constexpr int element() const { return id_; }			// default [0,81)
+	constexpr int row() const { return id_ / elem_size; }	// default [0,9)
+	constexpr int col() const { return id_ % elem_size; }	// default [0,9)
+	constexpr int block() const { return row() / base_size * base_size + col() / base_size; }// default [0,9)
+	constexpr int block_row() const { return row() % base_size; }	// default [0,3)
+	constexpr int block_col() const { return col() % base_size; }	// default [0,3)
+	constexpr int block_elem() const { return block_row() * base_size + block_col(); }// default [0,9)
 
 	// comparison
-	bool operator==(const self_type& other) const { return id_ == other.id_; }
-	bool operator<(const self_type& other) const { return id_ < other.id_; }
+	constexpr bool operator==(const self_type& other) const { return id_ == other.id_; }
+	constexpr bool operator==(const Location_Block& other) const { return id_ == Location(other).element(); }
+	constexpr bool operator<(const self_type& other) const { return id_ < other.id_; }
 
-	// change
-	//NOTE functional programming won't allow changing, it would create a new object
+	constexpr bool operator!=(const Location& other) const { return !(*this == other); }
 private:
-	const size_t id_;
+	const int id_{};
 };
+
+template<int N>
+class Location_Block
+{
+	static_assert(N > 1, "Location.h (Location_Block): base_size value too small");
+
+	using Location = Location<N>;
+	static constexpr auto base_size = Location().base_size;
+	static constexpr auto elem_size = Location().elem_size;
+	static constexpr auto full_size = Location().full_size;
+
+	static constexpr int block_elem(int row, int col) noexcept { return row * base_size + col; }
+	static constexpr int block_loc(int id, int elem) noexcept
+	{
+		return Location(
+			(id / base_size) * base_size + elem / base_size,
+			(id % base_size) * base_size + elem % base_size).element();
+	}
+	static constexpr int block_loc(int id, int row, int col) noexcept
+	{
+		return block_loc(id, block_elem(row, col));
+	}
+public:
+	explicit constexpr Location_Block(Location loc) : id_(loc.element()) {}
+	constexpr Location_Block(int id, int elem) : id_(block_loc(id, elem)) {}
+	constexpr Location_Block(int id, int row, int col) : id_(block_loc(id, row, col)) {}
+
+	constexpr int id() const { return Location(id_).block(); }
+	constexpr int element() const { return Location(id_).block_elem(); }
+	constexpr int row() const { return Location(id_).block_row(); }
+	constexpr int col() const { return Location(id_).block_col(); }
+
+	explicit constexpr operator Location() const { return Location(id_); }
+
+	// comparison
+	constexpr bool operator==(const Location_Block& other) const noexcept { return id_ == other.id_; }
+	constexpr bool operator==(const Location& other) const noexcept { return id_ == other.element(); }
+	constexpr bool operator<(const Location_Block& other) const noexcept
+	{
+		return ( (id() < other.id()) ? true : (id_ < other.id_) );
+	}
+private:
+	const int id_;
+};
+
+
+
+
+
+template<int N>
+constexpr bool shared_row(Location<N> left, Location<N> right)
+{
+	return left.row() == right.row();
+}
+
+template<int N>
+std::vector<Location<N>> shared_row(Location<N> left, std::vector<Location<N>> right)
+{
+	std::vector<Location<N>> tmp_{};
+	for (auto&& loc : right)
+	{
+		if (shared_row(left, loc)) { tmp_.push_back(loc); }
+	}
+	return tmp_;
+}
+
+template<int N>
+constexpr bool shared_col(Location<N> left, Location<N> right)
+{
+	return left.col() == right.col();
+}
+
+template<int N>
+std::vector<Location<N>> shared_col(Location<N> left, std::vector<Location<N>> right)
+{
+	std::vector<Location<N>> tmp_{};
+	for (auto&& loc : right)
+	{
+		if (shared_col(left, loc)) { tmp_.push_back(loc); }
+	}
+	return tmp_;
+}
+
+template<int N>
+constexpr bool shared_block(Location<N> left, Location<N> right)
+{
+	return left.block() == right.block();
+}
+
+template<int N>
+std::vector<Location<N>> shared_block(Location<N> left, std::vector<Location<N>> right)
+{
+	std::vector<Location<N>> tmp_{};
+	for (auto&& loc : right)
+	{
+		if (shared_block(left, loc)) { tmp_.push_back(loc); }
+	}
+	return tmp_;
+}
+
 }	// namespace Sudoku
