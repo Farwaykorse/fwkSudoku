@@ -7,14 +7,14 @@
 namespace Sudoku
 {
 template<int N>
-class Block_Loc;	// pre-declare for use in Location
+class Location_Block;	// pre-declare for use in Location
 
 template<int N>
 class Location
 {
 	static_assert(N > 1, "Location.h: base_size value too small");
 
-	using Block_Loc = Block_Loc<N>;
+	using Location_Block = Location_Block<N>;
 	using self_type = Location;
 	using value_type = int;
 	using difference_type = int;
@@ -51,7 +51,7 @@ public:
 
 	// comparison
 	constexpr bool operator==(const self_type& other) const { return id_ == other.id_; }
-	constexpr bool operator==(const Block_Loc& other) const { return id_ == Location(other).element(); }
+	constexpr bool operator==(const Location_Block& other) const { return id_ == Location(other).element(); }
 	constexpr bool operator<(const self_type& other) const { return id_ < other.id_; }
 
 	constexpr bool operator!=(const Location& other) const { return !(*this == other); }
@@ -60,9 +60,9 @@ private:
 };
 
 template<int N>
-class Block_Loc
+class Location_Block
 {
-	static_assert(N > 1, "Location.h (Block_Loc): base_size value too small");
+	static_assert(N > 1, "Location.h (Location_Block): base_size value too small");
 
 	using Location = Location<N>;
 	static constexpr auto base_size = Location().base_size;
@@ -81,9 +81,9 @@ class Block_Loc
 		return block_loc(id, block_elem(row, col));
 	}
 public:
-	explicit constexpr Block_Loc(Location loc) : id_(loc.element()) {}
-	constexpr Block_Loc(int id, int elem) : id_(block_loc(id, elem)) {}
-	constexpr Block_Loc(int id, int row, int col) : id_(block_loc(id, row, col)) {}
+	explicit constexpr Location_Block(Location loc) : id_(loc.element()) {}
+	constexpr Location_Block(int id, int elem) : id_(block_loc(id, elem)) {}
+	constexpr Location_Block(int id, int row, int col) : id_(block_loc(id, row, col)) {}
 
 	constexpr int id() const { return Location(id_).block(); }
 	constexpr int element() const { return Location(id_).block_elem(); }
@@ -93,9 +93,9 @@ public:
 	explicit constexpr operator Location() const { return Location(id_); }
 
 	// comparison
-	constexpr bool operator==(const Block_Loc& other) const noexcept { return id_ == other.id_; }
+	constexpr bool operator==(const Location_Block& other) const noexcept { return id_ == other.id_; }
 	constexpr bool operator==(const Location& other) const noexcept { return id_ == other.element(); }
-	constexpr bool operator<(const Block_Loc& other) const noexcept
+	constexpr bool operator<(const Location_Block& other) const noexcept
 	{
 		return ( (id() < other.id()) ? true : (id_ < other.id_) );
 	}

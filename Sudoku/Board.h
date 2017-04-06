@@ -115,7 +115,7 @@ public:
 
 	class Block : public Section
 	{
-		using Block_Loc = Block_Loc<N>;
+		using Block_Loc = Location_Block<N>;
 	public:
 		using Section::Section;	// inherit constructors
 		using Section::id;

@@ -67,25 +67,25 @@ public:
 		static_assert(std::is_constructible<typeT, int>(), "-- should construct from int");
 		static_assert(std::is_constructible<typeT, unsigned int>(), "-- construct from unsigned int");
 		static_assert(std::is_constructible<typeT, size_t>(), "-- construct from size_t");
-		static_assert(std::is_constructible<typeT, Block_Loc<3>>(), "-- should construct from Block_Loc");
-		static_assert(!std::is_constructible<typeT, Block_Loc<2>>(), "-- shouldn't accept non matching dimensions_1");
-		static_assert(!std::is_assignable<typeT, Block_Loc<3>>(), "--");
+		static_assert(std::is_constructible<typeT, Location_Block<3>>(), "-- should construct from Location_Block");
+		static_assert(!std::is_constructible<typeT, Location_Block<2>>(), "-- shouldn't accept non matching dimensions_1");
+		static_assert(!std::is_assignable<typeT, Location_Block<3>>(), "--");
 		static_assert(! std::is_assignable<typeT, int>(), "-- shouldn't be assignable from int, prevent with explicit!!");
 
-		static_assert(! std::is_swappable_with<typeT, Block_Loc<3>>(), "++");	//C++17
-		static_assert(! std::is_nothrow_swappable_with<typeT, Block_Loc<3>>(), "++");	//C++17
+		static_assert(! std::is_swappable_with<typeT, Location_Block<3>>(), "++");	//C++17
+		static_assert(! std::is_nothrow_swappable_with<typeT, Location_Block<3>>(), "++");	//C++17
 
 
 		//try { Location<3>(); }		catch (...) { Assert::Fail(L"Location<3>() Default Construction failed"); }
 		try { Location<3>(12); }	catch (...) { Assert::Fail(L"Location<3>(12) Construction from int failed"); }
 		try { Location<3>(1, 8); }	catch (...) { Assert::Fail(L"Location<3>(1, 8) Construction failed"); }
 		try { Location<3>(Location<3>(6)); }	catch (...) { Assert::Fail(L"Location<3>(1, 8) Construction failed"); }
-		try { Location<3>(Block_Loc<3>(1, 3)); }	catch (...) { Assert::Fail(L"Block_Lock<3>(1,3) Construction failed"); }
+		try { Location<3>(Location_Block<3>(1, 3)); }	catch (...) { Assert::Fail(L"Block_Lock<3>(1,3) Construction failed"); }
 	}
 	TEST_METHOD(T01_initialize_Block_Loc)
 	{
 		// Type properties
-		using typeT = Block_Loc<3>;
+		using typeT = Location_Block<3>;
 		static_assert(std::is_class<typeT>(), "-- a class, hiding datarepresentation");
 		static_assert(! std::is_trivial<typeT>(), "trivial default constructors & trivially copyable");
 		static_assert(!std::is_trivially_copyable<typeT>(), "-- compatible with std::memcpy & binary copy from/to files");
@@ -131,32 +131,32 @@ public:
 		// other types
 		static_assert(! std::is_constructible<typeT, int>(), "-- should not construct from int");
 		static_assert(std::is_constructible<typeT, Location<3>>(), "-- should construct from Location");
-		static_assert(! std::is_constructible<typeT, Block_Loc<2>>(), "-- shouldn't accept non matching dimensions_1");
+		static_assert(! std::is_constructible<typeT, Location_Block<2>>(), "-- shouldn't accept non matching dimensions_1");
 		static_assert(! std::is_constructible<typeT, Location<2>>(), "-- should not construct from non matching Location");
 
 		static_assert(!std::is_assignable<typeT, Location<3>>(), "-- assignable from Location");
-		static_assert(! std::is_assignable<typeT, Block_Loc<2>>(), "-- assignable wrong size");
+		static_assert(! std::is_assignable<typeT, Location_Block<2>>(), "-- assignable wrong size");
 		static_assert(! std::is_assignable<typeT, Location<2>>(), "-- assignable Location wrong size");
 		static_assert(! std::is_assignable<typeT, int>(), "-- shouldn't be assignable from int, prevent with explicit!!");
 
 		static_assert(! std::is_swappable_with<typeT, Location<3>>(), "++");	//C++17
 		static_assert(! std::is_nothrow_swappable_with<typeT, Location<3>>(), "++");	//C++17
 
-		Block_Loc<3> B1(8, 8);
+		Location_Block<3> B1(8, 8);
 		Assert::IsTrue(B1.element() == 8, L"block element");
-		Block_Loc<3> B6{0, 0, 2};
+		Location_Block<3> B6{0, 0, 2};
 		Assert::IsTrue(B6.element() == 2, L"block row-col");
-		Block_Loc<3> B2(B1);
+		Location_Block<3> B2(B1);
 		Assert::IsTrue(B2.element() == 8, L"Copy constructor");
-		Block_Loc<3> B3 = B1;
+		Location_Block<3> B3 = B1;
 		Assert::IsTrue(B3.element() == 8, L"Copy");
-		Block_Loc<3> B4(Block_Loc<3>(0, 2));
+		Location_Block<3> B4(Location_Block<3>(0, 2));
 		Assert::IsTrue(B4.element() == 2, L"Move constructor");
-		Block_Loc<3> B5 = Block_Loc<3>(8, 8);
+		Location_Block<3> B5 = Location_Block<3>(8, 8);
 		Assert::IsTrue(B5.element() == 8, L"Move");
 		// back and forth
-		Assert::IsTrue(Block_Loc<3>{ Location<3>{12} }.id() == 1, L"");
-		Assert::IsTrue(Location<3>{Block_Loc<3>{8, 8}}.element() == 80, L"");
+		Assert::IsTrue(Location_Block<3>{ Location<3>{12} }.id() == 1, L"");
+		Assert::IsTrue(Location<3>{Location_Block<3>{8, 8}}.element() == 80, L"");
 	}
 	TEST_METHOD(T1_information)
 	{
@@ -212,25 +212,25 @@ public:
 		Assert::IsTrue(Location<3>(0, 5) < Location<3>(3, 2), L"");
 		Assert::IsFalse(Location<3>(80) < Location<3>(8, 3), L"");
 
-		Assert::IsTrue(Block_Loc<3>(0,0) == Block_Loc<3>(0,0,0), L"");
-		Assert::IsFalse(Block_Loc<3>(4,3) == Block_Loc<3>(4,4), L"");
-		Assert::IsTrue(Block_Loc<3>(0, 5) < Block_Loc<3>(3, 2), L"");
-		Assert::IsFalse(Block_Loc<3>(0, 5) < Block_Loc<3>(0, 2), L"");
-		Assert::IsFalse(Block_Loc<3>(8,2,2) < Block_Loc<3>(8, 8), L"");
+		Assert::IsTrue(Location_Block<3>(0,0) == Location_Block<3>(0,0,0), L"");
+		Assert::IsFalse(Location_Block<3>(4,3) == Location_Block<3>(4,4), L"");
+		Assert::IsTrue(Location_Block<3>(0, 5) < Location_Block<3>(3, 2), L"");
+		Assert::IsFalse(Location_Block<3>(0, 5) < Location_Block<3>(0, 2), L"");
+		Assert::IsFalse(Location_Block<3>(8,2,2) < Location_Block<3>(8, 8), L"");
 
-		Assert::IsTrue(Block_Loc<3>(0,0) == Location<3>(0), L"");
-		Assert::IsTrue(Location<3>(1) == Block_Loc<3>(0, 1), L"");
+		Assert::IsTrue(Location_Block<3>(0,0) == Location<3>(0), L"");
+		Assert::IsTrue(Location<3>(1) == Location_Block<3>(0, 1), L"");
 	}
 	TEST_METHOD(T3_helper_Block_Loc)
 	{
-		Block_Loc<3> B1(2, 6);
-		Assert::IsTrue(B1.element() == 6, L"Block_Loc.elem");
+		Location_Block<3> B1(2, 6);
+		Assert::IsTrue(B1.element() == 6, L"Location_Block.elem");
 		Assert::IsTrue(B1.id() == 2, L"Block_loc.id");
 		Location<3> L1(B1);
 		Assert::IsTrue(L1.block() == B1.id());
 		Assert::IsTrue(L1.block_elem() == B1.element());
 
-		Block_Loc<3> B2(2, 2, 0);
+		Location_Block<3> B2(2, 2, 0);
 		Assert::IsTrue(B2.id() == 2);
 		Assert::IsTrue(B2.element() == 6);
 		Location<3> L2(B2);
@@ -261,16 +261,16 @@ public:
 		Assert::IsTrue(noexcept(Location<3>(79).block_row()));
 		Assert::IsTrue(noexcept(Location<3>(80).block_col()));
 		Assert::IsTrue(noexcept(Location<3>(80).block_elem()));
-		Assert::IsTrue(noexcept(Block_Loc<3>{Location<3>(12)}));
-		Assert::IsTrue(noexcept(Block_Loc<3>{5, 3}));
-		Assert::IsTrue(noexcept(Block_Loc<3>{5, 3, 2}));
-		Assert::IsTrue(noexcept(Block_Loc<3>{5, 3}.id()));
-		Assert::IsTrue(noexcept(Block_Loc<3>{5, 3}.element()));
-		Assert::IsTrue(noexcept(Block_Loc<3>{5, 3}.row()));
-		Assert::IsTrue(noexcept(Block_Loc<3>{5, 3}.col()));
-		Assert::IsTrue(noexcept(Location<3>(Block_Loc<3>{5, 3}).element()));
+		Assert::IsTrue(noexcept(Location_Block<3>{Location<3>(12)}));
+		Assert::IsTrue(noexcept(Location_Block<3>{5, 3}));
+		Assert::IsTrue(noexcept(Location_Block<3>{5, 3, 2}));
+		Assert::IsTrue(noexcept(Location_Block<3>{5, 3}.id()));
+		Assert::IsTrue(noexcept(Location_Block<3>{5, 3}.element()));
+		Assert::IsTrue(noexcept(Location_Block<3>{5, 3}.row()));
+		Assert::IsTrue(noexcept(Location_Block<3>{5, 3}.col()));
+		Assert::IsTrue(noexcept(Location<3>(Location_Block<3>{5, 3}).element()));
 		Assert::IsTrue(noexcept(Location<3>()==Location<3>(0)));
-		Assert::IsTrue(noexcept(Location<3>()==Block_Loc<3>(0,2)));
+		Assert::IsTrue(noexcept(Location<3>()==Location_Block<3>(0,2)));
 		Assert::IsTrue(noexcept(Location<3>()<Location<3>(0)));
 
 		// not precalculated
@@ -282,13 +282,13 @@ public:
 		Assert::IsFalse(noexcept(L0.block_row()));
 		Assert::IsFalse(noexcept(L0.block_col()));
 		Assert::IsFalse(noexcept(L0.block_elem()));
-		Assert::IsFalse(noexcept(Block_Loc<3>(L0)));
-		Block_Loc<3> B0{ L0 };
+		Assert::IsFalse(noexcept(Location_Block<3>(L0)));
+		Location_Block<3> B0{ L0 };
 		Assert::IsFalse(noexcept(B0.id()));
 		Assert::IsFalse(noexcept(B0.element()));
 		Assert::IsFalse(noexcept(B0.row()));
 		Assert::IsFalse(noexcept(B0.col()));
-		Block_Loc<3> B1{ 2, 4 };
+		Location_Block<3> B1{ 2, 4 };
 		Assert::IsFalse(noexcept(B1.id()));
 		Assert::IsFalse(noexcept(B1.element()));
 		Assert::IsFalse(noexcept(B1.row()));

@@ -63,19 +63,19 @@ namespace compiletime
 	static_assert(std::is_constructible<typeT, int>::value, "-- should construct from int");
 	static_assert(std::is_constructible<typeT, unsigned int>::value, "-- construct from unsigned int");
 	static_assert(std::is_constructible<typeT, size_t>::value, "-- construct from size_t");
-	static_assert(std::is_constructible<typeT, Block_Loc<3>>::value, "-- should construct from Block_Loc");
-	static_assert(!std::is_constructible<typeT, Block_Loc<2>>::value, "-- shouldn't accept non matching dimensions_1");
-	static_assert(!std::is_assignable<typeT, Block_Loc<3>>::value, "--");
+	static_assert(std::is_constructible<typeT, Location_Block<3>>::value, "-- should construct from Location_Block");
+	static_assert(!std::is_constructible<typeT, Location_Block<2>>::value, "-- shouldn't accept non matching dimensions_1");
+	static_assert(!std::is_assignable<typeT, Location_Block<3>>::value, "--");
 	static_assert(!std::is_assignable<typeT, int>::value, "-- shouldn't be assignable from int, prevent with explicit!!");
 
-	static_assert(!std::is_swappable_with<typeT, Block_Loc<3>>::value, "++");	//C++17
-	static_assert(!std::is_nothrow_swappable_with<typeT, Block_Loc<3>>::value, "++");	//C++17
+	static_assert(!std::is_swappable_with<typeT, Location_Block<3>>::value, "++");	//C++17
+	static_assert(!std::is_nothrow_swappable_with<typeT, Location_Block<3>>::value, "++");	//C++17
 }
 
-namespace Block_Loc_compiletime
+namespace Location_Block_compiletime
 {
 	// Type properties
-	using typeT = Block_Loc<3>;
+	using typeT = Location_Block<3>;
 	static_assert(std::is_class<typeT>::value, "-- a class, hiding datarepresentation");
 	static_assert(!std::is_trivial<typeT>::value, "trivial default constructors & trivially copyable");
 	static_assert(!std::is_trivially_copyable<typeT>::value, "++ compatible with std::memcpy & binary copy from/to files");
@@ -121,11 +121,11 @@ namespace Block_Loc_compiletime
 	// other types
 	static_assert(!std::is_constructible<typeT, int>::value, "-- should not construct from int");
 	static_assert(std::is_constructible<typeT, Location<3>>::value, "-- should construct from Location");
-	static_assert(!std::is_constructible<typeT, Block_Loc<2>>::value, "-- shouldn't accept non matching dimensions_1");
+	static_assert(!std::is_constructible<typeT, Location_Block<2>>::value, "-- shouldn't accept non matching dimensions_1");
 	static_assert(!std::is_constructible<typeT, Location<2>>::value, "-- should not construct from non matching Location");
 
 	static_assert(!std::is_assignable<typeT, Location<3>>::value, "assignable from Location");
-	static_assert(!std::is_assignable<typeT, Block_Loc<2>>::value, "-- assignable wrong size");
+	static_assert(!std::is_assignable<typeT, Location_Block<2>>::value, "-- assignable wrong size");
 	static_assert(!std::is_assignable<typeT, Location<2>>::value, "-- assignable Location wrong size");
 	static_assert(!std::is_assignable<typeT, int>::value, "-- shouldn't be assignable from int, prevent with explicit!!");
 
@@ -185,41 +185,41 @@ TEST(Location, Construction)
 	EXPECT_EQ(Location<3>(L3).element(), 6);
 	EXPECT_EQ(Location<3>{L3}.element(), 6);
 }
-TEST(Block_Loc, Construction)
+TEST(Location_Block, Construction)
 {
-	Block_Loc<3> B1(8, 8);
+	Location_Block<3> B1(8, 8);
 	EXPECT_EQ(B1.element(), 8);
-	EXPECT_EQ(Block_Loc<3>(8, 8).element(), 8);
+	EXPECT_EQ(Location_Block<3>(8, 8).element(), 8);
 	//??? ERROR if using {}
-	//EXPECT_EQ(Block_Loc<3>{8, 8}.element(), 8);
-	Block_Loc<3> B6{ 0, 0, 2 };
+	//EXPECT_EQ(Location_Block<3>{8, 8}.element(), 8);
+	Location_Block<3> B6{ 0, 0, 2 };
 	EXPECT_EQ(B6.element(), 2);
 	//??? ERROR if using {}
-	//EXPECT_EQ(Block_Loc<3>{0, 0, 2}.element(), 2);
-	EXPECT_EQ(Block_Loc<3>(0, 0, 2).element(), 2);
-	Block_Loc<3> B2(B1);
+	//EXPECT_EQ(Location_Block<3>{0, 0, 2}.element(), 2);
+	EXPECT_EQ(Location_Block<3>(0, 0, 2).element(), 2);
+	Location_Block<3> B2(B1);
 	EXPECT_EQ(B2.element(), 8) << "Copy constructor";
-	EXPECT_EQ(Block_Loc<3>(B1).element(), 8) << "Copy constructor";
-	EXPECT_EQ(Block_Loc<3>{B1}.element(), 8) << "Copy constructor";
-	Block_Loc<3> B3 = B1;
+	EXPECT_EQ(Location_Block<3>(B1).element(), 8) << "Copy constructor";
+	EXPECT_EQ(Location_Block<3>{B1}.element(), 8) << "Copy constructor";
+	Location_Block<3> B3 = B1;
 	EXPECT_EQ(B3.element(), 8) << "Copy";
-	Block_Loc<3> B4(Block_Loc<3>(0, 2));
+	Location_Block<3> B4(Location_Block<3>(0, 2));
 	EXPECT_EQ(B4.element(), 2) << "Move constructor";
-	EXPECT_EQ(Block_Loc<3>(Block_Loc<3>(0,2)).element(), 2) << "Move constructor";
-	EXPECT_EQ(Block_Loc<3>(Block_Loc<3>{0,2}).element(), 2) << "Move constructor";
+	EXPECT_EQ(Location_Block<3>(Location_Block<3>(0,2)).element(), 2) << "Move constructor";
+	EXPECT_EQ(Location_Block<3>(Location_Block<3>{0,2}).element(), 2) << "Move constructor";
 	//??? ERROR if using {}
-	//EXPECT_EQ(Block_Loc<3>{Block_Loc<3>{0,2}}.element(), 2) << "Move constructor";
-	EXPECT_EQ(Block_Loc<3>{Block_Loc<3>(0,2)}.element(), 2) << "Move constructor";
-	Block_Loc<3> B5 = Block_Loc<3>(8, 8);
+	//EXPECT_EQ(Location_Block<3>{Location_Block<3>{0,2}}.element(), 2) << "Move constructor";
+	EXPECT_EQ(Location_Block<3>{Location_Block<3>(0,2)}.element(), 2) << "Move constructor";
+	Location_Block<3> B5 = Location_Block<3>(8, 8);
 	EXPECT_EQ(B5.element(), 8) << "Move";
 
 	// back and forth
-	ASSERT_NO_THROW(Location<3>(Block_Loc<3>(1, 3)));
-	EXPECT_EQ(Block_Loc<3>{ Location<3>{12} }.id(), 1);
+	ASSERT_NO_THROW(Location<3>(Location_Block<3>(1, 3)));
+	EXPECT_EQ(Location_Block<3>{ Location<3>{12} }.id(), 1);
 	//??? ERROR if using {} 
-	//EXPECT_EQ(Location<3>{ Block_Loc<3>{8, 8} }.element(), 80);
-	EXPECT_EQ(Location<3>( Block_Loc<3>{8, 8} ).element(), 80);
-	EXPECT_EQ(Location<3>{ Block_Loc<3>(8, 8) }.element(), 80);
+	//EXPECT_EQ(Location<3>{ Location_Block<3>{8, 8} }.element(), 80);
+	EXPECT_EQ(Location<3>( Location_Block<3>{8, 8} ).element(), 80);
+	EXPECT_EQ(Location<3>{ Location_Block<3>(8, 8) }.element(), 80);
 }
 TEST(Location, Size_definitions)
 {
@@ -328,14 +328,14 @@ TEST(Location, OutOfBounds)
 		);
 	}
 }
-TEST(Block_Loc, Properties)
+TEST(Location_Block, Properties)
 {
-	EXPECT_EQ(Block_Loc<3>(2, 6).id(), 2);
-	EXPECT_EQ(Block_Loc<3>(2, 6).element(), 6);
-	EXPECT_EQ(Block_Loc<3>(2, 6).row(), 2);
-	EXPECT_EQ(Block_Loc<3>(2, 6).col(), 0);
+	EXPECT_EQ(Location_Block<3>(2, 6).id(), 2);
+	EXPECT_EQ(Location_Block<3>(2, 6).element(), 6);
+	EXPECT_EQ(Location_Block<3>(2, 6).row(), 2);
+	EXPECT_EQ(Location_Block<3>(2, 6).col(), 0);
 
-	Block_Loc<3> B1(2, 6);
+	Location_Block<3> B1(2, 6);
 	EXPECT_EQ(B1.id(), 2);
 	EXPECT_EQ(B1.element(), 6);
 	EXPECT_EQ(B1.row(), 2);
@@ -347,7 +347,7 @@ TEST(Block_Loc, Properties)
 	EXPECT_EQ(L1.block_row(), B1.row());
 	EXPECT_EQ(L1.block_col(), B1.col());
 
-	Block_Loc<3> B2(2, 1, 0);
+	Location_Block<3> B2(2, 1, 0);
 	EXPECT_EQ(B2.id(), 2);
 	EXPECT_EQ(B2.element(), 3);
 	EXPECT_EQ(B2.row(), 1);
@@ -376,18 +376,18 @@ TEST(Location, Comparisson)
 	//EXPECT_GE(Location<3>(3), Location<3>(3))		<< "verifies a >= b";
 	//EXPECT_FALSE(Location<3>(8) >= Location<3>(19));
 }
-TEST(Block_Loc, Comparisson)
+TEST(Location_Block, Comparisson)
 {
-	EXPECT_EQ(Block_Loc<3>(0, 0), Block_Loc<3>(0, 0, 0))	<< "verifies a == b";
-	EXPECT_FALSE(Block_Loc<3>(4, 3) == Block_Loc<3>(4, 4));
-	//TODO EXPECT_NE(Block_Loc<3>(0, 0), Block_Loc<3>(0, 13))		<< "verifies a != b";
-	//EXPECT_FALSE(Block_Loc<3>(4, 4) != Block_Loc<3>(4, 4));
-	EXPECT_LT(Block_Loc<3>(0, 5), Block_Loc<3>(3, 2))		<< "verifies a < b";
-	EXPECT_FALSE(Block_Loc<3>(0, 5) < Block_Loc<3>(0, 2));
-	EXPECT_FALSE(Block_Loc<3>(8, 2, 2) < Block_Loc<3>(8, 8));
+	EXPECT_EQ(Location_Block<3>(0, 0), Location_Block<3>(0, 0, 0))	<< "verifies a == b";
+	EXPECT_FALSE(Location_Block<3>(4, 3) == Location_Block<3>(4, 4));
+	//TODO EXPECT_NE(Location_Block<3>(0, 0), Location_Block<3>(0, 13))		<< "verifies a != b";
+	//EXPECT_FALSE(Location_Block<3>(4, 4) != Location_Block<3>(4, 4));
+	EXPECT_LT(Location_Block<3>(0, 5), Location_Block<3>(3, 2))		<< "verifies a < b";
+	EXPECT_FALSE(Location_Block<3>(0, 5) < Location_Block<3>(0, 2));
+	EXPECT_FALSE(Location_Block<3>(8, 2, 2) < Location_Block<3>(8, 8));
 
-	EXPECT_EQ(Block_Loc<3>(0, 0), Location<3>(0));
-	EXPECT_EQ(Location<3>(1), Block_Loc<3>(0, 1));
+	EXPECT_EQ(Location_Block<3>(0, 0), Location<3>(0));
+	EXPECT_EQ(Location<3>(1), Location_Block<3>(0, 1));
 }
 
 TEST(Location, is_constexpr)
@@ -462,31 +462,31 @@ TEST(Location, external)
 	EXPECT_EQ(shared_block(Location<3>(0), list1).size(), 3) << "vector length";
 }
 
-TEST(Block_Loc, is_constexpr)
+TEST(Location_Block, is_constexpr)
 {
-	EXPECT_TRUE(noexcept(Block_Loc<3>{Location<3>(12)}));
-	EXPECT_TRUE(noexcept(Block_Loc<3>{5, 3}));
-	EXPECT_TRUE(noexcept(Block_Loc<3>{5, 3, 2}));
-	EXPECT_TRUE(noexcept(Block_Loc<3>{5, 3}.id()));
-	EXPECT_TRUE(noexcept(Block_Loc<3>{5, 3}.element()));
-	EXPECT_TRUE(noexcept(Block_Loc<3>{5, 3}.row()));
-	EXPECT_TRUE(noexcept(Block_Loc<3>{5, 3}.col()));
-	EXPECT_TRUE(noexcept(Block_Loc<3>(0, 1) == Block_Loc<3>(0, 2)));
-	EXPECT_TRUE(noexcept(Block_Loc<3>(0, 2) < Block_Loc<3>(0, 2)));
+	EXPECT_TRUE(noexcept(Location_Block<3>{Location<3>(12)}));
+	EXPECT_TRUE(noexcept(Location_Block<3>{5, 3}));
+	EXPECT_TRUE(noexcept(Location_Block<3>{5, 3, 2}));
+	EXPECT_TRUE(noexcept(Location_Block<3>{5, 3}.id()));
+	EXPECT_TRUE(noexcept(Location_Block<3>{5, 3}.element()));
+	EXPECT_TRUE(noexcept(Location_Block<3>{5, 3}.row()));
+	EXPECT_TRUE(noexcept(Location_Block<3>{5, 3}.col()));
+	EXPECT_TRUE(noexcept(Location_Block<3>(0, 1) == Location_Block<3>(0, 2)));
+	EXPECT_TRUE(noexcept(Location_Block<3>(0, 2) < Location_Block<3>(0, 2)));
 
-	EXPECT_TRUE(noexcept(Location<3>(Block_Loc<3>{5, 3}).element()));
-	EXPECT_TRUE(noexcept(Block_Loc<3>(0, 2) == Location<3>(0)));
-	EXPECT_TRUE(noexcept(Location<3>() == Block_Loc<3>(0, 2)));
+	EXPECT_TRUE(noexcept(Location<3>(Location_Block<3>{5, 3}).element()));
+	EXPECT_TRUE(noexcept(Location_Block<3>(0, 2) == Location<3>(0)));
+	EXPECT_TRUE(noexcept(Location<3>() == Location_Block<3>(0, 2)));
 
 	// not precalculated
 	Location<3> L0{};
-	EXPECT_FALSE(noexcept(Block_Loc<3>(L0)));
-	Block_Loc<3> B0{ L0 };
+	EXPECT_FALSE(noexcept(Location_Block<3>(L0)));
+	Location_Block<3> B0{ L0 };
 	EXPECT_FALSE(noexcept(B0.id()));
 	EXPECT_FALSE(noexcept(B0.element()));
 	EXPECT_FALSE(noexcept(B0.row()));
 	EXPECT_FALSE(noexcept(B0.col()));
-	Block_Loc<3> B1{ 2, 4 };
+	Location_Block<3> B1{ 2, 4 };
 	EXPECT_FALSE(noexcept(B1.id()));
 	EXPECT_FALSE(noexcept(B1.element()));
 	EXPECT_FALSE(noexcept(B1.row()));
