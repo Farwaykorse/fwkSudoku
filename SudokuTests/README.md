@@ -21,6 +21,13 @@ Console project called: SudokuTest(s)
 	$(VcpkgRoot)lib\manual-link\gtest_main.lib				if no custom main()
 
 
+### Compiler settings
+**Dissabled:**
+```
+2017/04
+/w14619			pragma warning: there is no warning number 'number'
+```
+
 <!---------------------------------------------------------------->
 Catch debug assert() from <cassert> with:
 
