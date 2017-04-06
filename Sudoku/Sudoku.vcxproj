@@ -82,7 +82,7 @@
     <PlatformToolset>v141_clang_c2</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -206,10 +206,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">
     <ClCompile>
-      <Optimization>Disabled</Optimization>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>-Wextra -Wconversion -Wcast-align -Wformat=2 -fno-common -Woverloaded-virtual -Wreorder -pedantic -Wc++14-compat -std=c++1z %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -pedantic -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -fno-common -Wreorder -std=c++1z -Weverything -Wno-c++98-compat </AdditionalOptions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -220,7 +222,9 @@
       <Optimization>Disabled</Optimization>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>-Wextra -Wconversion -Wcast-align -Wformat=2 -fno-common -Woverloaded-virtual -Wreorder -pedantic -Wc++14-compat %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -pedantic -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -fno-common -Wreorder -std=c++1z -Weverything -Wno-c++98-compat </AdditionalOptions>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -246,6 +250,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Sudoku.cpp" />
   </ItemGroup>

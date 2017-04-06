@@ -1,21 +1,16 @@
-// stdafx.h : include file for standard system include files,
+// -----------------------------------------------------------------------------
+// stdafx.h : header for Precompiled Header
+// -----------------------------------------------------------------------------
+// - Compiled from stdafx.cpp
+// - Included in project by compiler configuration
+//		Clang:	-include "stdafx.h"
+//		VS:		/FI"stdafx.h"
+//
+// file for standard system include files,
 // or project specific include files that are used frequently, but
 // are changed infrequently
 //
-
-	/////////////////////
-	/////	NOTES	/////
-	/////////////////////
-//	Precomiled headers
-//	Configurations:
-//	- Project:
-//		Configuration Properties > C/C++ > Precompiled Headers
-//		Precompiled header:	Use (/Yu)
-//	- stdafx.cpp:
-//		Configuration Properties > C/C++ > Precompiled Headers
-//		Precompiled header:	Create (/Yc)
 //////////////////////////
-
 #pragma once
 
 #include "targetver.h"
