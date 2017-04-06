@@ -40,8 +40,8 @@ public:
 	// element access
 	T& at(int);
 	const T& at(int) const;
-	T& operator[](int elem) { return nocheck_at(elem); };
-	const T& operator[](int elem) const { return const_nocheck_at(elem); };
+	T& operator[](int elem) { return nocheck_at(elem); }
+	const T& operator[](int elem) const { return const_nocheck_at(elem); }
 
 	iterator begin() { return iterator(this, addressof(0), 0); }
 	iterator end() { return iterator(this); }

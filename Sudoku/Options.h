@@ -36,7 +36,7 @@ public:
 	Options& clear() noexcept;			// remove all options
 	Options& reset() noexcept;			// set all options
 	Options& flip() noexcept;
-	bool remove_option(int value);				// remove single option, return if needed
+	bool remove_option(int value);		// remove single option, return if needed
 	//TODO Options& remove_option(int value, ...);	// remove mentioned
 	Options& add(int value);			// add single option
 	Options& set(int value);			// set to answer
@@ -133,7 +133,7 @@ Options<E>& Options<E>::operator=(const bitset& other) noexcept
 template<int E> inline
 Options<E>& Options<E>::operator=(bitset&& other) noexcept
 {
-	std::swap(data_, other);	//<utility>
+	std::swap(data_, other);	// use <utility>
 	return *this;
 }
 

@@ -55,9 +55,9 @@ public:
 	void clear();
 
 	/* Query properties */
-	static constexpr int size() { return full_size; };
+	static constexpr int size() { return full_size; }
 	bool operator==(const Board&) const;
-	bool operator!=(const Board& other) const { return !(*this == other); };
+	bool operator!=(const Board& other) const { return !(*this == other); }
 
 	/* Element access */
 	// Checked
@@ -304,7 +304,7 @@ class Board<T, N>::InBetween
 {
 public:
 	friend class Board<T,N>;
-	T& operator[] (int col) { return owner->operator[](Location(row, col)); };
+	T& operator[] (int col) { return owner->operator[](Location(row, col)); }
 private:
 	InBetween(Board* owner, int row) :	// private constructor prevents creation out of class
 		owner(owner), row(row) {}
@@ -317,7 +317,7 @@ class Board<T, N>::const_InBetween
 {
 public:
 	friend class Board<T,N>;
-	const T& operator[] (int col) const { return owner->operator[](Location(row, col)); };
+	const T& operator[] (int col) const { return owner->operator[](Location(row, col)); }
 private:
 	const_InBetween(const Board* owner, int row) : owner(owner), row(row) {}
 	const Board* const owner; // const pointer-to-const

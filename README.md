@@ -22,7 +22,7 @@ The code might be frequently rewritten and different techniques and libraries ar
 <!---------------------------------------------------------------->
 <!-- installation -->
 <!-- usage -->
-The code is manly written and compiled using the Visual Studio platform.
+The code is mainly written and compiled using the Visual Studio platform.
 
 External libraries are imported using the [vcpkg project](https://github.com/Microsoft/vcpkg)
 

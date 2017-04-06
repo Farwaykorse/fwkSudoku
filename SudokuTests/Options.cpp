@@ -135,7 +135,7 @@ TEST(Options, Construction)
 		const Options<4> A_2 = 2;
 		EXPECT_EQ(A_1.DebugString(), "00100");
 		EXPECT_EQ(A_2.DebugString(), "00100");
-		EXPECT_EQ(Options<4>{0}.DebugString(), "00001");	//TODO change this
+		EXPECT_EQ(Options<4>{0}.DebugString(), "00001");	// [count-0]
 		EXPECT_EQ(Options<4>{4}.DebugString(), "10000");
 		EXPECT_EQ(Options<4>{4}.DebugString(), "10000");
 	// assertion see deathtests
@@ -150,7 +150,7 @@ TEST(Options, Construction)
 		TMP = 1;						// set() // clear() // add()
 		EXPECT_EQ(TMP.DebugString(), "00010");
 		EXPECT_EQ((TMP = 3).DebugString(), "01000");
-		EXPECT_EQ((TMP = 0).DebugString(), "00001");	// TODO change this
+		EXPECT_EQ((TMP = 0).DebugString(), "00001");		// [count-0]
 		EXPECT_THROW(TMP = 6, std::out_of_range);
 		EXPECT_THROW(TMP = -6, std::out_of_range);
 	}
@@ -435,8 +435,6 @@ TEST(Options, mf_booleanComparison)
 	EXPECT_NE(TE.O_1, TE.E_1);
 	EXPECT_FALSE(TE.O_1 != TE.O_1);
 
-for (int i{}; i < 9000; ++i)
-{
 	static_assert(noexcept(TE.O_1 < TE.O_4), "operator< should be noexcept");
 	EXPECT_FALSE(TE.D_1 < TE.O_4) << "both full";
 	EXPECT_FALSE(TE.E_1 < std::bitset<5>{"00000"}) << "both empty";
@@ -471,7 +469,6 @@ for (int i{}; i < 9000; ++i)
 	EXPECT_FALSE(TE.O_2 < TE.A_2) << "answer vs unanswered";
 	EXPECT_LT(TE.O_3, TE.X_0);
 	EXPECT_FALSE(TE.X_0 < TE.O_3);
-	}
 }
 TEST(Options, mf_constOperators)
 {
