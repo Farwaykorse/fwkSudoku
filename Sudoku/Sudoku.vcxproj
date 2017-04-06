@@ -240,7 +240,7 @@
     <ClInclude Include="Location.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="precompiled.h" />
-    <ClInclude Include="Section.h" />
+    <ClInclude Include="Board_Section.h" />
     <ClInclude Include="Solver.h" />
     <ClInclude Include="SolverBase.h" />
   </ItemGroup>

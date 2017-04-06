@@ -7,7 +7,7 @@
 */
 #pragma once
 #include "Location.h"
-#include "Section.h"
+#include "Board_Section.h"
 
 #include <vector>
 #include <algorithm>

@@ -24,9 +24,6 @@
     <ClInclude Include="Options.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Section.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Solver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -34,6 +31,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="precompiled.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Board_Section.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
