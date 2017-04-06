@@ -4,8 +4,8 @@
 #include <sstream>
 #include <iomanip>		// setw(), setfill()
 
-#include "Board.h"
-#include "Options.h"
+#include "../Sudoku/Board.h"
+#include "../Sudoku/Options.h"
 
 namespace Sudoku
 {

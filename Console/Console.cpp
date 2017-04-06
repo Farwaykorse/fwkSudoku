@@ -1,7 +1,7 @@
 // Sudoku.cpp : Defines the entry point for the console application.
 //
 
-#include "SolverBase.h"
+#include "../Sudoku/SolverBase.h"
 #include "Console.h"
 
 #include <algorithm>	// min
@@ -50,12 +50,12 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 	std::cout << "Load:\t" << time_in_microsec(tLoad) << " us\n";
 	std::cout << "Solve:\t" << time_in_microsec(tSolver) << " us\n";
 	std::cout << "Total:\t" << time_in_microsec(tTotal) << " us\n";
-	Sudoku::Board<int, 3> result = test_board.getResult();
+	auto result = test_board.getResult();
 	if (result == answer) { std::cout << " : ) Found the answer!\n"; }
 	else
 	{
 		std::cout << "Different from expected \n";
-		Sudoku::Board<Sudoku::Options<9>,3> options = test_board.getOptions();
+		auto options = test_board.getOptions();
 		std::cout << Sudoku::Console().print_board(options).str();
 		//test_board = start;
 		//Sudoku::Board<Sudoku::Options<9>,3> load = test_board.getOptions();
