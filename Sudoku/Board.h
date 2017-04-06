@@ -57,6 +57,14 @@ public:
 
 	/* Query properties */
 	bool is_empty() const;	// all elements default value or empty()
+	//TODO empty() for different value types
+	//{
+	//	for (auto& s : board)
+	//	{
+	//		if ( !s.empty() ) { return false; }
+	//	}
+	//	return true;
+	//}
 	static constexpr size_type size() { return full_size; };
 	bool operator==(const Board&) const;
 	bool operator!=(const Board& other) const { return !(*this == other); };
