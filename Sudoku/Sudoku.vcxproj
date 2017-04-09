@@ -254,6 +254,15 @@
     </ClCompile>
     <ClCompile Include="Sudoku.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Board.natvis">
+      <SubType>Designer</SubType>
+    </Natvis>
+    <Natvis Include="Location.natvis" />
+    <Natvis Include="Options.natvis">
+      <SubType>Designer</SubType>
+    </Natvis>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

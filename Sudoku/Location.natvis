@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+  <Type Name="Sudoku::Location&lt;*&gt;">
+    <Intrinsic Name="row" Expression="id_/elem_size" />
+    <Intrinsic Name="col" Expression="id_%elem_size" />
+    <Intrinsic Name="block" Expression="row()/base_size + col()/base_size" />
+    <DisplayString>id={id_} row={row()} col={col()}</DisplayString>
+    <Expand>
+      <Item Name="[base_size]">base_size</Item>
+      <Item Name="[elem_size]">elem_size</Item>
+      <Item Name="[full_size]">full_size</Item>
+      <Item Name="[id]">id_</Item>
+      <Item Name="[row]">row()</Item>
+      <Item Name="[col]">col()</Item>
+      <Item Name="[block]">block()</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="Sudoku::Location_Block&lt;*&gt;">
+    <Intrinsic Name="row" Expression="id_/elem_size" />
+    <Intrinsic Name="col" Expression="id_%elem_size" />
+    <Intrinsic Name="block" Expression="row()/base_size*base_size + col()/base_size" />
+    <Intrinsic Name="brow" Expression="row()%base_size" />
+    <Intrinsic Name="bcol" Expression="col()%base_size" />
+    <Intrinsic Name="element" Expression="brow()*base_size + bcol()" />
+    <DisplayString>id={id_}, </DisplayString>
+    <Expand>
+      <Synthetic Name="Location">
+        <Expand>
+          <Item Name="[base_size]">base_size</Item>
+          <Item Name="[elem_size]">elem_size</Item>
+          <Item Name="[full_size]">full_size</Item>
+          <Item Name="[id]">id_</Item>
+          <Item Name="[row]">row()</Item>
+          <Item Name="[col]">col()</Item>
+        </Expand>
+      </Synthetic>
+      <Item Name="[block]">block()</Item>
+      <Item Name="[element]">element()</Item>
+      <Item Name="[block_row]">brow()</Item>
+      <Item Name="[block_col]">bcol()</Item>
+    </Expand>
+  </Type>
+</AutoVisualizer>
