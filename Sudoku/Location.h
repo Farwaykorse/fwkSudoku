@@ -90,7 +90,7 @@ public:
 	constexpr int row() const { return Location(id_).block_row(); }
 	constexpr int col() const { return Location(id_).block_col(); }
 
-	explicit constexpr operator Location() const { return Location(id_); }
+	constexpr operator Location() const { return Location(id_); }
 
 	// comparison
 	constexpr bool operator==(const Location_Block& other) const noexcept { return id_ == other.id_; }
