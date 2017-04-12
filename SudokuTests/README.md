@@ -23,10 +23,14 @@ Console project called: SudokuTest(s)
 
 ### Compiler settings
 **Dissabled:**
+  **VC++:**
 ```
 2017/04
 /w14619			pragma warning: there is no warning number 'number'
 ```
+**Clang:**
+`-Wno-unused-comparison`	Comparissons in gTest *_No_THROW(...)
+`-Wno-unused-value`			in gTest *_NO_THROW(...)
 
 <!---------------------------------------------------------------->
 Catch debug assert() from <cassert> with:

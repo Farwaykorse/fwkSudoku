@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Board.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Location.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -33,7 +30,19 @@
     <ClInclude Include="precompiled.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Board_Section.h">
+    <ClInclude Include="Board.fwd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Board_Utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Board_Sections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Board_Sections.fwd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="board.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

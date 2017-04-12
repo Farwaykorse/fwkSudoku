@@ -237,11 +237,14 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Board.fwd.h" />
     <ClInclude Include="Board.h" />
+    <ClInclude Include="Board_Sections.fwd.h" />
+    <ClInclude Include="Board_Sections.h" />
+    <ClInclude Include="Board_Utilities.h" />
     <ClInclude Include="Location.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="precompiled.h" />
-    <ClInclude Include="Board_Section.h" />
     <ClInclude Include="Solver.h" />
     <ClInclude Include="SolverBase.h" />
   </ItemGroup>
