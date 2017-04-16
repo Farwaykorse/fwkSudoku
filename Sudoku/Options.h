@@ -10,8 +10,8 @@
 
 #include <bitset>
 #include <vector>
-#include <cassert>
 #include <utility>
+#include <cassert>
 
 namespace Sudoku
 {

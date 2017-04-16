@@ -2,9 +2,9 @@
 
 #include "Location.h"
 
-#include <cassert>
 #include <iterator>
 #include <stdexcept>
+#include <cassert>
 
 namespace Sudoku
 {
