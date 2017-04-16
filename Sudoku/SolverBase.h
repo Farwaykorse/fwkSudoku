@@ -7,8 +7,8 @@
 #include "Solver.h"
 
 #include <vector>
-#include <cassert>
 #include <stdexcept>
+#include <cassert>
 
 namespace Sudoku
 {
