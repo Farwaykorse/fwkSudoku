@@ -3,6 +3,7 @@
 #pragma once
 #include "Board.h"
 #include "Location.h"
+#include "Location_Utilities.h"
 #include "Options.h"
 
 #include <array>

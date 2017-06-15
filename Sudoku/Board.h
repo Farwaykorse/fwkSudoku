@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Location.h"
+#include "Location_Utilities.h"
 #include "Board_Sections.h"
 #include "Board_Utilities.h"
 
@@ -15,7 +16,6 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
-#include <limits>		// numeric_limits
 #include <stdexcept>	// out_of_range
 #include <cassert>
 
@@ -24,15 +24,6 @@
 
 namespace Sudoku
 {
-template<typename T, int N>
-constexpr void valid_dimensions(const Board<T, N>*);
-
-template<int N>
-constexpr bool valid_size(const int);
-
-template<int N>
-constexpr bool valid_size(const int, const int);
-
 template<typename T, int N = 3>
 class Board
 {
@@ -128,14 +119,14 @@ template<typename T, int N>
 Board<T, N>::Board() :
 	board_(full_size)
 {
-	valid_dimensions(this);
+	valid_dimensions<N>();
 }
 
 template<typename T, int N>
 Board<T, N>::Board(const T& def_value) :
 	board_(full_size, def_value)
 {
-	valid_dimensions(this);
+	valid_dimensions<N>();
 }
 
 template<typename T, int N>
@@ -144,7 +135,7 @@ Board<T, N>::Board(std::initializer_list<T> list) :
 {
 	Expects(list.size() == full_size);
 	board_.resize(full_size);
-	valid_dimensions(this);
+	valid_dimensions<N>();
 }
 
 
@@ -331,45 +322,5 @@ constexpr typename Board<T, N>::const_reverse_iterator Board<T, N>::crend() cons
 {
 	return board_.crend();
 }
-
-
-// ############################################################################
-//TODO these should be utilities on Location
-
-// Compile-time only
-template<typename T, int N>
-constexpr void valid_dimensions(const Board<T,N>*)	//TODO more-checks? otherwise remove passing Board*
-{
-	constexpr Location<N> L{};
-	// input check
-	static_assert(L.base_size > 1, "base_size too small");
-	static_assert(
-		L.base_size < L.elem_size &&
-		L.elem_size <= L.full_size &&
-		L.base_size < std::numeric_limits<int>::max() &&	// <limits>
-		L.elem_size < std::numeric_limits<int>::max() &&
-		L.full_size < std::numeric_limits<int>::max(),
-		"board size out of bounds");
-	// logic check
-	static_assert(
-		L.base_size*L.base_size == L.elem_size &&
-		L.elem_size*L.elem_size == L.full_size,
-		"size calculation broken");
-}
-
-template<int N>
-constexpr bool valid_size(const int elem)
-{
-	return (elem >= 0 && elem < Location<N>().full_size);
-}
-
-template<int N>
-constexpr bool valid_size(const int row, const int col)
-{
-	return (
-		row >= 0 && row < Location<N>().elem_size &&
-		col >= 0 && col < Location<N>().elem_size);
-}
-
 
 } // namespace Sudoku
