@@ -5,6 +5,7 @@
 
 #include "Location.h"
 
+#include <gsl/gsl>
 #include <iterator>
 #include <memory>
 #include <cassert>
@@ -29,13 +30,13 @@ class const_Row
 	friend class const_iterator<T,N,const_Col<T,N>>;
 	friend class const_iterator<T,N,const_Block<T,N>>;
 
-	const_Row(const Board<T, N>* owner, const int row)
+	const_Row(gsl::not_null<const Board<T, N>*> owner, const int row)
 		:	owner_(owner), id_(row)
 	{
 		assert(row >= 0);
 		assert(row < size());
 	}
-	const_Row(const Board<T, N>* owner, const Location loc)
+	const_Row(gsl::not_null<const Board<T, N>*> owner, const Location loc)
 		:	owner_(owner), id_(loc.row())
 	{
 	}
@@ -89,11 +90,11 @@ class const_Col
 	friend class Col<T,N>;
 	friend class const_iterator<T,N,self_type>;
 
-	const_Col(const Board<T, N>* owner, const int col)
+	const_Col(gsl::not_null<const Board<T, N>*> owner, const int col)
 		: const_Row(owner, col)
 	{
 	}
-	const_Col(const Board<T, N>* owner, const Location loc)
+	const_Col(gsl::not_null<const Board<T, N>*> owner, const Location loc)
 		: const_Row(owner, loc.col())
 	{
 	}
@@ -139,11 +140,11 @@ class const_Block
 	friend class Block<T,N>;
 	friend class const_iterator<T,N,self_type>;
 
-	const_Block(const Board<T, N>* owner, const int id)
+	const_Block(gsl::not_null<const Board<T, N>*> owner, const int id)
 		: const_Row(owner, id)
 	{
 	}
-	const_Block(const Board<T, N>* owner, const Location loc)
+	const_Block(gsl::not_null<const Board<T, N>*> owner, const Location loc)
 		: const_Row(owner, loc.block())
 	{
 	}
@@ -190,11 +191,11 @@ class Row
 	friend class iterator<T,N,self_type>;
 	friend class const_iterator<T,N, self_type>;
 
-	Row(Board<T, N>* owner, int row)
+	Row(gsl::not_null<Board<T, N>*> owner, int row)
 		: const_Row(owner, row), owner_(owner)
 	{
 	}
-	Row(Board<T, N>* owner, Location loc)
+	Row(gsl::not_null<Board<T, N>*> owner, Location loc)
 		: const_Row(owner, loc.row()), owner_(owner)
 	{
 	}
@@ -239,12 +240,12 @@ class Col
 	friend class iterator<T,N, self_type>;
 	friend class const_iterator<T,N, self_type>;
 
-	Col(Board<T, N>* owner, int col)
+	Col(gsl::not_null<Board<T, N>*> owner, int col)
 		:	const_Col(owner, col),
 			owner_(owner)
 	{
 	}
-	Col(Board<T, N>* owner, Location loc)
+	Col(gsl::not_null<Board<T, N>*> owner, Location loc)
 		:	const_Col(owner, loc.col()),
 			owner_(owner)
 	{
@@ -288,12 +289,12 @@ class Block
 	friend class iterator<T,N, self_type>;
 	friend class const_iterator<T,N, self_type>;
 
-	Block(Board<T, N>* owner, int id)
+	Block(gsl::not_null<Board<T, N>*> owner, int id)
 		:	const_Block(owner, id),
 			owner_(owner)
 	{
 	}
-	Block(Board<T, N>* owner, Location loc)
+	Block(gsl::not_null<Board<T, N>*> owner, Location loc)
 		:	const_Block(owner, loc.block()),
 			owner_(owner)
 	{
@@ -337,8 +338,8 @@ public:
 	using reference = value_type&;
 	using pointer = value_type*;
 
-	const_iterator(const owner_type* owner) : owner_(owner), elem_(0) {}
-	const_iterator(const owner_type* owner, int elem) : owner_(owner), elem_(elem) {}
+	const_iterator(gsl::not_null<const owner_type*> owner) : owner_(owner), elem_(0) {}
+	const_iterator(gsl::not_null<const owner_type*> owner, int elem) : owner_(owner), elem_(elem) {}
 
 	// All iterator categories
 	const_iterator(const self_type&) = default;
@@ -465,12 +466,12 @@ public:
 	using reference = value_type&;
 	using pointer = value_type*;
 
-	iterator(owner_type* owner)
+	iterator(gsl::not_null<owner_type*> owner)
 		:	const_iterator(owner, 0),
 			owner_(owner)
 	{
 	}
-	iterator(owner_type* owner, int elem)
+	iterator(gsl::not_null<owner_type*> owner, int elem)
 		:	const_iterator(owner, elem),
 			owner_(owner)
 	{

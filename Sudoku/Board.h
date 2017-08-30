@@ -12,6 +12,7 @@
 #include "Board_Sections.h"
 #include "Board_Utilities.h"
 
+#include <gsl/gsl>
 #include <initializer_list>
 #include <vector>
 #include <algorithm>
@@ -243,7 +244,7 @@ template<typename T, int N>
 class Board<T, N>::InBetween
 {
 	friend class Board<T,N>;	// access to private constructor
-	InBetween(Board<T,N>* owner, int row) :	// private constructor prevents creation out of class
+	InBetween(gsl::not_null<Board<T,N>*> owner, int row) :	// private constructor prevents creation out of class
 		owner_(owner), row_(row) {}
 public:
 	T& operator[] (const int col) noexcept { return owner_->operator[](Location(row_, col)); }
@@ -256,7 +257,7 @@ template<typename T, int N>
 class Board<T, N>::const_InBetween
 {
 	friend class Board<T,N>;
-	const_InBetween(const Board<T,N>* owner, int row) :
+	const_InBetween(gsl::not_null<const Board<T,N>*> owner, int row) :
 		owner_(owner), row_(row) {}
 public:
 	const T& operator[] (const int col) const noexcept { return owner_->operator[](Location(row_, col)); }
