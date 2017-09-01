@@ -346,7 +346,7 @@ template<typename InItr_> inline
 int Solver<N>::remove_option_section(
 	const InItr_ begin,
 	const InItr_ end,
-	const Location loc,
+	[[maybe_unused]] const Location loc, // not used in release mode
 	const int value)
 {
 	assert(board_.at(loc).is_answer(value));
