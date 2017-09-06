@@ -60,4 +60,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Options.natvis" />
+    <Natvis Include="Board.natvis" />
+    <Natvis Include="Location.natvis" />
+  </ItemGroup>
 </Project>

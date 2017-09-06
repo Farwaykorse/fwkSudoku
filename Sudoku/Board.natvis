@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+<!--
+  Content:
+    Sudoku::Board<T,N>
+    Sudoku::Board<T,N>::Row
+
+
+  Views: use by adding ",view(simple)" after element-name in debugger
+    simple  only display [rows] element
+
+-->
+  <Type Name="Sudoku::Board&lt;*,*&gt;"><!-- type $T1  base_size $T2-->
+    <DisplayString>{{ size= {elem_size} * {elem_size} }}</DisplayString>
+    <Expand>
+      <Item Name="[base_size]" ExcludeView="simple">base_size</Item>
+      <Item Name="[elem_size]" ExcludeView="simple">elem_size</Item>
+      <Item Name="[full_size]" ExcludeView="simple">full_size</Item>
+
+      <Synthetic Name="[rows]">
+        <DisplayString></DisplayString>
+        <Expand>
+          <Synthetic Name="row(0)">
+            <DisplayString Condition="base_size == 1">{{id=0}}, [ {board_[0+elem_size*0],u} ]</DisplayString>
+            <DisplayString Condition="base_size == 2">
+              {{id=0}}, [ {board_[0+elem_size*0],u}, {board_[1+elem_size*0],u} | {board_[2+elem_size*0],u}, {board_[3+elem_size*0],u} ]
+            </DisplayString>
+            <DisplayString Condition="base_size == 3">
+              {{id=0}}, [ {board_[0+elem_size*0],u}, {board_[1+elem_size*0],u}, {board_[2+elem_size*0],u} | {board_[3+elem_size*0],u}, {board_[4+elem_size*0],u}, {board_[5+elem_size*0],u} | {board_[6+elem_size*0],u}, {board_[7+elem_size*0],u}, {board_[8+elem_size*0],u} ]
+            </DisplayString>
+            <DisplayString>{{id=0}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[$i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="row(1)" Condition="elem_size &gt; 1">
+            <DisplayString Condition="base_size == 1">{{id=1}}, [ {board_[1+elem_size*1],u} ]</DisplayString>
+            <DisplayString Condition="base_size == 2">
+              {{id=1}}, [ {board_[0+elem_size*1],u}, {board_[1+elem_size*1],u} | {board_[2+elem_size*1],u}, {board_[3+elem_size*1],u} ]
+            </DisplayString>
+            <DisplayString Condition="base_size == 3">
+              {{id=1}}, [ {board_[0+elem_size*1],u}, {board_[1+elem_size*1],u}, {board_[2+elem_size*1],u} | {board_[3+elem_size*1],u}, {board_[4+elem_size*1],u}, {board_[5+elem_size*1],u} | {board_[6+elem_size*1],u}, {board_[7+elem_size*1],u}, {board_[8+elem_size*1],u} ]
+            </DisplayString>
+            <DisplayString>{{id=1}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[elem_size + $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="row(2)" Condition="elem_size &gt; 2">
+            <DisplayString Condition="base_size == 1">{{id=2}}, [ {board_[2+elem_size*2],u} ]</DisplayString>
+            <DisplayString Condition="base_size == 2">
+              {{id=2}}, [ {board_[0+elem_size*2],u}, {board_[1+elem_size*2],u} | {board_[2+elem_size*2],u}, {board_[3+elem_size*2],u} ]
+            </DisplayString>
+            <DisplayString Condition="base_size == 3">
+              {{id=2}}, [ {board_[0+elem_size*2],u}, {board_[1+elem_size*2],u}, {board_[2+elem_size*2],u} | {board_[3+elem_size*2],u}, {board_[4+elem_size*2],u}, {board_[5+elem_size*2],u} | {board_[6+elem_size*2],u}, {board_[7+elem_size*2],u}, {board_[8+elem_size*2],u} ]
+            </DisplayString>
+            <DisplayString>{{id=2}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[2*elem_size + $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="row(3)" Condition="elem_size &gt; 3">
+            <DisplayString Condition="base_size == 1">{{id=3}}, [ {board_[3+elem_size*3],u} ]</DisplayString>
+            <DisplayString Condition="base_size == 2">
+              {{id=3}}, [ {board_[0+elem_size*3],u}, {board_[1+elem_size*3],u} | {board_[2+elem_size*3],u}, {board_[3+elem_size*3],u} ]
+            </DisplayString>
+            <DisplayString Condition="base_size == 3">
+              {{id=3}}, [ {board_[0+elem_size*3],u}, {board_[1+elem_size*3],u}, {board_[2+elem_size*3],u} | {board_[3+elem_size*3],u}, {board_[4+elem_size*3],u}, {board_[5+elem_size*3],u} | {board_[6+elem_size*3],u}, {board_[7+elem_size*3],u}, {board_[8+elem_size*3],u} ]
+            </DisplayString>
+            <DisplayString>{{id=3}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[3*elem_size + $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="row(4)" Condition="elem_size &gt; 4">
+            <DisplayString Condition="base_size == 1">{{id=4}}, [ {board_[4+elem_size*4],u} ]</DisplayString>
+            <DisplayString Condition="base_size == 2">
+              {{id=4}}, [ {board_[0+elem_size*4],u}, {board_[1+elem_size*4],u} | {board_[2+elem_size*4],u}, {board_[3+elem_size*4],u} ]
+            </DisplayString>
+            <DisplayString Condition="base_size == 3">
+              {{id=4}}, [ {board_[0+elem_size*4],u}, {board_[1+elem_size*4],u}, {board_[2+elem_size*4],u} | {board_[3+elem_size*4],u}, {board_[4+elem_size*4],u}, {board_[5+elem_size*4],u} | {board_[6+elem_size*4],u}, {board_[7+elem_size*4],u}, {board_[8+elem_size*4],u} ]
+            </DisplayString>
+            <DisplayString>{{id=4}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[4*elem_size + $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="row(5)" Condition="elem_size &gt; 5">
+            <DisplayString Condition="base_size == 1">{{id=5}}, [ {board_[0+elem_size*5],u} ]</DisplayString>
+            <DisplayString Condition="base_size == 2">
+              {{id=5}}, [ {board_[0+elem_size*5],u}, {board_[1+elem_size*5],u} | {board_[2+elem_size*5],u}, {board_[3+elem_size*5],u} ]
+            </DisplayString>
+            <DisplayString Condition="base_size == 3">
+              {{id=5}}, [ {board_[0+elem_size*5],u}, {board_[1+elem_size*5],u}, {board_[2+elem_size*5],u} | {board_[3+elem_size*5],u}, {board_[4+elem_size*5],u}, {board_[5+elem_size*5],u} | {board_[6+elem_size*5],u}, {board_[7+elem_size*5],u}, {board_[8+elem_size*5],u} ]
+            </DisplayString>
+            <DisplayString>{{id=5}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[5*elem_size + $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="row(6)" Condition="elem_size &gt; 6">
+            <DisplayString Condition="base_size == 1">{{id=6}}, [ {board_[0+elem_size*6],u} ]</DisplayString>
+            <DisplayString Condition="base_size == 2">
+              {{id=6}}, [ {board_[0+elem_size*6],u}, {board_[1+elem_size*6],u} | {board_[2+elem_size*6],u}, {board_[3+elem_size*6],u} ]
+            </DisplayString>
+            <DisplayString Condition="base_size == 3">
+              {{id=6}}, [ {board_[0+elem_size*6],u}, {board_[1+elem_size*6],u}, {board_[2+elem_size*6],u} | {board_[3+elem_size*6],u}, {board_[4+elem_size*6],u}, {board_[5+elem_size*6],u} | {board_[6+elem_size*6],u}, {board_[7+elem_size*6],u}, {board_[8+elem_size*6],u} ]
+            </DisplayString>
+            <DisplayString>{{id=6}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[6*elem_size + $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="row(7)" Condition="elem_size &gt; 7">
+            <DisplayString Condition="base_size == 1">{{id=7}}, [ {board_[0+elem_size*7],u} ]</DisplayString>
+            <DisplayString Condition="base_size == 2">
+              {{id=7}}, [ {board_[0+elem_size*7],u}, {board_[1+elem_size*7],u} | {board_[2+elem_size*7],u}, {board_[3+elem_size*7],u} ]
+            </DisplayString>
+            <DisplayString Condition="base_size == 3">
+              {{id=7}}, [ {board_[0+elem_size*7],u}, {board_[1+elem_size*7],u}, {board_[2+elem_size*7],u} | {board_[3+elem_size*7],u}, {board_[4+elem_size*7],u}, {board_[5+elem_size*7],u} | {board_[6+elem_size*7],u}, {board_[7+elem_size*7],u}, {board_[8+elem_size*7],u} ]
+            </DisplayString>
+            <DisplayString>{{id=7}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[7*elem_size + $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="row(8)" Condition="elem_size &gt; 8">
+            <DisplayString Condition="base_size == 1">{{id=8}}, [ {board_[0+elem_size*8],u} ]</DisplayString>
+            <DisplayString Condition="base_size == 2">
+              {{id=8}}, [ {board_[0+elem_size*8],u}, {board_[1+elem_size*8],u} | {board_[2+elem_size*8],u}, {board_[3+elem_size*8],u} ]
+            </DisplayString>
+            <DisplayString Condition="base_size == 3">
+              {{id=8}}, [ {board_[0+elem_size*8],u}, {board_[1+elem_size*8],u}, {board_[2+elem_size*8],u} | {board_[3+elem_size*8],u}, {board_[4+elem_size*8],u}, {board_[5+elem_size*8],u} | {board_[6+elem_size*8],u}, {board_[7+elem_size*8],u}, {board_[8+elem_size*8],u} ]
+            </DisplayString>
+            <DisplayString>{{id=8}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[8*elem_size + $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="row(9+)" Condition="elem_size &gt; 9">
+            <DisplayString>More than 9 rows is not supported, edit Board.natvis if needed.</DisplayString>
+          </Synthetic>
+        </Expand>
+      </Synthetic>
+
+      <Synthetic Name="[cols]" ExcludeView="simple">
+        <DisplayString></DisplayString>
+        <Expand>
+          <Synthetic Name="col(0)">
+            <DisplayString>{{id=0}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[elem_size * $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="col(1)" Condition="elem_size &gt; 1">
+            <DisplayString>{{id=1}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[1 + elem_size * $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="col(2)" Condition="elem_size &gt; 2">
+            <DisplayString>{{id=2}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[2 + elem_size * $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="col(3)" Condition="elem_size &gt; 3">
+            <DisplayString>{{id=3}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[3 + elem_size * $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="col(4)" Condition="elem_size &gt; 4">
+            <DisplayString>{{id=4}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[4 + elem_size * $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="col(5)" Condition="elem_size &gt; 5">
+            <DisplayString>{{id=5}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[5 + elem_size * $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="col(6)" Condition="elem_size &gt; 6">
+            <DisplayString>{{id=6}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[6 + elem_size * $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="col(7)" Condition="elem_size &gt; 7">
+            <DisplayString>{{id=7}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[7 + elem_size * $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="col(8)" Condition="elem_size &gt; 8">
+            <DisplayString>{{id=8}}</DisplayString>
+            <Expand>
+              <IndexListItems>
+                <Size>elem_size</Size>
+                <ValueNode>board_[8 + elem_size * $i]</ValueNode>
+              </IndexListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="col(9+)" Condition="elem_size &gt; 9">
+            <DisplayString>More than 9 cols is not supported, edit Board.natvis if needed.</DisplayString>
+          </Synthetic>
+        </Expand>
+      </Synthetic>
+
+      <Synthetic Name="[blocks]" ExcludeView="simple">
+        <DisplayString></DisplayString>
+        <Expand>
+          <Synthetic Name="block(0)">
+            <DisplayString>{{id=0}}</DisplayString>
+            <Expand>
+              <CustomListItems>
+                <Variable Name="id" InitialValue="0" />
+                <Variable Name="brow" InitialValue="0" />
+                <Variable Name="bcol" InitialValue="0" />
+                <Size>elem_size</Size>
+                <Loop>
+                  <If Condition="brow >= base_size"><Break/></If>
+                  <Loop>
+                    <If Condition="bcol >= base_size">
+                      <Exec>bcol = 0</Exec>
+                      <Break/>
+                    </If>
+                    <Item>board_[elem_size * (id/base_size*base_size + brow) + id%base_size*base_size + bcol]</Item>
+                    <Exec>bcol++</Exec>
+                  </Loop>
+                  <Exec>brow++</Exec>
+                </Loop>
+              </CustomListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="block(1)" Condition="elem_size &gt; 1">
+            <DisplayString>{{id=1}}</DisplayString>
+            <Expand>
+              <CustomListItems>
+                <Variable Name="id" InitialValue="1" />
+                <Variable Name="brow" InitialValue="0" />
+                <Variable Name="bcol" InitialValue="0" />
+                <Size>elem_size</Size>
+                <Loop>
+                  <If Condition="brow >= base_size"><Break/></If>
+                  <Loop>
+                    <If Condition="bcol >= base_size">
+                      <Exec>bcol = 0</Exec>
+                      <Break/>
+                    </If>
+                    <Item>board_[elem_size * (id/base_size*base_size + brow) + id%base_size*base_size + bcol]</Item>
+                    <Exec>bcol++</Exec>
+                  </Loop>
+                  <Exec>brow++</Exec>
+                </Loop>
+              </CustomListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="block(2)" Condition="elem_size &gt; 2">
+            <DisplayString>{{id=2}}</DisplayString>
+            <Expand>
+              <CustomListItems>
+                <Variable Name="id" InitialValue="2" />
+                <Variable Name="brow" InitialValue="0" />
+                <Variable Name="bcol" InitialValue="0" />
+                <Size>elem_size</Size>
+                <Loop>
+                  <If Condition="brow >= base_size"><Break/></If>
+                  <Loop>
+                    <If Condition="bcol >= base_size">
+                      <Exec>bcol = 0</Exec>
+                      <Break/>
+                    </If>
+                    <Item>board_[elem_size * (id/base_size*base_size + brow) + id%base_size*base_size + bcol]</Item>
+                    <Exec>bcol++</Exec>
+                  </Loop>
+                  <Exec>brow++</Exec>
+                </Loop>
+              </CustomListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="block(3)" Condition="elem_size &gt; 3">
+            <DisplayString>{{id=3}}</DisplayString>
+            <Expand>
+              <CustomListItems>
+                <Variable Name="id" InitialValue="3" />
+                <Variable Name="brow" InitialValue="0" />
+                <Variable Name="bcol" InitialValue="0" />
+                <Size>elem_size</Size>
+                <Loop>
+                  <If Condition="brow >= base_size"><Break/></If>
+                  <Loop>
+                    <If Condition="bcol >= base_size">
+                      <Exec>bcol = 0</Exec>
+                      <Break/>
+                    </If>
+                    <Item>board_[elem_size * (id/base_size*base_size + brow) + id%base_size*base_size + bcol]</Item>
+                    <Exec>bcol++</Exec>
+                  </Loop>
+                  <Exec>brow++</Exec>
+                </Loop>
+              </CustomListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="block(4)" Condition="elem_size &gt; 4">
+            <DisplayString>{{id=4}}</DisplayString>
+            <Expand>
+              <CustomListItems>
+                <Variable Name="id" InitialValue="4" />
+                <Variable Name="brow" InitialValue="0" />
+                <Variable Name="bcol" InitialValue="0" />
+                <Size>elem_size</Size>
+                <Loop>
+                  <If Condition="brow >= base_size"><Break/></If>
+                  <Loop>
+                    <If Condition="bcol >= base_size">
+                      <Exec>bcol = 0</Exec>
+                      <Break/>
+                    </If>
+                    <Item>board_[elem_size * (id/base_size*base_size + brow) + id%base_size*base_size + bcol]</Item>
+                    <Exec>bcol++</Exec>
+                  </Loop>
+                  <Exec>brow++</Exec>
+                </Loop>
+              </CustomListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="block(5)" Condition="elem_size &gt; 5">
+            <DisplayString>{{id=5}}</DisplayString>
+            <Expand>
+              <CustomListItems>
+                <Variable Name="id" InitialValue="5" />
+                <Variable Name="brow" InitialValue="0" />
+                <Variable Name="bcol" InitialValue="0" />
+                <Size>elem_size</Size>
+                <Loop>
+                  <If Condition="brow >= base_size"><Break/></If>
+                  <Loop>
+                    <If Condition="bcol >= base_size">
+                      <Exec>bcol = 0</Exec>
+                      <Break/>
+                    </If>
+                    <Item>board_[elem_size * (id/base_size*base_size + brow) + id%base_size*base_size + bcol]</Item>
+                    <Exec>bcol++</Exec>
+                  </Loop>
+                  <Exec>brow++</Exec>
+                </Loop>
+              </CustomListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="block(6)" Condition="elem_size &gt; 6">
+            <DisplayString>{{id=6}}</DisplayString>
+            <Expand>
+              <CustomListItems>
+                <Variable Name="id" InitialValue="6" />
+                <Variable Name="brow" InitialValue="0" />
+                <Variable Name="bcol" InitialValue="0" />
+                <Size>elem_size</Size>
+                <Loop>
+                  <If Condition="brow >= base_size"><Break/></If>
+                  <Loop>
+                    <If Condition="bcol >= base_size">
+                      <Exec>bcol = 0</Exec>
+                      <Break/>
+                    </If>
+                    <Item>board_[elem_size * (id/base_size*base_size + brow) + id%base_size*base_size + bcol]</Item>
+                    <Exec>bcol++</Exec>
+                  </Loop>
+                  <Exec>brow++</Exec>
+                </Loop>
+              </CustomListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="block(7)" Condition="elem_size &gt; 7">
+            <DisplayString>{{id=7}}</DisplayString>
+            <Expand>
+              <CustomListItems>
+                <Variable Name="id" InitialValue="7" />
+                <Variable Name="brow" InitialValue="0" />
+                <Variable Name="bcol" InitialValue="0" />
+                <Size>elem_size</Size>
+                <Loop>
+                  <If Condition="brow >= base_size"><Break/></If>
+                  <Loop>
+                    <If Condition="bcol >= base_size">
+                      <Exec>bcol = 0</Exec>
+                      <Break/>
+                    </If>
+                    <Item>board_[elem_size * (id/base_size*base_size + brow) + id%base_size*base_size + bcol]</Item>
+                    <Exec>bcol++</Exec>
+                  </Loop>
+                  <Exec>brow++</Exec>
+                </Loop>
+              </CustomListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="block(8)" Condition="elem_size &gt; 8">
+            <DisplayString>{{id=8}}</DisplayString>
+            <Expand>
+              <CustomListItems>
+                <Variable Name="id" InitialValue="8" />
+                <Variable Name="brow" InitialValue="0" />
+                <Variable Name="bcol" InitialValue="0" />
+                <Size>elem_size</Size>
+                <Loop>
+                  <If Condition="brow >= base_size"><Break/></If>
+                  <Loop>
+                    <If Condition="bcol >= base_size">
+                      <Exec>bcol = 0</Exec>
+                      <Break/>
+                    </If>
+                    <Item>board_[elem_size * (id/base_size*base_size + brow) + id%base_size*base_size + bcol]</Item>
+                    <Exec>bcol++</Exec>
+                  </Loop>
+                  <Exec>brow++</Exec>
+                </Loop>
+              </CustomListItems>
+            </Expand>
+          </Synthetic>
+          <Synthetic Name="block(9+)" Condition="elem_size &gt; 9">
+            <DisplayString>More than 9 blocks is not supported, edit Board.natvis if needed.</DisplayString>
+          </Synthetic>
+        </Expand>
+      </Synthetic>
+
+      <Synthetic Name="[row,col]" ExcludeView="simple">
+        <DisplayString>{{ {elem_size} * {elem_size} }}</DisplayString>
+        <Expand>
+          <ArrayItems>
+            <Direction>Forward</Direction><!-- row-major -->
+            <Rank>2</Rank><!-- dimensions -->
+            <Size>elem_size</Size>
+            <ValuePointer>($T1*) board_._Mypair._Myval2._Myfirst</ValuePointer>
+          </ArrayItems>
+        </Expand>
+      </Synthetic>
+
+      <Synthetic Name="[block,elem]" ExcludeView="simple">
+        <DisplayString>{{ {elem_size} * {elem_size} }}</DisplayString>
+        <Expand>
+          <CustomListItems>
+            <Variable Name="id" InitialValue="0" />
+            <Variable Name="brow" InitialValue="0" />
+            <Variable Name="bcol" InitialValue="0" />
+            <Size>full_size</Size>
+            <Loop>
+              <Loop>
+                <If Condition="brow >= base_size">
+                  <Exec>brow = 0</Exec>
+                  <Break/>
+                </If>
+                <Loop>
+                  <If Condition="bcol >= base_size">
+                    <Exec>bcol = 0</Exec>
+                    <Break/>
+                  </If>
+                  <Item Name="[{id},{brow*base_size + bcol}]">
+                    board_[elem_size * (id/base_size*base_size + brow) + id%base_size*base_size + bcol]
+                  </Item>
+                  <Exec>bcol++</Exec>
+                </Loop>
+                <Exec>brow++</Exec>
+              </Loop>
+              <Exec>id++</Exec>
+            </Loop>
+          </CustomListItems>
+        </Expand>
+      </Synthetic>
+
+    </Expand>
+  </Type>
+
+
+
+
+
+  <Type Name="Sudoku::Board&lt;*,*&gt;::Row">
+    <DisplayString>{{ id={id_} }}</DisplayString>
+    <Expand>
+      <Item Name="[id]">id_</Item>
+      <IndexListItems>
+        <Size>elem_size</Size>
+        <ValueNode>owner_->board_[9*id_+$i]</ValueNode>
+      </IndexListItems>
+    </Expand>
+  </Type>
+
+</AutoVisualizer>
