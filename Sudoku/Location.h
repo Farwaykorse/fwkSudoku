@@ -1,14 +1,13 @@
 // Calculate locations within a board
 #pragma once
-#include <vector>	// shared functions
 
 #include <limits>
 
+// Forward declarations
+#include "Location.fwd.h"
+
 namespace Sudoku
 {
-template<int N>
-class Location_Block;	// pre-declare for use in Location
-
 template<int N>
 class Location
 {
@@ -103,59 +102,5 @@ private:
 	const int id_;
 };
 
-
-
-
-
-template<int N>
-constexpr bool shared_row(Location<N> left, Location<N> right)
-{
-	return left.row() == right.row();
-}
-
-template<int N>
-std::vector<Location<N>> shared_row(Location<N> left, std::vector<Location<N>> right)
-{
-	std::vector<Location<N>> tmp_{};
-	for (auto&& loc : right)
-	{
-		if (shared_row(left, loc)) { tmp_.push_back(loc); }
-	}
-	return tmp_;
-}
-
-template<int N>
-constexpr bool shared_col(Location<N> left, Location<N> right)
-{
-	return left.col() == right.col();
-}
-
-template<int N>
-std::vector<Location<N>> shared_col(Location<N> left, std::vector<Location<N>> right)
-{
-	std::vector<Location<N>> tmp_{};
-	for (auto&& loc : right)
-	{
-		if (shared_col(left, loc)) { tmp_.push_back(loc); }
-	}
-	return tmp_;
-}
-
-template<int N>
-constexpr bool shared_block(Location<N> left, Location<N> right)
-{
-	return left.block() == right.block();
-}
-
-template<int N>
-std::vector<Location<N>> shared_block(Location<N> left, std::vector<Location<N>> right)
-{
-	std::vector<Location<N>> tmp_{};
-	for (auto&& loc : right)
-	{
-		if (shared_block(left, loc)) { tmp_.push_back(loc); }
-	}
-	return tmp_;
-}
 
 }	// namespace Sudoku
