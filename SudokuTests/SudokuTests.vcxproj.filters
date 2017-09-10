@@ -30,6 +30,9 @@
     <ClCompile Include="precompiled.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Board_Iterators.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Coverage\coverage.ps1" />

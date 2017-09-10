@@ -250,6 +250,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Board_Iterators.cpp" />
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="precompiled.cpp">
