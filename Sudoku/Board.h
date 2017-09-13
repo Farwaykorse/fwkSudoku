@@ -12,7 +12,6 @@
 #include "Board_Sections.h"
 #include "Board_Utilities.h"
 
-#include <gsl/gsl>
 #include <initializer_list>
 #include <vector>
 #include <algorithm>
@@ -134,7 +133,7 @@ template<typename T, int N>
 Board<T, N>::Board(std::initializer_list<T> list) :
 	board_(list)
 {
-	Expects(list.size() == full_size);
+	assert(list.size() == full_size);
 	board_.resize(full_size);
 	valid_dimensions<N>();
 }

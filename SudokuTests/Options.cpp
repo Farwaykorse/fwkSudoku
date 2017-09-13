@@ -576,23 +576,23 @@ TEST(Options, deathtests)
 
 	Options<4> TMP{};
 	// Construction
-	EXPECT_DEBUG_DEATH({ Options<3>{5}; }, "");
+	EXPECT_DEBUG_DEATH({ Options<3>{5}; }, "Assertion failed: .*");
 	// mf_boolRequest
-	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(15); }, "");
-	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(-5); }, "");
+	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(15); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(-5); }, "Assertion failed: .*");
 	// 
-	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(15); }, "");
-	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(-5); }, "");
+	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(15); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(-5); }, "Assertion failed: .*");
 	// mf_add
 	Options<4> Opt{ std::bitset<5>{"00000"} };
-	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(5); }, "");
-	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(-5); }, "");
+	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(5); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(-5); }, "Assertion failed: .*");
 	// mf_set
 	EXPECT_TRUE(TMP.clear().is_empty());
-	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(15); }, "");
-	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(-5); }, "");
+	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(15); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(-5); }, "Assertion failed: .*");
 	// mf_constOperators
-	EXPECT_DEBUG_DEATH({ TE.O_3[9]; }, "");
-	EXPECT_DEBUG_DEATH({ TE.O_3[-1]; }, "");
+	EXPECT_DEBUG_DEATH({ TE.O_3[9]; }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TE.O_3[-1]; }, "Assertion failed: .*");
 }
 }	//namespace Sudoku_Test

@@ -8,7 +8,6 @@
 */
 #pragma once
 
-#include <gsl/gsl>
 #include <bitset>
 #include <vector>
 #include <utility>
@@ -113,7 +112,7 @@ inline Options<E>::Options(bitset&& other) :
 template<int E>
 Options<E>::Options(int value)
 {
-	Expects(value <= E);
+	assert(value <= E);
 	set(value);
 }
 
@@ -171,7 +170,7 @@ bool Options<E>::remove_option(const int value)
 	if (test(value))	// contains range-check
 	//if (operator[](value))
 	{
-		Expects(!is_answer());	// don't apply on answers
+		assert(!is_answer());	// don't apply on answers
 		data_[static_cast<size_t>(value)] = false;
 		//operator[](value) = false;
 		return true;
@@ -281,7 +280,7 @@ bool Options<E>::is_answer(int value) const noexcept
 template<int E> inline
 bool Options<E>::is_option(int value) const noexcept
 {
-	Expects(value != 0);
+	assert(value != 0);
 	//return (!is_answer() && test(value));
 	return (!is_answer() && operator[](value));
 }
@@ -330,7 +329,7 @@ std::vector<int> Options<E>::available() const
 template<int E> inline
 constexpr bool Options<E>::operator[](int value) const noexcept
 {
-	Expects(value >= 0 && value <= E);
+	assert(value >= 0 && value <= E);
 	return data_[static_cast<size_t>(value)];
 }
 
@@ -338,7 +337,7 @@ constexpr bool Options<E>::operator[](int value) const noexcept
 template<int E> inline
 auto Options<E>::operator[](int value) noexcept
 {
-	Expects(value >= 0 && value <= E);
+	assert(value >= 0 && value <= E);
 	return data_[static_cast<size_t>(value)];
 }
 

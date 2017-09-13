@@ -33,8 +33,8 @@ class const_Row
 	const_Row(gsl::not_null<const Board<T, N>*> owner, const int row)
 		:	owner_(owner), id_(row)
 	{
-		Expects(row >= 0);
-		Expects(row < size());
+		assert(row >= 0);
+		assert(row < size());
 	}
 	const_Row(gsl::not_null<const Board<T, N>*> owner, const Location loc)
 		:	owner_(owner), id_(loc.row())
@@ -47,8 +47,8 @@ public:
 
 	const T& operator[] (int col) const noexcept
 	{
-		Expects(col >= 0);
-		Expects(col < size());
+		assert(col >= 0);
+		assert(col < size());
 		return no_check(Location(id(), col));
 	}
 	using const_iterator = const_iterator<T,N, self_type>;
@@ -105,8 +105,8 @@ public:
 
 	const T& operator[] (int row) const noexcept
 	{
-		Expects(row >= 0);
-		Expects(row < Location().elem_size);
+		assert(row >= 0);
+		assert(row < Location().elem_size);
 		return no_check(Location(row, id()));
 	}
 
@@ -155,8 +155,8 @@ public:
 
 	const T& operator[] (int elem) const noexcept
 	{
-		Expects(elem >= 0);
-		Expects(elem < Location().elem_size);
+		assert(elem >= 0);
+		assert(elem < Location().elem_size);
 		//return no_check(Location_Block<N>(id(), elem));
 		return no_check(location(elem));
 	}
@@ -205,8 +205,8 @@ public:
 
 	T& operator[] (const int col) noexcept
 	{
-		Expects(col >= 0);
-		Expects(col < Location().elem_size);
+		assert(col >= 0);
+		assert(col < Location().elem_size);
 		return no_check(Location(id(), col));
 	}
 
@@ -256,8 +256,8 @@ public:
 
 	T& operator[] (const int row) noexcept
 	{
-		Expects(row >= 0);
-		Expects(row < Location().elem_size);
+		assert(row >= 0);
+		assert(row < Location().elem_size);
 		return no_check(Location(row, id()));
 	}
 
@@ -305,8 +305,8 @@ public:
 
 	T& operator[] (const int elem) noexcept
 	{
-		Expects(elem >= 0);
-		Expects(elem < Location().elem_size);
+		assert(elem >= 0);
+		assert(elem < Location().elem_size);
 		return no_check(Location_Block<N>(id(), elem));
 	}
 
