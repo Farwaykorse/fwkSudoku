@@ -10,8 +10,8 @@
 
 #include <bitset>
 #include <vector>
-#include <cassert>
 #include <utility>
+#include <cassert>
 
 namespace Sudoku
 {
@@ -40,8 +40,6 @@ public:
 	//TODO Options& remove_option(int value, ...);	// remove mentioned
 	Options& add(int value);			// add single option
 	Options& set(int value);			// set to answer
-	Options& add_nocheck(int value) noexcept;	// add single option
-	Options& set_nocheck(int value) noexcept;	// set to answer
 
 	constexpr int size() const noexcept;
 	int count() const noexcept;			// count available options
@@ -56,8 +54,8 @@ public:
 	int get_answer() const noexcept;	// return answer or 0 (won't confirm is_answer())
 	std::vector<int> available() const;	// return available options
 
-	constexpr bool operator[](int value) const noexcept;
-	auto operator[](int value) noexcept;
+	constexpr bool operator[](int value) const;
+	auto operator[](int value);
 
 	bool operator==(int) const noexcept;	// shorthand for is_answer(int)
 	bool operator==(const Options<E>&) const noexcept;
@@ -112,7 +110,8 @@ inline Options<E>::Options(bitset&& other) :
 template<int E>
 Options<E>::Options(int value)
 {
-	assert(value <= E);
+	// bitset: exception thrown for: value > E+1
+	assert(value <= E);	// caches E+1
 	set(value);
 }
 
@@ -188,21 +187,6 @@ template<int E> inline
 Options<E>& Options<E>::add(int value)
 {
 	data_.set(static_cast<size_t>(value), true);
-	return *this;
-}
-
-template<int E>
-inline Options<E>& Options<E>::add_nocheck(int value) noexcept
-{
-	operator[](value) = true;
-	return *this;
-}
-
-template<int E>
-inline Options<E>& Options<E>::set_nocheck(int value) noexcept
-{
-	clear();
-	add_nocheck(value);
 	return *this;
 }
 
@@ -325,17 +309,17 @@ std::vector<int> Options<E>::available() const
 	return values;
 }
 
-// no-check access read only
+// access read only
 template<int E> inline
-constexpr bool Options<E>::operator[](int value) const noexcept
+constexpr bool Options<E>::operator[](int value) const
 {
 	assert(value >= 0 && value <= E);
 	return data_[static_cast<size_t>(value)];
 }
 
-// no-check access
+// access
 template<int E> inline
-auto Options<E>::operator[](int value) noexcept
+auto Options<E>::operator[](int value)
 {
 	assert(value >= 0 && value <= E);
 	return data_[static_cast<size_t>(value)];

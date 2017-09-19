@@ -7,8 +7,8 @@
 #include "Solver.h"
 
 #include <vector>
-#include <cassert>
 #include <stdexcept>
+#include <cassert>
 
 namespace Sudoku
 {
@@ -114,9 +114,9 @@ Board<int, N> SolverBase<N>::getResult() const
 	Board<int, N> result{};
 	for (int i = 0; i < full_size; ++i)
 	{
-		if (options.at(i).is_answer())
+		if (options[Location(i)].is_answer())
 		{
-			result.at(i) = options.at(i).get_answer();
+			result[Location(i)] = options[Location(i)].get_answer();
 		}
 	}
 	return result;

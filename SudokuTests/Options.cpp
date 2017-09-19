@@ -371,20 +371,6 @@ TEST(Options, mf_add)
 	EXPECT_EQ(Opt.DebugString(), "00100");
 	EXPECT_THROW(Opt.add(12), std::out_of_range);
 	EXPECT_THROW(Opt.add(-2), std::out_of_range);
-
-	//add_noexcept(int)
-	Options<4> TMP{ std::bitset<5>{"00000"} };
-	static_assert(noexcept(TMP.add_nocheck(1)), "add_noexcept(int) should be noexcept");
-	// assertion see deathtests
-#ifndef _DEBUG
-	EXPECT_NO_THROW(TMP.add_nocheck(6));
-	EXPECT_NO_THROW(TMP.add_nocheck(-1));
-#endif // !_DEBUG
-	EXPECT_NO_THROW(TMP.add_nocheck(3));
-	EXPECT_EQ(TMP.DebugString(), "01000");
-	EXPECT_FALSE(TMP.count_all() == 0);
-	EXPECT_TRUE(TMP.test(3));
-	EXPECT_TRUE(TMP.add_nocheck(4).test(4));
 }
 TEST(Options, mf_set)
 {
@@ -403,19 +389,6 @@ TEST(Options, mf_set)
 	EXPECT_TRUE(TMP.set(0).is_empty());
 	EXPECT_EQ(TMP.count_all(), 0);
 	EXPECT_EQ(TMP.DebugString(), "00001");
-
-	//set_noexcept(int)
-	static_assert(noexcept(TMP.set_nocheck(2)), "set_noexcept(int) should be noexcept");
-	EXPECT_TRUE(TMP.clear().is_empty());
-	EXPECT_NO_THROW(TMP.set_nocheck(1));
-	EXPECT_EQ(TMP.DebugString(), "00010");
-	EXPECT_TRUE(TMP.set_nocheck(2).is_answer(2));
-	// assertion see deathtests
-#ifndef _DEBUG
-	EXPECT_NO_THROW(TMP.set_nocheck(15));
-	EXPECT_NO_THROW(TMP.set_nocheck(-5));
-#endif	// _DEBUG
-	EXPECT_NO_THROW(TMP.set_nocheck(0));
 }
 TEST(Options, mf_booleanComparison)
 {
@@ -481,7 +454,7 @@ TEST(Options, mf_constOperators)
 	EXPECT_EQ((TE.E_2 & TE.O_1), TE.E_2);
 
 	//constexpr bool operator[](int) const
-	static_assert(noexcept(TE.O_1[2]), "operator[int] should be no except for reading");
+	static_assert(!noexcept(TE.O_1[2]), "operator[int] should NOT be no except for reading");
 	EXPECT_NO_THROW(TE.O_3[2]);
 	EXPECT_NO_THROW(TE.O_3[0]);
 	// assertion see deathtests
@@ -509,7 +482,7 @@ TEST(Options, Operators)
 
 	///// non-const operators /////
 	//NEEDTEST constexpr bool operator[](int)
-	static_assert(noexcept(TMP.operator[](0) = true), "operator[] should be noexcept");
+	static_assert(!noexcept(TMP.operator[](0) = true), "operator[] should NOT be noexcept");
 	TMP.clear();
 	EXPECT_TRUE(TMP[0] = true);
 	EXPECT_TRUE(TMP[0] == true);
@@ -573,24 +546,20 @@ TEST(Options, External)
 }
 TEST(Options, deathtests)
 {
-
 	Options<4> TMP{};
 	// Construction
-	EXPECT_DEBUG_DEATH({ Options<3>{5}; }, "Assertion failed: .*");
+#ifdef _DEBUG
+	// Important	exeptrion thrown outside debug-mode
+	// assert serves to cach E+1 case
+	EXPECT_DEBUG_DEATH({ Options<3>{4}; }, "Assertion failed: .*");
+#endif // _DEBUG
+
 	// mf_boolRequest
 	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(15); }, "Assertion failed: .*");
 	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(-5); }, "Assertion failed: .*");
 	// 
 	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(15); }, "Assertion failed: .*");
 	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(-5); }, "Assertion failed: .*");
-	// mf_add
-	Options<4> Opt{ std::bitset<5>{"00000"} };
-	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(5); }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(-5); }, "Assertion failed: .*");
-	// mf_set
-	EXPECT_TRUE(TMP.clear().is_empty());
-	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(15); }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(-5); }, "Assertion failed: .*");
 	// mf_constOperators
 	EXPECT_DEBUG_DEATH({ TE.O_3[9]; }, "Assertion failed: .*");
 	EXPECT_DEBUG_DEATH({ TE.O_3[-1]; }, "Assertion failed: .*");

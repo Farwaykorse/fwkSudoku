@@ -65,7 +65,7 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 
 int main()
 {
-	static const std::vector<int> b1
+	const std::vector<int> b1
 	{
 		0, 0, 0,	0, 0, 0,	0, 1, 2,
 		0, 0, 0,	0, 3, 5,	0, 0, 0,
@@ -77,7 +77,7 @@ int main()
 		0, 8, 0,	0, 0, 0,	0, 4, 0,
 		0, 5, 0,	0, 0, 0,	6, 0, 0
 	};
-	static const std::vector<int> b1a	// requires unique
+	const std::vector<int> b1a	// requires unique
 	{
 		6, 7, 3,	8, 9, 4,	5, 1, 2,
 		9, 1, 2,	7, 3, 5,	4, 8, 6,

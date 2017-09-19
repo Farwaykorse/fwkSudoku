@@ -6,6 +6,7 @@
 
 // Class under test
 #include "../Sudoku/Location.h"
+#include "../Sudoku/Location_Utilities.h"
 // aditional
 
 
