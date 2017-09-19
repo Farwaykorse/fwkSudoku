@@ -7,24 +7,35 @@ Data structure and solvers.
 
 <!-- TOC -->
 [General Information](#general)
-[Elements](#elements)  
-	[Sudoku.lib](#sudoku.lib)
-	[Console.exe](#console.exe)
+	Compiler Settings
+[Classes](#elements)
 	<!-- win_app -->
-[Unit-Testing](#unit-testing)
+[Unit-Testing](#test)
+[Other](#other)
+	Natvis
+[Links](#link)
 
 <!----------------------------------------------------------------><a id="general"></a>
 ## General Information ##
 <!---------------------------------------------------------------->
 <!-- Usage -->
+This project generates a static library.
 
 <!-- Compilation -->
 <!-- libraries -->
+This project uses the STL and GSL.
+
 <!---------------------------------------------------------------->
 ### Compiler Settings ###
-<!-- compiler_settings -->
+
 #### VC++ ####
-/W4			
+/W4				Warning level 4 (=highest)
+/sdl			Enable SDL checks
+/MP				Multiprocessor compilation
+/std:c++17		
+/Yu"precompiled.h"	Use precompiled headers
+/FI"precompiled.h"	Force include, add precompiled to all files
+##### Additional command-line options: #####
 /w14242			'identfier': conversion from 'type1' to 'type1', possible loss of data
 /w14254			'operator': conversion from 'type1:field_bits' to 'type2:field_bits', possible loss of data
 /w14263			'function': member function does not override any base class virtual member function
@@ -44,8 +55,8 @@ Data structure and solvers.
 /w14905			wide string literal cast to 'LPSTR'
 /w14906			string literal cast to 'LPWSTR'
 /w14928			illegal copy-initialization; more than one user-defined conversion has been implicitly applied
-/experimental:module
-/permissive- 
+/experimental:module	enable mudules support
+/permissive-	dissable non-conforming constructs in Visual C++: [1]
 
 
 #### Clang/C2 ####
@@ -71,7 +82,6 @@ Data structure and solvers.
 -Wreorder
  ```
 
-<!-- unit-test project -->
 
 
 
@@ -80,7 +90,38 @@ Data structure and solvers.
 <!---------------------------------------------------------------->
 - Board  
 	public data structure
-- 
+- Options
+	the per element data
+- Location
+- ...
+
+<!----------------------------------------------------------------><a id="test"></a>
+## Unit-Testing ##
+<!---------------------------------------------------------------->
+Unit tests are written for gTest and collected in the SudokuTests project.
+
+
+<!----------------------------------------------------------------><a id="other"></a>
+## Other ##
+<!---------------------------------------------------------------->
+### .natvis ###
+<!---------------------------------------------------------------->
+Natvis files in the project.
+Generate custom views for objects in the Visual Studio debugger.
+- Board
+- Location
+- Options (TODO)
+
+<!---------------------------------------------------------------->
+
+
+<!----------------------------------------------------------------><a id="link"></a>
+## Links ##
+<!---------------------------------------------------------------->
+Visual C++ conformance mode, using the permissive- switch
+	[1](https://blogs.msdn.microsoft.com/vcblog/2016/11/16/permissive-switch/)
+	Adds two-phase name lookup:
+		[2](https://blogs.msdn.microsoft.com/vcblog/2017/09/11/two-phase-name-lookup-support-comes-to-msvc/)
 
 
 [top](#top)
