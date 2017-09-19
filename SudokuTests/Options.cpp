@@ -61,11 +61,11 @@ namespace compiletime
 	static_assert(std::is_trivially_move_assignable_v<typeT>, "trivially move assignable");
 
 	static_assert(std::is_trivially_copyable_v<typeT>, "trivially copyable");
-	static_assert(std::is_swappable_v<typeT>, "swappable");			//C++17
-	static_assert(std::is_nothrow_swappable_v<typeT>, "swappable");	//C++17
+	//static_assert(std::is_swappable_v<typeT>, "swappable");			//C++17
+	//static_assert(std::is_nothrow_swappable_v<typeT>, "swappable");	//C++17
 
-	static_assert(!std::is_swappable_with<typeT, std::bitset<10>>::value, "");	//C++17
-	static_assert(!std::is_nothrow_swappable_with_v<typeT, std::bitset<10>>, "");	//C++17
+	//static_assert(!std::is_swappable_with<typeT, std::bitset<10>>::value, "");	//C++17
+	//static_assert(!std::is_nothrow_swappable_with_v<typeT, std::bitset<10>>, "");	//C++17
 
 	// type construction
 	static_assert(std::is_constructible_v<Options<3>, const std::bitset<4>&>, "construct from const std::bitset&");

@@ -58,8 +58,8 @@ namespace compiletime
 	static_assert(std::is_trivially_destructible<typeT>::value, "-- trivially destructable");
 	static_assert(!std::has_virtual_destructor<typeT>::value, "-- virtual destructor");
 
-	static_assert(!std::is_swappable<typeT>::value, "-- swappable");			//C++17
-	static_assert(!std::is_nothrow_swappable<typeT>::value, "-- nothrow swappable");	//C++17
+	//static_assert(!std::is_swappable<typeT>::value, "-- swappable");			//C++17
+	//static_assert(!std::is_nothrow_swappable<typeT>::value, "-- nothrow swappable");	//C++17
 	// other types
 	static_assert(std::is_constructible<typeT, int>::value, "-- should construct from int");
 	static_assert(std::is_constructible<typeT, unsigned int>::value, "-- construct from unsigned int");
@@ -69,8 +69,8 @@ namespace compiletime
 	static_assert(!std::is_assignable<typeT, Location_Block<3>>::value, "--");
 	static_assert(!std::is_assignable<typeT, int>::value, "-- shouldn't be assignable from int, prevent with explicit!!");
 
-	static_assert(!std::is_swappable_with<typeT, Location_Block<3>>::value, "++");	//C++17
-	static_assert(!std::is_nothrow_swappable_with<typeT, Location_Block<3>>::value, "++");	//C++17
+	//static_assert(!std::is_swappable_with<typeT, Location_Block<3>>::value, "++");	//C++17
+	//static_assert(!std::is_nothrow_swappable_with<typeT, Location_Block<3>>::value, "++");	//C++17
 }
 
 namespace Location_Block_compiletime
@@ -117,8 +117,8 @@ namespace Location_Block_compiletime
 	static_assert(std::is_trivially_destructible<typeT>::value, "-- trivially destructable");
 	static_assert(!std::has_virtual_destructor<typeT>::value, "-- virtual destructor");
 
-	static_assert(!std::is_swappable<typeT>::value, "swappable");			//C++17
-	static_assert(!std::is_nothrow_swappable<typeT>::value, "nothrow swappable");	//C++17
+	//static_assert(!std::is_swappable<typeT>::value, "swappable");			//C++17
+	//static_assert(!std::is_nothrow_swappable<typeT>::value, "nothrow swappable");	//C++17
 	// other types
 	static_assert(!std::is_constructible<typeT, int>::value, "-- should not construct from int");
 	static_assert(std::is_constructible<typeT, Location<3>>::value, "-- should construct from Location");
@@ -130,8 +130,8 @@ namespace Location_Block_compiletime
 	static_assert(!std::is_assignable<typeT, Location<2>>::value, "-- assignable Location wrong size");
 	static_assert(!std::is_assignable<typeT, int>::value, "-- shouldn't be assignable from int, prevent with explicit!!");
 
-	static_assert(!std::is_swappable_with<typeT, Location<3>>::value, "++");	//C++17
-	static_assert(!std::is_nothrow_swappable_with<typeT, Location<3>>::value, "++");	//C++17
+	//static_assert(!std::is_swappable_with<typeT, Location<3>>::value, "++");	//C++17
+	//static_assert(!std::is_nothrow_swappable_with<typeT, Location<3>>::value, "++");	//C++17
 }
 
 // Shared data used for all tests

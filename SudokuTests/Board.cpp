@@ -82,8 +82,8 @@ namespace compiletime
 	static_assert(!std::is_trivially_destructible_v<typeT>, "-- trivially destructable");
 	static_assert(!std::has_virtual_destructor_v<typeT>, "-- virtual destructor");
 
-	static_assert(std::is_swappable_v<typeT>, "-- swappable");			//C++17
-	static_assert(std::is_nothrow_swappable_v<typeT>, "-- nothrow swappable");	//C++17
+	//static_assert(std::is_swappable_v<typeT>, "-- swappable");			//C++17
+	//static_assert(std::is_nothrow_swappable_v<typeT>, "-- nothrow swappable");	//C++17
 
 	//is_constructible from different types
 	// set to non-default value at initialization
@@ -101,8 +101,8 @@ namespace compiletime
 	static_assert(std::is_assignable_v<typeT, std::initializer_list<int>>, "");
 	static_assert(std::is_assignable_v<Board<Options<3>, 3>, std::initializer_list<Options<3>>>, "");
 
-	static_assert(! std::is_swappable_with_v<typeT, Options<9>>, "");	//C++17
-	static_assert(! std::is_nothrow_swappable_with_v<typeT, Options<9>>, "");	//C++17
+	//static_assert(! std::is_swappable_with_v<typeT, Options<9>>, "");	//C++17
+	//static_assert(! std::is_nothrow_swappable_with_v<typeT, Options<9>>, "");	//C++17
 }
 TEST(Board, Construction)
 {

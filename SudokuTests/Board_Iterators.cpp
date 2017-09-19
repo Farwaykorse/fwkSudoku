@@ -60,10 +60,10 @@ namespace iterator
 	static_assert(std::is_destructible_v<typeT::reverse_iterator>);
 	static_assert(std::is_destructible_v<typeT::const_reverse_iterator>);
 		// Swappable (lvalues)
-	static_assert(std::is_swappable_v<typeT::iterator>);
-	static_assert(std::is_swappable_v<typeT::const_iterator>);
-	static_assert(std::is_swappable_v<typeT::reverse_iterator>);
-	static_assert(std::is_swappable_v<typeT::const_reverse_iterator>);
+	//static_assert(std::is_swappable_v<typeT::iterator>);
+	//static_assert(std::is_swappable_v<typeT::const_iterator>);
+	//static_assert(std::is_swappable_v<typeT::reverse_iterator>);
+	//static_assert(std::is_swappable_v<typeT::const_reverse_iterator>);
 		// std::iterator_traits<It> has member typedefs value_type, difference_type, reference, pointer, iterator_category
 	static_assert(std::is_object_v<std::iterator_traits<typeT::iterator>::iterator_category>);
 	static_assert(std::is_object_v<std::iterator_traits<typeT::iterator>::value_type>);
@@ -425,8 +425,8 @@ namespace RowIterator
 	//static_assert(std::is_destructible_v<typeT::reverse_iterator>);
 	//static_assert(std::is_destructible_v<typeT::const_reverse_iterator>);
 		// Swappable (lvalues)
-	static_assert(std::is_swappable_v<typeT::iterator>);
-	static_assert(std::is_swappable_v<typeT::const_iterator>);
+	//static_assert(std::is_swappable_v<typeT::iterator>);
+	//static_assert(std::is_swappable_v<typeT::const_iterator>);
 	//static_assert(std::is_swappable_v<typeT::reverse_iterator>);
 	//static_assert(std::is_swappable_v<typeT::const_reverse_iterator>);
 
@@ -864,8 +864,8 @@ namespace ColIterator
 	static_assert(std::is_destructible_v<typeT::iterator>);
 	static_assert(std::is_destructible_v<typeT::const_iterator>);
 		// Swappable (lvalues)
-	static_assert(std::is_swappable_v<typeT::iterator>);
-	static_assert(std::is_swappable_v<typeT::const_iterator>);
+	//static_assert(std::is_swappable_v<typeT::iterator>);
+	//static_assert(std::is_swappable_v<typeT::const_iterator>);
 
 		// std::iterator_traits<It> has member typedefs value_type, difference_type, reference, pointer, iterator_category
 	static_assert(std::is_object_v<std::iterator_traits<typeT::iterator>::iterator_category>);
@@ -1266,8 +1266,8 @@ namespace BlockIterator
 	static_assert(std::is_destructible_v<typeT::iterator>);
 	static_assert(std::is_destructible_v<typeT::const_iterator>);
 		// Swappable (lvalues)
-	static_assert(std::is_swappable_v<typeT::iterator>);
-	static_assert(std::is_swappable_v<typeT::const_iterator>);
+	//static_assert(std::is_swappable_v<typeT::iterator>);
+	//static_assert(std::is_swappable_v<typeT::const_iterator>);
 
 		// std::iterator_traits<It> has member typedefs value_type, difference_type, reference, pointer, iterator_category
 	static_assert(std::is_object_v<std::iterator_traits<typeT::iterator>::iterator_category>);
