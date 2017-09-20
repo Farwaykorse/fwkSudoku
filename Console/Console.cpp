@@ -166,6 +166,7 @@ int main()
 	};
 
 	const std::vector<int> b3a			// no unique
+		// source: https://en.wikipedia.org/wiki/Sudoku
 	{
 		5, 3, 4,	6, 7, 8,	9, 1, 2,	// 0,8=1 random to trigger output
 		6, 7, 2,	1, 9, 5,	3, 4, 8,
@@ -359,6 +360,57 @@ int main()
 		0, 0, 0,	1, 0, 6,	0, 0, 7,
 		0, 0, 6,	0, 0, 0,	1, 0, 4
 	};
+
+	const std::vector<int> diagonal
+		// 17 clues and diagonal symmetry
+		// source: https://en.wikipedia.org/wiki/Sudoku_solving_algorithms
+	{
+		0, 0, 0,	0, 0, 0,	0, 0, 1,
+		0, 0, 0,	0, 0, 0,	0, 2, 3,
+		0, 0, 4,	0, 0, 5,	0, 0, 0,
+
+		0, 0, 0,	1, 0, 0,	0, 0, 0,
+		0, 0, 0,	0, 3, 0,	6, 0, 0,
+		0, 0, 7,	0, 0, 0,	5, 8, 0,
+
+		0, 0, 0,	0, 6, 7,	0, 0, 0,
+		0, 1, 0,	0, 0, 4,	0, 0, 0,
+		5, 2, 0,	0, 0, 0,	0, 0, 0
+	};
+
+	const std::vector<int> automorphic
+		// 18 clues and two-way diagonal symmetry
+		// source: https://en.wikipedia.org/wiki/Mathematics_of_Sudoku#Automorphic_Sudokus
+	{
+		0, 0, 0,	2, 1, 0,	0, 0, 0,
+		0, 0, 7,	3, 0, 0,	0, 0, 0,
+		0, 5, 8,	0, 0, 0,	0, 0, 0,
+
+		4, 3, 0,	0, 0, 0,	0, 0, 0,
+		2, 0, 0,	0, 0, 0,	0, 0, 8,
+		0, 0, 0,	0, 0, 0,	0, 7, 6,
+
+		0, 0, 0,	0, 0, 0,	2, 5, 0,
+		0, 0, 0,	0, 0, 7,	3, 0, 0,
+		0, 0, 0,	0, 9, 8,	0, 0, 0
+	};
+
+	const std::vector<int> automorphic2
+		// source: https://en.wikipedia.org/wiki/Mathematics_of_Sudoku#Automorphic_Sudokus
+	{
+		0, 0, 0,	5, 6, 0,	0, 3, 4,
+		0, 0, 0,	7, 8, 0,	0, 5, 6,
+		0, 0, 0,	0, 0, 0,	0, 0, 0,
+
+		1, 2, 0,	0, 0, 0,	0, 0, 0,
+		3, 4, 0,	0, 0, 0,	0, 6, 7,
+		0, 0, 0,	0, 0, 0,	0, 8, 9,
+
+		0, 0, 0,	0, 0, 0,	0, 0, 0,
+		4, 5, 0,	0, 2, 3,	0, 0, 0,
+		6, 7, 0,	0, 4, 5,	0, 0, 0
+	};
+
 
 
 
