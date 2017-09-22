@@ -51,6 +51,15 @@
     <ClInclude Include="Location.fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sudoku.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Solver_Utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Solver.fwd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sudoku.cpp">
@@ -64,5 +73,9 @@
     <Natvis Include="Options.natvis" />
     <Natvis Include="Board.natvis" />
     <Natvis Include="Location.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="Solver.md" />
   </ItemGroup>
 </Project>

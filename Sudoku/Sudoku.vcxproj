@@ -151,7 +151,6 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <ControlFlowGuard />
       <AdditionalOptions>/w14242 /w14254 /w14263 /w14265 /w14287 /we4289 /w14296 /w14311 /w14545 /w14546 /w14547 /w14549 /w14555 /w14619 /w14640 /w14826 /w14905 /w14906 /w14928 /experimental:module /permissive- %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MinimalRebuild>false</MinimalRebuild>
@@ -264,8 +263,11 @@
     <ClInclude Include="Location_Utilities.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="precompiled.h" />
+    <ClInclude Include="Solver.fwd.h" />
     <ClInclude Include="Solver.h" />
     <ClInclude Include="SolverBase.h" />
+    <ClInclude Include="Solver_Utilities.h" />
+    <ClInclude Include="Sudoku.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="precompiled.cpp">
@@ -279,6 +281,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="Solver.md" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Board.natvis">
