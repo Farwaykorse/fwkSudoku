@@ -29,9 +29,16 @@ This project uses the STL and GSL.
 ### Compiler Settings ###
 
 #### VC++ ####
+All:
+
+Debug:
 /W4				Warning level 4 (=highest)
-/sdl			Enable SDL checks
+/sdl			Enable SDL checks, additional warnings focused on security
 /MP				Multiprocessor compilation
+/GS				Buffer Security Check.
+/guard:cf		Control Flow Guard, compiler analizes control flow for indirect calls at compile time and records the results in the compiled binary. During runtime Windows checks before every indirect call and raises an exception if any check fails at runtime. 
+	can't be used with /ZI (edit and continue)
+
 /std:c++17		
 /Yu"precompiled.h"	Use precompiled headers
 /FI"precompiled.h"	Force include, add precompiled to all files
@@ -122,6 +129,7 @@ Visual C++ conformance mode, using the permissive- switch
 	[1](https://blogs.msdn.microsoft.com/vcblog/2016/11/16/permissive-switch/)
 	Adds two-phase name lookup:
 		[2](https://blogs.msdn.microsoft.com/vcblog/2017/09/11/two-phase-name-lookup-support-comes-to-msvc/)
+	[3](https://blogs.msdn.microsoft.com/vcblog/2017/06/28/security-features-in-microsoft-visual-c/)
 
 
 [top](#top)
