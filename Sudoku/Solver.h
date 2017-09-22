@@ -1,6 +1,10 @@
-/**	Container class for solver functions
-*/
+//===--	Sudoku/Solver.h													--===//
+//
+//	Solver function container-class
+//	Collects and gives access to solver functions acting on a Board<Options>&
+//===---------------------------------------------------------------------===//
 #pragma once
+
 #include "Board.h"
 #include "Location.h"
 #include "Location_Utilities.h"
@@ -14,24 +18,26 @@
 /* experiment flags */
 // DO #undef at end of file!
 // activate algorithms on removing option
-#define DUAL_ON_REMOVE		0
-#define MULTIPLE_ON_REMOVE	0
-
+#define DUAL_ON_REMOVE 0
+#define MULTIPLE_ON_REMOVE 0
 
 namespace Sudoku
 {
 template<int N>
 class Solver
 {
-	using Location	= Location<N>;
-	static constexpr int base_size = Location().base_size;	// default 3
-	static constexpr int elem_size = Location().elem_size;	// default 9
-	static constexpr int full_size = Location().full_size;	// default 81
-	using Options	= Options<elem_size>;
-	using Board		= Sudoku::Board<Options, base_size>;
-	using Row		= typename Board::Row;
-	using Col		= typename Board::Col;
-	using Block		= typename Board::Block;
+	using Location = Location<N>;
+
+	static constexpr int base_size = Location().base_size; // default 3
+	static constexpr int elem_size = Location().elem_size; // default 9
+	static constexpr int full_size = Location().full_size; // default 81
+
+	using Options = Options<elem_size>;
+	using Board   = Sudoku::Board<Options, base_size>;
+	using Row     = typename Board::Row;
+	using Col     = typename Board::Col;
+	using Block   = typename Board::Block;
+
 public:
 	Solver(Board&);
 
@@ -47,12 +53,16 @@ public:
 		InItr_ begin, InItr_ end, Location ignore, int value);
 	template<typename InItr_>
 	int remove_option_section(
-		InItr_ begin, InItr_ end,
-		const std::vector<Location>& ignore, int value);
+		InItr_ begin,
+		InItr_ end,
+		const std::vector<Location>& ignore,
+		int value);
 	template<typename InItr_>
 	int remove_option_section(
-		InItr_ begin, InItr_ end,
-		const std::vector<Location>& ignore, const std::vector<int>& value);
+		InItr_ begin,
+		InItr_ end,
+		const std::vector<Location>& ignore,
+		const std::vector<int>& value);
 
 	// Solvers
 	int single_option(Location);
@@ -71,10 +81,8 @@ public:
 	int section_exclusive(InItr_ begin, InItr_ end);
 	template<typename InItr_>
 	int block_exclusive(InItr_ begin, InItr_ end);
-	//TODO simplify calling
+	// TODO simplify calling
 	int section_exclusive(Block);
-
-
 
 private:
 	Board& board_;
@@ -86,11 +94,11 @@ private:
 	int set_block_locals(
 		InItr_ begin, InItr_ end, int rep_count, const Options& worker);
 
-	template<typename InItr_> inline
-		auto appearance_sets(InItr_ begin, InItr_ end) const;
-	template<typename InItr_> inline
-		auto find_locations(
-			InItr_ begin, InItr_ end, int rep_count, int value) const;
+	template<typename InItr_>
+	auto appearance_sets(InItr_ begin, InItr_ end) const;
+	template<typename InItr_>
+	auto find_locations(
+		InItr_ begin, InItr_ end, int rep_count, int value) const;
 
 	template<typename InItr_>
 	int remove_option_outside_block(
@@ -98,73 +106,74 @@ private:
 };
 
 
-
-
-template<int N> inline
-Solver<N>::Solver(Board& options) : board_(options)
+template<int N>
+inline Solver<N>::Solver(Board& options) : board_(options)
 {
 	// empty constructor
 }
 
-///	Make [value] the answer for [loc] and process
-template<int N> inline
-void Solver<N>::setValue(const Location loc, const int value)
+//	Make [value] the answer for [loc] and process
+template<int N>
+inline void Solver<N>::setValue(const Location loc, const int value)
 {
 	assert(value > 0 && value <= elem_size);
-	//TODO better exception type
-	if (!board_.at(loc).test(value)) { throw("invalid board"); }
+	// TODO better exception type
+	if (!board_.at(loc).test(value))
+	{
+		throw("invalid board");
+	}
 	board_.at(loc).set(value);
 
 	// process row / col / block
-	//single_option(loc, value);
+	// single_option(loc, value);
 }
 
 //	set board_ using a transferable container of values
 template<int N>
-template<typename InItr_> inline
-void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
+template<typename InItr_>
+inline void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 {
-	//TODO check iterator type, at least: forward_iterator_tag
+	// TODO check iterator type, at least: forward_iterator_tag
 	assert(end - begin == full_size);
 
-	int n{ 0 };
+	int n{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		Location loc(n++);	// start at 0!
-		if (*itr > 0 &&
-			board_.at(loc).is_option(*itr))
+		Location loc(n++); // start at 0!
+		if (*itr > 0 && board_.at(loc).is_option(*itr))
 		{
 			setValue(loc, *itr);
 			single_option(loc, *itr);
 		}
-		assert(*itr == 0 || board_.at(loc).is_answer(*itr));	// invalid value or conflict
+		// check invalid value or conflict
+		assert(*itr == 0 || board_.at(loc).is_answer(*itr));
 	}
 }
 
-template<int N> inline
-int Solver<N>::remove_option(const Location loc, const int value)
+template<int N>
+inline int Solver<N>::remove_option(const Location loc, const int value)
 {
 	assert(!board_.at(loc).is_answer(value));
 
 	int changes{};
-	if (board_.at(loc).remove_option(value))	// true if applied
+	if (board_.at(loc).remove_option(value)) // true if applied
 	{
 		++changes;
 		changes += single_option(loc);
 #if DUAL_ON_REMOVE == true
 		changes += dual_option(loc);
-#endif	// dual
+#endif // dual
 #if MULTIPLE_ON_REMOVE == true
 		changes += multi_option(loc);
-#endif	// multiple
+#endif // multiple
 	}
 	return changes;
 }
 
-template<int N> inline
-int Solver<N>::single_option(const Location loc)
+template<int N>
+inline int Solver<N>::single_option(const Location loc)
 {
-	const int answer{ board_.at(loc).get_answer() };
+	const int answer{board_.at(loc).get_answer()};
 	if (answer)
 	{
 		return single_option(loc, answer);
@@ -172,16 +181,15 @@ int Solver<N>::single_option(const Location loc)
 	return 0;
 }
 
-///	Process answer from [loc], update board_ options
-template<int N> inline
-int Solver<N>::single_option(const Location loc, const int value)
+//	Process answer from [loc], update board_ options
+template<int N>
+inline int Solver<N>::single_option(const Location loc, const int value)
 {
-	assert(loc.element() >= 0 && loc.element() < full_size);	// loc inside board_
+	assert(loc.element() >= 0 && loc.element() < full_size);
 	assert(board_.at(loc).test(value));
 	assert(value > 0 && value <= elem_size);
 
-	if (board_[loc].count() == 1 &&
-		board_[loc].is_option(value))
+	if (board_[loc].count() == 1 && board_[loc].is_option(value))
 	{
 		setValue(loc, value);
 	}
@@ -189,20 +197,11 @@ int Solver<N>::single_option(const Location loc, const int value)
 	{
 		int changes{};
 		changes += remove_option_section(
-			board_.row(loc).begin(),
-			board_.row(loc).end(),
-			loc,	value
-		);
+			board_.row(loc).begin(), board_.row(loc).end(), loc, value);
 		changes += remove_option_section(
-			board_.col(loc).begin(),
-			board_.col(loc).end(),
-			loc,	value
-		);
+			board_.col(loc).begin(), board_.col(loc).end(), loc, value);
 		changes += remove_option_section(
-			board_.block(loc).begin(),
-			board_.block(loc).end(),
-			loc,	value
-		);
+			board_.block(loc).begin(), board_.block(loc).end(), loc, value);
 		return changes;
 	}
 	return 0;
@@ -211,15 +210,15 @@ int Solver<N>::single_option(const Location loc, const int value)
 // if 2 options in element:
 // find exact pair in section:
 // remove form other elements in section
-template<int N> inline
-int Solver<N>::dual_option(const Location loc)
+template<int N>
+inline int Solver<N>::dual_option(const Location loc)
 {
-	assert(loc.element() >= 0 && loc.element() < full_size);	// loc inside board_
+	assert(loc.element() >= 0 && loc.element() < full_size);
 
 	if (board_.at(loc).count() == 2)
 	{
 		int changes{};
-		const Options& item{ board_[loc] };
+		const Options& item{board_[loc]};
 		for (int i{}; i < full_size; ++i)
 		{
 			// find exact same in board
@@ -229,27 +228,27 @@ int Solver<N>::dual_option(const Location loc)
 				if (shared_row(loc, Location(i)))
 				{
 					changes += remove_option_section(
-						board_.row(loc).begin(), board_.row(loc).end(),
+						board_.row(loc).begin(),
+						board_.row(loc).end(),
 						std::vector<Location>{loc, Location(i)},
-						item.available()
-					);
+						item.available());
 				}
 				else if (shared_col(loc, Location(i)))
 				{
 					changes += remove_option_section(
-						board_.col(loc).begin(), board_.col(loc).end(),
+						board_.col(loc).begin(),
+						board_.col(loc).end(),
 						std::vector<Location>{loc, Location(i)},
-						item.available()
-					);
+						item.available());
 				}
 				if (shared_block(loc, Location(i)))
 				{
-					//NOTE this is slow
+					// NOTE this is slow
 					changes += remove_option_section(
-						board_.block(loc).begin(), board_.block(loc).end(),
+						board_.block(loc).begin(),
+						board_.block(loc).end(),
 						std::vector<Location>{loc, Location(i)},
-						item.available()
-					);
+						item.available());
 				}
 			}
 		}
@@ -258,36 +257,35 @@ int Solver<N>::dual_option(const Location loc)
 	return 0;
 }
 
-// finds equal sets in section:
-// removes form others in section
-template<int N> inline
-int Solver<N>::multi_option(const Location loc)
+// 	inds equal sets in section:
+//	removes form others in section
+template<int N>
+inline int Solver<N>::multi_option(const Location loc)
 {
-	assert(loc.element() >= 0 && loc.element() < full_size);	// loc inside board_
+	assert(loc.element() >= 0 && loc.element() < full_size);
 
-	const size_t count = board_.at(loc).count();
-	constexpr auto specialize = 2;				// use specialization below and including
-	constexpr auto max_size = elem_size / 2;	//?? Assumption, Proof needed
+	const size_t count        = board_.at(loc).count();
+	constexpr auto specialize = 2; // use specialization below and including
+	constexpr auto max_size   = elem_size / 2; //?? Assumption, Proof needed
 	if (specialize < count && count <= max_size)
 	{
-		int changes{};	// performance counter
-		const Options& item{ board_[loc] };	// input item, to find matches to
-		std::vector<Location> list{};		// potential matches
+		int changes{};                    // performance counter
+		const Options& item{board_[loc]}; // input item, to find matches to
+		std::vector<Location> list{};     // potential matches
 		// traverse whole board
 		for (int i{}; i < full_size; ++i)
 		{
-			const auto &other = board_[Location(i)];
+			const auto& other = board_[Location(i)];
 			// find exact same in board
-			//TODO rework to also pick-up cels containing [2,n) values from these n
-			if (other.count() > 0 &&	// include not processed answers
+			// TODO rework to also pick-up cels containing [2,n) values
+			if (other.count() > 0 && // include not processed answers
 				other.count() <= base_size &&
-				( other == item || (item & other).count() == other.count() )
-				)
+				(other == item || (item & other).count() == other.count()))
 			{
 				list.push_back(Location(i));
 			}
 		}
-		///*
+		//
 		//	This algorithm is supprizingly robust
 		//	Example, showing operation if no specializations where applied
 		//			start	end	/	start	end		/	start	end
@@ -295,45 +293,45 @@ int Solver<N>::multi_option(const Location loc)
 		//	list1	1,2		1	/	1,2,3	1,2,3	/	1,2		1,2
 		//	list2	2		2	/	1,2		1,2		/	1,2		1,2
 		//	extern	1,2,3,4	4	/	1,2,3,4	4		/	1,2,3,4	4
-		//	
+		//
 		//	item	1,2,3,4		1,2,3,4
 		//	list1	1,2,3		1,2,3
 		//	list2	1,2,3		1,2,3
 		//	list3	1,2,3		1,2,3
 		//	other	1,2,3,4,5	5
 		//	Only the 2nd example could only be processed by this method
-		//*/
+		//
 		if (list.size() >= count)
 		{
 			// find if: count amount of items share an element
-			auto in_row{ shared_row(loc, list) };
-			auto in_col{ shared_col(loc, list) };
-			auto in_block{ shared_block(loc, list) };
+			auto in_row{shared_row(loc, list)};
+			auto in_col{shared_col(loc, list)};
+			auto in_block{shared_block(loc, list)};
 			// Remove values for rest of shared elements
 			if (in_row.size() == count)
 			{
 				changes += remove_option_section(
-					board_.row(loc).begin(), board_.row(loc).end(),
+					board_.row(loc).begin(),
+					board_.row(loc).end(),
 					in_row,
-					item.available()
-				);
+					item.available());
 			}
 			if (in_col.size() == count)
 			{
 				changes += remove_option_section(
-					board_.col(loc).begin(), board_.col(loc).end(),
+					board_.col(loc).begin(),
+					board_.col(loc).end(),
 					in_col,
-					item.available()
-				);
+					item.available());
 			}
 			if (in_block.size() == count)
 			{
-				//NOTE this is slow
+				// NOTE this is slow
 				changes += remove_option_section(
-					board_.block(loc).begin(), board_.block(loc).end(),
+					board_.block(loc).begin(),
+					board_.block(loc).end(),
 					in_block,
-					item.available()
-				);
+					item.available());
 			}
 		}
 		return changes;
@@ -341,10 +339,10 @@ int Solver<N>::multi_option(const Location loc)
 	return 0;
 }
 
-// remove [value] in [loc] from other elements in section
+//	remove [value] in [loc] from other elements in section
 template<int N>
-template<typename InItr_> inline
-int Solver<N>::remove_option_section(
+template<typename InItr_>
+inline int Solver<N>::remove_option_section(
 	const InItr_ begin,
 	const InItr_ end,
 	[[maybe_unused]] const Location loc, // not used in release mode
@@ -352,7 +350,7 @@ int Solver<N>::remove_option_section(
 {
 	assert(board_.at(loc).is_answer(value));
 
-	int changes{ 0 };
+	int changes{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		if (!(itr->is_answer()))
@@ -363,19 +361,16 @@ int Solver<N>::remove_option_section(
 	return changes;
 }
 
-// remove [value] from element if not part of [block]
+//	remove [value] from element if not part of [block]
 template<int N>
-template<typename InItr_> inline
-int Solver<N>::remove_option_outside_block(
-	const InItr_ begin,
-	const InItr_ end,
-	const Location block,
-	const int value)
+template<typename InItr_>
+inline int Solver<N>::remove_option_outside_block(
+	const InItr_ begin, const InItr_ end, const Location block, const int value)
 {
-	int changes{ 0 };
+	int changes{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		if ( !( itr->is_answer() || itr.location().block() == block.block() ))
+		if (!(itr->is_answer() || itr.location().block() == block.block()))
 		{
 			changes += remove_option(itr.location(), value);
 		}
@@ -383,22 +378,28 @@ int Solver<N>::remove_option_outside_block(
 	return changes;
 }
 
-// remove [value] from [section] if not part of [loc]s
+//	remove [value] from [section] if not part of [loc]s
 template<int N>
-template<typename InItr_> inline
-int Solver<N>::remove_option_section(
+template<typename InItr_>
+inline int Solver<N>::remove_option_section(
 	const InItr_ begin,
 	const InItr_ end,
 	const std::vector<Location>& ignore,
 	const int value)
 {
-	int changes{ 0 };
+	int changes{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
+		// clang-format off
 		if (itr->is_option(value) &&
-			ignore.cend() == std::find_if(ignore.cbegin(), ignore.cend(),
-				//	std::binary_search(ignore.cbegin(), ignore.cend(),
-				[itr](Location loc) { return itr == loc; }))	// <algorithm>
+			ignore.cend() == std::find_if(
+				ignore.cbegin(),
+				ignore.cend(),
+				[itr](Location loc) { return itr == loc; }
+			)) // <algorithm>
+		// clang-format on
+		// TODO replace find_if() with binary_search(), requires sorted data
+		// cheaper, if sorting can be done by design
 		{
 			changes += remove_option(itr.location(), value);
 		}
@@ -409,35 +410,41 @@ int Solver<N>::remove_option_section(
 // remove [value]s from [section] if not part of [loc]s
 // the ignore Location vector must be sorted
 template<int N>
-template<typename InItr_> inline
-int Solver<N>::remove_option_section(
+template<typename InItr_>
+inline int Solver<N>::remove_option_section(
 	const InItr_ begin,
 	const InItr_ end,
 	const std::vector<Location>& ignore,
 	const std::vector<int>& values)
 {
-	int changes{ 0 };
+	int changes{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		if ( !(itr->is_answer() ) &&
-			ignore.cend() == std::find_if(ignore.cbegin(), ignore.cend(),
-		//	std::binary_search(ignore.cbegin(), ignore.cend(),			// requires sorted data
-				[itr](Location loc) { return itr.location() == loc; }))	// <algorithm>
+		// clang-format off
+		if (!(itr->is_answer()) &&
+			ignore.cend() == std::find_if(
+				ignore.cbegin(),
+				ignore.cend(),
+				[itr](Location loc) { return itr.location() == loc; }
+			)) // <algorithm>
+		// clang-format on
+		// TODO replace find_if() with binary_search(), requires sorted data
+		// cheaper, if sorting can be done by design
 		{
 			for (auto v : values)
 			{
-				changes += remove_option(itr.location(), v);	// cascade
+				changes += remove_option(itr.location(), v); // cascade
 			}
 		}
 	}
 	return changes;
 }
 
-
-// Solver: Find and process options appearing only once in a section (row/col/block)
+//	Solver: Find and process options appearing only once in a section
+//	(row/col/block)
 template<int N>
-template<typename InItr_> inline
-int Solver<N>::unique_in_section(const InItr_ begin, const InItr_ end)
+template<typename InItr_>
+inline int Solver<N>::unique_in_section(const InItr_ begin, const InItr_ end)
 {
 	const auto& worker = find_unique_in_section(begin, end);
 	return set_uniques(begin, end, worker);
@@ -445,11 +452,12 @@ int Solver<N>::unique_in_section(const InItr_ begin, const InItr_ end)
 
 //	return a mask for values with a single appearance
 template<int N>
-template<typename InItr_> inline
-typename Solver<N>::Options Solver<N>::find_unique_in_section(const InItr_ begin, const InItr_ end)
+template<typename InItr_>
+inline typename Solver<N>::Options
+	Solver<N>::find_unique_in_section(const InItr_ begin, const InItr_ end)
 {
-	Options sum(0);		// helper all used
-	Options worker(0);	// multiple uses OR answer
+	Options sum(0);    // helper all used
+	Options worker(0); // multiple uses OR answer
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		if (itr->is_answer())
@@ -462,25 +470,25 @@ typename Solver<N>::Options Solver<N>::find_unique_in_section(const InItr_ begin
 			sum += *itr;
 		}
 	}
-	return worker.flip();	// multiple uses -> single-use
+	return worker.flip(); // multiple uses -> single-use
 }
 
 //	process unique values in section
 template<int N>
-template<typename InItr_> inline
-auto Solver<N>::set_uniques(InItr_ begin, InItr_ end, const Options& worker)
+template<typename InItr_>
+inline auto
+	Solver<N>::set_uniques(InItr_ begin, InItr_ end, const Options& worker)
 {
-	int changes{ 0 };
+	int changes{0};
 	if (worker.count_all() > 0)
 	{
-		for (int value{ 1 }; value < worker.size(); ++value)
+		for (int value{1}; value < worker.size(); ++value)
 		{
 			if (worker.test(value))
 			{
-				const auto itr = std::find_if(
-					begin, end,
-					[value](Options O) { return O.is_option(value); }
-				);	// <algorithm>
+				const auto itr = std::find_if(begin, end, [value](Options O) {
+					return O.is_option(value);
+				});                 // <algorithm>
 				assert(itr != end); // doesn't exist
 				setValue(itr.location(), value);
 				changes += single_option(itr.location(), value);
@@ -492,21 +500,18 @@ auto Solver<N>::set_uniques(InItr_ begin, InItr_ end, const Options& worker)
 }
 
 
-
-
-
-// value appearing 2x or 3x in row/col:
-//		IF all in same block -> remove from rest of block
+//	value appearing 2x or 3x in row/col:
+//	IF all in same block -> remove from rest of block
 template<int N>
-template<typename InItr_> inline
-int Solver<N>::section_exclusive(const InItr_ begin, const InItr_ end)
+template<typename InItr_>
+inline int Solver<N>::section_exclusive(const InItr_ begin, const InItr_ end)
 {
-	int changes{};	// performance counter
+	int changes{}; // performance counter
 
 	auto appearing = appearance_sets(begin, end);
 
-	int i{ 2 };
-	while (i <= N)	// won't run if condition fails
+	int i{2};
+	while (i <= N) // won't run if condition fails
 	{
 		// unique specialization
 		if (appearing[1].count_all() > 0)
@@ -520,23 +525,26 @@ int Solver<N>::section_exclusive(const InItr_ begin, const InItr_ end)
 			appearing = appearance_sets(begin, end);
 			++i;
 		}
-		else { ++i; }
+		else
+		{
+			++i;
+		}
 	}
 	return changes;
 }
 
 template<int N>
-template<typename InItr_> inline
-int Solver<N>::block_exclusive(const InItr_ begin, const InItr_ end)
+template<typename InItr_>
+inline int Solver<N>::block_exclusive(const InItr_ begin, const InItr_ end)
 {
-	//TODO ensure it's a block?
-	//TODO type-checking on board_
+	// TODO ensure it's a block?
+	// TODO type-checking on board_
 
-	int changes{};	// performance counter
+	int changes{}; // performance counter
 
-	int i{ 1 };
+	int i{1};
 	auto appearing = appearance_sets(begin, end);
-	while (i <= N)	// won't run if condition fails
+	while (i <= N) // won't run if condition fails
 	{
 		// unique in block specialization
 		if (appearing[1].count_all() > 0)
@@ -550,37 +558,42 @@ int Solver<N>::block_exclusive(const InItr_ begin, const InItr_ end)
 			appearing = appearance_sets(begin, end);
 			++i;
 		}
-		else { ++i; }
+		else
+		{
+			++i;
+		}
 	}
 	return changes;
-	//TODO can this be added/used?
+	// TODO can this be added/used?
 	// 2 values only appear in 2 cells -> remove rest from cells
 }
 
 template<int N>
-template<typename InItr_> inline
-int Solver<N>::set_section_locals(
+template<typename InItr_>
+inline int Solver<N>::set_section_locals(
 	const InItr_ begin,
 	const InItr_ end,
 	const int rep_count,
 	const Options& worker)
 {
 	const size_t count = worker.count_all();
-	assert(count > 0);		// should have been cought by caller
+	assert(count > 0); // should have been cought by caller
 
-	int changes{ 0 };
-	for (size_t value{ 1 }; value < worker.size(); ++value)
+	int changes{0};
+	for (size_t value{1}; value < worker.size(); ++value)
 	{
 		if (worker.test(value))
 		{
 			const auto locations = find_locations(begin, end, rep_count, value);
-			assert(locations.size() <= N);	// no use won't fit in a single block-row/col (too much data gathered!)
-			assert(locations.size() > 1);	// use the set_uniques specialization
+			assert(locations.size() <= N); // won't fit in single block-row/col
+			assert(locations.size() > 1);  // use the set_uniques specialization
 
-											// for each value check if appearing in same block
-			if (locations.cend() == std::find_if_not(
-				locations.cbegin(), locations.cend(),
-				[&locations](auto L) { return L.block() == locations[0].block(); }))
+			// for each value check if appearing in same block
+			if (locations.cend() ==
+				std::find_if_not(
+					locations.cbegin(), locations.cend(), [&locations](auto L) {
+						return L.block() == locations[0].block();
+					}))
 			{
 				changes += remove_option_section(
 					board_.block(locations[0]).begin(),
@@ -594,29 +607,31 @@ int Solver<N>::set_section_locals(
 }
 
 template<int N>
-template<typename InItr_> inline
-int Solver<N>::set_block_locals(
+template<typename InItr_>
+inline int Solver<N>::set_block_locals(
 	const InItr_ begin,
 	const InItr_ end,
 	const int rep_count,
 	const Options& worker)
 {
 	const size_t count = worker.count_all();
-	assert(count > 0);		// should have been cought by caller
+	assert(count > 0); // should have been cought by caller
 
-	int changes{ 0 };
-	for (int value{ 1 }; value < worker.size(); ++value)
+	int changes{0};
+	for (int value{1}; value < worker.size(); ++value)
 	{
 		if (worker.test(value))
 		{
 			const auto locations = find_locations(begin, end, rep_count, value);
-			assert(locations.size() <= N);	// no use won't fit in a single block-row/col
-			assert(locations.size() > 1);	// use the set_uniques specialization
+			assert(locations.size() <= N); // won't fit in single block-row/col
+			assert(locations.size() > 1);  // use the set_uniques specialization
 
-											// for each value check if appearing in same row/col
-			if (locations.cend() == std::find_if_not(
-				locations.cbegin(), locations.cend(),
-				[&locations](auto L) { return L.row() == locations[0].row(); }))
+			// for each value check if appearing in same row/col
+			if (locations.cend() ==
+				std::find_if_not(
+					locations.cbegin(), locations.cend(), [&locations](auto L) {
+						return L.row() == locations[0].row();
+					}))
 			{
 				changes += remove_option_outside_block(
 					board_.row(locations[0]).begin(),
@@ -624,9 +639,12 @@ int Solver<N>::set_block_locals(
 					locations[0],
 					value);
 			}
-			else if (locations.cend() == std::find_if_not(
-				locations.cbegin(), locations.cend(),
-				[&locations](auto L) { return L.col() == locations[0].col(); }))
+			else if (
+				locations.cend() ==
+				std::find_if_not(
+					locations.cbegin(), locations.cend(), [&locations](auto L) {
+						return L.col() == locations[0].col();
+					}))
 			{
 				changes += remove_option_outside_block(
 					board_.col(locations[0]).begin(),
@@ -634,7 +652,10 @@ int Solver<N>::set_block_locals(
 					locations[0],
 					value);
 			}
-			else { continue; }	// not in same row/col
+			else
+			{
+				continue;
+			} // not in same row/col
 		}
 	}
 	return changes;
@@ -659,40 +680,45 @@ inv				|	000	000	000	|	000	010	000	|	001	010	000	|	011	010	100
 What about the answer bit?
 */
 template<int N>
-template<typename InItr_> inline
-auto Solver<N>::appearance_sets(const InItr_ begin, const InItr_ end) const
+template<typename InItr_>
+inline auto
+	Solver<N>::appearance_sets(const InItr_ begin, const InItr_ end) const
 {
 	std::array<Options, N + 1> worker{};
-	for (int i{ 0 }; i <= N; ++i) { worker[i].set(0); }
-	//	Collect options by appearence count
-	//	worker[n] contains options appearing more than n times (or answer)
+	for (int i{0}; i <= N; ++i)
+	{
+		worker[i].set(0);
+	}
+	// Collect options by appearence count
+	// worker[n] contains options appearing more than n times (or answer)
 	for (auto elem_itr = begin; elem_itr != end; ++elem_itr)
 	{
 		if (elem_itr->is_answer())
 		{
 			// add answer to all
-			for (int i{ N }; i >= 0; --i)
+			for (int i{N}; i >= 0; --i)
 			{
 				worker[i] = *elem_itr + worker[i];
 			}
 		}
 		else
 		{
-			for (int i{ N }; i > 0; --i)
+			for (int i{N}; i > 0; --i)
 			{
 				worker[i] += (worker[i - 1] & *elem_itr);
 			}
 			worker[0] += *elem_itr;
 		}
 	}
-	//	flip -> worker[n] contains options appearing n times or less
-	for (int i{ 0 }; i <= N; ++i)
+	// flip -> worker[n] contains options appearing n times or less
+	for (int i{0}; i <= N; ++i)
 	{
 		worker[i].flip();
 	}
-	assert(worker[0].is_empty());	// fails if not all options exist
-									//	xor -> worker[n] options appearing n times
-	for (int i{ N }; i > 1; --i)
+	assert(worker[0].is_empty()); // fails if not all options exist
+
+	// xor -> worker[n] options appearing n times
+	for (int i{N}; i > 1; --i)
 	{
 		worker[i].XOR(worker[i - 1]);
 	}
@@ -700,33 +726,28 @@ auto Solver<N>::appearance_sets(const InItr_ begin, const InItr_ end) const
 }
 
 template<int N>
-template<typename InItr_> inline
-auto Solver<N>::find_locations(
+template<typename InItr_>
+inline auto Solver<N>::find_locations(
 	const InItr_ begin,
 	const InItr_ end,
 	const int rep_count,
-	const int value				) const
+	const int value) const
 {
 	assert(value > 0 && value <= elem_size);
 	assert(rep_count > 0 && rep_count <= board_.full_size);
 
 	std::vector<Location> locations{};
 	auto last = begin;
-	for (int i{ 0 }; i < rep_count; ++i)
+	for (int i{0}; i < rep_count; ++i)
 	{
 		last = std::find_if(
-			last, end,
-			[value](Options O) { return O.is_option(value); }
-		);
-		assert(last != end);	// incorrect rep_count
+			last, end, [value](Options O) { return O.is_option(value); });
+		assert(last != end); // incorrect rep_count
 		locations.emplace_back(last.location());
 		++last;
 	}
 	return locations;
 }
-
-
-
 
 
 // cell containing 2 options
@@ -746,9 +767,8 @@ auto Solver<N>::find_locations(
 //		find exact same in rest block
 
 
-
 /*	Remove local macros */
 #undef DUAL_ON_REMOVE
 #undef MULTIPLE_ON_REMOVE
 
-}	// namespace Sudoku
+} // namespace Sudoku
