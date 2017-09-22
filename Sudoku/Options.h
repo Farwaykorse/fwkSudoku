@@ -67,11 +67,7 @@ public:
 	Options& operator+=(const Options&) noexcept;
 	Options operator+(const Options&) const noexcept;
 	// xor
-	Options&                XOR(const Options&) noexcept;
-	[[deprecated]] Options& operator^=(const Options& other) noexcept
-	{
-		return XOR(other);
-	}
+	Options& XOR(const Options&) noexcept;
 	// return difference
 	Options operator-(const Options&) const
 		noexcept; // TODO difference; usecase?
