@@ -198,15 +198,15 @@ template<int N>
 inline int Solver<N>::single_option(const Location loc, const int value)
 {
 	assert(loc.element() >= 0 && loc.element() < full_size);
-	assert(board_.at(loc).test(value));
 	assert(value > 0 && value <= elem_size);
 
-	if (board_[loc].count() == 1 && board_[loc].is_option(value))
+	assert(board_.at(loc).test(value));
+	assert(board_.at[loc].count() == 1);
+
+	if (!board_[loc].is_answer(value))
 	{
 		setValue(loc, value);
 	}
-	if (board_[loc].is_answer(value))
-	{
 		int changes{};
 		changes += remove_option_section(
 			board_.row(loc).begin(), board_.row(loc).end(), loc, value);
@@ -215,8 +215,6 @@ inline int Solver<N>::single_option(const Location loc, const int value)
 		changes += remove_option_section(
 			board_.block(loc).begin(), board_.block(loc).end(), loc, value);
 		return changes;
-	}
-	return 0;
 }
 
 // if 2 options in element:
