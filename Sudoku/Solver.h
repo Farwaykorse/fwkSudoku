@@ -126,7 +126,7 @@ inline void Solver<N>::setValue(const Location loc, const int value)
 	{
 		throw("invalid board");
 	}
-	board_.at(loc).set(value);
+	board_.at(loc).set_nocheck(value);
 
 	//? process row / col / block
 	//x single_option(loc, value);
@@ -269,7 +269,7 @@ inline int Solver<N>::dual_option(const Location loc)
 	return 0;
 }
 
-// 	inds equal sets in section:
+//	finds equal sets in section:
 //	removes form others in section
 template<int N>
 inline int Solver<N>::multi_option(const Location loc)

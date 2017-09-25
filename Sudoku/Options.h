@@ -206,8 +206,7 @@ template<int E>
 inline Options<E>& Options<E>::set(int value)
 {
 	clear();
-	add(value); // if 0: -> not answer = [0] = true
-	return *this;
+	return add(value); // if 0: -> not answer = [0] = true
 }
 
 //	set to answer
@@ -322,11 +321,11 @@ inline std::vector<int> Options<E>::available() const
 	values.reserve(static_cast<size_t>(count()));
 	if (!is_answer() && !is_empty())
 	{
-		auto loc{0};
+		auto item{0};
 		for (auto i{0}; i < count(); ++i)
 		{
-			loc = read_next(loc);
-			values.emplace_back(loc);
+			item = read_next(item);
+			values.emplace_back(item);
 		}
 	}
 	return values;
