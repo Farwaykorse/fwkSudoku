@@ -158,16 +158,14 @@ template<int N>
 inline int Solver<N>::remove_option(const Location loc, const int value)
 {
 	int changes{};
-	if (board_.at(loc).is_option(value))
+	if (board_[loc].is_option(value))
 	{
 		++changes;
-		switch (board_.at(loc).remove_option(value).count())
+		switch (board_[loc].remove_option(value).count())
 		{
 			// remaining options
 		case 0: assert(false); // never trigger, removed last option
-		case 1:
-			changes += single_option(loc, board_.at(loc).get_answer());
-			break;
+		case 1: changes += single_option(loc, board_[loc].get_answer()); break;
 #if DUAL_ON_REMOVE == true
 		case 2: changes += dual_option(loc); break;
 #endif // dual
@@ -186,7 +184,7 @@ inline int Solver<N>::remove_option(const Location loc, const int value)
 template<int N>
 inline int Solver<N>::single_option(const Location loc)
 {
-	if (const int answer{board_.at(loc).get_answer()})
+	if (const int answer{board_[loc].get_answer()})
 	{
 		return single_option(loc, answer);
 	}
@@ -201,20 +199,20 @@ inline int Solver<N>::single_option(const Location loc, const int value)
 	assert(value > 0 && value <= elem_size);
 
 	assert(board_.at(loc).test(value));
-	assert(board_.at[loc].count() == 1);
+	assert(board_[loc].count_all() == 1);
 
 	if (!board_[loc].is_answer(value))
 	{
 		setValue(loc, value);
 	}
-		int changes{};
-		changes += remove_option_section(
-			board_.row(loc).begin(), board_.row(loc).end(), loc, value);
-		changes += remove_option_section(
-			board_.col(loc).begin(), board_.col(loc).end(), loc, value);
-		changes += remove_option_section(
-			board_.block(loc).begin(), board_.block(loc).end(), loc, value);
-		return changes;
+	int changes{};
+	changes += remove_option_section(
+		board_.row(loc).begin(), board_.row(loc).end(), loc, value);
+	changes += remove_option_section(
+		board_.col(loc).begin(), board_.col(loc).end(), loc, value);
+	changes += remove_option_section(
+		board_.block(loc).begin(), board_.block(loc).end(), loc, value);
+	return changes;
 }
 
 // if 2 options in element:
@@ -224,47 +222,44 @@ template<int N>
 inline int Solver<N>::dual_option(const Location loc)
 {
 	assert(loc.element() >= 0 && loc.element() < full_size);
+	assert(board_.at(loc).count() == 2);
 
-	if (board_.at(loc).count() == 2)
+	int changes{};
+	const Options& item{board_[loc]};
+	for (int i{}; i < full_size; ++i)
 	{
-		int changes{};
-		const Options& item{board_[loc]};
-		for (int i{}; i < full_size; ++i)
+		// find exact same in board
+		if (board_[Location(i)] == item && Location(i) != loc)
 		{
-			// find exact same in board
-			if (board_[Location(i)] == item && Location(i) != loc)
+			// Remove values for rest of shared elements
+			if (shared_row(loc, Location(i)))
 			{
-				// Remove values for rest of shared elements
-				if (shared_row(loc, Location(i)))
-				{
-					changes += remove_option_section(
-						board_.row(loc).begin(),
-						board_.row(loc).end(),
-						std::vector<Location>{loc, Location(i)},
-						item.available());
-				}
-				else if (shared_col(loc, Location(i)))
-				{
-					changes += remove_option_section(
-						board_.col(loc).begin(),
-						board_.col(loc).end(),
-						std::vector<Location>{loc, Location(i)},
-						item.available());
-				}
-				if (shared_block(loc, Location(i)))
-				{
-					// NOTE this is slow
-					changes += remove_option_section(
-						board_.block(loc).begin(),
-						board_.block(loc).end(),
-						std::vector<Location>{loc, Location(i)},
-						item.available());
-				}
+				changes += remove_option_section(
+					board_.row(loc).begin(),
+					board_.row(loc).end(),
+					std::vector<Location>{loc, Location(i)},
+					item.available());
+			}
+			else if (shared_col(loc, Location(i)))
+			{
+				changes += remove_option_section(
+					board_.col(loc).begin(),
+					board_.col(loc).end(),
+					std::vector<Location>{loc, Location(i)},
+					item.available());
+			}
+			if (shared_block(loc, Location(i)))
+			{
+				// NOTE this is slow
+				changes += remove_option_section(
+					board_.block(loc).begin(),
+					board_.block(loc).end(),
+					std::vector<Location>{loc, Location(i)},
+					item.available());
 			}
 		}
-		return changes;
 	}
-	return 0;
+	return changes;
 }
 
 //	finds equal sets in section:
