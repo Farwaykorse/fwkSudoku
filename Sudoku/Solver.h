@@ -157,21 +157,25 @@ inline void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 template<int N>
 inline int Solver<N>::remove_option(const Location loc, const int value)
 {
-	assert(!board_.at(loc).is_answer(value));
-
 	int changes{};
 	if (board_.at(loc).is_option(value))
 	{
 		++changes;
 		switch (board_.at(loc).remove_option(value).count())
 		{
-		case 1 : changes += single_option(loc);
+			// remaining options
+		case 0: assert(false); // never trigger, removed last option
+		case 1:
+			changes += single_option(loc, board_.at(loc).get_answer());
+			break;
 #if DUAL_ON_REMOVE == true
-		case 2 : changes += dual_option(loc);
+		case 2: changes += dual_option(loc); break;
 #endif // dual
+		default:
 #if MULTIPLE_ON_REMOVE == true
-		changes += multi_option(loc);
+			changes += multi_option(loc);
 #endif // multiple
+			break;
 		}
 	}
 	return changes;

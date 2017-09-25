@@ -345,8 +345,8 @@ TEST(Options, mf_remove_option)
 {
 	Options<4> TMP{};
 	static_assert(
-		!noexcept(TMP.remove_option(3)),
-		"remove_option(int) should NOT be noexcept");
+		noexcept(TMP.remove_option(3)),
+		"remove_option(int) should be noexcept");
 	ASSERT_NO_THROW(TMP.remove_option(3));
 	//EXPECT_THROW(TMP.remove_option(15), std::out_of_range);
 	//EXPECT_THROW(TMP.remove_option(-5), std::out_of_range);

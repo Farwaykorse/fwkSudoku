@@ -36,7 +36,7 @@ public:
 	Options& clear() noexcept; // remove all options
 	Options& reset() noexcept; // set all options
 	Options& flip() noexcept;
-	Options& remove_option(int value); // remove single option, return if needed
+	Options& remove_option(int value) noexcept; // remove single option
 	// TODO Options& remove_option(int value, ...);	// remove mentioned
 	Options& add(int value);                  // add single option
 	Options& set(int value);                  // set to answer
@@ -170,27 +170,18 @@ inline Options<E>& Options<E>::flip() noexcept
 
 //	remove single option
 template<int E>
-inline Options<E>& Options<E>::remove_option(const int value)
+inline Options<E>& Options<E>::remove_option(const int value) noexcept
 {
-	//if (test(value)) // contains range-check
-	// if (operator[](value))
-	if (!is_answer())
+	assert(value >= 0 && value <= E);
+	if (!is_answer(value))
 	{
 		operator[](static_cast<size_t>(value)) = false;
-		//data_[static_cast<size_t>(value)] = false;
-		// operator[](value) = false;
-		//return true;
 	}
 	else
 	{
 		assert(false); // don't apply on answers
 	}
 	return *this;
-
-	// ERROR compiler error VC++ only
-	// C3779 'Sudoku::Options<9>::operator[]': a function that returns 'auto'
-	// cannot be used before it is defined can't reproduce in any other
-	// memberfunction Triggerd by use in Solver::remove_Option(Location, int)
 }
 
 //	add single option
@@ -205,6 +196,7 @@ inline Options<E>& Options<E>::add(int value)
 template<int E>
 inline Options<E>& Options<E>::add_nocheck(int value) noexcept
 {
+	assert(value >= 0 && value <= E);
 	operator[](value) = true;
 	return *this;
 }
@@ -288,7 +280,6 @@ inline bool Options<E>::is_answer() const noexcept
 template<int E>
 inline bool Options<E>::is_answer(int value) const noexcept
 {
-	//x return (is_answer() && test(value));
 	return (is_answer() && operator[](value));
 }
 
@@ -298,7 +289,6 @@ template<int E>
 inline bool Options<E>::is_option(int value) const noexcept
 {
 	assert(value != 0);
-	//x return (!is_answer() && test(value));
 	return (!is_answer() && operator[](value));
 }
 
@@ -433,7 +423,7 @@ inline std::string Options<E>::DebugString() const
 //	return next option in data
 template<int E>
 inline int Options<E>::read_next(int start) const noexcept
-{	// default value start = 0
+{ // default value start = 0
 	++start;
 	for (int i = start; i <= E; ++i)
 	{
