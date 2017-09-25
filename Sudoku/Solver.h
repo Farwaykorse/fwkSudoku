@@ -15,10 +15,13 @@
 #include <algorithm>
 #include <cassert>
 
+// Forward declarations
+#include "Solver.fwd.h"
+
 /* experiment flags */
-// DO #undef at end of file!
+//! DO #undef at end of file!
 // activate algorithms on removing option
-#define DUAL_ON_REMOVE 0
+#define DUAL_ON_REMOVE 1
 #define MULTIPLE_ON_REMOVE 0
 
 namespace Sudoku
@@ -112,7 +115,8 @@ inline Solver<N>::Solver(Board& options) : board_(options)
 	// empty constructor
 }
 
-//	Make [value] the answer for [loc] and process
+//	IF valid, Make [value] the answer for [loc]
+//??? and process
 template<int N>
 inline void Solver<N>::setValue(const Location loc, const int value)
 {
@@ -124,8 +128,8 @@ inline void Solver<N>::setValue(const Location loc, const int value)
 	}
 	board_.at(loc).set(value);
 
-	// process row / col / block
-	// single_option(loc, value);
+	//? process row / col / block
+	//x single_option(loc, value);
 }
 
 //	set board_ using a transferable container of values
@@ -156,25 +160,29 @@ inline int Solver<N>::remove_option(const Location loc, const int value)
 	assert(!board_.at(loc).is_answer(value));
 
 	int changes{};
-	if (board_.at(loc).remove_option(value)) // true if applied
+	if (board_.at(loc).is_option(value))
 	{
 		++changes;
-		changes += single_option(loc);
+		switch (board_.at(loc).remove_option(value).count())
+		{
+		case 1 : changes += single_option(loc);
 #if DUAL_ON_REMOVE == true
-		changes += dual_option(loc);
+		case 2 : changes += dual_option(loc);
 #endif // dual
 #if MULTIPLE_ON_REMOVE == true
 		changes += multi_option(loc);
 #endif // multiple
+		}
 	}
 	return changes;
 }
 
+//	Check if only one option remaining
+//	IF true: process answer
 template<int N>
 inline int Solver<N>::single_option(const Location loc)
 {
-	const int answer{board_.at(loc).get_answer()};
-	if (answer)
+	if (const int answer{board_.at(loc).get_answer()})
 	{
 		return single_option(loc, answer);
 	}
@@ -576,8 +584,7 @@ inline int Solver<N>::set_section_locals(
 	const int rep_count,
 	const Options& worker)
 {
-	const size_t count = worker.count_all();
-	assert(count > 0); // should have been cought by caller
+	assert(worker.count_all() > 0); // should have been cought by caller
 
 	int changes{0};
 	for (size_t value{1}; value < worker.size(); ++value)
@@ -614,8 +621,7 @@ inline int Solver<N>::set_block_locals(
 	const int rep_count,
 	const Options& worker)
 {
-	const size_t count = worker.count_all();
-	assert(count > 0); // should have been cought by caller
+	assert(worker.count_all() > 0); // should have been cought by caller
 
 	int changes{0};
 	for (int value{1}; value < worker.size(); ++value)

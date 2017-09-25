@@ -36,10 +36,12 @@ public:
 	Options& clear() noexcept; // remove all options
 	Options& reset() noexcept; // set all options
 	Options& flip() noexcept;
-	bool remove_option(int value); // remove single option, return if needed
+	Options& remove_option(int value); // remove single option, return if needed
 	// TODO Options& remove_option(int value, ...);	// remove mentioned
-	Options& add(int value); // add single option
-	Options& set(int value); // set to answer
+	Options& add(int value);                  // add single option
+	Options& set(int value);                  // set to answer
+	Options& add_nocheck(int value) noexcept; // add single option
+	Options& set_nocheck(int value) noexcept; // set to answer
 
 	constexpr int size() const noexcept;
 	int count() const noexcept;      // count available options
@@ -55,8 +57,8 @@ public:
 		noexcept; // return answer or 0 (won't confirm is_answer())
 	std::vector<int> available() const; // return available options
 
-	constexpr bool operator[](int value) const;
-	auto operator[](int value);
+	bool operator[](int value) const noexcept;
+	auto operator[](int value) noexcept;
 
 	bool operator==(int) const noexcept; // shorthand for is_answer(int)
 	bool operator==(const Options<E>&) const noexcept;
@@ -90,7 +92,7 @@ private:
 }; // class Options
 
 
-//	default constructor
+//	construct with all options
 template<int E>
 Options<E>::Options() noexcept
 {
@@ -99,14 +101,12 @@ Options<E>::Options() noexcept
 
 template<int E>
 inline Options<E>::Options(const bitset& other) : data_(other)
-{
-	// empty constructor
+{ // empty constructor
 }
 
 template<int E>
 inline Options<E>::Options(bitset&& other) : data_{other}
-{
-	// empty constructor
+{ // empty constructor
 }
 
 //	construct with single option set to answer
@@ -144,6 +144,7 @@ template<int E>
 inline Options<E>& Options<E>::clear() noexcept
 {
 	data_.reset(); // all false
+	//???	Note: anwerbit unset too -> answered?
 	return *this;
 }
 
@@ -159,28 +160,33 @@ template<int E>
 inline Options<E>& Options<E>::flip() noexcept
 {
 	// retain answer flag value
-	if (data_[0])
+	if (data_[0]) // noexcept
 	{
-		data_.flip(0);
+		data_[0].flip(); // noexcept
 	}
 
-	data_.flip();
+	data_.flip(); // noexcept
 	return *this;
 }
 
 //	remove single option
 template<int E>
-inline bool Options<E>::remove_option(const int value)
+inline Options<E>& Options<E>::remove_option(const int value)
 {
-	if (test(value)) // contains range-check
+	//if (test(value)) // contains range-check
 	// if (operator[](value))
+	if (!is_answer())
 	{
-		assert(!is_answer()); // don't apply on answers
-		data_[static_cast<size_t>(value)] = false;
+		operator[](static_cast<size_t>(value)) = false;
+		//data_[static_cast<size_t>(value)] = false;
 		// operator[](value) = false;
-		return true;
+		//return true;
 	}
-	return false;
+	else
+	{
+		assert(false); // don't apply on answers
+	}
+	return *this;
 
 	// ERROR compiler error VC++ only
 	// C3779 'Sudoku::Options<9>::operator[]': a function that returns 'auto'
@@ -196,6 +202,14 @@ inline Options<E>& Options<E>::add(int value)
 	return *this;
 }
 
+//	add single option
+template<int E>
+inline Options<E>& Options<E>::add_nocheck(int value) noexcept
+{
+	operator[](value) = true;
+	return *this;
+}
+
 //	set to answer
 template<int E>
 inline Options<E>& Options<E>::set(int value)
@@ -203,6 +217,14 @@ inline Options<E>& Options<E>::set(int value)
 	clear();
 	add(value); // if 0: -> not answer = [0] = true
 	return *this;
+}
+
+//	set to answer
+template<int E>
+inline Options<E>& Options<E>::set_nocheck(int value) noexcept
+{
+	clear();
+	return add_nocheck(value);
 }
 
 template<int E>
@@ -263,21 +285,21 @@ inline bool Options<E>::is_answer() const noexcept
 }
 
 //	check if set to answer value
-//	! no input checks!
+//! no input checks!
 template<int E>
 inline bool Options<E>::is_answer(int value) const noexcept
 {
-	// return (is_answer() && test(value));
+	//x return (is_answer() && test(value));
 	return (is_answer() && operator[](value));
 }
 
 //	check if option available
-//	! no input checks!
+//! no input checks!
 template<int E>
 inline bool Options<E>::is_option(int value) const noexcept
 {
 	assert(value != 0);
-	// return (!is_answer() && test(value));
+	//x return (!is_answer() && test(value));
 	return (!is_answer() && operator[](value));
 }
 
@@ -321,17 +343,17 @@ inline std::vector<int> Options<E>::available() const
 	return values;
 }
 
-//	access read only
+//	no-check access read only
 template<int E>
-inline constexpr bool Options<E>::operator[](int value) const
+inline bool Options<E>::operator[](int value) const noexcept
 {
 	assert(value >= 0 && value <= E);
 	return data_[static_cast<size_t>(value)];
 }
 
-//	access
+//	no-check access
 template<int E>
-inline auto Options<E>::operator[](int value)
+inline auto Options<E>::operator[](int value) noexcept
 {
 	assert(value >= 0 && value <= E);
 	return data_[static_cast<size_t>(value)];
