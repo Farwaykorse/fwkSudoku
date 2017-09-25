@@ -159,10 +159,7 @@ template<int E>
 inline Options<E>& Options<E>::flip() noexcept
 {
 	// retain answer flag value
-	if (data_[0]) // noexcept
-	{
-		data_[0].flip(); // noexcept
-	}
+	data_[0].flip(); // noexcept
 
 	data_.flip(); // noexcept
 	return *this;
@@ -173,14 +170,9 @@ template<int E>
 inline Options<E>& Options<E>::remove_option(const int value) noexcept
 {
 	assert(value >= 0 && value <= E);
-	if (!is_answer(value))
-	{
-		operator[](static_cast<size_t>(value)) = false;
-	}
-	else
-	{
-		assert(false); // don't apply on answers
-	}
+	assert(!is_answer(value));
+
+	operator[](static_cast<size_t>(value)) = false;
 	return *this;
 }
 
