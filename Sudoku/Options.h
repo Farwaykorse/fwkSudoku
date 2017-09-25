@@ -84,8 +84,7 @@ private:
 	// false if answer has been set = inverse of answer
 	bitset data_{};
 
-	int read_next() const noexcept;
-	int read_next(int start) const noexcept;
+	int read_next(int start = 0) const noexcept;
 	Options& operator&=(const Options&) noexcept;
 	// NOTE might be risky while unused; private?
 
@@ -433,15 +432,8 @@ inline std::string Options<E>::DebugString() const
 
 //	return next option in data
 template<int E>
-inline int Options<E>::read_next() const noexcept
-{
-	return read_next(0);
-}
-
-//	return next option in data
-template<int E>
 inline int Options<E>::read_next(int start) const noexcept
-{
+{	// default value start = 0
 	++start;
 	for (int i = start; i <= E; ++i)
 	{
