@@ -70,7 +70,7 @@ public:
 	int single_option(Location);
 	int single_option(Location, int value);
 	int dual_option(Location);
-	int multi_option(Location);
+	int multi_option(Location, unsigned int = 0);
 
 	template<typename InItr_>
 	int unique_in_section(InItr_ begin, InItr_ end);
@@ -125,7 +125,7 @@ inline void Solver<N>::setValue(const Location loc, const int value)
 	{
 		throw("invalid board");
 	}
-	board_.at(loc).set_nocheck(value);
+	board_[loc].set_nocheck(value);
 
 	//? process row / col / block
 	//x single_option(loc, value);
@@ -165,17 +165,17 @@ inline int Solver<N>::remove_option(const Location loc, const int value)
 	if (item.is_option(value))
 	{
 		++changes;
-		switch (item.remove_option(value).count())
+		switch (const int count = item.remove_option(value).count())
 		{
 			// remaining options
-		case 0: assert(false); // never trigger, removed last option
+		case 0: assert(false); break; // never trigger, removed last option
 		case 1: changes += single_option(loc, item.get_answer()); break;
 #if DUAL_ON_REMOVE == true
 		case 2: changes += dual_option(loc); break;
 #endif // dual
 		default:
 #if MULTIPLE_ON_REMOVE == true
-			changes += multi_option(loc);
+			changes += multi_option(loc, count);
 #endif // multiple
 			break;
 		}
@@ -269,11 +269,14 @@ inline int Solver<N>::dual_option(const Location loc)
 //	finds equal sets in section:
 //	removes form others in section
 template<int N>
-inline int Solver<N>::multi_option(const Location loc)
+inline int Solver<N>::multi_option(const Location loc, unsigned int count)
 {
 	assert(is_valid(loc));
 
-	const size_t count        = board_.at(loc).count();
+	if (!count)
+	{
+		count = board_[loc].count();
+	}
 	constexpr auto specialize = 2; // use specialization below and including
 	constexpr auto max_size   = elem_size / 2; //?? Assumption, Proof needed
 	if (specialize < count && count <= max_size)
@@ -500,11 +503,12 @@ inline auto
 	{
 		for (int value{1}; value < worker.size(); ++value)
 		{
-			if (worker.test(value))
+			if (worker[value])
 			{
-				const auto itr = std::find_if(begin, end, [value](Options O) {
-					return O.is_option(value);
-				});                 // <algorithm>
+				const auto itr = std::find_if( // <algorithm>
+					begin,
+					end,
+					[value](Options O) { return O.is_option(value); });
 				assert(itr != end); // doesn't exist
 				setValue(itr.location(), value);
 				changes += single_option(itr.location(), value);
@@ -516,7 +520,7 @@ inline auto
 }
 
 
-//	value appearing 2x or 3x in row/col:
+//	Solver: find and process values appearing 2x or 3x in row/col:
 //	IF all in same block -> remove from rest of block
 template<int N>
 template<typename InItr_>
@@ -676,8 +680,16 @@ inline int Solver<N>::set_block_locals(
 }
 
 
+//	Helper, returning options collected by appearance count in input-dataset
+template<int N>
+template<typename InItr_>
+inline auto
+	Solver<N>::appearance_sets(const InItr_ begin, const InItr_ end) const
 /*
-input			|	[0]			|	[1]			|	[2]			|	[3]
+Example illustration
+Step 1) Collect
+input			worker[n]
+				|	[0]			|	[1]			|	[2]			|	[3]
 1	100 000 001	|	100	000	001	|	000	000	000	|				|
 2	110 100 010	|	110	100	011	|	100	000	000	|	000	000	000	|
 3	010 000 011	|	110	100	011	|	110	000	011	|	000	000	000	|	000	000	000
@@ -687,22 +699,29 @@ input			|	[0]			|	[1]			|	[2]			|	[3]
 7	101	100	110	|	111	101	111	|	111	101	111	|	100	101	011	|	100	001	011
 8	100	110	010	|	111	111	111	|	111	101	111	|	100	101	011	|	100	101	011
 9	010	000	101	|				|	111	101	111	|	110	101	111	|	100	101	011
-inv				|	000	000	000	|	000	010	000	|	001	010	000	|	011	010	100
-532	419	365		0 keer			1x				<=2x			<=3x
-- [n-1]								000	010	000	|	001	000	000	|	010	000	100
-==2x			==3x
-What about the answer bit?
+				worker[n] contains options appearing more than n times
+Step 2) flip
+				|	000	000	000	|	000	010	000	|	001	010	000	|	011	010	100
+532	419	365		|	==0x		|	==1x		|	<=2x		|	<=3x
+				worker[n] contains options appearing n times or less
+Step 3) xor [n-1]
+				|	== empty!	|	000	010	000	|	001	000	000	|	010	000	100
+				|	==0x		|	==1x		|	==2x		|	==3x
+				worker[n] contains options appearing exactly n times
+
+// Q: What about the answer bit?
+// A: results all read as answer, unless [n] or less unanswered
+//? Working with more or less than [elem_size] input elements?
+// Less than 9: possible worker[0] is not empty
+// Less than 3: no use for worker[3]
+// More than 9: shouldn't be an issue
+// TODO Test different inputs
 */
-template<int N>
-template<typename InItr_>
-inline auto
-	Solver<N>::appearance_sets(const InItr_ begin, const InItr_ end) const
 {
-	std::array<Options, N + 1> worker{};
-	for (int i{0}; i <= N; ++i)
-	{
-		worker[i].set(0);
-	}
+	// To limit processing time, counting up to N
+	constexpr int max = N; // default: (9x9 board) up-to 3 times
+	std::array<Options, max + 1> worker{};
+
 	// Collect options by appearence count
 	// worker[n] contains options appearing more than n times (or answer)
 	for (auto elem_itr = begin; elem_itr != end; ++elem_itr)
@@ -710,29 +729,30 @@ inline auto
 		if (elem_itr->is_answer())
 		{
 			// add answer to all
-			for (int i{N}; i >= 0; --i)
+			for (int i{max}; i >= 0; --i)
 			{
 				worker[i] = *elem_itr + worker[i];
 			}
 		}
 		else
 		{
-			for (int i{N}; i > 0; --i)
+			for (int i{max}; i > 0; --i)
 			{
-				worker[i] += (worker[i - 1] & *elem_itr);
+				worker[i] += (worker[i - 1] & *elem_itr); // AND
 			}
 			worker[0] += *elem_itr;
 		}
 	}
 	// flip -> worker[n] contains options appearing n times or less
-	for (int i{0}; i <= N; ++i)
+	for (auto&& option_set : worker)
 	{
-		worker[i].flip();
+		option_set.flip();
 	}
+	// TODO test: can trigger on smaller sets; better
 	assert(worker[0].is_empty()); // fails if not all options exist
 
 	// xor -> worker[n] options appearing n times
-	for (int i{N}; i > 1; --i)
+	for (int i{max}; i > 1; --i)
 	{
 		worker[i].XOR(worker[i - 1]);
 	}
