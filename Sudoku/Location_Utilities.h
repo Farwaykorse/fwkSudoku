@@ -1,6 +1,8 @@
-﻿/**	Utilities for class Sudoku::Location
- *	Non-member functions, included in Board.h
- */
+﻿//===--	Sudoku/Location_Utilities.h										--===//
+//
+//	Utilities for class Sudoku::Location
+//	Included in Location.h
+//===---------------------------------------------------------------------===//
 #pragma once
 
 #include <vector>
