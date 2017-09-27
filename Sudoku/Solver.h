@@ -5,8 +5,6 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
-#include "Board.h"
-#include "Location.h"
 #include "Location_Utilities.h"
 #include "Options.h"
 
@@ -16,6 +14,8 @@
 #include <cassert>
 
 // Forward declarations
+#include "Board.fwd.h"
+#include "Location.fwd.h"
 #include "Solver.fwd.h"
 
 /* experiment flags */

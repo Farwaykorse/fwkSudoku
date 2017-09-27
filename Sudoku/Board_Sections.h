@@ -3,16 +3,15 @@
  */
 #pragma once
 
-#include "Location.h"
-
 #include <gsl/gsl>
 #include <iterator>
 #include <memory>
 #include <cassert>
 
 // Forward declarations
-#include "Board_Sections.fwd.h"
 #include "Board.fwd.h"
+#include "Board_Sections.fwd.h"
+#include "Location.fwd.h"
 
 namespace Sudoku::Board_Section
 {
