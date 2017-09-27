@@ -9,8 +9,7 @@
 #include <cassert>
 
 // Forward declarations
-#include "Board.fwd.h"
-#include "Board_Sections.fwd.h"
+#include "Board.fwd.h" // self
 #include "Location.fwd.h"
 
 namespace Sudoku::Board_Section

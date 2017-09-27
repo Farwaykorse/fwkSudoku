@@ -39,9 +39,6 @@
     <ClInclude Include="Board_Sections.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Board_Sections.fwd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="board.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -4,7 +4,6 @@
 #pragma once
 
 #include "Board.fwd.h"
-#include "Board_Sections.fwd.h"
 
 namespace Sudoku
 {

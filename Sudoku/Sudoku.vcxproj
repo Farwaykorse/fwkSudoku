@@ -255,7 +255,6 @@
   <ItemGroup>
     <ClInclude Include="Board.fwd.h" />
     <ClInclude Include="Board.h" />
-    <ClInclude Include="Board_Sections.fwd.h" />
     <ClInclude Include="Board_Sections.h" />
     <ClInclude Include="Board_Utilities.h" />
     <ClInclude Include="Location.fwd.h" />
