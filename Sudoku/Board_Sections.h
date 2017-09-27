@@ -32,12 +32,12 @@ class const_Row
 	const_Row(gsl::not_null<const Board<T, N>*> owner, const int row)
 		:	owner_(owner), id_(row)
 	{
-		assert(row >= 0);
-		assert(row < size());
+		assert(is_valid_size<N>(row));
 	}
 	const_Row(gsl::not_null<const Board<T, N>*> owner, const Location loc)
 		:	owner_(owner), id_(loc.row())
 	{
+		assert(is_valid(loc));
 	}
 public:
 	constexpr int size() const noexcept { return Location().elem_size; }
@@ -46,8 +46,7 @@ public:
 
 	const T& operator[] (int col) const noexcept
 	{
-		assert(col >= 0);
-		assert(col < size());
+		assert(is_valid_size<N>(col));
 		return no_check(Location(id(), col));
 	}
 	using const_iterator = const_iterator<T,N, self_type>;
@@ -62,19 +61,20 @@ public:
 
 	constexpr Location location(int element) const
 	{
+		assert(is_valid_size<N>(element));
 		return Location(id(), element);
 	}
 protected:
 	// Data-access for child-objects
 	const T& no_check(const Location& loc) const noexcept
 	{
+		assert(is_valid(loc));
 		return owner_->operator[](loc);
 	}
 private:
 	const Board<T, N>* const owner_; // const-pointer-to-const-object
 	const int id_;
 };
-
 
 
 template<typename T, int N>
@@ -96,6 +96,7 @@ class const_Col
 	const_Col(gsl::not_null<const Board<T, N>*> owner, const Location loc)
 		: const_Row(owner, loc.col())
 	{
+		assert(is_valid(loc));
 	}
 	using const_Row::no_check;
 public:
@@ -104,8 +105,7 @@ public:
 
 	const T& operator[] (int row) const noexcept
 	{
-		assert(row >= 0);
-		assert(row < Location().elem_size);
+		assert(is_valid_size<N>(row));
 		return no_check(Location(row, id()));
 	}
 
@@ -121,10 +121,10 @@ public:
 
 	constexpr Location location(int element) const
 	{
+		assert(is_valid_size<N>(element));
 		return Location(element, id());
 	}
 };
-
 
 
 template<typename T, int N>
@@ -146,6 +146,7 @@ class const_Block
 	const_Block(gsl::not_null<const Board<T, N>*> owner, const Location loc)
 		: const_Row(owner, loc.block())
 	{
+		assert(is_valid(loc));
 	}
 	using const_Row::no_check;
 public:
@@ -154,8 +155,7 @@ public:
 
 	const T& operator[] (int elem) const noexcept
 	{
-		assert(elem >= 0);
-		assert(elem < Location().elem_size);
+		assert(is_valid_size<N>(elem));
 		//return no_check(Location_Block<N>(id(), elem));
 		return no_check(location(elem));
 	}
@@ -172,10 +172,10 @@ public:
 
 	constexpr Location location(int element) const
 	{
+		assert(is_valid_size<N>(element));
 		return Location_Block<N>(id(), element);
 	}
 };
-
 
 
 template<typename T, int N>
@@ -197,6 +197,7 @@ class Row
 	Row(gsl::not_null<Board<T, N>*> owner, Location loc)
 		: const_Row(owner, loc.row()), owner_(owner)
 	{
+		assert(is_valid(loc));
 	}
 public:
 	using const_Row::size;
@@ -204,8 +205,7 @@ public:
 
 	T& operator[] (const int col) noexcept
 	{
-		assert(col >= 0);
-		assert(col < Location().elem_size);
+		assert(is_valid_size<N>(col));
 		return no_check(Location(id(), col));
 	}
 
@@ -220,6 +220,7 @@ private:
 
 	T& no_check(Location loc) noexcept
 	{
+		assert(is_valid(loc));
 		return owner_->operator[](loc);
 	}
 };
@@ -248,6 +249,7 @@ class Col
 		:	const_Col(owner, loc.col()),
 			owner_(owner)
 	{
+		assert(is_valid(loc));
 	}
 public:
 	using const_Col::id;
@@ -255,8 +257,7 @@ public:
 
 	T& operator[] (const int row) noexcept
 	{
-		assert(row >= 0);
-		assert(row < Location().elem_size);
+		assert(is_valid_size<N>(row));
 		return no_check(Location(row, id()));
 	}
 
@@ -270,10 +271,10 @@ private:
 
 	T& no_check(Location loc) noexcept
 	{
+		assert(is_valid(loc));
 		return owner_->operator[](loc);
 	}
 };
-
 
 
 template<typename T, int N>
@@ -297,6 +298,7 @@ class Block
 		:	const_Block(owner, loc.block()),
 			owner_(owner)
 	{
+		assert(is_valid(loc));
 	}
 public:
 	using const_Block::id;
@@ -304,8 +306,7 @@ public:
 
 	T& operator[] (const int elem) noexcept
 	{
-		assert(elem >= 0);
-		assert(elem < Location().elem_size);
+		assert(is_valid_size<N>(elem));
 		return no_check(Location_Block<N>(id(), elem));
 	}
 
@@ -319,10 +320,10 @@ private:
 
 	T& no_check(Location loc) noexcept
 	{
+		assert(is_valid(loc));
 		return owner_->operator[](loc);
 	}
 };
-
 
 
 template<typename T, int N, typename ownerT>
@@ -337,8 +338,14 @@ public:
 	using reference = value_type&;
 	using pointer = value_type*;
 
-	const_iterator(gsl::not_null<const owner_type*> owner) : owner_(owner), elem_(0) {}
-	const_iterator(gsl::not_null<const owner_type*> owner, int elem) : owner_(owner), elem_(elem) {}
+	const_iterator(gsl::not_null<const owner_type*> owner)
+		: owner_(owner), elem_(0)
+	{
+	}
+	const_iterator(gsl::not_null<const owner_type*> owner, int elem)
+		: owner_(owner), elem_(elem)
+	{
+	}
 
 	// All iterator categories
 	const_iterator(const self_type&) = default;
@@ -363,11 +370,14 @@ public:
 			owner_->id() == other.owner_->id() &&
 			owner_->owner_ == other.owner_->owner_;
 	}
-	bool operator!=(const self_type& other) const { return (!(*this == other)); }
+	bool operator!=(const self_type& other) const
+	{
+		return (!(*this == other));
+	}
 
 	// In- & output iterator
-	pointer operator->() const noexcept	// member access; equivalent to (*p).member
-	{
+	pointer operator->() const noexcept
+	{ // member access; equivalent to (*p).member
 		return std::addressof<value_type>(owner_->operator[](elem_));
 	}
 
@@ -378,7 +388,7 @@ public:
 	}
 
 	// Bidirectional iterator
-	self_type& operator--() { --elem_; 	return *this; }	//predecrement 
+	self_type& operator--() { --elem_; 	return *this; }	//predecrement
 	self_type operator--(int)	// postdecrement
 	{
 		self_type pre{ *this };
@@ -397,7 +407,10 @@ public:
 		self_type tmp{ *this };
 		return (tmp += offset);
 	}
-	self_type& operator-=(difference_type offset) { return operator+=(-offset); }
+	self_type& operator-=(difference_type offset)
+	{
+		return operator+=(-offset);
+	}
 	self_type operator-(difference_type offset) const
 	{
 		self_type tmp{ *this };
@@ -557,6 +570,5 @@ public:
 private:
 	owner_type* owner_;
 };
-
 
 }	// namespace Sudoku

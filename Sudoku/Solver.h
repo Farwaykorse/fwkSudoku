@@ -120,7 +120,7 @@ inline Solver<N>::Solver(Board& options) : board_(options)
 template<int N>
 inline void Solver<N>::setValue(const Location loc, const int value)
 {
-	assert(value > 0 && value <= elem_size);
+	assert(is_valid_value<N>(value));
 	// TODO better exception type
 	if (!board_.at(loc).test(value))
 	{
@@ -157,15 +157,20 @@ inline void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 template<int N>
 inline int Solver<N>::remove_option(const Location loc, const int value)
 {
+	assert(is_valid(loc));
+	assert(is_valid_value<N>(value));
+
 	int changes{};
-	if (board_[loc].is_option(value))
+	auto& item{board_.at(loc)};
+
+	if (item.is_option(value))
 	{
 		++changes;
-		switch (board_[loc].remove_option(value).count())
+		switch (item.remove_option(value).count())
 		{
 			// remaining options
 		case 0: assert(false); // never trigger, removed last option
-		case 1: changes += single_option(loc, board_[loc].get_answer()); break;
+		case 1: changes += single_option(loc, item.get_answer()); break;
 #if DUAL_ON_REMOVE == true
 		case 2: changes += dual_option(loc); break;
 #endif // dual
@@ -195,8 +200,8 @@ inline int Solver<N>::single_option(const Location loc)
 template<int N>
 inline int Solver<N>::single_option(const Location loc, const int value)
 {
-	assert(loc.element() >= 0 && loc.element() < full_size);
-	assert(value > 0 && value <= elem_size);
+	assert(is_valid(loc));
+	assert(is_valid_value<N>(value));
 
 	assert(board_.at(loc).test(value));
 	assert(board_[loc].count_all() == 1);
@@ -221,7 +226,7 @@ inline int Solver<N>::single_option(const Location loc, const int value)
 template<int N>
 inline int Solver<N>::dual_option(const Location loc)
 {
-	assert(loc.element() >= 0 && loc.element() < full_size);
+	assert(is_valid(loc));
 	assert(board_.at(loc).count() == 2);
 
 	int changes{};
@@ -267,7 +272,7 @@ inline int Solver<N>::dual_option(const Location loc)
 template<int N>
 inline int Solver<N>::multi_option(const Location loc)
 {
-	assert(loc.element() >= 0 && loc.element() < full_size);
+	assert(is_valid(loc));
 
 	const size_t count        = board_.at(loc).count();
 	constexpr auto specialize = 2; // use specialization below and including
@@ -353,6 +358,8 @@ inline int Solver<N>::remove_option_section(
 	[[maybe_unused]] const Location loc, // not used in release mode
 	const int value)
 {
+	assert(is_valid(loc));
+	assert(is_valid_value<N>(value));
 	assert(board_.at(loc).is_answer(value));
 
 	int changes{0};
@@ -372,6 +379,9 @@ template<typename InItr_>
 inline int Solver<N>::remove_option_outside_block(
 	const InItr_ begin, const InItr_ end, const Location block, const int value)
 {
+	assert(is_valid(block));
+	assert(is_valid_value<N>(value));
+
 	int changes{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
@@ -392,6 +402,8 @@ inline int Solver<N>::remove_option_section(
 	const std::vector<Location>& ignore,
 	const int value)
 {
+	assert(is_valid_value<N>(value));
+
 	int changes{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
@@ -736,7 +748,7 @@ inline auto Solver<N>::find_locations(
 	const int rep_count,
 	const int value) const
 {
-	assert(value > 0 && value <= elem_size);
+	assert(is_valid_value<N>(value));
 	assert(rep_count > 0 && rep_count <= board_.full_size);
 
 	std::vector<Location> locations{};

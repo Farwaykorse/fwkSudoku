@@ -87,21 +87,32 @@ constexpr void valid_dimensions()
 		"size calculation broken");
 }
 
+// Test if Location on Board
+template<int N>
+constexpr bool is_valid(const Location<N> loc)
+{
+	return (loc.element() >= 0 && loc.element() < loc.full_size);
+}
+
 // Test row/col/block-element
 template<int N>
-constexpr bool valid_size(const int elem)
+constexpr bool is_valid_size(const int elem)
 {
-	return (elem >= 0 && elem < Location<N>().full_size);
+	return (elem >= 0 && elem < Location<N>().elem_size);
 }
 
-// Test
+// Test if location on Board
 template<int N>
-constexpr bool valid_size(const int row, const int col)
+constexpr bool is_valid_size(const int row, const int col)
 {
-	return (
-		row >= 0 && row < Location<N>().elem_size &&
-		col >= 0 && col < Location<N>().elem_size);
+	return is_valid_size<N>(row) && is_valid_size<N>(col);
 }
 
+// Test input value
+template<int N>
+constexpr bool is_valid_value(const int value)
+{
+	return value > 0 && value <= Location<N>().elem_size;
+}
 
 }	// namespace Sudoku

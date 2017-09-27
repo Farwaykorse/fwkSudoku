@@ -494,5 +494,53 @@ TEST(Location_Block, is_constexpr)
 	EXPECT_FALSE(noexcept(B1.col()));
 }
 
+TEST(Location_Utilities, is_valid)
+{
+	EXPECT_FALSE(is_valid(Location<2>(-1)));
+	EXPECT_TRUE(is_valid(Location<2>(0)));
+	EXPECT_TRUE(is_valid(Location<2>(1)));
+	EXPECT_TRUE(is_valid(Location<2>(15)));
+	EXPECT_FALSE(is_valid(Location<2>(16)));
+	EXPECT_TRUE(is_valid(Location<3>(16)));
+	EXPECT_TRUE(is_valid(Location<3>(80)));
+	EXPECT_FALSE(is_valid(Location<3>(81)));
+
+	EXPECT_FALSE(is_valid_size<2>(-1));
+	EXPECT_TRUE(is_valid_size<2>(0));
+	EXPECT_TRUE(is_valid_size<2>(1));
+	EXPECT_FALSE(is_valid_size<2>(4));
+	EXPECT_TRUE(is_valid_size<3>(4));
+	EXPECT_TRUE(is_valid_size<3>(8));
+	EXPECT_FALSE(is_valid_size<3>(9));
+
+	EXPECT_FALSE(is_valid_size<2>(-1, 3));
+	EXPECT_FALSE(is_valid_size<2>(2, -3));
+	EXPECT_TRUE(is_valid_size<2>(1, 0));
+	EXPECT_FALSE(is_valid_size<2>(2, 4));
+
+	EXPECT_FALSE(is_valid_value<2>(-1));
+	EXPECT_FALSE(is_valid_value<2>(0));
+	EXPECT_TRUE(is_valid_value<2>(1));
+	EXPECT_TRUE(is_valid_value<2>(4));
+	EXPECT_FALSE(is_valid_value<2>(5));
+	EXPECT_TRUE(is_valid_value<3>(5));
+	EXPECT_FALSE(is_valid_value<3>(16));
+}
+
+TEST(Location_Utilities, is_constexpr)
+{
+	EXPECT_TRUE(noexcept(is_valid(Location<2>(10))));
+	EXPECT_TRUE(noexcept(is_valid(Location<3>(67))));
+	EXPECT_TRUE(noexcept(is_valid(Location<3>(97)))); //
+
+	EXPECT_TRUE(noexcept(is_valid_size<2>(3)));
+	EXPECT_TRUE(noexcept(is_valid_size<3>(8)));
+
+	EXPECT_TRUE(noexcept(is_valid_size<2>(1, 2)));
+	EXPECT_TRUE(noexcept(is_valid_size<3>(7, 3)));
+
+	EXPECT_TRUE(noexcept(is_valid_value<2>(1)));
+	EXPECT_TRUE(noexcept(is_valid_value<3>(7)));
+}
 
 }	// namespace SudokuTests::LocationTest
