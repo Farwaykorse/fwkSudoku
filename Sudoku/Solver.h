@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Options.h"
+#include "Solvers_Appearance.h"
 
 #include <array>
 #include <vector>
@@ -21,7 +22,7 @@
 //! DO #undef at end of file!
 // activate algorithms on removing option
 #define DUAL_ON_REMOVE 1
-#define MULTIPLE_ON_REMOVE 0
+#define MULTIPLE_ON_REMOVE true
 
 namespace Sudoku
 {
@@ -50,9 +51,14 @@ public:
 
 	// remove an option: triggers solvers single_option()
 	int remove_option(Location, int value);
+	template<typename SectionT, typename LocT, typename ValT>
+	int remove_option_section(SectionT, LocT ignore, ValT value);
 	template<typename InItr_>
 	int remove_option_section(
 		InItr_ begin, InItr_ end, Location ignore, int value);
+	template<typename SectionT>
+	int remove_option_section(
+		SectionT section, const std::vector<Location>& ignore, int value);
 	template<typename InItr_>
 	int remove_option_section(
 		InItr_ begin,
@@ -72,10 +78,10 @@ public:
 	int dual_option(Location);
 	int multi_option(Location, unsigned int = 0);
 
+	template<typename SectionT>
+	int unique_in_section(SectionT);
 	template<typename InItr_>
 	int unique_in_section(InItr_ begin, InItr_ end);
-	template<typename InItr_>
-	Options find_unique_in_section(InItr_ begin, InItr_ end);
 	template<typename InItr_>
 	auto set_uniques(InItr_ begin, InItr_ end, const Options& worker);
 
@@ -96,8 +102,13 @@ private:
 	int set_block_locals(
 		InItr_ begin, InItr_ end, int rep_count, const Options& worker);
 
+	// template<typename InItr_>
+	// auto appearance_sets(InItr_ begin, InItr_ end) const;
 	template<typename InItr_>
-	auto appearance_sets(InItr_ begin, InItr_ end) const;
+	auto appearance_sets(InItr_ begin, InItr_ end) const
+	{
+		return Solvers_::appearance_sets<N>(begin, end);
+	}
 	template<typename InItr_>
 	auto find_locations(
 		InItr_ begin, InItr_ end, int rep_count, int value) const;
@@ -210,12 +221,9 @@ inline int Solver<N>::single_option(const Location loc, const int value)
 		setValue(loc, value);
 	}
 	int changes{};
-	changes += remove_option_section(
-		board_.row(loc).begin(), board_.row(loc).end(), loc, value);
-	changes += remove_option_section(
-		board_.col(loc).begin(), board_.col(loc).end(), loc, value);
-	changes += remove_option_section(
-		board_.block(loc).begin(), board_.block(loc).end(), loc, value);
+	changes += remove_option_section(board_.row(loc), loc, value);
+	changes += remove_option_section(board_.col(loc), loc, value);
+	changes += remove_option_section(board_.block(loc), loc, value);
 	return changes;
 }
 
@@ -323,32 +331,37 @@ inline int Solver<N>::multi_option(const Location loc, unsigned int count)
 			if (in_row.size() == count)
 			{
 				changes += remove_option_section(
-					board_.row(loc).begin(),
-					board_.row(loc).end(),
-					in_row,
-					item.available());
+					board_.row(loc), in_row, item.available());
 			}
 			if (in_col.size() == count)
 			{
 				changes += remove_option_section(
-					board_.col(loc).begin(),
-					board_.col(loc).end(),
-					in_col,
-					item.available());
+					board_.col(loc), in_col, item.available());
 			}
 			if (in_block.size() == count)
 			{
 				// NOTE this is slow
 				changes += remove_option_section(
-					board_.block(loc).begin(),
-					board_.block(loc).end(),
-					in_block,
-					item.available());
+					board_.block(loc), in_block, item.available());
 			}
 		}
 		return changes;
 	}
 	return 0;
+}
+
+//	remove value(s) from other elements in section
+template<int N>
+template<typename SectionT, typename LocT, typename ValT>
+inline int Solver<N>::remove_option_section(
+	SectionT section, const LocT ignore, const ValT value)
+{
+	static_assert(std::is_base_of_v<Board::const_Row, SectionT>);
+	using traits = std::iterator_traits<SectionT::iterator>;
+	static_assert(std::is_object_v<traits::iterator_category>);
+	static_assert(std::is_same_v<traits::value_type, Options>);
+
+	return remove_option_section(section.begin(), section.end(), ignore, value);
 }
 
 //	remove [value] in [loc] from other elements in section
@@ -395,7 +408,7 @@ inline int Solver<N>::remove_option_outside_block(
 	return changes;
 }
 
-//	remove [value] from [section] if not part of [loc]s
+//	remove [value] from set if not part of [loc]s
 template<int N>
 template<typename InItr_>
 inline int Solver<N>::remove_option_section(
@@ -460,36 +473,23 @@ inline int Solver<N>::remove_option_section(
 }
 
 //	Solver: Find and process options appearing only once in a section
-//	(row/col/block)
+template<int N>
+template<typename SectionT>
+inline int Solver<N>::unique_in_section(SectionT section)
+{
+	static_assert(std::is_base_of_v<Board::const_Row, SectionT>);
+
+	const auto& worker = Solvers_::appearance_once<N>(section);
+	return set_uniques(section.begin(), section.end(), worker);
+}
+
+//	Solver: Find and process options appearing only once a set
 template<int N>
 template<typename InItr_>
 inline int Solver<N>::unique_in_section(const InItr_ begin, const InItr_ end)
 {
-	const auto& worker = find_unique_in_section(begin, end);
+	const auto& worker = Solvers_::appearance_once<elem_size>(begin, end);
 	return set_uniques(begin, end, worker);
-}
-
-//	return a mask for values with a single appearance
-template<int N>
-template<typename InItr_>
-inline typename Solver<N>::Options
-	Solver<N>::find_unique_in_section(const InItr_ begin, const InItr_ end)
-{
-	Options sum(0);    // helper all used
-	Options worker(0); // multiple uses OR answer
-	for (auto itr = begin; itr != end; ++itr)
-	{
-		if (itr->is_answer())
-		{
-			worker = *itr + worker;
-		}
-		else
-		{
-			worker += (sum & *itr);
-			sum += *itr;
-		}
-	}
-	return worker.flip(); // multiple uses -> single-use
 }
 
 //	process unique values in section
@@ -677,86 +677,6 @@ inline int Solver<N>::set_block_locals(
 		}
 	}
 	return changes;
-}
-
-
-//	Helper, returning options collected by appearance count in input-dataset
-template<int N>
-template<typename InItr_>
-inline auto
-	Solver<N>::appearance_sets(const InItr_ begin, const InItr_ end) const
-/*
-Example illustration
-Step 1) Collect
-input			worker[n]
-				|	[0]			|	[1]			|	[2]			|	[3]
-1	100 000 001	|	100	000	001	|	000	000	000	|				|
-2	110 100 010	|	110	100	011	|	100	000	000	|	000	000	000	|
-3	010 000 011	|	110	100	011	|	110	000	011	|	000	000	000	|	000	000	000
-4	000 000 011	|	110	100	011	|	110	000	011	|	000	000	011	|	000	000	000
-5	101 100	111	|	111	100	111	|	110	100	011	|	100	000	011	|	000	000	011
-6 A	000	001	000	|	111	101	111	|	110	101	011	|	100	001	011	|	000	001	011
-7	101	100	110	|	111	101	111	|	111	101	111	|	100	101	011	|	100	001	011
-8	100	110	010	|	111	111	111	|	111	101	111	|	100	101	011	|	100	101	011
-9	010	000	101	|				|	111	101	111	|	110	101	111	|	100	101	011
-				worker[n] contains options appearing more than n times
-Step 2) flip
-				|	000	000	000	|	000	010	000	|	001	010	000	|	011	010	100
-532	419	365		|	==0x		|	==1x		|	<=2x		|	<=3x
-				worker[n] contains options appearing n times or less
-Step 3) xor [n-1]
-				|	== empty!	|	000	010	000	|	001	000	000	|	010	000	100
-				|	==0x		|	==1x		|	==2x		|	==3x
-				worker[n] contains options appearing exactly n times
-
-// Q: What about the answer bit?
-// A: results all read as answer, unless [n] or less unanswered
-//? Working with more or less than [elem_size] input elements?
-// Less than 9: possible worker[0] is not empty
-// Less than 3: no use for worker[3]
-// More than 9: shouldn't be an issue
-// TODO Test different inputs
-*/
-{
-	// To limit processing time, counting up to N
-	constexpr int max = N; // default: (9x9 board) up-to 3 times
-	std::array<Options, max + 1> worker{};
-
-	// Collect options by appearence count
-	// worker[n] contains options appearing more than n times (or answer)
-	for (auto elem_itr = begin; elem_itr != end; ++elem_itr)
-	{
-		if (elem_itr->is_answer())
-		{
-			// add answer to all
-			for (int i{max}; i >= 0; --i)
-			{
-				worker[i] = *elem_itr + worker[i];
-			}
-		}
-		else
-		{
-			for (int i{max}; i > 0; --i)
-			{
-				worker[i] += (worker[i - 1] & *elem_itr); // AND
-			}
-			worker[0] += *elem_itr;
-		}
-	}
-	// flip -> worker[n] contains options appearing n times or less
-	for (auto&& option_set : worker)
-	{
-		option_set.flip();
-	}
-	// TODO test: can trigger on smaller sets; better
-	assert(worker[0].is_empty()); // fails if not all options exist
-
-	// xor -> worker[n] options appearing n times
-	for (int i{max}; i > 1; --i)
-	{
-		worker[i].XOR(worker[i - 1]);
-	}
-	return worker;
 }
 
 template<int N>

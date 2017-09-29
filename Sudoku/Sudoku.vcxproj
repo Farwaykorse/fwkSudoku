@@ -265,6 +265,7 @@
     <ClInclude Include="Solver.fwd.h" />
     <ClInclude Include="Solver.h" />
     <ClInclude Include="SolverBase.h" />
+    <ClInclude Include="Solvers_Appearance.h" />
     <ClInclude Include="Solver_Utilities.h" />
     <ClInclude Include="Sudoku.h" />
   </ItemGroup>

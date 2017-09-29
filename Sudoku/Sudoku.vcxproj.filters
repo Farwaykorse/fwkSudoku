@@ -57,6 +57,9 @@
     <ClInclude Include="Solver.fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Solvers_Appearance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sudoku.cpp">
