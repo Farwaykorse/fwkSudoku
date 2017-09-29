@@ -365,7 +365,7 @@ bool Options<E>::operator<(const Options<E>& other) const noexcept
 	return data_.to_ulong() < other.data_.to_ulong();
 }
 
-//	available options, won't add an answer
+//	Combine available options, won't add an answer (binary OR)
 template<int E>
 inline Options<E>& Options<E>::operator+=(const Options& other) noexcept
 {
@@ -375,6 +375,7 @@ inline Options<E>& Options<E>::operator+=(const Options& other) noexcept
 	}
 	return *this;
 }
+//	Combine (binary OR)
 template<int E>
 inline Options<E> Options<E>::operator+(const Options& other) const noexcept
 {
@@ -382,7 +383,7 @@ inline Options<E> Options<E>::operator+(const Options& other) const noexcept
 	return tmp += other;
 }
 
-//	Per element XOR, exclusive OR
+//	Per element (binary) XOR, exclusive OR
 template<int E>
 inline Options<E>& Options<E>::XOR(const Options& other) noexcept
 {
@@ -390,14 +391,14 @@ inline Options<E>& Options<E>::XOR(const Options& other) noexcept
 	return *this;
 }
 
-//	Retain only shared options
+//	Retain only shared options (binary AND)
 template<int E>
 inline Options<E>& Options<E>::operator&=(const Options& other) noexcept
 {
 	data_ &= other.data_;
 	return *this;
 }
-//	Shared options
+//	Shared options (binary AND)
 template<int E>
 inline Options<E> Options<E>::operator&(const Options& other) const noexcept
 {
