@@ -15,13 +15,13 @@
 namespace Sudoku
 {
 template<int N>
-constexpr bool shared_row(Location<N> left, Location<N> right)
+constexpr bool shared_row(const Location<N> left, const Location<N> right)
 {
 	return left.row() == right.row();
 }
 
 template<int N>
-std::vector<Location<N>> shared_row(Location<N> left, std::vector<Location<N>> right)
+std::vector<Location<N>> shared_row(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> tmp_{};
 	for (auto&& loc : right)
@@ -32,13 +32,13 @@ std::vector<Location<N>> shared_row(Location<N> left, std::vector<Location<N>> r
 }
 
 template<int N>
-constexpr bool shared_col(Location<N> left, Location<N> right)
+constexpr bool shared_col(const Location<N> left, const Location<N> right)
 {
 	return left.col() == right.col();
 }
 
 template<int N>
-std::vector<Location<N>> shared_col(Location<N> left, std::vector<Location<N>> right)
+std::vector<Location<N>> shared_col(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> tmp_{};
 	for (auto&& loc : right)
@@ -49,13 +49,13 @@ std::vector<Location<N>> shared_col(Location<N> left, std::vector<Location<N>> r
 }
 
 template<int N>
-constexpr bool shared_block(Location<N> left, Location<N> right)
+constexpr bool shared_block(const Location<N> left, const Location<N> right)
 {
 	return left.block() == right.block();
 }
 
 template<int N>
-std::vector<Location<N>> shared_block(Location<N> left, std::vector<Location<N>> right)
+std::vector<Location<N>> shared_block(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> tmp_{};
 	for (auto&& loc : right)
