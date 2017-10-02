@@ -11,6 +11,7 @@
 #include <array>
 #include <vector>
 #include <algorithm>
+#include <stdexcept>
 #include <cassert>
 
 // Forward declarations
@@ -131,10 +132,9 @@ template<int N>
 inline void Solver<N>::setValue(const Location loc, const int value)
 {
 	assert(is_valid_value<N>(value));
-	// TODO better exception type
 	if (!board_.at(loc).test(value))
 	{
-		throw("invalid board");
+		throw std::logic_error{"Invalid Board"};
 	}
 	board_[loc].set_nocheck(value);
 
