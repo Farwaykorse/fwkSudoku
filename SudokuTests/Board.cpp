@@ -104,6 +104,87 @@ namespace compiletime
 	static_assert(! std::is_swappable_with_v<typeT, Options<9>>, "");	//C++17
 	static_assert(! std::is_nothrow_swappable_with_v<typeT, Options<9>>, "");	//C++17
 }
+//===---------------------------------------------------------------------===//
+namespace compiletime::Section
+{
+	// Type properties
+	using Section = Board<int, 3>::Section;
+	using const_Row = Board<int, 3>::const_Row;
+	using const_Col = Board<int, 3>::const_Col;
+	using const_Block = Board<int, 3>::const_Block;
+	using Row = Board<int, 3>::Row;
+	using Col = Board<int, 3>::Col;
+	using Block = Board<int, 3>::Block;
+
+	using typeT = const_Row;
+
+	static_assert(std::is_base_of_v<Section, typeT>);
+	static_assert(std::is_base_of_v<Section, const_Row>);
+	static_assert(std::is_base_of_v<Section, const_Col>);
+	static_assert(std::is_base_of_v<Section, const_Block>);
+	static_assert(std::is_base_of_v<Section, Row>);
+	static_assert(std::is_base_of_v<Section, Col>);
+	static_assert(std::is_base_of_v<Section, Block>);
+
+	static_assert(std::is_class_v<typeT>, "-- a class");
+	static_assert(!std::is_trivial_v<typeT>, "trivial default constructors");
+	static_assert(!std::is_trivially_copyable_v<typeT>,
+		"-- compatible with std::memcpy & binary copy from/to files");
+	static_assert(std::is_standard_layout_v<typeT>, "standard layout");
+	static_assert(!std::is_pod_v<typeT>,
+		"++ Plain Old Data, both trivial and standard-layout, C compatible");
+	//static_assert(std::has_unique_object_representations_v<typeT>, "");	//C++17	trivially_copyable same object representation
+	static_assert(!std::is_empty_v<typeT>, "-- class with no datamembers");
+	static_assert(!std::is_polymorphic_v<typeT>,
+		"-- inherits atleast one virtual function");
+	static_assert(!std::is_abstract_v<typeT>,
+		"-- inherits or declares at least one pure virtual function");
+	static_assert(!std::is_final_v<typeT>, "-- cannot be used as base class");
+
+	static_assert(std::is_trivial_v<Section>, "trivial Section");
+	static_assert(std::is_trivially_copyable_v<Section>, "trivial copy Section");
+	static_assert(std::is_empty_v<Section>, "empty Section");
+	static_assert(std::is_pod_v<Section>, "POD Section");
+	static_assert(!std::is_standard_layout_v<Row>, "standard layout");
+
+	// default constructor: typeT()
+	static_assert(!std::is_default_constructible_v<typeT>, "class()");
+	static_assert(!std::is_nothrow_default_constructible_v<typeT>, "class() notrow");
+	static_assert(!std::is_trivially_default_constructible_v<typeT>, "++ default, nothing virtual");
+
+	// copy constructor: typeT(const typeT&)
+	static_assert(std::is_copy_constructible_v<typeT>, "-- copy constructor");
+	static_assert(std::is_nothrow_copy_constructible_v<typeT>, "-- notrow copy constructor");
+	static_assert(std::is_trivially_copy_constructible_v<typeT>, "-- trivially copy constructor"); // = default
+
+	// move constructor: typeT(typeT&&)
+	static_assert(std::is_move_constructible_v<typeT>, "-- move constructor");
+	static_assert(std::is_nothrow_move_constructible_v<typeT>, "-- nothrow move constructor");
+	static_assert(std::is_trivially_move_constructible_v<typeT>, "-- trivially move constructor");
+
+	// copy assingment
+	static_assert(!std::is_copy_assignable_v<typeT>, "-- copy assignable");
+	static_assert(!std::is_nothrow_copy_assignable_v<typeT>, "-- notrow copy assignable");
+	static_assert(!std::is_trivially_copy_assignable_v<typeT>, "-- trivially copy assignable");
+
+	static_assert(!std::is_move_assignable_v<typeT>, "-- move assignable");
+	static_assert(!std::is_nothrow_move_assignable_v<typeT>, "-- move assignable");
+	static_assert(!std::is_trivially_move_assignable_v<typeT>, "-- trivially move assignable");
+
+	static_assert(std::is_destructible_v<typeT>, "-- destructable");
+	static_assert(std::is_nothrow_destructible_v<typeT>, "-- nothrow destructable");
+	static_assert(std::is_trivially_destructible_v<typeT>, "-- trivially destructable");
+	static_assert(!std::has_virtual_destructor_v<typeT>, "-- virtual destructor");
+
+	static_assert(!std::is_swappable_v<typeT>, "-- swappable");			//C++17
+	static_assert(!std::is_nothrow_swappable_v<typeT>, "-- nothrow swappable");	//C++17
+
+	// variations
+	static_assert(std::is_default_constructible_v<Section>, "not Section()");
+	static_assert(std::is_copy_assignable_v<Section>, "-- copy assignable");
+	static_assert(std::is_move_assignable_v<Section>, "-- move assignable");
+	static_assert(std::is_swappable_v<Section>, "-- swappable");			//C++17
+}
 TEST(Board, Construction)
 {
 	// default constructor

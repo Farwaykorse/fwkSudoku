@@ -1,7 +1,4 @@
 ﻿//===--	Sudoku/Appearance.h												--===//
-// Options_appearance_count
-// Collect_Options
-// Count appearance
 //
 //	Helper functions, collecting options by appearance count in a given set.
 //===---------------------------------------------------------------------===//
@@ -38,7 +35,7 @@ auto appearance_once(const T& section)
 	using Board   = Board<Options, N>;
 
 	// Board_Sections are based on const_Row
-	static_assert(std::is_base_of_v<Board::const_Row, T>);
+	static_assert(std::is_base_of_v<Board::Section, T>);
 	// check iterator traits
 	{
 		using traits = std::iterator_traits<T::iterator>;

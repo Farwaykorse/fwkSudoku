@@ -15,7 +15,14 @@
 namespace Sudoku::Board_Section
 {
 template<typename T, int N>
+class Section
+{
+	//empty base-class
+};
+
+template<typename T, int N>
 class const_Row
+	: public Section<T, N>
 {
 	using self_type = const_Row;
 	using Location = Sudoku::Location<N>;
