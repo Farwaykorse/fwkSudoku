@@ -29,7 +29,7 @@ static constexpr int elem_size = Location<N>().elem_size; // default 9
 
 // range-based-for
 template<int N, typename T>
-auto appearance_once(const T& section)
+auto appearance_once(T section)
 {
 	using Options = Options<elem_size<N>>;
 	using Board   = Board<Options, N>;
@@ -58,6 +58,7 @@ auto appearance_once(const T& section)
 			sum += item;
 		}
 	}
+	return worker.flip(); // multiple uses -> single-use
 }
 
 //	return a mask for values with a single appearance
@@ -123,6 +124,8 @@ Step 3) xor [n-1]
 	// To limit processing time, counting up to N
 	constexpr int max = N; // default: (9x9 board) up-to 3 times
 	std::array<Options, max + 1> worker{};
+	// start with all false
+	for (auto& obj : worker) obj.flip();
 
 	// Collect options by appearence count
 	// worker[n] contains options appearing more than n times (or answer)
@@ -152,6 +155,7 @@ Step 3) xor [n-1]
 	}
 	// TODO test: can trigger on smaller sets; better
 	assert(worker[0].is_empty()); // fails if not all options exist
+								  // won't trigger if answer-bit set
 
 	// xor -> worker[n] options appearing n times
 	for (int i{max}; i > 1; --i)
