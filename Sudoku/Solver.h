@@ -22,8 +22,8 @@
 /* experiment flags */
 //! DO #undef at end of file!
 // activate algorithms on removing option
-#define DUAL_ON_REMOVE 1
-#define MULTIPLE_ON_REMOVE true
+#define DUAL_ON_REMOVE false
+#define MULTIPLE_ON_REMOVE false
 
 namespace Sudoku
 {
@@ -481,7 +481,7 @@ inline int Solver<N>::unique_in_section(SectionT section)
 {
 	static_assert(std::is_base_of_v<Board::Section, SectionT>);
 
-	const auto& worker = Solvers_::appearance_once<N>(section);
+	const auto worker = Solvers_::appearance_once<N>(section);
 	return set_uniques(section.begin(), section.end(), worker);
 }
 
@@ -490,7 +490,7 @@ template<int N>
 template<typename InItr_>
 inline int Solver<N>::unique_in_section(const InItr_ begin, const InItr_ end)
 {
-	const auto& worker = Solvers_::appearance_once<elem_size>(begin, end);
+	const auto worker = Solvers_::appearance_once<elem_size>(begin, end);
 	return set_uniques(begin, end, worker);
 }
 
