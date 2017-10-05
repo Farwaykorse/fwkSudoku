@@ -38,7 +38,7 @@ namespace compiletime
 
 	// Type properties
 	//===---------------------------------------------------------------------===//
-	using typeT = typename Solver<3>;
+	using typeT = Solver<3>;
 	static_assert(std::is_class_v<typeT>, "class, hiding datarepresentation");
 	static_assert(!std::is_trivial_v<typeT>, "is trivial");
 	//	default constructors & trivially copyable

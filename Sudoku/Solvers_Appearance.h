@@ -35,12 +35,12 @@ auto appearance_once(T section)
 	using Board   = Board<Options, N>;
 
 	// Board_Sections are based on const_Row
-	static_assert(std::is_base_of_v<Board::Section, T>);
+	static_assert(std::is_base_of_v<typename Board::Section, T>);
 	// check iterator traits
 	{
-		using traits = std::iterator_traits<T::iterator>;
-		static_assert(std::is_object_v<traits::iterator_category>);
-		static_assert(std::is_same_v<traits::value_type, Options>);
+		using traits = std::iterator_traits<typename T::iterator>;
+		static_assert(std::is_object_v<typename traits::iterator_category>);
+		static_assert(std::is_same_v<typename traits::value_type, Options>);
 	}
 
 	Options sum(0);    // helper all used

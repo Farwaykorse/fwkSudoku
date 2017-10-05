@@ -357,11 +357,11 @@ inline int Solver<N>::remove_option_section(
 	SectionT section, const LocT ignore, const ValT value)
 {
 	// referal function, creates iterators
-	static_assert(std::is_base_of_v<Board::Section, SectionT>);
+	static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 
-	using traits = std::iterator_traits<SectionT::iterator>;
-	static_assert(std::is_object_v<traits::iterator_category>);
-	static_assert(std::is_same_v<traits::value_type, Options>);
+	using traits = std::iterator_traits<typename SectionT::iterator>;
+	static_assert(std::is_object_v<typename traits::iterator_category>);
+	static_assert(std::is_same_v<typename traits::value_type, Options>);
 
 	return remove_option_section(section.begin(), section.end(), ignore, value);
 }
@@ -479,7 +479,7 @@ template<int N>
 template<typename SectionT>
 inline int Solver<N>::unique_in_section(SectionT section)
 {
-	static_assert(std::is_base_of_v<Board::Section, SectionT>);
+	static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 
 	const auto worker = Solvers_::appearance_once<N>(section);
 	return set_uniques(section.begin(), section.end(), worker);
