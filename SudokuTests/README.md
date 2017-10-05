@@ -36,9 +36,36 @@ Console project called: SudokuTest(s)
 /w14619			pragma warning: there is no warning number 'number'
 ```
 **Clang:**
-`-Wno-unused-comparison`	Comparissons in gTest *_No_THROW(...)
-`-Wno-unused-value`			in gTest *_NO_THROW(...)
-
+-gline-tables-only
+NO
+`-Wno-c++98-compat`
+	6358
+`-Wno-c++98-compat-pedantic`
+	56	long long
+		variadic macros
+`-Wno-c++17-extensions`
+	192	static_assert with no message is a C++17 extension
+		use of the 'maybe_unused' attribute
+`-Wno-deprecated-declarations`
+	80	gtest; write, read, fopen, fdopen, freopen, strerror, strncpy, close, ...
+`-Wno-covered-switch-default`
+	46	in EXPECT_DEBUG_DEATH()
+`-Wno-global-constructors`
+	76
+`-Wno-keyword-macro`
+	25	keyword is hidden by macro definition (gsl, span, multi_span, string_span)
+`-Wno-undef`
+	872	not defined macro values
+`-Wno-unused-comparison`
+	78	Comparissons in gTest *_NO_THROW(...)
+`-Wno-unused-value`
+	4 	expression result unused	in gTest *_NO_THROW(...)
+`-Wno-used-but-marked-unused`
+	76	
+`-Wno-zero-as-null-pointer-constant`
+	429	2x per TEST(...)
+`-fno-ms-compatibility`
+`-fno-strict-aliasing`
 
 <!----------------------------------------------------------------><a id="cover"></a>
 ## Code Coverage ##

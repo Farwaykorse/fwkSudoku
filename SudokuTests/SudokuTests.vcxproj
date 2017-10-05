@@ -208,13 +208,14 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -Wreorder -Weverything -Wno-c++98-compat -Wno-c++17-extensions</AdditionalOptions>
+      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -Wreorder -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++17-extensions -Wno-deprecated-declarations -Wno-covered-switch-default -Wno-global-constructors -Wno-keyword-macro -Wno-undef -Wno-unused-comparison -Wno-unused-value -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant -fno-ms-compatibility -fno-strict-aliasing -gline-tables-only </AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>NotSet</TargetMachine>
     </Link>
     <Lib>
       <AdditionalDependencies>$(VcpkgRoot)debug\lib\manual-link\gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -226,7 +227,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -Wreorder -Weverything -Wno-c++98-compat -Wno-c++17-extensions</AdditionalOptions>
+      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -Wreorder -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++17-extensions -Wno-deprecated-declarations -Wno-covered-switch-default -Wno-global-constructors -Wno-keyword-macro -Wno-undef -Wno-unused-comparison -Wno-unused-value -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant -fno-ms-compatibility -fno-strict-aliasing -gline-tables-only </AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
