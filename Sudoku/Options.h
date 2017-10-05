@@ -365,14 +365,11 @@ bool Options<E>::operator<(const Options<E>& other) const noexcept
 	return data_.to_ulong() < other.data_.to_ulong();
 }
 
-//	Combine available options, won't add an answer (binary OR)
+//	Combine available options (binary OR)
 template<int E>
 inline Options<E>& Options<E>::operator+=(const Options& other) noexcept
 {
-	if (!other.is_answer())
-	{
-		data_ |= (other.data_);
-	}
+	data_ |= (other.data_);
 	return *this;
 }
 //	Combine (binary OR)

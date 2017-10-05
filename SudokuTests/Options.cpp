@@ -537,7 +537,7 @@ TEST(Options, Operators)
 	EXPECT_TRUE(O_1 + O_2 == O_1);
 	EXPECT_TRUE(E_1 + O_1 == O_1);
 	EXPECT_TRUE(A_2 + E_3 == O_3);
-	EXPECT_FALSE(E_1 + A_2 == O_3);
+	EXPECT_TRUE(E_1 + A_2 == O_3);
 	//Options operator-(Options&) const		difference
 	static_assert(noexcept(O_1 - O_2), "operator- should be noexcept");
 

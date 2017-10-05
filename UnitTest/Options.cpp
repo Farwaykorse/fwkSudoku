@@ -293,7 +293,7 @@ public:
 		Assert::IsTrue(O_1 + O_2 == O_1, L"operation+ failed");
 		Assert::IsTrue(E_1 + O_1 == O_1, L"operation+ failed");
 		Assert::IsTrue(A_2 + E_3 == O_3, L"operation+= ans+=other failed");
-		Assert::IsFalse(E_1 + A_2 == O_3, L"operation+= other+=ans failed");
+		Assert::IsTrue(E_1 + A_2 == O_3, L"operation+= other+=ans failed");
 		//Options operator-(Options&) const		difference
 		static_assert(noexcept(O_1 - O_2), "operator- should be noexcept");
 
