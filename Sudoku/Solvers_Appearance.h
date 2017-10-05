@@ -121,7 +121,7 @@ Step 3) xor [n-1]
 {
 	using Options = Sudoku::Options<N * N>;
 	// To limit processing time, counting up to N
-	constexpr int max = N; // default: (9x9 board) up-to 3 times
+	constexpr size_t max = N; // default: (9x9 board) up-to 3 times
 	std::array<Options, max + 1> worker{};
 	// start with all false
 	for (auto& obj : worker) obj.flip();
@@ -137,7 +137,7 @@ Step 3) xor [n-1]
 		}
 		else
 		{
-			for (int i{max}; i > 0; --i)
+			for (size_t i{max}; i > 0; --i)
 			{
 				worker[i] += (worker[i - 1] & *elem_itr); // OR( AND )
 			}
@@ -154,7 +154,7 @@ Step 3) xor [n-1]
 	assert(worker[0].is_empty() || worker[0].count_all() == 0);
 
 	// xor -> worker[n] options appearing n times
-	for (int i{max}; i > 1; --i)
+	for (size_t i{max}; i > 1; --i)
 	{
 		worker[i].XOR(worker[i - 1]);
 	}

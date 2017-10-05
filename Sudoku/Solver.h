@@ -77,7 +77,7 @@ public:
 	int single_option(Location);
 	int single_option(Location, int value);
 	int dual_option(Location);
-	int multi_option(Location, unsigned int = 0);
+	int multi_option(Location, size_t = 0);
 
 	template<typename SectionT>
 	int unique_in_section(SectionT);
@@ -277,13 +277,13 @@ inline int Solver<N>::dual_option(const Location loc)
 //	finds equal sets in section:
 //	removes form others in section
 template<int N>
-inline int Solver<N>::multi_option(const Location loc, unsigned int count)
+inline int Solver<N>::multi_option(const Location loc, size_t count)
 {
 	assert(is_valid(loc));
 
 	if (!count)
 	{
-		count = board_[loc].count();
+		count = static_cast<size_t>(board_[loc].count());
 	}
 	constexpr auto specialize = 2; // use specialization below and including
 	constexpr auto max_size   = elem_size / 2; //?? Assumption, Proof needed
@@ -532,7 +532,7 @@ inline int Solver<N>::section_exclusive(const InItr_ begin, const InItr_ end)
 
 	auto appearing = appearance_sets(begin, end);
 
-	int i{2};
+	size_t i{2};
 	while (i <= N) // won't run if condition fails
 	{
 		// unique specialization
@@ -543,7 +543,8 @@ inline int Solver<N>::section_exclusive(const InItr_ begin, const InItr_ end)
 		}
 		else if (appearing[i].count_all() > 0)
 		{
-			changes += set_section_locals(begin, end, i, appearing[i]);
+			changes += set_section_locals(
+				begin, end, static_cast<int>(i), appearing[i]);
 			appearing = appearance_sets(begin, end);
 			++i;
 		}
@@ -564,7 +565,7 @@ inline int Solver<N>::block_exclusive(const InItr_ begin, const InItr_ end)
 
 	int changes{}; // performance counter
 
-	int i{1};
+	size_t i{1};
 	auto appearing = appearance_sets(begin, end);
 	while (i <= N) // won't run if condition fails
 	{
@@ -576,7 +577,8 @@ inline int Solver<N>::block_exclusive(const InItr_ begin, const InItr_ end)
 		}
 		else if (appearing[i].count_all() > 0)
 		{
-			changes += set_block_locals(begin, end, i, appearing[i]);
+			changes +=
+				set_block_locals(begin, end, static_cast<int>(i), appearing[i]);
 			appearing = appearance_sets(begin, end);
 			++i;
 		}

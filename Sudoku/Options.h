@@ -172,7 +172,7 @@ inline Options<E>& Options<E>::remove_option(const int value) noexcept
 	assert(value >= 0 && value <= E);
 	assert(!is_answer(value));
 
-	operator[](static_cast<size_t>(value)) = false;
+	operator[](value) = false;
 	return *this;
 }
 
