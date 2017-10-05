@@ -266,7 +266,6 @@
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
       <WarningLevel>EnableAllWarnings</WarningLevel>
-      <Optimization>Full</Optimization>
       <MinimalRebuild />
     </ClCompile>
   </ItemDefinitionGroup>
@@ -278,7 +277,6 @@
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
       <WarningLevel>EnableAllWarnings</WarningLevel>
-      <Optimization>Full</Optimization>
       <MinimalRebuild />
     </ClCompile>
   </ItemDefinitionGroup>

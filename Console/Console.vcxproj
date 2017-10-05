@@ -261,7 +261,6 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">
     <ClCompile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <Optimization>Full</Optimization>
       <MinimalRebuild />
       <AdditionalOptions>-fno-ms-compatibility -fno-strict-aliasing -Wno-c++17-extensions -Wextra -Wconversion -Wcast-align -Wformat=2 -Woverloaded-virtual -Wreorder %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>EnableAllWarnings</WarningLevel>
@@ -270,7 +269,6 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">
     <ClCompile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <Optimization>Full</Optimization>
       <MinimalRebuild />
       <AdditionalOptions>-fno-ms-compatibility -fno-strict-aliasing -Wno-c++17-extensions -Wextra -Wconversion -Wcast-align -Wformat=2 -Woverloaded-virtual -Wreorder %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>EnableAllWarnings</WarningLevel>
