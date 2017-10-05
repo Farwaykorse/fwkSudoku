@@ -117,7 +117,6 @@ Step 3) xor [n-1]
 // Less than 9: possible worker[0] is not empty
 // Less than 3: no use for worker[3]
 // More than 9: shouldn't be an issue
-// TODO Test different inputs
 */
 {
 	using Options = Sudoku::Options<N * N>;
@@ -134,18 +133,15 @@ Step 3) xor [n-1]
 		if (elem_itr->is_answer())
 		{
 			// add answer to all
-			for (int i{max}; i >= 0; --i)
-			{
-				worker[i] = *elem_itr + worker[i];
-			}
+			for (auto& set : worker) { set += *elem_itr; } // OR
 		}
 		else
 		{
 			for (int i{max}; i > 0; --i)
 			{
-				worker[i] += (worker[i - 1] & *elem_itr); // AND
+				worker[i] += (worker[i - 1] & *elem_itr); // OR( AND )
 			}
-			worker[0] += *elem_itr;
+			worker[0] += *elem_itr; // OR
 		}
 	}
 	// flip -> worker[n] contains options appearing n times or less
@@ -154,8 +150,8 @@ Step 3) xor [n-1]
 		option_set.flip();
 	}
 	// TODO test: can trigger on smaller sets; better
-	assert(worker[0].is_empty()); // fails if not all options exist
-								  // won't trigger if answer-bit set
+	// fails if not all options exist
+	assert(worker[0].is_empty() || worker[0].count_all() == 0);
 
 	// xor -> worker[n] options appearing n times
 	for (int i{max}; i > 1; --i)
