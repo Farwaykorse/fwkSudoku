@@ -1,6 +1,8 @@
-﻿/**	Utilities for class Sudoku::Location
- *	Non-member functions, included in Board.h
- */
+﻿//===--	Sudoku/Location_Utilities.h										--===//
+//
+//	Utilities for class Sudoku::Location
+//	Included in Location.h
+//===---------------------------------------------------------------------===//
 #pragma once
 
 #include <vector>
@@ -13,13 +15,13 @@
 namespace Sudoku
 {
 template<int N>
-constexpr bool shared_row(Location<N> left, Location<N> right)
+constexpr bool shared_row(const Location<N> left, const Location<N> right)
 {
 	return left.row() == right.row();
 }
 
 template<int N>
-std::vector<Location<N>> shared_row(Location<N> left, std::vector<Location<N>> right)
+std::vector<Location<N>> shared_row(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> tmp_{};
 	for (auto&& loc : right)
@@ -30,13 +32,13 @@ std::vector<Location<N>> shared_row(Location<N> left, std::vector<Location<N>> r
 }
 
 template<int N>
-constexpr bool shared_col(Location<N> left, Location<N> right)
+constexpr bool shared_col(const Location<N> left, const Location<N> right)
 {
 	return left.col() == right.col();
 }
 
 template<int N>
-std::vector<Location<N>> shared_col(Location<N> left, std::vector<Location<N>> right)
+std::vector<Location<N>> shared_col(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> tmp_{};
 	for (auto&& loc : right)
@@ -47,13 +49,13 @@ std::vector<Location<N>> shared_col(Location<N> left, std::vector<Location<N>> r
 }
 
 template<int N>
-constexpr bool shared_block(Location<N> left, Location<N> right)
+constexpr bool shared_block(const Location<N> left, const Location<N> right)
 {
 	return left.block() == right.block();
 }
 
 template<int N>
-std::vector<Location<N>> shared_block(Location<N> left, std::vector<Location<N>> right)
+std::vector<Location<N>> shared_block(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> tmp_{};
 	for (auto&& loc : right)
@@ -87,21 +89,32 @@ constexpr void valid_dimensions()
 		"size calculation broken");
 }
 
+// Test if Location on Board
+template<int N>
+constexpr bool is_valid(const Location<N> loc)
+{
+	return (loc.element() >= 0 && loc.element() < loc.full_size);
+}
+
 // Test row/col/block-element
 template<int N>
-constexpr bool valid_size(const int elem)
+constexpr bool is_valid_size(const int elem)
 {
-	return (elem >= 0 && elem < Location<N>().full_size);
+	return (elem >= 0 && elem < Location<N>().elem_size);
 }
 
-// Test
+// Test if location on Board
 template<int N>
-constexpr bool valid_size(const int row, const int col)
+constexpr bool is_valid_size(const int row, const int col)
 {
-	return (
-		row >= 0 && row < Location<N>().elem_size &&
-		col >= 0 && col < Location<N>().elem_size);
+	return is_valid_size<N>(row) && is_valid_size<N>(col);
 }
 
+// Test input value
+template<int N>
+constexpr bool is_valid_value(const int value)
+{
+	return value > 0 && value <= Location<N>().elem_size;
+}
 
 }	// namespace Sudoku

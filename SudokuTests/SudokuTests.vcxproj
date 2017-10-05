@@ -261,6 +261,7 @@
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Board_Iterators.cpp" />
+    <ClCompile Include="Board_Sections.cpp" />
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="precompiled.cpp">
@@ -271,6 +272,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Solver.cpp" />
     <ClCompile Include="SudokuTests.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 // Calculate locations within a board
 #pragma once
 
+#include "Location_Utilities.h"
 #include <limits>
 
 // Forward declarations

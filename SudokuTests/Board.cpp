@@ -104,6 +104,8 @@ namespace compiletime
 	//static_assert(! std::is_swappable_with_v<typeT, Options<9>>, "");	//C++17
 	//static_assert(! std::is_nothrow_swappable_with_v<typeT, Options<9>>, "");	//C++17
 }
+//===---------------------------------------------------------------------===//
+
 TEST(Board, Construction)
 {
 	// default constructor
@@ -332,89 +334,6 @@ TEST(Board, InBetween)
 	EXPECT_NE(cboard[3][3], 10);
 	// see deathtests
 }
-TEST(Board, Row)
-{
-	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-	const Board<int, 2> cA{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-	ASSERT_NO_THROW(Board<int>().row(0));	//??? intellisense: incomplete type
-	// see deathtests
-	ASSERT_NO_THROW(Board<int>().row(Location<3>(12)));
-
-	EXPECT_NO_THROW(Board<int>().row(0)[0]);
-	EXPECT_NO_THROW((Board<int, 2>().row(0)[0]));	// [gTest]
-	EXPECT_NO_THROW(A.row(0)[0]);
-	EXPECT_NO_THROW(cA.row(0)[0]);
-	EXPECT_EQ(A.row(0)[3], 3);
-	EXPECT_EQ(cA.row(0)[3], 3);
-	EXPECT_EQ(A.row(3)[3], 15);
-	EXPECT_NE(A.row(3)[3], 10);
-	// see deathtests
-
-	EXPECT_NO_THROW(Board<int>().row(Location<3>(13))[0]);
-	EXPECT_NO_THROW(A.row(Location<2>(13))[0]);
-	EXPECT_EQ(A.row(Location<2>(13))[0], 12);
-	EXPECT_EQ(cA.row(Location<2>(13))[0], 12);
-	EXPECT_NE(A.row(Location<2>(13))[0], 10);
-	EXPECT_NE(cA.row(Location<2>(13))[0], 10);
-}
-
-
-TEST(Board, Col)
-{
-	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-	const Board<int, 2> cA{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-	ASSERT_NO_THROW(Board<int>().col(0));	//??? intellisense: incomplete type
-	ASSERT_NO_THROW(Board<int>().col(Location<3>(12)));
-
-	EXPECT_NO_THROW(Board<int>().col(0)[0]);
-	EXPECT_NO_THROW((Board<int, 2>().col(0)[0]));	// [gTest]
-	EXPECT_NO_THROW(A.col(0)[0]);
-	EXPECT_NO_THROW(cA.col(0)[0]);
-	EXPECT_EQ(A.col(0)[0], 9);
-	EXPECT_EQ(A.col(0)[1], 4);
-	EXPECT_EQ(A.col(1)[0], 1);
-	EXPECT_EQ(A.col(1)[3], 13);
-	EXPECT_EQ(cA.col(0)[3], 12);
-	EXPECT_EQ(cA.col(3)[3], 15);
-	EXPECT_EQ(A.col(3)[3], 15);
-	EXPECT_NE(A.col(3)[3], 10);
-
-	EXPECT_NO_THROW(Board<int>().col(Location<3>(13))[0]);
-	EXPECT_NO_THROW(A.col(Location<2>(13))[0]);
-	EXPECT_EQ(A.col(Location<2>(13))[0], 1);
-	EXPECT_EQ(cA.col(Location<2>(13))[0], 1);
-	EXPECT_NE(A.col(Location<2>(13))[0], 10);
-	EXPECT_NE(cA.col(Location<2>(13))[0], 10);
-}
-
-TEST(Board, Block)
-{
-	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-	const Board<int, 2> cA{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-	ASSERT_NO_THROW(Board<int>().block(0));	//??? intellisense: incomplete type
-	ASSERT_NO_THROW(Board<int>().block(Location<3>(12)));
-
-	EXPECT_NO_THROW(Board<int>().block(0)[0]);
-	EXPECT_NO_THROW((Board<int, 2>().block(0)[0]));	// [gTest]
-	EXPECT_NO_THROW(A.block(0)[0]);
-	EXPECT_NO_THROW(cA.block(0)[0]);
-	EXPECT_EQ(A.block(0)[0], 9);
-	EXPECT_EQ(A.block(0)[1], 1);
-	EXPECT_EQ(A.block(1)[0], 2);
-	EXPECT_EQ(A.block(1)[3], 7);
-	EXPECT_EQ(cA.block(0)[3], 5);
-	EXPECT_EQ(cA.block(3)[3], 15);
-	EXPECT_EQ(A.block(3)[3], 15);
-	EXPECT_NE(A.block(3)[3], 10);
-
-	EXPECT_NO_THROW(Board<int>().block(Location<3>(13))[0]);
-	EXPECT_NO_THROW(A.block(Location<2>(13))[0]);
-	EXPECT_EQ(A.block(Location<2>(13))[0], 8);
-	EXPECT_EQ(cA.block(Location<2>(13))[0], 8);
-	EXPECT_NE(A.block(Location<2>(13))[0], 10);
-	EXPECT_NE(cA.block(Location<2>(13))[0], 10);
-}
-
 TEST(Board, deathtests)
 {
 	// Board.h
@@ -427,45 +346,7 @@ TEST(Board, deathtests)
 	//Board<int, 2> board{};
 	//EXPECT_DEBUG_DEATH({ board[4][4]; }, "") << "Out of bounds";	// [gTest]
 
-	// Board_Sections.h
-	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-	const Board<int, 2> cA{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-	EXPECT_DEBUG_DEATH({ cA.row(-1); }, "")		<< "const_Row(-1) element out of bounds";
-	EXPECT_DEBUG_DEATH({ A.row(-1); }, "")		<< "Row(-1) element out of bounds";
-	EXPECT_DEBUG_DEATH({ cA.row(4); }, "")		<< "const_Row(4) element out of bounds";
-	EXPECT_DEBUG_DEATH({ A.row(4); }, "")		<< "Row(4) element out of bounds";
-	EXPECT_DEBUG_DEATH({ cA.col(-1); }, "")		<< "const_Col(-1) element out of bounds";
-	EXPECT_DEBUG_DEATH({ A.col(-1); }, "")		<< "Col(-1) element out of bounds";
-	EXPECT_DEBUG_DEATH({ cA.col(4); }, "")		<< "const_Col(4) element out of bounds";
-	EXPECT_DEBUG_DEATH({ cA.block(-1); }, "")	<< "const_Block(-1) element out of bounds";
-	EXPECT_DEBUG_DEATH({ A.block(-1); }, "")	<< "Block(-1) element out of bounds";
-	EXPECT_DEBUG_DEATH({ cA.block(4); }, "")	<< "const_Block(4) element out of bounds";
-	EXPECT_DEBUG_DEATH({ A.block(4); }, "")		<< "Block(4) element out of bounds";
 
-	//TODO Row(Location) out of bounds
-	//const Location<2> min{ -1 };
-	//const Location<2> plus{ 21 };
-	//EXPECT_DEBUG_DEATH({ cA.row(min); }, "")	<< "const_Row(Loc(-1) element out of bounds";
-	//EXPECT_DEBUG_DEATH({ cA.row(plus); }, "")	<< "const_Row(Loc(21) element out of bounds";
-
-	EXPECT_DEBUG_DEATH({ cA.row(0)[-1]; }, "")	<< "const_Row[-1] element out of bounds";
-	EXPECT_DEBUG_DEATH({ A.row(0)[-1]; }, "")	<< "row[-1] element out of bounds";
-	EXPECT_DEBUG_DEATH({ cA.row(0)[4]; }, "")	<< "row[4] element out of bounds";
-	EXPECT_DEBUG_DEATH({ A.row(0)[4]; }, "")	<< "row[4] element out of bounds";
-	EXPECT_DEBUG_DEATH({ cA.col(0)[-1]; }, "")	<< "const_Col[-1] element out of bounds";
-	EXPECT_DEBUG_DEATH({ A.col(0)[-1]; }, "")	<< "Col[-1] element out of bounds";
-	EXPECT_DEBUG_DEATH({ cA.col(0)[4]; }, "")	<< "const_Col[4] element out of bounds";
-	EXPECT_DEBUG_DEATH({ A.col(0)[4]; }, "")	<< "Col[4] element out of bounds";
-	EXPECT_DEBUG_DEATH({ cA.block(0)[-1]; }, "") << "const_Block[-1] element out of bounds";
-	EXPECT_DEBUG_DEATH({ A.block(0)[-1]; }, "")	<< "Block[-1] element out of bounds";
-	EXPECT_DEBUG_DEATH({ cA.block(0)[4]; }, "")	<< "const_Block[4] element out of bounds";
-	EXPECT_DEBUG_DEATH({ A.block(0)[4]; }, "")	<< "Block[4] element out of bounds";
-
-
-	// compatible_(other)
-	//TODO check asserts that check if same board
-		//assert(owner_->owner_ == other.owner_->owner_);
-		//assert(owner_->id() == other.owner_->id());
 }
 
 } // namespace Sudoku_Test

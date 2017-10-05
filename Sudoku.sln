@@ -12,6 +12,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5FE296CB-7F95-44A2-A544-4009EF24F251}"
 	ProjectSection(SolutionItems) = preProject
+		.clang-format = .clang-format
 		README.md = README.md
 		TODO.md = TODO.md
 	EndProjectSection

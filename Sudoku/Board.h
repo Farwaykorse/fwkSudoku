@@ -8,7 +8,6 @@
 #pragma once
 
 #include "Location.h"
-#include "Location_Utilities.h"
 #include "Board_Sections.h"
 #include "Board_Utilities.h"
 
@@ -31,6 +30,7 @@ public:
 	static_assert(N > 1, "Board.h base_size value too small");
 
 	using Location = Location<N>;
+	using Section	= Board_Section::Section<T, N>;
 	using Row		= Board_Section::Row<T, N>;
 	using const_Row = Board_Section::const_Row<T, N>;
 	using Col		= Board_Section::Col<T, N>;
@@ -166,7 +166,7 @@ inline void Board<T, N>::clear()
 template<typename T, int N>
 T& Board<T, N>::at(const Location loc)
 {
-	if (!valid_size<N>(loc.element()))
+	if (!is_valid<N>(loc))
 	{
 		throw std::out_of_range{ "Board::at(Location)" };
 	}
@@ -176,7 +176,7 @@ T& Board<T, N>::at(const Location loc)
 template<typename T, int N>
 const T& Board<T, N>::at(const Location loc) const
 {
-	if (!valid_size<N>(loc.element()))
+	if (!is_valid<N>(loc))
 	{
 		throw std::out_of_range{ "Board::at(Location) const" };
 	}
@@ -186,7 +186,7 @@ const T& Board<T, N>::at(const Location loc) const
 template<typename T, int N>
 T& Board<T, N>::at(const int row, const int col)
 {
-	if (!valid_size<N>(row, col))
+	if (!is_valid_size<N>(row, col))
 	{
 		throw std::out_of_range{ "Board::at(int row, col)" };	// <stdexcept>
 	}
@@ -196,7 +196,7 @@ T& Board<T, N>::at(const int row, const int col)
 template<typename T, int N>
 const T& Board<T, N>::at(const int row, const int col) const
 {
-	if (!valid_size<N>(row, col))
+	if (!is_valid_size<N>(row, col))
 	{
 		throw std::out_of_range{ "Board::at(row, col) const" };
 	}
@@ -207,7 +207,7 @@ const T& Board<T, N>::at(const int row, const int col) const
 template<typename T, int N>
 T& Board<T, N>::at(const int elem)
 {
-	if (!valid_size<N>(elem))
+	if (!is_valid_size<N>(elem))
 	{
 		throw std::out_of_range{ "Board::at(int)" };
 	}
@@ -218,7 +218,7 @@ T& Board<T, N>::at(const int elem)
 template<typename T, int N>
 const T& Board<T, N>::at(const int elem) const
 {
-	if (!valid_size<N>(elem))
+	if (!is_valid_size<N>(elem))
 	{
 		throw std::out_of_range{ "Board::at(int) const" };
 	}

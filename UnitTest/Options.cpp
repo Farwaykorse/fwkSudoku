@@ -196,10 +196,10 @@ public:
 		Assert::IsTrue(O_2.count_all() == 0, L"flip() failed on count_all()");
 		// remove_option(int)
 		TMP.reset();
-		static_assert(!noexcept(TMP.remove_option(3)), "remove_option(int) should be noexcept");
-		Assert::IsTrue(TMP.remove_option(3), L"remove_option(int) failed");
-		Assert::IsTrue(TMP.count() == 8, L"remove_option(int) failed_2");
-		Assert::IsFalse(TMP.remove_option(3), L"remove_option(int) on false should return false");
+		static_assert(noexcept(TMP.remove_option(3)), "remove_option(int) should be noexcept");
+		//Assert::IsTrue(TMP.remove_option(3), L"remove_option(int) failed");
+		//Assert::IsTrue(TMP.count() == 8, L"remove_option(int) failed_2");
+		//Assert::IsFalse(TMP.remove_option(3), L"remove_option(int) on false should return false");
 		// add(int)
 		//Options& add(int value);			// add single option
 		static_assert(!noexcept(O_1.add(4)), "add(int) should NOT be noexcept");
@@ -293,7 +293,7 @@ public:
 		Assert::IsTrue(O_1 + O_2 == O_1, L"operation+ failed");
 		Assert::IsTrue(E_1 + O_1 == O_1, L"operation+ failed");
 		Assert::IsTrue(A_2 + E_3 == O_3, L"operation+= ans+=other failed");
-		Assert::IsFalse(E_1 + A_2 == O_3, L"operation+= other+=ans failed");
+		Assert::IsTrue(E_1 + A_2 == O_3, L"operation+= other+=ans failed");
 		//Options operator-(Options&) const		difference
 		static_assert(noexcept(O_1 - O_2), "operator- should be noexcept");
 

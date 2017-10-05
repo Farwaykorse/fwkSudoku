@@ -7,6 +7,7 @@
 // File under test
 #include "../Sudoku/Solver.h"
 // helpers
+#include "../Sudoku/Board.h"
 
 // library
 #include <vector>
@@ -73,7 +74,7 @@ public:
 		};
 		// Set single value
 		Board<Options<4>, 2> board;
-		Assert::IsTrue(board.at(5) == Options<4>{}, L"incorrect instantiation");
+		Assert::IsTrue(board[1][1] == Options<4>{}, L"incorrect instantiation");
 		try { Solver<2>(board).setValue(Location<2>(2), 3); }
 		catch (...) { Assert::Fail(L"setValue failed"); }
 		Assert::IsTrue(board[0][2] == 3, L"setValue failed to set the value");
@@ -118,10 +119,10 @@ public:
 			0,0, 0,0	// 2,3	4	1,2	1,2,
 		};
 		Board<Options<4>, 2> B1;
-		Assert::IsTrue(B1.at(0) == Options<4>{} && B1.at(15) == Options<4>{}, L"incorrect instantiation");
+		Assert::IsTrue(B1[0][0] == Options<4>{} && B1[3][3] == Options<4>{}, L"incorrect instantiation");
 		Solver<2>(B1).setValue(v1.cbegin(), v1.cend());
 		const Board<Options<4>, 2> cB1{ B1 };	// copy to compare with
-		Assert::IsTrue(B1.at(1) == 2 && B1.at(4) == 4 && B1.at(10) == 4, L"setup error");
+		Assert::IsTrue(B1[0][1] == 2 && B1[1][0] == 4 && B1[2][2] == 4, L"setup error");
 		Assert::IsTrue(B1 == cB1, L"copy error");
 		// single row
 		Solver<2>(B1).unique_in_section(B1.row(0).cbegin(), B1.row(0).cend());

@@ -285,7 +285,6 @@
   <ItemGroup>
     <ClInclude Include="Board.fwd.h" />
     <ClInclude Include="Board.h" />
-    <ClInclude Include="Board_Sections.fwd.h" />
     <ClInclude Include="Board_Sections.h" />
     <ClInclude Include="Board_Utilities.h" />
     <ClInclude Include="Location.fwd.h" />
@@ -293,8 +292,12 @@
     <ClInclude Include="Location_Utilities.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="precompiled.h" />
+    <ClInclude Include="Solver.fwd.h" />
     <ClInclude Include="Solver.h" />
     <ClInclude Include="SolverBase.h" />
+    <ClInclude Include="Solvers_Appearance.h" />
+    <ClInclude Include="Solver_Utilities.h" />
+    <ClInclude Include="Sudoku.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="precompiled.cpp">
@@ -309,6 +312,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="Solver.md" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Board.natvis">
