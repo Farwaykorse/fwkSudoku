@@ -1,6 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?> 
+<?xml version="1.0" encoding="utf-8"?>
+<!--  Sudoku/Location.natvis                                                 //
+//
+//  Support for Sudoku::Location<N> in the debugger
+//===-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-===//
+//
+//  Views: use by adding ",view(simple)" after element-name in debugger
+//    simple: ...
+//===-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-->
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
-
   <Type Name="Sudoku::Location&lt;*&gt;">
     <Intrinsic Name="row" Expression="id_/elem_size" />
     <Intrinsic Name="col" Expression="id_%elem_size" />
