@@ -33,6 +33,9 @@
     <ClCompile Include="Board_Iterators.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Solver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Board_Sections.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
