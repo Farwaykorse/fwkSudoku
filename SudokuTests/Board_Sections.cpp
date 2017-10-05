@@ -57,8 +57,9 @@ namespace compiletime
 
 	static_assert(std::is_class_v<typeT>, "-- a class");
 	static_assert(!std::is_trivial_v<typeT>, "trivial default constructors");
-	static_assert(!std::is_trivially_copyable_v<typeT>,
-		"-- compatible with std::memcpy & binary copy from/to files");
+	//! different between VC++ / Clang
+	//static_assert(!std::is_trivially_copyable_v<typeT>,
+	//	"-- compatible with std::memcpy & binary copy from/to files");
 	static_assert(std::is_standard_layout_v<typeT>, "standard layout");
 	static_assert(!std::is_pod_v<typeT>,
 		"++ Plain Old Data, both trivial and standard-layout, C compatible");
@@ -105,14 +106,15 @@ namespace compiletime
 	static_assert(std::is_trivially_destructible_v<typeT>, "-- trivially destructable");
 	static_assert(!std::has_virtual_destructor_v<typeT>, "-- virtual destructor");
 
-	static_assert(!std::is_swappable_v<typeT>, "-- swappable");			//C++17
-	static_assert(!std::is_nothrow_swappable_v<typeT>, "-- nothrow swappable");	//C++17
+	//TODO not yet supported in Clang
+	//static_assert(!std::is_swappable_v<typeT>, "-- swappable");			//C++17
+	//static_assert(!std::is_nothrow_swappable_v<typeT>, "-- nothrow swappable");	//C++17
 
 	// variations
 	static_assert(std::is_default_constructible_v<Section>, "not Section()");
 	static_assert(std::is_copy_assignable_v<Section>, "-- copy assignable");
 	static_assert(std::is_move_assignable_v<Section>, "-- move assignable");
-	static_assert(std::is_swappable_v<Section>, "-- swappable");			//C++17
+	//static_assert(std::is_swappable_v<Section>, "-- swappable");			//C++17
 }
 TEST(Board_Sections, Row)
 {

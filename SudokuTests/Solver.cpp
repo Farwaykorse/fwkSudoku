@@ -42,7 +42,8 @@ namespace compiletime
 	static_assert(std::is_class_v<typeT>, "class, hiding datarepresentation");
 	static_assert(!std::is_trivial_v<typeT>, "is trivial");
 	//	default constructors & trivially copyable
-	static_assert(!std::is_trivially_copyable_v<typeT>, "trivial copy");
+	//! different between VC++ / Clang
+	//static_assert(!std::is_trivially_copyable_v<typeT>, "trivial copy");
 	//	compatible with std::memcpy & binary copy from/to files
 	static_assert(!std::is_standard_layout_v<typeT>, "standard layout");
 	//	can be converted with reinterpret_cast
@@ -102,10 +103,11 @@ namespace compiletime
 		"-- virtual destructor");
 
 	// C++17 swappable
-	static_assert(!std::is_swappable_v<typeT>, "-- swappable");
-	static_assert(!std::is_nothrow_swappable_v<typeT>, "-- nothrow swappable");
-	static_assert(!std::is_swappable_with_v<typeT, Options<9>>, "");
-	static_assert(!std::is_nothrow_swappable_with_v<typeT, Options<9>>, "");
+	//TODO no Clang support
+	//static_assert(!std::is_swappable_v<typeT>, "-- swappable");
+	//static_assert(!std::is_nothrow_swappable_v<typeT>, "-- nothrow swappable");
+	//static_assert(!std::is_swappable_with_v<typeT, Options<9>>, "");
+	//static_assert(!std::is_nothrow_swappable_with_v<typeT, Options<9>>, "");
 
 	//===---------------------------------------------------------------------===//
 	// is_constructible from different types

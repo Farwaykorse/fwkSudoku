@@ -20,7 +20,8 @@ namespace compiletime
 	using typeT = Location<3>;
 	static_assert(std::is_class<typeT>::value, "-- a class, hiding datarepresentation");
 	static_assert(!std::is_trivial<typeT>::value, "trivial default constructors & trivially copyable");
-	static_assert(!std::is_trivially_copyable<typeT>::value, "-- compatible with std::memcpy & binary copy from/to files");
+	//! different between VC++ / Clang
+	//static_assert(!std::is_trivially_copyable<typeT>::value, "-- compatible with std::memcpy & binary copy from/to files");
 	static_assert(std::is_standard_layout<typeT>::value, "-- StandardLayoutType");	// can be converted with reinterpret_cast
 	static_assert(!std::is_pod<typeT>::value, "++ Plain Old Data, both trivial and standard-layout, C compatible");
 	//static_assert(std::has_unique_object_representations<typeT>::value, "");	//C++17	trivially_copyable same object representation
@@ -79,7 +80,8 @@ namespace Location_Block_compiletime
 	using typeT = Location_Block<3>;
 	static_assert(std::is_class<typeT>::value, "-- a class, hiding datarepresentation");
 	static_assert(!std::is_trivial<typeT>::value, "trivial default constructors & trivially copyable");
-	static_assert(!std::is_trivially_copyable<typeT>::value, "++ compatible with std::memcpy & binary copy from/to files");
+	//! different between VC++ / Clang
+	//static_assert(!std::is_trivially_copyable<typeT>::value, "++ compatible with std::memcpy & binary copy from/to files");
 	static_assert(std::is_standard_layout<typeT>::value, "-- StandardLayoutType");	// can be converted with reinterpret_cast
 	static_assert(!std::is_pod<typeT>::value, "++ Plain Old Data, both trivial and standard-layout, C compatible");
 	//static_assert(std::has_unique_object_representations<typeT>::value, "");	//C++17	trivially_copyable same object representation
