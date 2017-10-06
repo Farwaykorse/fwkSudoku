@@ -59,13 +59,14 @@ auto appearance_once(T section)
 }
 
 //	return a mask for values with a single appearance
-template<int E, typename InItr_, typename = std::enable_if_t<is_input<InItr_>>>
-Options<E> appearance_once(const InItr_ begin, const InItr_ end)
+template<int N, typename InItr_, typename = std::enable_if_t<is_input<InItr_>>>
+Options<elem_size<N>> appearance_once(const InItr_ begin, const InItr_ end)
 {
 	// TODO determine iterator types, should point to Options...
+	using Options = Options<elem_size<N>>;
 
-	Options<E> sum(0);    // helper all used
-	Options<E> worker(0); // multiple uses OR answer
+	Options sum(0);    // helper all used
+	Options worker(0); // multiple uses OR answer
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		if (itr->is_answer())
@@ -116,7 +117,7 @@ Step 3) xor [n-1]
 // More than 9: shouldn't be an issue
 */
 {
-	using Options = Sudoku::Options<N * N>;
+	using Options = Sudoku::Options<elem_size<N>>;
 	// To limit processing time, counting up to N
 	constexpr size_t max = N; // default: (9x9 board) up-to 3 times
 	std::array<Options, max + 1> worker{};

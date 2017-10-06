@@ -194,28 +194,28 @@ TEST(Solvers_, appearance_once)
 	EXPECT_EQ(B1[3][3].count(), 4);
 	EXPECT_TRUE(B1[3][3].is_option(1));
 	// on row
-	EXPECT_NO_THROW(result = Solvers_::appearance_once<4>(B1.row(3).cbegin(), B1.row(3).cend()));
+	EXPECT_NO_THROW(result = Solvers_::appearance_once<2>(B1.row(3).cbegin(), B1.row(3).cend()));
 	EXPECT_EQ(result.count_all(), 1);
 	EXPECT_TRUE(result.test(1));
 	EXPECT_FALSE(result.is_answer());	// NOT needed
 	// on col
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
-	EXPECT_NO_THROW(result = Solvers_::appearance_once<4>(B1.col(3).cbegin(), B1.col(3).cend()));
+	EXPECT_NO_THROW(result = Solvers_::appearance_once<2>(B1.col(3).cbegin(), B1.col(3).cend()));
 	EXPECT_EQ(result.count_all(), 1);
 	EXPECT_TRUE(result.test(1));
 	EXPECT_FALSE(result.is_answer());	// NOT needed
 	// on block
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
-	EXPECT_NO_THROW(result = Solvers_::appearance_once<4>(B1.block(3).cbegin(), B1.block(3).cend()));
+	EXPECT_NO_THROW(result = Solvers_::appearance_once<2>(B1.block(3).cbegin(), B1.block(3).cend()));
 	EXPECT_EQ(result.count_all(), 1);
 	EXPECT_TRUE(result.test(1));
 	EXPECT_FALSE(result.is_answer());	// NOT needed
 	// nothing
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
-	EXPECT_NO_THROW(result = Solvers_::appearance_once<4>(B1.row(0).cbegin(), B1.row(0).cend()));
+	EXPECT_NO_THROW(result = Solvers_::appearance_once<2>(B1.row(0).cbegin(), B1.row(0).cend()));
 	EXPECT_EQ(result.count_all(), 0);
 	EXPECT_FALSE(result.test(1));
 	EXPECT_FALSE(result.is_answer());	// NOT needed
@@ -248,7 +248,6 @@ TEST(Solvers_, appearance_once)
 	EXPECT_FALSE(result.test(1));
 	EXPECT_FALSE(result.is_answer());	// NOT needed
 }
-
 TEST(Solvers_, appearance_sets)
 {
 	// Example as shown in implementation
