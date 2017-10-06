@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Options.h"
+#include "Solver_Utilities.h"
 #include "Solvers_Appearance.h"
 
 #include <array>
@@ -41,13 +42,15 @@ class Solver
 	using Row     = typename Board::Row;
 	using Col     = typename Board::Col;
 	using Block   = typename Board::Block;
+	template<typename Itr>
+	using if_forward = std::enable_if_t<Solvers_::is_forward<Itr>>;
 
 public:
 	Solver(Board&);
 
 	// Edit Board
 	void setValue(Location, int);
-	template<typename InItr_>
+	template<typename InItr_, typename = if_forward<InItr_>>
 	void setValue(InItr_ begin, InItr_ end);
 
 	// remove an option: triggers solvers single_option()
@@ -144,10 +147,11 @@ inline void Solver<N>::setValue(const Location loc, const int value)
 
 //	set board_ using a transferable container of values
 template<int N>
-template<typename InItr_>
+template<typename InItr_, typename> // at least forward_iterator
 inline void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 {
-	// TODO check iterator type, at least: forward_iterator_tag
+	// check iterator type, at least: forward_iterator_tag
+	static_assert(Solvers_::is_forward<InItr_>);
 	assert(end - begin == full_size);
 
 	int n{0};
@@ -487,7 +491,7 @@ template<int N>
 template<typename InItr_>
 inline int Solver<N>::unique_in_section(const InItr_ begin, const InItr_ end)
 {
-	const auto worker = Solvers_::appearance_once<elem_size>(begin, end);
+	const auto worker = Solvers_::appearance_once<N>(begin, end);
 	return set_uniques(begin, end, worker);
 }
 

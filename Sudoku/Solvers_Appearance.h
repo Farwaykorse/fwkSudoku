@@ -6,7 +6,9 @@
 
 #include "Options.h"
 #include "Location.h"
+#include "Solver_Utilities.h"
 #include <type_traits>
+#include <iterator>
 
 // Forward declarations
 #include "Board.fwd.h"
@@ -19,13 +21,6 @@ namespace Sudoku::Solvers_
 //TODO 1. general version taking [int] 1-full_size for appearance count
 //TODO 2. default to base_size
 //TODO 3. specialize appearance_once version (unique?)
-
-namespace
-{
-// Local namespace, helper-functions
-template<int N>
-static constexpr int elem_size = Location<N>().elem_size; // default 9
-}
 
 // range-based-for
 template<int N, typename T>
@@ -41,6 +36,8 @@ auto appearance_once(T section)
 		using traits = std::iterator_traits<typename T::iterator>;
 		static_assert(std::is_object_v<typename traits::iterator_category>);
 		static_assert(std::is_same_v<typename traits::value_type, Options>);
+
+		static_assert(iterator_to<T::iterator, Options>);
 	}
 
 	Options sum(0);    // helper all used
@@ -62,7 +59,7 @@ auto appearance_once(T section)
 }
 
 //	return a mask for values with a single appearance
-template<int E, typename InItr_>
+template<int E, typename InItr_, typename = std::enable_if_t<is_input<InItr_>>>
 Options<E> appearance_once(const InItr_ begin, const InItr_ end)
 {
 	// TODO determine iterator types, should point to Options...
@@ -85,7 +82,7 @@ Options<E> appearance_once(const InItr_ begin, const InItr_ end)
 }
 
 //	returning options collected by appearance count in input-dataset
-template<int N, typename InItr_>
+template<int N, typename InItr_, typename = std::enable_if_t<is_input<InItr_>>>
 auto appearance_sets(const InItr_ begin, const InItr_ end)
 /*
 Example illustration
