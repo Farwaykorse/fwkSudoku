@@ -247,16 +247,14 @@ inline int Solver<N>::dual_option(const Location loc)
 			if (shared_row(loc, Location(i)))
 			{
 				changes += remove_option_section(
-					board_.row(loc).begin(),
-					board_.row(loc).end(),
+					board_.row(loc),
 					std::vector<Location>{loc, Location(i)},
 					item.available());
 			}
 			else if (shared_col(loc, Location(i)))
 			{
 				changes += remove_option_section(
-					board_.col(loc).begin(),
-					board_.col(loc).end(),
+					board_.col(loc),
 					std::vector<Location>{loc, Location(i)},
 					item.available());
 			}
@@ -264,8 +262,7 @@ inline int Solver<N>::dual_option(const Location loc)
 			{
 				// NOTE this is slow
 				changes += remove_option_section(
-					board_.block(loc).begin(),
-					board_.block(loc).end(),
+					board_.block(loc),
 					std::vector<Location>{loc, Location(i)},
 					item.available());
 			}
