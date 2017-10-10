@@ -115,6 +115,29 @@ namespace compiletime
 	static_assert(std::is_copy_assignable_v<Section>, "-- copy assignable");
 	static_assert(std::is_move_assignable_v<Section>, "-- move assignable");
 	//static_assert(std::is_swappable_v<Section>, "-- swappable");			//C++17
+
+	//is_constructible from different types
+	static_assert(std::is_constructible_v<const_Row, Row>);
+	static_assert(std::is_constructible_v<const_Row, const_Row>);
+	static_assert(std::is_constructible_v<Row, Row>);
+	static_assert(std::is_constructible_v<const_Col, Col>);
+	static_assert(std::is_constructible_v<const_Block, Block>);
+	static_assert(!std::is_constructible_v<const_Row, const_Col>);
+	static_assert(!std::is_constructible_v<const_Row, Col>);
+	static_assert(!std::is_constructible_v<const_Row, const_Block>);
+	static_assert(!std::is_constructible_v<const_Row, Block>);
+	static_assert(!std::is_constructible_v<const_Row, Section>);
+	static_assert(!std::is_constructible_v<Row, const_Row>);
+	static_assert(!std::is_constructible_v<Row, const_Col>);
+	static_assert(!std::is_constructible_v<Row, const_Block>);
+	static_assert(!std::is_constructible_v<Row, Section>);
+	static_assert(!std::is_constructible_v<Col, const_Col>);
+	static_assert(!std::is_constructible_v<const_Col, const_Row>);
+	static_assert(!std::is_constructible_v<const_Col, Row>);
+	static_assert(!std::is_constructible_v<const_Col, const_Block>);
+	static_assert(!std::is_constructible_v<const_Col, Block>);
+	static_assert(!std::is_constructible_v<const_Col, Section>);
+	static_assert(!std::is_constructible_v<Block, const_Block>);
 }
 TEST(Board_Sections, Row)
 {

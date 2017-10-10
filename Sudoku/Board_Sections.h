@@ -45,7 +45,13 @@ class const_Row
 	{
 		assert(is_valid(loc));
 	}
+
+	// stop inheritance parent constructing
+	template<typename OtherT>
+	const_Row(OtherT) = delete;
 public:
+	const_Row(Row<T, N> row) : owner_(row.owner_), id_(row.id_) {}
+
 	constexpr int size() const noexcept { return Location().elem_size; }
 
 	int id() const { return id_; }
@@ -193,15 +199,16 @@ class Row
 	using Location = Sudoku::Location<N>;
 
 	friend class Sudoku::Board<T,N>;		// access private constructor
+	friend class const_Row;
 	friend class iterator<T,N,self_type>;
 	friend class const_iterator<T,N, self_type>;
 
 	Row(gsl::not_null<Board<T, N>*> owner, int row)
-		: const_Row(owner, row), owner_(owner)
+		: const_Row(owner, row), owner_(owner), id_(row)
 	{
 	}
 	Row(gsl::not_null<Board<T, N>*> owner, Location loc)
-		: const_Row(owner, loc.row()), owner_(owner)
+		: const_Row(owner, loc.row()), owner_(owner), id_(loc.row())
 	{
 		assert(is_valid(loc));
 	}
@@ -223,6 +230,7 @@ public:
 
 private:
 	Board<T, N>* const owner_; // const-pointer
+	const int id_;
 
 	T& no_check(Location loc) noexcept
 	{
