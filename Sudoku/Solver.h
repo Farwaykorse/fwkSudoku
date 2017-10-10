@@ -247,21 +247,21 @@ inline int Solver<N>::dual_option(const Location loc)
 		if (board_[Location(i)] == item && Location(i) != loc)
 		{
 			// Remove values for rest of shared elements
-			if (shared_row(loc, Location(i)))
+			if (is_same_row(loc, Location(i)))
 			{
 				changes += remove_option_section(
 					board_.row(loc),
 					std::vector<Location>{loc, Location(i)},
 					item.available());
 			}
-			else if (shared_col(loc, Location(i)))
+			else if (is_same_col(loc, Location(i)))
 			{
 				changes += remove_option_section(
 					board_.col(loc),
 					std::vector<Location>{loc, Location(i)},
 					item.available());
 			}
-			if (shared_block(loc, Location(i)))
+			if (is_same_block(loc, Location(i)))
 			{
 				// NOTE this is slow
 				changes += remove_option_section(
@@ -324,9 +324,9 @@ inline int Solver<N>::multi_option(const Location loc, size_t count)
 		if (list.size() >= count)
 		{
 			// find if: count amount of items share an element
-			auto in_row{shared_row(loc, list)};
-			auto in_col{shared_col(loc, list)};
-			auto in_block{shared_block(loc, list)};
+			auto in_row{is_same_row(loc, list)};
+			auto in_col{is_same_col(loc, list)};
+			auto in_block{is_same_block(loc, list)};
 			// Remove values for rest of shared elements
 			if (in_row.size() == count)
 			{
@@ -361,7 +361,7 @@ inline int Solver<N>::remove_option_section(
 
 	using traits = std::iterator_traits<typename SectionT::iterator>;
 	static_assert(std::is_object_v<typename traits::iterator_category>);
-	static_assert(std::shared_v<typename traits::value_type, Options>);
+	static_assert(std::is_same_v<typename traits::value_type, Options>);
 
 	return remove_option_section(section.begin(), section.end(), ignore, value);
 }
@@ -402,7 +402,7 @@ inline int Solver<N>::remove_option_outside_block(
 	int changes{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		if (!(itr->is_answer() || shared_block(itr.location(), block)))
+		if (!(itr->is_answer() || is_same_block(itr.location(), block)))
 		{
 			changes += remove_option(itr.location(), value);
 		}
@@ -778,7 +778,7 @@ inline int Solver<N>::set_section_locals(
 					locations.cend(),
 					[&locations](auto Loc) {
 						// return L.row() == locations[0].row();
-						return shared_row(Loc, locations[0]);
+						return is_same_row(Loc, locations[0]);
 					}))
 			{
 				changes += remove_option_outside_block(
@@ -791,7 +791,7 @@ inline int Solver<N>::set_section_locals(
 				locations.cend() ==
 				std::find_if_not(
 					locations.cbegin(), locations.cend(), [&locations](auto L) {
-						return shared_col(L, locations[0]);
+						return is_same_col(L, locations[0]);
 					}))
 			{
 				changes += remove_option_outside_block(

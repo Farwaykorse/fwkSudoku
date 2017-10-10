@@ -6,7 +6,7 @@
 #pragma once
 
 #include <vector>
-#include <limits>	// numeric_limits
+#include <limits> // numeric_limits
 
 // Forward declarations
 #include "Location.fwd.h"
@@ -15,52 +15,55 @@
 namespace Sudoku
 {
 template<int N>
-constexpr bool shared_row(const Location<N> left, const Location<N> right)
+constexpr bool is_same_row(const Location<N> left, const Location<N> right)
 {
 	return left.row() == right.row();
 }
 
 template<int N>
-std::vector<Location<N>> shared_row(const Location<N> left, const std::vector<Location<N>>& right)
+std::vector<Location<N>>
+	is_same_row(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> tmp_{};
 	for (auto&& loc : right)
 	{
-		if (shared_row(left, loc)) { tmp_.push_back(loc); }
+		if (is_same_row(left, loc)) { tmp_.push_back(loc); }
 	}
 	return tmp_;
 }
 
 template<int N>
-constexpr bool shared_col(const Location<N> left, const Location<N> right)
+constexpr bool is_same_col(const Location<N> left, const Location<N> right)
 {
 	return left.col() == right.col();
 }
 
 template<int N>
-std::vector<Location<N>> shared_col(const Location<N> left, const std::vector<Location<N>>& right)
+std::vector<Location<N>>
+	is_same_col(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> tmp_{};
 	for (auto&& loc : right)
 	{
-		if (shared_col(left, loc)) { tmp_.push_back(loc); }
+		if (is_same_col(left, loc)) { tmp_.push_back(loc); }
 	}
 	return tmp_;
 }
 
 template<int N>
-constexpr bool shared_block(const Location<N> left, const Location<N> right)
+constexpr bool is_same_block(const Location<N> left, const Location<N> right)
 {
 	return left.block() == right.block();
 }
 
 template<int N>
-std::vector<Location<N>> shared_block(const Location<N> left, const std::vector<Location<N>>& right)
+std::vector<Location<N>>
+	is_same_block(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> tmp_{};
 	for (auto&& loc : right)
 	{
-		if (shared_block(left, loc)) { tmp_.push_back(loc); }
+		if (is_same_block(left, loc)) { tmp_.push_back(loc); }
 	}
 	return tmp_;
 }
@@ -78,7 +81,7 @@ constexpr void valid_dimensions()
 	static_assert(
 		L.base_size < L.elem_size &&
 		L.elem_size <= L.full_size &&
-		L.base_size < std::numeric_limits<int>::max() &&	// <limits>
+		L.base_size < std::numeric_limits<int>::max() && // <limits>
 		L.elem_size < std::numeric_limits<int>::max() &&
 		L.full_size < std::numeric_limits<int>::max(),
 		"board size out of bounds");
@@ -117,4 +120,4 @@ constexpr bool is_valid_value(const int value)
 	return value > 0 && value <= Location<N>().elem_size;
 }
 
-}	// namespace Sudoku
+} // namespace Sudoku
