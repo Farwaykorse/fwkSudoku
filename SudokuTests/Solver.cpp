@@ -190,6 +190,8 @@ TEST(Solvers_, appearance_once)
 	};
 	Board<Options<4>, 2> B1;
 	Options<4> result{};
+
+	// Using iterators
 	EXPECT_NO_THROW(Solver<2>(B1).setValue(v1.cbegin(), v1.cend()));
 	EXPECT_EQ(B1[3][3].count(), 4);
 	EXPECT_TRUE(B1[3][3].is_option(1));
@@ -219,6 +221,8 @@ TEST(Solvers_, appearance_once)
 	EXPECT_EQ(result.count_all(), 0);
 	EXPECT_FALSE(result.test(1));
 	EXPECT_FALSE(result.is_answer());	// NOT needed
+
+	// Using Sections
 	// Row
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
@@ -266,6 +270,7 @@ TEST(Solvers_, appearance_sets)
 	const Options<9> Ans_2{ std::bitset<10>{"0010000000"} }; // 7, less than 2 answers
 	const Options<9> Ans_3{ std::bitset<10>{"0100001000"} }; // 3 8, less than 3 answers
 
+	// Using iterators
 	auto result = Solvers_::appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
 	EXPECT_EQ(result[0], Ans_0);
 	EXPECT_EQ(result[1], Ans_1);
@@ -310,6 +315,45 @@ TEST(Solvers_, appearance_sets)
 	EXPECT_EQ(result[2], Ans_2);
 	EXPECT_EQ(result[3], Ans_3);
 
+	// Using Sections
+	board[0][0] = std::bitset<10>{"1000000011"};
+	board[0][1] = std::bitset<10>{"1101000101"};
+	board[0][2] = std::bitset<10>{"0100000111"};
+	board[0][3] = std::bitset<10>{"0000000111"};
+	board[0][4] = std::bitset<10>{"1011001111"};
+	board[0][5] = std::bitset<10>{"0000010000"}; // ans 4
+	board[0][6] = std::bitset<10>{"1011001101"};
+	board[0][7] = std::bitset<10>{"1001100101"};
+	board[0][8] = std::bitset<10>{"0100001011"};
+
+	result = Solvers_::appearance_sets<3>(board.row(0));
+	EXPECT_EQ(result[0], Ans_0);
+	EXPECT_EQ(result[1], Ans_1);
+	EXPECT_EQ(result[2], Ans_2);
+	EXPECT_EQ(result[3], Ans_3);
+
+	// reorder, should give same result
+	// set answer last
+	board[0][8] = std::bitset<10>{"0000010000"}; // ans 4
+	board[0][5] = std::bitset<10>{"0100001011"};
+
+	result = Solvers_::appearance_sets<3>(board.row(0));
+	EXPECT_EQ(result[0], Ans_0);
+	EXPECT_EQ(result[1], Ans_1);
+	EXPECT_EQ(result[2], Ans_2);
+	EXPECT_EQ(result[3], Ans_3);
+
+	// set unique value last
+	board[0][8] = std::bitset<10>{"1001100101"};
+	board[0][7] = std::bitset<10>{"0000010000"}; // ans 4
+
+	result = Solvers_::appearance_sets<3>(board.row(0));
+	EXPECT_EQ(result[0], Ans_0);
+	EXPECT_EQ(result[1], Ans_1);
+	EXPECT_EQ(result[2], Ans_2);
+	EXPECT_EQ(result[3], Ans_3);
+
+	//TODO other sections (col / Block)
 }
 
 TEST(Solver, Unique)
@@ -501,13 +545,13 @@ TEST(Solver, block_exclusive)
 		EXPECT_FALSE(B1[3][3].is_answer());
 	}
 	// block_exclusive:
-	EXPECT_EQ(1, Solver<2>(B1).block_exclusive(B1.block(3).cbegin(), B1.block(3).cend()))
-		<< "block_exclusive() should find 1 value";
-	EXPECT_EQ(B1[3][3], 1) << "block_exclusive() unique value failed";
+	EXPECT_EQ(1, Solver<2>(B1).section_exclusive(B1.block(3)))
+		<< "section_exclusive(Block) should find 1 value";
+	EXPECT_EQ(B1[3][3], 1) << "section_exclusive(Block) unique value failed";
 	int found1{ 0 };
 	for (int i{ 0 }; i < B1.elem_size; ++i)
 	{
-		found1 += Solver<2>(B1).block_exclusive(B1.block(i).cbegin(), B1.block(i).cend());
+		found1 += Solver<2>(B1).section_exclusive(B1.block(i));
 	}
 	EXPECT_EQ(found1, 0) << "shouldn't find any others";
 
@@ -545,13 +589,13 @@ TEST(Solver, block_exclusive)
 	//		double: 1 in row 2;	2 not paired
 	// block 2
 	//		unique: 9=3
-	int count_s = Solver<3>(B2).block_exclusive(B2.block(2).cbegin(), B2.block(2).cend());
+	int count_s = Solver<3>(B2).section_exclusive(B2.block(2));
 
-	EXPECT_GE(count_s, 1) << "block_exclusive() should find at least 1 value";
-	EXPECT_EQ(B2[2][8], 3) << "block_exclusive() unique value failed N=3";
+	EXPECT_GE(count_s, 1) << "section_exclusive(block) should find at least 1 value";
+	EXPECT_EQ(B2[2][8], 3) << "section_exclusive(block) unique value failed N=3";
 	for (int i = 0; i < B2.elem_size; ++i)
 	{
-		EXPECT_NO_THROW(Solver<3>(B2).block_exclusive(B2.block(i).cbegin(), B2.block(i).cend()));
+		EXPECT_NO_THROW(Solver<3>(B2).section_exclusive(B2.block(i)));
 	}
 }
 TEST(Solver, single_option)

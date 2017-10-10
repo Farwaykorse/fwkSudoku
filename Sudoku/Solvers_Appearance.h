@@ -4,11 +4,11 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
-#include "Options.h"
 #include "Location.h"
+#include "Options.h"
 #include "Solver_Utilities.h"
-#include <type_traits>
 #include <iterator>
+#include <type_traits>
 
 // Forward declarations
 #include "Board.fwd.h"
@@ -17,74 +17,16 @@
 
 namespace Sudoku::Solvers_
 {
-//TODO rename: use a generalized function name
-//TODO 1. general version taking [int] 1-full_size for appearance count
-//TODO 2. default to base_size
-//TODO 3. specialize appearance_once version (unique?)
+// TODO rename: use a generalized function name
+// TODO 1. general version taking [int] 1-full_size for appearance count
+// TODO 2. default to base_size
+// TODO 3. specialize appearance_once version (unique?)
 
-// range-based-for
-template<int N, typename T>
-auto appearance_once(T section)
-{
-	using Options = Options<elem_size<N>>;
-	using Board   = Board<Options, N>;
-
-	// Board_Sections are based on const_Row
-	static_assert(std::is_base_of_v<typename Board::Section, T>);
-	// check iterator traits
-	{
-		using traits = std::iterator_traits<typename T::iterator>;
-		static_assert(std::is_object_v<typename traits::iterator_category>);
-		static_assert(std::is_same_v<typename traits::value_type, Options>);
-
-		static_assert(iterator_to<T::iterator, Options>);
-	}
-
-	Options sum(0);    // helper all used
-	Options worker(0); // multiple uses OR answer
-	for (const Options& item : section)
-	{
-		//TODO make (lambda)function, shared with begin-end version
-		if (item.is_answer())
-		{
-			worker = item + worker; // OR
-		}
-		else
-		{
-			worker += (sum & item); // OR ( AND )
-			sum += item;
-		}
-	}
-	return worker.flip(); // multiple uses -> single-use
-}
-
-//	return a mask for values with a single appearance
-template<int N, typename InItr_, typename = std::enable_if_t<is_input<InItr_>>>
-Options<elem_size<N>> appearance_once(const InItr_ begin, const InItr_ end)
-{
-	// TODO determine iterator types, should point to Options...
-	using Options = Options<elem_size<N>>;
-
-	Options sum(0);    // helper all used
-	Options worker(0); // multiple uses OR answer
-	for (auto itr = begin; itr != end; ++itr)
-	{
-		if (itr->is_answer())
-		{
-			worker = *itr + worker;
-		}
-		else
-		{
-			worker += (sum & *itr);
-			sum += *itr;
-		}
-	}
-	return worker.flip(); // multiple uses -> single-use
-}
 
 //	returning options collected by appearance count in input-dataset
 template<int N, typename InItr_, typename = std::enable_if_t<is_input<InItr_>>>
 auto appearance_sets(const InItr_ begin, const InItr_ end)
+{
 /*
 Example illustration
 Step 1) Collect
@@ -116,8 +58,10 @@ Step 3) xor [n-1]
 // Less than 3: no use for worker[3]
 // More than 9: shouldn't be an issue
 */
-{
 	using Options = Sudoku::Options<elem_size<N>>;
+
+	static_assert(iterator_to<InItr_, const Options>);
+
 	// To limit processing time, counting up to N
 	constexpr size_t max = N; // default: (9x9 board) up-to 3 times
 	std::array<Options, max + 1> worker{};
@@ -131,7 +75,10 @@ Step 3) xor [n-1]
 		if (elem_itr->is_answer())
 		{
 			// add answer to all
-			for (auto& set : worker) { set += *elem_itr; } // OR
+			for (auto& set : worker)
+			{
+				set += *elem_itr;
+			} // OR
 		}
 		else
 		{
@@ -157,6 +104,75 @@ Step 3) xor [n-1]
 		worker[i].XOR(worker[i - 1]);
 	}
 	return worker;
+}
+
+//	returning options collected by appearance count in section
+template<int N, typename SectionT>
+auto appearance_sets(const SectionT section)
+{	// referal function, creates iterators
+	using Board   = Sudoku::Board<Options<elem_size<N>>, N>;
+	using Options = Sudoku::Options<elem_size<N>>;
+
+	static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+	static_assert(iterator_to<typename SectionT::const_iterator, const Options>);
+
+	return appearance_sets<N>(section.cbegin(), section.cend());
+}
+
+
+//	return a mask for values with a single appearance
+template<int N, typename InItr_, typename = std::enable_if_t<is_input<InItr_>>>
+Options<elem_size<N>> appearance_once(const InItr_ begin, const InItr_ end)
+{
+	using Options = Options<elem_size<N>>;
+
+	static_assert(is_input<InItr_>);
+	static_assert(iterator_to<InItr_, const Options>);
+
+	Options sum(0);    // helper all used
+	Options worker(0); // multiple uses OR answer
+	for (auto itr = begin; itr != end; ++itr)
+	{
+		if (itr->is_answer())
+		{
+			worker = *itr + worker;
+		}
+		else
+		{
+			worker += (sum & *itr);
+			sum += *itr;
+		}
+	}
+	return worker.flip(); // multiple uses -> single-use
+}
+
+// range-based-for
+template<int N, typename T>
+auto appearance_once(T section)
+{
+	using Options = Options<elem_size<N>>;
+	using Board   = Board<Options, N>;
+
+	// Board_Sections are based on Section
+	static_assert(std::is_base_of_v<typename Board::Section, T>);
+	// check iterator traits
+	static_assert(iterator_to<typename T::const_iterator, const Options>);
+
+	Options sum(0);    // helper all used
+	Options worker(0); // multiple uses OR answer
+	for (const Options& item : section)
+	{
+		if (item.is_answer())
+		{
+			worker = item + worker; // OR
+		}
+		else
+		{
+			worker += (sum & item); // OR ( AND )
+			sum += item;
+		}
+	}
+	return worker.flip(); // multiple uses -> single-use
 }
 
 } // namespace Sudoku::Solvers_

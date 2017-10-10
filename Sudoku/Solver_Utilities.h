@@ -37,7 +37,7 @@ constexpr bool is_input =
 // iterator pointing to type
 template<typename Object, typename Target>
 constexpr bool iterator_to = std::is_same_v<
-	typename std::iterator_traits<typename Object>::value_type,
+	typename std::iterator_traits<Object>::value_type,
 	Target>;
 
 } // namespace Sudoku::Solvers_
