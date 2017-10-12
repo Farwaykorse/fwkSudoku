@@ -527,6 +527,27 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_FALSE(is_valid_value<2>(5));
 	EXPECT_TRUE(is_valid_value<3>(5));
 	EXPECT_FALSE(is_valid_value<3>(16));
+
+	// vector input
+	EXPECT_TRUE(is_valid_value<2>(std::vector<int>{ 1, 2, 3, 4, 3, 1 }));
+	EXPECT_TRUE(is_valid_value<2>(std::vector<int>{ 1 }));
+	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 0 }));
+	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 5 }));
+	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 1, 2, 0, 4, 3, 1 }));
+	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 1, -2, 3, 4, 3, 1 }));
+	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 1, 5, 3, 4, 3, 1 }));
+
+	using L = Location<2>;
+	EXPECT_TRUE(is_valid(std::vector<Location<2>>{})) << "must except empty";
+	EXPECT_TRUE(is_valid(std::vector<Location<2>>{L(0), L(12), L(13)}));
+	EXPECT_TRUE(is_valid(std::vector<Location<2>>{L(8)})) << "must except single";
+	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(5), L(2), L(16)})) << "must be sorted";
+	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(15), L(2), L(1)})) << "must be sorted ascending";
+	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(0), L(15), L(16)}));
+	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(-1), L(0), L(1)}));
+	EXPECT_TRUE(is_valid(std::vector<Location<2>>{L(0)}));
+	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(16)}));
+	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(-6)}));
 }
 
 TEST(Location_Utilities, is_constexpr)
@@ -543,6 +564,9 @@ TEST(Location_Utilities, is_constexpr)
 
 	EXPECT_TRUE(noexcept(is_valid_value<2>(1)));
 	EXPECT_TRUE(noexcept(is_valid_value<3>(7)));
+
+	EXPECT_FALSE(noexcept(is_valid_value<2>(std::vector<int>{ 1, 2, 3, 4, 3, 1 })));
+	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<2>>{Location<2>(0)})));
 }
 
 }	// namespace SudokuTests::LocationTest

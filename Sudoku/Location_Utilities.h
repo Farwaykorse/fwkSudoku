@@ -6,7 +6,8 @@
 #pragma once
 
 #include <vector>
-#include <limits> // numeric_limits
+#include <algorithm> // minmax_element, is_sorted, all_of
+#include <limits>    // numeric_limits
 
 // Forward declarations
 #include "Location.fwd.h"
@@ -99,6 +100,16 @@ constexpr bool is_valid(const Location<N> loc)
 	return (loc.element() >= 0 && loc.element() < loc.full_size);
 }
 
+// Test if Locations on Board and if sorted (ascending)
+template<int N>
+constexpr bool is_valid(const std::vector<Location<N>>& locs)
+{
+	return (
+		locs.empty() || (std::is_sorted(locs.cbegin(), locs.cend()) &&
+						 locs.cbegin()->element() >= 0 &&
+						 locs.crbegin()->element() < Location<N>().full_size));
+}
+
 // Test row/col/block-element
 template<int N>
 constexpr bool is_valid_size(const int elem)
@@ -118,6 +129,15 @@ template<int N>
 constexpr bool is_valid_value(const int value)
 {
 	return value > 0 && value <= Location<N>().elem_size;
+}
+
+// Test input values
+template<int N>
+constexpr bool is_valid_value(const std::vector<int>& values)
+{
+	return std::all_of(values.cbegin(), values.cend(), [](int i) {
+		return is_valid_value<N>(i);
+	});
 }
 
 } // namespace Sudoku
