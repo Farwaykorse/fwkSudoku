@@ -11,7 +11,7 @@
 
 #include <array>
 #include <vector>
-#include <algorithm>
+#include <algorithm> // for_each, minmax, all_of, none_of
 #include <stdexcept>
 #include <cassert>
 
@@ -55,24 +55,14 @@ public:
 
 	// remove an option: triggers solvers single_option()
 	int remove_option(Location, int value);
-	template<typename SectionT, typename LocT, typename ValT>
-	int remove_option_section(SectionT, LocT ignore, ValT value);
-	template<typename InItr_>
-	int remove_option_section(
-		InItr_ begin, InItr_ end, Location ignore, int value);
+	template<typename SectionT>
+	int remove_option_section(SectionT, Location ignore, int value);
 	template<typename SectionT>
 	int remove_option_section(
 		SectionT, const std::vector<Location>& ignore, int value);
-	template<typename InItr_>
+	template<typename SectionT>
 	int remove_option_section(
-		InItr_ begin,
-		InItr_ end,
-		const std::vector<Location>& ignore,
-		int value);
-	template<typename InItr_>
-	int remove_option_section(
-		InItr_ begin,
-		InItr_ end,
+		SectionT,
 		const std::vector<Location>& ignore,
 		const std::vector<int>& value);
 
@@ -84,41 +74,27 @@ public:
 
 	template<typename SectionT>
 	int unique_in_section(SectionT);
-	template<typename InItr_>
-	int unique_in_section(InItr_ begin, InItr_ end);
 	template<typename SectionT>
 	auto set_uniques(SectionT, const Options& worker);
-	template<typename InItr_>
-	auto set_uniques(InItr_ begin, InItr_ end, const Options& worker);
-
 	template<typename SectionT>
 	int section_exclusive(SectionT);
 	int section_exclusive(Block);
-	template<typename InItr_>
-	int section_exclusive(InItr_ begin, InItr_ end);
-	template<typename InItr_>
-	int block_exclusive(InItr_ begin, InItr_ end);
 
 private:
 	Board& board_;
 
-	template<typename InItr_>
-	int set_section_locals(
-		InItr_ begin, InItr_ end, int rep_count, const Options& worker);
 	template<typename SectionT>
 	int set_section_locals(SectionT, int rep_count, const Options& worker);
 	int set_section_locals(Block, int rep_count, const Options& worker);
-	template<typename InItr_>
-	int set_block_locals(
-		InItr_ begin, InItr_ end, int rep_count, const Options& worker);
 
+	template<typename SectionT>
+	int remove_option_outside_block(SectionT, Location block, int value);
+	template<typename SectionT>
+	auto find_locations(SectionT, int rep_count, int value) const;
+	//? deprecated ?? use on full board?
 	template<typename InItr_>
 	auto find_locations(
 		InItr_ begin, InItr_ end, int rep_count, int value) const;
-
-	template<typename InItr_>
-	int remove_option_outside_block(
-		InItr_ begin, InItr_ end, Location block, int value);
 };
 
 
@@ -133,6 +109,7 @@ inline Solver<N>::Solver(Board& options) : board_(options)
 template<int N>
 inline void Solver<N>::setValue(const Location loc, const int value)
 {
+	assert(is_valid(loc));
 	assert(is_valid_value<N>(value));
 	if (!board_.at(loc).test(value))
 	{
@@ -167,6 +144,7 @@ inline void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 	}
 }
 
+//	remove option from element, make answer if last option
 template<int N>
 inline int Solver<N>::remove_option(const Location loc, const int value)
 {
@@ -239,6 +217,11 @@ inline int Solver<N>::dual_option(const Location loc)
 	assert(is_valid(loc));
 	assert(board_.at(loc).count() == 2);
 
+	auto sorted_loc = [loc](const Location L) {
+		const auto result = std::minmax(loc, L);
+		return std::vector<Location>{result.first, result.second};
+	};
+
 	int changes{};
 	const Options& item{board_[loc]};
 	for (int i{}; i < full_size; ++i)
@@ -250,23 +233,19 @@ inline int Solver<N>::dual_option(const Location loc)
 			if (is_same_row(loc, Location(i)))
 			{
 				changes += remove_option_section(
-					board_.row(loc),
-					std::vector<Location>{loc, Location(i)},
-					item.available());
+					board_.row(loc), sorted_loc(Location(i)), item.available());
 			}
 			else if (is_same_col(loc, Location(i)))
 			{
 				changes += remove_option_section(
-					board_.col(loc),
-					std::vector<Location>{loc, Location(i)},
-					item.available());
+					board_.col(loc), sorted_loc(Location(i)), item.available());
 			}
 			if (is_same_block(loc, Location(i)))
 			{
 				// NOTE this is slow
 				changes += remove_option_section(
 					board_.block(loc),
-					std::vector<Location>{loc, Location(i)},
+					sorted_loc(Location(i)),
 					item.available());
 			}
 		}
@@ -292,6 +271,7 @@ inline int Solver<N>::multi_option(const Location loc, size_t count)
 		int changes{};                    // performance counter
 		const Options& item{board_[loc]}; // input item, to find matches to
 		std::vector<Location> list{};     // potential matches
+
 		// traverse whole board
 		for (int i{}; i < full_size; ++i)
 		{
@@ -305,7 +285,6 @@ inline int Solver<N>::multi_option(const Location loc, size_t count)
 				list.push_back(Location(i));
 			}
 		}
-		//
 		//	This algorithm is supprizingly robust
 		//	Example, showing operation if no specializations where applied
 		//			start	end	/	start	end		/	start	end
@@ -350,36 +329,27 @@ inline int Solver<N>::multi_option(const Location loc, size_t count)
 	return 0;
 }
 
-//	remove value(s) from other elements in section
+//	remove [value] in [loc] from other elements in set
 template<int N>
-template<typename SectionT, typename LocT, typename ValT>
+template<typename SectionT>
 inline int Solver<N>::remove_option_section(
-	SectionT section, const LocT ignore, const ValT value)
-{
-	// referal function, creates iterators
-	static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
-
-	using traits = std::iterator_traits<typename SectionT::iterator>;
-	static_assert(std::is_object_v<typename traits::iterator_category>);
-	static_assert(std::is_same_v<typename traits::value_type, Options>);
-
-	return remove_option_section(section.begin(), section.end(), ignore, value);
-}
-
-//	remove [value] in [loc] from other elements in section
-template<int N>
-template<typename InItr_>
-inline int Solver<N>::remove_option_section(
-	const InItr_ begin,
-	const InItr_ end,
+	const SectionT section,
 	[[maybe_unused]] const Location loc, // not used in release mode
 	const int value)
 {
-	assert(is_valid(loc));
-	assert(is_valid_value<N>(value));
-	assert(board_.at(loc).is_answer(value));
-
+	{
+		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using iterator = typename SectionT::const_iterator;
+		static_assert(Solvers_::is_input<iterator>);
+		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		assert(is_valid(loc));
+		assert(is_valid_value<N>(value));
+		assert(board_.at(loc).is_answer(value));
+	}
 	int changes{0};
+	const auto begin = section.cbegin();
+	const auto end   = section.cend();
+
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		if (!(itr->is_answer()))
@@ -390,19 +360,28 @@ inline int Solver<N>::remove_option_section(
 	return changes;
 }
 
-//	remove [value] from element if not part of [block]
+//	remove [value] from elements not in same block as [block_loc]
 template<int N>
-template<typename InItr_>
+template<typename SectionT>
 inline int Solver<N>::remove_option_outside_block(
-	const InItr_ begin, const InItr_ end, const Location block, const int value)
+	const SectionT section, const Location block_loc, const int value)
 {
-	assert(is_valid(block));
-	assert(is_valid_value<N>(value));
+	{
+		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using iterator = typename SectionT::const_iterator;
+		static_assert(Solvers_::is_input<iterator>);
+		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		assert(is_valid(block_loc));
+		assert(is_valid_value<N>(value));
+	}
 
 	int changes{0};
+	const auto begin = section.cbegin();
+	const auto end   = section.cend();
+
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		if (!(itr->is_answer() || is_same_block(itr.location(), block)))
+		if (!(itr->is_answer() || is_same_block(itr.location(), block_loc)))
 		{
 			changes += remove_option(itr.location(), value);
 		}
@@ -412,28 +391,30 @@ inline int Solver<N>::remove_option_outside_block(
 
 //	remove [value] from set if not part of [loc]s
 template<int N>
-template<typename InItr_>
+template<typename SectionT>
 inline int Solver<N>::remove_option_section(
-	const InItr_ begin,
-	const InItr_ end,
+	const SectionT section,
 	const std::vector<Location>& ignore,
 	const int value)
 {
-	assert(is_valid_value<N>(value));
-
+	{
+		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using iterator = typename SectionT::const_iterator;
+		static_assert(Solvers_::is_input<iterator>);
+		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		assert(is_valid(ignore));
+		assert(is_valid_value<N>(value));
+	}
 	int changes{0};
+	const auto begin = section.cbegin();
+	const auto end   = section.cend();
+
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		// clang-format off
 		if (itr->is_option(value) &&
-			ignore.cend() == std::find_if(
-				ignore.cbegin(),
-				ignore.cend(),
-				[itr](Location loc) { return itr == loc; }
-			)) // <algorithm>
-		// clang-format on
-		// TODO replace find_if() with binary_search(), requires sorted data
-		// cheaper, if sorting can be done by design
+			std::none_of(ignore.cbegin(), ignore.cend(), [itr](Location loc) {
+				return itr.location() == loc;
+			})) // <algorithm>
 		{
 			changes += remove_option(itr.location(), value);
 		}
@@ -444,30 +425,34 @@ inline int Solver<N>::remove_option_section(
 // remove [value]s from [section] if not part of [loc]s
 // the ignore Location vector must be sorted
 template<int N>
-template<typename InItr_>
+template<typename SectionT>
 inline int Solver<N>::remove_option_section(
-	const InItr_ begin,
-	const InItr_ end,
+	const SectionT section,
 	const std::vector<Location>& ignore,
 	const std::vector<int>& values)
 {
+	{
+		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using iterator = typename SectionT::const_iterator;
+		static_assert(Solvers_::is_input<iterator>);
+		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		assert(is_valid(ignore));
+		assert(is_valid_value<N>(values));
+	}
 	int changes{0};
+	const auto begin = section.cbegin();
+	const auto end   = section.cend();
+
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		// clang-format off
 		if (!(itr->is_answer()) &&
-			ignore.cend() == std::find_if(
-				ignore.cbegin(),
-				ignore.cend(),
-				[itr](Location loc) { return itr.location() == loc; }
-			)) // <algorithm>
-		// clang-format on
-		// TODO replace find_if() with binary_search(), requires sorted data
-		// cheaper, if sorting can be done by design
+			std::none_of(ignore.cbegin(), ignore.cend(), [itr](Location loc) {
+				return itr.location() == loc;
+			})) // <algorithm>
 		{
 			for (auto v : values)
-			{
-				changes += remove_option(itr.location(), v); // cascade
+			{ //! Cascade (!)
+				changes += remove_option(itr.location(), v);
 			}
 		}
 	}
@@ -485,53 +470,25 @@ inline int Solver<N>::unique_in_section(const SectionT section)
 	return set_uniques(section, worker);
 }
 
-//	Solver: Find and process options appearing only once a set
-template<int N>
-template<typename InItr_>
-inline int Solver<N>::unique_in_section(const InItr_ begin, const InItr_ end)
-{
-	const auto worker = Solvers_::appearance_once<N>(begin, end);
-	return set_uniques(begin, end, worker);
-}
-
-//	process unique values in range
-template<int N>
-template<typename InItr_>
-inline auto
-	Solver<N>::set_uniques(InItr_ begin, InItr_ end, const Options& worker)
-{
-	int changes{0};
-	if (worker.count_all() > 0)
-	{
-		for (int value{1}; value < worker.size(); ++value)
-		{
-			if (worker[value])
-			{
-				const auto itr = std::find_if( // <algorithm>
-					begin,
-					end,
-					[value](Options O) { return O.is_option(value); });
-				assert(itr != end); // doesn't exist
-				setValue(itr.location(), value);
-				changes += single_option(itr.location(), value);
-				++changes;
-			}
-		}
-	}
-	return changes;
-}
-
 //	process unique values in section
 template<int N>
 template<typename SectionT>
 inline auto
 	Solver<N>::set_uniques(const SectionT section, const Options& worker)
 {
+	{
+		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using iterator = typename SectionT::const_iterator;
+		static_assert(Solvers_::is_input<iterator>);
+		static_assert(Solvers_::iterator_to<iterator, const Options>);
+	}
 	int changes{0};
+
 	if (worker.count_all() > 0)
 	{
 		const auto begin = section.cbegin();
 		const auto end   = section.cend();
+
 		for (int value{1}; value < worker.size(); ++value)
 		{
 			if (worker[value])
@@ -553,27 +510,33 @@ inline auto
 //	Solver: find and process values appearing 2x or 3x in row/col:
 //	IF all in same block -> remove from rest of block
 template<int N>
-template<typename InItr_>
-inline int Solver<N>::section_exclusive(const InItr_ begin, const InItr_ end)
+template<typename SectionT>
+inline int Solver<N>::section_exclusive(const SectionT section)
 {
+	{
+		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using iterator = typename SectionT::const_iterator;
+		static_assert(Solvers_::iterator_to<iterator, const Options>);
+	}
 	int changes{}; // performance counter
 
-	auto appearing = appearance_sets(begin, end);
+	auto appearing       = appearance_sets(section);
+	auto renew_appearing = [&]() { appearing = appearance_sets(section); };
 
 	size_t i{2};
-	while (i <= N) // won't run if condition fails
+	while (i < appearing.size()) // won't run if condition fails
 	{
 		// unique specialization
 		if (appearing[1].count_all() > 0)
 		{
-			changes += set_uniques(begin, end, appearing[1]);
-			appearing = appearance_sets(begin, end);
+			changes += set_uniques(section, appearing[1]);
+			renew_appearing();
 		}
 		else if (appearing[i].count_all() > 0)
 		{
-			changes += set_section_locals(
-				begin, end, static_cast<int>(i), appearing[i]);
-			appearing = appearance_sets(begin, end);
+			changes +=
+				set_section_locals(section, static_cast<int>(i), appearing[i]);
+			renew_appearing();
 			++i;
 		}
 		else
@@ -584,30 +547,36 @@ inline int Solver<N>::section_exclusive(const InItr_ begin, const InItr_ end)
 	return changes;
 }
 
-// TODO description
+//	Solver: find and process values by appearance count in Block
+//	IF all in same row/col -> remove from rest
 template<int N>
 inline int Solver<N>::section_exclusive(const Block block)
 {
-	static_assert(
-		Solvers_::iterator_to<typename Block::const_iterator, const Options>);
-
+	{
+		using iterator = typename Block::const_iterator;
+		static_assert(Solvers_::iterator_to<iterator, const Options>);
+	}
 	int changes{}; // performance counter
 
-	size_t i{1};
-	auto appearing = Solvers_::appearance_sets<N>(block);
-	while (i <= N) // won't run if condition fails
+	auto appearing       = Solvers_::appearance_sets<N>(block);
+	auto renew_appearing = [&]() {
+		appearing = Solvers_::appearance_sets<N>(block);
+	};
+
+	size_t i{2};
+	while (i < appearing.size()) // won't run if condition fails
 	{
 		// unique in block specialization
 		if (appearing[1].count_all() > 0)
 		{
 			changes += set_uniques(block, appearing[1]);
-			appearing = Solvers_::appearance_sets<N>(block);
+			renew_appearing();
 		}
 		else if (appearing[i].count_all() > 0)
 		{
 			changes +=
 				set_section_locals(block, static_cast<int>(i), appearing[i]);
-			appearing = Solvers_::appearance_sets<N>(block);
+			renew_appearing();
 			++i;
 		}
 		else
@@ -620,185 +589,84 @@ inline int Solver<N>::section_exclusive(const Block block)
 	// 2 values only appear in 2 cells -> remove rest from cells
 }
 
+//	for [row/col]: if all in same block, remove [values] from rest block
 template<int N>
-template<typename InItr_>
-[[deprecated]] inline int
-	Solver<N>::block_exclusive(const InItr_ begin, const InItr_ end)
-{
-	// TODO ensure it's a block?
-	// TODO type-checking on board_
-
-	int changes{}; // performance counter
-
-	size_t i{1};
-	auto appearing = Solvers_::appearance_sets<N>(begin, end);
-	while (i <= N) // won't run if condition fails
-	{
-		// unique in block specialization
-		if (appearing[1].count_all() > 0)
-		{
-			changes += set_uniques(begin, end, appearing[1]);
-			appearing = Solvers_::appearance_sets<N>(begin, end);
-		}
-		else if (appearing[i].count_all() > 0)
-		{
-			changes +=
-				set_block_locals(begin, end, static_cast<int>(i), appearing[i]);
-			appearing = Solvers_::appearance_sets<N>(begin, end);
-			++i;
-		}
-		else
-		{
-			++i;
-		}
-	}
-	return changes;
-	// TODO can this be added/used?
-	// 2 values only appear in 2 cells -> remove rest from cells
-}
-
-template<int N>
-template<typename InItr_>
+template<typename SectionT>
 inline int Solver<N>::set_section_locals(
-	const InItr_ begin,
-	const InItr_ end,
-	const int rep_count,
-	const Options& worker)
+	const SectionT section, const int rep_count, const Options& worker)
 {
-	assert(worker.count_all() > 0); // should have been cought by caller
-
+	{
+		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using iterator = typename SectionT::const_iterator;
+		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		assert(worker.count_all() > 0); // should have been cought by caller
+	}
 	int changes{0};
+
 	for (size_t value{1}; value < worker.size(); ++value)
 	{
-		if (worker.test(value))
+		if (worker[value])
 		{
-			const auto locations = find_locations(begin, end, rep_count, value);
+			const auto locations = find_locations(section, rep_count, value);
 			assert(locations.size() <= N); // won't fit in single block-row/col
 			assert(locations.size() > 1);  // use the set_uniques specialization
 
-			// for each value check if appearing in same block
-			if (locations.cend() ==
-				std::find_if_not(
-					locations.cbegin(), locations.cend(), [&locations](auto L) {
-						return L.block() == locations[0].block();
-					}))
-			{
-				changes += remove_option_section(
-					board_.block(locations[0]).begin(),
-					board_.block(locations[0]).end(),
-					locations,
-					value);
-			}
-		}
-	}
-	return changes;
-}
-
-template<int N>
-template<typename InItr_>
-[[deprecated]] inline int Solver<N>::set_block_locals(
-	const InItr_ begin,
-	const InItr_ end,
-	const int rep_count,
-	const Options& worker)
-{
-	assert(worker.count_all() > 0); // should have been cought by caller
-
-	int changes{0};
-	for (int value{1}; value < worker.size(); ++value)
-	{
-		if (worker.test(value))
-		{
-			const auto locations = find_locations(begin, end, rep_count, value);
-			assert(locations.size() <= N); // won't fit in single block-row/col
-			assert(locations.size() > 1);  // use the set_uniques specialization
-
-			// for each value check if appearing in same row/col
-			if (locations.cend() ==
-				std::find_if_not(
-					locations.cbegin(), locations.cend(), [&locations](auto L) {
-						return L.row() == locations[0].row();
-					}))
-			{
-				changes += remove_option_outside_block(
-					board_.row(locations[0]).begin(),
-					board_.row(locations[0]).end(),
-					locations[0],
-					value);
-			}
-			else if (
-				locations.cend() ==
-				std::find_if_not(
-					locations.cbegin(), locations.cend(), [&locations](auto L) {
-						return L.col() == locations[0].col();
-					}))
-			{
-				changes += remove_option_outside_block(
-					board_.col(locations[0]).begin(),
-					board_.col(locations[0]).end(),
-					locations[0],
-					value);
-			}
-			else
-			{
-				continue;
-			} // not in same row/col
-		}
-	}
-	return changes;
-}
-
-template<int N>
-inline int Solver<N>::set_section_locals(
-	const Block section, const int rep_count, const Options& worker)
-{
-	static_assert(
-		Solvers_::iterator_to<typename Block::const_iterator, const Options>);
-
-
-	assert(worker.count_all() > 0); // should have been cought by caller
-
-	const auto first = section.cbegin();
-	const auto last  = section.cend();
-
-	int changes{0};
-	for (int value{1}; value < worker.size(); ++value)
-	{
-		if (worker.test(value))
-		{
-			const auto locations =
-				find_locations(first, last, rep_count, value);
-			assert(locations.size() <= N); // won't fit in single block-row/col
-			assert(locations.size() > 1);  // use the set_uniques specialization
-
-			// for each value check if appearing in same row/col
-			if (locations.cend() ==
-				std::find_if_not(
+			// check if all in same block
+			if (std::all_of(
 					locations.cbegin(),
 					locations.cend(),
-					[&locations](auto Loc) {
-						// return L.row() == locations[0].row();
-						return is_same_row(Loc, locations[0]);
+					[&locations](Location L) {
+						return is_same_block(L, locations[0]);
 					}))
-			{
-				changes += remove_option_outside_block(
-					board_.row(locations[0]).begin(),
-					board_.row(locations[0]).end(),
-					locations[0],
-					value);
+			{ // remove from rest of block
+				changes += remove_option_section(
+					board_.block(locations[0]), locations, value);
 			}
-			else if (
-				locations.cend() ==
-				std::find_if_not(
-					locations.cbegin(), locations.cend(), [&locations](auto L) {
-						return is_same_col(L, locations[0]);
+		}
+	}
+	return changes;
+}
+
+//	remove found set in block from rest of its row/col
+template<int N>
+inline int Solver<N>::set_section_locals(
+	const Block block, const int rep_count, const Options& worker)
+{
+	{
+		using iterator = typename Block::const_iterator;
+		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		assert(worker.count_all() > 0); // should have been cought by caller
+	}
+	int changes{0};
+
+	for (int value{1}; value < worker.size(); ++value)
+	{
+		if (worker[value])
+		{
+			const auto locations = find_locations(block, rep_count, value);
+			assert(locations.size() <= N); // won't fit in single block-row/col
+			assert(locations.size() > 1);  // use the set_uniques specialization
+
+			// check if all in same row/col
+			if (std::all_of(
+					locations.cbegin(),
+					locations.cend(),
+					[&locations](Location L) {
+						return is_same_row(L, locations[0]);
 					}))
-			{
+			{ // remove from rest of row
 				changes += remove_option_outside_block(
-					board_.col(locations[0]).begin(),
-					board_.col(locations[0]).end(),
-					locations[0],
-					value);
+					board_.row(locations[0]), locations[0], value);
+			}
+			else if (std::all_of(
+						 locations.cbegin(),
+						 locations.cend(),
+						 [&locations](Location L) {
+							 return is_same_col(L, locations[0]);
+						 }))
+			{ // remove from rest of col
+				changes += remove_option_outside_block(
+					board_.col(locations[0]), locations[0], value);
 			}
 			else
 			{
@@ -809,6 +677,37 @@ inline int Solver<N>::set_section_locals(
 	return changes;
 }
 
+//	List locations containing value
+template<int N>
+template<typename SectionT>
+inline auto Solver<N>::find_locations(
+	const SectionT section, const int rep_count, const int value) const
+{
+	{
+		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using iterator = typename SectionT::const_iterator;
+		static_assert(Solvers_::is_input<iterator>);
+		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		assert(is_valid_value<N>(value));
+		assert(rep_count > 0 && rep_count <= board_.full_size);
+	}
+	const auto begin = section.cbegin();
+	const auto end   = section.cend();
+	std::vector<Location> locations{};
+	auto last = begin;
+
+	for (int i{0}; i < rep_count; ++i)
+	{
+		last = std::find_if(
+			last, end, [value](Options O) { return O.is_option(value); });
+		assert(last != end); // incorrect rep_count
+		locations.emplace_back(last.location());
+		++last;
+	}
+	return locations;
+}
+
+//	List locations containing value
 template<int N>
 template<typename InItr_>
 inline auto Solver<N>::find_locations(
@@ -817,11 +716,16 @@ inline auto Solver<N>::find_locations(
 	const int rep_count,
 	const int value) const
 {
-	assert(is_valid_value<N>(value));
-	assert(rep_count > 0 && rep_count <= board_.full_size);
-
+	{
+		static_assert(Solvers_::is_input<InItr_>);
+		using iterator = typename InItr_::const_iterator;
+		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		assert(is_valid_value<N>(value));
+		assert(rep_count > 0 && rep_count <= board_.full_size);
+	}
 	std::vector<Location> locations{};
 	auto last = begin;
+
 	for (int i{0}; i < rep_count; ++i)
 	{
 		last = std::find_if(

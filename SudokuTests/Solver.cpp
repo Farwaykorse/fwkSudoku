@@ -375,9 +375,6 @@ TEST(Solver, Unique)
 	EXPECT_EQ(B1[2][2], 4) << "setup error";
 	EXPECT_EQ(B1, cB1) << "copy error";
 	// single row
-	EXPECT_NO_THROW(Solver<2>(B1).unique_in_section(B1.row(0).cbegin(), B1.row(0).cend()));
-	EXPECT_EQ(B1, cB1) << "row 0 was completely fixed by setValue";
-	B1 = cB1;
 	EXPECT_NO_THROW(Solver<2>(B1).unique_in_section(B1.row(0)));
 	EXPECT_EQ(B1, cB1) << "row 0 was completely fixed by setValue";
 
@@ -392,25 +389,6 @@ TEST(Solver, Unique)
 	Board<Options<4>, 2> B2{}; // working copy
 	EXPECT_NO_THROW(Solver<2>(B2).setValue(v2.cbegin(), v2.cend()));
 	const Board<Options<4>, 2> cB2{ B2 }; // copy to compare with
-	// single row 0
-	EXPECT_NO_THROW(Solver<2>(B2).unique_in_section(B2.row(0).cbegin(), B2.row(0).cend()));
-	EXPECT_EQ(B2, cB2) << "row 0 was completely fixed by setValue";
-	// single row 1
-	EXPECT_NO_THROW(Solver<2>(B2).unique_in_section(B2.row(3).cbegin(), B2.row(3).cend()));
-	EXPECT_NE(B2, cB2) << "row 3 should have changed";
-	// full board
-	for (int i = 0; i < B2.elem_size; ++i)
-	{
-		EXPECT_NO_THROW(Solver<2>(B2).unique_in_section(B2.row(i).cbegin(), B2.row(i).cend()));
-	}
-	EXPECT_EQ(B2[0][0], 3) << "input values are lost";
-	EXPECT_EQ(B2[0][1], 2);
-	EXPECT_EQ(B2[2][2], 2);
-	EXPECT_EQ(B2[1][3], 2) << "not all uniques found in rows";
-	EXPECT_EQ(B2[3][0], 2);
-
-	// Section-input
-	B2 = cB2; // reset
 	// single row 0
 	EXPECT_NO_THROW(Solver<2>(B2).unique_in_section(B2.row(0)));
 	EXPECT_EQ(B2, cB2) << "row 0 was completely fixed by setValue";
@@ -446,10 +424,6 @@ TEST(Solver, Unique)
 	reset_B3();
 	EXPECT_EQ(B3[3][3].count(), 4);
 	EXPECT_TRUE(B3[3][3].is_option(1));
-	// iterator based
-	EXPECT_NO_THROW(Solver<2>(B3).unique_in_section(B3.row(3).cbegin(), B3.row(3).cend()));
-	EXPECT_TRUE(B3[3][3].is_answer(1));
-	reset_B3();
 	// Row()
 	EXPECT_NO_THROW(Solver<2>(B3).unique_in_section(B3.row(3)));
 	EXPECT_TRUE(B3[3][3].is_answer(1));
@@ -509,7 +483,7 @@ TEST(Solver, solve_board)
 	Solver<3>(options).setValue(b1.cbegin(), b1.cend());
 	for (int i = 0; i < options.elem_size; ++i)
 	{
-		Solver<3>(options).unique_in_section(options.row(i).cbegin(), options.row(i).cend());
+		Solver<3>(options).unique_in_section(options.row(i));
 	}
 }
 TEST(Solver, block_exclusive)

@@ -173,10 +173,10 @@ void SolverBase<N>::solver_unique()
 		found = 0;
 		for (int i = 0; i < elem_size; ++i)
 		{
-			found += S.unique_in_section(options.row(i).cbegin(), options.row(i).cend());
-			found += S.unique_in_section(options.col(i).cbegin(), options.col(i).cend());
-			found += S.unique_in_section(options.block(i).cbegin(), options.block(i).cend());
-			//found += S.block_exclusive(options.block(i).cbegin(), options.block(i).cend());
+			found += S.unique_in_section(options.row(i));
+			found += S.unique_in_section(options.col(i));
+			found += S.unique_in_section(options.block(i));
+			//found += S.block_exclusive(options.block(i));
 		}
 	}
 }
@@ -185,42 +185,42 @@ template<int N> inline
 int SolverBase<N>::unique_row(int i)
 {
 	Solver<N> S(options);
-	return S.unique_in_section(options.row(i).cbegin(), options.row(i).cend());
+	return S.unique_in_section(options.row(i));
 }
 
 template<int N> inline
 int SolverBase<N>::unique_col(int i)
 {
 	Solver<N> S(options);
-	return S.unique_in_section(options.col(i).cbegin(), options.col(i).cend());
+	return S.unique_in_section(options.col(i));
 }
 
 template<int N> inline
 int SolverBase<N>::unique_block(int i)
 {
 	Solver<N> S(options);
-	return S.unique_in_section(options.block(i).cbegin(), options.block(i).cend());
+	return S.unique_in_section(options.block(i));
 }
 
 template<int N> inline
 int SolverBase<N>::solver_block(int i)
 {
 	Solver<N> S(options);
-	return S.block_exclusive(options.block(i).cbegin(), options.block(i).cend());
+	return S.section_exclusive(options.block(i));
 }
 
 template<int N> inline
 int SolverBase<N>::solver_row(int i)
 {
 	Solver<N> S(options);
-	return S.section_exclusive(options.row(i).begin(), options.row(i).end());
+	return S.section_exclusive(options.row(i));
 }
 
 template<int N> inline
 int SolverBase<N>::solver_col(int i)
 {
 	Solver<N> S(options);
-	return S.section_exclusive(options.col(i).cbegin(), options.col(i).cend());
+	return S.section_exclusive(options.col(i));
 }
 
 }	// namespace Sudoku
