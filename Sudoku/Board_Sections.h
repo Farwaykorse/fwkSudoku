@@ -195,26 +195,25 @@ class Row
 	: public const_Row<T, N>
 {
 	using self_type = Row;
-	using const_Row = const_Row<T, N>;
 	using Location = Sudoku::Location<N>;
 
 	friend class Sudoku::Board<T,N>;		// access private constructor
-	friend class const_Row;
+	friend class const_Row<T,N>;
 	friend class iterator<T,N,self_type>;
 	friend class const_iterator<T,N, self_type>;
 
 	Row(gsl::not_null<Board<T, N>*> owner, int row)
-		: const_Row(owner, row), owner_(owner), id_(row)
+		: const_Row<T,N>(owner, row), owner_(owner), id_(row)
 	{
 	}
 	Row(gsl::not_null<Board<T, N>*> owner, Location loc)
-		: const_Row(owner, loc.row()), owner_(owner), id_(loc.row())
+		: const_Row<T,N>(owner, loc.row()), owner_(owner), id_(loc.row())
 	{
 		assert(is_valid(loc));
 	}
 public:
-	using const_Row::size;
-	using const_Row::id;
+	using const_Row<T,N>::size;
+	using const_Row<T,N>::id;
 
 	T& operator[] (const int col) noexcept
 	{
