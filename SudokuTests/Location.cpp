@@ -434,37 +434,6 @@ TEST(Location, is_constexpr)
 
 	EXPECT_FALSE(noexcept(Location<5>().element()));
 }
-TEST(Location, external)
-{
-	EXPECT_TRUE(noexcept(is_same_row(Location<3>(0), Location<3>(8))));
-	EXPECT_TRUE(noexcept(is_same_col(Location<3>(0), Location<3>(8))));
-	EXPECT_TRUE(noexcept(is_same_block(Location<3>(0), Location<3>(8))));
-	EXPECT_TRUE(is_same_row(Location<3>(0), Location<3>(8)));
-	EXPECT_FALSE(is_same_row(Location<3>(9), Location<3>(8)));
-	EXPECT_TRUE(is_same_col(Location<3>(0), Location<3>(18)));
-	EXPECT_FALSE(is_same_col(Location<3>(9), Location<3>(8)));
-	EXPECT_TRUE(is_same_block(Location<3>(0), Location<3>(11)));
-	EXPECT_FALSE(is_same_block(Location<3>(9), Location<3>(8)));
-
-	std::vector<Location<3>> list1{};
-	//std::vector<Location<3>> list2{};
-	std::vector<Location<3>> list3{};
-	for (int i{}; i < 9; ++i)
-	{
-		list1.push_back(Location<3>{i});
-		//list2.push_back(Location<3>{i*3});
-		list3.push_back(Location<3>{i*9});
-	}
-	EXPECT_FALSE(noexcept(is_same_row(Location<3>(0), list1)));
-	EXPECT_FALSE(noexcept(is_same_col(Location<3>(0), list1)));
-	EXPECT_FALSE(noexcept(is_same_block(Location<3>(0), list1)));
-	EXPECT_EQ(is_same_row(Location<3>(0), list1), list1);
-	EXPECT_EQ(is_same_row(Location<3>(0), list1).size(), 9) << "vector length";
-	EXPECT_EQ(is_same_col(Location<3>(0), list3), list3);
-	EXPECT_EQ(is_same_col(Location<3>(0), list3).size(), 9) << "vector length";
-	EXPECT_EQ(is_same_block(Location<3>(0), list1).size(), 3) << "vector length";
-}
-
 TEST(Location_Block, is_constexpr)
 {
 	EXPECT_TRUE(noexcept(Location_Block<3>{Location<3>(12)}));
@@ -494,6 +463,58 @@ TEST(Location_Block, is_constexpr)
 	EXPECT_FALSE(noexcept(B1.element()));
 	EXPECT_FALSE(noexcept(B1.row()));
 	EXPECT_FALSE(noexcept(B1.col()));
+}
+
+TEST(Location_Utilities, is_same_section)
+{
+	EXPECT_TRUE(noexcept(is_same_row(Location<3>(0), Location<3>(8))));
+	EXPECT_TRUE(noexcept(is_same_col(Location<3>(0), Location<3>(8))));
+	EXPECT_TRUE(noexcept(is_same_block(Location<3>(0), Location<3>(8))));
+	EXPECT_TRUE(is_same_row(Location<3>(0), Location<3>(8)));
+	EXPECT_FALSE(is_same_row(Location<3>(9), Location<3>(8)));
+	EXPECT_TRUE(is_same_col(Location<3>(0), Location<3>(18)));
+	EXPECT_FALSE(is_same_col(Location<3>(9), Location<3>(8)));
+	EXPECT_TRUE(is_same_block(Location<3>(0), Location<3>(11)));
+	EXPECT_FALSE(is_same_block(Location<3>(9), Location<3>(8)));
+
+	// is_same_section (taking iterators)
+	using L = Location<3>;
+	const std::vector<L> row{ L(0), L(1), L(2), L(3), L(4), L(5), L(6), L(7), L(8) };
+	const std::vector<L> col{ L(0,6), L(1,6), L(3,6), L(4,6), L(5,6), L(6,6), L(8,6) };
+	const std::vector<L> blo{ L(3,3), L(3,4), L(3,5), L(4,3), L(4,4), L(5,3), L(5,5) };
+	const std::vector<L> notsortedrow{ L(5), L(3), L(2), L(0), L(4), L(8), L(6), L(7), L(1) };
+	const std::vector<L> duplicate{ L(0), L(1), L(2), L(0), L(4), L(0), L(6), L(1), L(0) };
+
+	EXPECT_NO_THROW(is_same_row<3>(row.begin(), row.end()));
+	EXPECT_NO_THROW(is_same_row<3>(row.cbegin(), row.cend()));
+	EXPECT_NO_THROW(is_same_col<3>(col.cbegin(), col.cend()));
+	EXPECT_TRUE(is_same_row<3>(row.cbegin(), row.cend()));
+	EXPECT_TRUE(is_same_col<3>(col.cbegin(), col.cend()));
+	EXPECT_TRUE(is_same_block<3>(blo.cbegin(), blo.cend()));
+	EXPECT_TRUE(is_same_row<3>(notsortedrow.cbegin(), notsortedrow.cend()));
+	EXPECT_TRUE(is_same_row<3>(duplicate.cbegin(), duplicate.cend()));
+	EXPECT_FALSE(is_same_col<3>(row.cbegin(), row.cend()));
+	EXPECT_FALSE(is_same_block<3>(row.cbegin(), row.cend()));
+}
+TEST(Location_Utilities, get_same_section)
+{
+	std::vector<Location<3>> list1{};
+	//std::vector<Location<3>> list2{};
+	std::vector<Location<3>> list3{};
+	for (int i{}; i < 9; ++i)
+	{
+		list1.push_back(Location<3>{i});
+		//list2.push_back(Location<3>{i*3});
+		list3.push_back(Location<3>{i*9});
+	}
+	EXPECT_FALSE(noexcept(get_same_row(Location<3>(0), list1)));
+	EXPECT_FALSE(noexcept(get_same_col(Location<3>(0), list1)));
+	EXPECT_FALSE(noexcept(get_same_block(Location<3>(0), list1)));
+	EXPECT_EQ(get_same_row(Location<3>(0), list1), list1);
+	EXPECT_EQ(get_same_row(Location<3>(0), list1).size(), 9) << "vector length";
+	EXPECT_EQ(get_same_col(Location<3>(0), list3), list3);
+	EXPECT_EQ(get_same_col(Location<3>(0), list3).size(), 9) << "vector length";
+	EXPECT_EQ(get_same_block(Location<3>(0), list1).size(), 3) << "vector length";
 }
 
 TEST(Location_Utilities, is_valid)

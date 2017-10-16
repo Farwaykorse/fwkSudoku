@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Options.h"
+#include "Location_Utilities.h"
 #include "Solver_Utilities.h"
 #include "Solvers_Appearance.h"
 
@@ -303,9 +304,9 @@ inline int Solver<N>::multi_option(const Location loc, size_t count)
 		if (list.size() >= count)
 		{
 			// find if: count amount of items share an element
-			auto in_row{is_same_row(loc, list)};
-			auto in_col{is_same_col(loc, list)};
-			auto in_block{is_same_block(loc, list)};
+			auto in_row{get_same_row(loc, list)};
+			auto in_col{get_same_col(loc, list)};
+			auto in_block{get_same_block(loc, list)};
 			// Remove values for rest of shared elements
 			if (in_row.size() == count)
 			{
@@ -611,13 +612,7 @@ inline int Solver<N>::set_section_locals(
 			assert(locations.size() <= N); // won't fit in single block-row/col
 			assert(locations.size() > 1);  // use the set_uniques specialization
 
-			// check if all in same block
-			if (std::all_of(
-					locations.cbegin(),
-					locations.cend(),
-					[&locations](Location L) {
-						return is_same_block(L, locations[0]);
-					}))
+			if (is_same_block(locations.cbegin(), locations.cend()))
 			{ // remove from rest of block
 				changes += remove_option_section(
 					board_.block(locations[0]), locations, value);
@@ -648,22 +643,12 @@ inline int Solver<N>::set_section_locals(
 			assert(locations.size() > 1);  // use the set_uniques specialization
 
 			// check if all in same row/col
-			if (std::all_of(
-					locations.cbegin(),
-					locations.cend(),
-					[&locations](Location L) {
-						return is_same_row(L, locations[0]);
-					}))
+			if (is_same_row<N>(locations.cbegin(), locations.cend()))
 			{ // remove from rest of row
 				changes += remove_option_outside_block(
 					board_.row(locations[0]), locations[0], value);
 			}
-			else if (std::all_of(
-						 locations.cbegin(),
-						 locations.cend(),
-						 [&locations](Location L) {
-							 return is_same_col(L, locations[0]);
-						 }))
+			else if (is_same_col<N>(locations.cbegin(), locations.cend()))
 			{ // remove from rest of col
 				changes += remove_option_outside_block(
 					board_.col(locations[0]), locations[0], value);

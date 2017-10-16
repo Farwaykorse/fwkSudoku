@@ -16,14 +16,23 @@
 namespace Sudoku
 {
 template<int N>
-constexpr bool is_same_row(const Location<N> left, const Location<N> right)
+inline constexpr bool
+	is_same_row(const Location<N> left, const Location<N> right)
 {
 	return left.row() == right.row();
 }
 
+template<int N, typename InItr_>
+constexpr bool is_same_row(const InItr_ begin, const InItr_ end)
+{
+	auto itr = begin + 1;
+	return std::all_of(
+		itr, end, [begin](Location<N> i) { return is_same_row<N>(*begin, i); });
+}
+
 template<int N>
 std::vector<Location<N>>
-	is_same_row(const Location<N> left, const std::vector<Location<N>>& right)
+	get_same_row(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> tmp_{};
 	for (auto&& loc : right)
@@ -34,14 +43,23 @@ std::vector<Location<N>>
 }
 
 template<int N>
-constexpr bool is_same_col(const Location<N> left, const Location<N> right)
+inline constexpr bool
+	is_same_col(const Location<N> left, const Location<N> right)
 {
 	return left.col() == right.col();
 }
 
+template<int N, typename InItr_>
+inline constexpr bool is_same_col(const InItr_ begin, const InItr_ end)
+{
+	auto itr = begin+1;
+	return std::all_of(
+		itr, end, [begin](Location<N> i) { return is_same_col<N>(*begin, i); });
+}
+
 template<int N>
 std::vector<Location<N>>
-	is_same_col(const Location<N> left, const std::vector<Location<N>>& right)
+	get_same_col(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> tmp_{};
 	for (auto&& loc : right)
@@ -52,14 +70,24 @@ std::vector<Location<N>>
 }
 
 template<int N>
-constexpr bool is_same_block(const Location<N> left, const Location<N> right)
+inline constexpr bool
+	is_same_block(const Location<N> left, const Location<N> right)
 {
 	return left.block() == right.block();
 }
 
+template<int N, typename InItr_>
+inline constexpr bool is_same_block(const InItr_ begin, const InItr_ end)
+{
+	auto itr = begin + 1;
+	return std::all_of(itr, end, [begin](Location<N> i) {
+		return is_same_block<N>(*begin, i);
+	});
+}
+
 template<int N>
 std::vector<Location<N>>
-	is_same_block(const Location<N> left, const std::vector<Location<N>>& right)
+	get_same_block(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> tmp_{};
 	for (auto&& loc : right)
