@@ -127,10 +127,11 @@ template<int N>
 template<typename InItr_, typename> // at least forward_iterator
 inline void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 {
-	// check iterator type, at least: forward_iterator_tag
-	static_assert(Solvers_::is_forward<InItr_>);
-	assert(end - begin == full_size);
-
+	{
+		static_assert(Solvers_::is_forward<InItr_>);
+		static_assert(Solvers_::iterator_to<InItr_, int>);
+		assert(end - begin == full_size);
+	}
 	int n{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
@@ -143,6 +144,7 @@ inline void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 		// check invalid value or conflict
 		assert(*itr == 0 || board_.at(loc).is_answer(*itr));
 	}
+	assert(n == Location().full_size);
 }
 
 //	remove option from element, make answer if last option
