@@ -280,7 +280,8 @@ template<int E>
 inline bool Options<E>::is_option(int value) const noexcept
 {
 	assert(value != 0);
-	return (!is_answer() && operator[](value));
+	// benched: this order is ~1.3 times faster
+	return (operator[](value) && !is_answer());
 }
 
 //_Test if no options or answers available

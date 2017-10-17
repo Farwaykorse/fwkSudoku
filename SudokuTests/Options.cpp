@@ -265,9 +265,9 @@ TEST(Options, mf_boolRequest)
 #ifndef _DEBUG
 	EXPECT_NO_THROW(TE.O_1.is_option(15));	// undefined behaviour
 	EXPECT_NO_THROW(TE.O_1.is_option(-5));
+	EXPECT_NO_THROW(TE.A_1.is_option(15));
+	EXPECT_NO_THROW(TE.A_1.is_option(-5));
 #endif // _DEBUG
-	EXPECT_NO_THROW(TE.A_1.is_option(15));	// defined (== false)
-	EXPECT_NO_THROW(TE.A_1.is_option(-5));	// defined (== false)
 	EXPECT_TRUE(TE.D_1.is_option(4));
 	EXPECT_TRUE(TE.O_1.is_option(2));
 	EXPECT_FALSE(TE.A_2.is_option(2));
