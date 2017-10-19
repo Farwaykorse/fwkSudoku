@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "Location_Utilities.h"
 #include <gsl/gsl>
 #include <iterator>
 #include <memory>
@@ -52,7 +53,7 @@ class const_Row
 public:
 	const_Row(Row<T, N> row) : owner_(row.owner_), id_(row.id_) {}
 
-	constexpr int size() const noexcept { return Location().elem_size; }
+	constexpr int size() const noexcept { return elem_size<N>; }
 
 	int id() const { return id_; }
 

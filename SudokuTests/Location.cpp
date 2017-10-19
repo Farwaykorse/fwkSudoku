@@ -465,6 +465,18 @@ TEST(Location_Block, is_constexpr)
 	EXPECT_FALSE(noexcept(B1.col()));
 }
 
+TEST(Location_Utilities, Size_definitions)
+{
+	EXPECT_EQ(base_size<2>, 2);
+	EXPECT_EQ(elem_size<2>, 4);
+	EXPECT_EQ(full_size<2>, 16);
+	EXPECT_EQ(base_size<3>, 3);
+	EXPECT_EQ(elem_size<3>, 9);
+	EXPECT_EQ(full_size<3>, 81);
+	EXPECT_EQ(base_size<4>, 4);
+	EXPECT_EQ(elem_size<4>, 16);
+	EXPECT_EQ(full_size<4>, 256);
+}
 TEST(Location_Utilities, is_same_section)
 {
 	EXPECT_TRUE(noexcept(is_same_row(Location<3>(0), Location<3>(8))));

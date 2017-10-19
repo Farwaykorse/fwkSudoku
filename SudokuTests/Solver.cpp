@@ -22,6 +22,7 @@
 // helpers
 #include "../Sudoku/Board.h"
 #include "../Sudoku/Location.h"
+#include "../Sudoku/Location_Utilities.h"
 #include "../Sudoku/Options.h"
 // library
 #include <bitset>
@@ -427,7 +428,7 @@ TEST(Solver, unique_in_section)
 	EXPECT_NO_THROW(Solver<2>(B2).unique_in_section(B2.row(3)));
 	EXPECT_NE(B2, cB2) << "row 3 should have changed";
 	// full board
-	for (int i = 0; i < B2.elem_size; ++i)
+	for (int i = 0; i < elem_size<2>; ++i)
 	{
 		EXPECT_NO_THROW(Solver<2>(B2).unique_in_section(B2.row(i)));
 	}
@@ -513,7 +514,7 @@ TEST(Solver, block_exclusive)
 		<< "section_exclusive(Block) should find 1 value";
 	EXPECT_EQ(B1[3][3], 1) << "section_exclusive(Block) unique value failed";
 	int found1{0};
-	for (int i{0}; i < B1.elem_size; ++i)
+	for (int i{0}; i < elem_size<2>; ++i)
 	{
 		found1 += Solver<2>(B1).section_exclusive(B1.block(i));
 	}
@@ -561,7 +562,7 @@ TEST(Solver, block_exclusive)
 		<< "section_exclusive(block) should find at least 1 value";
 	EXPECT_EQ(B2[2][8], 3)
 		<< "section_exclusive(block) unique value failed N=3";
-	for (int i = 0; i < B2.elem_size; ++i)
+	for (int i = 0; i < elem_size<3>; ++i)
 	{
 		EXPECT_NO_THROW(Solver<3>(B2).section_exclusive(B2.block(i)));
 	}
@@ -895,7 +896,7 @@ TEST(Solver, solve_board)
 	std::copy(b1a.cbegin(), b1a.cend(), answer.begin());
 	Board<Options<9>, 3> options{};
 	Solver<3>(options).setValue(b1.cbegin(), b1.cend());
-	for (int i = 0; i < options.elem_size; ++i)
+	for (int i = 0; i < elem_size<3>; ++i)
 	{
 		Solver<3>(options).unique_in_section(options.row(i));
 	}

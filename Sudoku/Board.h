@@ -38,10 +38,6 @@ public:
 	using Block		= Board_Section::Block<T, N>;
 	using const_Block = Board_Section::const_Block<T, N>;
 
-	static constexpr int base_size = Location().base_size;	// default 3
-	static constexpr int elem_size = Location().elem_size;	// default 9
-	static constexpr int full_size = Location().full_size;	// default 81
-
 	Board();
 	// initialize with non-default value
 	explicit Board(const T&);
@@ -50,7 +46,7 @@ public:
 	void clear();
 
 	/* Query properties */
-	constexpr int size() const noexcept { return full_size; }
+	constexpr int size() const noexcept { return full_size<N>; }
 	bool operator==(const Board&) const;
 
 	/* Element access */
@@ -117,14 +113,14 @@ private:
 // Board - Constructors
 template<typename T, int N>
 Board<T, N>::Board() :
-	board_(full_size)
+	board_(full_size<N>)
 {
 	valid_dimensions<N>();
 }
 
 template<typename T, int N>
 Board<T, N>::Board(const T& def_value) :
-	board_(full_size, def_value)
+	board_(full_size<N>, def_value)
 {
 	valid_dimensions<N>();
 }
@@ -133,8 +129,8 @@ template<typename T, int N>
 Board<T, N>::Board(std::initializer_list<T> list) :
 	board_(list)
 {
-	assert(list.size() == full_size);
-	board_.resize(full_size);
+	assert(list.size() == full_size<N>);
+	board_.resize(full_size<N>);
 	valid_dimensions<N>();
 }
 
@@ -156,7 +152,7 @@ inline void Board<T, N>::clear()
 {
 	/* all elements to the empty value */
 	board_.clear();
-	board_.resize(full_size);
+	board_.resize(full_size<N>);
 }
 
 

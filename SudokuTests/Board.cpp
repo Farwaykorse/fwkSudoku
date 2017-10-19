@@ -174,18 +174,6 @@ TEST(Board, Construction)
 		// see deathtests
 	}
 }
-TEST(Board, Size_definitions)
-{
-	EXPECT_EQ((Board<int, 2>().base_size), 2);	// [gTest]
-	EXPECT_EQ((Board<int, 2>().elem_size), 4);	// [gTest]
-	EXPECT_EQ((Board<int, 2>().full_size), 16);	// [gTest]
-	EXPECT_EQ((Board<int, 3>().base_size), 3);	// [gTest]
-	EXPECT_EQ((Board<int, 3>().elem_size), 9);	// [gTest]
-	EXPECT_EQ((Board<int, 3>().full_size), 81);	// [gTest]
-	EXPECT_EQ((Board<int, 4>().base_size), 4);	// [gTest]
-	EXPECT_EQ((Board<int, 4>().elem_size), 16);	// [gTest]
-	EXPECT_EQ((Board<int, 4>().full_size), 256);	// [gTest]
-}
 TEST(Board, size)
 {
 	EXPECT_EQ((Board<int,2>().size()), 16);	// [gTest]

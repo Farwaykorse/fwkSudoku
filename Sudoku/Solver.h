@@ -35,12 +35,8 @@ class Solver
 {
 	using Location = Location<N>;
 
-	static constexpr int base_size = Location().base_size; // default 3
-	static constexpr int elem_size = Location().elem_size; // default 9
-	static constexpr int full_size = Location().full_size; // default 81
-
-	using Options = Options<elem_size>;
-	using Board   = Sudoku::Board<Options, base_size>;
+	using Options = Options<elem_size<N>>;
+	using Board   = Sudoku::Board<Options, base_size<N>>;
 	using Row     = typename Board::Row;
 	using Col     = typename Board::Col;
 	using Block   = typename Board::Block;
@@ -129,7 +125,7 @@ inline void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 	{
 		static_assert(Utility_::is_forward<InItr_>);
 		static_assert(Utility_::iterator_to<InItr_, int>);
-		assert(end - begin == full_size);
+		assert(end - begin == full_size<N>);
 	}
 	int n{0};
 	for (auto itr = begin; itr != end; ++itr)
@@ -143,7 +139,7 @@ inline void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 		// check invalid value or conflict
 		assert(*itr == 0 || board_.at(loc).is_answer(*itr));
 	}
-	assert(n == full_size);
+	assert(n == full_size<N>);
 }
 
 //	remove option from element, make answer if last option
@@ -230,7 +226,7 @@ inline int Solver<N>::dual_option(const Location loc)
 
 	int changes{};
 	const Options& item{board_[loc]};
-	for (int i{}; i < full_size; ++i)
+	for (int i{}; i < full_size<N>; ++i)
 	{
 		// find exact same in board
 		if (board_[Location(i)] == item && Location(i) != loc)
@@ -272,7 +268,7 @@ inline int Solver<N>::multi_option(const Location loc, size_t count)
 		count = static_cast<size_t>(board_[loc].count());
 	}
 	constexpr auto specialize = 2; // use specialization below and including
-	constexpr auto max_size   = elem_size / 2; //?? Assumption, Proof needed
+	constexpr auto max_size   = elem_size<N> / 2; //?? Assumption, Proof needed
 	if (specialize < count && count <= max_size)
 	{
 		int changes{};                    // performance counter
@@ -280,13 +276,13 @@ inline int Solver<N>::multi_option(const Location loc, size_t count)
 		std::vector<Location> list{};     // potential matches
 
 		// traverse whole board
-		for (int i{}; i < full_size; ++i)
+		for (int i{}; i < full_size<N>; ++i)
 		{
 			const auto& other = board_[Location(i)];
 			// find exact same in board
 			// TODO rework to also pick-up cels containing [2,n) values
 			if (other.count() > 0 && // include not processed answers
-				other.count() <= base_size &&
+				other.count() <= base_size<N> &&
 				(other == item || (item & other).count() == other.count()))
 			{
 				list.push_back(Location(i));
@@ -688,7 +684,7 @@ inline auto Solver<N>::find_locations(
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid_value<N>(value));
-		assert(rep_count > 0 && rep_count <= board_.full_size);
+		assert(rep_count > 0 && rep_count <= full_size<N>);
 	}
 	const auto begin = section.cbegin();
 	const auto end   = section.cend();
@@ -720,7 +716,7 @@ inline auto Solver<N>::find_locations(
 		using iterator = typename InItr_::const_iterator;
 		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid_value<N>(value));
-		assert(rep_count > 0 && rep_count <= board_.full_size);
+		assert(rep_count > 0 && rep_count <= full_size<N>);
 	}
 	std::vector<Location> locations{};
 	auto last = begin;

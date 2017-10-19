@@ -58,14 +58,14 @@ inline constexpr bool is_valid(const std::vector<Location<N>>& locs)
 	return (
 		!locs.empty() && (std::is_sorted(locs.cbegin(), locs.cend()) &&
 						  locs.cbegin()->element() >= 0 &&
-						  locs.crbegin()->element() < Location<N>().full_size));
+						  locs.crbegin()->element() < full_size<N>));
 }
 
 // Test row/col/block-element
 template<int N>
 inline constexpr bool is_valid_size(const int elem)
 {
-	return (elem >= 0 && elem < Location<N>().elem_size);
+	return (elem >= 0 && elem < elem_size<N>);
 }
 
 // Test if location on Board
@@ -79,7 +79,7 @@ inline constexpr bool is_valid_size(const int row, const int col)
 template<int N>
 inline constexpr bool is_valid_value(const int value)
 {
-	return value > 0 && value <= Location<N>().elem_size;
+	return value > 0 && value <= elem_size<N>;
 }
 
 // Test input values

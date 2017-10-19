@@ -5,6 +5,7 @@
 #include <iomanip>		// setw(), setfill()
 
 #include "../Sudoku/Board.h"
+#include "../Sudoku/Location_Utilities.h"
 #include "../Sudoku/Options.h"
 
 namespace Sudoku
@@ -98,10 +99,10 @@ template<int N>
 std::stringstream Console::print_row(const Board<int,N>& input, int row) const
 {
 	std::stringstream stream;
-	const int chars = charsize(input.elem_size) + 1;
+	const int chars = charsize(elem_size<N>) + 1;
 
 	stream << d.col_block << std::setfill(d.space);
-	for (int i = 0; i < input.elem_size; ++i)
+	for (int i = 0; i < elem_size<N>; ++i)
 	{
 		if (input[row][i] == 0)	// no value
 		{
@@ -111,7 +112,7 @@ std::stringstream Console::print_row(const Board<int,N>& input, int row) const
 		{
 			stream << std::setw(chars) << input[row][i];
 		}
-		if ((i + 1) % input.base_size == 0)
+		if ((i + 1) % base_size<N> == 0)
 		{
 			stream << std::setw(2) << d.col_block;
 		}
@@ -124,23 +125,23 @@ std::stringstream Console::print_board(const Board<int,N>& input) const
 {
 	std::stringstream stream;
 	std::stringstream temp;
-	const int chars = charsize(input.elem_size) + 1;
+	const int chars = charsize(elem_size<N>) + 1;
 
 	// opening bar
 	temp << d.block_cross;
-	for (int j = 0; j < input.base_size; ++j)
+	for (int j = 0; j < base_size<N>; ++j)
 	{
-		temp << std::setfill(d.row_block[0]) << std::setw(chars * input.base_size + 2) << d.block_cross;
+		temp << std::setfill(d.row_block[0]) << std::setw(chars * base_size<N> + 2) << d.block_cross;
 	}
 	std::string bar;
 	temp >> bar;
 	stream << bar << '\n';
 
 	// loop rows
-	for (int i = 0; i < input.elem_size; ++i)
+	for (int i = 0; i < elem_size<N>; ++i)
 	{
 		stream << print_row(input, i).str() << d.newl;
-		if ((i + 1) % input.base_size == 0)
+		if ((i + 1) % base_size<N> == 0)
 		{
 			stream << bar << '\n';
 		}
@@ -152,11 +153,9 @@ template<int N, int E>
 std::stringstream Console::print_board(const Board<Options<E>,N>& input) const
 {
 	static_assert(E == N*N, "");
-	assert(input.elem_size == 9);	// no support for different sizes yet
-	const int base_size = input.base_size;
-	const int elem_size = input.elem_size;
-	const int block_size = elem_size + base_size + 2;
-	const int row_length = base_size * block_size;
+	assert(elem_size<N> == 9);	// no support for different sizes yet
+	const int block_size = elem_size<N> + base_size<N> + 2;
+	const int row_length = base_size<N> * block_size;
 	/*
 	9   9   9
 	o-----------------------------------------o
@@ -175,18 +174,18 @@ std::stringstream Console::print_board(const Board<Options<E>,N>& input) const
 	n0 << std::setfill(d.row_block[0]) << d.block_cross << std::setw(row_length) << d.block_cross << d.newl;
 	n4 << std::setfill(' ') << std::setw(block_size) << d.col_block;
 	//stream << std::endl;
-	//for (size_t col = 0; col < elem_size; ++col)
+	//for (size_t col = 0; col < elem_size<N>; ++col)
 	//{
 	//	stream << std::setfill(' ') << std::setw(4) << col_prop.count_unknown(col);
 	//}
 
-	stream << std::setfill(d.empty) << std::setw(base_size);
+	stream << std::setfill(d.empty) << std::setw(base_size<N>);
 	const std::string empty = stream.str();
 
 	stream << '\n' << n0.str();
 
 
-	for (int row{ 0 }; row < elem_size; ++row)
+	for (int row{ 0 }; row < elem_size<N>; ++row)
 	{
 
 		stream << print_row(input, row).str();
@@ -200,23 +199,20 @@ std::stringstream Console::print_board(const Board<Options<E>,N>& input) const
 template<int N, int E>
 std::stringstream Console::print_row(const Board<Options<E>, N>& input, int row) const
 {
-	const int base_size = input.base_size;
-	const int elem_size = input.elem_size;
-
 	std::stringstream stream;
 
 	int X{ 1 };
-	for (int k{ 0 }; k < base_size; ++k)
+	for (int k{ 0 }; k < base_size<N>; ++k)
 	{
 		stream << d.col_block << d.space;
-		for (int col{ 0 }; col < elem_size; ++col)
+		for (int col{ 0 }; col < elem_size<N>; ++col)
 		{
-			for (int i{ X }; i < X + base_size; ++i)
+			for (int i{ X }; i < X + base_size<N>; ++i)
 			{
 				if (input[row][col].test(i)) { stream << i; }
 				else { stream << d.empty; }
 			}
-			if ((col + 1) % base_size == 0)
+			if ((col + 1) % base_size<N> == 0)
 			{
 				stream << std::setfill(d.space) << std::setw(2) << d.col_block << d.space;
 			}
@@ -226,7 +222,7 @@ std::stringstream Console::print_row(const Board<Options<E>, N>& input, int row)
 			}
 		}
 		stream << d.newl;
-		X += base_size;
+		X += base_size<N>;
 	}
 	return stream;
 }
