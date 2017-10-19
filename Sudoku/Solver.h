@@ -5,9 +5,9 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
+#include "Iterator_Utilities.h"
 #include "Location_Utilities.h"
 #include "Options.h"
-#include "Solver_Utilities.h"
 #include "Solvers_Appearance.h"
 
 #include <array>
@@ -45,7 +45,7 @@ class Solver
 	using Col     = typename Board::Col;
 	using Block   = typename Board::Block;
 	template<typename Itr>
-	using if_forward = std::enable_if_t<Solvers_::is_forward<Itr>>;
+	using if_forward = std::enable_if_t<Utility_::is_forward<Itr>>;
 
 public:
 	Solver(Board&);
@@ -127,8 +127,8 @@ template<typename InItr_, typename> // at least forward_iterator
 inline void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 {
 	{
-		static_assert(Solvers_::is_forward<InItr_>);
-		static_assert(Solvers_::iterator_to<InItr_, int>);
+		static_assert(Utility_::is_forward<InItr_>);
+		static_assert(Utility_::iterator_to<InItr_, int>);
 		assert(end - begin == full_size);
 	}
 	int n{0};
@@ -345,8 +345,8 @@ inline int Solver<N>::remove_option_section(
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
-		static_assert(Solvers_::is_input<iterator>);
-		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		static_assert(Utility_::is_input<iterator>);
+		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid(loc));
 		assert(is_valid_value<N>(value));
 		assert(is_same_section(section, loc));
@@ -378,8 +378,8 @@ inline int Solver<N>::remove_option_outside_block(
 			!std::is_base_of_v<typename Board::const_Block, SectionT>,
 			"remove_option_outside_block is useless on bock");
 		using iterator = typename SectionT::const_iterator;
-		static_assert(Solvers_::is_input<iterator>);
-		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		static_assert(Utility_::is_input<iterator>);
+		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid(block_loc));
 		assert(is_valid_value<N>(value));
 		assert(intersect_block(section, block_loc));
@@ -409,8 +409,8 @@ inline int Solver<N>::remove_option_section(
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
-		static_assert(Solvers_::is_input<iterator>);
-		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		static_assert(Utility_::is_input<iterator>);
+		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid(ignore));
 		assert(is_valid_value<N>(value));
 		assert(is_same_section(section, ignore));
@@ -448,8 +448,8 @@ inline int Solver<N>::remove_option_section(
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
-		static_assert(Solvers_::is_input<iterator>);
-		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		static_assert(Utility_::is_input<iterator>);
+		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid(ignore));
 		assert(is_valid_value<N>(values));
 		assert(is_same_section(section, ignore));
@@ -494,8 +494,8 @@ inline auto
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
-		static_assert(Solvers_::is_input<iterator>);
-		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		static_assert(Utility_::is_input<iterator>);
+		static_assert(Utility_::iterator_to<iterator, const Options>);
 	}
 	int changes{0};
 
@@ -531,7 +531,7 @@ inline int Solver<N>::section_exclusive(const SectionT section)
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
-		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		static_assert(Utility_::iterator_to<iterator, const Options>);
 	}
 	int changes{}; // performance counter
 
@@ -569,7 +569,7 @@ inline int Solver<N>::section_exclusive(const Block block)
 {
 	{
 		using iterator = typename Block::const_iterator;
-		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		static_assert(Utility_::iterator_to<iterator, const Options>);
 	}
 	int changes{}; // performance counter
 
@@ -613,7 +613,7 @@ inline int Solver<N>::set_section_locals(
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
-		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(worker.count_all() > 0); // should have been cought by caller
 	}
 	int changes{0};
@@ -643,7 +643,7 @@ inline int Solver<N>::set_section_locals(
 {
 	{
 		using iterator = typename Block::const_iterator;
-		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(worker.count_all() > 0); // should have been cought by caller
 	}
 	int changes{0};
@@ -685,8 +685,8 @@ inline auto Solver<N>::find_locations(
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
-		static_assert(Solvers_::is_input<iterator>);
-		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		static_assert(Utility_::is_input<iterator>);
+		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid_value<N>(value));
 		assert(rep_count > 0 && rep_count <= board_.full_size);
 	}
@@ -716,9 +716,9 @@ inline auto Solver<N>::find_locations(
 	const int value) const
 {
 	{
-		static_assert(Solvers_::is_input<InItr_>);
+		static_assert(Utility_::is_input<InItr_>);
 		using iterator = typename InItr_::const_iterator;
-		static_assert(Solvers_::iterator_to<iterator, const Options>);
+		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid_value<N>(value));
 		assert(rep_count > 0 && rep_count <= board_.full_size);
 	}

@@ -6,7 +6,7 @@
 
 #include "Location.h"
 #include "Options.h"
-#include "Solver_Utilities.h"
+#include "Iterator_Utilities.h"
 #include <iterator>
 #include <type_traits>
 
@@ -17,6 +17,7 @@
 
 namespace Sudoku::Solvers_
 {
+using namespace Sudoku::Utility_;
 // TODO rename: use a generalized function name
 // TODO 1. general version taking [int] 1-full_size for appearance count
 // TODO 2. default to base_size
