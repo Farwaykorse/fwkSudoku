@@ -5,8 +5,8 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
-#include "Options.h"
 #include "Location_Utilities.h"
+#include "Options.h"
 #include "Solver_Utilities.h"
 #include "Solvers_Appearance.h"
 
@@ -14,6 +14,7 @@
 #include <vector>
 #include <algorithm> // for_each, minmax, all_of, none_of
 #include <stdexcept>
+#include <type_traits> // is_base_of
 #include <cassert>
 
 // Forward declarations
@@ -66,6 +67,8 @@ public:
 		SectionT,
 		const std::vector<Location>& ignore,
 		const std::vector<int>& value);
+	template<typename SectionT>
+	int remove_option_outside_block(SectionT, Location block, int value);
 
 	// Solvers
 	int single_option(Location);
@@ -89,8 +92,6 @@ private:
 	int set_section_locals(Block, int rep_count, const Options& worker);
 
 	template<typename SectionT>
-	int remove_option_outside_block(SectionT, Location block, int value);
-	template<typename SectionT>
 	auto find_locations(SectionT, int rep_count, int value) const;
 	//? deprecated ?? use on full board?
 	template<typename InItr_>
@@ -106,20 +107,18 @@ inline Solver<N>::Solver(Board& options) : board_(options)
 }
 
 //	IF valid, Make [value] the answer for [loc]
-//??? and process
+//	No processing
 template<int N>
 inline void Solver<N>::setValue(const Location loc, const int value)
 {
 	assert(is_valid(loc));
 	assert(is_valid_value<N>(value));
+
 	if (!board_.at(loc).test(value))
-	{
+	{ // value is option nor answer
 		throw std::logic_error{"Invalid Board"};
 	}
 	board_[loc].set_nocheck(value);
-
-	//? process row / col / block
-	// x single_option(loc, value);
 }
 
 //	set board_ using a transferable container of values
@@ -144,7 +143,7 @@ inline void Solver<N>::setValue(const InItr_ begin, const InItr_ end)
 		// check invalid value or conflict
 		assert(*itr == 0 || board_.at(loc).is_answer(*itr));
 	}
-	assert(n == Location().full_size);
+	assert(n == full_size);
 }
 
 //	remove option from element, make answer if last option
@@ -160,20 +159,22 @@ inline int Solver<N>::remove_option(const Location loc, const int value)
 	if (item.is_option(value))
 	{
 		++changes;
-		switch (const int count = item.remove_option(value).count())
+		const int count = item.remove_option(value).count();
+		assert(count > 0); // never trigger, removed last option
+
+		if (count == 1)
 		{
-			// remaining options
-		case 0: assert(false); break; // never trigger, removed last option
-		case 1: changes += single_option(loc, item.get_answer()); break;
-#if DUAL_ON_REMOVE == true
-		case 2: changes += dual_option(loc); break;
-#endif // dual
-		default:
-#if MULTIPLE_ON_REMOVE == true
-			changes += multi_option(loc, count);
-#endif // multiple
-			break;
+			changes += single_option(loc);
 		}
+#if DUAL_ON_REMOVE == true
+		if (count == 2)
+		{
+			changes += dual_option(loc);
+		}
+#endif // dual
+#if MULTIPLE_ON_REMOVE == true
+		changes += multi_option(loc, count);
+#endif // multiple
 	}
 	return changes;
 }
@@ -183,6 +184,8 @@ inline int Solver<N>::remove_option(const Location loc, const int value)
 template<int N>
 inline int Solver<N>::single_option(const Location loc)
 {
+	assert(is_valid(loc));
+
 	if (const int answer{board_[loc].get_answer()})
 	{
 		return single_option(loc, answer);
@@ -243,7 +246,8 @@ inline int Solver<N>::dual_option(const Location loc)
 				changes += remove_option_section(
 					board_.col(loc), sorted_loc(Location(i)), item.available());
 			}
-			if (is_same_block(loc, Location(i)))
+			// run don't if already answered in one of the previous
+			if (is_same_block(loc, Location(i)) && !item.is_answer())
 			{
 				// NOTE this is slow
 				changes += remove_option_section(
@@ -336,9 +340,7 @@ inline int Solver<N>::multi_option(const Location loc, size_t count)
 template<int N>
 template<typename SectionT>
 inline int Solver<N>::remove_option_section(
-	const SectionT section,
-	[[maybe_unused]] const Location loc, // not used in release mode
-	const int value)
+	const SectionT section, const Location loc, const int value)
 {
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
@@ -347,7 +349,8 @@ inline int Solver<N>::remove_option_section(
 		static_assert(Solvers_::iterator_to<iterator, const Options>);
 		assert(is_valid(loc));
 		assert(is_valid_value<N>(value));
-		assert(board_.at(loc).is_answer(value));
+		assert(is_same_section(section, loc));
+		assert(board_.at(loc).is_answer(value)); // first set as anwer!
 	}
 	int changes{0};
 	const auto begin = section.cbegin();
@@ -355,7 +358,7 @@ inline int Solver<N>::remove_option_section(
 
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		if (!(itr->is_answer()))
+		if (itr.location() != loc)
 		{
 			changes += remove_option(itr.location(), value);
 		}
@@ -371,20 +374,23 @@ inline int Solver<N>::remove_option_outside_block(
 {
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		static_assert(
+			!std::is_base_of_v<typename Board::const_Block, SectionT>,
+			"remove_option_outside_block is useless on bock");
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Solvers_::is_input<iterator>);
 		static_assert(Solvers_::iterator_to<iterator, const Options>);
 		assert(is_valid(block_loc));
 		assert(is_valid_value<N>(value));
+		assert(intersect_block(section, block_loc));
 	}
-
 	int changes{0};
 	const auto begin = section.cbegin();
 	const auto end   = section.cend();
 
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		if (!(itr->is_answer() || is_same_block(itr.location(), block_loc)))
+		if (!(is_same_block(itr.location(), block_loc)))
 		{
 			changes += remove_option(itr.location(), value);
 		}
@@ -407,13 +413,18 @@ inline int Solver<N>::remove_option_section(
 		static_assert(Solvers_::iterator_to<iterator, const Options>);
 		assert(is_valid(ignore));
 		assert(is_valid_value<N>(value));
+		assert(is_same_section(section, ignore));
 	}
 	int changes{0};
 	const auto begin = section.cbegin();
 	const auto end   = section.cend();
 
+	// TODO maybe faster to run get_same_row/col/block first?
+	// and than not to check is_option(), since it is already in remove_option
+
 	for (auto itr = begin; itr != end; ++itr)
 	{
+		// TODO is the is_option check really faster?
 		if (itr->is_option(value) &&
 			std::none_of(ignore.cbegin(), ignore.cend(), [itr](Location loc) {
 				return itr.location() == loc;
@@ -441,6 +452,7 @@ inline int Solver<N>::remove_option_section(
 		static_assert(Solvers_::iterator_to<iterator, const Options>);
 		assert(is_valid(ignore));
 		assert(is_valid_value<N>(values));
+		assert(is_same_section(section, ignore));
 	}
 	int changes{0};
 	const auto begin = section.cbegin();

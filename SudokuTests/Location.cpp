@@ -559,7 +559,7 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 1, 5, 3, 4, 3, 1 }));
 
 	using L = Location<2>;
-	EXPECT_TRUE(is_valid(std::vector<Location<2>>{})) << "must except empty";
+	EXPECT_FALSE(is_valid(std::vector<Location<2>>{})) << "can't be empty";
 	EXPECT_TRUE(is_valid(std::vector<Location<2>>{L(0), L(12), L(13)}));
 	EXPECT_TRUE(is_valid(std::vector<Location<2>>{L(8)})) << "must except single";
 	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(5), L(2), L(16)})) << "must be sorted";

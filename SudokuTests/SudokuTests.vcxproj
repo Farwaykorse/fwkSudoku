@@ -278,6 +278,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Solver.cpp" />
+    <ClCompile Include="Solver_remove_option.cpp" />
     <ClCompile Include="SudokuTests.cpp" />
   </ItemGroup>
   <ItemGroup>
