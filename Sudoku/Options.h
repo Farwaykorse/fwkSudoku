@@ -172,7 +172,7 @@ inline Options<E>& Options<E>::remove_option(const int value) noexcept
 	assert(value >= 0 && value <= E);
 	assert(!is_answer(value));
 
-	operator[](value) = false;
+	data_[static_cast<size_t>(value)] = false;
 	return *this;
 }
 
@@ -189,7 +189,7 @@ template<int E>
 inline Options<E>& Options<E>::add_nocheck(int value) noexcept
 {
 	assert(value >= 0 && value <= E);
-	operator[](value) = true;
+	data_[static_cast<size_t>(value)] = true;
 	return *this;
 }
 
