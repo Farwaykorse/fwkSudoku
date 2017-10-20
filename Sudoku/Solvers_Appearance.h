@@ -67,7 +67,7 @@ Step 3) xor [n-1]
 	constexpr size_t max = N; // default: (9x9 board) up-to 3 times
 	std::array<Options, max + 1> worker{};
 	// start with all false
-	for (auto& obj : worker) obj.flip();
+	for (auto& obj : worker) { obj.flip(); }
 
 	// Collect options by appearence count
 	// worker[n] contains options appearing more than n times (or answer)

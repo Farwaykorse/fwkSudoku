@@ -23,8 +23,8 @@ public:
 	Options() noexcept;
 	Options(const Options&) = default;
 	Options& operator=(const Options&) = default;
-	Options(Options&&)                 = default;
-	Options& operator=(Options&&) = default;
+	Options(Options&&) noexcept        = default;
+	Options& operator=(Options&&) noexcept = default;
 	Options(const bitset&); // 0th bit is last in input
 	Options(bitset&&);
 	Options(int value);

@@ -352,7 +352,7 @@ public:
 	using pointer = value_type*;
 
 	const_iterator(gsl::not_null<const owner_type*> owner)
-		: owner_(owner), elem_(0)
+		: owner_(owner)
 	{
 	}
 	const_iterator(gsl::not_null<const owner_type*> owner, int elem)
@@ -361,12 +361,10 @@ public:
 	}
 
 	// All iterator categories
-	const_iterator(const self_type&) = default;
-	self_type& operator=(const self_type&) = default;
 	self_type& operator++() { ++elem_; return *this; }
-	self_type operator++(int)
+	const self_type operator++(int)
 	{
-		self_type pre = *this;
+		const self_type pre{*this};
 		operator++();
 		return pre;
 	}
@@ -402,9 +400,9 @@ public:
 
 	// Bidirectional iterator
 	self_type& operator--() { --elem_; 	return *this; }	//predecrement
-	self_type operator--(int)	// postdecrement
+	const self_type operator--(int)	// postdecrement
 	{
-		self_type pre{ *this };
+		const self_type pre{*this};
 		operator--();
 		return pre;
 	}
@@ -457,7 +455,7 @@ private:
 
 protected:
 	// accessible to child class: iterator
-	int elem_;	// element within the section
+	int elem_{0}; // element within the section
 
 	[[maybe_unused]] void compatible_(
 		[[maybe_unused]] difference_type offset) const
@@ -503,12 +501,10 @@ public:
 	}
 
 	// All iterator categories
-	iterator(const self_type&) = default;
-	self_type& operator=(const self_type&) = default;
 	self_type& operator++() { ++elem_; 	return *this; }
-	self_type operator++(int)
+	const self_type operator++(int)
 	{
-		self_type pre = *this;
+		const self_type pre = *this;
 		operator++();
 		return pre;
 	}
@@ -531,8 +527,8 @@ public:
 	}
 
 	// In- & output iterator
-	pointer operator->() const noexcept	// member access; equivalent to (*p).member
-	{
+	pointer operator->() const noexcept
+	{ // member access; equivalent to (*p).member
 		return std::addressof<value_type>(owner_->operator[](elem_));
 	}
 
@@ -544,10 +540,10 @@ public:
 	}
 
 	// Bidirectional iterator
-	self_type& operator--() { --elem_; return *this; }	//predecrement 
-	self_type operator--(int)	// postdecrement
+	self_type& operator--() { --elem_; return *this; }	//predecrement
+	const self_type operator--(int)	// postdecrement
 	{
-		self_type pre{ *this };
+		const self_type pre{*this};
 		operator--();
 		return pre;
 	}
@@ -584,4 +580,4 @@ private:
 	owner_type* owner_;
 };
 
-}	// namespace Sudoku
+} // namespace Sudoku::Board_Section

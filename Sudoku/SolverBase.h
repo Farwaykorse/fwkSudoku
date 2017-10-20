@@ -16,19 +16,16 @@ namespace Sudoku
 template<int N = 3> class SolverBase
 {
 	using Location = Location<N>;
-	static const int base_size = Location().base_size;
-	static const int elem_size = Location().elem_size;
-	static const int full_size = Location().full_size;
 
 public:
 	SolverBase();
 	SolverBase(const Board<int, N>&);
-	SolverBase(const std::vector<int>& board);	// needed?? only Board might be enough, added value?
-	SolverBase(SolverBase&&)			= default;	// move
-	SolverBase& operator=(SolverBase&&)	= default;
-	SolverBase(SolverBase const&)		= default;	// copy
-	SolverBase& operator=(SolverBase const&) = default;
-	~SolverBase()					= default;
+	SolverBase(const std::vector<int>&); //? needed?? added value?
+	SolverBase& operator=(SolverBase&&) noexcept = default;
+	SolverBase(SolverBase&&) noexcept            = default; // move
+	SolverBase& operator=(SolverBase const&)     = default;
+	SolverBase(SolverBase const&)                = default; // copy
+	~SolverBase()                                = default;
 
 	/* Input */
 	void setBoard(const Board<int, N>& board);
@@ -50,7 +47,7 @@ public:
 
 private:
 	Board<int, N> start;
-	Board<Options<elem_size>, N> options;
+	Board<Options<elem_size<N>>, N> options;
 
 	/* Initiate */
 	void process_new(const Board<int, N>&);
@@ -84,8 +81,8 @@ template<int N> inline
 SolverBase<N>::SolverBase(const std::vector<int>& input) :
 	start(0)
 {
-	if (input.size() != full_size) { throw std::length_error("input length_error"); }
-	if (std::find_if(start.cbegin(), start.cend(), [&](int V) { return V > elem_size || V < 0; }) != start.cend())
+	if (input.size() != full_size<N>) { throw std::length_error("input length_error"); }
+	if (std::find_if(start.cbegin(), start.cend(), [&](int V) { return V > elem_size<N> || V < 0; }) != start.cend())
 	{
 		throw std::invalid_argument("elements out of bounds");
 	}
@@ -112,7 +109,7 @@ template<int N> inline
 Board<int, N> SolverBase<N>::getResult() const
 {
 	Board<int, N> result{};
-	for (int i = 0; i < full_size; ++i)
+	for (int i = 0; i < full_size<N>; ++i)
 	{
 		if (options[Location(i)].is_answer())
 		{
@@ -140,9 +137,9 @@ template<int N> inline
 void SolverBase<N>::setValue(const Location loc, const int value)
 {
 	// valid input
-	assert(value <= elem_size);
+	assert(value <= elem_size<N>);
 	Solver<N> S(options);
-	if (value > elem_size) { throw std::out_of_range{ "value in setValue(loc, value)" }; }
+	if (value > elem_size<N>) { throw std::out_of_range{ "value in setValue(loc, value)" }; }
 	if (options.at(loc).is_option(value))
 	{
 		S.setValue(loc, value);
@@ -171,7 +168,7 @@ void SolverBase<N>::solver_unique()
 	while (found > 0)
 	{
 		found = 0;
-		for (int i = 0; i < elem_size; ++i)
+		for (int i = 0; i < elem_size<N>; ++i)
 		{
 			found += S.unique_in_section(options.row(i));
 			found += S.unique_in_section(options.col(i));

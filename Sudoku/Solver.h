@@ -33,7 +33,8 @@ namespace Sudoku
 template<int N>
 class Solver
 {
-	using Location = Location<N>;
+	using Location       = Location<N>;
+	using Location_Block = Location_Block<N>;
 
 	using Options = Options<elem_size<N>>;
 	using Board   = Sudoku::Board<Options, base_size<N>>;
@@ -62,9 +63,9 @@ public:
 	int remove_option_section(
 		SectionT,
 		const std::vector<Location>& ignore,
-		const std::vector<int>& value);
+		const std::vector<int>& values);
 	template<typename SectionT>
-	int remove_option_outside_block(SectionT, Location block, int value);
+	int remove_option_outside_block(SectionT, Location block_loc, int value);
 
 	// Solvers
 	int single_option(Location);
@@ -332,21 +333,21 @@ inline int Solver<N>::multi_option(const Location loc, size_t count)
 	return 0;
 }
 
-//	remove [value] in [loc] from other elements in set
+//	remove [value] in [ignore] from other elements in set
 template<int N>
 template<typename SectionT>
 inline int Solver<N>::remove_option_section(
-	const SectionT section, const Location loc, const int value)
+	const SectionT section, const Location ignore, const int value)
 {
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(is_valid(loc));
+		assert(is_valid(ignore));
 		assert(is_valid_value<N>(value));
-		assert(is_same_section(section, loc));
-		assert(board_.at(loc).is_answer(value)); // first set as anwer!
+		assert(is_same_section(section, ignore));
+		assert(board_.at(ignore).is_answer(value)); // first set as anwer!
 	}
 	int changes{0};
 	const auto begin = section.cbegin();
@@ -354,7 +355,7 @@ inline int Solver<N>::remove_option_section(
 
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		if (itr.location() != loc)
+		if (itr.location() != ignore)
 		{
 			changes += remove_option(itr.location(), value);
 		}

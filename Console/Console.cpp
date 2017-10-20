@@ -65,7 +65,7 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 	else
 	{
 		std::cout << "Different from expected \n";
-		auto options = test_board.getOptions();
+		const auto& options = test_board.getOptions();
 		std::cout << Sudoku::Console().print_board(options).str();
 		//test_board = start;
 		//Sudoku::Board<Sudoku::Options<9>,3> load = test_board.getOptions();

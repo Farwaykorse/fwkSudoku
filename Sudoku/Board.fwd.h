@@ -35,6 +35,6 @@ namespace Board_Section
 	template<typename T, int N, typename ownerT>
 	class iterator;
 
-} // namespace Baord_Section
+} // namespace Board_Section
 
 } // namespace Sudoku

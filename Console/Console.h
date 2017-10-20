@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <iomanip>		// setw(), setfill()
+#include <utility>
 
 #include "../Sudoku/Board.h"
 #include "../Sudoku/Location_Utilities.h"
@@ -39,12 +40,12 @@ public:
 
 	Console();
 	Console(delimiter);
-	~Console() = default;
+	//~Console() = default;
 
 	template<int N>
-	std::stringstream print_row(const Board<int, N>&, int id) const;
+	std::stringstream print_row(const Board<int, N>&, int row_id) const;
 	template<int N, int E>
-	std::stringstream print_row(const Board<Options<E>, N>&, int id) const;
+	std::stringstream print_row(const Board<Options<E>, N>&, int row_id) const;
 	template<int N>
 	std::stringstream print_board(const Board<int, N>&) const;
 	template<int N, int E>
@@ -53,7 +54,7 @@ public:
 	delimiter d;
 private:
 	int charsize(int value) const;
-	int charsize(int, int counter) const;	// recursion
+	int charsize(int, int length) const;	// recursion
 //	bool Format::find_option(const Board<std::set<int>>&, Location, int value);
 	// format elem
 	// format col-block section
@@ -71,32 +72,31 @@ Console::Console() :
 
 inline
 Console::Console(delimiter del) :
-	d(del)
+	d(std::move(del))
 {
 	// empty constructor
 }
 
-inline
-int Console::charsize(int in) const
+inline int Console::charsize(int value) const
 {
-	assert(in >= 0);
-	if (in < 10) { return 1; }
-	return charsize(in, 2);
+	assert(value >= 0);
+	if (value < 10) { return 1; }
+	return charsize(value, 2);
 }
 
 inline
-int Console::charsize(int in, int length) const
+int Console::charsize(int value, int length) const
 {
-	if (in < pow(10, length))
+	if (value < pow(10, length))
 	{
 		return length;
 	}
 	++length;
-	return charsize(in, length);
+	return charsize(value, length);
 }
 
 template<int N>
-std::stringstream Console::print_row(const Board<int,N>& input, int row) const
+std::stringstream Console::print_row(const Board<int,N>& input, int row_id) const
 {
 	std::stringstream stream;
 	const int chars = charsize(elem_size<N>) + 1;
@@ -104,13 +104,13 @@ std::stringstream Console::print_row(const Board<int,N>& input, int row) const
 	stream << d.col_block << std::setfill(d.space);
 	for (int i = 0; i < elem_size<N>; ++i)
 	{
-		if (input[row][i] == 0)	// no value
+		if (input[row_id][i] == 0)	// no value
 		{
 			stream << std::setw(chars) << d.space;
 		}
 		else
 		{
-			stream << std::setw(chars) << input[row][i];
+			stream << std::setw(chars) << input[row_id][i];
 		}
 		if ((i + 1) % base_size<N> == 0)
 		{
@@ -197,7 +197,8 @@ std::stringstream Console::print_board(const Board<Options<E>,N>& input) const
 }
 
 template<int N, int E>
-std::stringstream Console::print_row(const Board<Options<E>, N>& input, int row) const
+std::stringstream
+	Console::print_row(const Board<Options<E>, N>& input, int row_id) const
 {
 	std::stringstream stream;
 
@@ -209,7 +210,7 @@ std::stringstream Console::print_row(const Board<Options<E>, N>& input, int row)
 		{
 			for (int i{ X }; i < X + base_size<N>; ++i)
 			{
-				if (input[row][col].test(i)) { stream << i; }
+				if (input[row_id][col].test(i)) { stream << i; }
 				else { stream << d.empty; }
 			}
 			if ((col + 1) % base_size<N> == 0)
