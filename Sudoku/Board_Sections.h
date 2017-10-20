@@ -47,10 +47,9 @@ class const_Row
 		assert(is_valid(loc));
 	}
 
-	// stop inheritance parent constructing
-	template<typename OtherT>
-	const_Row(OtherT) = delete;
 public:
+	template<typename OtherT>
+	const_Row(OtherT) = delete; // stop inheritance parent constructing
 	const_Row(Row<T, N> row) : owner_(row.owner_), id_(row.id_) {}
 
 	constexpr int size() const noexcept { return elem_size<N>; }
