@@ -299,34 +299,37 @@ TEST(Solvers_, appearance_sets)
 	const Options<9> Ans_3{std::bitset<10>{"0100001000"}}; // 3 8, <3 answers
 
 	// Using iterators
-	auto result =
-		appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
-	EXPECT_EQ(result[0], Ans_0);
-	EXPECT_EQ(result[1], Ans_1);
-	EXPECT_EQ(result[2], Ans_2);
-	EXPECT_EQ(result[3], Ans_3);
-
+	{
+		auto result =
+			appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
+		EXPECT_EQ(result[0], Ans_0);
+		EXPECT_EQ(result[1], Ans_1);
+		EXPECT_EQ(result[2], Ans_2);
+		EXPECT_EQ(result[3], Ans_3);
+	}
 	// reorder, should give same result
 	// set answer last
 	board[0][8] = std::bitset<10>{"0000010000"}; // ans 4
 	board[0][5] = std::bitset<10>{"0100001011"};
-
-	result = appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
-	EXPECT_EQ(result[0], Ans_0);
-	EXPECT_EQ(result[1], Ans_1);
-	EXPECT_EQ(result[2], Ans_2);
-	EXPECT_EQ(result[3], Ans_3);
-
+	{
+		auto result =
+			appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
+		EXPECT_EQ(result[0], Ans_0);
+		EXPECT_EQ(result[1], Ans_1);
+		EXPECT_EQ(result[2], Ans_2);
+		EXPECT_EQ(result[3], Ans_3);
+	}
 	// set unique value last
 	board[0][8] = std::bitset<10>{"1001100101"};
 	board[0][7] = std::bitset<10>{"0000010000"}; // ans 4
-
-	result = appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
-	EXPECT_EQ(result[0], Ans_0);
-	EXPECT_EQ(result[1], Ans_1);
-	EXPECT_EQ(result[2], Ans_2);
-	EXPECT_EQ(result[3], Ans_3);
-
+	{
+		auto result =
+			appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
+		EXPECT_EQ(result[0], Ans_0);
+		EXPECT_EQ(result[1], Ans_1);
+		EXPECT_EQ(result[2], Ans_2);
+		EXPECT_EQ(result[3], Ans_3);
+	}
 	// set value appearing 3 times last
 	board[0][0] = std::bitset<10>{"1000000011"};
 	board[0][7] = std::bitset<10>{"1101000101"}; // 1 -> 7
@@ -337,13 +340,14 @@ TEST(Solvers_, appearance_sets)
 	board[0][2] = std::bitset<10>{"1011001101"};
 	board[0][1] = std::bitset<10>{"1001100101"};
 	board[0][8] = std::bitset<10>{"0100001011"}; // 8 -> 8
-
-	result = appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
-	EXPECT_EQ(result[0], Ans_0);
-	EXPECT_EQ(result[1], Ans_1);
-	EXPECT_EQ(result[2], Ans_2);
-	EXPECT_EQ(result[3], Ans_3);
-
+	{
+		auto result =
+			appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
+		EXPECT_EQ(result[0], Ans_0);
+		EXPECT_EQ(result[1], Ans_1);
+		EXPECT_EQ(result[2], Ans_2);
+		EXPECT_EQ(result[3], Ans_3);
+	}
 	// Using Sections
 	board[0][0] = std::bitset<10>{"1000000011"};
 	board[0][1] = std::bitset<10>{"1101000101"};
@@ -354,35 +358,88 @@ TEST(Solvers_, appearance_sets)
 	board[0][6] = std::bitset<10>{"1011001101"};
 	board[0][7] = std::bitset<10>{"1001100101"};
 	board[0][8] = std::bitset<10>{"0100001011"};
-
-	result = appearance_sets<3>(board.row(0));
-	EXPECT_EQ(result[0], Ans_0);
-	EXPECT_EQ(result[1], Ans_1);
-	EXPECT_EQ(result[2], Ans_2);
-	EXPECT_EQ(result[3], Ans_3);
-
+	{
+		auto result = appearance_sets<3>(board.row(0));
+		EXPECT_EQ(result[0], Ans_0);
+		EXPECT_EQ(result[1], Ans_1);
+		EXPECT_EQ(result[2], Ans_2);
+		EXPECT_EQ(result[3], Ans_3);
+	}
 	// reorder, should give same result
 	// set answer last
 	board[0][8] = std::bitset<10>{"0000010000"}; // ans 4
 	board[0][5] = std::bitset<10>{"0100001011"};
-
-	result = appearance_sets<3>(board.row(0));
-	EXPECT_EQ(result[0], Ans_0);
-	EXPECT_EQ(result[1], Ans_1);
-	EXPECT_EQ(result[2], Ans_2);
-	EXPECT_EQ(result[3], Ans_3);
-
+	{
+		auto result = appearance_sets<3>(board.row(0));
+		EXPECT_EQ(result[0], Ans_0);
+		EXPECT_EQ(result[1], Ans_1);
+		EXPECT_EQ(result[2], Ans_2);
+		EXPECT_EQ(result[3], Ans_3);
+	}
 	// set unique value last
 	board[0][8] = std::bitset<10>{"1001100101"};
 	board[0][7] = std::bitset<10>{"0000010000"}; // ans 4
-
-	result = appearance_sets<3>(board.row(0));
-	EXPECT_EQ(result[0], Ans_0);
-	EXPECT_EQ(result[1], Ans_1);
-	EXPECT_EQ(result[2], Ans_2);
-	EXPECT_EQ(result[3], Ans_3);
-
-	// TODO other sections (col / Block)
+	{
+		auto result = appearance_sets<3>(board.row(0));
+		EXPECT_EQ(result[0], Ans_0);
+		EXPECT_EQ(result[1], Ans_1);
+		EXPECT_EQ(result[2], Ans_2);
+		EXPECT_EQ(result[3], Ans_3);
+	}
+	//===-----------------------------------------------------------------===//
+	// Col
+	// Example as shown in implementation
+	Board<Options<9>, 3> B2{};
+	B2[0][0] = std::bitset<10>{"1000000011"};
+	B2[1][0] = std::bitset<10>{"1101000101"};
+	B2[2][0] = std::bitset<10>{"0100000111"};
+	B2[3][0] = std::bitset<10>{"0000000111"};
+	B2[4][0] = std::bitset<10>{"1011001111"};
+	B2[5][0] = std::bitset<10>{"0000010000"}; // ans 4
+	B2[6][0] = std::bitset<10>{"1011001101"};
+	B2[7][0] = std::bitset<10>{"1001100101"};
+	B2[8][0] = std::bitset<10>{"0100001011"};
+	{ // Using iterators
+		auto result = appearance_sets<3>(B2.col(0).cbegin(), B2.col(0).cend());
+		EXPECT_EQ(result[0], Ans_0);
+		EXPECT_EQ(result[1], Ans_1);
+		EXPECT_EQ(result[2], Ans_2);
+		EXPECT_EQ(result[3], Ans_3);
+	}
+	{ // using Col
+		auto result = appearance_sets<3>(B2.col(0));
+		EXPECT_EQ(result[0], Ans_0);
+		EXPECT_EQ(result[1], Ans_1);
+		EXPECT_EQ(result[2], Ans_2);
+		EXPECT_EQ(result[3], Ans_3);
+	}
+	//===-----------------------------------------------------------------===//
+	// Block
+	using B = Location_Block<3>;
+	Board<Options<9>, 3> B3{};
+	B3[B{2, 0}] = std::bitset<10>{"1000000011"};
+	B3[B(2, 1)] = std::bitset<10>{"1101000101"};
+	B3[B(2, 2)] = std::bitset<10>{"0100000111"};
+	B3[B(2, 3)] = std::bitset<10>{"0000000111"};
+	B3[B(2, 4)] = std::bitset<10>{"1011001111"};
+	B3[B(2, 5)] = std::bitset<10>{"0000010000"}; // ans 4
+	B3[B(2, 6)] = std::bitset<10>{"1011001101"};
+	B3[B(2, 7)] = std::bitset<10>{"1001100101"};
+	B3[B(2, 8)] = std::bitset<10>{"0100001011"};
+	{ // using iterators
+		auto result = appearance_sets<3>(B3.block(2).cbegin(), B3.block(2).cend());
+		EXPECT_EQ(result[0], Ans_0);
+		EXPECT_EQ(result[1], Ans_1);
+		EXPECT_EQ(result[2], Ans_2);
+		EXPECT_EQ(result[3], Ans_3);
+	}
+	{ // using Block
+		auto result = appearance_sets<3>(B3.block(2));
+		EXPECT_EQ(result[0], Ans_0);
+		EXPECT_EQ(result[1], Ans_1);
+		EXPECT_EQ(result[2], Ans_2);
+		EXPECT_EQ(result[3], Ans_3);
+	}
 }
 
 TEST(Solver, unique_in_section)
