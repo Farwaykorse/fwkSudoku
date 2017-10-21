@@ -1,11 +1,26 @@
-/**	Unit tests for the template class Sudoku::Location
-*
-*/
+//===--	SudokuTests/Location.cpp										--===//
+//
+//	Unit tests for the template class Sudoku::Location
+//===---------------------------------------------------------------------===//
+//	Implemented with GoogleTest
+//
+//	Notes:
+//	gTest is limited for use with multiple template parameters.
+//	These expressions need to be implemented between extra parentheses
+//	- test elements implementing this are flagged with [gTest]
+//	- not implemented tests are flagged as NEEDTEST [gTest]
+//	gTest tries to print iterators if they use inheritance,
+//		if used in *_EQ/NE etc.
+//		use an explicit test like EXPECT_TRUE(.. == ..).
+//
+//===---------------------------------------------------------------------===//
 #include <gtest/gtest.h>
 
 // Class under test
 #include "../Sudoku/Location.h"
 #include "../Sudoku/Location_Utilities.h"
+// Helpers
+#include "../Sudoku/Board.h"
 // aditional
 #include <type_traits>
 #include <vector>
@@ -465,6 +480,7 @@ TEST(Location_Block, is_constexpr)
 	EXPECT_FALSE(noexcept(B1.col()));
 }
 
+//===---------------------------------------------------------------------===//
 TEST(Location_Utilities, Size_definitions)
 {
 	EXPECT_EQ(base_size<2>, 2);
@@ -477,58 +493,6 @@ TEST(Location_Utilities, Size_definitions)
 	EXPECT_EQ(elem_size<4>, 16);
 	EXPECT_EQ(full_size<4>, 256);
 }
-TEST(Location_Utilities, is_same_section)
-{
-	EXPECT_TRUE(noexcept(is_same_row(Location<3>(0), Location<3>(8))));
-	EXPECT_TRUE(noexcept(is_same_col(Location<3>(0), Location<3>(8))));
-	EXPECT_TRUE(noexcept(is_same_block(Location<3>(0), Location<3>(8))));
-	EXPECT_TRUE(is_same_row(Location<3>(0), Location<3>(8)));
-	EXPECT_FALSE(is_same_row(Location<3>(9), Location<3>(8)));
-	EXPECT_TRUE(is_same_col(Location<3>(0), Location<3>(18)));
-	EXPECT_FALSE(is_same_col(Location<3>(9), Location<3>(8)));
-	EXPECT_TRUE(is_same_block(Location<3>(0), Location<3>(11)));
-	EXPECT_FALSE(is_same_block(Location<3>(9), Location<3>(8)));
-
-	// is_same_section (taking iterators)
-	using L = Location<3>;
-	const std::vector<L> row{ L(0), L(1), L(2), L(3), L(4), L(5), L(6), L(7), L(8) };
-	const std::vector<L> col{ L(0,6), L(1,6), L(3,6), L(4,6), L(5,6), L(6,6), L(8,6) };
-	const std::vector<L> blo{ L(3,3), L(3,4), L(3,5), L(4,3), L(4,4), L(5,3), L(5,5) };
-	const std::vector<L> notsortedrow{ L(5), L(3), L(2), L(0), L(4), L(8), L(6), L(7), L(1) };
-	const std::vector<L> duplicate{ L(0), L(1), L(2), L(0), L(4), L(0), L(6), L(1), L(0) };
-
-	EXPECT_NO_THROW(is_same_row<3>(row.begin(), row.end()));
-	EXPECT_NO_THROW(is_same_row<3>(row.cbegin(), row.cend()));
-	EXPECT_NO_THROW(is_same_col<3>(col.cbegin(), col.cend()));
-	EXPECT_TRUE(is_same_row<3>(row.cbegin(), row.cend()));
-	EXPECT_TRUE(is_same_col<3>(col.cbegin(), col.cend()));
-	EXPECT_TRUE(is_same_block<3>(blo.cbegin(), blo.cend()));
-	EXPECT_TRUE(is_same_row<3>(notsortedrow.cbegin(), notsortedrow.cend()));
-	EXPECT_TRUE(is_same_row<3>(duplicate.cbegin(), duplicate.cend()));
-	EXPECT_FALSE(is_same_col<3>(row.cbegin(), row.cend()));
-	EXPECT_FALSE(is_same_block<3>(row.cbegin(), row.cend()));
-}
-TEST(Location_Utilities, get_same_section)
-{
-	std::vector<Location<3>> list1{};
-	//std::vector<Location<3>> list2{};
-	std::vector<Location<3>> list3{};
-	for (int i{}; i < 9; ++i)
-	{
-		list1.push_back(Location<3>{i});
-		//list2.push_back(Location<3>{i*3});
-		list3.push_back(Location<3>{i*9});
-	}
-	EXPECT_FALSE(noexcept(get_same_row(Location<3>(0), list1)));
-	EXPECT_FALSE(noexcept(get_same_col(Location<3>(0), list1)));
-	EXPECT_FALSE(noexcept(get_same_block(Location<3>(0), list1)));
-	EXPECT_EQ(get_same_row(Location<3>(0), list1), list1);
-	EXPECT_EQ(get_same_row(Location<3>(0), list1).size(), 9) << "vector length";
-	EXPECT_EQ(get_same_col(Location<3>(0), list3), list3);
-	EXPECT_EQ(get_same_col(Location<3>(0), list3).size(), 9) << "vector length";
-	EXPECT_EQ(get_same_block(Location<3>(0), list1).size(), 3) << "vector length";
-}
-
 TEST(Location_Utilities, is_valid)
 {
 	EXPECT_FALSE(is_valid(Location<2>(-1)));
@@ -562,6 +526,7 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_FALSE(is_valid_value<3>(16));
 
 	// vector input
+	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{})) << "can't be empty";
 	EXPECT_TRUE(is_valid_value<2>(std::vector<int>{ 1, 2, 3, 4, 3, 1 }));
 	EXPECT_TRUE(is_valid_value<2>(std::vector<int>{ 1 }));
 	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 0 }));
@@ -582,7 +547,99 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(16)}));
 	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(-6)}));
 }
+TEST(Location_Utilities, is_same_section)
+{
+	EXPECT_TRUE(is_same_row(Location<3>(0), Location<3>(8)));
+	EXPECT_FALSE(is_same_row(Location<3>(9), Location<3>(8)));
+	EXPECT_TRUE(is_same_col(Location<3>(0), Location<3>(18)));
+	EXPECT_FALSE(is_same_col(Location<3>(9), Location<3>(8)));
+	EXPECT_TRUE(is_same_block(Location<3>(0), Location<3>(11)));
+	EXPECT_FALSE(is_same_block(Location<3>(9), Location<3>(8)));
 
+	// is_same_section (taking iterators)
+	using L = Location<3>;
+	const std::vector<L> row{
+		L(0), L(1), L(2), L(3), L(4), L(5), L(6), L(7), L(8)};
+	const std::vector<L> col{
+		L(0, 6), L(1, 6), L(3, 6), L(4, 6), L(5, 6), L(6, 6), L(8, 6)};
+	const std::vector<L> blo{
+		L(3, 3), L(3, 4), L(3, 5), L(4, 3), L(4, 4), L(5, 3), L(5, 5)};
+	const std::vector<L> notsortedrow{
+		L(5), L(3), L(2), L(0), L(4), L(8), L(6), L(7), L(1)};
+	const std::vector<L> duplicate{
+		L(0), L(1), L(2), L(0), L(4), L(0), L(6), L(1), L(0)};
+
+	EXPECT_NO_THROW(is_same_row<3>(row.begin(), row.end()));
+	EXPECT_NO_THROW(is_same_row<3>(row.cbegin(), row.cend()));
+	EXPECT_NO_THROW(is_same_col<3>(col.cbegin(), col.cend()));
+	EXPECT_TRUE(is_same_row<3>(row.cbegin(), row.cend()));
+	EXPECT_TRUE(is_same_col<3>(col.cbegin(), col.cend()));
+	EXPECT_TRUE(is_same_block<3>(blo.cbegin(), blo.cend()));
+	EXPECT_TRUE(is_same_row<3>(notsortedrow.cbegin(), notsortedrow.cend()));
+	EXPECT_TRUE(is_same_row<3>(duplicate.cbegin(), duplicate.cend()));
+	EXPECT_FALSE(is_same_col<3>(row.cbegin(), row.cend()));
+	EXPECT_FALSE(is_same_block<3>(row.cbegin(), row.cend()));
+
+	// is_same_section (taking a section)
+	const Board<int, 3> B1;
+	EXPECT_NO_THROW(is_same_section(B1.row(0), L(12)));
+	EXPECT_NO_THROW(is_same_section(B1.col(0), L(12)));
+	EXPECT_NO_THROW(is_same_section(B1.block(0), L(12)));
+	EXPECT_TRUE(is_same_section(B1.row(0), L(8)));
+	EXPECT_TRUE(is_same_section(B1.row(1), L(12)));
+	EXPECT_TRUE(is_same_section(B1.row(7), L(70)));
+	EXPECT_FALSE(is_same_section(B1.row(2), L(15)));
+	EXPECT_TRUE(is_same_section(B1.col(0), L(0)));
+	EXPECT_TRUE(is_same_section(B1.col(0), L(72)));
+	EXPECT_FALSE(is_same_section(B1.col(1), L(9)));
+	EXPECT_TRUE(is_same_section(B1.block(0), L(10)));
+	EXPECT_FALSE(is_same_section(B1.block(1), L(16)));
+
+	// is_same_section (taking a section and a vector)
+	EXPECT_NO_THROW(is_same_section(B1.row(0), row));
+	EXPECT_NO_THROW(is_same_section(B1.col(0), row));
+	EXPECT_NO_THROW(is_same_section(B1.block(0), row));
+	EXPECT_TRUE(is_same_section(B1.row(0), row));
+	EXPECT_TRUE(is_same_section(B1.row(0), col));
+	EXPECT_FALSE(is_same_section(B1.row(0), blo));
+	EXPECT_FALSE(is_same_section(B1.row(1), row));
+	EXPECT_TRUE(is_same_section(B1.col(0), row));
+	EXPECT_TRUE(is_same_section(B1.col(6), col));
+	EXPECT_FALSE(is_same_section(B1.col(0), col));
+	EXPECT_FALSE(is_same_section(B1.col(0), blo));
+	EXPECT_TRUE(is_same_section(B1.col(5), blo));
+	EXPECT_TRUE(is_same_section(B1.block(4), blo));
+	EXPECT_FALSE(is_same_section(B1.block(5), blo));
+
+	// intersect_block
+	EXPECT_NO_THROW(intersect_block(B1.row(0), L(55)));
+	EXPECT_NO_THROW(intersect_block(B1.col(0), L(55)));
+	EXPECT_TRUE(intersect_block(B1.row(0), L(8)));
+	EXPECT_TRUE(intersect_block(B1.row(6), L(54)));
+	EXPECT_FALSE(intersect_block(B1.row(5), L(59)));
+	EXPECT_TRUE(intersect_block(B1.col(0), L(11)));
+	EXPECT_FALSE(intersect_block(B1.col(8), L(2)));
+}
+TEST(Location_Utilities, get_same_section)
+{
+	std::vector<Location<3>> list1{};
+	//std::vector<Location<3>> list2{};
+	std::vector<Location<3>> list3{};
+	for (int i{}; i < 9; ++i)
+	{
+		list1.push_back(Location<3>{i});
+		//list2.push_back(Location<3>{i*3});
+		list3.push_back(Location<3>{i*9});
+	}
+	const std::vector<Location<3>> clist1{list1};
+
+	EXPECT_EQ(get_same_row(Location<3>(0), list1), list1);
+	EXPECT_EQ(get_same_row(Location<3>(0), list1).size(), 9) << "vector length";
+	EXPECT_EQ(get_same_col(Location<3>(0), list3), list3);
+	EXPECT_EQ(get_same_col(Location<3>(0), list3).size(), 9) << "vector length";
+	EXPECT_EQ(get_same_block(Location<3>(0), list1).size(), 3) << "length";
+	EXPECT_EQ(get_same_row(Location<3>(0), clist1), list1);
+}
 TEST(Location_Utilities, is_constexpr)
 {
 	EXPECT_TRUE(noexcept(is_valid(Location<2>(10))));
@@ -598,8 +655,21 @@ TEST(Location_Utilities, is_constexpr)
 	EXPECT_TRUE(noexcept(is_valid_value<2>(1)));
 	EXPECT_TRUE(noexcept(is_valid_value<3>(7)));
 
-	EXPECT_FALSE(noexcept(is_valid_value<2>(std::vector<int>{ 1, 2, 3, 4, 3, 1 })));
+	EXPECT_FALSE(
+		noexcept(is_valid_value<2>(std::vector<int>{1, 2, 3, 4, 3, 1})));
 	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<2>>{Location<2>(0)})));
+	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<3>>{Location<3>(0)})));
+	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<2>>{})));
+	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<3>>{})));
+
+	EXPECT_TRUE(noexcept(is_same_row(Location<3>(0), Location<3>(8))));
+	EXPECT_TRUE(noexcept(is_same_col(Location<3>(0), Location<3>(8))));
+	EXPECT_TRUE(noexcept(is_same_block(Location<3>(0), Location<3>(8))));
+
+	std::vector<Location<3>> list1{};
+	EXPECT_FALSE(noexcept(get_same_row(Location<3>(0), list1)));
+	EXPECT_FALSE(noexcept(get_same_col(Location<3>(0), list1)));
+	EXPECT_FALSE(noexcept(get_same_block(Location<3>(0), list1)));
 }
 
 }	// namespace SudokuTests::LocationTest
