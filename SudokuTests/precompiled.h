@@ -22,3 +22,5 @@
 #include <gtest/gtest.h>
 
 #include <bitset>
+#include <vector>
+#include <type_traits>
