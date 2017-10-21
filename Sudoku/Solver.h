@@ -382,10 +382,8 @@ inline int Solver<N>::remove_option_outside_block(
 		assert(intersect_block(section, block_loc));
 	}
 	int changes{0};
-	const auto begin = section.cbegin();
-	const auto end   = section.cend();
 
-	for (auto itr = begin; itr != end; ++itr)
+	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
 	{
 		if (!(is_same_block(itr.location(), block_loc)))
 		{
@@ -413,18 +411,18 @@ inline int Solver<N>::remove_option_section(
 		assert(is_same_section(section, ignore));
 	}
 	int changes{0};
-	const auto begin = section.cbegin();
-	const auto end   = section.cend();
+	const auto begin = ignore.cbegin();
+	const auto end   = ignore.cend();
 
 	// TODO maybe faster to run get_same_row/col/block first?
 	// and than not to check is_option(), since it is already in remove_option
 
-	for (auto itr = begin; itr != end; ++itr)
+	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
 	{
 		// TODO is the is_option check really faster?
 		if (itr->is_option(value) &&
-			std::none_of(ignore.cbegin(), ignore.cend(), [itr](Location loc) {
-				return itr.location() == loc;
+			std::none_of(begin, end, [L1 = itr.location()](Location L2) {
+				return L1 == L2;
 			})) // <algorithm>
 		{
 			changes += remove_option(itr.location(), value);
@@ -452,14 +450,14 @@ inline int Solver<N>::remove_option_section(
 		assert(is_same_section(section, ignore));
 	}
 	int changes{0};
-	const auto begin = section.cbegin();
-	const auto end   = section.cend();
+	const auto begin = ignore.cbegin();
+	const auto end   = ignore.cend();
 
-	for (auto itr = begin; itr != end; ++itr)
+	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
 	{
 		if (!(itr->is_answer()) &&
-			std::none_of(ignore.cbegin(), ignore.cend(), [itr](Location loc) {
-				return itr.location() == loc;
+			std::none_of(begin, end, [L1 = itr.location()](Location L2) {
+				return L1 == L2;
 			})) // <algorithm>
 		{
 			for (auto v : values)
