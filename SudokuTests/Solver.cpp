@@ -277,6 +277,45 @@ TEST(Solvers_, appearance_once)
 	EXPECT_EQ(result.count_all(), 0);
 	EXPECT_FALSE(result.test(1));
 	EXPECT_FALSE(result.is_answer()); // NOT needed
+	//===-----------------------------------------------------------------===//
+	// also in the test: appearance_sets
+	//
+	//	0	0	0	0	234	234	234	1234
+	//	1	0	0	0	1	234	234	234
+	//	0	0	0	0	234	1234234	234
+	//	0	0	1	0	234	234	1	234
+	{
+		Board<Options<4>, 2> B4{};
+		const std::vector<int> v4{
+			0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
+		Solver<2> S4{B4};
+		S4.setValue(v4.cbegin(), v4.cend());
+		EXPECT_EQ(B4[0][0].count(), 3);
+		EXPECT_EQ(B4[0][1].count(), 3);
+		EXPECT_EQ(B4[0][2].count(), 3);
+		EXPECT_EQ(B4[0][3].count(), 4);
+		EXPECT_EQ(B4[2][1].count(), 4);
+		auto result4 = appearance_once<2>(B4.row(0));
+		EXPECT_TRUE(result4[0]); // answer bit
+		EXPECT_EQ(result4.count(), 1);
+		EXPECT_TRUE(result4[1]);
+		result4 = appearance_once<2>(B4.row(1));
+		EXPECT_TRUE(result4[0]); // answer bit
+		EXPECT_EQ(result4.count(), 0);
+		EXPECT_TRUE(result4.is_empty());
+		result4 = appearance_once<2>(B4.row(2));
+		EXPECT_TRUE(result4[0]); // answer bit
+		EXPECT_EQ(result4.count(), 1);
+		EXPECT_TRUE(result4[1]);
+		result4 = appearance_once<2>(B4.col(3));
+		EXPECT_TRUE(result4[0]); // answer bit
+		EXPECT_EQ(result4.count(), 1);
+		EXPECT_TRUE(result4[1]);
+		result4 = appearance_once<2>(B4.block(1));
+		EXPECT_TRUE(result4[0]); // answer bit
+		EXPECT_EQ(result4.count(), 1);
+		EXPECT_TRUE(result4[1]);
+	}
 }
 TEST(Solvers_, appearance_sets)
 {
@@ -427,7 +466,8 @@ TEST(Solvers_, appearance_sets)
 	B3[B(2, 7)] = std::bitset<10>{"1001100101"};
 	B3[B(2, 8)] = std::bitset<10>{"0100001011"};
 	{ // using iterators
-		auto result = appearance_sets<3>(B3.block(2).cbegin(), B3.block(2).cend());
+		auto result =
+			appearance_sets<3>(B3.block(2).cbegin(), B3.block(2).cend());
 		EXPECT_EQ(result[0], Ans_0);
 		EXPECT_EQ(result[1], Ans_1);
 		EXPECT_EQ(result[2], Ans_2);
@@ -440,8 +480,133 @@ TEST(Solvers_, appearance_sets)
 		EXPECT_EQ(result[2], Ans_2);
 		EXPECT_EQ(result[3], Ans_3);
 	}
+	//===-----------------------------------------------------------------===//
+	// also in the test: appearance_once
+	//
+	//	0	0	0	0	234	234	234	1234
+	//	1	0	0	0	1	234	234	234
+	//	0	0	0	0	234	1234234	234
+	//	0	0	1	0	234	234	1	234
+	{
+		Board<Options<4>, 2> B4{};
+		const std::vector<int> v4{
+			0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
+		Solver<2> S4{B4};
+		S4.setValue(v4.cbegin(), v4.cend());
+		EXPECT_EQ(B4[0][0].count(), 3);
+		EXPECT_EQ(B4[0][1].count(), 3);
+		EXPECT_EQ(B4[0][2].count(), 3);
+		EXPECT_EQ(B4[0][3].count(), 4);
+		EXPECT_EQ(B4[2][1].count(), 4);
+		auto result = appearance_sets<2>(B4.row(0));
+		EXPECT_EQ(result.size(), 3); // max = N
+		EXPECT_TRUE(result[0].is_empty());
+		EXPECT_TRUE(result[1][0]); // answer bit
+		EXPECT_EQ(result[1].count(), 1);
+		EXPECT_TRUE(result[1][1]);
+		EXPECT_EQ(result[2].count(), 0);
+		result = appearance_sets<2>(B4.row(1));
+		EXPECT_TRUE(result[0].is_empty());
+		EXPECT_EQ(result[1].count(), 0);
+		EXPECT_TRUE(result[1].is_empty());
+		EXPECT_TRUE(result[2].is_empty());
+		result = appearance_sets<2>(B4.row(2));
+		EXPECT_TRUE(result[0].is_empty());
+		EXPECT_EQ(result[1].count(), 1);
+		EXPECT_TRUE(result[1][1]);
+		result = appearance_sets<2>(B4.col(3));
+		EXPECT_TRUE(result[0].is_empty());
+		EXPECT_EQ(result[1].count(), 1);
+		EXPECT_TRUE(result[1][1]);
+		result = appearance_sets<2>(B4.block(1));
+		EXPECT_TRUE(result[0].is_empty());
+		EXPECT_EQ(result[1].count(), 1);
+		EXPECT_TRUE(result[1][1]);
+	}
 }
 
+TEST(Solver, set_uniques)
+{
+	// Solver<N>::set_uniques(const SectionT section, const Options& worker)
+	//===-----------------------------------------------------------------===//
+	// processing only one value per section.
+	// also in the test: appearance_sets and appearance_once
+	//
+	//	0	0	0	0	234	234	234	1234
+	//	1	0	0	0	1	234	234	234
+	//	0	0	0	0	234	1234234	234
+	//	0	0	1	0	234	234	1	234
+	//
+	Board<Options<4>, 2> B1{};
+	const std::vector<int> v1{0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
+	Solver<2> S1{B1};
+	S1.setValue(v1.cbegin(), v1.cend());
+	const Board<Options<4>, 2> cB1{B1}; // to reset B1
+	// verify setup
+	ASSERT_EQ(B1[0][0].count(), 3);
+	ASSERT_EQ(B1[0][1].count(), 3);
+	ASSERT_EQ(B1[0][2].count(), 3);
+	ASSERT_EQ(B1[0][3].count(), 4);
+	ASSERT_EQ(B1[2][1].count(), 4);
+
+	// worker empty -> return 0, no execution
+	EXPECT_EQ(S1.set_uniques(B1.row(0), std::bitset<5>{"00001"}), 0);
+	EXPECT_EQ(B1[0][0].count(), 3);
+	EXPECT_EQ(B1[0][3].count(), 4);
+
+	// Row (one value)
+	auto worker = Solvers_::appearance_once<2>(B1.row(0));
+	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
+	EXPECT_NO_FATAL_FAILURE(S1.set_uniques(B1.row(0), worker));
+	EXPECT_EQ(B1[0][0].count(), 3); // no change
+	EXPECT_EQ(B1[0][1].count(), 3); // no change
+	EXPECT_EQ(B1[0][2].count(), 3); // no change
+	EXPECT_TRUE(B1[0][3].is_answer(1));
+	worker = Solvers_::appearance_once<2>(B1.row(2));
+	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
+	EXPECT_EQ(S1.set_uniques(B1.row(2), worker), 1);
+	EXPECT_TRUE(B1[2][1].is_answer(1));
+	// Col (one value)
+	B1 = cB1; // reset
+	ASSERT_EQ(B1[0][3].count(), 4);
+	ASSERT_EQ(B1[2][1].count(), 4);
+	worker = Solvers_::appearance_once<2>(B1.col(1));
+	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
+	EXPECT_EQ(S1.set_uniques(B1.col(1), worker), 1);
+	EXPECT_EQ(B1[0][1].count(), 3); // no change
+	EXPECT_EQ(B1[1][1].count(), 3); // no change
+	EXPECT_TRUE(B1[2][1].is_answer(1));
+	EXPECT_EQ(B1[3][1].count(), 3); // no change
+	// Block (one value)
+	B1 = cB1; // reset
+	ASSERT_EQ(B1[2][1].count(), 4);
+	worker = Solvers_::appearance_once<2>(B1.block(2));
+	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
+	EXPECT_EQ(S1.set_uniques(B1.block(2), worker), 1);
+	EXPECT_EQ(B1[2][0].count(), 3); // no change
+	EXPECT_TRUE(B1[2][1].is_answer(1));
+	EXPECT_EQ(B1[3][0].count(), 3); // no change
+	EXPECT_EQ(B1[3][1].count(), 3); // no change
+
+	//===-----------------------------------------------------------------===//
+	// multiple values in a single go
+	// 12	24	324	24
+	Board<Options<4>, 2> B2{};
+	B2[0][0] = std::bitset<5>{"00111"};
+	B2[0][1] = std::bitset<5>{"10101"};
+	B2[0][2] = std::bitset<5>{"11101"};
+	B2[0][3] = std::bitset<5>{"10101"};
+	worker   = Solvers_::appearance_once<2>(B2.row(0));
+	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"01011"}});
+	EXPECT_EQ(Solver<2>(B2).set_uniques(B2.row(0), worker), 10);
+	// 10 = ans(0){1} + col(0){3} + block(0){1}
+	//		ans(2){1} + col(2){3} + block(1){1}
+	EXPECT_TRUE(B2[0][0].is_answer(1));
+	EXPECT_TRUE(B2[0][2].is_answer(3));
+	EXPECT_EQ(B2[0][1].count(), 2); // no change
+	EXPECT_EQ(B2[0][3].count(), 2); // no change
+	EXPECT_FALSE(B2[3][0].is_option(1));
+}
 TEST(Solver, unique_in_section)
 {
 	// clang-format off
@@ -821,6 +986,7 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B1[4][4].count(), 9) << "after 24"; // unchanged
 	EXPECT_EQ(B1[0][8].available(), (std::vector<int>{4, 5, 7, 8}))
 		<< "after 25";
+
 	// run for block
 	// clang-format off
 	const std::vector<int> b2
@@ -865,7 +1031,7 @@ TEST(Solver, multi_option)
 		<< "after 310";
 
 	// clang-format off
-	//NEEDTEST 9*9 partials forming a set: 3 cels containing (123,12,13)
+	// 9*9 partials forming a set: 3 cels containing (123,12,13)
 	const std::vector<int> b3
 	{									 //  _ _ _ _ _ _ _ _ _ _ _ _
 		0, 0, 0,	0, 0, 0,	0, 0, 0, // |       |       |       | row: 1,2; 1,2,3; 1,2,3
@@ -905,6 +1071,10 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B3[0][1].available(), (std::vector<int>{1, 2, 3})) << "after 47";
 	EXPECT_EQ(B3[0][3].available(), (std::vector<int>{5, 6, 8, 9}))
 		<< "after 48";
+
+	// TODO invalid value for count, should return 0
+	// count = 1
+	// count > elem_size / 2
 }
 
 TEST(Solver, solve_board)
@@ -971,17 +1141,36 @@ TEST(Solver, deathtest)
 	EXPECT_DEBUG_DEATH(S.setValue(v1.cbegin(), v1.cend()), "Assertion failed:");
 	EXPECT_DEBUG_DEATH(S.setValue(v2.cbegin(), v2.cend()), "Assertion failed:");
 
+	// set_uniques
+	{
+		Board<Options<4>, 2> B1{};
+		// deathtest: worker[0] has to be true
+		EXPECT_DEBUG_DEATH(
+			Solver<2>(B1).set_uniques(B1.row(0), std::bitset<5>{"10110"}),
+			"Assertion failed: worker.test.0.");
+		// deathtest: an unique in worker doesn't exist in the section
+		// 1	24	324	24
+		B1[0][0] = std::bitset<5>{ "00010" }; // ans 1
+		EXPECT_FALSE(B1[0][0].is_option(1));
+		B1[0][1] = std::bitset<5>{ "10101" };
+		B1[0][2] = std::bitset<5>{ "11101" };
+		B1[0][3] = std::bitset<5>{ "10101" };
+		auto worker = std::bitset<5>{ "01011" };
+		EXPECT_DEBUG_DEATH(
+			Solver<2>(B1).set_uniques(B1.row(0), worker),
+			"Assertion failed: false");
+	}
 	// single_option()
 #ifdef _DEBUG // note: release triggers normal exception
 	// when wrong value
 	B[1][2] = std::bitset<5>{"00011"}; // 1, not answer
-	EXPECT_DEBUG_DEATH(S.single_option(L(1,2), 4), "Assertion failed: .*test.*");
+	EXPECT_DEBUG_DEATH(
+		S.single_option(L(1, 2), 4), "Assertion failed: .*test.*");
 #endif // _DEBUG
 	// when more than 1 option available
 	B[1][2] = std::bitset<5>{"10011"}; // 1, 4
-	EXPECT_DEBUG_DEATH(S.single_option(L(1,2), 1), "Assertion failed: .*count_all.*");
-
-
+	EXPECT_DEBUG_DEATH(
+		S.single_option(L(1, 2), 1), "Assertion failed: .*count_all.*");
 }
 
 } // namespace SudokuTests::SolversTest

@@ -263,6 +263,7 @@ template<int N>
 inline int Solver<N>::multi_option(const Location loc, size_t count)
 {
 	assert(is_valid(loc));
+	assert(count <= elem_size<N>);
 
 	if (!count)
 	{
@@ -491,10 +492,12 @@ inline auto
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
+		assert(worker.test(0)); // answer-bit always set (unanswered)
+								// not required when using count_all()
 	}
 	int changes{0};
 
-	if (worker.count_all() > 0)
+	if (worker.count_all() > 0) //! performs better (here) than count()
 	{
 		const auto begin = section.cbegin();
 		const auto end   = section.cend();
@@ -507,10 +510,16 @@ inline auto
 					begin,
 					end,
 					[value](Options O) { return O.is_option(value); });
-				assert(itr != end); // doesn't exist
-				setValue(itr.location(), value);
-				changes += single_option(itr.location(), value);
-				++changes;
+				if (itr != end)
+				{
+					setValue(itr.location(), value);
+					changes += single_option(itr.location(), value);
+					++changes;
+				}
+				else
+				{
+					assert(false); // value is not an option
+				}
 			}
 		}
 	}
