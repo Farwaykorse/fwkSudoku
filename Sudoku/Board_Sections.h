@@ -452,9 +452,6 @@ public:
 	}
 private:
 	const owner_type* owner_;
-
-protected:
-	// accessible to child class: iterator
 	int elem_{0}; // element within the section
 
 	[[maybe_unused]] void compatible_(
@@ -480,8 +477,6 @@ class iterator
 	using owner_type = ownerT;
 	using const_iterator = const_iterator<T,N,ownerT>;
 	
-	using const_iterator::elem_;
-	using const_iterator::compatible_;
 public:
 	using iterator_category = std::random_access_iterator_tag;
 	using value_type = T;
@@ -490,13 +485,11 @@ public:
 	using pointer = value_type*;
 
 	iterator(gsl::not_null<owner_type*> owner)
-		:	const_iterator(owner, 0),
-			owner_(owner)
+		: owner_(owner)
 	{
 	}
 	iterator(gsl::not_null<owner_type*> owner, int elem)
-		:	const_iterator(owner, elem),
-			owner_(owner)
+		: owner_(owner), elem_(elem)
 	{
 	}
 
@@ -575,9 +568,34 @@ public:
 	{
 		return (*(*this + offset));
 	}
+	bool operator<(const self_type& other) const
+	{
+		compatible_(other);
+		return elem_ < other.elem_;
+	}
+	bool operator> (const self_type& other) const { return (other < *this); }
+	bool operator<=(const self_type& other) const { return (!(other < *this)); }
+	bool operator>=(const self_type& other) const { return (!(*this < other)); }
 
+	Location<N> location() const
+	{
+		return owner_->location(elem_);
+	}
 private:
 	owner_type* owner_;
+	int elem_{0}; // element within the section
+
+	[[maybe_unused]] void compatible_(
+		[[maybe_unused]] difference_type offset) const
+	{
+		assert(elem_ + offset >= 0 && elem_ + offset < owner_->size());
+	}
+	[[maybe_unused]] void compatible_(
+		[[maybe_unused]] const self_type& other) const
+	{
+		assert(owner_->owner_ == other.owner_->owner_);
+		assert(owner_->id() == other.owner_->id());
+	}
 };
 
 } // namespace Sudoku::Board_Section
