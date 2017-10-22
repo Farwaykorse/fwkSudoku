@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sudoku", "Sudoku\Sudoku.vcxproj", "{14B76E47-7B5D-43C1-B056-A82FCA671CC5}"
 EndProject
@@ -62,6 +62,7 @@ Global
 		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.Debug|x86.Build.0 = Debug|Win32
 		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.Release|x64.ActiveCfg = Release|x64
 		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.Release|x86.ActiveCfg = Release|Win32
+		{CCD1F3D0-0A4E-4386-AD3E-037328520975}.Release|x86.Build.0 = Release|Win32
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangDebug|x64.ActiveCfg = ClangDebug|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangDebug|x64.Build.0 = ClangDebug|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangDebug|x86.ActiveCfg = ClangDebug|Win32
