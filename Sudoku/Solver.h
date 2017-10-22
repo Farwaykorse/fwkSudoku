@@ -79,10 +79,6 @@ public:
 	auto set_uniques(SectionT, const Options& worker);
 	template<typename SectionT>
 	int section_exclusive(SectionT);
-	int section_exclusive(Block);
-
-private:
-	Board& board_;
 
 	template<typename SectionT>
 	int set_section_locals(SectionT, int rep_count, const Options& worker);
@@ -90,6 +86,10 @@ private:
 
 	template<typename SectionT>
 	auto find_locations(SectionT, int rep_count, int value) const;
+
+private:
+	Board& board_;
+
 	//? deprecated ?? use on full board?
 	template<typename InItr_>
 	auto find_locations(
@@ -532,6 +532,7 @@ template<int N>
 template<typename SectionT>
 inline int Solver<N>::section_exclusive(const SectionT section)
 {
+	using namespace Solvers_;
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
@@ -539,8 +540,8 @@ inline int Solver<N>::section_exclusive(const SectionT section)
 	}
 	int changes{}; // performance counter
 
-	auto appearing       = appearance_sets(section);
-	auto renew_appearing = [&]() { appearing = appearance_sets(section); };
+	auto appearing       = appearance_sets<N>(section);
+	auto renew_appearing = [&]() { appearing = appearance_sets<N>(section); };
 
 	size_t i{2};
 	while (i < appearing.size()) // won't run if condition fails
@@ -564,48 +565,6 @@ inline int Solver<N>::section_exclusive(const SectionT section)
 		}
 	}
 	return changes;
-}
-
-//	Solver: find and process values by appearance count in Block
-//	IF all in same row/col -> remove from rest
-template<int N>
-inline int Solver<N>::section_exclusive(const Block block)
-{
-	{
-		using iterator = typename Block::const_iterator;
-		static_assert(Utility_::iterator_to<iterator, const Options>);
-	}
-	int changes{}; // performance counter
-
-	auto appearing       = Solvers_::appearance_sets<N>(block);
-	auto renew_appearing = [&]() {
-		appearing = Solvers_::appearance_sets<N>(block);
-	};
-
-	size_t i{2};
-	while (i < appearing.size()) // won't run if condition fails
-	{
-		// unique in block specialization
-		if (appearing[1].count_all() > 0)
-		{
-			changes += set_uniques(block, appearing[1]);
-			renew_appearing();
-		}
-		else if (appearing[i].count_all() > 0)
-		{
-			changes +=
-				set_section_locals(block, static_cast<int>(i), appearing[i]);
-			renew_appearing();
-			++i;
-		}
-		else
-		{
-			++i;
-		}
-	}
-	return changes;
-	// TODO can this be added/used?
-	// 2 values only appear in 2 cells -> remove rest from cells
 }
 
 //	for [row/col]: if all in same block, remove [values] from rest block
