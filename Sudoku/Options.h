@@ -27,8 +27,8 @@ public:
 	Options& operator=(Options&&) noexcept = default;
 	Options(const bitset&); // 0th bit is last in input
 	Options(bitset&&);
-	Options(int value);
-	Options& operator=(int value);
+	Options(int value) noexcept;
+	Options& operator=(int value) noexcept;
 	Options& operator=(const bitset&) noexcept;
 	Options& operator=(bitset&&) noexcept;
 	~Options()       = default;
@@ -61,6 +61,7 @@ public:
 	auto operator[](int value) noexcept;
 
 	bool operator==(int) const noexcept; // shorthand for is_answer(int)
+	bool operator!=(int) const noexcept; // shorthand for is_answer(int)
 	bool operator==(const Options<E>&) const noexcept;
 	bool operator!=(const Options<E>&) const noexcept;
 	bool operator<(const Options<E>&) const noexcept;
@@ -110,18 +111,19 @@ inline Options<E>::Options(bitset&& other) : data_{other}
 
 //	construct with single option set to answer
 template<int E>
-Options<E>::Options(int value)
+Options<E>::Options(int value) noexcept
 {
-	// bitset: exception thrown for: value > E+1
-	assert(value <= E); // caches E+1
-	set(value);
+	//// bitset: exception thrown for: value > E+1
+	//assert(value <= E); // caches E+1
+	assert(value >= 0 && value <= E);
+	set_nocheck(value);
 }
 
 //	set to answer value
 template<int E>
-inline Options<E>& Options<E>::operator=(int value)
+inline Options<E>& Options<E>::operator=(int value) noexcept
 {
-	return set(value);
+	return set_nocheck(value);
 }
 
 template<int E>
@@ -263,15 +265,43 @@ inline bool Options<E>::test(int value) const
 template<int E>
 inline bool Options<E>::is_answer() const noexcept
 {
-	return data_.count() == 1 && !data_[0];
+	return !data_[0] && data_.count() == 1;
 }
+
+namespace
+{
+constexpr int exp2(int value)
+{
+	if (value < 1)
+	{
+		return 1;
+	}
+	else
+	{
+		return 2 * exp2(--value);
+	}
+}
+static_assert(exp2(0) == 1);
+static_assert(exp2(1) == 2);
+static_assert(exp2(2) == 4);
+static_assert(exp2(3) == 8);
+static_assert(exp2(4) == 16);
+static_assert(exp2(5) == 32);
+static_assert(exp2(6) == 64);
+static_assert(exp2(7) == 128);
+static_assert(exp2(8) == 256);
+static_assert(exp2(9) == 512);
+}	// namespace ::
 
 //	check if set to answer value
 //! no input checks!
 template<int E>
 inline bool Options<E>::is_answer(int value) const noexcept
 {
+	assert(value >= 0 && value <= E);
 	return (is_answer() && operator[](value));
+	//return *this == Options<E>(value);
+	//return data_ == std::bitset<E + 1>{static_cast<unsigned long long>(exp2(value))};
 }
 
 //	check if option available
@@ -282,13 +312,21 @@ inline bool Options<E>::is_option(int value) const noexcept
 	assert(value != 0);
 	// benched: this order is ~1.3 times faster
 	return (operator[](value) && !is_answer());
+
+	//! ... much slower ...
+	//constexpr auto not_answered =
+	//	std::bitset<E + 1>{static_cast<unsigned long long>(1)};
+	//return data_ ==
+	//	   ((std::bitset<E + 1>{static_cast<unsigned long long>(exp2(value))} |=
+	//		 not_answered) |= data_);
 }
 
 //_Test if no options or answers available
 template<int E>
 inline bool Options<E>::is_empty() const noexcept
 {
-	return (data_.none() || (data_.count() == 1 && data_[0] == true));
+	//return (data_.none() || (data_.count() == 1 && data_[0] == true));
+	return (data_.none() || data_ == std::bitset<E+1>{1});
 }
 
 //	determine the answer value, even if not marked
@@ -357,6 +395,12 @@ template<int E>
 inline bool Options<E>::operator==(int value) const noexcept
 {
 	return is_answer(value);
+}
+
+template<int E>
+inline bool Options<E>::operator!=(int value) const noexcept
+{
+	return !operator==(value);
 }
 
 //	Basis for sorting

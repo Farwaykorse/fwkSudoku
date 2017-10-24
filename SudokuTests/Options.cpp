@@ -139,10 +139,6 @@ TEST(Options, Construction)
 		EXPECT_EQ(Options<4>{4}.DebugString(), "10000");
 		EXPECT_EQ(Options<4>{4}.DebugString(), "10000");
 	// assertion see deathtests
-#ifndef _DEBUG	// debug contains assert( <= )
-		EXPECT_THROW(Options<4>{5}, std::out_of_range);
-#endif // _DEBUG
-		EXPECT_THROW(Options<4>{-5}, std::out_of_range);
 	}
 	{
 		SCOPED_TRACE("Options& operator=(int value)");
@@ -151,8 +147,6 @@ TEST(Options, Construction)
 		EXPECT_EQ(TMP.DebugString(), "00010");
 		EXPECT_EQ((TMP = 3).DebugString(), "01000");
 		EXPECT_EQ((TMP = 0).DebugString(), "00001");		// [count-0]
-		EXPECT_THROW(TMP = 6, std::out_of_range);
-		EXPECT_THROW(TMP = -6, std::out_of_range);
 	}
 	{
 		SCOPED_TRACE("Options& operator=(const bitset&)");
@@ -245,14 +239,6 @@ TEST(Options, mf_boolRequest)
 	static_assert(noexcept(TE.O_1.is_answer(1)), "is_answer(int) is noexcept");
 	static_assert(noexcept(TE.A_1.is_answer(100)), "is_answer(int) is noexcept");
 	// assertion see deathtests
-#ifndef _DEBUG
-	EXPECT_NO_THROW(TE.A_1.is_answer(15));	// undefined behaviour
-	EXPECT_NO_THROW(TE.A_1.is_answer(-5));
-#endif // _DEBUG
-	EXPECT_NO_THROW(TE.O_1.is_answer(15));	// defined behaviour (== false)
-	EXPECT_FALSE(TE.O_1.is_answer(15));	// defined behaviour
-	EXPECT_NO_THROW(TE.O_1.is_answer(-1));	// defined behaviour (== false)
-	EXPECT_FALSE(TE.O_1.is_answer(-1));	// defined behaviour
 	EXPECT_TRUE(TE.A_2.is_answer(2));
 	EXPECT_FALSE(TE.A_2.is_answer(3));
 	EXPECT_FALSE(TE.A_1.is_answer(0));
@@ -429,6 +415,9 @@ TEST(Options, mf_booleanComparison)
 	static_assert(noexcept(TE.A_1 == 1), "operator==(int) should be noexcept");
 	EXPECT_EQ(TE.A_1, 1);
 	EXPECT_EQ(TE.A_2, 2);
+	static_assert(noexcept(TE.A_1 != 1), "operator==(int) should be noexcept");
+	EXPECT_NE(TE.A_1, 2);
+	EXPECT_NE(TE.A_2, 1);
 
 	//bool operator==(Options<E>&) const
 	static_assert(noexcept(TE.O_1 == TE.O_2), "operator== should be noexcept");
@@ -546,7 +535,7 @@ TEST(Options, Operators)
 	EXPECT_TRUE(E_1 == E_3);
 	// copy-assign
 	static_assert(noexcept(TMP.operator=(O_2)), "operator= should be noexcept");
-	static_assert(!noexcept(TMP.operator=(1)), "operator=(int) IS NOT noexcept");
+	static_assert(noexcept(TMP.operator=(1)), "operator=(int) IS NOT noexcept");
 	Options<4> TMP1 = A_2;
 	EXPECT_TRUE(TMP1.is_answer(2));
 	EXPECT_TRUE(TMP1 == A_2);
@@ -585,12 +574,19 @@ TEST(Options, deathtests)
 	// Important	exeptrion thrown outside debug-mode
 	// assert serves to cach E+1 case
 	EXPECT_DEBUG_DEATH({ Options<3>{4}; }, "Assertion failed: .*");
+	// debug contains assert( <= )
+	EXPECT_DEBUG_DEATH(Options<4>{-5}, "Assertion failed:");
+
+	EXPECT_DEBUG_DEATH(TMP = 6, "Assertion failed:");
+	EXPECT_DEBUG_DEATH(TMP = -6, "Assertion failed:");
 #endif // _DEBUG
 
 	// mf_boolRequest
-	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(15); }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(-5); }, "Assertion failed: .*");
-	// 
+#ifdef _DEBUG
+	EXPECT_DEATH({ TE.A_1.is_answer(15); }, "Assertion failed: .*");
+	EXPECT_DEATH({ TE.A_1.is_answer(-5); }, "Assertion failed: .*");
+#endif // _DEBUG
+
 	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(15); }, "Assertion failed: .*");
 	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(-5); }, "Assertion failed: .*");
 	// mf_constOperators
