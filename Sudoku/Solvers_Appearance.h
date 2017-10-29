@@ -53,7 +53,7 @@ Step 3) xor [n-1]
 				worker[n] contains options appearing exactly n times
 
 // Q: What about the answer bit?
-// A: results all read as answer, unless [n] or less unanswered
+// A: Always true (==not anwered)
 //? Working with more or less than [elem_size] input elements?
 // Less than 9: possible worker[0] is not empty
 // Less than 3: no use for worker[3]
@@ -66,8 +66,7 @@ Step 3) xor [n-1]
 	// To limit processing time, counting up to N
 	constexpr size_t max = N; // default: (9x9 board) up-to 3 times
 	std::array<Options, max + 1> worker{};
-	// start with all false
-	for (auto& obj : worker) { obj.flip(); }
+	worker.fill(std::bitset<elem_size<N>+1>{1});
 
 	// Collect options by appearence count
 	// worker[n] contains options appearing more than n times (or answer)
@@ -95,14 +94,15 @@ Step 3) xor [n-1]
 	{
 		option_set.flip();
 	}
-	// TODO test: can trigger on smaller sets; better
+	// TODO test: can trigger on partial sections; improve?
 	// fails if not all options exist
-	assert(worker[0].is_empty() || worker[0].count_all() == 0);
+	assert(worker[0].count_all() == 0);
 
 	// xor -> worker[n] options appearing n times
 	for (size_t i{max}; i > 1; --i)
 	{
 		worker[i].XOR(worker[i - 1]);
+		worker[i] += std::bitset<elem_size<N>+1>{1};
 	}
 	return worker;
 }
@@ -144,6 +144,7 @@ Options<elem_size<N>> appearance_once(const InItr_ begin, const InItr_ end)
 			sum += *itr;
 		}
 	}
+	assert(worker[0] == true);
 	return worker.flip(); // multiple uses -> single-use
 }
 
