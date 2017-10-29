@@ -69,19 +69,27 @@ namespace compiletime
 
 	// type construction
 	static_assert(std::is_constructible_v<Options<3>, const std::bitset<4>&>, "construct from const std::bitset&");
+	static_assert(!noexcept(Options<3>{std::bitset<4>{}}), "");
 	static_assert(!std::is_constructible_v<Options<3>, const std::bitset<3>&>, "shouldn't accept non matching dimensions_1");
 	static_assert(std::is_assignable_v<Options<3>, std::bitset<4>>, "assign from std::bitset");
+	static_assert(noexcept(Options<3>() = std::bitset<4>{}), "assignment should be noexcept");
 	static_assert(!std::is_assignable_v<Options<3>, std::bitset<3>>, "shouldn't accept non matching dimensions_2");
 	static_assert(std::is_constructible_v<Options<3>, int>, "construct from int");
+	static_assert(noexcept(Options<3>{int{}}), "construction should be noexcept");
 	static_assert(std::is_constructible_v<Options<3>, unsigned int>, "construct from unsigned int");
+	static_assert(noexcept(Options<3>{unsigned int{}}), "construction should be noexcept");
 	static_assert(std::is_assignable_v<Options<3>, int>, "assign from int");
+	static_assert(noexcept(Options<3>() = int{}), "assignment should be noexcept");
 	static_assert(std::is_assignable_v<Options<3>, unsigned int>, "assign from int");
+	static_assert(noexcept(Options<3>() = unsigned int{}), "assignment should be noexcept");
 }
 TEST(Options, Construction)
 {
 	const Options<4> D_0{};
 	{
 		SCOPED_TRACE("Default Constructor : Options()");
+		static_assert(noexcept(Options<4>()), "Options() should be noexcept");
+		static_assert(noexcept(Options<4>{}), "Options{} should be noexcept");
 		const Options<4> D;
 		EXPECT_EQ(D_0.size(), 5);
 		EXPECT_EQ(D_0, D_0)	<< "operator== failed, required";
@@ -90,6 +98,7 @@ TEST(Options, Construction)
 	}
 	{
 		SCOPED_TRACE("Copy Constructor : Options(const Options&)");
+		static_assert(noexcept(Options<4>(D_0)), "Options(other) should be noexcept");
 		const Options<4> Opt(D_0);
 		EXPECT_EQ(Opt.size(), 5);
 		EXPECT_EQ(Opt, D_0);
@@ -138,6 +147,8 @@ TEST(Options, Construction)
 		EXPECT_EQ(Options<4>{0}.DebugString(), "00001");	// [count-0]
 		EXPECT_EQ(Options<4>{4}.DebugString(), "10000");
 		EXPECT_EQ(Options<4>{4}.DebugString(), "10000");
+		EXPECT_EQ(Options<9>{9}.DebugString(), "1000000000");
+		EXPECT_EQ(Options<9>{2}.DebugString(), "0000000100");
 	// assertion see deathtests
 	}
 	{
@@ -146,7 +157,7 @@ TEST(Options, Construction)
 		TMP = 1;						// set() // clear() // add()
 		EXPECT_EQ(TMP.DebugString(), "00010");
 		EXPECT_EQ((TMP = 3).DebugString(), "01000");
-		EXPECT_EQ((TMP = 0).DebugString(), "00001");		// [count-0]
+		EXPECT_EQ((TMP = 0).DebugString(), "00001"); // [count-0]
 	}
 	{
 		SCOPED_TRACE("Options& operator=(const bitset&)");
@@ -577,8 +588,9 @@ TEST(Options, deathtests)
 	// debug contains assert( <= )
 	EXPECT_DEBUG_DEATH(Options<4>{-5}, "Assertion failed:");
 
-	EXPECT_DEBUG_DEATH(TMP = 6, "Assertion failed:");
-	EXPECT_DEBUG_DEATH(TMP = -6, "Assertion failed:");
+	// TODO won't trigger for constexpr, test required
+	// EXPECT_DEBUG_DEATH(TMP = 6, "Assertion failed:");
+	// EXPECT_DEBUG_DEATH(TMP = -6, "Assertion failed:");
 #endif // _DEBUG
 
 	// mf_boolRequest

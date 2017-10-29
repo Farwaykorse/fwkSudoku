@@ -27,7 +27,7 @@ public:
 	Options& operator=(Options&&) noexcept = default;
 	Options(const bitset&); // 0th bit is last in input
 	Options(bitset&&);
-	Options(int value) noexcept;
+	constexpr Options(int value) noexcept;
 	Options& operator=(int value) noexcept;
 	Options& operator=(const bitset&) noexcept;
 	Options& operator=(bitset&&) noexcept;
@@ -91,6 +91,25 @@ private:
 
 }; // class Options
 
+namespace
+{
+	// convert to a number for use in std::bitset to use a unique bit per value
+	constexpr int exp2(int value)
+	{
+		return (value < 1) ? 1 : (2 * exp2(--value));
+	}
+	static_assert(exp2(0) == 1);
+	static_assert(exp2(1) == 2);
+	static_assert(exp2(2) == 4);
+	static_assert(exp2(3) == 8);
+	static_assert(exp2(4) == 16);
+	static_assert(exp2(5) == 32);
+	static_assert(exp2(6) == 64);
+	static_assert(exp2(7) == 128);
+	static_assert(exp2(8) == 256);
+	static_assert(exp2(9) == 512);
+} // namespace ::
+
 
 //	construct with all options
 template<int E>
@@ -111,19 +130,17 @@ inline Options<E>::Options(bitset&& other) : data_{other}
 
 //	construct with single option set to answer
 template<int E>
-Options<E>::Options(int value) noexcept
+constexpr Options<E>::Options(const int value) noexcept : data_{exp2(value)}
 {
-	//// bitset: exception thrown for: value > E+1
-	//assert(value <= E); // caches E+1
 	assert(value >= 0 && value <= E);
-	set_nocheck(value);
 }
 
 //	set to answer value
 template<int E>
 inline Options<E>& Options<E>::operator=(int value) noexcept
 {
-	return set_nocheck(value);
+	data_ = exp2(value);
+	return *this;
 }
 
 template<int E>
@@ -267,31 +284,6 @@ inline bool Options<E>::is_answer() const noexcept
 {
 	return !data_[0] && data_.count() == 1;
 }
-
-namespace
-{
-constexpr int exp2(int value)
-{
-	if (value < 1)
-	{
-		return 1;
-	}
-	else
-	{
-		return 2 * exp2(--value);
-	}
-}
-static_assert(exp2(0) == 1);
-static_assert(exp2(1) == 2);
-static_assert(exp2(2) == 4);
-static_assert(exp2(3) == 8);
-static_assert(exp2(4) == 16);
-static_assert(exp2(5) == 32);
-static_assert(exp2(6) == 64);
-static_assert(exp2(7) == 128);
-static_assert(exp2(8) == 256);
-static_assert(exp2(9) == 512);
-}	// namespace ::
 
 //	check if set to answer value
 //! no input checks!

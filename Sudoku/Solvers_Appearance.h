@@ -4,9 +4,9 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
+#include "Iterator_Utilities.h"
 #include "Location.h"
 #include "Options.h"
-#include "Iterator_Utilities.h"
 #include <iterator>
 #include <type_traits>
 
@@ -28,6 +28,7 @@ using namespace Sudoku::Utility_;
 template<int N, typename InItr_, typename = std::enable_if_t<is_input<InItr_>>>
 auto appearance_sets(const InItr_ begin, const InItr_ end)
 {
+	// clang-format off
 /*
 Example illustration
 Step 1) Collect
@@ -51,7 +52,6 @@ Step 3) xor [n-1]
 				|	== empty!	|	000	010	000	|	001	000	000	|	010	000	100
 				|	==0x		|	==1x		|	==2x		|	==3x
 				worker[n] contains options appearing exactly n times
-
 // Q: What about the answer bit?
 // A: Always true (==not anwered)
 //? Working with more or less than [elem_size] input elements?
@@ -59,6 +59,7 @@ Step 3) xor [n-1]
 // Less than 3: no use for worker[3]
 // More than 9: shouldn't be an issue
 */
+	// clang-format on
 	using Options = Sudoku::Options<elem_size<N>>;
 
 	static_assert(iterator_to<InItr_, const Options>);
@@ -66,7 +67,7 @@ Step 3) xor [n-1]
 	// To limit processing time, counting up to N
 	constexpr size_t max = N; // default: (9x9 board) up-to 3 times
 	std::array<Options, max + 1> worker{};
-	worker.fill(std::bitset<elem_size<N>+1>{1});
+	worker.fill(Options(0));
 
 	// Collect options by appearence count
 	// worker[n] contains options appearing more than n times (or answer)
@@ -102,7 +103,7 @@ Step 3) xor [n-1]
 	for (size_t i{max}; i > 1; --i)
 	{
 		worker[i].XOR(worker[i - 1]);
-		worker[i] += std::bitset<elem_size<N>+1>{1};
+		worker[i] += Options(0); // set not-answered
 	}
 	return worker;
 }
@@ -110,12 +111,13 @@ Step 3) xor [n-1]
 //	returning options collected by appearance count in section
 template<int N, typename SectionT>
 auto appearance_sets(const SectionT section)
-{	// referal function, creates iterators
+{ // referal function, creates iterators
 	using Board   = Sudoku::Board<Options<elem_size<N>>, N>;
 	using Options = Sudoku::Options<elem_size<N>>;
 
 	static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
-	static_assert(iterator_to<typename SectionT::const_iterator, const Options>);
+	static_assert(
+		iterator_to<typename SectionT::const_iterator, const Options>);
 
 	return appearance_sets<N>(section.cbegin(), section.cend());
 }
