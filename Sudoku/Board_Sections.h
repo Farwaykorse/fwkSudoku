@@ -1,6 +1,8 @@
-﻿/**	Section access for Board<T,N>
- *	included by Board.h
- */
+﻿//===--	Sudoku/Board_Sections.h											--===//
+//
+//	Section access for Board<T,N>
+//	included by Board.h
+//===---------------------------------------------------------------------===//
 #pragma once
 
 #include "Location_Utilities.h"
@@ -17,8 +19,7 @@ namespace Sudoku::Board_Section
 {
 template<typename T, int N>
 class Section
-{
-	//empty base-class
+{ // empty base-class
 };
 
 template<typename T, int N>
@@ -54,9 +55,9 @@ public:
 
 	constexpr int size() const noexcept { return elem_size<N>; }
 
-	int id() const { return id_; }
+	int id() const noexcept { return id_; }
 
-	const T& operator[] (int col) const noexcept
+	const T& operator[] (const int col) const noexcept
 	{
 		assert(is_valid_size<N>(col));
 		return no_check(Location(id(), col));
@@ -71,14 +72,14 @@ public:
 	auto rbegin() const				{ return crbegin(); }
 	auto rend() const				{ return crend(); }
 
-	constexpr Location location(int element) const
+	constexpr Location location(const int element) const noexcept
 	{
 		assert(is_valid_size<N>(element));
 		return Location(id(), element);
 	}
 protected:
 	// Data-access for child-objects
-	const T& no_check(const Location& loc) const noexcept
+	const T& no_check(const Location loc) const noexcept
 	{
 		assert(is_valid(loc));
 		return owner_->operator[](loc);
@@ -115,7 +116,7 @@ public:
 	using const_Row::id;
 	using const_Row::size;
 
-	const T& operator[] (int row) const noexcept
+	const T& operator[] (const int row) const noexcept
 	{
 		assert(is_valid_size<N>(row));
 		return no_check(Location(row, id()));
@@ -131,7 +132,7 @@ public:
 	auto rbegin() const				{ return crbegin(); }
 	auto rend() const				{ return crend(); }
 
-	constexpr Location location(int element) const
+	constexpr Location location(const int element) const noexcept
 	{
 		assert(is_valid_size<N>(element));
 		return Location(element, id());
@@ -165,7 +166,7 @@ public:
 	using const_Row::id;
 	using const_Row::size;
 
-	const T& operator[] (int elem) const noexcept
+	const T& operator[] (const int elem) const noexcept
 	{
 		assert(is_valid_size<N>(elem));
 		//return no_check(Location_Block<N>(id(), elem));
@@ -182,7 +183,7 @@ public:
 	auto rbegin() const				{ return crbegin(); }
 	auto rend() const				{ return crend(); }
 
-	constexpr Location location(int element) const
+	constexpr Location location(const int element) const noexcept
 	{
 		assert(is_valid_size<N>(element));
 		return Location_Block<N>(id(), element);
@@ -237,7 +238,6 @@ private:
 		return owner_->operator[](loc);
 	}
 };
-
 
 
 template<typename T, int N>
@@ -393,9 +393,8 @@ public:
 	}
 
 	// Forward iterator
-	const_iterator() : owner_(), elem_{}
-	{
-		// construct with null pointer
+	const_iterator() : owner_()
+	{ // construct with null pointer
 	}
 
 	// Bidirectional iterator
@@ -408,21 +407,21 @@ public:
 	}
 
 	// RandomAccess iterator
-	self_type& operator+=(difference_type offset)
+	self_type& operator+=(const difference_type offset)
 	{
 		compatible_(offset);
 		elem_ += offset; return *this;
 	}
-	self_type operator+(difference_type offset) const
+	self_type operator+(const difference_type offset) const
 	{
 		self_type tmp{ *this };
 		return (tmp += offset);
 	}
-	self_type& operator-=(difference_type offset)
+	self_type& operator-=(const difference_type offset)
 	{
 		return operator+=(-offset);
 	}
-	self_type operator-(difference_type offset) const
+	self_type operator-(const difference_type offset) const
 	{
 		self_type tmp{ *this };
 		return (tmp += -offset);
@@ -432,7 +431,7 @@ public:
 		compatible_(other);
 		return elem_ - other.elem_;
 	}
-	reference operator[](difference_type offset) const
+	reference operator[](const difference_type offset) const
 	{
 		return (*(*this + offset));
 	}
@@ -446,7 +445,7 @@ public:
 	bool operator<=(const self_type& other) const { return (!(other < *this)); }
 	bool operator>=(const self_type& other) const { return (!(*this < other)); }
 
-	Location<N> location() const
+	Location<N> location() const noexcept
 	{
 		return owner_->location(elem_);
 	}
@@ -455,7 +454,7 @@ private:
 	int elem_{0}; // element within the section
 
 	[[maybe_unused]] void compatible_(
-		[[maybe_unused]] difference_type offset) const
+		[[maybe_unused]] const difference_type offset) const
 	{
 		assert(elem_ + offset >= 0 && elem_ + offset < owner_->size());
 	}
@@ -526,10 +525,8 @@ public:
 	}
 
 	// Forward iterator
-	iterator()
-		:	const_iterator(),
-			owner_()
-	{	// construct with null pointer
+	iterator() : owner_()
+	{ // construct with null pointer
 	}
 
 	// Bidirectional iterator
@@ -542,19 +539,22 @@ public:
 	}
 
 	// RandomAccess iterator
-	self_type& operator+=(difference_type offset)
+	self_type& operator+=(const difference_type offset)
 	{
 		compatible_(offset);
 		elem_ += offset;
 		return *this;
 	}
-	self_type operator+(difference_type offset) const
+	self_type operator+(const difference_type offset) const
 	{
 		self_type tmp{ *this };
 		return (tmp += offset);
 	}
-	self_type& operator-=(difference_type offset) { return operator+=(-offset); }
-	self_type operator-(difference_type offset) const
+	self_type& operator-=(const difference_type offset)
+	{
+		return operator+=(-offset);
+	}
+	self_type operator-(const difference_type offset) const
 	{
 		self_type tmp{ *this };
 		return (tmp += -offset);
@@ -564,7 +564,7 @@ public:
 		compatible_(other);
 		return elem_ - other.elem_;
 	}
-	reference operator[](difference_type offset) const
+	reference operator[](const difference_type offset) const
 	{
 		return (*(*this + offset));
 	}
@@ -577,7 +577,7 @@ public:
 	bool operator<=(const self_type& other) const { return (!(other < *this)); }
 	bool operator>=(const self_type& other) const { return (!(*this < other)); }
 
-	Location<N> location() const
+	Location<N> location() const noexcept
 	{
 		return owner_->location(elem_);
 	}
@@ -586,7 +586,7 @@ private:
 	int elem_{0}; // element within the section
 
 	[[maybe_unused]] void compatible_(
-		[[maybe_unused]] difference_type offset) const
+		[[maybe_unused]] const difference_type offset) const
 	{
 		assert(elem_ + offset >= 0 && elem_ + offset < owner_->size());
 	}

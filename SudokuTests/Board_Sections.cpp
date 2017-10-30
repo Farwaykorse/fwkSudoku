@@ -143,6 +143,23 @@ TEST(Board_Sections, Row)
 {
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 	const Board<int, 2> cA{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
+	{
+		auto r = A.row(0);
+		auto c = A.col(0);
+		auto b = A.block(0);
+		auto cr = cA.row(0);
+		auto cc = cA.col(0);
+		auto cb = cA.block(0);
+		static_assert(noexcept(r.location(1)));
+		static_assert(noexcept(c.location(1)));
+		static_assert(noexcept(b.location(1)));
+		static_assert(noexcept(cr.location(1)));
+		static_assert(noexcept(cc.location(1)));
+		static_assert(noexcept(cb.location(1)));
+		static_assert(noexcept(r.id()));
+		static_assert(noexcept(c.id()));
+		static_assert(noexcept(b.id()));
+	}
 	ASSERT_NO_THROW(Board<int>().row(0));	//??? intellisense: incomplete type
 	// see deathtests
 	ASSERT_NO_THROW(Board<int>().row(Location<3>(12)));
