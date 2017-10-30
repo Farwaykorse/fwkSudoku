@@ -39,12 +39,12 @@ class const_Row
 	friend class const_iterator<T,N,const_Col<T,N>>;
 	friend class const_iterator<T,N,const_Block<T,N>>;
 
-	const_Row(gsl::not_null<const Board<T, N>*> owner, const int row)
+	const_Row(const Board<T, N>& owner, const int row)
 		:	owner_(owner), id_(row)
 	{
 		assert(is_valid_size<N>(row));
 	}
-	const_Row(gsl::not_null<const Board<T, N>*> owner, const Location loc)
+	const_Row(const Board<T, N>& owner, const Location loc)
 		:	owner_(owner), id_(loc.row())
 	{
 		assert(is_valid(loc));
@@ -84,10 +84,10 @@ protected:
 	const T& no_check(const Location loc) const noexcept
 	{
 		assert(is_valid(loc));
-		return owner_->operator[](loc);
+		return owner_[loc];
 	}
 private:
-	const Board<T, N>* const owner_; // const-pointer-to-const-object
+	const Board<T, N>& owner_; // const-pointer-to-const-object
 	const int id_;
 };
 
@@ -104,11 +104,11 @@ class const_Col
 	friend class Col<T,N>;
 	friend class const_iterator<T,N,self_type>;
 
-	const_Col(gsl::not_null<const Board<T, N>*> owner, const int col)
+	const_Col(const Board<T, N>& owner, const int col)
 		: const_Row(owner, col)
 	{
 	}
-	const_Col(gsl::not_null<const Board<T, N>*> owner, const Location loc)
+	const_Col(const Board<T, N>& owner, const Location loc)
 		: const_Row(owner, loc.col())
 	{
 		assert(is_valid(loc));
@@ -154,11 +154,11 @@ class const_Block
 	friend class Block<T,N>;
 	friend class const_iterator<T,N,self_type>;
 
-	const_Block(gsl::not_null<const Board<T, N>*> owner, const int id)
+	const_Block(const Board<T, N>& owner, const int id)
 		: const_Row(owner, id)
 	{
 	}
-	const_Block(gsl::not_null<const Board<T, N>*> owner, const Location loc)
+	const_Block(const Board<T, N>& owner, const Location loc)
 		: const_Row(owner, loc.block())
 	{
 		assert(is_valid(loc));
@@ -204,11 +204,11 @@ class Row
 	friend class iterator<T,N,self_type>;
 	friend class const_iterator<T,N, self_type>;
 
-	Row(gsl::not_null<Board<T, N>*> owner, int row)
+	Row(Board<T, N>& owner, int row)
 		: const_Row<T,N>(owner, row), owner_(owner), id_(row)
 	{
 	}
-	Row(gsl::not_null<Board<T, N>*> owner, Location loc)
+	Row(Board<T, N>& owner, Location loc)
 		: const_Row<T,N>(owner, loc.row()), owner_(owner), id_(loc.row())
 	{
 		assert(is_valid(loc));
@@ -230,13 +230,13 @@ public:
 	constexpr auto rend()	{ return std::make_reverse_iterator(begin()); }
 
 private:
-	Board<T, N>* const owner_; // const-pointer
+	Board<T, N>& owner_; // const-pointer
 	const int id_;
 
 	T& no_check(Location loc) noexcept
 	{
 		assert(is_valid(loc));
-		return owner_->operator[](loc);
+		return owner_[loc];
 	}
 };
 
@@ -254,12 +254,12 @@ class Col
 	friend class iterator<T,N, self_type>;
 	friend class const_iterator<T,N, self_type>;
 
-	Col(gsl::not_null<Board<T, N>*> owner, int col)
+	Col(Board<T, N>& owner, int col)
 		:	const_Col(owner, col),
 			owner_(owner)
 	{
 	}
-	Col(gsl::not_null<Board<T, N>*> owner, Location loc)
+	Col(Board<T, N>& owner, Location loc)
 		:	const_Col(owner, loc.col()),
 			owner_(owner)
 	{
@@ -281,12 +281,12 @@ public:
 	constexpr auto rbegin() { return std::make_reverse_iterator(end()); }
 	constexpr auto rend()	{ return std::make_reverse_iterator(begin()); }
 private:
-	Board<T, N>* const owner_; // const-pointer
+	Board<T, N>& owner_; // const-pointer
 
 	T& no_check(Location loc) noexcept
 	{
 		assert(is_valid(loc));
-		return owner_->operator[](loc);
+		return owner_[loc];
 	}
 };
 
@@ -303,12 +303,12 @@ class Block
 	friend class iterator<T,N, self_type>;
 	friend class const_iterator<T,N, self_type>;
 
-	Block(gsl::not_null<Board<T, N>*> owner, int id)
+	Block(Board<T, N>& owner, int id)
 		:	const_Block(owner, id),
 			owner_(owner)
 	{
 	}
-	Block(gsl::not_null<Board<T, N>*> owner, Location loc)
+	Block(Board<T, N>& owner, Location loc)
 		:	const_Block(owner, loc.block()),
 			owner_(owner)
 	{
@@ -330,12 +330,12 @@ public:
 	constexpr auto rbegin() { return std::make_reverse_iterator(end()); }
 	constexpr auto rend()	{ return std::make_reverse_iterator(begin()); }
 private:
-	Board<T, N>* const owner_; // const-pointer
+	Board<T, N>& owner_; // const-pointer
 
 	T& no_check(Location loc) noexcept
 	{
 		assert(is_valid(loc));
-		return owner_->operator[](loc);
+		return owner_[loc];
 	}
 };
 
@@ -455,7 +455,8 @@ private:
 
 	bool is_same(const self_type& other) const
 	{
-		return (owner_->owner_ == other.owner_->owner_) &&
+		// compare address of:
+		return (&(owner_->owner_) == &(other.owner_->owner_)) &&
 			   (owner_->id() == other.owner_->id());
 	}
 };
@@ -577,7 +578,8 @@ private:
 
 	bool is_same(const self_type& other) const
 	{
-		return (owner_->owner_ == other.owner_->owner_) &&
+		// compare address of:
+		return (&(owner_->owner_) == &(other.owner_->owner_)) &&
 			   (owner_->id() == other.owner_->id());
 	}
 };

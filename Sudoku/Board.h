@@ -89,18 +89,18 @@ public:
 	constexpr const_reverse_iterator rend() const noexcept { return crend(); }
 
 	/* Sections */
-	Row			row(int id)				{ return Row(this, id); }
-	const_Row	row(int id) const		{ return const_Row(this, id); }
-	Row			row(Location loc)		{ return Row(this, loc); }
-	const_Row	row(Location loc) const	{ return const_Row(this, loc); }
-	Col			col(int id)				{ return Col(this, id); }
-	const_Col	col(int id) const		{ return const_Col(this, id); }
-	Col			col(Location loc)		{ return Col(this, loc); }
-	const_Col	col(Location loc) const	{ return const_Col(this, loc); }
-	Block		block(int id)			{ return Block(this, id); }
-	const_Block	block(int id) const		{ return const_Block(this, id); }
-	Block		block(Location loc)		{ return Block(this, loc); }
-	const_Block	block(Location loc) const	{ return const_Block(this, loc); }
+	Row			row(int id)				{ return Row(*this, id); }
+	const_Row	row(int id) const		{ return const_Row(*this, id); }
+	Row			row(Location loc)		{ return Row(*this, loc); }
+	const_Row	row(Location loc) const	{ return const_Row(*this, loc); }
+	Col			col(int id)				{ return Col(*this, id); }
+	const_Col	col(int id) const		{ return const_Col(*this, id); }
+	Col			col(Location loc)		{ return Col(*this, loc); }
+	const_Col	col(Location loc) const	{ return const_Col(*this, loc); }
+	Block		block(int id)			{ return Block(*this, id); }
+	const_Block	block(int id) const		{ return const_Block(*this, id); }
+	Block		block(Location loc)		{ return Block(*this, loc); }
+	const_Block	block(Location loc) const	{ return const_Block(*this, loc); }
 
 private:
 	std::vector<T> board_{};

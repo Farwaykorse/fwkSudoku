@@ -60,7 +60,8 @@ namespace compiletime
 	//! different between VC++ / Clang
 	//static_assert(!std::is_trivially_copyable_v<typeT>,
 	//	"-- compatible with std::memcpy & binary copy from/to files");
-	static_assert(std::is_standard_layout_v<typeT>, "standard layout");
+	// can't be standard, reference member
+	static_assert(!std::is_standard_layout_v<typeT>, "standard layout");
 	static_assert(!std::is_pod_v<typeT>,
 		"++ Plain Old Data, both trivial and standard-layout, C compatible");
 	//static_assert(std::has_unique_object_representations_v<typeT>, "");	//C++17	trivially_copyable same object representation
