@@ -255,11 +255,11 @@ TEST(Board_Sections, deathtests)
 	EXPECT_DEBUG_DEATH({ cA.block(4); }, "")	<< "const_Block(4) element out of bounds";
 	EXPECT_DEBUG_DEATH({ A.block(4); }, "")		<< "Block(4) element out of bounds";
 
-	//TODO Row(Location) out of bounds
-	//const Location<2> min{ -1 };
-	//const Location<2> plus{ 21 };
-	//EXPECT_DEBUG_DEATH({ cA.row(min); }, "")	<< "const_Row(Loc(-1) element out of bounds";
-	//EXPECT_DEBUG_DEATH({ cA.row(plus); }, "")	<< "const_Row(Loc(21) element out of bounds";
+	// Row(Location) out of bounds
+	const Location<2> min{ -1 };
+	const Location<2> plus{ 21 };
+	EXPECT_DEBUG_DEATH({ cA.row(min); }, "")	<< "const_Row(Loc(-1) element out of bounds";
+	EXPECT_DEBUG_DEATH({ cA.row(plus); }, "")	<< "const_Row(Loc(21) element out of bounds";
 
 	EXPECT_DEBUG_DEATH({ cA.row(0)[-1]; }, "")	<< "const_Row[-1] element out of bounds";
 	EXPECT_DEBUG_DEATH({ A.row(0)[-1]; }, "")	<< "row[-1] element out of bounds";
@@ -273,13 +273,6 @@ TEST(Board_Sections, deathtests)
 	EXPECT_DEBUG_DEATH({ A.block(0)[-1]; }, "")	<< "Block[-1] element out of bounds";
 	EXPECT_DEBUG_DEATH({ cA.block(0)[4]; }, "")	<< "const_Block[4] element out of bounds";
 	EXPECT_DEBUG_DEATH({ A.block(0)[4]; }, "")	<< "Block[4] element out of bounds";
-
-
-	// compatible_(other)
-	//TODO check asserts that check if same board
-		//assert(owner_->owner_ == other.owner_->owner_);
-		//assert(owner_->id() == other.owner_->id());
 }
-
 
 } // namespace SudokuTests::Board_SectionsTest

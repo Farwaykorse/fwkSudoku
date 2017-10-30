@@ -1,6 +1,8 @@
 ﻿//===--	Sudoku/Board_Sections.h											--===//
 //
-//	Section access for Board<T,N>
+//	Section access for Board<T,N>, as if a seperate object
+//	using iterators and operator[]
+//	The iterator can return a Location object.
 //	included by Board.h
 //===---------------------------------------------------------------------===//
 #pragma once
@@ -169,7 +171,6 @@ public:
 	const T& operator[] (const int elem) const noexcept
 	{
 		assert(is_valid_size<N>(elem));
-		//return no_check(Location_Block<N>(id(), elem));
 		return no_check(location(elem));
 	}
 
@@ -339,6 +340,8 @@ private:
 };
 
 
+//===---------------------------------------------------------------------===//
+// Board_Sections Iterators
 template<typename T, int N, typename ownerT>
 class const_iterator
 {
@@ -370,16 +373,15 @@ public:
 	}
 	reference operator*() const
 	{
+		assert(is_valid_size<N>(elem_));
 		return (*owner_)[elem_];
 	}
 
 	// Input iterator
 	bool operator==(const self_type& other) const
 	{
-		return 
-			elem_ == other.elem_ &&
-			owner_->id() == other.owner_->id() &&
-			owner_->owner_ == other.owner_->owner_;
+		assert(is_same(other));
+		return elem_ == other.elem_ && is_same(other);
 	}
 	bool operator!=(const self_type& other) const
 	{
@@ -389,6 +391,7 @@ public:
 	// In- & output iterator
 	pointer operator->() const noexcept
 	{ // member access; equivalent to (*p).member
+		assert(is_valid_size<N>(elem_));
 		return std::addressof<value_type>(owner_->operator[](elem_));
 	}
 
@@ -409,7 +412,6 @@ public:
 	// RandomAccess iterator
 	self_type& operator+=(const difference_type offset)
 	{
-		compatible_(offset);
 		elem_ += offset; return *this;
 	}
 	self_type operator+(const difference_type offset) const
@@ -428,7 +430,7 @@ public:
 	}
 	difference_type operator-(const self_type& other) const
 	{
-		compatible_(other);
+		assert(is_same(other));
 		return elem_ - other.elem_;
 	}
 	reference operator[](const difference_type offset) const
@@ -438,34 +440,25 @@ public:
 
 	bool operator<(const self_type& other) const
 	{
-		compatible_(other);
+		assert(is_same(other));
 		return elem_ < other.elem_;
 	}
 	bool operator> (const self_type& other) const { return (other < *this); }
 	bool operator<=(const self_type& other) const { return (!(other < *this)); }
 	bool operator>=(const self_type& other) const { return (!(*this < other)); }
 
-	Location<N> location() const noexcept
-	{
-		return owner_->location(elem_);
-	}
+	Location<N> location() const noexcept { return owner_->location(elem_); }
+
 private:
 	const owner_type* owner_;
 	int elem_{0}; // element within the section
 
-	[[maybe_unused]] void compatible_(
-		[[maybe_unused]] const difference_type offset) const
+	bool is_same(const self_type& other) const
 	{
-		assert(elem_ + offset >= 0 && elem_ + offset < owner_->size());
-	}
-	[[maybe_unused]] void compatible_(
-		[[maybe_unused]] const self_type& other) const
-	{
-		assert(owner_->owner_ == other.owner_->owner_);
-		assert(owner_->id() == other.owner_->id());
+		return (owner_->owner_ == other.owner_->owner_) &&
+			   (owner_->id() == other.owner_->id());
 	}
 };
-
 
 
 template<typename T, int N, typename ownerT>
@@ -502,16 +495,15 @@ public:
 	}
 	reference operator*() const
 	{
+		assert(is_valid_size<N>(elem_));
 		return owner_->operator[](elem_);
 	}
 
 	// Input iterator
 	bool operator==(const self_type& other) const
 	{
-		return
-			elem_ == other.elem_ &&
-			owner_->id() == other.owner_->id() &&
-			owner_->owner_ == other.owner_->owner_;
+		assert(is_same(other));
+		return elem_ == other.elem_ && is_same(other);
 	}
 	bool operator!=(const self_type& other) const
 	{
@@ -521,6 +513,7 @@ public:
 	// In- & output iterator
 	pointer operator->() const noexcept
 	{ // member access; equivalent to (*p).member
+		assert(is_valid_size<N>(elem_));
 		return std::addressof<value_type>(owner_->operator[](elem_));
 	}
 
@@ -541,7 +534,6 @@ public:
 	// RandomAccess iterator
 	self_type& operator+=(const difference_type offset)
 	{
-		compatible_(offset);
 		elem_ += offset;
 		return *this;
 	}
@@ -561,7 +553,7 @@ public:
 	}
 	difference_type operator-(const self_type& other) const
 	{
-		compatible_(other);
+		assert(is_same(other));
 		return elem_ - other.elem_;
 	}
 	reference operator[](const difference_type offset) const
@@ -570,31 +562,23 @@ public:
 	}
 	bool operator<(const self_type& other) const
 	{
-		compatible_(other);
+		assert(is_same(other));
 		return elem_ < other.elem_;
 	}
 	bool operator> (const self_type& other) const { return (other < *this); }
 	bool operator<=(const self_type& other) const { return (!(other < *this)); }
 	bool operator>=(const self_type& other) const { return (!(*this < other)); }
 
-	Location<N> location() const noexcept
-	{
-		return owner_->location(elem_);
-	}
+	Location<N> location() const noexcept { return owner_->location(elem_); }
+
 private:
 	owner_type* owner_;
 	int elem_{0}; // element within the section
 
-	[[maybe_unused]] void compatible_(
-		[[maybe_unused]] const difference_type offset) const
+	bool is_same(const self_type& other) const
 	{
-		assert(elem_ + offset >= 0 && elem_ + offset < owner_->size());
-	}
-	[[maybe_unused]] void compatible_(
-		[[maybe_unused]] const self_type& other) const
-	{
-		assert(owner_->owner_ == other.owner_->owner_);
-		assert(owner_->id() == other.owner_->id());
+		return (owner_->owner_ == other.owner_->owner_) &&
+			   (owner_->id() == other.owner_->id());
 	}
 };
 

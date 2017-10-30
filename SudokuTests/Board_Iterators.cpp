@@ -99,7 +99,7 @@ namespace iterator
 	static_assert(std::is_same_v<std::iterator_traits<baseT::reverse_iterator>::value_type, type>);
 	static_assert(std::is_same_v<std::iterator_traits<baseT::const_reverse_iterator>::value_type, type>);
 }
-TEST(Board, iterator)
+TEST(Board_Iterator, iterator)
 {
 	// All iterator categories
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
@@ -130,7 +130,7 @@ TEST(Board, iterator)
 	EXPECT_NO_THROW(++A.rbegin());
 	EXPECT_NO_THROW(++A.crbegin());
 }
-TEST(Board, InputIterator)
+TEST(Board_Iterator, InputIterator)
 {
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 	const Board<int, 2> cA{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
@@ -211,7 +211,7 @@ TEST(Board, InputIterator)
 	EXPECT_NO_THROW(total = std::accumulate(cA.rbegin(), cA.rend(), 0));
 	EXPECT_EQ(total, 129);
 }
-TEST(Board, OutputIterator)
+TEST(Board_Iterator, OutputIterator)
 {
 	Board<int, 2> tmp{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 	EXPECT_EQ(tmp[0][0], 0) << "requires InBetween";
@@ -240,7 +240,7 @@ TEST(Board, OutputIterator)
 	auto r = tmp.begin();
 	EXPECT_TRUE(&r == &++r);
 }
-TEST(Board, ForwardIterator)
+TEST(Board_Iterator, ForwardIterator)
 {
 	using typeT = Board<int>;
 	static_assert(std::is_default_constructible_v<typeT::iterator>);
@@ -265,7 +265,7 @@ TEST(Board, ForwardIterator)
 	EXPECT_EQ(*++r, 1);
 	EXPECT_EQ(*++r, *++(++i));
 }
-TEST(Board, BidirectionalIterator)
+TEST(Board_Iterator, BidirectionalIterator)
 {
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 	
@@ -299,7 +299,7 @@ TEST(Board, BidirectionalIterator)
 	EXPECT_EQ(A.crend()--, A.crend());
 	EXPECT_EQ(*(--A.crend())--, 9);
 }
-TEST(Board, RandomAccessIterator)
+TEST(Board_Iterator, RandomAccessIterator)
 {
 	using typeT = Board<int, 2>;
 	using diff = std::iterator_traits<typeT::iterator>::difference_type;
@@ -469,7 +469,7 @@ namespace RowIterator
 	//static_assert(std::is_same_v<std::iterator_traits<typeT::reverse_iterator>::difference_type, diff>);
 	//static_assert(std::is_same_v<std::iterator_traits<typeT::const_reverse_iterator>::difference_type, diff>);
 }
-TEST(Board, RowIterator)
+TEST(Board_Iterator, RowIterator)
 {
 	// All iterator categories
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
@@ -508,7 +508,7 @@ TEST(Board, RowIterator)
 	EXPECT_NO_THROW(++A.row(1).rbegin());
 	EXPECT_NO_THROW(++A.row(1).crbegin());
 }
-TEST(Board, RowInputIterator)
+TEST(Board_Iterator, RowInputIterator)
 {
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 	const Board<int, 2> cA{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
@@ -645,7 +645,7 @@ TEST(Board, RowInputIterator)
 	EXPECT_EQ(total, 54);
 	total = 0;
 }
-TEST(Board, RowOutputIterator)
+TEST(Board_Iterator, RowOutputIterator)
 {
 	Board<int, 2> tmp{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 	EXPECT_EQ(tmp[0][0], 0) << "requires InBetween";
@@ -674,7 +674,7 @@ TEST(Board, RowOutputIterator)
 	auto r = tmp.begin();
 	EXPECT_TRUE(&r == &++r);
 }
-TEST(Board, RowForwardIterator)
+TEST(Board_Iterator, RowForwardIterator)
 {
 	using typeT = Board<int>::Row;
 	static_assert(std::is_default_constructible_v<typeT::iterator>);
@@ -700,7 +700,7 @@ TEST(Board, RowForwardIterator)
 	EXPECT_EQ(*++r, 1);
 	EXPECT_EQ(*++r, *++(++i));
 }
-TEST(Board, RowBidirectionalIterator)
+TEST(Board_Iterator, RowBidirectionalIterator)
 {
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 	
@@ -738,7 +738,7 @@ TEST(Board, RowBidirectionalIterator)
 	EXPECT_TRUE(A.row(0).crend()-- == A.row(0).crend());
 	EXPECT_EQ(*(--A.row(0).crend())--, 9);
 }
-TEST(Board, RowRandomAccessIterator)
+TEST(Board_Iterator, RowRandomAccessIterator)
 {
 	using typeT = Board<int, 2>;
 	using diff = std::iterator_traits<typeT::iterator>::difference_type;
@@ -900,7 +900,7 @@ namespace ColIterator
 	using diff = std::iterator_traits<typeT::iterator>::difference_type;
 	static_assert(std::is_same_v<std::iterator_traits<typeT::const_iterator>::difference_type, diff>);
 }
-TEST(Board, ColIterator)
+TEST(Board_Iterator, ColIterator)
 {
 	// All iterator categories
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
@@ -939,7 +939,7 @@ TEST(Board, ColIterator)
 	EXPECT_NO_THROW(++A.col(1).rbegin());
 	EXPECT_NO_THROW(++A.col(1).crbegin());
 }
-TEST(Board, ColInputIterator)
+TEST(Board_Iterator, ColInputIterator)
 {
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 	const Board<int, 2> cA{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
@@ -1053,7 +1053,7 @@ TEST(Board, ColInputIterator)
 	EXPECT_NO_THROW(total = std::accumulate(cA.col(2).rbegin(), cA.col(2).rend(), 0));
 	EXPECT_EQ(total, 32);
 }
-TEST(Board, ColOutputIterator)
+TEST(Board_Iterator, ColOutputIterator)
 {
 	Board<int, 2> tmp{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 	EXPECT_EQ(tmp[0][0], 0) << "requires InBetween";
@@ -1082,7 +1082,7 @@ TEST(Board, ColOutputIterator)
 	auto r = tmp.begin();
 	EXPECT_TRUE(&r == &++r);
 }
-TEST(Board, ColForwardIterator)
+TEST(Board_Iterator, ColForwardIterator)
 {
 	using typeT = Board<int>::Col;
 	static_assert(std::is_default_constructible_v<typeT::iterator>);
@@ -1108,7 +1108,7 @@ TEST(Board, ColForwardIterator)
 	EXPECT_EQ(*++r, 4);
 	EXPECT_EQ(*++r, *++(++i));
 }
-TEST(Board, ColBidirectionalIterator)
+TEST(Board_Iterator, ColBidirectionalIterator)
 {
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 	
@@ -1146,7 +1146,7 @@ TEST(Board, ColBidirectionalIterator)
 	EXPECT_TRUE(A.col(0).crend()-- == A.col(0).crend());
 	EXPECT_EQ(*(--A.col(0).crend())--, 9);
 }
-TEST(Board, ColRandomAccessIterator)
+TEST(Board_Iterator, ColRandomAccessIterator)
 {
 	using typeT = Board<int, 2>;
 	using diff = std::iterator_traits<typeT::iterator>::difference_type;
@@ -1302,7 +1302,7 @@ namespace BlockIterator
 	using diff = std::iterator_traits<typeT::iterator>::difference_type;
 	static_assert(std::is_same_v<std::iterator_traits<typeT::const_iterator>::difference_type, diff>);
 }
-TEST(Board, BlockIterator)
+TEST(Board_Iterator, BlockIterator)
 {
 	// All iterator categories
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
@@ -1341,7 +1341,7 @@ TEST(Board, BlockIterator)
 	EXPECT_NO_THROW(++A.block(1).rbegin());
 	EXPECT_NO_THROW(++A.block(1).crbegin());
 }
-TEST(Board, BlockInputIterator)
+TEST(Board_Iterator, BlockInputIterator)
 {
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 	const Board<int, 2> cA{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
@@ -1455,7 +1455,7 @@ TEST(Board, BlockInputIterator)
 	EXPECT_NO_THROW(total = std::accumulate(cA.block(2).rbegin(), cA.block(2).rend(), 0));
 	EXPECT_EQ(total, 42);
 }
-TEST(Board, BlockOutputIterator)
+TEST(Board_Iterator, BlockOutputIterator)
 {
 	Board<int, 2> tmp{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 	EXPECT_EQ(tmp[0][0], 0) << "requires InBetween";
@@ -1480,11 +1480,12 @@ TEST(Board, BlockOutputIterator)
 	EXPECT_EQ(tmp[0][0], 1);
 	EXPECT_NO_THROW(++(*tmp.block(0).rbegin() = 9));
 	EXPECT_EQ(tmp[1][1], 10);
-
-	auto r = tmp.begin();
-	EXPECT_TRUE(&r == &++r);
+	{
+		auto r = tmp.begin();
+		EXPECT_TRUE(&r == &++r);
+	}
 }
-TEST(Board, BlockForwardIterator)
+TEST(Board_Iterator, BlockForwardIterator)
 {
 	using typeT = Board<int>::Block;
 	static_assert(std::is_default_constructible_v<typeT::iterator>);
@@ -1510,7 +1511,7 @@ TEST(Board, BlockForwardIterator)
 	EXPECT_EQ(*++r, 1);
 	EXPECT_EQ(*++r, *++(++i));
 }
-TEST(Board, BlockBidirectionalIterator)
+TEST(Board_Iterator, BlockBidirectionalIterator)
 {
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 	
@@ -1548,7 +1549,7 @@ TEST(Board, BlockBidirectionalIterator)
 	EXPECT_TRUE(A.block(0).crend()-- == A.block(0).crend());
 	EXPECT_EQ(*(--A.block(0).crend())--, 9);
 }
-TEST(Board, BlockRandomAccessIterator)
+TEST(Board_Iterator, BlockRandomAccessIterator)
 {
 	using typeT = Board<int, 2>;
 	using diff = std::iterator_traits<typeT::iterator>::difference_type;
@@ -1650,6 +1651,68 @@ TEST(Board, BlockRandomAccessIterator)
 	EXPECT_NE(A, cA);
 }
 
+TEST(Board_Iterator, deathtest)
+{
+	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
+	const Board<int, 2> cA{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
+
+	// move out of range
+	// forward and random-access require different steps
+	EXPECT_NO_FATAL_FAILURE(A.row(0).begin() += 5);
+	EXPECT_NO_FATAL_FAILURE(cA.row(0).begin() += 5);
+
+	// check asserts that check if same board
+	Board<int, 2> B{};
+	const Board<int, 2> cB{};
+	EXPECT_NO_FATAL_FAILURE(A.row(0).begin() == A.row(0).begin());
+	EXPECT_DEBUG_DEATH(A.row(0).begin() == B.row(0).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.row(0).begin() == B.row(2).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.col(0).begin() == B.col(2).end(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.block(0).begin() == B.block(2).end(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(cA.row(0).begin() == cB.row(0).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.row(0).begin() != B.row(0).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(cA.row(0).begin() == A.row(0).cbegin(), ".*: is_same");
+#ifndef _DEBUG
+	EXPECT_NE(A.row(0).begin(), B.row(0).begin());
+	EXPECT_NE(A.row(0).begin(), A.row(2).begin());
+#endif // !_DEBUG
+	// assert(owner_->owner_ == other.owner_->owner_);
+	EXPECT_NO_FATAL_FAILURE(A.row(0).begin() < A.row(0).begin());
+	EXPECT_DEBUG_DEATH(A.row(0).begin() < B.row(0).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.col(0).begin() < B.col(0).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.block(0).begin() < B.block(0).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(cA.row(0).begin() < cB.row(0).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(cA.row(0).begin() < B.row(0).cbegin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.row(0).begin() > B.row(0).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.row(0).begin() <= B.row(0).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.row(0).begin() <= B.row(0).begin(), ".*: is_same");
+
+	// assert(owner_->id() == other.owner_->id());
+	EXPECT_NO_FATAL_FAILURE(A.row(0).begin() < A.row(0).end());
+	EXPECT_DEBUG_DEATH(A.row(0).begin() < A.row(1).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.col(0).begin() < A.col(1).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.row(0).begin() > A.row(1).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.row(0).begin() <= A.row(1).begin(), ".*: is_same");
+	EXPECT_DEBUG_DEATH(A.row(0).begin() >= A.row(1).begin(), ".*: is_same");
+
+	// invalid location on dereferencing out-of-bounds iterator
+	int tmp_{};
+	EXPECT_NO_FATAL_FAILURE(tmp_ = *((cA.row(0).cbegin())--));
+	EXPECT_NO_FATAL_FAILURE(tmp_ = *(--(cA.row(0).cend()))++);
+#ifdef _DEBUG
+	EXPECT_DEBUG_DEATH(tmp_ = *(--(A.row(0).begin())), ".*: is_valid_size");
+	EXPECT_DEBUG_DEATH(tmp_ = *(A.row(0).end()), ".*: is_valid_size");
+	EXPECT_DEBUG_DEATH(tmp_ = *(cA.row(0).end()), ".*: is_valid_size");
+	EXPECT_DEBUG_DEATH(tmp_ = *(--(cA.row(0).cbegin())), ".*: is_valid_size");
+	EXPECT_DEBUG_DEATH(tmp_ = *((A.row(0).begin())+=8), ".*: is_valid_size");
+#endif // _DEBUG
+	Board<Options<4>, 2> Opt{};
+	EXPECT_NO_FATAL_FAILURE(tmp_ = (Opt.row(0).begin())->count());
+#ifdef _DEBUG
+	EXPECT_DEBUG_DEATH(
+		tmp_ = (--(Opt.row(0).begin()))->count(), ".*: is_valid_size");
+#endif // _DEBUG
+}
 
 template<typename T>
 int range_for_sum(T structure)
@@ -1666,7 +1729,7 @@ int range_for_sum(T structure)
 	return total;
 }
 
-TEST(Board, IteratorLoop)
+TEST(Board_Iterator, IteratorLoop)
 {
 	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 	const Board<int, 2> cA{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
@@ -1721,26 +1784,6 @@ TEST(Board, IteratorLoop)
 		total += range_for_sum(cA.block(i));
 	}
 	EXPECT_EQ(total, 129);
-}
-
-TEST(Board, IteratorDeathtest)
-{
-	Board<int, 2> A{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-	const Board<int, 2> cA{ 9,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-	// iterator
-	// compatible_(offset)
-	EXPECT_DEBUG_DEATH({ cA.row(0).begin() += 4; },
-		"Assertion failed: .*") << "const_row_iterator out of bounds";
-	EXPECT_DEBUG_DEATH({ A.row(0).begin() += 4; },
-		"Assertion failed: .*") << "row_iterator out of bounds";
-	EXPECT_DEBUG_DEATH({ cA.col(3).begin() += 4; },
-		"Assertion failed: .*") << "const_col_iterator out of bounds";
-	EXPECT_DEBUG_DEATH({ A.col(3).begin() += 4; },
-		"Assertion failed: .*") << "col_iterator out of bounds";
-	EXPECT_DEBUG_DEATH({ cA.block(1).begin() += 4; },
-		"Assertion failed: .*") << "const_block_iterator out of bounds";
-	EXPECT_DEBUG_DEATH({ A.block(2).begin() += 4; },
-		"Assertion failed: .*") << "block_iterator out of bounds";
 }
 
 }
