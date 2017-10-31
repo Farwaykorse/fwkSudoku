@@ -271,7 +271,7 @@ TEST(Options, mf_boolRequest)
 }
 TEST(Options, mf_dataRequest)
 {
-	std::vector<int> result{};
+	std::vector<unsigned int> result{};
 	//std::vector<int> available() const;	// return available options
 	static_assert(!noexcept(TE.O_1.available()), "available() should NOT be noexcept");
 	ASSERT_NO_THROW(result = TE.O_2.available());

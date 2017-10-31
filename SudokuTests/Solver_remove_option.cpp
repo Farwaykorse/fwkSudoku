@@ -195,7 +195,7 @@ TEST(Solver, remove_option_section_2)
 {
 	using L  = Location<2>;
 	using vL = std::vector<L>;
-	using v  = std::vector<int>;
+	using v  = std::vector<unsigned int>;
 
 	// remove_option_section(SectionT, vector<Location>, vecor<int>
 	const Board<Options<4>, 2> cB;
@@ -287,7 +287,7 @@ TEST(Solver, deathtests_remove_option)
 {
 	using L  = Location<2>;
 	using vL = std::vector<L>;
-	using v  = std::vector<int>;
+	using v  = std::vector<unsigned int>;
 
 	Board<Options<4>, 2> B{};
 	//===-----------------------------------------------------------------===//
@@ -361,7 +361,7 @@ TEST(Solver, deathtests_remove_option)
 	// invalid value
 #ifdef _DEBUG
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(B.row(0), vL{L(1), L(3)}, -3),
+		Solver<2>(B).remove_option_section(B.row(0), vL{L(1), L(3)}, 0),
 		"Assertion failed: is_valid_value<N>.value.");
 #endif // _DEBUG
 	// assert atleast one ignore-location inside section

@@ -526,26 +526,35 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_FALSE(is_valid_value<3>(16));
 
 	// vector input
+	using list = std::vector<unsigned int>;
+	EXPECT_FALSE(is_valid_value<2>(list{})) << "can't be empty";
 	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{})) << "can't be empty";
+	EXPECT_TRUE(is_valid_value<2>(list{ 1, 2, 3, 4, 3, 1 }));
 	EXPECT_TRUE(is_valid_value<2>(std::vector<int>{ 1, 2, 3, 4, 3, 1 }));
+	EXPECT_TRUE(is_valid_value<2>(list{ 1 }));
 	EXPECT_TRUE(is_valid_value<2>(std::vector<int>{ 1 }));
+	EXPECT_FALSE(is_valid_value<2>(list{ 0 }));
 	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 0 }));
+	EXPECT_FALSE(is_valid_value<2>(list{ 5 }));
 	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 5 }));
+	EXPECT_FALSE(is_valid_value<2>(list{ 1, 2, 0, 4, 3, 1 }));
 	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 1, 2, 0, 4, 3, 1 }));
 	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 1, -2, 3, 4, 3, 1 }));
+	EXPECT_FALSE(is_valid_value<2>(list{ 1, 5, 3, 4, 3, 1 }));
 	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 1, 5, 3, 4, 3, 1 }));
 
 	using L = Location<2>;
-	EXPECT_FALSE(is_valid(std::vector<Location<2>>{})) << "can't be empty";
-	EXPECT_TRUE(is_valid(std::vector<Location<2>>{L(0), L(12), L(13)}));
-	EXPECT_TRUE(is_valid(std::vector<Location<2>>{L(8)})) << "must except single";
-	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(5), L(2), L(16)})) << "must be sorted";
-	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(15), L(2), L(1)})) << "must be sorted ascending";
-	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(0), L(15), L(16)}));
-	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(-1), L(0), L(1)}));
-	EXPECT_TRUE(is_valid(std::vector<Location<2>>{L(0)}));
-	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(16)}));
-	EXPECT_FALSE(is_valid(std::vector<Location<2>>{L(-6)}));
+	using list2 = std::vector<L>;
+	EXPECT_FALSE(is_valid(list2{})) << "can't be empty";
+	EXPECT_TRUE(is_valid(list2{L(0), L(12), L(13)}));
+	EXPECT_TRUE(is_valid(list2{L(8)})) << "must except single";
+	EXPECT_FALSE(is_valid(list2{L(5), L(2), L(16)})) << "must be sorted";
+	EXPECT_FALSE(is_valid(list2{L(15), L(2), L(1)})) << "must be sorted ascending";
+	EXPECT_FALSE(is_valid(list2{L(0), L(15), L(16)}));
+	EXPECT_FALSE(is_valid(list2{L(-1), L(0), L(1)}));
+	EXPECT_TRUE(is_valid(list2{L(0)}));
+	EXPECT_FALSE(is_valid(list2{L(16)}));
+	EXPECT_FALSE(is_valid(list2{L(-6)}));
 }
 TEST(Location_Utilities, is_same_section)
 {

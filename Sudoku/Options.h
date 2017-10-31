@@ -54,9 +54,9 @@ public:
 	bool is_option(value_t) const noexcept; // is an option
 	bool is_empty() const noexcept;
 
-	int get_answer() const noexcept;    // return answer or 0
+	value_t get_answer() const noexcept;    // return answer or 0
 										// (won't confirm is_answer())
-	std::vector<int> available() const; // return available options
+	std::vector<value_t> available() const; // return available options
 
 	bool operator[](value_t) const noexcept;
 	auto operator[](value_t) noexcept;
@@ -85,7 +85,7 @@ private:
 	// false if answer has been set = inverse of answer
 	bitset data_{};
 
-	int read_next(int start = 0) const noexcept;
+	value_t read_next(value_t start = 0) const noexcept;
 	Options& operator&=(const Options&) noexcept;
 	// NOTE might be risky while unused; private?
 
@@ -325,7 +325,7 @@ inline bool Options<E>::is_empty() const noexcept
 //	determine the answer value, even if not marked
 //	use with is_answer() to determine if flaged as anwer
 template<int E>
-inline int Options<E>::get_answer() const noexcept
+inline typename Options<E>::value_t Options<E>::get_answer() const noexcept
 {
 	// TODO	microbench simpler/faster way to read single value from data_
 	//		constexpr?
@@ -339,9 +339,9 @@ inline int Options<E>::get_answer() const noexcept
 
 //	all available options
 template<int E>
-inline std::vector<int> Options<E>::available() const
+inline std::vector<typename Options<E>::value_t> Options<E>::available() const
 {
-	std::vector<int> values{};
+	std::vector<unsigned int> values{};
 	values.reserve(static_cast<size_t>(count()));
 	if (!is_answer() && !is_empty())
 	{
@@ -449,12 +449,13 @@ inline std::string Options<E>::DebugString() const
 
 //	return next option in data
 template<int E>
-inline int Options<E>::read_next(int start) const noexcept
+inline typename Options<E>::value_t Options<E>::read_next(value_t start) const
+	noexcept
 { // default value start = 0
 	++start;
-	for (int i = start; i <= E; ++i)
+	for (value_t i = start; i <= E; ++i)
 	{
-		if (data_[static_cast<size_t>(i)])
+		if (data_[i])
 		{
 			return i;
 		}

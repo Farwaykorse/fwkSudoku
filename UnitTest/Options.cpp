@@ -149,7 +149,7 @@ public:
 		// available() const
 		//std::vector<int> available() const;	// return available options
 		static_assert(!noexcept(O_1.available()), "available() should NOT be noexcept");
-		std::vector<int> result{};
+		std::vector<unsigned int> result{};
 		try { result = O_4.available(); }
 		catch (...) { Assert::Fail(L"available() failed"); }
 		Assert::IsTrue(result.size() == 2, L"available() failed_2");

@@ -1198,6 +1198,7 @@ TEST(Solver, multi_option)
 	*	after:  0,8: contains only 4,5,7,8 (not 1,2,3,6,9)
 	*	no change:  block 4 contains all options in all cells
 	*/
+	using list = std::vector<unsigned int>;
 	const std::vector<int> b1
 	{
 		0, 0, 0,	0, 0, 0,	0, 0, 0,
@@ -1224,7 +1225,7 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B1[0][0].count(), 3) << "after 1"; // unchanged
 	EXPECT_EQ(B1[0][8].count(), 6) << "after 2";
 	EXPECT_EQ(B1[4][4].count(), 9) << "after 3"; // unchanged
-	EXPECT_EQ(B1[0][8].available(), (std::vector<int>{4, 5, 6, 7, 8, 9}))
+	EXPECT_EQ(B1[0][8].available(), (list{4, 5, 6, 7, 8, 9}))
 		<< "after 4";
 	// run for col
 	EXPECT_NO_THROW(Run1.multi_option(Location<3>{6, 8}))
@@ -1233,7 +1234,7 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B1[8][8].count(), 3) << "after 22"; // unchanged
 	EXPECT_EQ(B1[0][8].count(), 4) << "after 23";
 	EXPECT_EQ(B1[4][4].count(), 9) << "after 24"; // unchanged
-	EXPECT_EQ(B1[0][8].available(), (std::vector<int>{4, 5, 7, 8}))
+	EXPECT_EQ(B1[0][8].available(), (list{4, 5, 7, 8}))
 		<< "after 25";
 
 	// run for block
@@ -1259,12 +1260,12 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B2[2][2].count(), 3) << "before 33";
 	EXPECT_EQ(B2[0][1].count(), 4) << "before 34";
 	EXPECT_EQ(B2[2][0].count(), 4) << "before 35";
-	EXPECT_EQ(B2[0][0].available(), (std::vector<int>{1, 5, 9})) << "before 36";
-	EXPECT_EQ(B2[2][0].available(), (std::vector<int>{1, 5, 7, 9}))
+	EXPECT_EQ(B2[0][0].available(), (list{1, 5, 9})) << "before 36";
+	EXPECT_EQ(B2[2][0].available(), (list{1, 5, 7, 9}))
 		<< "before 37";
 	EXPECT_EQ(B2[8][8].count(), 9) << "before 38";
 	EXPECT_EQ(B2[2][5].count(), 6) << "before 39";
-	EXPECT_EQ(B2[2][5].available(), (std::vector<int>{1, 3, 4, 5, 6, 9}))
+	EXPECT_EQ(B2[2][5].available(), (list{1, 3, 4, 5, 6, 9}))
 		<< "before 310";
 	EXPECT_NO_THROW(Run2.multi_option(Location<3>(0)))
 		<< "multi_option failed 3";
@@ -1273,10 +1274,10 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B2[2][2].count(), 3) << "after 33";
 	EXPECT_TRUE(B2[0][1].is_answer(2)) << "after 34";
 	EXPECT_TRUE(B2[2][0].is_answer(7)) << "after 35";
-	EXPECT_EQ(B2[0][0].available(), (std::vector<int>{1, 5, 9})) << "after 36";
+	EXPECT_EQ(B2[0][0].available(), (list{1, 5, 9})) << "after 36";
 	EXPECT_EQ(B2[8][8].count(), 9) << "after 38";
 	EXPECT_EQ(B2[2][5].count(), 6) << "after 39";
-	EXPECT_EQ(B2[2][5].available(), (std::vector<int>{1, 3, 4, 5, 6, 9}))
+	EXPECT_EQ(B2[2][5].available(), (list{1, 3, 4, 5, 6, 9}))
 		<< "after 310";
 
 	// clang-format off
@@ -1302,11 +1303,11 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B3[0][2].count(), 3) << "before 43";
 	EXPECT_EQ(B3[0][3].count(), 7) << "before 44";
 	// EXPECT_EQ(B3[5][1].count(), 6) << "before 45";
-	EXPECT_EQ(B3[0][1].available(), (std::vector<int>{1, 2, 3})) << "before 46";
+	EXPECT_EQ(B3[0][1].available(), (list{1, 2, 3})) << "before 46";
 	EXPECT_EQ(B3[6][8].count(), 2) << "before 47";
 	EXPECT_EQ(B3[7][8].count(), 2) << "before 48";
 	EXPECT_EQ(B3[8][8].count(), 3) << "before 49";
-	EXPECT_EQ(B3[8][8].available(), (std::vector<int>{3, 6, 9}))
+	EXPECT_EQ(B3[8][8].available(), (list{3, 6, 9}))
 		<< "before 410";
 	EXPECT_NO_THROW(Run3.multi_option(Location<3>(1)))
 		<< "multi_option failed 4";
@@ -1316,9 +1317,9 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B3[0][2].count(), 3) << "after 43"; // unchanged
 	EXPECT_EQ(B3[0][3].count(), 4) << "after 44";
 	// EXPECT_EQ(B3[5][1].count(), 6) << "after 45"; // unchanged
-	EXPECT_EQ(B3[0][0].available(), (std::vector<int>{1, 2})) << "after 46";
-	EXPECT_EQ(B3[0][1].available(), (std::vector<int>{1, 2, 3})) << "after 47";
-	EXPECT_EQ(B3[0][3].available(), (std::vector<int>{5, 6, 8, 9}))
+	EXPECT_EQ(B3[0][0].available(), (list{1, 2})) << "after 46";
+	EXPECT_EQ(B3[0][1].available(), (list{1, 2, 3})) << "after 47";
+	EXPECT_EQ(B3[0][3].available(), (list{5, 6, 8, 9}))
 		<< "after 48";
 
 	// TODO invalid value for count, should return 0
