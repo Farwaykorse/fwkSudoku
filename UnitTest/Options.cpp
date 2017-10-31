@@ -117,8 +117,6 @@ public:
 		Assert::IsFalse(O_3.test(1), L"test(value) inverse failed");
 		try { if (O_1.test(15) || true) { Assert::Fail(L"test(high) out-of-range expected"); } }
 		catch (const std::out_of_range&) {} // caught
-		try { if (O_1.test(-1) || true) { Assert::Fail(L"test(-1) out-of-range expected"); } }
-		catch (const std::out_of_range&) {} // caught
 		catch (...) { Assert::Fail(L"test() unexpected exception"); }
 		// is_answer() const
 		static_assert(noexcept(O_1.is_answer()), "is_answer() should be noexcept");

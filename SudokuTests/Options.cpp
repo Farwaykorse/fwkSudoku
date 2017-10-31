@@ -231,7 +231,6 @@ TEST(Options, mf_boolRequest)
 {
 	static_assert(!noexcept(TE.O_1.test(2)), "test() is NOT noexcept");
 	EXPECT_THROW(TE.O_1.test(15), std::out_of_range);
-	EXPECT_THROW(TE.O_1.test(-1), std::out_of_range);
 	EXPECT_TRUE(TE.O_1.test(2));
 	EXPECT_TRUE(TE.O_3.test(2));
 	EXPECT_FALSE(TE.O_3.test(1));
@@ -261,9 +260,7 @@ TEST(Options, mf_boolRequest)
 	// assertion see deathtests
 #ifndef _DEBUG
 	EXPECT_NO_THROW(TE.O_1.is_option(15));	// undefined behaviour
-	EXPECT_NO_THROW(TE.O_1.is_option(-5));
 	EXPECT_NO_THROW(TE.A_1.is_option(15));
-	EXPECT_NO_THROW(TE.A_1.is_option(-5));
 #endif // _DEBUG
 	EXPECT_TRUE(TE.D_1.is_option(4));
 	EXPECT_TRUE(TE.O_1.is_option(2));
@@ -363,7 +360,6 @@ TEST(Options, mf_add)
 	ASSERT_NO_THROW(Opt.add(4)) << "add(int)";
 	EXPECT_EQ(Opt.DebugString(), "10000");
 	ASSERT_THROW(Opt.add(5), std::out_of_range);
-	ASSERT_THROW(Opt.add(-5), std::out_of_range);
 	ASSERT_NO_THROW(Opt.add(0));
 	EXPECT_EQ(Opt.DebugString(), "10001");	//??? better way?
 
@@ -372,7 +368,6 @@ TEST(Options, mf_add)
 	EXPECT_NO_THROW(Opt.add(u_i)) << "add(unsinged int) failed";
 	EXPECT_EQ(Opt.DebugString(), "00100");
 	EXPECT_THROW(Opt.add(12), std::out_of_range);
-	EXPECT_THROW(Opt.add(-2), std::out_of_range);
 
 	//add_noexcept(int)
 	Options<4> TMP{ std::bitset<5>{"00000"} };
@@ -395,7 +390,6 @@ TEST(Options, mf_set)
 	static_assert(!noexcept(TMP.set(4)), "set(int) should NOT be noexcept");
 	EXPECT_NO_THROW(TMP.set(4));
 	EXPECT_THROW(TMP.set(5), std::out_of_range);
-	EXPECT_THROW(TMP.set(-5), std::out_of_range);
 	EXPECT_NO_THROW(TMP.set(0));
 	EXPECT_TRUE(TMP.set(4).is_answer());
 	EXPECT_TRUE(TMP.is_answer(4));
@@ -493,7 +487,6 @@ TEST(Options, mf_constOperators)
 	// assertion see deathtests
 #ifndef _DEBUG
 	EXPECT_NO_THROW(TE.O_3[9]);
-	EXPECT_NO_THROW(TE.O_3[-1]);
 #endif	// _DEBUG
 	EXPECT_TRUE(TE.O_1[2]);
 	EXPECT_TRUE(TE.A_2[2]);
@@ -586,7 +579,7 @@ TEST(Options, deathtests)
 	// assert serves to cach E+1 case
 	EXPECT_DEBUG_DEATH({ Options<3>{4}; }, "Assertion failed: .*");
 	// debug contains assert( <= )
-	EXPECT_DEBUG_DEATH(Options<4>{-5}, "Assertion failed:");
+	EXPECT_DEBUG_DEATH(Options<4>{5}, "Assertion failed:");
 
 	// TODO won't trigger for constexpr, test required
 	// EXPECT_DEBUG_DEATH(TMP = 6, "Assertion failed:");
@@ -596,32 +589,25 @@ TEST(Options, deathtests)
 	// mf_boolRequest
 #ifdef _DEBUG
 	EXPECT_DEATH({ TE.A_1.is_answer(15); }, "Assertion failed: .*");
-	EXPECT_DEATH({ TE.A_1.is_answer(-5); }, "Assertion failed: .*");
 #endif // _DEBUG
 
 	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(15); }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(-5); }, "Assertion failed: .*");
 	// mf_constOperators
 	EXPECT_DEBUG_DEATH({ TE.O_3[9]; }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ TE.O_3[-1]; }, "Assertion failed: .*");
 	bool a;
 	EXPECT_DEBUG_DEATH({ a = TE.O_3[5]; }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ a = TE.O_3[-1]; }, "Assertion failed: .*");
 	// operator[]
 #ifdef _DEBUG
 	//! supposed to be noexcept, and no bounds-checks in release-mode
 	Options<4> Opp{std::bitset<5>{"00000"}};
 	// EXPECT_DEBUG_DEATH({ Opp[3] == Opp[-2]; }, "Assertion failed: .*");
 	EXPECT_DEBUG_DEATH({ Opp[5] = true; }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ Opp[-1] = true; }, "Assertion failed: .*");
 	// mf_add
 	Options<4> Opt{std::bitset<5>{"00000"}};
 	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(5); }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(-5); }, "Assertion failed: .*");
 	// mf_set
 	EXPECT_TRUE(TMP.clear().is_empty());
 	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(15); }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(-5); }, "Assertion failed: .*");
 #endif // _DEBUG
 }
 } // namespace Sudoku_Test

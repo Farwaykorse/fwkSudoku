@@ -17,7 +17,8 @@ namespace Sudoku
 template<int E>
 class Options
 {
-	using bitset = std::bitset<E + 1>;
+	using bitset   = std::bitset<E + 1>;
+	using value_t  = unsigned int;
 
 public:
 	Options() noexcept;
@@ -27,8 +28,8 @@ public:
 	Options& operator=(Options&&) noexcept = default;
 	Options(const bitset&); // 0th bit is last in input
 	Options(bitset&&);
-	constexpr Options(int value) noexcept;
-	Options& operator=(int value) noexcept;
+	constexpr Options(value_t) noexcept;
+	Options& operator=(value_t) noexcept;
 	Options& operator=(const bitset&) noexcept;
 	Options& operator=(bitset&&) noexcept;
 	~Options()       = default;
@@ -36,32 +37,32 @@ public:
 	Options& clear() noexcept; // remove all options
 	Options& reset() noexcept; // set all options
 	Options& flip() noexcept;
-	Options& remove_option(int value) noexcept; // remove single option
+	Options& remove_option(value_t) noexcept; // remove single option
 	// TODO Options& remove_option(int value, ...);	// remove mentioned
-	Options& add(int value);                  // add single option
-	Options& set(int value);                  // set to answer
-	Options& add_nocheck(int value) noexcept; // add single option
-	Options& set_nocheck(int value) noexcept; // set to answer
+	Options& add(value_t);                  // add single option
+	Options& set(value_t);                  // set to answer
+	Options& add_nocheck(value_t) noexcept; // add single option
+	Options& set_nocheck(value_t) noexcept; // set to answer
 
 	constexpr int size() const noexcept;
 	int count() const noexcept;      // count available options
 	int count_all() const noexcept;  // count all options (incl answer)
 	bool all() const noexcept;       // if all options available = all bits set
-	bool test(int value) const;      // if an option, or answer
+	bool test(value_t) const;        // if an option, or answer
 	bool is_answer() const noexcept; // is set to answer
-	bool is_answer(int value) const noexcept; // is set to answer value
-	bool is_option(int value) const noexcept; // is an option
+	bool is_answer(value_t) const noexcept; // is set to answer value
+	bool is_option(value_t) const noexcept; // is an option
 	bool is_empty() const noexcept;
 
-	int get_answer() const
-		noexcept; // return answer or 0 (won't confirm is_answer())
+	int get_answer() const noexcept;    // return answer or 0
+										// (won't confirm is_answer())
 	std::vector<int> available() const; // return available options
 
-	bool operator[](int value) const noexcept;
-	auto operator[](int value) noexcept;
+	bool operator[](value_t) const noexcept;
+	auto operator[](value_t) noexcept;
 
-	bool operator==(int) const noexcept; // shorthand for is_answer(int)
-	bool operator!=(int) const noexcept; // shorthand for is_answer(int)
+	bool operator==(value_t) const noexcept; // shorthand for is_answer(int)
+	bool operator!=(value_t) const noexcept; // shorthand for is_answer(int)
 	bool operator==(const Options<E>&) const noexcept;
 	bool operator!=(const Options<E>&) const noexcept;
 	bool operator<(const Options<E>&) const noexcept;
@@ -71,9 +72,8 @@ public:
 	Options operator+(const Options&) const noexcept;
 	// xor
 	Options& XOR(const Options&) noexcept;
-	// return difference
-	Options operator-(const Options&) const
-		noexcept; // TODO difference; usecase?
+	// TODO difference; usecase?
+	Options operator-(const Options&) const noexcept;
 	// return shared options
 	Options operator&(const Options&)const noexcept;
 
@@ -94,21 +94,21 @@ private:
 namespace
 {
 	// convert to a number for use in std::bitset to use a unique bit per value
-	constexpr int exp2(int value)
+	constexpr unsigned int exp2_(unsigned int value)
 	{
-		return (value < 1) ? 1 : (2 * exp2(--value));
+		return (value < 1) ? 1 : (2 * exp2_(--value));
 	}
-	static_assert(exp2(0) == 1);
-	static_assert(exp2(1) == 2);
-	static_assert(exp2(2) == 4);
-	static_assert(exp2(3) == 8);
-	static_assert(exp2(4) == 16);
-	static_assert(exp2(5) == 32);
-	static_assert(exp2(6) == 64);
-	static_assert(exp2(7) == 128);
-	static_assert(exp2(8) == 256);
-	static_assert(exp2(9) == 512);
-} // namespace ::
+	static_assert(exp2_(0) == 1);
+	static_assert(exp2_(1) == 2);
+	static_assert(exp2_(2) == 4);
+	static_assert(exp2_(3) == 8);
+	static_assert(exp2_(4) == 16);
+	static_assert(exp2_(5) == 32);
+	static_assert(exp2_(6) == 64);
+	static_assert(exp2_(7) == 128);
+	static_assert(exp2_(8) == 256);
+	static_assert(exp2_(9) == 512);
+} // namespace
 
 
 //	construct with all options
@@ -130,16 +130,17 @@ inline Options<E>::Options(bitset&& other) : data_{other}
 
 //	construct with single option set to answer
 template<int E>
-constexpr Options<E>::Options(const int value) noexcept : data_{exp2(value)}
+constexpr Options<E>::Options(const value_t value) noexcept
+	: data_{exp2_(value)}
 {
-	assert(value >= 0 && value <= E);
+	assert(value <= E);
 }
 
 //	set to answer value
 template<int E>
-inline Options<E>& Options<E>::operator=(int value) noexcept
+inline Options<E>& Options<E>::operator=(const value_t value) noexcept
 {
-	data_ = exp2(value);
+	data_ = exp2_(value);
 	return *this;
 }
 
@@ -186,35 +187,35 @@ inline Options<E>& Options<E>::flip() noexcept
 
 //	remove single option
 template<int E>
-inline Options<E>& Options<E>::remove_option(const int value) noexcept
+inline Options<E>& Options<E>::remove_option(const value_t value) noexcept
 {
-	assert(value >= 0 && value <= E);
+	assert(value <= E);
 	assert(!is_answer(value));
 
-	data_[static_cast<size_t>(value)] = false;
+	data_[value] = false;
 	return *this;
 }
 
 //	add single option
 template<int E>
-inline Options<E>& Options<E>::add(int value)
+inline Options<E>& Options<E>::add(const value_t value)
 {
-	data_.set(static_cast<size_t>(value), true);
+	data_.set(value, true);
 	return *this;
 }
 
 //	add single option
 template<int E>
-inline Options<E>& Options<E>::add_nocheck(int value) noexcept
+inline Options<E>& Options<E>::add_nocheck(const value_t value) noexcept
 {
-	assert(value >= 0 && value <= E);
-	data_[static_cast<size_t>(value)] = true;
+	assert(value <= E);
+	data_[value] = true;
 	return *this;
 }
 
 //	set to answer
 template<int E>
-inline Options<E>& Options<E>::set(int value)
+inline Options<E>& Options<E>::set(const value_t value)
 {
 	clear();
 	return add(value); // if 0: -> not answer = [0] = true
@@ -222,7 +223,7 @@ inline Options<E>& Options<E>::set(int value)
 
 //	set to answer
 template<int E>
-inline Options<E>& Options<E>::set_nocheck(int value) noexcept
+inline Options<E>& Options<E>::set_nocheck(const value_t value) noexcept
 {
 	clear();
 	return add_nocheck(value);
@@ -273,9 +274,9 @@ inline bool Options<E>::all() const noexcept
 
 //	if an option, or the answer
 template<int E>
-inline bool Options<E>::test(int value) const
+inline bool Options<E>::test(const value_t value) const
 {
-	return data_.test(static_cast<size_t>(value));
+	return data_.test(value);
 }
 
 //	check if set to answer
@@ -288,20 +289,20 @@ inline bool Options<E>::is_answer() const noexcept
 //	check if set to answer value
 //! no input checks!
 template<int E>
-inline bool Options<E>::is_answer(int value) const noexcept
+inline bool Options<E>::is_answer(const value_t value) const noexcept
 {
-	assert(value >= 0 && value <= E);
+	assert(value <= E);
 	return (is_answer() && operator[](value));
 	//return *this == Options<E>(value);
-	//return data_ == std::bitset<E + 1>{static_cast<unsigned long long>(exp2(value))};
+	//return data_ == std::bitset<E + 1>{static_cast<unsigned long long>(exp2_(value))};
 }
 
 //	check if option available
 //! no input checks!
 template<int E>
-inline bool Options<E>::is_option(int value) const noexcept
+inline bool Options<E>::is_option(const value_t value) const noexcept
 {
-	assert(value != 0);
+	assert(value != 0 && value <= E);
 	// benched: this order is ~1.3 times faster
 	return (operator[](value) && !is_answer());
 
@@ -309,7 +310,7 @@ inline bool Options<E>::is_option(int value) const noexcept
 	//constexpr auto not_answered =
 	//	std::bitset<E + 1>{static_cast<unsigned long long>(1)};
 	//return data_ ==
-	//	   ((std::bitset<E + 1>{static_cast<unsigned long long>(exp2(value))} |=
+	//	   ((std::bitset<E + 1>{static_cast<unsigned long long>(exp2_(value))} |=
 	//		 not_answered) |= data_);
 }
 
@@ -356,18 +357,18 @@ inline std::vector<int> Options<E>::available() const
 
 //	no-check access read only
 template<int E>
-inline bool Options<E>::operator[](int value) const noexcept
+inline bool Options<E>::operator[](const value_t value) const noexcept
 {
-	assert(value >= 0 && value <= E);
-	return data_[static_cast<size_t>(value)];
+	assert(value <= E);
+	return data_[value];
 }
 
 //	no-check access
 template<int E>
-inline auto Options<E>::operator[](int value) noexcept
+inline auto Options<E>::operator[](const value_t value) noexcept
 {
-	assert(value >= 0 && value <= E);
-	return data_[static_cast<size_t>(value)];
+	assert(value <= E);
+	return data_[value];
 }
 
 template<int E>
@@ -384,13 +385,13 @@ inline bool Options<E>::operator!=(const Options& other) const noexcept
 }
 
 template<int E>
-inline bool Options<E>::operator==(int value) const noexcept
+inline bool Options<E>::operator==(const value_t value) const noexcept
 {
 	return is_answer(value);
 }
 
 template<int E>
-inline bool Options<E>::operator!=(int value) const noexcept
+inline bool Options<E>::operator!=(const value_t value) const noexcept
 {
 	return !operator==(value);
 }
