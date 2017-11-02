@@ -86,9 +86,10 @@ public:
 	int set_section_locals(Block, int rep_count, Options worker);
 
 	template<typename SectionT>
-	auto find_locations(SectionT, int rep_count, value_t) const;
+	auto find_locations(SectionT, value_t, int rep_count = elem_size<N>) const;
 	template<typename ItrT>
-	auto find_locations(ItrT begin, ItrT end, int rep_count, value_t) const;
+	auto find_locations(
+		ItrT begin, ItrT end, value_t, int rep_count = elem_size<N>) const;
 	template<typename SectionT>
 	auto find_locations(SectionT, Options value) const;
 
@@ -202,11 +203,12 @@ inline int Solver<N>::single_option(const Location loc, const value_t value)
 	assert(board_.at(loc).test(value));
 	assert(board_[loc].count_all() == 1);
 
+	int changes{};
 	if (!board_[loc].is_answer(value))
 	{
 		setValue(loc, value);
+		++changes;
 	}
-	int changes{};
 	changes += remove_option_section(board_.row(loc), loc, value);
 	changes += remove_option_section(board_.col(loc), loc, value);
 	changes += remove_option_section(board_.block(loc), loc, value);
@@ -603,10 +605,12 @@ inline int Solver<N>::set_section_locals(
 	{
 		if (worker[value])
 		{
-			const auto locations = find_locations(section, rep_count, value);
-			assert(locations.size() == static_cast<size_t>(rep_count));
-
-			if (is_same_block<N>(locations.cbegin(), locations.cend()))
+			const auto locations = find_locations(section, value, rep_count);
+			if (locations.size() != static_cast<size_t>(rep_count))
+			{
+				assert(changes > 0); // changed by earlier value in worker
+			}
+			else if (is_same_block<N>(locations.cbegin(), locations.cend()))
 			{ // remove from rest of block
 				changes += remove_option_section(
 					board_.block(locations[0]), locations, value);
@@ -637,11 +641,12 @@ inline int Solver<N>::set_section_locals(
 	{
 		if (worker[value])
 		{
-			const auto locations = find_locations(block, rep_count, value);
-			assert(locations.size() == static_cast<size_t>(rep_count));
-
-			// check if all in same row/col
-			if (is_same_row<N>(locations.cbegin(), locations.cend()))
+			const auto locations = find_locations(block, value, rep_count);
+			if (locations.size() != static_cast<size_t>(rep_count))
+			{
+				assert(changes > 0); // changed by earlier value in worker
+			}
+			else if (is_same_row<N>(locations.cbegin(), locations.cend()))
 			{ // remove from rest of row
 				changes += remove_option_outside_block(
 					board_.row(locations[0]), locations[0], value);
@@ -651,10 +656,6 @@ inline int Solver<N>::set_section_locals(
 				changes += remove_option_outside_block(
 					board_.col(locations[0]), locations[0], value);
 			}
-			else
-			{
-				continue;
-			} // not in same row/col
 		}
 	}
 	return changes;
@@ -664,7 +665,7 @@ inline int Solver<N>::set_section_locals(
 template<int N>
 template<typename SectionT>
 inline auto Solver<N>::find_locations(
-	const SectionT section, const int rep_count, const value_t value) const
+	const SectionT section, value_t value, const int rep_count) const
 {
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
@@ -673,7 +674,7 @@ inline auto Solver<N>::find_locations(
 	const auto begin = section.cbegin();
 	const auto end   = section.cend();
 
-	return find_locations(begin, end, rep_count, value);
+	return find_locations(begin, end, value, rep_count);
 }
 
 //	List locations where [value] is an option
@@ -682,8 +683,8 @@ template<typename ItrT>
 inline auto Solver<N>::find_locations(
 	const ItrT begin,
 	const ItrT end,
-	const int rep_count,
-	const value_t value) const
+	const value_t value,
+	const int rep_count) const
 {
 	{
 		static_assert(Utility_::is_input<ItrT>);
@@ -703,14 +704,12 @@ inline auto Solver<N>::find_locations(
 			last, end, [value](Options O) { return O.is_option(value); });
 		if (last == end)
 		{ // rep_count too large
-			assert(false);
 			break;
 		}
 		locations.push_back(last.location());
 		++last;
 	}
-	assert(locations.size() == static_cast<size_t>(rep_count)); // rep_count too
-																// small
+	assert(locations.size() > 0);
 	return locations;
 }
 

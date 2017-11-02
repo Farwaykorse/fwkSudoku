@@ -88,7 +88,7 @@ TEST(Solver, remove_option_section)
 	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.row(0), L(0, 1), 2), 2);
 	// trigger single_option
 	B1[0][2] = 3;
-	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.row(0), L(0, 2), 3), 5);
+	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.row(0), L(0, 2), 3), 6);
 	EXPECT_TRUE(B1[0][3].is_answer(4));
 	EXPECT_EQ(B1[3][3].count(), 3);
 	EXPECT_EQ(B1[1][3].count(), 3);
@@ -108,7 +108,7 @@ TEST(Solver, remove_option_section)
 	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.col(0), L(1, 0), 2), 2);
 	// trigger single_option
 	B1[2][0] = 3;
-	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.col(0), L(2, 0), 3), 5);
+	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.col(0), L(2, 0), 3), 6);
 	EXPECT_TRUE(B1[3][0].is_answer(4));
 	EXPECT_EQ(B1[3][3].count(), 3);
 	EXPECT_EQ(B1[3][1].count(), 3);
@@ -128,7 +128,7 @@ TEST(Solver, remove_option_section)
 	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.block(0), L(0, 1), 2), 2);
 	// trigger single_option
 	B1[1][0] = 3;
-	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.block(0), L(1, 0), 3), 5);
+	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.block(0), L(1, 0), 3), 6);
 	EXPECT_TRUE(B1[1][1].is_answer(4));
 	EXPECT_EQ(B1[1][2].count(), 3);
 	EXPECT_EQ(B1[1][3].count(), 3);
@@ -221,7 +221,7 @@ TEST(Solver, remove_option_section_2)
 	EXPECT_EQ(
 		Solver<2>(B).remove_option_section(
 			B.col(3), vL{L(0, 3), L(1, 3)}, v{2, 3, 4}),
-		36);
+		44);
 	EXPECT_EQ(B[0][0].count(), 2);
 	EXPECT_EQ(B[1][0].count(), 2);
 	EXPECT_EQ(B[2][0].count(), 0);

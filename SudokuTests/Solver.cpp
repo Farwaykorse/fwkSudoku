@@ -538,29 +538,45 @@ TEST(Solver, find_locations)
 	B[3][0] = set{"10011"};
 	std::vector<loc> list{};
 	// row/col/block
-	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.row(0), 3, 1));
+	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.row(0), 1, 3));
 	EXPECT_EQ(list.size(), 3);
 	EXPECT_EQ(list[0], loc(1));
 	EXPECT_EQ(list[1], loc(2));
 	EXPECT_EQ(list[2], loc(3));
-	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.col(0), 3, 1));
+	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.col(0), 1, 3));
 	EXPECT_EQ(list.size(), 3);
 	EXPECT_EQ(list[0], loc(1, 0));
 	EXPECT_EQ(list[1], loc(2, 0));
 	EXPECT_EQ(list[2], loc(3, 0));
 	EXPECT_NO_FATAL_FAILURE(
-		list = Solver<2>(B).find_locations(B.block(0), 2, 1));
+		list = Solver<2>(B).find_locations(B.block(0), 1, 2));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[0], loc(0, 1));
 	EXPECT_EQ(list[1], loc(1, 0));
 	// incorrect rep_count: too low
-	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.row(0), 2, 1));
+	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.row(0), 1, 2));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[1], loc(2));
+	// incorrect rep_count: too high
+	EXPECT_NO_FATAL_FAILURE(
+		list = Solver<2>(B).find_locations(B.block(0), 1, 3));
+	EXPECT_EQ(list.size(), 2);
+	EXPECT_EQ(list[1], loc(1, 0));
+	EXPECT_NO_FATAL_FAILURE(
+		Solver<2>(B).find_locations(B.row(0).cbegin(), B.row(0).cend(), 3, 5));
+	// no rep_count
+	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.row(0), 1));
+	EXPECT_EQ(list.size(), 3);
+	EXPECT_EQ(list[0], loc(1));
+	EXPECT_EQ(list[1], loc(2));
+	EXPECT_EQ(list[2], loc(3));
+	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.block(0), 1));
+	EXPECT_EQ(list.size(), 2);
+	EXPECT_EQ(list[1], loc(1, 0));
 	// partial section
 	EXPECT_NO_FATAL_FAILURE(
 		list = Solver<2>(B).find_locations(
-			B.row(0).cbegin() + 2, B.row(0).cend(), 2, 1));
+			B.row(0).cbegin() + 2, B.row(0).cend(), 1, 2));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[0], loc(2));
 	EXPECT_EQ(list[1], loc(3));
@@ -589,7 +605,7 @@ TEST(Solver, set_section_locals)
 	//	1234	1234	1234	1234
 	//
 	// Row
-	//	2 waarden in rij, niet inzelfde block
+	//	2 values in row, not in same block
 	B[0][0] = set{"00111"};
 	B[0][2] = set{"00111"};
 	Options<4> worker{set{"11001"}};
@@ -602,7 +618,7 @@ TEST(Solver, set_section_locals)
 	EXPECT_TRUE(B[0][3].all());
 	EXPECT_TRUE(B[1][0].all());
 	EXPECT_TRUE(B[1][1].all());
-	//	2 waarden in rij, wel inzelfde block
+	//	2 values in row, and in same block
 	B[2][0] = set{"11001"};
 	B[2][1] = set{"11001"};
 	worker  = set{"00111"};
@@ -701,7 +717,7 @@ TEST(Solver, set_section_locals)
 	B3[1][2] = 6;
 	B3[2][0] = 7;
 	B3[2][1] = 8;
-	B3[2][3] = 9;
+	B3[2][2] = 9;
 	ASSERT_TRUE(B3[0][0].all());
 	ASSERT_TRUE(B3[0][5].all());
 	ASSERT_TRUE(B3[1][0].is_answer(4));
@@ -718,7 +734,7 @@ TEST(Solver, set_section_locals)
 	EXPECT_TRUE(B3[3][2].all());
 	EXPECT_TRUE(B3[8][2].all());
 	EXPECT_TRUE(B3[5][5].all());
-	// TODO 3 options in same block & col
+	// 3 options in same block & col
 	//
 	//	0	2	3
 	//	0	5	6
@@ -730,7 +746,7 @@ TEST(Solver, set_section_locals)
 	B3[1][1] = 5;
 	B3[1][2] = 6;
 	B3[2][1] = 8;
-	B3[2][3] = 9;
+	B3[2][2] = 9;
 	worker3  = std::bitset<10>{"0010010011"};
 	EXPECT_EQ(S3.set_section_locals(B3.block(0), 3, worker3), 3 * 6);
 	EXPECT_EQ(B3[0][0].count(), 9);
@@ -755,7 +771,7 @@ TEST(Solver, set_section_locals)
 	B3[1][1] = 5;
 	B3[1][2] = 6;
 	B3[2][0] = 7;
-	B3[2][3] = 9;
+	B3[2][2] = 9;
 	worker3  = std::bitset<10>{"0100010011"};
 	EXPECT_EQ(S3.set_section_locals(B3.block(0), 3, worker3), 0);
 	EXPECT_TRUE(B3[0][0].all()); // self
@@ -942,10 +958,385 @@ TEST(Solver, section_exclusive)
 {
 	// section_exclusive(SectionT)
 	// section_exclusive(Block)
-}
 
-TEST(Solver, block_exclusive)
-{
+	// same result as unique_in_section
+	{
+		// clang-format off
+		const std::vector<int> v3
+		{
+			// start	// after setValue
+			0,0, 1,0,	// 
+			1,0, 0,0,	// 
+			0,1, 0,0,	// 
+			0,0, 0,0	//					//	0	0	0	1
+		}; // clang-format on
+		Board<Options<4>, 2> B3;
+		// reset
+		auto reset_B3 = [&]() {
+			B3.clear();
+			ASSERT_TRUE(B3[0][0].all());
+			EXPECT_NO_THROW(Solver<2>(B3).setValue(v3.cbegin(), v3.cend()));
+		};
+		reset_B3();
+		EXPECT_EQ(B3[3][3].count(), 4);
+		EXPECT_TRUE(B3[3][3].is_option(1));
+		// Row()
+		EXPECT_NO_THROW(Solver<2>(B3).section_exclusive(B3.row(3)));
+		EXPECT_TRUE(B3[3][3].is_answer(1));
+		// Col()
+		reset_B3();
+		EXPECT_NO_THROW(Solver<2>(B3).section_exclusive(B3.col(3)));
+		EXPECT_TRUE(B3[3][3].is_answer(1));
+		// BLock()
+		reset_B3();
+		EXPECT_NO_THROW(Solver<2>(B3).section_exclusive(B3.block(3)));
+		EXPECT_TRUE(B3[3][3].is_answer(1));
+	}
+	// same result as set_section_locals
+	{
+		using set = std::bitset<5>;
+		using S   = Solver<2>;
+		Board<Options<4>, 2> B{};
+		Board<Options<4>, 2> cB{B};
+		//
+		//	12		1234	12		1234
+		//	1234	1234	1234	1234
+		//	34		34		1234	1234
+		//	1234	1234	1234	1234
+		//
+		// Row
+		//	2 values in row, not in same block
+		B[0][0] = set{"00111"};
+		B[0][2] = set{"00111"};
+		ASSERT_TRUE(B[0][1].all());
+		ASSERT_TRUE(B[0][3].all());
+		EXPECT_EQ(S(B).section_exclusive(B.row(0)), 0);
+		EXPECT_EQ(B[0][0].count(), 2);
+		EXPECT_TRUE(B[0][1].all());
+		EXPECT_EQ(B[0][2].count(), 2);
+		EXPECT_TRUE(B[0][3].all());
+		EXPECT_TRUE(B[1][0].all());
+		EXPECT_TRUE(B[1][1].all());
+		//	2 values in row, and in same block
+		B[2][0] = set{"11001"};
+		B[2][1] = set{"11001"};
+		ASSERT_TRUE(B[2][2].all());
+		ASSERT_TRUE(B[2][3].all());
+		ASSERT_TRUE(B[3][2].all());
+		EXPECT_EQ(S(B).section_exclusive(B.row(2)), 4);
+		EXPECT_TRUE(B[3][0].all());
+		EXPECT_EQ(B[2][2].count(), 4); // self
+		EXPECT_EQ(B[2][3].count(), 4); // self
+		EXPECT_EQ(B[3][2].count(), 2); // rest block
+		EXPECT_EQ(B[1][2].count(), 4);
+
+		// Block
+		//
+		//	12		1234	1234	1234
+		//	1234	12		1234	1234
+		//	34		34		1234	1234
+		//	1234	1234	1234	1234
+		//
+		B       = cB; // reset board
+		B[0][0] = set{"00111"};
+		B[1][1] = set{"00111"};
+		EXPECT_EQ(S(B).section_exclusive(B.block(0)), 0);
+		EXPECT_TRUE(B[0][1].all());
+		EXPECT_TRUE(B[0][3].all());
+		EXPECT_TRUE(B[1][0].all());
+		EXPECT_TRUE(B[1][3].all());
+		EXPECT_TRUE(B[3][0].all());
+		// same block, same row
+		B[2][0] = set{"11001"};
+		B[2][1] = set{"11001"};
+		EXPECT_EQ(S(B).section_exclusive(B.block(2)), 4);
+		EXPECT_TRUE(B[3][0].all());    // self block
+		EXPECT_TRUE(B[3][1].all());    // self block
+		EXPECT_EQ(B[3][2].count(), 2); // rest row
+		EXPECT_EQ(B[3][3].count(), 2); // rest row
+		EXPECT_TRUE(B[0][1].all());    // rest col
+		EXPECT_TRUE(B[0][2].all());
+		EXPECT_TRUE(B[0][3].all());
+		// same block, same col
+		B       = cB; // reset board
+		B[0][1] = set{"00111"};
+		B[1][1] = set{"00111"};
+		EXPECT_EQ(S(B).section_exclusive(B.block(0)), 4);
+		EXPECT_TRUE(B[0][0].all());    // self block
+		EXPECT_EQ(B[0][1].count(), 2); // self block
+		EXPECT_TRUE(B[0][2].all());    // rest row
+		EXPECT_TRUE(B[0][3].all());    // rest row
+		EXPECT_TRUE(B[1][0].all());    // self block
+		EXPECT_EQ(B[1][1].count(), 2); // self block
+		EXPECT_TRUE(B[1][2].all());
+		EXPECT_TRUE(B[1][3].all());
+		EXPECT_EQ(B[2][0].count(), 2); // rest col
+		EXPECT_TRUE(B[2][1].all());
+		EXPECT_TRUE(B[2][2].all());
+		EXPECT_TRUE(B[2][3].all());
+		EXPECT_EQ(B[3][0].count(), 2); // rest col
+		EXPECT_TRUE(B[3][1].all());
+		EXPECT_TRUE(B[3][2].all());
+		EXPECT_TRUE(B[3][3].all());
+		Board<Options<9>, 3> B3{};
+		const Board<Options<9>, 3> cB3{};
+		Solver<3> S3{B3};
+		// 3 option in same block & row
+		//
+		//	0	0	0
+		//	4	5	6
+		//	7	8	9
+		//
+		B3[1][0] = 4;
+		B3[1][1] = 5;
+		B3[1][2] = 6;
+		B3[2][0] = 7;
+		B3[2][1] = 8;
+		B3[2][2] = 9;
+		ASSERT_TRUE(B3[0][0].all());
+		ASSERT_TRUE(B3[0][5].all());
+		ASSERT_TRUE(B3[1][0].is_answer(4));
+		ASSERT_TRUE(B3[1][8].all());
+		EXPECT_EQ(S3.section_exclusive(B3.block(0)), 3 * 6);
+		EXPECT_EQ(B3[0][0].count(), 9);
+		EXPECT_EQ(B3[0][3].count(), 6);
+		EXPECT_EQ(B3[0][8].count(), 6);
+		EXPECT_TRUE(B3[1][5].all());
+		EXPECT_TRUE(B3[2][7].all());
+		EXPECT_TRUE(B3[3][0].all());
+		EXPECT_TRUE(B3[3][1].all());
+		EXPECT_TRUE(B3[3][2].all());
+		EXPECT_TRUE(B3[8][2].all());
+		EXPECT_TRUE(B3[5][5].all());
+		// 3 options in same block & col
+		//
+		//	0	2	3
+		//	0	5	6
+		//	0	8	9
+		//
+		B3       = cB3;
+		B3[0][1] = 2;
+		B3[0][2] = 3;
+		B3[1][1] = 5;
+		B3[1][2] = 6;
+		B3[2][1] = 8;
+		B3[2][2] = 9;
+		EXPECT_EQ(S3.section_exclusive(B3.block(0)), 3 * 6);
+		EXPECT_EQ(B3[0][0].count(), 9);
+		EXPECT_TRUE(B3[0][4].all()); // rest row
+		EXPECT_TRUE(B3[0][8].all()); // rest row
+		EXPECT_TRUE(B3[1][0].all()); // self
+		EXPECT_TRUE(B3[1][1].is_answer(5));
+		EXPECT_EQ(B3[3][0].count(), 6); // rest col
+		EXPECT_TRUE(B3[3][1].all());
+		EXPECT_EQ(B3[4][0].count(), 6); // rest col
+		EXPECT_EQ(B3[8][0].count(), 6); // rest col
+		EXPECT_TRUE(B3[8][1].all());
+		// 2 in same block & col, one in different col
+		//
+		//	0	2	3
+		//	0	5	6
+		//	7	0	9
+		//
+		B3       = cB3;
+		B3[0][1] = 2;
+		B3[0][2] = 3;
+		B3[1][1] = 5;
+		B3[1][2] = 6;
+		B3[2][0] = 7;
+		B3[2][2] = 9;
+		EXPECT_EQ(S3.section_exclusive(B3.block(0)), 0);
+		EXPECT_TRUE(B3[0][0].all()); // self
+		EXPECT_TRUE(B3[0][4].all()); // rest row
+		EXPECT_TRUE(B3[0][8].all()); // rest row
+		EXPECT_TRUE(B3[1][0].all()); // self
+		EXPECT_TRUE(B3[1][1].is_answer(5));
+		EXPECT_TRUE(B3[2][1].all()); // self
+		EXPECT_TRUE(B3[3][0].all()); // rest col
+		EXPECT_TRUE(B3[3][1].all());
+		EXPECT_TRUE(B3[4][0].all()); // rest col
+		EXPECT_TRUE(B3[8][0].all()); // rest col
+		EXPECT_TRUE(B3[8][1].all());
+	}
+
+	{
+		// clang-format off
+		const std::vector<int> b1
+		{
+			0, 0, 0,	0, 0, 0,	0, 1, 2,
+			0, 0, 0,	0, 3, 5,	0, 0, 0,
+			0, 0, 0,	6, 0, 0,	0, 7, 0,
+			7, 0, 0,	0, 0, 0,	3, 0, 0,
+			0, 0, 0,	4, 0, 0,	8, 0, 0,
+			1, 0, 0,	0, 0, 0,	0, 0, 0,
+			0, 0, 0,	1, 2, 0,	0, 0, 0,
+			0, 8, 0,	0, 0, 0,	0, 4, 0,
+			0, 5, 0,	0, 0, 0,	6, 0, 0
+		};
+		const std::vector<int> b1a	// requires unique
+		{
+			6, 7, 3,	8, 9, 4,	5, 1, 2,
+			9, 1, 2,	7, 3, 5,	4, 8, 6,
+			8, 4, 5,	6, 1, 2,	9, 7, 3,
+			7, 9, 8,	2, 6, 1,	3, 5, 4,
+			5, 2, 6,	4, 7, 3,	8, 9, 1,
+			1, 3, 4,	5, 8, 9,	2, 6, 7,
+			4, 6, 9,	1, 2, 8,	7, 3, 5,
+			2, 8, 7,	3, 5, 6,	1, 4, 9,
+			3, 5, 1,	9, 4, 7,	6, 2, 8
+		};
+		// clang-format on
+		Board<Options<9>, 3> B1{};
+		Solver<3> S1(B1);
+		S1.setValue(b1.cbegin(), b1.cend());
+		Board<Options<9>, 3> A1{};
+		Solver<3>(A1).setValue(b1a.cbegin(), b1a.cend());
+		EXPECT_NE(A1, B1);
+
+		EXPECT_EQ(S1.section_exclusive(B1.row(0)), 6);
+		EXPECT_EQ(S1.section_exclusive(B1.row(1)), 2);
+		EXPECT_EQ(S1.section_exclusive(B1.row(2)), 4);
+		EXPECT_EQ(S1.section_exclusive(B1.row(3)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.row(4)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.row(5)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.row(6)), 2);
+		EXPECT_EQ(S1.section_exclusive(B1.row(7)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.row(8)), 0);
+		EXPECT_NE(A1, B1);
+
+		EXPECT_EQ(S1.section_exclusive(B1.col(0)), 3);
+		EXPECT_EQ(S1.section_exclusive(B1.col(1)), 2);
+		EXPECT_EQ(S1.section_exclusive(B1.col(2)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.col(3)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.col(4)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.col(5)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.col(6)), 65);
+		EXPECT_EQ(S1.section_exclusive(B1.col(7)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.col(8)), 0);
+		EXPECT_NE(A1, B1);
+
+		EXPECT_EQ(S1.section_exclusive(B1.block(0)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.block(1)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.block(2)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.block(3)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.block(4)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.block(5)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.block(6)), 24);
+		EXPECT_EQ(S1.section_exclusive(B1.block(7)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.block(8)), 0);
+		EXPECT_NE(A1, B1);
+
+		EXPECT_EQ(S1.section_exclusive(B1.row(0)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.row(1)), 23);
+		EXPECT_EQ(S1.section_exclusive(B1.row(2)), 7);
+		EXPECT_EQ(S1.section_exclusive(B1.row(3)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.row(4)), 2);
+		EXPECT_EQ(S1.section_exclusive(B1.row(5)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.row(6)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.row(7)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.row(8)), 0);
+		EXPECT_NE(A1, B1);
+
+		EXPECT_EQ(S1.section_exclusive(B1.col(0)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.col(1)), 23);
+		EXPECT_EQ(S1.section_exclusive(B1.col(2)), 1);
+		EXPECT_EQ(S1.section_exclusive(B1.col(3)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.col(4)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.col(5)), 82);
+		EXPECT_EQ(S1.section_exclusive(B1.col(6)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.col(7)), 0);
+		EXPECT_EQ(S1.section_exclusive(B1.col(8)), 0);
+		EXPECT_EQ(A1, B1);
+	}
+	{
+		// clang-format off
+		const std::vector<int> b5
+		{
+			4, 0, 0,	0, 0, 0,	0, 3, 8,
+			0, 0, 2,	0, 0, 4,	1, 0, 0,
+			0, 0, 5,	3, 0, 0,	2, 4, 0,
+
+			0, 7, 0,	6, 0, 9,	0, 0, 4,
+			0, 2, 0,	0, 0, 0,	0, 7, 0,
+			6, 0, 0,	7, 0, 3,	0, 9, 0,
+
+			0, 5, 7,	0, 0, 8,	3, 0, 0,
+			0, 0, 3,	9, 0, 0,	4, 0, 0,
+			2, 4, 0,	0, 0, 0,	0, 0, 9
+		};
+		const std::vector<int> b5a	// requires double_option, not unique
+		{
+			4, 6, 1,	5, 7, 2,	9, 3, 8,
+			7, 3, 2,	8, 9, 4,	1, 5, 6,
+			8, 9, 5,	3, 1, 6,	2, 4, 7,
+
+			3, 7, 8,	6, 2, 9,	5, 1, 4,
+			5, 2, 9,	4, 8, 1,	6, 7, 3,
+			6, 1, 4,	7, 5, 3,	8, 9, 2,
+
+			9, 5, 7,	2, 4, 8,	3, 6, 1,
+			1, 8, 3,	9, 6, 7,	4, 2, 5,
+			2, 4, 6,	1, 3, 5,	7, 8, 9
+		};
+		// clang-format on
+		Board<Options<9>, 3> B5{};
+		Solver<3> S5(B5);
+		S5.setValue(b5.cbegin(), b5.cend());
+		Board<Options<9>, 3> A5{};
+		Solver<3>(A5).setValue(b5a.cbegin(), b5a.cend());
+		EXPECT_NE(A5, B5);
+
+		EXPECT_EQ(S5.section_exclusive(B5.row(0)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.row(1)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.row(2)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.row(3)), 3);
+		EXPECT_EQ(S5.section_exclusive(B5.row(4)), 4);
+		EXPECT_EQ(S5.section_exclusive(B5.row(5)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.row(6)), 4);
+		EXPECT_EQ(S5.section_exclusive(B5.row(7)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.row(8)), 1);
+		EXPECT_NE(A5, B5);
+
+		EXPECT_EQ(S5.section_exclusive(B5.col(0)), 14);
+		EXPECT_EQ(S5.section_exclusive(B5.col(1)), 2);
+		EXPECT_EQ(S5.section_exclusive(B5.col(2)), 3);
+		EXPECT_EQ(S5.section_exclusive(B5.col(3)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.col(4)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.col(5)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.col(6)), 9);
+		EXPECT_EQ(S5.section_exclusive(B5.col(7)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.col(8)), 0);
+		EXPECT_NE(A5, B5);
+
+		EXPECT_EQ(S5.section_exclusive(B5.block(0)), 14);
+		EXPECT_EQ(S5.section_exclusive(B5.block(1)), 89);
+		EXPECT_EQ(S5.section_exclusive(B5.block(2)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.block(3)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.block(4)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.block(5)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.block(6)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.block(7)), 0);
+		EXPECT_EQ(S5.section_exclusive(B5.block(8)), 0);
+		EXPECT_EQ(A5, B5);
+
+		// Triggered a bug while testing, on B5
+		Board<Options<9>, 3> B6{};
+		Solver<3> S6{B6};
+		const auto& A6 = A5;
+		S6.setValue(b5.cbegin(), b5.cend());
+		ASSERT_NE(A6, B6);
+
+		EXPECT_EQ(S6.section_exclusive(B6.row(0)), 0);
+		EXPECT_EQ(S6.section_exclusive(B6.col(0)), 0);
+		EXPECT_EQ(S6.section_exclusive(B6.block(0)), 0);
+		EXPECT_EQ(S6.section_exclusive(B6.row(1)), 0);
+		EXPECT_EQ(S6.section_exclusive(B6.col(1)), 5);
+		EXPECT_EQ(S6.section_exclusive(B6.block(1)), 0);
+		EXPECT_EQ(S6.section_exclusive(B6.row(2)), 0);
+		EXPECT_EQ(S6.section_exclusive(B6.col(2)), 4);
+		EXPECT_NO_FATAL_FAILURE(S6.section_exclusive(B6.block(2)));
+	}
+
 	// reproduce functionality of unique
 	//===-----------------------------------------------------------------===//
 	// clang-format off
@@ -989,7 +1380,7 @@ TEST(Solver, block_exclusive)
 	}
 	EXPECT_EQ(found1, 0) << "shouldn't find any others";
 
-	// TODO working for more than 1 unique (use set_section_locals)
+	// working for more than 1 unique (use set_section_locals)
 	//===-----------------------------------------------------------------===//
 	// clang-format off
 	const std::vector<int> V2
@@ -1088,7 +1479,7 @@ TEST(Solver, single_option)
 	EXPECT_TRUE(B2[0][2].count() == 4 && B2[0][3].count() == 4);
 	EXPECT_EQ(B2[1][1].count(), 4);
 	EXPECT_TRUE(B2[2][1].count() == 4 && B2[3][1].count() == 4);
-	EXPECT_EQ(Solver<2>(B2).single_option(L(1)), 7);
+	EXPECT_EQ(Solver<2>(B2).single_option(L(1)), 8);
 	EXPECT_EQ(B2[0][0].count(), 3);
 	EXPECT_FALSE(B2[0][0].is_option(2));
 	EXPECT_FALSE(B2[0][2].is_option(2) || B2[0][3].is_option(2));
@@ -1105,7 +1496,7 @@ TEST(Solver, single_option)
 	ASSERT_TRUE(B2[2][1].is_answer(1));
 	EXPECT_EQ(B2[0][0].count(), 2);
 	EXPECT_EQ(B2[1][1].count(), 2);
-	EXPECT_EQ(Solver<2>(B2).single_option(L(2, 1)), 14);
+	EXPECT_EQ(Solver<2>(B2).single_option(L(2, 1)), 17);
 	EXPECT_TRUE(B2[1][1].is_answer(3));
 	EXPECT_TRUE(B2[0][0].is_answer(1));
 	EXPECT_TRUE(B2[3][1].is_answer(4));
@@ -1225,8 +1616,7 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B1[0][0].count(), 3) << "after 1"; // unchanged
 	EXPECT_EQ(B1[0][8].count(), 6) << "after 2";
 	EXPECT_EQ(B1[4][4].count(), 9) << "after 3"; // unchanged
-	EXPECT_EQ(B1[0][8].available(), (list{4, 5, 6, 7, 8, 9}))
-		<< "after 4";
+	EXPECT_EQ(B1[0][8].available(), (list{4, 5, 6, 7, 8, 9})) << "after 4";
 	// run for col
 	EXPECT_NO_THROW(Run1.multi_option(Location<3>{6, 8}))
 		<< "multi_option failed 2";
@@ -1234,8 +1624,7 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B1[8][8].count(), 3) << "after 22"; // unchanged
 	EXPECT_EQ(B1[0][8].count(), 4) << "after 23";
 	EXPECT_EQ(B1[4][4].count(), 9) << "after 24"; // unchanged
-	EXPECT_EQ(B1[0][8].available(), (list{4, 5, 7, 8}))
-		<< "after 25";
+	EXPECT_EQ(B1[0][8].available(), (list{4, 5, 7, 8})) << "after 25";
 
 	// run for block
 	// clang-format off
@@ -1261,12 +1650,10 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B2[0][1].count(), 4) << "before 34";
 	EXPECT_EQ(B2[2][0].count(), 4) << "before 35";
 	EXPECT_EQ(B2[0][0].available(), (list{1, 5, 9})) << "before 36";
-	EXPECT_EQ(B2[2][0].available(), (list{1, 5, 7, 9}))
-		<< "before 37";
+	EXPECT_EQ(B2[2][0].available(), (list{1, 5, 7, 9})) << "before 37";
 	EXPECT_EQ(B2[8][8].count(), 9) << "before 38";
 	EXPECT_EQ(B2[2][5].count(), 6) << "before 39";
-	EXPECT_EQ(B2[2][5].available(), (list{1, 3, 4, 5, 6, 9}))
-		<< "before 310";
+	EXPECT_EQ(B2[2][5].available(), (list{1, 3, 4, 5, 6, 9})) << "before 310";
 	EXPECT_NO_THROW(Run2.multi_option(Location<3>(0)))
 		<< "multi_option failed 3";
 	EXPECT_EQ(B2[0][0].count(), 3) << "after 31";
@@ -1277,8 +1664,7 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B2[0][0].available(), (list{1, 5, 9})) << "after 36";
 	EXPECT_EQ(B2[8][8].count(), 9) << "after 38";
 	EXPECT_EQ(B2[2][5].count(), 6) << "after 39";
-	EXPECT_EQ(B2[2][5].available(), (list{1, 3, 4, 5, 6, 9}))
-		<< "after 310";
+	EXPECT_EQ(B2[2][5].available(), (list{1, 3, 4, 5, 6, 9})) << "after 310";
 
 	// clang-format off
 	// 9*9 partials forming a set: 3 cels containing (123,12,13)
@@ -1307,8 +1693,7 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B3[6][8].count(), 2) << "before 47";
 	EXPECT_EQ(B3[7][8].count(), 2) << "before 48";
 	EXPECT_EQ(B3[8][8].count(), 3) << "before 49";
-	EXPECT_EQ(B3[8][8].available(), (list{3, 6, 9}))
-		<< "before 410";
+	EXPECT_EQ(B3[8][8].available(), (list{3, 6, 9})) << "before 410";
 	EXPECT_NO_THROW(Run3.multi_option(Location<3>(1)))
 		<< "multi_option failed 4";
 	// row:
@@ -1319,8 +1704,7 @@ TEST(Solver, multi_option)
 	// EXPECT_EQ(B3[5][1].count(), 6) << "after 45"; // unchanged
 	EXPECT_EQ(B3[0][0].available(), (list{1, 2})) << "after 46";
 	EXPECT_EQ(B3[0][1].available(), (list{1, 2, 3})) << "after 47";
-	EXPECT_EQ(B3[0][3].available(), (list{5, 6, 8, 9}))
-		<< "after 48";
+	EXPECT_EQ(B3[0][3].available(), (list{5, 6, 8, 9})) << "after 48";
 
 	// TODO invalid value for count, should return 0
 	// count = 1
@@ -1438,25 +1822,21 @@ TEST(Solver, deathtest)
 		std::vector<loc> list{};
 		// rep_count = 0
 		EXPECT_DEBUG_DEATH(
-			Solver<2>(B5).find_locations(B5.row(0), 0, 3),
+			Solver<2>(B5).find_locations(B5.row(0), 3, 0),
 			"Assertion failed: rep_count > 0");
-		// incorrect rep_count: too high
-		EXPECT_DEBUG_DEATH(
-			Solver<2>(B5).find_locations(B5.row(0), 3, 3),
-			"Assertion failed: ");
 		// section -> rep_count > elem_size
 		EXPECT_DEBUG_DEATH(
-			Solver<2>(B5).find_locations(B5.row(0), 5, 3),
+			Solver<2>(B5).find_locations(B5.row(0), 3, 5),
 			"Assertion failed: .* <= elem_size");
-		EXPECT_DEBUG_DEATH(
-			Solver<2>(B5).find_locations(
-				B5.row(0).cbegin(), B5.row(0).cend(), 5, 3),
-			"Assertion failed: ");
 		// itr -> rep_count > full_size
 		EXPECT_DEBUG_DEATH(
 			Solver<2>(B5).find_locations(
-				B5.row(0).cbegin(), B5.row(0).cend(), 17, 3),
+				B5.row(0).cbegin(), B5.row(0).cend(), 3, 17),
 			"Assertion failed: .* <= full_size");
+		EXPECT_DEBUG_DEATH(
+			Solver<2>(B5).find_locations(
+				B5.row(0).cbegin(), B5.row(0).cend(), 2),
+			"Assertion failed: .*size.. > 0");
 	}
 	// set_section_locals()
 	{
@@ -1479,7 +1859,6 @@ TEST(Solver, deathtest)
 			S(B).set_section_locals(B.col(2), 1, worker), "rep_count > 1");
 		EXPECT_DEBUG_DEATH(
 			S(B).set_section_locals(B.block(3), 1, worker), "rep_count > 1");
-		// TODO locations.size() == rep_count
 	}
 	// set_section_locals(section, rep_count, worker)
 	{
@@ -1492,6 +1871,26 @@ TEST(Solver, deathtest)
 		EXPECT_DEBUG_DEATH(S.set_section_locals(B.col(0), 1, worker), "count");
 		EXPECT_DEBUG_DEATH(
 			S.set_section_locals(B.block(0), 1, worker), "count");
+	}
+	{
+		// option doesn't excist in section
+		using set = std::bitset<5>;
+		using loc = Location<2>;
+		Board<Options<4>, 2> B5{};
+		B5[0][0] = set{"00100"}; // ans 2
+		B5[0][1] = set{"11111"};
+		B5[0][2] = set{"10011"};
+		B5[0][3] = set{"11011"};
+		B5[1][0] = set{"11011"};
+		B5[1][1] = set{"11011"};
+		Options<4> worker{2};
+		ASSERT_TRUE(worker[2]);
+		EXPECT_DEBUG_DEATH(
+			Solver<2>(B5).set_section_locals(B5.block(0), 2, worker),
+			"Assertion failed: changes > 0");
+		EXPECT_DEBUG_DEATH(
+			Solver<2>(B5).set_section_locals(B5.row(0), 2, worker),
+			"Assertion failed: changes > 0");
 	}
 }
 
