@@ -1,16 +1,82 @@
+
 #pragma once
+
+#include "../Sudoku/Board.h"
+#include "../Sudoku/Location_Utilities.h"
+#include "../Sudoku/Options.h"
 
 #include <string>
 #include <sstream>
 #include <iomanip>		// setw(), setfill()
 #include <utility>
 
-#include "../Sudoku/Board.h"
-#include "../Sudoku/Location_Utilities.h"
-#include "../Sudoku/Options.h"
 
 namespace Sudoku
 {
+
+void test(const std::vector<int>& B_in, const std::vector<int>& A_in);
+
+template<int N>
+void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
+{
+	Solver<N> S(board);
+	int found{ 1 };
+	while (found > 0)
+	{
+		found = 0;
+		for (int i = 0; i < elem_size<N>; ++i)
+		{
+			found += S.unique_in_section(board.row(i));
+		}
+		for (int i = 0; i < elem_size<N>; ++i)
+		{
+			found += S.unique_in_section(board.col(i));
+		}
+		for (int i = 0; i < elem_size<N>; ++i)
+		{
+			found += S.unique_in_section(board.block(i));
+		}
+	}
+}
+
+template<int N>
+void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
+{
+	Solver<N> S(board);
+	int found{ 1 };
+	while (found > 0)
+	{
+		found = 0;
+		for (int i = 0; i < elem_size<N>; ++i)
+		{
+			found += S.section_exclusive(board.row(i));
+		}
+		for (int i = 0; i < elem_size<N>; ++i)
+		{
+			found += S.section_exclusive(board.col(i));
+		}
+		for (int i = 0; i < elem_size<N>; ++i)
+		{
+			found += S.section_exclusive(board.block(i));
+		}
+	}
+}
+
+template<int N>
+Board<int, N> getResult(const Board<Options<elem_size<N>>, N>& options)
+{
+	Board<int, N> result{};
+	for (int i = 0; i < full_size<N>; ++i)
+	{
+		if (options[Location<N>(i)].is_answer())
+		{
+			result[Location<N>(i)] = options[Location<N>(i)].get_answer();
+		}
+	}
+	return result;
+}
+
+
 class Console
 {
 public:
@@ -202,13 +268,13 @@ std::stringstream
 {
 	std::stringstream stream;
 
-	int X{ 1 };
+	unsigned int X{ 1 };
 	for (int k{ 0 }; k < base_size<N>; ++k)
 	{
 		stream << d.col_block << d.space;
 		for (int col{ 0 }; col < elem_size<N>; ++col)
 		{
-			for (int i{ X }; i < X + base_size<N>; ++i)
+			for (unsigned int i{ X }; i < X + base_size<N>; ++i)
 			{
 				if (input[row_id][col].test(i)) { stream << i; }
 				else { stream << d.empty; }
