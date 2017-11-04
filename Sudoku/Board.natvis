@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?> 
+<!--  Sudoku/Board.natvis                                                    //
+//
+//  Support for Sudoku::Board<T,N> in the debugger
+//===-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-===//
+//
+//  Content:
+//    Sudoku::Board<T,N>
+//    Sudoku::Board<T,N>::Row
+//  Views: use by adding ",view(simple)" after element-name in debugger
+//    simple: only display [rows] element
+//===-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-->
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
-
-<!--
-  Content:
-    Sudoku::Board<T,N>
-    Sudoku::Board<T,N>::Row
-
-
-  Views: use by adding ",view(simple)" after element-name in debugger
-    simple  only display [rows] element
-
--->
   <Type Name="Sudoku::Board&lt;*,*&gt;"><!-- type $T1  base_size $T2-->
     <DisplayString>{{ size= {elem_size} * {elem_size} }}</DisplayString>
     <Expand>
@@ -520,12 +520,8 @@
           </CustomListItems>
         </Expand>
       </Synthetic>
-
     </Expand>
   </Type>
-
-
-
 
 
   <Type Name="Sudoku::Board&lt;*,*&gt;::Row">

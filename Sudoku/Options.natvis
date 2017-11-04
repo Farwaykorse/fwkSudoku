@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  Sudoku/Options.natvis                                                  //
+//
+//  Support for Sudoku::Options<N> in debugger visualizer
+//===-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-===//
+//
+//  Views: use by adding ",view(simple)" after element-name in debugger
+//    simple: don't display size
+//===-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-->
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="Sudoku::Options&lt;*&gt;">
+    <!--Template items: $T1 -->
+
+    <!-- Display answer, if set -->
+    <DisplayString Condition="$T1 == 1">
+      ans: {data_[1]*1}
+    </DisplayString>
+    <!-- If set as not-answered: -->
+    <DisplayString Condition="($T1 * data_[0]) == 4">
+      <!-- Show list of available options, space after 2 elements -->
+      {data_[1]*1}{(data_[2]*2)} {
+       (data_[3]*3)}{(data_[4]*4)}
+    </DisplayString>
+    <!-- If set as answered: -->
+    <DisplayString Condition="$T1 == 4">
+      <!-- display 0 if multiple answers (or none) -->
+      ans: {
+        ( (data_[1]*1 + data_[2]*1 + data_[3]*1 + data_[4]*1) == 1) ?
+        (data_[1]*1 + data_[2]*2 + data_[3]*3 + data_[4]*4) :
+        (0)
+      }
+    </DisplayString>
+    <DisplayString Condition="($T1 * data_[0]) == 9">
+      <!-- If set as not-answered: -->
+      <!-- Show list of available options, space after 3 elements -->
+      {data_[1]*1}{(data_[2]*2)}{(data_[3]*3)} {
+      (data_[4]*4)}{(data_[5]*5)}{(data_[6]*6)} {
+      (data_[7]*7)}{(data_[8]*8)}{(data_[9]*9)}
+    </DisplayString>
+    <DisplayString Condition="($T1 * !data_[0]) == 9">
+      <!-- display 0 if multiple answers (or none) -->
+      ans: {
+        ( (data_[1]*1 + data_[2]*1 + data_[3]*1 +
+           data_[4]*1 + data_[5]*1 + data_[6]*1 + 
+           data_[7]*1 + data_[8]*1 + data_[9]*1 
+          ) == 1) ?
+        (data_[1]*1 + data_[2]*2 + data_[3]*3 + data_[4]*4 + data_[5]*5 +
+         data_[6]*6 + data_[7]*7 + data_[8]*8 + data_[9]*9) :
+        (0)
+      }
+    </DisplayString>
+    <DisplayString Condition="($T1 * data_[0]) == 16">
+      <!-- Show list of available options, space after 4 elements -->
+      {data_[1]?1:0}{(data_[2]?1:0)}{(data_[3]?1:0)}{(data_[4]?1:0)} {
+       (data_[5]?1:0)}{(data_[6]?1:0)}{(data_[7]?1:0)}{(data_[8]?1:0)} {
+       (data_[9]?1:0)}{(data_[10]?1:0)}{(data_[11]?1:0)}{(data_[12]?1:0)} {
+       (data_[13]?1:0)}{(data_[14]?1:0)}{(data_[15]?1:0)}{(data_[16]?1:0)}
+    </DisplayString>
+    <DisplayString Condition="$T1 == 16">
+      ans: {data_[1]*1 + data_[2]*2 + data_[3]*3 + data_[4]*4 + data_[5]*5 +
+       data_[6]*6 + data_[7]*7 + data_[8]*8 + data_[9]*9 + data_[10]*10 +
+       data_[11]*11 + data_[12]*12 + data_[13]*13 + data_[14]*14 +
+       data_[15]*15 + data_[16]*16}
+    </DisplayString>
+    <Expand>
+      <Item Name="[size]" ExcludeView="simple">(int)$T1</Item>
+      <CustomListItems>
+        <Variable Name="answer" InitialValue="(bool)!data_[0]"/>
+        <!--note: data-bit is inverse of meaning-->
+        <Variable Name="iCount" InitialValue="0"/>
+        <Variable Name="iEnd" InitialValue="$T1"/>
+        <Variable Name="pItem" InitialValue="true"/>
+
+        <Size>$T1+1</Size><!--! +1 to show [answer]-->
+        <If Condition="answer">
+          <!--Display answer value-->
+          <Loop>
+            <Exec>iCount++</Exec>
+            <Break Condition="iCount > iEnd"/><!--first-->
+            <Break Condition="data_[iCount]"/>
+          </Loop>
+          <If Condition="iCount &lt;= iEnd">
+            <Item Name="[answer]">iCount</Item>
+          </If>
+          <Else>
+            <Item Name="[answer]">-1</Item><!--no answer set-->
+          </Else>
+          <Exec>iCount = 0</Exec><!--reset-->
+        </If>
+        <Else>
+          <!--No answer-->
+          <Item Name="[answer]">false</Item>
+        </Else>
+        <Loop>
+          <!--Display option-bits-->
+          <Exec>iCount++</Exec>
+          <Exec>pItem = data_[iCount]</Exec>
+          <Item Name="{iCount}">(bool)pItem</Item>
+          <Break Condition="iCount == iEnd"/>
+        </Loop>
+      </CustomListItems>
+    </Expand>
+  </Type>
+</AutoVisualizer>
