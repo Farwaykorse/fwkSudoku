@@ -18,7 +18,7 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 	// working object:
 	Sudoku::SolverBase<3> other;
 
-	constexpr size_t repeat{ 100 };
+	constexpr size_t repeat{ 10 };
 	Sudoku::SolverBase<3> test_board{};
 	using time = std::chrono::time_point<std::chrono::steady_clock>;
 	using duration = std::chrono::duration<long long, std::nano>;
@@ -28,6 +28,10 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 	duration tLoad{ duration::max() };
 	duration tSolver{ duration::max() };
 	duration tTotal{ duration::max() };
+
+	static duration tLoad_total{0};
+	static duration tSolver_total{0};
+	static duration tTotal_total{0};
 
 	// find uniques (should solve this board)
 	for (size_t i{}; i < repeat; ++i)
@@ -42,14 +46,20 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 		tTotal = std::min(tTotal, t2 - t0);
 		tSolver = std::min(tSolver, tTotal - tLoad);
 	}
+	tLoad_total += tLoad;
+	tSolver_total += tSolver;
+	tTotal_total += tTotal;
 
 	auto time_in_microsec = [](duration t_in)
 	{
 		return std::chrono::duration_cast<std::chrono::microseconds>(t_in).count();
 	};
-	std::cout << "Load:\t" << time_in_microsec(tLoad) << " us\n";
-	std::cout << "Solve:\t" << time_in_microsec(tSolver) << " us\n";
-	std::cout << "Total:\t" << time_in_microsec(tTotal) << " us\n";
+	std::cout << "Load:\t" << time_in_microsec(tLoad) << " us"
+		<< " (" << time_in_microsec(tLoad_total) << " us)\n";
+	std::cout << "Solve:\t" << time_in_microsec(tSolver) << " us"
+		<< " (" << time_in_microsec(tSolver_total) << " us)\n";
+	std::cout << "Total:\t" << time_in_microsec(tTotal) << " us"
+		<< " (" << time_in_microsec(tTotal_total) << " us)\n";
 	auto result = test_board.getResult();
 	if (result == answer) { std::cout << " : ) Found the answer!\n"; }
 	else
@@ -166,6 +176,7 @@ int main()
 	};
 
 	const std::vector<int> b3a			// no unique
+		// source: https://en.wikipedia.org/wiki/Sudoku
 	{
 		5, 3, 4,	6, 7, 8,	9, 1, 2,	// 0,8=1 random to trigger output
 		6, 7, 2,	1, 9, 5,	3, 4, 8,
@@ -359,6 +370,57 @@ int main()
 		0, 0, 0,	1, 0, 6,	0, 0, 7,
 		0, 0, 6,	0, 0, 0,	1, 0, 4
 	};
+
+	const std::vector<int> diagonal
+		// 17 clues and diagonal symmetry
+		// source: https://en.wikipedia.org/wiki/Sudoku_solving_algorithms
+	{
+		0, 0, 0,	0, 0, 0,	0, 0, 1,
+		0, 0, 0,	0, 0, 0,	0, 2, 3,
+		0, 0, 4,	0, 0, 5,	0, 0, 0,
+
+		0, 0, 0,	1, 0, 0,	0, 0, 0,
+		0, 0, 0,	0, 3, 0,	6, 0, 0,
+		0, 0, 7,	0, 0, 0,	5, 8, 0,
+
+		0, 0, 0,	0, 6, 7,	0, 0, 0,
+		0, 1, 0,	0, 0, 4,	0, 0, 0,
+		5, 2, 0,	0, 0, 0,	0, 0, 0
+	};
+
+	const std::vector<int> automorphic
+		// 18 clues and two-way diagonal symmetry
+		// source: https://en.wikipedia.org/wiki/Mathematics_of_Sudoku#Automorphic_Sudokus
+	{
+		0, 0, 0,	2, 1, 0,	0, 0, 0,
+		0, 0, 7,	3, 0, 0,	0, 0, 0,
+		0, 5, 8,	0, 0, 0,	0, 0, 0,
+
+		4, 3, 0,	0, 0, 0,	0, 0, 0,
+		2, 0, 0,	0, 0, 0,	0, 0, 8,
+		0, 0, 0,	0, 0, 0,	0, 7, 6,
+
+		0, 0, 0,	0, 0, 0,	2, 5, 0,
+		0, 0, 0,	0, 0, 7,	3, 0, 0,
+		0, 0, 0,	0, 9, 8,	0, 0, 0
+	};
+
+	const std::vector<int> automorphic2
+		// source: https://en.wikipedia.org/wiki/Mathematics_of_Sudoku#Automorphic_Sudokus
+	{
+		0, 0, 0,	5, 6, 0,	0, 3, 4,
+		0, 0, 0,	7, 8, 0,	0, 5, 6,
+		0, 0, 0,	0, 0, 0,	0, 0, 0,
+
+		1, 2, 0,	0, 0, 0,	0, 0, 0,
+		3, 4, 0,	0, 0, 0,	0, 6, 7,
+		0, 0, 0,	0, 0, 0,	0, 8, 9,
+
+		0, 0, 0,	0, 0, 0,	0, 0, 0,
+		4, 5, 0,	0, 2, 3,	0, 0, 0,
+		6, 7, 0,	0, 4, 5,	0, 0, 0
+	};
+
 
 
 

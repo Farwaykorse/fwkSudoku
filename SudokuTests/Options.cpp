@@ -61,11 +61,11 @@ namespace compiletime
 	static_assert(std::is_trivially_move_assignable_v<typeT>, "trivially move assignable");
 
 	static_assert(std::is_trivially_copyable_v<typeT>, "trivially copyable");
-	static_assert(std::is_swappable_v<typeT>, "swappable");			//C++17
-	static_assert(std::is_nothrow_swappable_v<typeT>, "swappable");	//C++17
+	//static_assert(std::is_swappable_v<typeT>, "swappable");			//C++17
+	//static_assert(std::is_nothrow_swappable_v<typeT>, "swappable");	//C++17
 
-	static_assert(!std::is_swappable_with<typeT, std::bitset<10>>::value, "");	//C++17
-	static_assert(!std::is_nothrow_swappable_with_v<typeT, std::bitset<10>>, "");	//C++17
+	//static_assert(!std::is_swappable_with<typeT, std::bitset<10>>::value, "");	//C++17
+	//static_assert(!std::is_nothrow_swappable_with_v<typeT, std::bitset<10>>, "");	//C++17
 
 	// type construction
 	static_assert(std::is_constructible_v<Options<3>, const std::bitset<4>&>, "construct from const std::bitset&");
@@ -250,7 +250,9 @@ TEST(Options, mf_boolRequest)
 	EXPECT_NO_THROW(TE.A_1.is_answer(-5));
 #endif // _DEBUG
 	EXPECT_NO_THROW(TE.O_1.is_answer(15));	// defined behaviour (== false)
+	EXPECT_FALSE(TE.O_1.is_answer(15));	// defined behaviour
 	EXPECT_NO_THROW(TE.O_1.is_answer(-1));	// defined behaviour (== false)
+	EXPECT_FALSE(TE.O_1.is_answer(-1));	// defined behaviour
 	EXPECT_TRUE(TE.A_2.is_answer(2));
 	EXPECT_FALSE(TE.A_2.is_answer(3));
 	EXPECT_FALSE(TE.A_1.is_answer(0));
@@ -342,15 +344,18 @@ TEST(Options, mf_changeAll)
 TEST(Options, mf_remove_option)
 {
 	Options<4> TMP{};
-	static_assert(!noexcept(TMP.remove_option(3)), "remove_option(int) should NOT be noexcept");
+	static_assert(
+		noexcept(TMP.remove_option(3)),
+		"remove_option(int) should be noexcept");
 	ASSERT_NO_THROW(TMP.remove_option(3));
-	EXPECT_THROW(TMP.remove_option(15), std::out_of_range);
-	EXPECT_THROW(TMP.remove_option(-5), std::out_of_range);
+	//EXPECT_THROW(TMP.remove_option(15), std::out_of_range);
+	//EXPECT_THROW(TMP.remove_option(-5), std::out_of_range);
 	ASSERT_TRUE(TMP.reset().all())	<< "Reset testdata failed";
 	ASSERT_EQ(TMP.size(), 5)		<< "Test requires Options<4> object";
-	EXPECT_TRUE(TMP.remove_option(3));
+	EXPECT_TRUE(TMP.test(3));
+	EXPECT_NO_THROW(TMP.remove_option(3));
+	EXPECT_FALSE(TMP.test(3));
 	EXPECT_EQ(TMP.count(), 3);
-	EXPECT_FALSE(TMP.remove_option(3));
 }
 TEST(Options, mf_add)
 {
@@ -377,8 +382,8 @@ TEST(Options, mf_add)
 	static_assert(noexcept(TMP.add_nocheck(1)), "add_noexcept(int) should be noexcept");
 	// assertion see deathtests
 #ifndef _DEBUG
-	EXPECT_NO_THROW(TMP.add_nocheck(6));
-	EXPECT_NO_THROW(TMP.add_nocheck(-1));
+	//EXPECT_NO_THROW(TMP.add_nocheck(6));
+	//EXPECT_NO_THROW(TMP.add_nocheck(-1));
 #endif // !_DEBUG
 	EXPECT_NO_THROW(TMP.add_nocheck(3));
 	EXPECT_EQ(TMP.DebugString(), "01000");
@@ -404,17 +409,18 @@ TEST(Options, mf_set)
 	EXPECT_EQ(TMP.count_all(), 0);
 	EXPECT_EQ(TMP.DebugString(), "00001");
 
-	//set_noexcept(int)
-	static_assert(noexcept(TMP.set_nocheck(2)), "set_noexcept(int) should be noexcept");
+	// set_noexcept(int)
+	static_assert(
+		noexcept(TMP.set_nocheck(2)), "set_noexcept(int) should be noexcept");
 	EXPECT_TRUE(TMP.clear().is_empty());
 	EXPECT_NO_THROW(TMP.set_nocheck(1));
 	EXPECT_EQ(TMP.DebugString(), "00010");
 	EXPECT_TRUE(TMP.set_nocheck(2).is_answer(2));
 	// assertion see deathtests
 #ifndef _DEBUG
-	EXPECT_NO_THROW(TMP.set_nocheck(15));
-	EXPECT_NO_THROW(TMP.set_nocheck(-5));
-#endif	// _DEBUG
+	// EXPECT_NO_THROW(TMP.set_nocheck(15));
+	// EXPECT_NO_THROW(TMP.set_nocheck(-5));
+#endif // _DEBUG
 	EXPECT_NO_THROW(TMP.set_nocheck(0));
 }
 TEST(Options, mf_booleanComparison)
@@ -531,7 +537,7 @@ TEST(Options, Operators)
 	EXPECT_TRUE(O_1 + O_2 == O_1);
 	EXPECT_TRUE(E_1 + O_1 == O_1);
 	EXPECT_TRUE(A_2 + E_3 == O_3);
-	EXPECT_FALSE(E_1 + A_2 == O_3);
+	EXPECT_TRUE(E_1 + A_2 == O_3);
 	//Options operator-(Options&) const		difference
 	static_assert(noexcept(O_1 - O_2), "operator- should be noexcept");
 
@@ -573,26 +579,41 @@ TEST(Options, External)
 }
 TEST(Options, deathtests)
 {
-
 	Options<4> TMP{};
 	// Construction
-	EXPECT_DEBUG_DEATH({ Options<3>{5}; }, "");
+#ifdef _DEBUG
+	// Important	exeptrion thrown outside debug-mode
+	// assert serves to cach E+1 case
+	EXPECT_DEBUG_DEATH({ Options<3>{4}; }, "Assertion failed: .*");
+#endif // _DEBUG
+
 	// mf_boolRequest
-	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(15); }, "");
-	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(-5); }, "");
+	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(15); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TE.A_1.is_answer(-5); }, "Assertion failed: .*");
 	// 
-	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(15); }, "");
-	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(-5); }, "");
+	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(15); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(-5); }, "Assertion failed: .*");
+	// mf_constOperators
+	EXPECT_DEBUG_DEATH({ TE.O_3[9]; }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TE.O_3[-1]; }, "Assertion failed: .*");
+	bool a;
+	EXPECT_DEBUG_DEATH({ a = TE.O_3[5]; }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ a = TE.O_3[-1]; }, "Assertion failed: .*");
+	// operator[]
+#ifdef _DEBUG
+	//! supposed to be noexcept, and no bounds-checks in release-mode
+	Options<4> Opp{std::bitset<5>{"00000"}};
+	// EXPECT_DEBUG_DEATH({ Opp[3] == Opp[-2]; }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ Opp[5] = true; }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ Opp[-1] = true; }, "Assertion failed: .*");
 	// mf_add
-	Options<4> Opt{ std::bitset<5>{"00000"} };
-	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(5); }, "");
-	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(-5); }, "");
+	Options<4> Opt{std::bitset<5>{"00000"}};
+	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(5); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(-5); }, "Assertion failed: .*");
 	// mf_set
 	EXPECT_TRUE(TMP.clear().is_empty());
-	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(15); }, "");
-	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(-5); }, "");
-	// mf_constOperators
-	EXPECT_DEBUG_DEATH({ TE.O_3[9]; }, "");
-	EXPECT_DEBUG_DEATH({ TE.O_3[-1]; }, "");
+	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(15); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(-5); }, "Assertion failed: .*");
+#endif // _DEBUG
 }
-}	//namespace Sudoku_Test
+} // namespace Sudoku_Test

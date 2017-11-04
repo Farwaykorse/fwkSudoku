@@ -1,0 +1,210 @@
+##===--	./.clang-format - Clang-Format configuration					--===##
+##
+##	For the Sudoku project, learning cpp
+##===---------------------------------------------------------------------===##
+##	Documentation:
+##		https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+##
+##	Disable locally:
+##		// clang-format off
+##		...
+##		// clang-format on
+##===---------------------------------------------------------------------===##
+##
+##	TOC
+##	- Sizes
+##	- Comments
+##	- Include
+##	- Namespace
+##	- Template
+##	- Using
+##	- Blocks
+##		-Single-Line Statements
+##	- Braces
+##	- Functions
+##	- Constructors
+##	- Operators
+##	- Strings
+##	- Penalties
+##	Languages
+##
+
+---
+#	For starters use defaults from the LLVM style
+#	(required since the complete ruleset is needed)
+BasedOnStyle:					LLVM
+
+##	Sizes
+UseTab:							ForContinuationAndIndentation
+TabWidth:						4
+IndentWidth:					4
+ColumnLimit:					80
+MaxEmptyLinesToKeep:			2
+ContinuationIndentWidth:		4
+IndentCaseLabels:				false
+IndentPPDirectives:				None
+AccessModifierOffset:			-4
+# public: or private: etc.
+
+##	Comments
+ReflowComments:					true
+SpacesBeforeTrailingComments:	1
+AlignTrailingComments:			true
+#CommentPragmas:				
+
+##	Include
+# #include <xxx>		stl includes
+# #include <xxx.h>	library includes
+# #include "xxx.h"	local project includes
+# 
+# Order: (alphabetic within each)
+# Headers should not depend upon other headers being included first.
+# 
+# 	#pragma once			// if header file
+# 	-1. Precompiled header	// if cpp and using a precompiled header
+#	0. Main Module Header	// if cpp
+# 	1. Prototype/interface 	// if cpp
+# 	2. Main framework		// e.g. gTest to show intent
+# 	3. Local components		// if used
+# 	4. Aditional components, libraries
+# 	5. STL data-structures	// ! 
+# 	6. STL other			// ! add all used!	habbit
+# 	7. Standard C headers
+#	8.	cassert
+# 	9. Forward declaration	// *.fwd.h for recursive external definitions
+SortIncludes:					true
+IncludeIsMainRegex:				''
+IncludeCategories:
+  - Regex:		'^"((P|p)recompiled|stdfx)/'
+    Priority:	-1
+  - Regex:		'^<(gtest|gmock)/'
+    Priority:	2
+  - Regex:		'^"\.\.(\\|\/)'
+    Priority:	3
+  - Regex:		'\.h>$'
+    Priority:	4
+  - Regex:		'^<(array|vector|(.+_)?list|set|map|(unordered_.*)|bitset)>'
+    Priority:	5
+  - Regex:		'^<cassert>'
+    Priority:	8
+  - Regex:		'^<c[a-z]+>'
+    Priority:	7
+  - Regex:		'^<.*>'
+    Priority:	6
+  - Regex:		'.*\.fwd\.h"$'
+    Priority:	9
+  - Regex:		'.*'
+    Priority:	1
+
+##	Namespace
+NamespaceIndentation:			Inner
+CompactNamespaces:				true
+FixNamespaceComments:			true
+
+##	Template
+AlwaysBreakTemplateDeclarations:	true
+SpaceAfterTemplateKeyword:			false
+
+##	Using
+SortUsingDeclarations:			false
+
+## Blocks
+KeepEmptyLinesAtTheStartOfBlocks:	false
+#BreakBeforeBraces:				Allman
+BreakBeforeBraces:				Custom
+BraceWrapping:
+  AfterNamespace:				true
+  SplitEmptyNamespace:			true
+  AfterClass:					true
+  AfterStruct:					true
+  AfterUnion:					true
+  SplitEmptyRecord:				true
+  AfterEnum:					false
+  AfterFunction:				true
+  SplitEmptyFunction:			true
+#Clang 6  AfterExternBlock:		true
+  AfterControlStatement:		true
+  BeforeCatch:					true
+  BeforeElse:					true
+  IndentBraces:					false
+
+###	Single-Line Statements
+AllowShortBlocksOnASingleLine:			false
+AllowShortFunctionsOnASingleLine:		InlineOnly
+AllowShortIfStatementsOnASingleLine:	true
+AllowShortLoopsOnASingleLine:			true
+AllowShortCaseLabelsOnASingleLine:		true
+
+##	Braces
+SpacesInAngles:					false
+SpaceAfterCStyleCast:			false
+SpacesInCStyleCastParentheses:	false
+SpacesInContainerLiterals:		false
+SpaceBeforeParens:				ControlStatements
+SpacesInParentheses:			false
+SpaceInEmptyParentheses:		false
+SpacesInSquareBrackets:			false
+Cpp11BracedListStyle:			true
+#	if false always spaces in { dd }
+
+## Declarations
+AlignConsecutiveDeclarations:	false
+
+##	Functions
+IndentWrappedFunctionNames:		true
+#	BinPack: if false, all on same line, or one line each
+BinPackArguments:				false
+BinPackParameters:				false
+AlignAfterOpenBracket:			AlwaysBreak
+AllowAllParametersOfDeclarationOnNextLine:	true
+AlwaysBreakAfterReturnType:		None
+#	None= uses PenaltyReturnTypeOnItsOwnLine
+
+##	Constructors
+ConstructorInitializerIndentWidth:	4
+ConstructorInitializerAllOnOneLineOrOnePerLine:	false
+BreakConstructorInitializers:	BeforeColon
+
+##	Operators
+AlignOperands:					true
+AlignConsecutiveAssignments:	true
+SpaceBeforeAssignmentOperators:	true
+
+BreakBeforeBinaryOperators:		None
+BreakBeforeInheritanceComma:	false
+BreakBeforeTernaryOperators:	true
+
+DerivePointerAlignment:			false
+PointerAlignment:				Left
+
+##	Strings
+BreakStringLiterals:				true
+AlignEscapedNewlines:				Left
+AlwaysBreakBeforeMultilineStrings:	true
+
+##	Penalties:
+PenaltyExcessCharacter:			1000000
+PenaltyBreakAssignment:			2
+PenaltyBreakBeforeFirstCallParameter:	19
+PenaltyBreakComment:			30
+PenaltyBreakFirstLessLess:		120
+PenaltyBreakString:				1000
+PenaltyReturnTypeOnItsOwnLine:	60
+
+---
+Language:						Cpp
+DisableFormat:					false
+
+# Language standard, using LLVM setting, it might get updated
+#Standard:						Cpp11
+---
+Language:						Java
+DisableFormat:					false
+---
+Language:						JavaScript
+DisableFormat:					false
+---
+Language:						ObjC
+DisableFormat:					false
+
+...

@@ -71,21 +71,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141_clang_c2</PlatformToolset>
+    <PlatformToolset>LLVM-vs2014</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141_clang_c2</PlatformToolset>
+    <PlatformToolset>LLVM-vs2014</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">
-    <PlatformToolset>v141_clang_c2</PlatformToolset>
+    <PlatformToolset>LLVM-vs2014</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">
-    <PlatformToolset>v141_clang_c2</PlatformToolset>
+    <PlatformToolset>LLVM-vs2014</PlatformToolset>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -125,6 +126,12 @@
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <EnableExperimentalCppCoreCheck>true</EnableExperimentalCppCoreCheck>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">
+    <UseMultiToolTask>true</UseMultiToolTask>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">
+    <UseMultiToolTask>true</UseMultiToolTask>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
@@ -132,13 +139,15 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/w14242 /w14254 /w14263 /w14265 /w14287 /we4289 /w14296 /w14311 /w14545 /w14546 /w14547 /w14549 /w14555 /w14619 /w14640 /w14826 /w14905 /w14906 /w14928 /experimental:module /permissive- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/permissive- /w14242 /w14254 /w14263 /w14265 /w14287 /we4289 /w14296 /w14311 /w14545 /w14546 /w14547 /w14549 /w14555 /w14619 /w14640 /w14826 /w14905 /w14906 /w14928 </AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,14 +160,15 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <ControlFlowGuard />
-      <AdditionalOptions>/w14242 /w14254 /w14263 /w14265 /w14287 /we4289 /w14296 /w14311 /w14545 /w14546 /w14547 /w14549 /w14555 /w14619 /w14640 /w14826 /w14905 /w14906 /w14928 /experimental:module /permissive- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/permissive- /w14242 /w14254 /w14263 /w14265 /w14287 /we4289 /w14296 /w14311 /w14545 /w14546 /w14547 /w14549 /w14555 /w14619 /w14640 /w14826 /w14905 /w14906 /w14928 </AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -168,18 +178,18 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <ControlFlowGuard>Guard</ControlFlowGuard>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/w14242 /w14254 /w14263 /w14265 /w14287 /we4289 /w14296 /w14311 /w14545 /w14546 /w14547 /w14549 /w14555 /w14619 /w14640 /w14826 /w14905 /w14906 /w14928 /experimental:module /permissive- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/permissive- /w14242 /w14254 /w14263 /w14265 /w14287 /we4289 /w14296 /w14311 /w14545 /w14546 /w14547 /w14549 /w14555 /w14619 /w14640 /w14826 /w14905 /w14906 /w14928 </AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -191,17 +201,18 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/w14242 /w14254 /w14263 /w14265 /w14287 /we4289 /w14296 /w14311 /w14545 /w14546 /w14547 /w14549 /w14555 /w14619 /w14640 /w14826 /w14905 /w14906 /w14928 /experimental:module /permissive- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/permissive- /w14242 /w14254 /w14263 /w14265 /w14287 /we4289 /w14296 /w14311 /w14545 /w14546 /w14547 /w14549 /w14555 /w14619 /w14640 /w14826 /w14905 /w14906 /w14928 </AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -213,25 +224,37 @@
     <ClCompile>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -pedantic -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -fno-common -Wreorder -std=c++1z -Weverything -Wno-c++98-compat </AdditionalOptions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -Wreorder -Weverything -Wno-c++98-compat -Wno-c++17-extensions -gline-tables-only -fno-ms-compatibility -fno-strict-aliasing </AdditionalOptions>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MinimalRebuild>
+      </MinimalRebuild>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <TargetMachine>
+      </TargetMachine>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -pedantic -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -fno-common -Wreorder -std=c++1z -Weverything -Wno-c++98-compat </AdditionalOptions>
-      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -Wreorder -Weverything -Wno-c++98-compat -Wno-c++17-extensions -gline-tables-only -fno-ms-compatibility -fno-strict-aliasing </AdditionalOptions>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MinimalRebuild>
+      </MinimalRebuild>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -240,23 +263,28 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">
     <ClCompile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalOptions>-std=c++1z %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-fno-ms-compatibility -fno-strict-aliasing -Wno-c++17-extensions -Wextra -Wconversion -Wcast-align -Wformat=2 -Woverloaded-virtual -Wreorder %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <MinimalRebuild />
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">
     <ClCompile>
-      <AdditionalOptions>-std=c++1z %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-fno-ms-compatibility -fno-strict-aliasing -Wno-c++17-extensions -Wextra -Wconversion -Wcast-align -Wformat=2 -Woverloaded-virtual -Wreorder %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <MinimalRebuild />
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Board.fwd.h" />
     <ClInclude Include="Board.h" />
-    <ClInclude Include="Board_Sections.fwd.h" />
     <ClInclude Include="Board_Sections.h" />
     <ClInclude Include="Board_Utilities.h" />
     <ClInclude Include="Location.fwd.h" />
@@ -264,8 +292,12 @@
     <ClInclude Include="Location_Utilities.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="precompiled.h" />
+    <ClInclude Include="Solver.fwd.h" />
     <ClInclude Include="Solver.h" />
     <ClInclude Include="SolverBase.h" />
+    <ClInclude Include="Solvers_Appearance.h" />
+    <ClInclude Include="Solver_Utilities.h" />
+    <ClInclude Include="Sudoku.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="precompiled.cpp">
@@ -274,8 +306,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Sudoku.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="Solver.md" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Board.natvis">
@@ -287,5 +324,8 @@
     </Natvis>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="'$(Configuration)'=='ClangDebug' Or '$(Configuration)'=='ClangRelease'">
+    <Import Project="C:\src\vcpkg\scripts\buildsystems\msbuild\vcpkg.targets" />
+  </ImportGroup>
   <ImportGroup Label="ExtensionTargets" />
 </Project>
