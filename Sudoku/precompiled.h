@@ -11,13 +11,17 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
+// STL containers
 #include <array>
 #include <bitset>
 #include <vector>
+// STL
 #include <algorithm>
-#include <gsl/gsl>
 #include <iterator>
 #include <limits>
 #include <memory>
 #include <stdexcept>
 #include <utility>
+
+// Libraries
+#include <gsl/gsl>
