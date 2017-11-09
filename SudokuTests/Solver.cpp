@@ -1836,7 +1836,7 @@ TEST(Solver, deathtest)
 		EXPECT_DEBUG_DEATH(
 			Solver<2>(B5).find_locations(
 				B5.row(0).cbegin(), B5.row(0).cend(), 2),
-			"Assertion failed: .*size.. > 0");
+			"Assertion failed: not.*empty..");
 	}
 	// set_section_locals()
 	{

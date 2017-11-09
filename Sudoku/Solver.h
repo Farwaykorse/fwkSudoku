@@ -133,7 +133,7 @@ inline void Solver<N>::setValue(const ItrT begin, const ItrT end)
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		Location loc(n++); // start at 0!
-		const value_t value = static_cast<value_t>(*itr);
+		const auto value = static_cast<value_t>(*itr);
 		if (value > 0 && board_.at(loc).is_option(value))
 		{
 			setValue(loc, value);
@@ -709,7 +709,7 @@ inline auto Solver<N>::find_locations(
 		locations.push_back(last.location());
 		++last;
 	}
-	assert(locations.size() > 0);
+	assert(not locations.empty());
 	return locations;
 }
 
