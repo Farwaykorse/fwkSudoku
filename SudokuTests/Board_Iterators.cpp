@@ -698,7 +698,9 @@ TEST(Board_Iterator, RowForwardIterator)
 	EXPECT_EQ(*r, 0);
 	EXPECT_EQ(*i, 0);
 	EXPECT_EQ(*++r, 1);
-	EXPECT_EQ(*++r, *++(++i));
+	r = A.row(0).begin();
+	i = r;
+	EXPECT_EQ(*++r, *(++i));
 }
 TEST(Board_Iterator, RowBidirectionalIterator)
 {
@@ -1106,7 +1108,7 @@ TEST(Board_Iterator, ColForwardIterator)
 	EXPECT_EQ(*r, 0);
 	EXPECT_EQ(*i, 0);
 	EXPECT_EQ(*++r, 4);
-	EXPECT_EQ(*++r, *++(++i));
+	EXPECT_EQ(*r, *(++i));
 }
 TEST(Board_Iterator, ColBidirectionalIterator)
 {
@@ -1509,7 +1511,7 @@ TEST(Board_Iterator, BlockForwardIterator)
 	EXPECT_EQ(*r, 0);
 	EXPECT_EQ(*i, 0);
 	EXPECT_EQ(*++r, 1);
-	EXPECT_EQ(*++r, *++(++i));
+	EXPECT_EQ(*r, *(++i));
 }
 TEST(Board_Iterator, BlockBidirectionalIterator)
 {
