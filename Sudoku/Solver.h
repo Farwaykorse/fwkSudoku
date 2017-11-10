@@ -54,9 +54,6 @@ public:
 	void setValue(ItrT begin, ItrT end);
 
 
-	template<typename SectionT>
-	int remove_option_outside_block(SectionT, Location block_loc, value_t);
-
 	// Solvers
 	int single_option(Location);
 	int single_option(Location, value_t);
@@ -107,6 +104,9 @@ int remove_option_section(
 	SectionT,
 	const std::vector<Location<N>>& ignore,
 	const std::vector<unsigned int>& values);
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+int remove_option_outside_block(
+	Board<Options, N>&, SectionT, Location<N> block_loc, unsigned int value);
 //===---------------------------------------------------------------------===//
 
 
@@ -391,12 +391,15 @@ int remove_option_section(
 }
 
 //	remove [value] from elements not in same block as [block_loc]
-template<int N>
-template<typename SectionT>
-inline int Solver<N>::remove_option_outside_block(
-	const SectionT section, const Location block_loc, const value_t value)
+template<int N, typename Options, typename SectionT>
+int remove_option_outside_block(
+	Board<Options, N>& board,
+	const SectionT section,
+	const Location<N> block_loc,
+	const unsigned int value)
 {
 	{
+		using Board = Board<Options, N>;
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		static_assert(
 			not std::is_base_of_v<typename Board::const_Block, SectionT>,
@@ -415,7 +418,7 @@ inline int Solver<N>::remove_option_outside_block(
 	{
 		if (not is_same_block(itr.location(), block_loc))
 		{
-			changes += remove_option(board_, itr.location(), value);
+			changes += remove_option(board, itr.location(), value);
 		}
 	}
 	return changes;
@@ -673,12 +676,12 @@ inline int Solver<N>::set_section_locals(
 			else if (is_same_row<N>(locations.cbegin(), locations.cend()))
 			{ // remove from rest of row
 				changes += remove_option_outside_block(
-					board_.row(locations[0]), locations[0], value);
+					board_, board_.row(locations[0]), locations[0], value);
 			}
 			else if (is_same_col<N>(locations.cbegin(), locations.cend()))
 			{ // remove from rest of col
 				changes += remove_option_outside_block(
-					board_.col(locations[0]), locations[0], value);
+					board_, board_.col(locations[0]), locations[0], value);
 			}
 		}
 	}
