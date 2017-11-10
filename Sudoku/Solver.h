@@ -563,7 +563,7 @@ inline int Solver<N>::section_exclusive(const SectionT section)
 		{
 			// for [row/col]: if in same block: remove from rest block
 			// for [block]: if in same row/col: remove from rest row/col
-			if (int tmp_ = set_section_locals(
+			if (const int tmp_ = set_section_locals(
 					section, static_cast<int>(i), appearing[i]))
 			{
 				changes += tmp_;

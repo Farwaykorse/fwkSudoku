@@ -105,7 +105,7 @@ public:
 	//static const Format::delimiter xml;
 
 	Console();
-	Console(delimiter);
+	explicit Console(delimiter);
 	//~Console() = default;
 
 	template<int N>
@@ -218,7 +218,7 @@ std::stringstream Console::print_board(const Board<int,N>& input) const
 template<int N, int E>
 std::stringstream Console::print_board(const Board<Options<E>,N>& input) const
 {
-	static_assert(E == N*N, "");
+	static_assert(E == N*N);
 	assert(elem_size<N> == 9);	// no support for different sizes yet
 	const int block_size = elem_size<N> + base_size<N> + 2;
 	const int row_length = base_size<N> * block_size;
