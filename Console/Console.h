@@ -70,7 +70,8 @@ Board<int, N> getResult(const Board<Options<elem_size<N>>, N>& options)
 	{
 		if (options[Location<N>(i)].is_answer())
 		{
-			result[Location<N>(i)] = options[Location<N>(i)].get_answer();
+			result[Location<N>(i)] =
+				static_cast<int>(options[Location<N>(i)].get_answer());
 		}
 	}
 	return result;
