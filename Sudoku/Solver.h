@@ -53,8 +53,6 @@ public:
 	template<typename ItrT, typename = if_forward<ItrT>>
 	void setValue(ItrT begin, ItrT end);
 
-	// remove an option: triggers solvers single_option()
-	int remove_option(Location, value_t);
 	template<typename SectionT>
 	int remove_option_section(SectionT, Location ignore, value_t);
 	template<typename SectionT>
@@ -98,6 +96,13 @@ auto find_locations(
 	ItrT begin, ItrT end, unsigned int value, int rep_count = elem_size<N>);
 template<int N, typename SectionT>
 auto find_locations(SectionT, Options<elem_size<N>> value);
+
+// remove an option: triggers solvers single_option()
+template<
+	int N,
+	typename Options  = Options<elem_size<N>>,
+	typename Location = Location<N>>
+int remove_option(Board<Options, N>&, Location, unsigned int value);
 
 //===---------------------------------------------------------------------===//
 
@@ -150,14 +155,15 @@ inline void Solver<N>::setValue(const ItrT begin, const ItrT end)
 }
 
 //	remove option from element, make answer if last option
-template<int N>
-inline int Solver<N>::remove_option(const Location loc, const value_t value)
+template<int N, typename Options, typename Location>
+int remove_option(
+	Board<Options, N>& board, const Location loc, const unsigned int value)
 {
 	assert(is_valid(loc));
 	assert(is_valid_value<N>(value));
 
 	int changes{};
-	auto& item{board_.at(loc)};
+	auto& item{board.at(loc)};
 
 	if (item.is_option(value))
 	{
@@ -167,16 +173,16 @@ inline int Solver<N>::remove_option(const Location loc, const value_t value)
 
 		if (count == 1)
 		{
-			changes += single_option(loc);
+			changes += Solver<N>(board).single_option(loc);
 		}
 #if DUAL_ON_REMOVE == true
 		if (count == 2)
 		{
-			changes += dual_option(loc);
+			changes += Solver<N>(board).dual_option(loc);
 		}
 #endif // dual
 #if MULTIPLE_ON_REMOVE == true
-		changes += multi_option(loc, count);
+		changes += Solver<N>(board).multi_option(loc, count);
 #endif // multiple
 	}
 	return changes;
@@ -365,7 +371,7 @@ inline int Solver<N>::remove_option_section(
 	{
 		if (itr.location() != ignore)
 		{
-			changes += remove_option(itr.location(), value);
+			changes += remove_option(board_, itr.location(), value);
 		}
 	}
 	return changes;
@@ -396,7 +402,7 @@ inline int Solver<N>::remove_option_outside_block(
 	{
 		if (not is_same_block(itr.location(), block_loc))
 		{
-			changes += remove_option(itr.location(), value);
+			changes += remove_option(board_, itr.location(), value);
 		}
 	}
 	return changes;
@@ -434,7 +440,7 @@ inline int Solver<N>::remove_option_section(
 				return L1 == L2;
 			})) // <algorithm>
 		{
-			changes += remove_option(itr.location(), value);
+			changes += remove_option(board_, itr.location(), value);
 		}
 	}
 	return changes;
@@ -471,7 +477,7 @@ inline int Solver<N>::remove_option_section(
 		{
 			for (auto v : values)
 			{ //! Cascade (!)
-				changes += remove_option(itr.location(), v);
+				changes += remove_option(board_, itr.location(), v);
 			}
 		}
 	}

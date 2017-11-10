@@ -42,27 +42,27 @@ TEST(Solver, remove_option)
 	board[0][0] = std::bitset<5>{"11011"};
 	board[1][0] = std::bitset<5>{"11011"};
 	ASSERT_FALSE(board[0][0].is_option(2));
-	EXPECT_NO_THROW(Solver<2>(board).remove_option(Location<2>(0), 2));
-	EXPECT_EQ(Solver<2>(board).remove_option(Location<2>(1, 0), 2), 0);
+	EXPECT_NO_THROW(remove_option(board, Location<2>(0), 2));
+	EXPECT_EQ(remove_option(board, Location<2>(1, 0), 2), 0);
 	// location = answer (not value)
 	board[0][1] = std::bitset<5>{"10000"}; // answer 4
 	board[1][1] = std::bitset<5>{"10000"}; // answer 4
-	EXPECT_NO_THROW(Solver<2>(board).remove_option(Location<2>(1), 2));
-	EXPECT_EQ(Solver<2>(board).remove_option(Location<2>(1, 1), 2), 0);
+	EXPECT_NO_THROW(remove_option(board, Location<2>(1), 2));
+	EXPECT_EQ(remove_option(board, Location<2>(1, 1), 2), 0);
 	// location = answer (value)
-	EXPECT_NO_THROW(Solver<2>(board).remove_option(Location<2>(1), 4));
-	EXPECT_EQ(Solver<2>(board).remove_option(Location<2>(1), 2), 0);
+	EXPECT_NO_THROW(remove_option(board, Location<2>(1), 4));
+	EXPECT_EQ(remove_option(board, Location<2>(1), 2), 0);
 
 	// normal remove from 4
 	EXPECT_TRUE(board[2][1].is_option(4));
 	EXPECT_EQ(board[2][1].count(), 4);
-	EXPECT_EQ(Solver<2>(board).remove_option(Location<2>(2, 1), 4), 1);
+	EXPECT_EQ(remove_option(board, Location<2>(2, 1), 4), 1);
 	// normal remove from 3 -> dual_option
 	EXPECT_EQ(board[2][1].count(), 3);
-	EXPECT_EQ(Solver<2>(board).remove_option(Location<2>(2, 1), 3), 1);
+	EXPECT_EQ(remove_option(board, Location<2>(2, 1), 3), 1);
 	// normal remove from 2 -> single option
 	EXPECT_EQ(board[2][1].count(), 2);
-	EXPECT_GT(Solver<2>(board).remove_option(Location<2>(2, 1), 2), 1);
+	EXPECT_GT(remove_option(board, Location<2>(2, 1), 2), 1);
 	EXPECT_EQ(board[2][1].count(), 0);
 	EXPECT_EQ(board[2][1].count_all(), 1);
 
@@ -295,23 +295,20 @@ TEST(Solver, deathtests_remove_option)
 	// last option (not answer)
 	B[0][2] = std::bitset<5>{"01001"}; // 3
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option(Location<2>(2), 3),
-		"Assertion failed: count > 0");
+		remove_option(B, Location<2>(2), 3), "Assertion failed: count > 0");
 	// check input
 	// loc out of bounds (2-sided)
 #ifdef _DEBUG
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option(Location<2>(-1), 3),
-		"Assertion failed: is_valid");
+		remove_option(B, Location<2>(-1), 3), "Assertion failed: is_valid");
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option(Location<2>(20), 3),
-		"Assertion failed: is_valid");
+		remove_option(B, Location<2>(20), 3), "Assertion failed: is_valid");
 	// value out of bounds (2-sided)
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option(Location<2>(2), 9),
+		remove_option(B, Location<2>(2), 9),
 		"Assertion failed: is_valid_value");
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option(Location<2>(2), 0),
+		remove_option(B, Location<2>(2), 0),
 		"Assertion failed: is_valid_value");
 #endif // _DEBUG
 
