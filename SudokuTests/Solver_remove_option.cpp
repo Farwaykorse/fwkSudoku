@@ -82,13 +82,13 @@ TEST(Solver, remove_option_section)
 	ASSERT_TRUE(B1[0][0].is_answer(1));
 	// row
 	ASSERT_EQ(B1[0][1].count(), 4);
-	EXPECT_NO_THROW(Solver<2>(B1).remove_option_section(B1.row(0), L(0), 1));
+	EXPECT_NO_THROW(remove_option_section(B1, B1.row(0), L(0), 1));
 	EXPECT_EQ(B1[0][1].count(), 3);
 	B1[0][1] = 2;
-	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.row(0), L(0, 1), 2), 2);
+	EXPECT_EQ(remove_option_section(B1, B1.row(0), L(0, 1), 2), 2);
 	// trigger single_option
 	B1[0][2] = 3;
-	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.row(0), L(0, 2), 3), 6);
+	EXPECT_EQ(remove_option_section(B1, B1.row(0), L(0, 2), 3), 6);
 	EXPECT_TRUE(B1[0][3].is_answer(4));
 	EXPECT_EQ(B1[3][3].count(), 3);
 	EXPECT_EQ(B1[1][3].count(), 3);
@@ -102,13 +102,13 @@ TEST(Solver, remove_option_section)
 	B1       = cB1;
 	B1[0][0] = 1;
 	ASSERT_EQ(B1[1][0].count(), 4);
-	EXPECT_NO_THROW(Solver<2>(B1).remove_option_section(B1.col(0), L(0), 1));
+	EXPECT_NO_THROW(remove_option_section(B1, B1.col(0), L(0), 1));
 	EXPECT_EQ(B1[1][0].count(), 3);
 	B1[1][0] = 2;
-	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.col(0), L(1, 0), 2), 2);
+	EXPECT_EQ(remove_option_section(B1, B1.col(0), L(1, 0), 2), 2);
 	// trigger single_option
 	B1[2][0] = 3;
-	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.col(0), L(2, 0), 3), 6);
+	EXPECT_EQ(remove_option_section(B1, B1.col(0), L(2, 0), 3), 6);
 	EXPECT_TRUE(B1[3][0].is_answer(4));
 	EXPECT_EQ(B1[3][3].count(), 3);
 	EXPECT_EQ(B1[3][1].count(), 3);
@@ -122,13 +122,13 @@ TEST(Solver, remove_option_section)
 	B1       = cB1;
 	B1[0][0] = 1;
 	ASSERT_EQ(B1[1][1].count(), 4);
-	EXPECT_NO_THROW(Solver<2>(B1).remove_option_section(B1.block(0), L(0), 1));
+	EXPECT_NO_THROW(remove_option_section(B1, B1.block(0), L(0), 1));
 	EXPECT_EQ(B1[1][1].count(), 3);
 	B1[0][1] = 2;
-	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.block(0), L(0, 1), 2), 2);
+	EXPECT_EQ(remove_option_section(B1, B1.block(0), L(0, 1), 2), 2);
 	// trigger single_option
 	B1[1][0] = 3;
-	EXPECT_EQ(Solver<2>(B1).remove_option_section(B1.block(0), L(1, 0), 3), 6);
+	EXPECT_EQ(remove_option_section(B1, B1.block(0), L(1, 0), 3), 6);
 	EXPECT_TRUE(B1[1][1].is_answer(4));
 	EXPECT_EQ(B1[1][2].count(), 3);
 	EXPECT_EQ(B1[1][3].count(), 3);
@@ -142,7 +142,7 @@ TEST(Solver, remove_option_section)
 	B1       = cB1;
 	B1[0][0] = 2;
 	B1[0][1] = 2;
-	EXPECT_NO_THROW(Solver<2>(B1).remove_option_section(B1.row(0), L(0), 2));
+	EXPECT_NO_THROW(remove_option_section(B1, B1.row(0), L(0), 2));
 	EXPECT_TRUE(B1[0][0].is_answer(2));
 	EXPECT_TRUE(B1[0][1].is_answer(2));
 }
@@ -155,40 +155,32 @@ TEST(Solver, remove_option_section_1)
 	Board<Options<4>, 2> B1;
 	// SEE deathtest: when ignore is empty
 	// row
-	ASSERT_NO_THROW(
-		Solver<2>(B1).remove_option_section(B1.row(0), vL{L(0), L(1)}, 1));
+	ASSERT_NO_THROW(remove_option_section(B1, B1.row(0), vL{L(0), L(1)}, 1));
 	EXPECT_EQ(B1[0][3].count(), 3);
-	EXPECT_EQ(
-		Solver<2>(B1).remove_option_section(B1.row(0), vL{L(0), L(1)}, 2), 2);
+	EXPECT_EQ(remove_option_section(B1, B1.row(0), vL{L(0), L(1)}, 2), 2);
 	EXPECT_EQ(B1[0][0].count(), 4);
 	EXPECT_EQ(B1[0][1].count(), 4);
 	EXPECT_EQ(B1[0][2].count(), 2);
 	EXPECT_EQ(B1[0][3].count(), 2);
 	// col
-	ASSERT_NO_THROW(
-		Solver<2>(B1).remove_option_section(B1.col(0), vL{L(0), L(1, 0)}, 1));
+	ASSERT_NO_THROW(remove_option_section(B1, B1.col(0), vL{L(0), L(1, 0)}, 1));
 	EXPECT_EQ(B1[3][0].count(), 3);
-	EXPECT_EQ(
-		Solver<2>(B1).remove_option_section(B1.col(0), vL{L(0), L(1, 0)}, 2),
-		2);
+	EXPECT_EQ(remove_option_section(B1, B1.col(0), vL{L(0), L(1, 0)}, 2), 2);
 	EXPECT_EQ(B1[0][0].count(), 4);
 	EXPECT_EQ(B1[1][0].count(), 4);
 	EXPECT_EQ(B1[2][0].count(), 2);
 	EXPECT_EQ(B1[3][0].count(), 2);
 	// block
-	ASSERT_NO_THROW(
-		Solver<2>(B1).remove_option_section(B1.block(0), vL{L(0), L(1)}, 1));
+	ASSERT_NO_THROW(remove_option_section(B1, B1.block(0), vL{L(0), L(1)}, 1));
 	EXPECT_EQ(B1[1][0].count(), 3);
-	EXPECT_EQ(
-		Solver<2>(B1).remove_option_section(B1.block(0), vL{L(0), L(1)}, 2), 2);
+	EXPECT_EQ(remove_option_section(B1, B1.block(0), vL{L(0), L(1)}, 2), 2);
 	EXPECT_EQ(B1[0][0].count(), 4);
 	EXPECT_EQ(B1[0][1].count(), 4);
 	EXPECT_EQ(B1[1][0].count(), 2);
 	EXPECT_EQ(B1[1][1].count(), 2);
 	// single ignore value
 	ASSERT_EQ(B1[3][1].count(), 4);
-	ASSERT_NO_THROW(
-		Solver<2>(B1).remove_option_section(B1.row(3), vL{L(3, 0)}, 3));
+	ASSERT_NO_THROW(remove_option_section(B1, B1.row(3), vL{L(3, 0)}, 3));
 	EXPECT_EQ(B1[3][1].count(), 3);
 }
 TEST(Solver, remove_option_section_2)
@@ -202,12 +194,10 @@ TEST(Solver, remove_option_section_2)
 	Board<Options<4>, 2> B;
 	// row
 	ASSERT_NO_THROW(
-		Solver<2>(B).remove_option_section(B.row(0), vL{L(0), L(1)}, v{1, 2}));
+		remove_option_section(B, B.row(0), vL{L(0), L(1)}, v{1, 2}));
 	EXPECT_EQ(B[0][3].count(), 2);
 	EXPECT_EQ(
-		Solver<2>(B).remove_option_section(
-			B.row(1), vL{L(1, 0), L(1, 1)}, v{3, 4}),
-		4);
+		remove_option_section(B, B.row(1), vL{L(1, 0), L(1, 1)}, v{3, 4}), 4);
 	EXPECT_EQ(B[0][0].count(), 4);
 	EXPECT_EQ(B[0][1].count(), 4);
 	EXPECT_EQ(B[1][1].count(), 4);
@@ -215,11 +205,11 @@ TEST(Solver, remove_option_section_2)
 	EXPECT_EQ(B[0][3].count(), 2);
 	// col
 	B = cB; // reset
-	ASSERT_NO_THROW(Solver<2>(B).remove_option_section(
-		B.col(0), vL{L(0), L(1, 0)}, v{1, 3}));
+	ASSERT_NO_THROW(
+		remove_option_section(B, B.col(0), vL{L(0), L(1, 0)}, v{1, 3}));
 	EXPECT_EQ(B[3][0].count(), 2);
 	EXPECT_EQ(
-		Solver<2>(B).remove_option_section(
+		remove_option_section(B, 
 			B.col(3), vL{L(0, 3), L(1, 3)}, v{2, 3, 4}),
 		44);
 	EXPECT_EQ(B[0][0].count(), 2);
@@ -228,21 +218,18 @@ TEST(Solver, remove_option_section_2)
 	EXPECT_EQ(B[3][0].count(), 0);
 	// block
 	B = cB; // reset
-	ASSERT_NO_THROW(Solver<2>(B).remove_option_section(
-		B.block(0), vL{L(0), L(1)}, v{1, 3}));
+	ASSERT_NO_THROW(
+		remove_option_section(B, B.block(0), vL{L(0), L(1)}, v{1, 3}));
 	EXPECT_EQ(B[1][0].count(), 2);
 	EXPECT_EQ(
-		Solver<2>(B).remove_option_section(
-			B.block(3), vL{L(2, 2), L(3, 1)}, v{2, 4}),
-		6);
+		remove_option_section(B, B.block(3), vL{L(2, 2), L(3, 1)}, v{2, 4}), 6);
 	EXPECT_EQ(B[0][0].count(), 4);
 	EXPECT_EQ(B[0][1].count(), 4);
 	EXPECT_EQ(B[1][0].count(), 2);
 	EXPECT_EQ(B[1][1].count(), 2);
 	// single ignore value
 	ASSERT_EQ(B[3][1].count(), 4);
-	ASSERT_NO_THROW(
-		Solver<2>(B).remove_option_section(B.row(3), vL{L(3, 0)}, v{3}));
+	ASSERT_NO_THROW(remove_option_section(B, B.row(3), vL{L(3, 0)}, v{3}));
 	EXPECT_EQ(B[3][1].count(), 2);
 }
 TEST(Solver, remove_option_outside_block)
@@ -317,21 +304,21 @@ TEST(Solver, deathtests_remove_option)
 	// deathtest: loc-> !is_answer(value)
 	ASSERT_FALSE(B[0][0].is_answer());
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(B.row(0), L(0), 2),
+		remove_option_section(B, B.row(0), L(0), 2),
 		"Assertion failed: .*is_answer.*");
 	// ignore is part of section
 	B[0][0] = 2;
 	ASSERT_TRUE(B[0][0].is_answer(2));
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(B.row(1), L(0), 2),
+		remove_option_section(B, B.row(1), L(0), 2),
 		"Assertion failed: is_same_section.*");
 	ASSERT_TRUE(B[0][0].is_answer(2));
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(B.col(1), L(0), 2),
+		remove_option_section(B, B.col(1), L(0), 2),
 		"Assertion failed: is_same_section.*");
 	ASSERT_TRUE(B[0][0].is_answer(2));
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(B.block(1), L(0), 2),
+		remove_option_section(B, B.block(1), L(0), 2),
 		"Assertion failed: is_same_section.*");
 
 	//===-----------------------------------------------------------------===//
@@ -340,59 +327,56 @@ TEST(Solver, deathtests_remove_option)
 	B[0][0] = 3;
 	ASSERT_TRUE(B[0][0].is_answer(3));
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(B.row(0), vL{}, 3),
+		remove_option_section(B, B.row(0), vL{}, 3),
 		"Assertion failed: is_valid.ignore.");
 	// ignore-location out of bounds (1-sided, assume check tested earlier)
 #ifdef _DEBUG
 	B[0][0] = 3;
 	ASSERT_TRUE(B[0][0].is_answer(3));
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(B.row(0), vL{L(0), L(1), L(16)}, 3),
+		remove_option_section(B, B.row(0), vL{L(0), L(1), L(16)}, 3),
 		"Assertion failed: is_valid.ignore.");
 #endif // _DEBUG
 	// ignore-locations not sorted
 	ASSERT_TRUE(B[0][0].is_answer(3));
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(B.row(0), vL{L(0), L(7), L(6)}, 3),
+		remove_option_section(B, B.row(0), vL{L(0), L(7), L(6)}, 3),
 		"Assertion failed: is_valid.ignore.");
 	// invalid value
 #ifdef _DEBUG
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(B.row(0), vL{L(1), L(3)}, 0),
+		remove_option_section(B, B.row(0), vL{L(1), L(3)}, 0),
 		"Assertion failed: is_valid_value<N>.value.");
 #endif // _DEBUG
 	// assert atleast one ignore-location inside section
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(
-			B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, 1),
+		remove_option_section(B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, 1),
 		"Assertion failed: is_same_section.*");
 
 	//===-----------------------------------------------------------------===//
 	// remove_option_section(SectionT, std::vector<Location>, std::vector<int>)
 	// ignore is empty
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(B.row(0), vL{}, v{3, 1, 4}),
+		remove_option_section(B, B.row(0), vL{}, v{3, 1, 4}),
 		"Assertion failed: is_valid.ignore.");
 	// values is empty
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(
+		remove_option_section(B, 
 			B.row(0), vL{L(0), L(1), L(11)}, v{}),
 		"Assertion failed: is_valid_value");
 	// an value out-of-bounds
 #ifdef _DEBUG
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(
-			B.row(0), vL{L(0), L(1), L(11)}, v{1, 2, 0}),
+		remove_option_section(B, B.row(0), vL{L(0), L(1), L(11)}, v{1, 2, 0}),
 		"Assertion failed: is_valid_value");
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(
-			B.row(0), vL{L(0), L(1), L(11)}, v{1, 2, 5}),
+		remove_option_section(B, B.row(0), vL{L(0), L(1), L(11)}, v{1, 2, 5}),
 		"Assertion failed: is_valid_value");
 #endif // _DEBUG
 	// assert atleast one ignore-location inside section
 	EXPECT_DEBUG_DEATH(
-		Solver<2>(B).remove_option_section(
-			B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, v{1, 2}),
+		remove_option_section(
+			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, v{1, 2}),
 		"Assertion failed: is_same_section.*");
 
 	//===-----------------------------------------------------------------===//

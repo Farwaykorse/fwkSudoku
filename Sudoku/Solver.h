@@ -53,16 +53,7 @@ public:
 	template<typename ItrT, typename = if_forward<ItrT>>
 	void setValue(ItrT begin, ItrT end);
 
-	template<typename SectionT>
-	int remove_option_section(SectionT, Location ignore, value_t);
-	template<typename SectionT>
-	int remove_option_section(
-		SectionT, const std::vector<Location>& ignore, value_t);
-	template<typename SectionT>
-	int remove_option_section(
-		SectionT,
-		const std::vector<Location>& ignore,
-		const std::vector<value_t>& values);
+
 	template<typename SectionT>
 	int remove_option_outside_block(SectionT, Location block_loc, value_t);
 
@@ -98,12 +89,24 @@ template<int N, typename SectionT>
 auto find_locations(SectionT, Options<elem_size<N>> value);
 
 // remove an option: triggers solvers single_option()
-template<
-	int N,
-	typename Options  = Options<elem_size<N>>,
-	typename Location = Location<N>>
-int remove_option(Board<Options, N>&, Location, unsigned int value);
+template<int N, typename Options = Options<elem_size<N>>>
+int remove_option(Board<Options, N>&, Location<N>, unsigned int value);
 
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+int remove_option_section(
+	Board<Options, N>&, SectionT, Location<N> ignore, unsigned int value);
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+int remove_option_section(
+	Board<Options, N>&,
+	SectionT,
+	const std::vector<Location<N>>& ignore,
+	unsigned int value);
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+int remove_option_section(
+	Board<Options, N>&,
+	SectionT,
+	const std::vector<Location<N>>& ignore,
+	const std::vector<unsigned int>& values);
 //===---------------------------------------------------------------------===//
 
 
@@ -155,9 +158,9 @@ inline void Solver<N>::setValue(const ItrT begin, const ItrT end)
 }
 
 //	remove option from element, make answer if last option
-template<int N, typename Options, typename Location>
+template<int N, typename Options>
 int remove_option(
-	Board<Options, N>& board, const Location loc, const unsigned int value)
+	Board<Options, N>& board, const Location<N> loc, const unsigned int value)
 {
 	assert(is_valid(loc));
 	assert(is_valid_value<N>(value));
@@ -219,9 +222,9 @@ inline int Solver<N>::single_option(const Location loc, const value_t value)
 		setValue(loc, value);
 		++changes;
 	}
-	changes += remove_option_section(board_.row(loc), loc, value);
-	changes += remove_option_section(board_.col(loc), loc, value);
-	changes += remove_option_section(board_.block(loc), loc, value);
+	changes += remove_option_section(board_, board_.row(loc), loc, value);
+	changes += remove_option_section(board_, board_.col(loc), loc, value);
+	changes += remove_option_section(board_, board_.block(loc), loc, value);
 	return changes;
 }
 
@@ -250,18 +253,25 @@ inline int Solver<N>::dual_option(const Location loc)
 			if (is_same_row(loc, Location(i)))
 			{
 				changes += remove_option_section(
-					board_.row(loc), sorted_loc(Location(i)), item.available());
+					board_,
+					board_.row(loc),
+					sorted_loc(Location(i)),
+					item.available());
 			}
 			else if (is_same_col(loc, Location(i)))
 			{
 				changes += remove_option_section(
-					board_.col(loc), sorted_loc(Location(i)), item.available());
+					board_,
+					board_.col(loc),
+					sorted_loc(Location(i)),
+					item.available());
 			}
 			// run don't if already answered in one of the previous
 			if (is_same_block(loc, Location(i)) && !item.is_answer())
 			{
 				// NOTE this is slow
 				changes += remove_option_section(
+					board_,
 					board_.block(loc),
 					sorted_loc(Location(i)),
 					item.available());
@@ -327,20 +337,20 @@ inline int Solver<N>::multi_option(const Location loc, size_t count)
 				in_row.size() == count)
 			{
 				changes += remove_option_section(
-					board_.row(loc), in_row, item.available());
+					board_, board_.row(loc), in_row, item.available());
 			}
 			if (const auto in_col{get_same_col(loc, list)};
 				in_col.size() == count)
 			{
 				changes += remove_option_section(
-					board_.col(loc), in_col, item.available());
+					board_, board_.col(loc), in_col, item.available());
 			}
 			if (const auto in_block{get_same_block(loc, list)};
 				in_block.size() == count)
 			{
 				// NOTE this is slow
 				changes += remove_option_section(
-					board_.block(loc), in_block, item.available());
+					board_, board_.block(loc), in_block, item.available());
 			}
 		}
 		return changes;
@@ -349,12 +359,15 @@ inline int Solver<N>::multi_option(const Location loc, size_t count)
 }
 
 //	remove [value] in [ignore] from other elements in set
-template<int N>
-template<typename SectionT>
-inline int Solver<N>::remove_option_section(
-	const SectionT section, const Location ignore, const value_t value)
+template<int N, typename Options, typename SectionT>
+int remove_option_section(
+	Board<Options, N>& board,
+	const SectionT section,
+	const Location<N> ignore,
+	const unsigned int value)
 {
 	{
+		using Board = Board<Options, N>;
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);
@@ -362,7 +375,7 @@ inline int Solver<N>::remove_option_section(
 		assert(is_valid(ignore));
 		assert(is_valid_value<N>(value));
 		assert(is_same_section(section, ignore));
-		assert(board_.at(ignore).is_answer(value)); // first set as anwer!
+		assert(board.at(ignore).is_answer(value)); // first set as anwer!
 	}
 	int changes{0};
 	const auto end = section.cend();
@@ -371,7 +384,7 @@ inline int Solver<N>::remove_option_section(
 	{
 		if (itr.location() != ignore)
 		{
-			changes += remove_option(board_, itr.location(), value);
+			changes += remove_option(board, itr.location(), value);
 		}
 	}
 	return changes;
@@ -409,15 +422,16 @@ inline int Solver<N>::remove_option_outside_block(
 }
 
 //	remove [value] from set if not part of [loc]s
-template<int N>
-template<typename SectionT>
-inline int Solver<N>::remove_option_section(
+template<int N, typename Options, typename SectionT>
+inline int remove_option_section(
+	Board<Options, N>& board,
 	const SectionT section,
-	const std::vector<Location>& ignore,
-	const value_t value)
+	const std::vector<Location<N>>& ignore,
+	const unsigned int value)
 {
 	{
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		static_assert(
+			std::is_base_of_v<typename Board<Options, N>::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
@@ -436,11 +450,11 @@ inline int Solver<N>::remove_option_section(
 	{
 		// TODO is the is_option check really faster?
 		if (itr->is_option(value) &&
-			std::none_of(begin, end, [L1 = itr.location()](Location L2) {
+			std::none_of(begin, end, [L1 = itr.location()](Location<N> L2) {
 				return L1 == L2;
 			})) // <algorithm>
 		{
-			changes += remove_option(board_, itr.location(), value);
+			changes += remove_option(board, itr.location(), value);
 		}
 	}
 	return changes;
@@ -448,14 +462,15 @@ inline int Solver<N>::remove_option_section(
 
 // remove [value]s from [section] if not part of [loc]s
 // the ignore Location vector must be sorted
-template<int N>
-template<typename SectionT>
-inline int Solver<N>::remove_option_section(
+template<int N, typename Options, typename SectionT>
+int remove_option_section(
+	Board<Options, N>& board,
 	const SectionT section,
-	const std::vector<Location>& ignore,
-	const std::vector<value_t>& values)
+	const std::vector<Location<N>>& ignore,
+	const std::vector<unsigned int>& values)
 {
 	{
+		using Board = Board<Options, N>;
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);
@@ -471,13 +486,13 @@ inline int Solver<N>::remove_option_section(
 	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
 	{
 		if (not(itr->is_answer()) and
-			std::none_of(begin, end, [L1 = itr.location()](Location L2) {
+			std::none_of(begin, end, [L1 = itr.location()](Location<N> L2) {
 				return L1 == L2;
 			})) // <algorithm>
 		{
 			for (auto v : values)
 			{ //! Cascade (!)
-				changes += remove_option(board_, itr.location(), v);
+				changes += remove_option(board, itr.location(), v);
 			}
 		}
 	}
@@ -622,7 +637,7 @@ inline int Solver<N>::set_section_locals(
 			else if (is_same_block<N>(locations.cbegin(), locations.cend()))
 			{ // remove from rest of block
 				changes += remove_option_section(
-					board_.block(locations[0]), locations, value);
+					board_, board_.block(locations[0]), locations, value);
 			}
 		}
 	}
