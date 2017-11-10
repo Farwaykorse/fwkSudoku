@@ -481,7 +481,7 @@ inline int Solver<N>::unique_in_section(const SectionT section)
 {
 	static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 
-	const auto worker = Solvers_::appearance_once<N>(section);
+	const auto worker = appearance_once<N>(section);
 	return set_uniques(section, worker);
 }
 
@@ -537,7 +537,6 @@ template<int N>
 template<typename SectionT>
 inline int Solver<N>::section_exclusive(const SectionT section)
 {
-	using namespace Solvers_;
 	{
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;

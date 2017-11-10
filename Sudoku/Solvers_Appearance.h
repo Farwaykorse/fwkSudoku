@@ -15,7 +15,7 @@
 #include "Solver.fwd.h"
 
 
-namespace Sudoku::Solvers_
+namespace Sudoku
 {
 using namespace Sudoku::Utility_;
 // TODO rename: use a generalized function name
@@ -179,4 +179,4 @@ auto appearance_once(T section)
 	return worker.flip(); // multiple uses -> single-use
 }
 
-} // namespace Sudoku::Solvers_
+} // namespace Sudoku

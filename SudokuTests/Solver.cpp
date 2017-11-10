@@ -199,7 +199,6 @@ TEST(Solver, setValue)
 }
 TEST(Solvers_, appearance_once)
 {
-	using namespace Solvers_;
 	// clang-format off
 	const std::vector<int> v1
 	{
@@ -318,8 +317,6 @@ TEST(Solvers_, appearance_once)
 }
 TEST(Solvers_, appearance_sets)
 {
-	using namespace Solvers_;
-
 	// Example as shown in implementation
 	Board<Options<9>, 3> board{};
 	board[0][0] = std::bitset<10>{"1000000011"};
@@ -817,14 +814,14 @@ TEST(Solver, set_uniques)
 	EXPECT_EQ(B1[0][3].count(), 4);
 
 	// Row (one value)
-	auto worker = Solvers_::appearance_once<2>(B1.row(0));
+	auto worker = appearance_once<2>(B1.row(0));
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
 	EXPECT_NO_FATAL_FAILURE(S1.set_uniques(B1.row(0), worker));
 	EXPECT_EQ(B1[0][0].count(), 3); // no change
 	EXPECT_EQ(B1[0][1].count(), 3); // no change
 	EXPECT_EQ(B1[0][2].count(), 3); // no change
 	EXPECT_TRUE(B1[0][3].is_answer(1));
-	worker = Solvers_::appearance_once<2>(B1.row(2));
+	worker = appearance_once<2>(B1.row(2));
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
 	EXPECT_EQ(S1.set_uniques(B1.row(2), worker), 1);
 	EXPECT_TRUE(B1[2][1].is_answer(1));
@@ -832,7 +829,7 @@ TEST(Solver, set_uniques)
 	B1 = cB1; // reset
 	ASSERT_EQ(B1[0][3].count(), 4);
 	ASSERT_EQ(B1[2][1].count(), 4);
-	worker = Solvers_::appearance_once<2>(B1.col(1));
+	worker = appearance_once<2>(B1.col(1));
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
 	EXPECT_EQ(S1.set_uniques(B1.col(1), worker), 1);
 	EXPECT_EQ(B1[0][1].count(), 3); // no change
@@ -842,7 +839,7 @@ TEST(Solver, set_uniques)
 	// Block (one value)
 	B1 = cB1; // reset
 	ASSERT_EQ(B1[2][1].count(), 4);
-	worker = Solvers_::appearance_once<2>(B1.block(2));
+	worker = appearance_once<2>(B1.block(2));
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
 	EXPECT_EQ(S1.set_uniques(B1.block(2), worker), 1);
 	EXPECT_EQ(B1[2][0].count(), 3); // no change
@@ -858,7 +855,7 @@ TEST(Solver, set_uniques)
 	B2[0][1] = std::bitset<5>{"10101"};
 	B2[0][2] = std::bitset<5>{"11101"};
 	B2[0][3] = std::bitset<5>{"10101"};
-	worker   = Solvers_::appearance_once<2>(B2.row(0));
+	worker   = appearance_once<2>(B2.row(0));
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"01011"}});
 	EXPECT_EQ(Solver<2>(B2).set_uniques(B2.row(0), worker), 10);
 	// 10 = ans(0){1} + col(0){3} + block(0){1}
