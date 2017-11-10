@@ -85,17 +85,21 @@ public:
 	int set_section_locals(SectionT, int rep_count, Options worker);
 	int set_section_locals(Block, int rep_count, Options worker);
 
-	template<typename SectionT>
-	auto find_locations(SectionT, value_t, int rep_count = elem_size<N>) const;
-	template<typename ItrT>
-	auto find_locations(
-		ItrT begin, ItrT end, value_t, int rep_count = elem_size<N>) const;
-	template<typename SectionT>
-	auto find_locations(SectionT, Options value) const;
-
 private:
 	Board& board_;
 };
+
+//===---------------------------------------------------------------------===//
+// free functions
+template<int N, typename SectionT>
+auto find_locations(SectionT, unsigned int value, int rep_count = elem_size<N>);
+template<int N, typename ItrT>
+auto find_locations(
+	ItrT begin, ItrT end, unsigned int value, int rep_count = elem_size<N>);
+template<int N, typename SectionT>
+auto find_locations(SectionT, Options<elem_size<N>> value);
+
+//===---------------------------------------------------------------------===//
 
 
 template<int N>
@@ -604,7 +608,7 @@ inline int Solver<N>::set_section_locals(
 	{
 		if (worker[value])
 		{
-			const auto locations = find_locations(section, value, rep_count);
+			const auto locations = find_locations<N>(section, value, rep_count);
 			if (locations.size() != static_cast<size_t>(rep_count))
 			{
 				assert(changes > 0); // changed by earlier value in worker
@@ -640,7 +644,7 @@ inline int Solver<N>::set_section_locals(
 	{
 		if (worker[value])
 		{
-			const auto locations = find_locations(block, value, rep_count);
+			const auto locations = find_locations<N>(block, value, rep_count);
 			if (locations.size() != static_cast<size_t>(rep_count))
 			{
 				assert(changes > 0); // changed by earlier value in worker
@@ -661,30 +665,31 @@ inline int Solver<N>::set_section_locals(
 }
 
 //	List locations in [section] where [value] is an option
-template<int N>
-template<typename SectionT>
-inline auto Solver<N>::find_locations(
-	const SectionT section, value_t value, const int rep_count) const
+template<int N, typename SectionT>
+auto find_locations(
+	const SectionT section, unsigned int value, const int rep_count)
 {
 	{
+		using Options = Options<elem_size<N>>;
+		using Board   = Board<Options, N>;
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		assert(rep_count <= elem_size<N>);
 	}
 	const auto begin = section.cbegin();
 	const auto end   = section.cend();
 
-	return find_locations(begin, end, value, rep_count);
+	return find_locations<N>(begin, end, value, rep_count);
 }
 
 //	List locations where [value] is an option
-template<int N>
-template<typename ItrT>
-inline auto Solver<N>::find_locations(
+template<int N, typename ItrT>
+auto find_locations(
 	const ItrT begin,
 	const ItrT end,
-	const value_t value,
-	const int rep_count) const
+	const unsigned int value,
+	const int rep_count)
 {
+	using Options = Options<elem_size<N>>;
 	{
 		static_assert(Utility_::is_input<ItrT>);
 		using iterator = typename ItrT::const_iterator;
@@ -692,7 +697,7 @@ inline auto Solver<N>::find_locations(
 		assert(is_valid_value<N>(value));
 		assert(rep_count > 0 && rep_count <= full_size<N>);
 	}
-	std::vector<Location> locations{};
+	std::vector<Location<N>> locations{};
 	locations.reserve(static_cast<size_t>(rep_count));
 
 	auto last = begin;
@@ -713,15 +718,15 @@ inline auto Solver<N>::find_locations(
 }
 
 //	List locations in [section] where [value] is an option
-template<int N>
-template<typename SectionT>
-inline auto
-	Solver<N>::find_locations(const SectionT section, const Options value) const
+template<int N, typename SectionT>
+auto find_locations(const SectionT section, const Options<elem_size<N>> value)
 {
 	{
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using Options = Options<elem_size<N>>;
+		using Board   = Board<Options, N>;
+		static_assert(std::is_base_of_v<Board::Section, SectionT>);
 	}
-	std::vector<Location> locations{};
+	std::vector<Location<N>> locations{};
 
 	auto last      = section.cbegin();
 	const auto end = section.cend();

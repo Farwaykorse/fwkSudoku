@@ -535,53 +535,49 @@ TEST(Solver, find_locations)
 	B[3][0] = set{"10011"};
 	std::vector<loc> list{};
 	// row/col/block
-	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.row(0), 1, 3));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), 1, 3));
 	EXPECT_EQ(list.size(), 3);
 	EXPECT_EQ(list[0], loc(1));
 	EXPECT_EQ(list[1], loc(2));
 	EXPECT_EQ(list[2], loc(3));
-	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.col(0), 1, 3));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.col(0), 1, 3));
 	EXPECT_EQ(list.size(), 3);
 	EXPECT_EQ(list[0], loc(1, 0));
 	EXPECT_EQ(list[1], loc(2, 0));
 	EXPECT_EQ(list[2], loc(3, 0));
-	EXPECT_NO_FATAL_FAILURE(
-		list = Solver<2>(B).find_locations(B.block(0), 1, 2));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), 1, 2));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[0], loc(0, 1));
 	EXPECT_EQ(list[1], loc(1, 0));
 	// incorrect rep_count: too low
-	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.row(0), 1, 2));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), 1, 2));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[1], loc(2));
 	// incorrect rep_count: too high
-	EXPECT_NO_FATAL_FAILURE(
-		list = Solver<2>(B).find_locations(B.block(0), 1, 3));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), 1, 3));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[1], loc(1, 0));
 	EXPECT_NO_FATAL_FAILURE(
-		Solver<2>(B).find_locations(B.row(0).cbegin(), B.row(0).cend(), 3, 5));
+		find_locations<2>(B.row(0).cbegin(), B.row(0).cend(), 3, 5));
 	// no rep_count
-	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.row(0), 1));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), 1));
 	EXPECT_EQ(list.size(), 3);
 	EXPECT_EQ(list[0], loc(1));
 	EXPECT_EQ(list[1], loc(2));
 	EXPECT_EQ(list[2], loc(3));
-	EXPECT_NO_FATAL_FAILURE(list = Solver<2>(B).find_locations(B.block(0), 1));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), 1));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[1], loc(1, 0));
 	// partial section
 	EXPECT_NO_FATAL_FAILURE(
-		list = Solver<2>(B).find_locations(
-			B.row(0).cbegin() + 2, B.row(0).cend(), 1, 2));
+		list = find_locations<2>(B.row(0).cbegin() + 2, B.row(0).cend(), 1, 2));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[0], loc(2));
 	EXPECT_EQ(list[1], loc(3));
 
 	// find Options
 	Options<4> value{set{"10011"}};
-	EXPECT_NO_FATAL_FAILURE(
-		list = Solver<2>(B).find_locations(B.row(0), value));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), value));
 	EXPECT_EQ(list.size(), 1);
 	EXPECT_EQ(list[0], loc(2));
 }
@@ -1819,20 +1815,18 @@ TEST(Solver, deathtest)
 		std::vector<loc> list{};
 		// rep_count = 0
 		EXPECT_DEBUG_DEATH(
-			Solver<2>(B5).find_locations(B5.row(0), 3, 0),
+			find_locations<2>(B5.row(0), 3, 0),
 			"Assertion failed: rep_count > 0");
 		// section -> rep_count > elem_size
 		EXPECT_DEBUG_DEATH(
-			Solver<2>(B5).find_locations(B5.row(0), 3, 5),
+			find_locations<2>(B5.row(0), 3, 5),
 			"Assertion failed: .* <= elem_size");
 		// itr -> rep_count > full_size
 		EXPECT_DEBUG_DEATH(
-			Solver<2>(B5).find_locations(
-				B5.row(0).cbegin(), B5.row(0).cend(), 3, 17),
+			find_locations<2>(B5.row(0).cbegin(), B5.row(0).cend(), 3, 17),
 			"Assertion failed: .* <= full_size");
 		EXPECT_DEBUG_DEATH(
-			Solver<2>(B5).find_locations(
-				B5.row(0).cbegin(), B5.row(0).cend(), 2),
+			find_locations<2>(B5.row(0).cbegin(), B5.row(0).cend(), 2),
 			"Assertion failed: not.*empty..");
 	}
 	// set_section_locals()
