@@ -6,7 +6,5 @@
 
 namespace Sudoku
 {
-template<int N>
-class Solver;
 
 } // namespace Sudoku

@@ -30,31 +30,6 @@
 
 namespace Sudoku
 {
-template<int N>
-class Solver
-{
-	using Location       = Location<N>;
-	using Location_Block = Location_Block<N>;
-	using value_t        = unsigned int;
-
-	using Options = Options<elem_size<N>>;
-	using Board   = Sudoku::Board<Options, N>;
-	using Row     = typename Board::Row;
-	using Col     = typename Board::Col;
-	using Block   = typename Board::Block;
-	template<typename ItrT>
-	using if_forward = std::enable_if_t<Utility_::is_forward<ItrT>>;
-
-public:
-	Solver(Board&);
-
-	int dual_option(Location);
-	int multi_option(Location, size_t = 0);
-
-private:
-	Board& board_;
-};
-
 //===-- free functions ---------------------------------------------------===//
 template<int N, typename SectionT>
 auto find_locations(SectionT, unsigned int value, int rep_count = elem_size<N>);
@@ -118,13 +93,12 @@ int single_option(Board<Options, N>&, Location<N>);
 template<int N, typename Options = Options<elem_size<N>>>
 int single_option(Board<Options, N>&, Location<N>, unsigned int value);
 
-//===---------------------------------------------------------------------===//
+template<int N, typename Options = Options<elem_size<N>>>
+int dual_option(Board<Options, N>&, Location<N>);
+template<int N, typename Options = Options<elem_size<N>>>
+int multi_option(Board<Options, N>&, Location<N>, size_t = 0);
 
-template<int N>
-inline Solver<N>::Solver(Board& options) : board_(options)
-{
-	// empty constructor
-}
+//===---------------------------------------------------------------------===//
 
 //	IF valid, Make [value] the answer for [loc]
 //	No processing
@@ -192,11 +166,11 @@ int remove_option(
 #if DUAL_ON_REMOVE == true
 		if (count == 2)
 		{
-			changes += Solver<N>(board).dual_option(loc);
+			changes += dual_option(board, loc);
 		}
 #endif // dual
 #if MULTIPLE_ON_REMOVE == true
-		changes += Solver<N>(board).multi_option(loc, count);
+		changes += multi_option(board, loc, count);
 #endif // multiple
 	}
 	return changes;
@@ -244,38 +218,40 @@ inline int single_option(
 // if 2 options in element:
 // find exact pair in section:
 // remove form other elements in section
-template<int N>
-inline int Solver<N>::dual_option(const Location loc)
+template<int N, typename Options>
+inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 {
-	assert(is_valid(loc));
-	assert(board_.at(loc).count() == 2);
-
+	using Location = Location<N>;
+	{
+		assert(is_valid(loc));
+		assert(board.at(loc).count() == 2);
+	}
 	auto sorted_loc = [loc](const Location L) {
 		const auto result = std::minmax(loc, L);
 		return std::vector<Location>{result.first, result.second};
 	};
 
 	int changes{};
-	const Options& item{board_[loc]};
+	const Options& item{board[loc]};
 	for (int i{}; i < full_size<N>; ++i)
 	{
 		// find exact same in board
-		if (board_[Location(i)] == item && Location(i) != loc)
+		if (board[Location(i)] == item && Location(i) != loc)
 		{
 			// Remove values for rest of shared elements
 			if (is_same_row(loc, Location(i)))
 			{
 				changes += remove_option_section(
-					board_,
-					board_.row(loc),
+					board,
+					board.row(loc),
 					sorted_loc(Location(i)),
 					item.available());
 			}
 			else if (is_same_col(loc, Location(i)))
 			{
 				changes += remove_option_section(
-					board_,
-					board_.col(loc),
+					board,
+					board.col(loc),
 					sorted_loc(Location(i)),
 					item.available());
 			}
@@ -284,8 +260,8 @@ inline int Solver<N>::dual_option(const Location loc)
 			{
 				// NOTE this is slow
 				changes += remove_option_section(
-					board_,
-					board_.block(loc),
+					board,
+					board.block(loc),
 					sorted_loc(Location(i)),
 					item.available());
 			}
@@ -296,28 +272,31 @@ inline int Solver<N>::dual_option(const Location loc)
 
 //	finds equal sets in section:
 //	removes form others in section
-template<int N>
-inline int Solver<N>::multi_option(const Location loc, size_t count)
+template<int N, typename Options>
+inline int
+	multi_option(Board<Options, N>& board, const Location<N> loc, size_t count)
 {
-	assert(is_valid(loc));
-	assert(count <= elem_size<N>);
-
+	using Location = Location<N>;
+	{
+		assert(is_valid(loc));
+		assert(count <= elem_size<N>);
+	}
 	if (count == 0)
 	{
-		count = static_cast<size_t>(board_[loc].count());
+		count = static_cast<size_t>(board[loc].count());
 	}
 	constexpr auto specialize = 2; // use specialization below and including
 	constexpr auto max_size   = elem_size<N> / 2; //?? Assumption, Proof needed
 	if (specialize < count && count <= max_size)
 	{
-		int changes{};                    // performance counter
-		const Options& item{board_[loc]}; // input item, to find matches to
-		std::vector<Location> list{};     // potential matches
+		int changes{};                   // performance counter
+		const Options& item{board[loc]}; // input item, to find matches to
+		std::vector<Location> list{};    // potential matches
 
 		// traverse whole board
 		for (int i{}; i < full_size<N>; ++i)
 		{
-			const auto& other = board_[Location(i)];
+			const auto& other = board[Location(i)];
 			// find exact same in board
 			// TODO rework to also pick-up cels containing [2,n) values
 			if (other.count() > 0 && // include not processed answers
@@ -350,20 +329,20 @@ inline int Solver<N>::multi_option(const Location loc, size_t count)
 				in_row.size() == count)
 			{
 				changes += remove_option_section(
-					board_, board_.row(loc), in_row, item.available());
+					board, board.row(loc), in_row, item.available());
 			}
 			if (const auto in_col{get_same_col(loc, list)};
 				in_col.size() == count)
 			{
 				changes += remove_option_section(
-					board_, board_.col(loc), in_col, item.available());
+					board, board.col(loc), in_col, item.available());
 			}
 			if (const auto in_block{get_same_block(loc, list)};
 				in_block.size() == count)
 			{
 				// NOTE this is slow
 				changes += remove_option_section(
-					board_, board_.block(loc), in_block, item.available());
+					board, board.block(loc), in_block, item.available());
 			}
 		}
 		return changes;

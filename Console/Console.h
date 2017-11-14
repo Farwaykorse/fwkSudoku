@@ -19,7 +19,6 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in);
 template<int N>
 void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
 {
-	Solver<N> S(board);
 	int found{ 1 };
 	while (found > 0)
 	{
@@ -42,7 +41,6 @@ void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
 template<int N>
 void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
 {
-	Solver<N> S(board);
 	int found{ 1 };
 	while (found > 0)
 	{

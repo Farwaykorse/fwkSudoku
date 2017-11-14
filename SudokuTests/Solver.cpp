@@ -34,116 +34,6 @@ using namespace Sudoku;
 
 namespace SudokuTests::SolversTest
 {
-namespace compiletime
-{
-	// try initializing a board in different ways
-	// will trigger compile-time errors
-
-	// Type properties
-	//===-----------------------------------------------------------------===//
-	using typeT = Solver<3>;
-	static_assert(std::is_class_v<typeT>, "class, hiding datarepresentation");
-	static_assert(!std::is_trivial_v<typeT>, "is trivial");
-	//	default constructors & trivially copyable
-	//! different between VC++ / Clang
-	// static_assert(!std::is_trivially_copyable_v<typeT>, "trivial copy");
-	//	compatible with std::memcpy & binary copy from/to files
-	static_assert(!std::is_standard_layout_v<typeT>, "standard layout");
-	//	can be converted with reinterpret_cast
-	static_assert(!std::is_pod_v<typeT>, "++ Plain Old Data");
-	//	both trivial and standard - layout, C compatible
-	// static_assert(std::has_unique_object_representations_v<typeT>, "");
-	//	C++17	trivially_copyable same object representation
-	static_assert(!std::is_empty_v<typeT>, "empty");
-	//	class with no datamembers & nothing virtual
-	static_assert(!std::is_polymorphic_v<typeT>, "polymorphic");
-	//	inherits atleast one virtual function");
-	static_assert(!std::is_final_v<typeT>, "cannot be used as base class");
-	static_assert(!std::is_abstract_v<typeT>, "abstract function");
-	//	inherits or declares at least one pure virtual function
-
-	// clang-format off
-	// default constructor: typeT()
-	static_assert(!std::is_default_constructible_v<typeT>, "default constr");
-	static_assert(!std::is_nothrow_default_constructible_v<typeT>,
-		"notrow default constructor");
-	static_assert(!std::is_trivially_default_constructible_v<typeT>,
-		"++ default, nothing virtual");
-
-	// copy constructor: typeT(const typeT&)
-	static_assert(std::is_copy_constructible_v<typeT>, "-- copy constructor");
-	static_assert(std::is_nothrow_copy_constructible_v<typeT>,
-		"-- notrow copy constructor");
-	static_assert(std::is_trivially_copy_constructible_v<typeT>,
-		"-- trivially copy constructor"); // = default
-
-	// move constructor: typeT(typeT&&)
-	static_assert(std::is_move_constructible_v<typeT>, "-- move constructor");
-	static_assert(std::is_nothrow_move_constructible_v<typeT>,
-		"-- nothrow move constructor");
-	static_assert(std::is_trivially_move_constructible_v<typeT>,
-		"-- trivially move constructor");
-
-	// copy assingment
-	static_assert(!std::is_copy_assignable_v<typeT>, "-- copy assignable");
-	static_assert(!std::is_nothrow_copy_assignable_v<typeT>,
-		"-- notrow copy assignable");
-	static_assert(!std::is_trivially_copy_assignable_v<typeT>,
-		"-- trivially copy assignable");
-
-	static_assert(!std::is_move_assignable_v<typeT>, "-- move assignable");
-	static_assert(!std::is_nothrow_move_assignable_v<typeT>,
-		"-- move assignable");
-	static_assert(!std::is_trivially_move_assignable_v<typeT>,
-		"-- trivially move assignable");
-
-	static_assert(std::is_destructible_v<typeT>, "-- destructable");
-	static_assert(std::is_nothrow_destructible_v<typeT>,
-		"-- nothrow destructable");
-	static_assert(std::is_trivially_destructible_v<typeT>,
-		"-- trivially destructable");
-	static_assert(!std::has_virtual_destructor_v<typeT>,
-		"-- virtual destructor");
-
-	// C++17 swappable
-	//TODO no Clang support
-	//static_assert(!std::is_swappable_v<typeT>, "-- swappable");
-	//static_assert(!std::is_nothrow_swappable_v<typeT>, "-- nothrow swappable");
-	//static_assert(!std::is_swappable_with_v<typeT, Options<9>>, "");
-	//static_assert(!std::is_nothrow_swappable_with_v<typeT, Options<9>>, "");
-
-	//===---------------------------------------------------------------------===//
-	// is_constructible from different types
-	// set to non-default value at initialization
-	//===---------------------------------------------------------------------===//
-	static_assert(!std::is_constructible_v<typeT, int>,
-		"-- should not construct from int");
-	static_assert(!std::is_constructible_v<typeT, unsigned int>,
-		"-- construct from unsigned int");
-	static_assert(!std::is_constructible_v<typeT, size_t>,
-		"-- construct from size_t");
-	static_assert(
-		!std::is_constructible_v<typeT, std::initializer_list<int>>, "");
-	static_assert(std::is_constructible_v<typeT, Board<Options<9>, 3>&>,
-		"Constructor takes Board<Options>&");
-	static_assert(!std::is_constructible_v<typeT, Board<Options<9>, 3>>,
-		"Requires reference");
-	static_assert(!std::is_constructible_v<typeT, Board<int>&>,
-		"Don't accept non-Options Board!");
-	static_assert(std::is_constructible_v<Solver<2>, Board<Options<4>, 2>&>,
-		"Constructor takes Board<Options, 2>&");
-	static_assert(std::is_constructible_v<Solver<4>, Board<Options<16>, 4>&>,
-		"Constructor takes Board<Options, 4>&");
-	// clang-format on
-
-	static_assert(!std::is_assignable_v<typeT, Board<Options<9>, 3>>);
-	static_assert(!std::is_assignable_v<typeT, Board<Options<9>, 3>&>);
-	static_assert(!std::is_assignable_v<typeT, int>, "NOT assignable from int");
-	static_assert(!std::is_assignable_v<typeT, std::initializer_list<int>>);
-	static_assert(
-		!std::is_assignable_v<typeT, std::initializer_list<Options<3>>>);
-
-} // namespace compiletime
 TEST(Solver, setValue)
 {
 	using L = Location<2>;
@@ -1531,24 +1421,23 @@ TEST(Solver, dual_option)
 		0, 0, 0,	0, 0, 0,	7, 8, 0
 	}; // clang-format on
 	Board<Options<9>, 3> B1;
-	Solver<3> Run1(B1);
 	EXPECT_NO_THROW(setValue(B1, b1.cbegin(), b1.cend()))
 		<< "setValue failed in copying from vector";
 	EXPECT_EQ(B1[0][0].count(), 2) << "dual_option before 1";
 	EXPECT_EQ(B1[0][8].count(), 8) << "dual_option before 2";
 	EXPECT_EQ(B1[4][4].count(), 9) << "dual_option before 3";
 	EXPECT_EQ(B1[8][0].count(), 6) << "dual_option before 4";
-	EXPECT_NO_THROW(Run1.dual_option(Location<3>(0))) << "dual_option failed 1";
+	EXPECT_NO_THROW(dual_option(B1, Location<3>(0))) << "dual_option failed 1";
 	EXPECT_EQ(B1[0][0].count(), 2) << "dual_option 1"; // unchanged
 	EXPECT_EQ(B1[0][8].count(), 6) << "dual_option 2";
 	EXPECT_EQ(B1[4][4].count(), 9) << "dual_option 3"; // unchanged
 	EXPECT_EQ(B1[8][0].count(), 6) << "dual_option 4"; // unchanged
-	EXPECT_NO_THROW(Run1.dual_option(Location<3>(1))) << "dual_option failed 3";
+	EXPECT_NO_THROW(dual_option(B1, Location<3>(1))) << "dual_option failed 3";
 	EXPECT_EQ(B1[0][0].count(), 2) << "dual_option 5"; // unchanged
 	EXPECT_EQ(B1[0][8].count(), 6) << "dual_option 6"; // unchanged
 	EXPECT_EQ(B1[4][4].count(), 9) << "dual_option 7"; // unchanged
 	EXPECT_EQ(B1[8][0].count(), 6) << "dual_option 8"; // unchanged
-	EXPECT_NO_THROW(Run1.dual_option(Location<3>(80))) << "dual_option failed3";
+	EXPECT_NO_THROW(dual_option(B1, Location<3>(80))) << "dual_option failed3";
 	EXPECT_EQ(B1[0][0].count(), 2) << "dual_option 9"; // unchanged
 	EXPECT_EQ(B1[0][8].count(), 4) << "dual_option 10";
 	EXPECT_EQ(B1[4][4].count(), 9) << "dual_option 11"; // unchanged
@@ -1586,7 +1475,6 @@ TEST(Solver, multi_option)
 		0, 0, 0,	0, 0, 0,	7, 8, 0
 	}; // clang-format on
 	Board<Options<9>, 3> B1;
-	Solver<3> Run1(B1);
 	EXPECT_NO_THROW(setValue(B1, b1.cbegin(), b1.cend()))
 		<< "setValue failed in copying from vector";
 	EXPECT_EQ(B1[0][0].count(), 3) << "before 1";
@@ -1594,14 +1482,14 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B1[4][4].count(), 9) << "before 3";
 	EXPECT_EQ(B1[8][8].count(), 3) << "before 4";
 	// run for row
-	EXPECT_NO_THROW(Run1.multi_option(Location<3>(2)))
+	EXPECT_NO_THROW(multi_option(B1, Location<3>(2)))
 		<< "multi_option failed 1";
 	EXPECT_EQ(B1[0][0].count(), 3) << "after 1"; // unchanged
 	EXPECT_EQ(B1[0][8].count(), 6) << "after 2";
 	EXPECT_EQ(B1[4][4].count(), 9) << "after 3"; // unchanged
 	EXPECT_EQ(B1[0][8].available(), (list{4, 5, 6, 7, 8, 9})) << "after 4";
 	// run for col
-	EXPECT_NO_THROW(Run1.multi_option(Location<3>{6, 8}))
+	EXPECT_NO_THROW(multi_option(B1, Location<3>{6, 8}))
 		<< "multi_option failed 2";
 	EXPECT_EQ(B1[0][0].count(), 3) << "after 21"; // unchanged
 	EXPECT_EQ(B1[8][8].count(), 3) << "after 22"; // unchanged
@@ -1624,7 +1512,6 @@ TEST(Solver, multi_option)
 		0, 0, 0,	0, 0, 0,	0, 0, 0	 // |_ _ _ _|_ _ _ _|_ _ _ _|
 	}; // clang-format on
 	Board<Options<9>, 3> B2;
-	Solver<3> Run2(B2);
 	EXPECT_NO_THROW(setValue(B2, b2.cbegin(), b2.cend()))
 		<< "setValue failed in copying from vector 4";
 	EXPECT_EQ(B2[0][0].count(), 3) << "before 31";
@@ -1637,7 +1524,7 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B2[8][8].count(), 9) << "before 38";
 	EXPECT_EQ(B2[2][5].count(), 6) << "before 39";
 	EXPECT_EQ(B2[2][5].available(), (list{1, 3, 4, 5, 6, 9})) << "before 310";
-	EXPECT_NO_THROW(Run2.multi_option(Location<3>(0)))
+	EXPECT_NO_THROW(multi_option(B2, Location<3>(0)))
 		<< "multi_option failed 3";
 	EXPECT_EQ(B2[0][0].count(), 3) << "after 31";
 	EXPECT_EQ(B2[1][1].count(), 3) << "after 32";
@@ -1664,7 +1551,6 @@ TEST(Solver, multi_option)
 		0, 0, 0,	0, 0, 0,	7, 8, 0  // |_ _ _ _|_ _ _5_|_7_8_ _|		 3,6,9
 	}; // clang-format on
 	Board<Options<9>, 3> B3;
-	Solver<3> Run3(B3);
 	EXPECT_NO_THROW(setValue(B3, b3.cbegin(), b3.cend()))
 		<< "setValue failed in copying from vector 3";
 	EXPECT_EQ(B3[0][0].count(), 2) << "before 41";
@@ -1677,7 +1563,7 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B3[7][8].count(), 2) << "before 48";
 	EXPECT_EQ(B3[8][8].count(), 3) << "before 49";
 	EXPECT_EQ(B3[8][8].available(), (list{3, 6, 9})) << "before 410";
-	EXPECT_NO_THROW(Run3.multi_option(Location<3>(1)))
+	EXPECT_NO_THROW(multi_option(B3, Location<3>(1)))
 		<< "multi_option failed 4";
 	// row:
 	EXPECT_EQ(B3[0][0].count(), 2) << "after 41"; // unchanged
@@ -1749,7 +1635,6 @@ TEST(Solver, deathtest)
 {
 	using L = Location<2>;
 	Board<Options<4>, 2> B{};
-	Solver<2> S{B};
 
 	// SetValue(Itr, Itr)
 	const std::vector<int> v1(10);
