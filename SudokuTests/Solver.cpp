@@ -588,7 +588,6 @@ TEST(Solver, set_section_locals)
 
 	// int set_section_locals(section, rep_count, worker)
 	using set = std::bitset<5>;
-	using S   = Solver<2>;
 	Board<Options<4>, 2> B{};
 	Board<Options<4>, 2> cB{B};
 	//
@@ -604,7 +603,7 @@ TEST(Solver, set_section_locals)
 	Options<4> worker{set{"11001"}};
 	ASSERT_TRUE(B[0][1].all());
 	ASSERT_TRUE(B[0][3].all());
-	EXPECT_EQ(S(B).set_section_locals(B.row(0), 2, worker), 0);
+	EXPECT_EQ(set_section_locals(B, B.row(0), 2, worker), 0);
 	EXPECT_EQ(B[0][0].count(), 2);
 	EXPECT_TRUE(B[0][1].all());
 	EXPECT_EQ(B[0][2].count(), 2);
@@ -618,7 +617,7 @@ TEST(Solver, set_section_locals)
 	ASSERT_TRUE(B[2][2].all());
 	ASSERT_TRUE(B[2][3].all());
 	ASSERT_TRUE(B[3][2].all());
-	EXPECT_EQ(S(B).set_section_locals(B.row(2), 2, worker), 4);
+	EXPECT_EQ(set_section_locals(B, B.row(2), 2, worker), 4);
 	EXPECT_TRUE(B[3][0].all());
 	EXPECT_EQ(B[2][2].count(), 4); // self
 	EXPECT_EQ(B[2][3].count(), 4); // self
@@ -635,12 +634,12 @@ TEST(Solver, set_section_locals)
 	B[0][0] = set{"00111"};
 	B[2][0] = set{"00111"};
 	worker  = set{"11001"};
-	EXPECT_EQ(S(B).set_section_locals(B.col(0), 2, worker), 0);
+	EXPECT_EQ(set_section_locals(B, B.col(0), 2, worker), 0);
 	//
 	B[2][3] = set{"11001"};
 	B[3][3] = set{"11001"};
 	worker  = set{"00111"};
-	EXPECT_EQ(S(B).set_section_locals(B.row(2), 2, worker), 4);
+	EXPECT_EQ(set_section_locals(B, B.row(2), 2, worker), 4);
 	EXPECT_TRUE(B[0][3].all());
 	EXPECT_TRUE(B[1][3].all());
 	EXPECT_TRUE(B[0][1].all());
@@ -655,7 +654,7 @@ TEST(Solver, set_section_locals)
 	B[0][0] = set{"00111"};
 	B[1][1] = set{"00111"};
 	worker  = set{"11001"};
-	EXPECT_EQ(S(B).set_section_locals(B.block(0), 2, worker), 0);
+	EXPECT_EQ(set_section_locals(B, B.block(0), 2, worker), 0);
 	EXPECT_TRUE(B[0][1].all());
 	EXPECT_TRUE(B[0][3].all());
 	EXPECT_TRUE(B[1][0].all());
@@ -665,7 +664,7 @@ TEST(Solver, set_section_locals)
 	B[2][0] = set{"11001"};
 	B[2][1] = set{"11001"};
 	worker  = set{"00111"};
-	EXPECT_EQ(S(B).set_section_locals(B.block(2), 2, worker), 4);
+	EXPECT_EQ(set_section_locals(B, B.block(2), 2, worker), 4);
 	EXPECT_TRUE(B[3][0].all());    // self block
 	EXPECT_TRUE(B[3][1].all());    // self block
 	EXPECT_EQ(B[3][2].count(), 2); // rest row
@@ -678,7 +677,7 @@ TEST(Solver, set_section_locals)
 	B[0][1] = set{"00111"};
 	B[1][1] = set{"00111"};
 	worker  = set{"11001"};
-	EXPECT_EQ(S(B).set_section_locals(B.block(0), 2, worker), 4);
+	EXPECT_EQ(set_section_locals(B, B.block(0), 2, worker), 4);
 	EXPECT_TRUE(B[0][0].all());    // self block
 	EXPECT_EQ(B[0][1].count(), 2); // self block
 	EXPECT_TRUE(B[0][2].all());    // rest row
@@ -697,7 +696,6 @@ TEST(Solver, set_section_locals)
 	EXPECT_TRUE(B[3][3].all());
 	Board<Options<9>, 3> B3{};
 	const Board<Options<9>, 3> cB3{};
-	Solver<3> S3{B3};
 	Options<9> worker3{};
 	// 3 option in same block & row
 	//
@@ -716,7 +714,7 @@ TEST(Solver, set_section_locals)
 	ASSERT_TRUE(B3[1][0].is_answer(4));
 	ASSERT_TRUE(B3[1][8].all());
 	worker3 = std::bitset<10>{"0000001111"};
-	EXPECT_EQ(S3.set_section_locals(B3.block(0), 3, worker3), 3 * 6);
+	EXPECT_EQ(set_section_locals(B3, B3.block(0), 3, worker3), 3 * 6);
 	EXPECT_EQ(B3[0][0].count(), 9);
 	EXPECT_EQ(B3[0][3].count(), 6);
 	EXPECT_EQ(B3[0][8].count(), 6);
@@ -741,7 +739,7 @@ TEST(Solver, set_section_locals)
 	B3[2][1] = 8;
 	B3[2][2] = 9;
 	worker3  = std::bitset<10>{"0010010011"};
-	EXPECT_EQ(S3.set_section_locals(B3.block(0), 3, worker3), 3 * 6);
+	EXPECT_EQ(set_section_locals(B3, B3.block(0), 3, worker3), 3 * 6);
 	EXPECT_EQ(B3[0][0].count(), 9);
 	EXPECT_TRUE(B3[0][4].all()); // rest row
 	EXPECT_TRUE(B3[0][8].all()); // rest row
@@ -766,7 +764,7 @@ TEST(Solver, set_section_locals)
 	B3[2][0] = 7;
 	B3[2][2] = 9;
 	worker3  = std::bitset<10>{"0100010011"};
-	EXPECT_EQ(S3.set_section_locals(B3.block(0), 3, worker3), 0);
+	EXPECT_EQ(set_section_locals(B3, B3.block(0), 3, worker3), 0);
 	EXPECT_TRUE(B3[0][0].all()); // self
 	EXPECT_TRUE(B3[0][4].all()); // rest row
 	EXPECT_TRUE(B3[0][8].all()); // rest row
@@ -1831,37 +1829,36 @@ TEST(Solver, deathtest)
 	}
 	// set_section_locals()
 	{
-		using S   = Solver<2>;
 		using set = std::bitset<5>;
 		// worker empty
 		Options<4> worker{set{"00000"}};
 		ASSERT_TRUE(worker.is_empty());
-		EXPECT_DEBUG_DEATH(S(B).set_section_locals(B.row(0), 2, worker), "");
-		EXPECT_DEBUG_DEATH(S(B).set_section_locals(B.block(0), 2, worker), "");
+		EXPECT_DEBUG_DEATH(set_section_locals(B, B.row(0), 2, worker), "");
+		EXPECT_DEBUG_DEATH(set_section_locals(B, B.block(0), 2, worker), "");
 		// worker all set
 		worker = set{"11111"};
 		EXPECT_DEBUG_DEATH(
-			S(B).set_section_locals(B.col(2), 4, worker), "rep_count <= N");
+			set_section_locals(B, B.col(2), 4, worker), "rep_count <= N");
 		EXPECT_DEBUG_DEATH(
-			S(B).set_section_locals(B.block(2), 4, worker), "rep_count <= N");
+			set_section_locals(B, B.block(2), 4, worker), "rep_count <= N");
 		// 1 value
 		worker = set{"00101"};
 		EXPECT_DEBUG_DEATH(
-			S(B).set_section_locals(B.col(2), 1, worker), "rep_count > 1");
+			set_section_locals(B, B.col(2), 1, worker), "rep_count > 1");
 		EXPECT_DEBUG_DEATH(
-			S(B).set_section_locals(B.block(3), 1, worker), "rep_count > 1");
+			set_section_locals(B, B.block(3), 1, worker), "rep_count > 1");
 	}
 	// set_section_locals(section, rep_count, worker)
 	{
 		// worker.count_all() = 0
 		Options<4> worker{0};
-		EXPECT_DEBUG_DEATH(S.set_section_locals(B.row(0), 1, worker), "count");
+		EXPECT_DEBUG_DEATH(set_section_locals(B, B.row(0), 1, worker), "count");
 		EXPECT_DEBUG_DEATH(
-			S.set_section_locals(B.block(0), 1, worker), "count");
+			set_section_locals(B, B.block(0), 1, worker), "count");
 		worker = std::bitset<5>{"00001"};
-		EXPECT_DEBUG_DEATH(S.set_section_locals(B.col(0), 1, worker), "count");
+		EXPECT_DEBUG_DEATH(set_section_locals(B, B.col(0), 1, worker), "count");
 		EXPECT_DEBUG_DEATH(
-			S.set_section_locals(B.block(0), 1, worker), "count");
+			set_section_locals(B, B.block(0), 1, worker), "count");
 	}
 	{
 		// option doesn't excist in section
@@ -1877,10 +1874,10 @@ TEST(Solver, deathtest)
 		Options<4> worker{2};
 		ASSERT_TRUE(worker[2]);
 		EXPECT_DEBUG_DEATH(
-			Solver<2>(B5).set_section_locals(B5.block(0), 2, worker),
+			set_section_locals(B5, B5.block(0), 2, worker),
 			"Assertion failed: changes > 0");
 		EXPECT_DEBUG_DEATH(
-			Solver<2>(B5).set_section_locals(B5.row(0), 2, worker),
+			set_section_locals(B5, B5.row(0), 2, worker),
 			"Assertion failed: changes > 0");
 	}
 }

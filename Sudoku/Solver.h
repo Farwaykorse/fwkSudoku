@@ -67,10 +67,6 @@ public:
 	template<typename SectionT>
 	int section_exclusive(SectionT);
 
-	template<typename SectionT>
-	int set_section_locals(SectionT, int rep_count, Options worker);
-	int set_section_locals(Block, int rep_count, Options worker);
-
 private:
 	Board& board_;
 };
@@ -107,6 +103,18 @@ int remove_option_section(
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_outside_block(
 	Board<Options, N>&, SectionT, Location<N> block_loc, unsigned int value);
+
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+int set_section_locals(
+	Board<Options, N>&, SectionT, int rep_count, Options worker);
+template<int N, typename Options = Options<elem_size<N>>>
+int set_section_locals(
+	Board<Options, N>&,
+	Board_Section::Block<Options, N>,
+	int rep_count,
+	Options worker);
+
+
 //===---------------------------------------------------------------------===//
 
 
@@ -591,7 +599,7 @@ inline int Solver<N>::section_exclusive(const SectionT section)
 			// for [row/col]: if in same block: remove from rest block
 			// for [block]: if in same row/col: remove from rest row/col
 			if (const int tmp_ = set_section_locals(
-					section, static_cast<int>(i), appearing[i]))
+					board_, section, static_cast<int>(i), appearing[i]))
 			{
 				changes += tmp_;
 				renew_appearing();
@@ -610,12 +618,16 @@ inline int Solver<N>::section_exclusive(const SectionT section)
 }
 
 //	for [row/col]: if all in same block, remove [values] from rest block
-template<int N>
-template<typename SectionT>
-inline int Solver<N>::set_section_locals(
-	const SectionT section, const int rep_count, const Options worker)
+template<int N, typename Options, typename SectionT>
+inline int set_section_locals(
+	Board<Options, N>& board,
+	const SectionT section,
+	const int rep_count,
+	const Options worker)
 {
+	using value_t = unsigned int;
 	{
+		using Board = Board<Options, N>;
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::iterator_to<iterator, const Options>);
@@ -640,7 +652,7 @@ inline int Solver<N>::set_section_locals(
 			else if (is_same_block<N>(locations.cbegin(), locations.cend()))
 			{ // remove from rest of block
 				changes += remove_option_section(
-					board_, board_.block(locations[0]), locations, value);
+					board, board.block(locations[0]), locations, value);
 			}
 		}
 	}
@@ -648,12 +660,17 @@ inline int Solver<N>::set_section_locals(
 }
 
 //	remove found set in block from rest of its row/col
-template<int N>
-inline int Solver<N>::set_section_locals(
-	const Block block, const int rep_count, const Options worker)
+template<int N, typename Options>
+inline int set_section_locals(
+	Board<Options, N>& board,
+	const Board_Section::Block<Options, N> block,
+	const int rep_count,
+	const Options worker)
 {
+	using value_t = unsigned int;
 	{
-		using iterator = typename Block::const_iterator;
+		using BlockT = Board_Section::Block<Options, N>;
+		using iterator = typename BlockT::const_iterator;
 		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(rep_count > 1);  // should have been cought by caller
 								// use the set_uniques specialization
@@ -676,12 +693,12 @@ inline int Solver<N>::set_section_locals(
 			else if (is_same_row<N>(locations.cbegin(), locations.cend()))
 			{ // remove from rest of row
 				changes += remove_option_outside_block(
-					board_, board_.row(locations[0]), locations[0], value);
+					board, board.row(locations[0]), locations[0], value);
 			}
 			else if (is_same_col<N>(locations.cbegin(), locations.cend()))
 			{ // remove from rest of col
 				changes += remove_option_outside_block(
-					board_, board_.col(locations[0]), locations[0], value);
+					board, board.col(locations[0]), locations[0], value);
 			}
 		}
 	}
