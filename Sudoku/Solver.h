@@ -50,10 +50,6 @@ public:
 
 	// Edit Board
 	void setValue(Location, value_t);
-	template<typename ItrT, typename = if_forward<ItrT>>
-	void setValue(ItrT begin, ItrT end);
-
-
 	// Solvers
 	int single_option(Location);
 	int single_option(Location, value_t);
@@ -72,6 +68,13 @@ auto find_locations(
 	ItrT begin, ItrT end, unsigned int value, int rep_count = elem_size<N>);
 template<int N, typename SectionT>
 auto find_locations(SectionT, Options<elem_size<N>> value);
+
+template<
+	int N,
+	typename Options = Options<elem_size<N>>,
+	typename ItrT,
+	typename = std::enable_if_t<Utility_::is_forward<ItrT>>>
+void setValue(Board<Options, N>&, ItrT begin, ItrT end);
 
 // remove an option: triggers solvers single_option()
 template<int N, typename Options = Options<elem_size<N>>>
@@ -137,10 +140,10 @@ inline void Solver<N>::setValue(const Location loc, const value_t value)
 }
 
 //	set board_ using a transferable container of values
-template<int N>
-template<typename ItrT, typename> // at least forward_iterator
-inline void Solver<N>::setValue(const ItrT begin, const ItrT end)
+template<int N, typename Options, typename ItrT, typename>
+inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 {
+	using value_t = unsigned int;
 	{
 		static_assert(Utility_::is_forward<ItrT>);
 		static_assert(Utility_::iterator_to<ItrT, int>);
@@ -149,15 +152,15 @@ inline void Solver<N>::setValue(const ItrT begin, const ItrT end)
 	int n{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		Location loc(n++); // start at 0!
+		Location<N> loc(n++); // start at 0!
 		const auto value = static_cast<value_t>(*itr);
-		if (value > 0 && board_.at(loc).is_option(value))
+		if (value > 0 && board.at(loc).is_option(value))
 		{
-			setValue(loc, value);
-			single_option(loc, value);
+			Solver<N>(board).setValue(loc, value);
+			Solver<N>(board).single_option(loc, value);
 		}
 		// check invalid value or conflict
-		assert(value == 0 || board_.at(loc).is_answer(value));
+		assert(value == 0 || board.at(loc).is_answer(value));
 	}
 	assert(n == full_size<N>);
 }
