@@ -156,21 +156,20 @@ TEST(Solver, setValue)
 
 	// Set single value
 	Board<Options<4>, 2> board;
-	Solver<2> S1{board};
 	ASSERT_EQ(board[1][0], Options<4>{}) << "incorrect instantiation";
-	EXPECT_NO_THROW(S1.setValue(L(2), 3));
+	EXPECT_NO_THROW(setValue(board, L(2), 3));
 	EXPECT_EQ(board[0][2], 3);
-	EXPECT_NO_THROW(S1.setValue(L(0), 4));
+	EXPECT_NO_THROW(setValue(board, L(0), 4));
 	EXPECT_EQ(board[0][0], 4);
 	// test: already set to THIS answer (allow to overwrite with same)
-	EXPECT_NO_THROW(S1.setValue(L(15), 4));
+	EXPECT_NO_THROW(setValue(board, L(15), 4));
 	ASSERT_EQ(board[3][3], 4);
-	EXPECT_NO_THROW(S1.setValue(L(3, 3), 4));
+	EXPECT_NO_THROW(setValue(board, L(3, 3), 4));
 	// test: value is not an option
 	board[1][1] = std::bitset<5>{"11011"}; // options: 1,3,4
-	EXPECT_THROW(S1.setValue(L(1, 1), 2), std::logic_error);
+	EXPECT_THROW(setValue(board, L(1, 1), 2), std::logic_error);
 	// test: already set to another answer
-	EXPECT_THROW(S1.setValue(L(0), 1), std::logic_error);
+	EXPECT_THROW(setValue(board, L(0), 1), std::logic_error);
 
 	// clang-format off
 	const std::vector<int> v1

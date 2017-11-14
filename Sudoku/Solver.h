@@ -48,8 +48,6 @@ class Solver
 public:
 	Solver(Board&);
 
-	// Edit Board
-	void setValue(Location, value_t);
 	// Solvers
 	int single_option(Location);
 	int single_option(Location, value_t);
@@ -69,6 +67,8 @@ auto find_locations(
 template<int N, typename SectionT>
 auto find_locations(SectionT, Options<elem_size<N>> value);
 
+template<int N, typename Options = Options<elem_size<N>>>
+void setValue(Board<Options, N>&, Location<N>, unsigned int value);
 template<
 	int N,
 	typename Options = Options<elem_size<N>>,
@@ -126,17 +126,18 @@ inline Solver<N>::Solver(Board& options) : board_(options)
 
 //	IF valid, Make [value] the answer for [loc]
 //	No processing
-template<int N>
-inline void Solver<N>::setValue(const Location loc, const value_t value)
+template<int N, typename Options>
+inline void setValue(
+	Board<Options, N>& board, const Location<N> loc, const unsigned int value)
 {
 	assert(is_valid(loc));
 	assert(is_valid_value<N>(value));
 
-	if (!board_.at(loc).test(value))
+	if (!board.at(loc).test(value))
 	{ // value is option nor answer
 		throw std::logic_error{"Invalid Board"};
 	}
-	board_[loc].set_nocheck(value);
+	board[loc].set_nocheck(value);
 }
 
 //	set board_ using a transferable container of values
@@ -156,7 +157,7 @@ inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 		const auto value = static_cast<value_t>(*itr);
 		if (value > 0 && board.at(loc).is_option(value))
 		{
-			Solver<N>(board).setValue(loc, value);
+			setValue(board, loc, value);
 			Solver<N>(board).single_option(loc, value);
 		}
 		// check invalid value or conflict
@@ -227,7 +228,7 @@ inline int Solver<N>::single_option(const Location loc, const value_t value)
 	int changes{};
 	if (!board_[loc].is_answer(value))
 	{
-		setValue(loc, value);
+		setValue(board_, loc, value);
 		++changes;
 	}
 	changes += remove_option_section(board_, board_.row(loc), loc, value);
@@ -555,7 +556,7 @@ inline auto set_uniques(
 					[value](Options O) { return O.is_option(value); });
 				if (itr != end)
 				{
-					Solver<N>(board).setValue(itr.location(), value);
+					setValue(board, itr.location(), value);
 					changes +=
 						Solver<N>(board).single_option(itr.location(), value);
 					++changes;
