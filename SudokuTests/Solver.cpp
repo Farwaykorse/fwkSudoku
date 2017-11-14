@@ -881,7 +881,7 @@ TEST(Solver, unique_in_section)
 	EXPECT_EQ(B1[2][2], 4) << "setup error";
 	EXPECT_EQ(B1, cB1) << "copy error";
 	// single row
-	EXPECT_NO_THROW(Solver<2>(B1).unique_in_section(B1.row(0)));
+	EXPECT_NO_THROW(unique_in_section(B1, B1.row(0)));
 	EXPECT_EQ(B1, cB1) << "row 0 was completely fixed by setValue";
 
 	// clang-format off
@@ -898,15 +898,15 @@ TEST(Solver, unique_in_section)
 	EXPECT_NO_THROW(Solver<2>(B2).setValue(v2.cbegin(), v2.cend()));
 	const Board<Options<4>, 2> cB2{B2}; // copy to compare with
 	// single row 0
-	EXPECT_NO_THROW(Solver<2>(B2).unique_in_section(B2.row(0)));
+	EXPECT_NO_THROW(unique_in_section(B2, B2.row(0)));
 	EXPECT_EQ(B2, cB2) << "row 0 was completely fixed by setValue";
 	// single row 1
-	EXPECT_NO_THROW(Solver<2>(B2).unique_in_section(B2.row(3)));
+	EXPECT_NO_THROW(unique_in_section(B2, B2.row(3)));
 	EXPECT_NE(B2, cB2) << "row 3 should have changed";
 	// full board
 	for (int i = 0; i < elem_size<2>; ++i)
 	{
-		EXPECT_NO_THROW(Solver<2>(B2).unique_in_section(B2.row(i)));
+		EXPECT_NO_THROW(unique_in_section(B2, B2.row(i)));
 	}
 	EXPECT_EQ(B2[0][0], 3) << "input values are lost";
 	EXPECT_EQ(B2[0][1], 2);
@@ -934,15 +934,15 @@ TEST(Solver, unique_in_section)
 	EXPECT_EQ(B3[3][3].count(), 4);
 	EXPECT_TRUE(B3[3][3].is_option(1));
 	// Row()
-	EXPECT_NO_THROW(Solver<2>(B3).unique_in_section(B3.row(3)));
+	EXPECT_NO_THROW(unique_in_section(B3, B3.row(3)));
 	EXPECT_TRUE(B3[3][3].is_answer(1));
 	// Col()
 	reset_B3();
-	EXPECT_NO_THROW(Solver<2>(B3).unique_in_section(B3.col(3)));
+	EXPECT_NO_THROW(unique_in_section(B3, B3.col(3)));
 	EXPECT_TRUE(B3[3][3].is_answer(1));
 	// BLock()
 	reset_B3();
-	EXPECT_NO_THROW(Solver<2>(B3).unique_in_section(B3.block(3)));
+	EXPECT_NO_THROW(unique_in_section(B3, B3.block(3)));
 	EXPECT_TRUE(B3[3][3].is_answer(1));
 }
 
@@ -1751,7 +1751,7 @@ TEST(Solver, solve_board)
 	Solver<3>(options).setValue(b1.cbegin(), b1.cend());
 	for (int i = 0; i < elem_size<3>; ++i)
 	{
-		Solver<3>(options).unique_in_section(options.row(i));
+		unique_in_section(options, options.row(i));
 	}
 }
 TEST(Solver, deathtest)

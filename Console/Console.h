@@ -26,15 +26,15 @@ void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
 		found = 0;
 		for (int i = 0; i < elem_size<N>; ++i)
 		{
-			found += S.unique_in_section(board.row(i));
+			found += unique_in_section(board, board.row(i));
 		}
 		for (int i = 0; i < elem_size<N>; ++i)
 		{
-			found += S.unique_in_section(board.col(i));
+			found += unique_in_section(board, board.col(i));
 		}
 		for (int i = 0; i < elem_size<N>; ++i)
 		{
-			found += S.unique_in_section(board.block(i));
+			found += unique_in_section(board, board.block(i));
 		}
 	}
 }

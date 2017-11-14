@@ -61,8 +61,6 @@ public:
 	int multi_option(Location, size_t = 0);
 
 	template<typename SectionT>
-	int unique_in_section(SectionT);
-	template<typename SectionT>
 	int section_exclusive(SectionT);
 
 private:
@@ -111,6 +109,8 @@ int set_section_locals(
 	int rep_count,
 	Options worker);
 
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+int unique_in_section(Board<Options, N>&, SectionT);
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 auto set_uniques(Board<Options, N>&, SectionT, Options worker);
 
@@ -510,14 +510,15 @@ int remove_option_section(
 }
 
 //	Solver: Find and set options appearing only once in a section as answer
-template<int N>
-template<typename SectionT>
-inline int Solver<N>::unique_in_section(const SectionT section)
+template<int N, typename Options, typename SectionT>
+inline int unique_in_section(Board<Options, N>& board, const SectionT section)
 {
-	static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
-
+	{
+		using Board = Board<Options, N>;
+		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+	}
 	const auto worker = appearance_once<N>(section);
-	return set_uniques(board_, section, worker);
+	return set_uniques(board, section, worker);
 }
 
 //	Set unique values in section as answer
