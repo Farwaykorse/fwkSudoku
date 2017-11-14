@@ -48,9 +48,6 @@ class Solver
 public:
 	Solver(Board&);
 
-	// Solvers
-	int single_option(Location);
-	int single_option(Location, value_t);
 	int dual_option(Location);
 	int multi_option(Location, size_t = 0);
 
@@ -116,6 +113,11 @@ auto set_uniques(Board<Options, N>&, SectionT, Options worker);
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int section_exclusive(Board<Options, N>&, SectionT);
 
+template<int N, typename Options = Options<elem_size<N>>>
+int single_option(Board<Options, N>&, Location<N>);
+template<int N, typename Options = Options<elem_size<N>>>
+int single_option(Board<Options, N>&, Location<N>, unsigned int value);
+
 //===---------------------------------------------------------------------===//
 
 template<int N>
@@ -158,7 +160,7 @@ inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 		if (value > 0 && board.at(loc).is_option(value))
 		{
 			setValue(board, loc, value);
-			Solver<N>(board).single_option(loc, value);
+			single_option(board, loc, value);
 		}
 		// check invalid value or conflict
 		assert(value == 0 || board.at(loc).is_answer(value));
@@ -185,7 +187,7 @@ int remove_option(
 
 		if (count == 1)
 		{
-			changes += Solver<N>(board).single_option(loc);
+			changes += single_option(board, loc);
 		}
 #if DUAL_ON_REMOVE == true
 		if (count == 2)
@@ -202,38 +204,40 @@ int remove_option(
 
 //	Check if only one option remaining
 //	IF true: process answer
-template<int N>
-inline int Solver<N>::single_option(const Location loc)
+template<int N, typename Options>
+inline int single_option(Board<Options, N>& board, const Location<N> loc)
 {
+	using value_t = unsigned int;
 	assert(is_valid(loc));
 
-	if (const value_t answer{board_[loc].get_answer()})
+	if (const value_t answer{board[loc].get_answer()})
 	{
-		return single_option(loc, answer);
+		return single_option(board, loc, answer);
 	}
 	return 0;
 }
 
 //	Process answer from [loc], update board_ options
 //	Remove option from rest of row, col and block
-template<int N>
-inline int Solver<N>::single_option(const Location loc, const value_t value)
+template<int N, typename Options>
+inline int single_option(
+	Board<Options, N>& board, const Location<N> loc, const unsigned int value)
 {
 	assert(is_valid(loc));
 	assert(is_valid_value<N>(value));
 
-	assert(board_.at(loc).test(value));
-	assert(board_[loc].count_all() == 1);
+	assert(board.at(loc).test(value));
+	assert(board[loc].count_all() == 1);
 
 	int changes{};
-	if (!board_[loc].is_answer(value))
+	if (!board[loc].is_answer(value))
 	{
-		setValue(board_, loc, value);
+		setValue(board, loc, value);
 		++changes;
 	}
-	changes += remove_option_section(board_, board_.row(loc), loc, value);
-	changes += remove_option_section(board_, board_.col(loc), loc, value);
-	changes += remove_option_section(board_, board_.block(loc), loc, value);
+	changes += remove_option_section(board, board.row(loc), loc, value);
+	changes += remove_option_section(board, board.col(loc), loc, value);
+	changes += remove_option_section(board, board.block(loc), loc, value);
 	return changes;
 }
 
@@ -557,8 +561,7 @@ inline auto set_uniques(
 				if (itr != end)
 				{
 					setValue(board, itr.location(), value);
-					changes +=
-						Solver<N>(board).single_option(itr.location(), value);
+					changes += single_option(board, itr.location(), value);
 					++changes;
 				}
 				else

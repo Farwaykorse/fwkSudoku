@@ -1427,7 +1427,7 @@ TEST(Solver, single_option)
 	EXPECT_TRUE(B1[0][2].count() == 4 && B1[0][3].count() == 4);
 	EXPECT_EQ(B1[1][1].count(), 4);
 	EXPECT_TRUE(B1[2][1].count() == 4 && B1[3][1].count() == 4);
-	EXPECT_NO_THROW(Solver<2>(B1).single_option(L(1), 2));
+	EXPECT_NO_THROW(single_option(B1, L(1), 2));
 	EXPECT_EQ(B1[0][0].count(), 3);
 	EXPECT_FALSE(B1[0][0].is_option(2));
 	EXPECT_FALSE(B1[0][2].is_option(2) || B1[0][3].is_option(2));
@@ -1436,7 +1436,7 @@ TEST(Solver, single_option)
 	ASSERT_TRUE(B1[1][0].is_answer(4));
 	EXPECT_EQ(B1[1][2].count(), 4);
 	EXPECT_EQ(B1[2][0].count(), 4);
-	EXPECT_NO_THROW(Solver<2>(B1).single_option(L(1, 0), 4));
+	EXPECT_NO_THROW(single_option(B1, L(1, 0), 4));
 	EXPECT_EQ(B1[0][0].count(), 2);
 	EXPECT_EQ(B1[1][2].count(), 3);
 	// cascase
@@ -1444,7 +1444,7 @@ TEST(Solver, single_option)
 	ASSERT_TRUE(B1[2][1].is_answer(1));
 	EXPECT_EQ(B1[0][0].count(), 2);
 	EXPECT_EQ(B1[1][1].count(), 2);
-	EXPECT_NO_THROW(Solver<2>(B1).single_option(L(2, 1), 1));
+	EXPECT_NO_THROW(single_option(B1, L(2, 1), 1));
 	EXPECT_TRUE(B1[1][1].is_answer(3));
 	EXPECT_TRUE(B1[0][0].is_answer(1));
 	EXPECT_TRUE(B1[3][1].is_answer(4));
@@ -1453,8 +1453,8 @@ TEST(Solver, single_option)
 	Board<Options<4>, 2> B2;
 	ASSERT_EQ(B2[1][0], Options<4>{}) << "incorrect instantiation";
 	// more than 1 option available
-	ASSERT_NO_THROW(Solver<2>(B2).single_option(L(1)));
-	EXPECT_EQ(Solver<2>(B2).single_option(L(1)), 0);
+	ASSERT_NO_THROW(single_option(B2, L(1)));
+	EXPECT_EQ(single_option(B2, L(1)), 0);
 	B2[0][1] = std::bitset<5>{"00101"}; // 2
 	ASSERT_FALSE(B2[0][1].is_answer(2));
 	ASSERT_TRUE(B2[0][1].is_option(2));
@@ -1462,7 +1462,7 @@ TEST(Solver, single_option)
 	EXPECT_TRUE(B2[0][2].count() == 4 && B2[0][3].count() == 4);
 	EXPECT_EQ(B2[1][1].count(), 4);
 	EXPECT_TRUE(B2[2][1].count() == 4 && B2[3][1].count() == 4);
-	EXPECT_EQ(Solver<2>(B2).single_option(L(1)), 8);
+	EXPECT_EQ(single_option(B2, L(1)), 8);
 	EXPECT_EQ(B2[0][0].count(), 3);
 	EXPECT_FALSE(B2[0][0].is_option(2));
 	EXPECT_FALSE(B2[0][2].is_option(2) || B2[0][3].is_option(2));
@@ -1471,7 +1471,7 @@ TEST(Solver, single_option)
 	ASSERT_TRUE(B2[1][0].is_answer(4));
 	EXPECT_EQ(B2[1][2].count(), 4);
 	EXPECT_EQ(B2[2][0].count(), 4);
-	EXPECT_EQ(Solver<2>(B2).single_option(L(1, 0)), 6);
+	EXPECT_EQ(single_option(B2, L(1, 0)), 6);
 	EXPECT_EQ(B2[0][0].count(), 2);
 	EXPECT_EQ(B2[1][2].count(), 3);
 	// cascase
@@ -1479,7 +1479,7 @@ TEST(Solver, single_option)
 	ASSERT_TRUE(B2[2][1].is_answer(1));
 	EXPECT_EQ(B2[0][0].count(), 2);
 	EXPECT_EQ(B2[1][1].count(), 2);
-	EXPECT_EQ(Solver<2>(B2).single_option(L(2, 1)), 17);
+	EXPECT_EQ(single_option(B2, L(2, 1)), 17);
 	EXPECT_TRUE(B2[1][1].is_answer(3));
 	EXPECT_TRUE(B2[0][0].is_answer(1));
 	EXPECT_TRUE(B2[3][1].is_answer(4));
@@ -1781,12 +1781,12 @@ TEST(Solver, deathtest)
 	// when wrong value
 	B[1][2] = std::bitset<5>{"00011"}; // 1, not answer
 	EXPECT_DEBUG_DEATH(
-		S.single_option(L(1, 2), 4), "Assertion failed: .*test.*");
+		single_option(B, L(1, 2), 4), "Assertion failed: .*test.*");
 #endif // _DEBUG
 	// when more than 1 option available
 	B[1][2] = std::bitset<5>{"10011"}; // 1, 4
 	EXPECT_DEBUG_DEATH(
-		S.single_option(L(1, 2), 1), "Assertion failed: .*count_all.*");
+		single_option(B, L(1, 2), 1), "Assertion failed: .*count_all.*");
 
 	// find_locations()
 	{
