@@ -114,7 +114,7 @@ inline constexpr bool
 template<int N, typename InItr_>
 constexpr bool is_same_row(const InItr_ begin, const InItr_ end)
 {
-	auto itr = begin + 1;
+	const auto itr = begin + 1;
 	return std::all_of(
 		itr, end, [begin](Location<N> i) { return is_same_row<N>(*begin, i); });
 }
@@ -144,7 +144,7 @@ inline constexpr bool
 template<int N, typename InItr_>
 inline constexpr bool is_same_col(const InItr_ begin, const InItr_ end)
 {
-	auto itr = begin+1;
+	const auto itr = begin+1;
 	return std::all_of(
 		itr, end, [begin](Location<N> i) { return is_same_col<N>(*begin, i); });
 }
@@ -174,7 +174,7 @@ inline constexpr bool
 template<int N, typename InItr_>
 inline constexpr bool is_same_block(const InItr_ begin, const InItr_ end)
 {
-	auto itr = begin + 1;
+	const auto itr = begin + 1;
 	return std::all_of(itr, end, [begin](Location<N> i) {
 		return is_same_block<N>(*begin, i);
 	});
