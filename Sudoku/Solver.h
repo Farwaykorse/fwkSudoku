@@ -60,9 +60,6 @@ public:
 	int dual_option(Location);
 	int multi_option(Location, size_t = 0);
 
-	template<typename SectionT>
-	int section_exclusive(SectionT);
-
 private:
 	Board& board_;
 };
@@ -113,9 +110,10 @@ template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int unique_in_section(Board<Options, N>&, SectionT);
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 auto set_uniques(Board<Options, N>&, SectionT, Options worker);
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+int section_exclusive(Board<Options, N>&, SectionT);
 
 //===---------------------------------------------------------------------===//
-
 
 template<int N>
 inline Solver<N>::Solver(Board& options) : board_(options)
@@ -572,12 +570,12 @@ inline auto set_uniques(
 //	Solver: find and process values appearing 1 to base_size times in section:
 //	[row/col] IF all in same block -> remove from rest of block
 //	[block] IF all in same row/col -> remove from rest of row/col
-template<int N>
-template<typename SectionT>
-inline int Solver<N>::section_exclusive(const SectionT section)
+template<int N, typename Options, typename SectionT>
+inline int section_exclusive(Board<Options, N>& board, const SectionT section)
 {
 	{
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		static_assert(
+			std::is_base_of_v<typename Board<Options, N>::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::iterator_to<iterator, const Options>);
 	}
@@ -594,7 +592,7 @@ inline int Solver<N>::section_exclusive(const SectionT section)
 		// unique specialization
 		if (appearing[1].count_all() > 0)
 		{
-			changes += set_uniques(board_, section, appearing[1]);
+			changes += set_uniques(board, section, appearing[1]);
 			renew_appearing();
 		}
 		else if (appearing[i].count_all() > 0)
@@ -602,7 +600,7 @@ inline int Solver<N>::section_exclusive(const SectionT section)
 			// for [row/col]: if in same block: remove from rest block
 			// for [block]: if in same row/col: remove from rest row/col
 			if (const int tmp_ = set_section_locals(
-					board_, section, static_cast<int>(i), appearing[i]))
+					board, section, static_cast<int>(i), appearing[i]))
 			{
 				changes += tmp_;
 				renew_appearing();

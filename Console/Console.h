@@ -49,15 +49,15 @@ void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
 		found = 0;
 		for (int i = 0; i < elem_size<N>; ++i)
 		{
-			found += S.section_exclusive(board.row(i));
+			found += section_exclusive(board, board.row(i));
 		}
 		for (int i = 0; i < elem_size<N>; ++i)
 		{
-			found += S.section_exclusive(board.col(i));
+			found += section_exclusive(board, board.col(i));
 		}
 		for (int i = 0; i < elem_size<N>; ++i)
 		{
-			found += S.section_exclusive(board.block(i));
+			found += section_exclusive(board, board.block(i));
 		}
 	}
 }

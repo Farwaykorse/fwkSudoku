@@ -973,21 +973,20 @@ TEST(Solver, section_exclusive)
 		EXPECT_EQ(B3[3][3].count(), 4);
 		EXPECT_TRUE(B3[3][3].is_option(1));
 		// Row()
-		EXPECT_NO_THROW(Solver<2>(B3).section_exclusive(B3.row(3)));
+		EXPECT_NO_THROW(section_exclusive(B3, B3.row(3)));
 		EXPECT_TRUE(B3[3][3].is_answer(1));
 		// Col()
 		reset_B3();
-		EXPECT_NO_THROW(Solver<2>(B3).section_exclusive(B3.col(3)));
+		EXPECT_NO_THROW(section_exclusive(B3, B3.col(3)));
 		EXPECT_TRUE(B3[3][3].is_answer(1));
 		// BLock()
 		reset_B3();
-		EXPECT_NO_THROW(Solver<2>(B3).section_exclusive(B3.block(3)));
+		EXPECT_NO_THROW(section_exclusive(B3, B3.block(3)));
 		EXPECT_TRUE(B3[3][3].is_answer(1));
 	}
 	// same result as set_section_locals
 	{
 		using set = std::bitset<5>;
-		using S   = Solver<2>;
 		Board<Options<4>, 2> B{};
 		Board<Options<4>, 2> cB{B};
 		//
@@ -1002,7 +1001,7 @@ TEST(Solver, section_exclusive)
 		B[0][2] = set{"00111"};
 		ASSERT_TRUE(B[0][1].all());
 		ASSERT_TRUE(B[0][3].all());
-		EXPECT_EQ(S(B).section_exclusive(B.row(0)), 0);
+		EXPECT_EQ(section_exclusive(B, B.row(0)), 0);
 		EXPECT_EQ(B[0][0].count(), 2);
 		EXPECT_TRUE(B[0][1].all());
 		EXPECT_EQ(B[0][2].count(), 2);
@@ -1015,7 +1014,7 @@ TEST(Solver, section_exclusive)
 		ASSERT_TRUE(B[2][2].all());
 		ASSERT_TRUE(B[2][3].all());
 		ASSERT_TRUE(B[3][2].all());
-		EXPECT_EQ(S(B).section_exclusive(B.row(2)), 4);
+		EXPECT_EQ(section_exclusive(B, B.row(2)), 4);
 		EXPECT_TRUE(B[3][0].all());
 		EXPECT_EQ(B[2][2].count(), 4); // self
 		EXPECT_EQ(B[2][3].count(), 4); // self
@@ -1032,7 +1031,7 @@ TEST(Solver, section_exclusive)
 		B       = cB; // reset board
 		B[0][0] = set{"00111"};
 		B[1][1] = set{"00111"};
-		EXPECT_EQ(S(B).section_exclusive(B.block(0)), 0);
+		EXPECT_EQ(section_exclusive(B, B.block(0)), 0);
 		EXPECT_TRUE(B[0][1].all());
 		EXPECT_TRUE(B[0][3].all());
 		EXPECT_TRUE(B[1][0].all());
@@ -1041,7 +1040,7 @@ TEST(Solver, section_exclusive)
 		// same block, same row
 		B[2][0] = set{"11001"};
 		B[2][1] = set{"11001"};
-		EXPECT_EQ(S(B).section_exclusive(B.block(2)), 4);
+		EXPECT_EQ(section_exclusive(B, B.block(2)), 4);
 		EXPECT_TRUE(B[3][0].all());    // self block
 		EXPECT_TRUE(B[3][1].all());    // self block
 		EXPECT_EQ(B[3][2].count(), 2); // rest row
@@ -1053,7 +1052,7 @@ TEST(Solver, section_exclusive)
 		B       = cB; // reset board
 		B[0][1] = set{"00111"};
 		B[1][1] = set{"00111"};
-		EXPECT_EQ(S(B).section_exclusive(B.block(0)), 4);
+		EXPECT_EQ(section_exclusive(B, B.block(0)), 4);
 		EXPECT_TRUE(B[0][0].all());    // self block
 		EXPECT_EQ(B[0][1].count(), 2); // self block
 		EXPECT_TRUE(B[0][2].all());    // rest row
@@ -1072,7 +1071,6 @@ TEST(Solver, section_exclusive)
 		EXPECT_TRUE(B[3][3].all());
 		Board<Options<9>, 3> B3{};
 		const Board<Options<9>, 3> cB3{};
-		Solver<3> S3{B3};
 		// 3 option in same block & row
 		//
 		//	0	0	0
@@ -1089,7 +1087,7 @@ TEST(Solver, section_exclusive)
 		ASSERT_TRUE(B3[0][5].all());
 		ASSERT_TRUE(B3[1][0].is_answer(4));
 		ASSERT_TRUE(B3[1][8].all());
-		EXPECT_EQ(S3.section_exclusive(B3.block(0)), 3 * 6);
+		EXPECT_EQ(section_exclusive(B3, B3.block(0)), 3 * 6);
 		EXPECT_EQ(B3[0][0].count(), 9);
 		EXPECT_EQ(B3[0][3].count(), 6);
 		EXPECT_EQ(B3[0][8].count(), 6);
@@ -1113,7 +1111,7 @@ TEST(Solver, section_exclusive)
 		B3[1][2] = 6;
 		B3[2][1] = 8;
 		B3[2][2] = 9;
-		EXPECT_EQ(S3.section_exclusive(B3.block(0)), 3 * 6);
+		EXPECT_EQ(section_exclusive(B3, B3.block(0)), 3 * 6);
 		EXPECT_EQ(B3[0][0].count(), 9);
 		EXPECT_TRUE(B3[0][4].all()); // rest row
 		EXPECT_TRUE(B3[0][8].all()); // rest row
@@ -1137,7 +1135,7 @@ TEST(Solver, section_exclusive)
 		B3[1][2] = 6;
 		B3[2][0] = 7;
 		B3[2][2] = 9;
-		EXPECT_EQ(S3.section_exclusive(B3.block(0)), 0);
+		EXPECT_EQ(section_exclusive(B3, B3.block(0)), 0);
 		EXPECT_TRUE(B3[0][0].all()); // self
 		EXPECT_TRUE(B3[0][4].all()); // rest row
 		EXPECT_TRUE(B3[0][8].all()); // rest row
@@ -1179,65 +1177,64 @@ TEST(Solver, section_exclusive)
 		};
 		// clang-format on
 		Board<Options<9>, 3> B1{};
-		Solver<3> S1(B1);
-		S1.setValue(b1.cbegin(), b1.cend());
+		Solver<3>(B1).setValue(b1.cbegin(), b1.cend());
 		Board<Options<9>, 3> A1{};
 		Solver<3>(A1).setValue(b1a.cbegin(), b1a.cend());
 		EXPECT_NE(A1, B1);
 
-		EXPECT_EQ(S1.section_exclusive(B1.row(0)), 6);
-		EXPECT_EQ(S1.section_exclusive(B1.row(1)), 2);
-		EXPECT_EQ(S1.section_exclusive(B1.row(2)), 4);
-		EXPECT_EQ(S1.section_exclusive(B1.row(3)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.row(4)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.row(5)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.row(6)), 2);
-		EXPECT_EQ(S1.section_exclusive(B1.row(7)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.row(8)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.row(0)), 6);
+		EXPECT_EQ(section_exclusive(B1, B1.row(1)), 2);
+		EXPECT_EQ(section_exclusive(B1, B1.row(2)), 4);
+		EXPECT_EQ(section_exclusive(B1, B1.row(3)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.row(4)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.row(5)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.row(6)), 2);
+		EXPECT_EQ(section_exclusive(B1, B1.row(7)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.row(8)), 0);
 		EXPECT_NE(A1, B1);
 
-		EXPECT_EQ(S1.section_exclusive(B1.col(0)), 3);
-		EXPECT_EQ(S1.section_exclusive(B1.col(1)), 2);
-		EXPECT_EQ(S1.section_exclusive(B1.col(2)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.col(3)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.col(4)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.col(5)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.col(6)), 65);
-		EXPECT_EQ(S1.section_exclusive(B1.col(7)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.col(8)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.col(0)), 3);
+		EXPECT_EQ(section_exclusive(B1, B1.col(1)), 2);
+		EXPECT_EQ(section_exclusive(B1, B1.col(2)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.col(3)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.col(4)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.col(5)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.col(6)), 65);
+		EXPECT_EQ(section_exclusive(B1, B1.col(7)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.col(8)), 0);
 		EXPECT_NE(A1, B1);
 
-		EXPECT_EQ(S1.section_exclusive(B1.block(0)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.block(1)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.block(2)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.block(3)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.block(4)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.block(5)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.block(6)), 24);
-		EXPECT_EQ(S1.section_exclusive(B1.block(7)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.block(8)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.block(0)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.block(1)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.block(2)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.block(3)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.block(4)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.block(5)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.block(6)), 24);
+		EXPECT_EQ(section_exclusive(B1, B1.block(7)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.block(8)), 0);
 		EXPECT_NE(A1, B1);
 
-		EXPECT_EQ(S1.section_exclusive(B1.row(0)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.row(1)), 23);
-		EXPECT_EQ(S1.section_exclusive(B1.row(2)), 7);
-		EXPECT_EQ(S1.section_exclusive(B1.row(3)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.row(4)), 2);
-		EXPECT_EQ(S1.section_exclusive(B1.row(5)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.row(6)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.row(7)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.row(8)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.row(0)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.row(1)), 23);
+		EXPECT_EQ(section_exclusive(B1, B1.row(2)), 7);
+		EXPECT_EQ(section_exclusive(B1, B1.row(3)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.row(4)), 2);
+		EXPECT_EQ(section_exclusive(B1, B1.row(5)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.row(6)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.row(7)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.row(8)), 0);
 		EXPECT_NE(A1, B1);
 
-		EXPECT_EQ(S1.section_exclusive(B1.col(0)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.col(1)), 23);
-		EXPECT_EQ(S1.section_exclusive(B1.col(2)), 1);
-		EXPECT_EQ(S1.section_exclusive(B1.col(3)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.col(4)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.col(5)), 82);
-		EXPECT_EQ(S1.section_exclusive(B1.col(6)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.col(7)), 0);
-		EXPECT_EQ(S1.section_exclusive(B1.col(8)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.col(0)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.col(1)), 23);
+		EXPECT_EQ(section_exclusive(B1, B1.col(2)), 1);
+		EXPECT_EQ(section_exclusive(B1, B1.col(3)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.col(4)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.col(5)), 82);
+		EXPECT_EQ(section_exclusive(B1, B1.col(6)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.col(7)), 0);
+		EXPECT_EQ(section_exclusive(B1, B1.col(8)), 0);
 		EXPECT_EQ(A1, B1);
 	}
 	{
@@ -1272,61 +1269,59 @@ TEST(Solver, section_exclusive)
 		};
 		// clang-format on
 		Board<Options<9>, 3> B5{};
-		Solver<3> S5(B5);
-		S5.setValue(b5.cbegin(), b5.cend());
+		Solver<3>(B5).setValue(b5.cbegin(), b5.cend());
 		Board<Options<9>, 3> A5{};
 		Solver<3>(A5).setValue(b5a.cbegin(), b5a.cend());
 		EXPECT_NE(A5, B5);
 
-		EXPECT_EQ(S5.section_exclusive(B5.row(0)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.row(1)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.row(2)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.row(3)), 3);
-		EXPECT_EQ(S5.section_exclusive(B5.row(4)), 4);
-		EXPECT_EQ(S5.section_exclusive(B5.row(5)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.row(6)), 4);
-		EXPECT_EQ(S5.section_exclusive(B5.row(7)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.row(8)), 1);
+		EXPECT_EQ(section_exclusive(B5, B5.row(0)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.row(1)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.row(2)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.row(3)), 3);
+		EXPECT_EQ(section_exclusive(B5, B5.row(4)), 4);
+		EXPECT_EQ(section_exclusive(B5, B5.row(5)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.row(6)), 4);
+		EXPECT_EQ(section_exclusive(B5, B5.row(7)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.row(8)), 1);
 		EXPECT_NE(A5, B5);
 
-		EXPECT_EQ(S5.section_exclusive(B5.col(0)), 14);
-		EXPECT_EQ(S5.section_exclusive(B5.col(1)), 2);
-		EXPECT_EQ(S5.section_exclusive(B5.col(2)), 3);
-		EXPECT_EQ(S5.section_exclusive(B5.col(3)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.col(4)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.col(5)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.col(6)), 9);
-		EXPECT_EQ(S5.section_exclusive(B5.col(7)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.col(8)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.col(0)), 14);
+		EXPECT_EQ(section_exclusive(B5, B5.col(1)), 2);
+		EXPECT_EQ(section_exclusive(B5, B5.col(2)), 3);
+		EXPECT_EQ(section_exclusive(B5, B5.col(3)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.col(4)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.col(5)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.col(6)), 9);
+		EXPECT_EQ(section_exclusive(B5, B5.col(7)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.col(8)), 0);
 		EXPECT_NE(A5, B5);
 
-		EXPECT_EQ(S5.section_exclusive(B5.block(0)), 14);
-		EXPECT_EQ(S5.section_exclusive(B5.block(1)), 89);
-		EXPECT_EQ(S5.section_exclusive(B5.block(2)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.block(3)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.block(4)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.block(5)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.block(6)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.block(7)), 0);
-		EXPECT_EQ(S5.section_exclusive(B5.block(8)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.block(0)), 14);
+		EXPECT_EQ(section_exclusive(B5, B5.block(1)), 89);
+		EXPECT_EQ(section_exclusive(B5, B5.block(2)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.block(3)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.block(4)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.block(5)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.block(6)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.block(7)), 0);
+		EXPECT_EQ(section_exclusive(B5, B5.block(8)), 0);
 		EXPECT_EQ(A5, B5);
 
 		// Triggered a bug while testing, on B5
 		Board<Options<9>, 3> B6{};
-		Solver<3> S6{B6};
 		const auto& A6 = A5;
-		S6.setValue(b5.cbegin(), b5.cend());
+		Solver<3>(B6).setValue(b5.cbegin(), b5.cend());
 		ASSERT_NE(A6, B6);
 
-		EXPECT_EQ(S6.section_exclusive(B6.row(0)), 0);
-		EXPECT_EQ(S6.section_exclusive(B6.col(0)), 0);
-		EXPECT_EQ(S6.section_exclusive(B6.block(0)), 0);
-		EXPECT_EQ(S6.section_exclusive(B6.row(1)), 0);
-		EXPECT_EQ(S6.section_exclusive(B6.col(1)), 5);
-		EXPECT_EQ(S6.section_exclusive(B6.block(1)), 0);
-		EXPECT_EQ(S6.section_exclusive(B6.row(2)), 0);
-		EXPECT_EQ(S6.section_exclusive(B6.col(2)), 4);
-		EXPECT_NO_FATAL_FAILURE(S6.section_exclusive(B6.block(2)));
+		EXPECT_EQ(section_exclusive(B6, B6.row(0)), 0);
+		EXPECT_EQ(section_exclusive(B6, B6.col(0)), 0);
+		EXPECT_EQ(section_exclusive(B6, B6.block(0)), 0);
+		EXPECT_EQ(section_exclusive(B6, B6.row(1)), 0);
+		EXPECT_EQ(section_exclusive(B6, B6.col(1)), 5);
+		EXPECT_EQ(section_exclusive(B6, B6.block(1)), 0);
+		EXPECT_EQ(section_exclusive(B6, B6.row(2)), 0);
+		EXPECT_EQ(section_exclusive(B6, B6.col(2)), 4);
+		EXPECT_NO_FATAL_FAILURE(section_exclusive(B6, B6.block(2)));
 	}
 
 	// reproduce functionality of unique
@@ -1362,13 +1357,13 @@ TEST(Solver, section_exclusive)
 		EXPECT_FALSE(B1[3][3].is_answer());
 	}
 	// block_exclusive:
-	EXPECT_EQ(1, Solver<2>(B1).section_exclusive(B1.block(3)))
+	EXPECT_EQ(1, section_exclusive(B1, B1.block(3)))
 		<< "section_exclusive(Block) should find 1 value";
 	EXPECT_EQ(B1[3][3], 1) << "section_exclusive(Block) unique value failed";
 	int found1{0};
 	for (int i{0}; i < elem_size<2>; ++i)
 	{
-		found1 += Solver<2>(B1).section_exclusive(B1.block(i));
+		found1 += section_exclusive(B1, B1.block(i));
 	}
 	EXPECT_EQ(found1, 0) << "shouldn't find any others";
 
@@ -1410,7 +1405,7 @@ TEST(Solver, section_exclusive)
 	//		double: 1 in row 2;	2 not paired
 	// block 2
 	//		unique: 8=3
-	int count_s = Solver<3>(B2).section_exclusive(B2.block(2));
+	int count_s = section_exclusive(B2, B2.block(2));
 
 	EXPECT_GE(count_s, 1)
 		<< "section_exclusive(block) should find at least 1 value";
@@ -1418,7 +1413,7 @@ TEST(Solver, section_exclusive)
 		<< "section_exclusive(block) unique value failed N=3";
 	for (int i = 0; i < elem_size<3>; ++i)
 	{
-		EXPECT_NO_THROW(Solver<3>(B2).section_exclusive(B2.block(i)));
+		EXPECT_NO_THROW(section_exclusive(B2, B2.block(i)));
 	}
 }
 
