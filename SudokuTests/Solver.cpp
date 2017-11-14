@@ -803,21 +803,22 @@ TEST(Solver, set_uniques)
 	ASSERT_EQ(B1[2][1].count(), 4);
 
 	// worker empty -> return 0, no execution
-	EXPECT_EQ(S1.set_uniques(B1.row(0), std::bitset<5>{"00001"}), 0);
+	EXPECT_EQ(
+		set_uniques(B1, B1.row(0), Options<4>{std::bitset<5>{"00001"}}), 0);
 	EXPECT_EQ(B1[0][0].count(), 3);
 	EXPECT_EQ(B1[0][3].count(), 4);
 
 	// Row (one value)
 	auto worker = appearance_once<2>(B1.row(0));
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
-	EXPECT_NO_FATAL_FAILURE(S1.set_uniques(B1.row(0), worker));
+	EXPECT_NO_FATAL_FAILURE(set_uniques(B1, B1.row(0), worker));
 	EXPECT_EQ(B1[0][0].count(), 3); // no change
 	EXPECT_EQ(B1[0][1].count(), 3); // no change
 	EXPECT_EQ(B1[0][2].count(), 3); // no change
 	EXPECT_TRUE(B1[0][3].is_answer(1));
 	worker = appearance_once<2>(B1.row(2));
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
-	EXPECT_EQ(S1.set_uniques(B1.row(2), worker), 1);
+	EXPECT_EQ(set_uniques(B1, B1.row(2), worker), 1);
 	EXPECT_TRUE(B1[2][1].is_answer(1));
 	// Col (one value)
 	B1 = cB1; // reset
@@ -825,7 +826,7 @@ TEST(Solver, set_uniques)
 	ASSERT_EQ(B1[2][1].count(), 4);
 	worker = appearance_once<2>(B1.col(1));
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
-	EXPECT_EQ(S1.set_uniques(B1.col(1), worker), 1);
+	EXPECT_EQ(set_uniques(B1, B1.col(1), worker), 1);
 	EXPECT_EQ(B1[0][1].count(), 3); // no change
 	EXPECT_EQ(B1[1][1].count(), 3); // no change
 	EXPECT_TRUE(B1[2][1].is_answer(1));
@@ -835,7 +836,7 @@ TEST(Solver, set_uniques)
 	ASSERT_EQ(B1[2][1].count(), 4);
 	worker = appearance_once<2>(B1.block(2));
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
-	EXPECT_EQ(S1.set_uniques(B1.block(2), worker), 1);
+	EXPECT_EQ(set_uniques(B1, B1.block(2), worker), 1);
 	EXPECT_EQ(B1[2][0].count(), 3); // no change
 	EXPECT_TRUE(B1[2][1].is_answer(1));
 	EXPECT_EQ(B1[3][0].count(), 3); // no change
@@ -851,7 +852,7 @@ TEST(Solver, set_uniques)
 	B2[0][3] = std::bitset<5>{"10101"};
 	worker   = appearance_once<2>(B2.row(0));
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"01011"}});
-	EXPECT_EQ(Solver<2>(B2).set_uniques(B2.row(0), worker), 10);
+	EXPECT_EQ(set_uniques(B2, B2.row(0), worker), 10);
 	// 10 = ans(0){1} + col(0){3} + block(0){1}
 	//		ans(2){1} + col(2){3} + block(1){1}
 	EXPECT_TRUE(B2[0][0].is_answer(1));
@@ -1771,7 +1772,7 @@ TEST(Solver, deathtest)
 		Board<Options<4>, 2> B1{};
 		// deathtest: worker[0] has to be true
 		EXPECT_DEBUG_DEATH(
-			Solver<2>(B1).set_uniques(B1.row(0), std::bitset<5>{"10110"}),
+			set_uniques(B1, B1.row(0), Options<4>{std::bitset<5>{"10110"}}),
 			"Assertion failed: worker.test.0.");
 		// deathtest: an unique in worker doesn't exist in the section
 		// 1	24	324	24
@@ -1780,10 +1781,9 @@ TEST(Solver, deathtest)
 		B1[0][1]    = std::bitset<5>{"10101"};
 		B1[0][2]    = std::bitset<5>{"11101"};
 		B1[0][3]    = std::bitset<5>{"10101"};
-		auto worker = std::bitset<5>{"01011"};
+		auto worker = Options<4>{std::bitset<5>{"01011"}};
 		EXPECT_DEBUG_DEATH(
-			Solver<2>(B1).set_uniques(B1.row(0), worker),
-			"Assertion failed: false");
+			set_uniques(B1, B1.row(0), worker), "Assertion failed: false");
 	}
 	// single_option()
 #ifdef _DEBUG // note: release triggers normal exception

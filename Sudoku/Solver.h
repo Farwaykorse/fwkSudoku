@@ -63,16 +63,13 @@ public:
 	template<typename SectionT>
 	int unique_in_section(SectionT);
 	template<typename SectionT>
-	auto set_uniques(SectionT, Options worker);
-	template<typename SectionT>
 	int section_exclusive(SectionT);
 
 private:
 	Board& board_;
 };
 
-//===---------------------------------------------------------------------===//
-// free functions
+//===-- free functions ---------------------------------------------------===//
 template<int N, typename SectionT>
 auto find_locations(SectionT, unsigned int value, int rep_count = elem_size<N>);
 template<int N, typename ItrT>
@@ -114,6 +111,8 @@ int set_section_locals(
 	int rep_count,
 	Options worker);
 
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+auto set_uniques(Board<Options, N>&, SectionT, Options worker);
 
 //===---------------------------------------------------------------------===//
 
@@ -518,16 +517,18 @@ inline int Solver<N>::unique_in_section(const SectionT section)
 	static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
 
 	const auto worker = appearance_once<N>(section);
-	return set_uniques(section, worker);
+	return set_uniques(board_, section, worker);
 }
 
 //	Set unique values in section as answer
-template<int N>
-template<typename SectionT>
-inline auto Solver<N>::set_uniques(const SectionT section, const Options worker)
+template<int N, typename Options, typename SectionT>
+inline auto set_uniques(
+	Board<Options, N>& board, const SectionT section, const Options worker)
 {
+	using value_t = unsigned int;
 	{
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		static_assert(
+			std::is_base_of_v<typename Board<Options, N>::Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
@@ -552,8 +553,9 @@ inline auto Solver<N>::set_uniques(const SectionT section, const Options worker)
 					[value](Options O) { return O.is_option(value); });
 				if (itr != end)
 				{
-					setValue(itr.location(), value);
-					changes += single_option(itr.location(), value);
+					Solver<N>(board).setValue(itr.location(), value);
+					changes +=
+						Solver<N>(board).single_option(itr.location(), value);
 					++changes;
 				}
 				else
@@ -591,7 +593,7 @@ inline int Solver<N>::section_exclusive(const SectionT section)
 		// unique specialization
 		if (appearing[1].count_all() > 0)
 		{
-			changes += set_uniques(section, appearing[1]);
+			changes += set_uniques(board_, section, appearing[1]);
 			renew_appearing();
 		}
 		else if (appearing[i].count_all() > 0)
@@ -669,7 +671,7 @@ inline int set_section_locals(
 {
 	using value_t = unsigned int;
 	{
-		using BlockT = Board_Section::Block<Options, N>;
+		using BlockT   = Board_Section::Block<Options, N>;
 		using iterator = typename BlockT::const_iterator;
 		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(rep_count > 1);  // should have been cought by caller
