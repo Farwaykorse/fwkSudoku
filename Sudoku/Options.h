@@ -17,8 +17,8 @@ namespace Sudoku
 template<int E>
 class Options
 {
-	using bitset   = std::bitset<E + 1>;
-	using value_t  = unsigned int;
+	using bitset  = std::bitset<E + 1>;
+	using value_t = unsigned int;
 
 public:
 	Options() noexcept;
@@ -55,7 +55,7 @@ public:
 	bool is_empty() const noexcept;
 
 	value_t get_answer() const noexcept;    // return answer or 0
-										// (won't confirm is_answer())
+											// (won't confirm is_answer())
 	std::vector<value_t> available() const; // return available options
 
 	bool operator[](value_t) const noexcept;
@@ -64,7 +64,6 @@ public:
 	bool operator==(value_t) const noexcept; // shorthand for is_answer(int)
 	bool operator!=(value_t) const noexcept; // shorthand for is_answer(int)
 	bool operator==(const Options<E>&) const noexcept;
-	bool operator!=(const Options<E>&) const noexcept;
 	bool operator<(const Options<E>&) const noexcept;
 
 	// combine available options
@@ -85,11 +84,14 @@ private:
 	value_t read_next(value_t start = 0) const noexcept;
 	Options& operator&=(const Options&) noexcept; // NOTE might be risky
 	template<int E>
-	friend Options<E> operator&(const Options<E>&, const Options<E>&) noexcept;
+	friend Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
 
 }; // class Options
 
 //===-- free-functions ---------------------------------------------------===//
+
+template<int E>
+bool operator!=(const Options<E>&, const Options<E>&) noexcept;
 
 template<int E>
 inline Options<E> XOR(Options<E>& A, Options<E>& B) noexcept;
@@ -101,7 +103,7 @@ Options<E> operator+(const Options<E>&, const Options<E>&) noexcept;
 template<int E>
 inline Options<E> shared(Options<E>& A, Options<E>& B) noexcept;
 template<int E>
-Options<E> operator&(const Options<E>&, const Options<E>&) noexcept;
+Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
 
 //===---------------------------------------------------------------------===//
 
@@ -308,8 +310,9 @@ inline bool Options<E>::is_answer(const value_t value) const noexcept
 {
 	assert(value <= E);
 	return (is_answer() && operator[](value));
-	//return *this == Options<E>(value);
-	//return data_ == std::bitset<E + 1>{static_cast<unsigned long long>(exp2_(value))};
+	// return *this == Options<E>(value);
+	// return data_ == std::bitset<E + 1>{static_cast<unsigned long
+	// long>(exp2_(value))};
 }
 
 //	check if option available
@@ -322,19 +325,19 @@ inline bool Options<E>::is_option(const value_t value) const noexcept
 	return (operator[](value) && !is_answer());
 
 	//! ... much slower ...
-	//constexpr auto not_answered =
+	// constexpr auto not_answered =
 	//	std::bitset<E + 1>{static_cast<unsigned long long>(1)};
-	//return data_ ==
-	//	   ((std::bitset<E + 1>{static_cast<unsigned long long>(exp2_(value))} |=
-	//		 not_answered) |= data_);
+	// return data_ ==
+	//	   ((std::bitset<E + 1>{static_cast<unsigned long long>(exp2_(value))}
+	//|= 		 not_answered) |= data_);
 }
 
 //_Test if no options or answers available
 template<int E>
 inline bool Options<E>::is_empty() const noexcept
 {
-	//return (data_.none() || (data_.count() == 1 && data_[0] == true));
-	return (data_.none() || data_ == std::bitset<E+1>{1});
+	// return (data_.none() || (data_.count() == 1 && data_[0] == true));
+	return (data_.none() || data_ == std::bitset<E + 1>{1});
 }
 
 //	determine the answer value, even if not marked
@@ -394,9 +397,9 @@ inline bool Options<E>::operator==(const Options& other) const noexcept
 }
 
 template<int E>
-inline bool Options<E>::operator!=(const Options& other) const noexcept
+inline bool operator!=(const Options<E>& left, const Options<E>& right) noexcept
 {
-	return !(*this == other);
+	return !(left == right);
 }
 
 template<int E>
@@ -440,6 +443,14 @@ inline Options<E>& Options<E>::XOR(const Options& other) noexcept
 {
 	data_ ^= other.data_;
 	return *this;
+}
+
+// Exclusive OR
+template<int E>
+inline Options<E> XOR(const Options<E>& A, const Options<E>& B) noexcept
+{
+	Options<E> tmp{A};
+	return tmp.XOR(B);
 }
 
 //	Retain only shared options (binary AND)
@@ -487,20 +498,5 @@ inline typename Options<E>::value_t Options<E>::read_next(value_t start) const
 	}
 	return 0; // never triggered
 }
-
-//////////////////////////////
-///// external functions /////
-//////////////////////////////
-
-// Exclusive OR
-template<int E>
-inline Options<E> XOR(const Options<E>& A, const Options<E>& B) noexcept
-{
-	Options<E> tmp{A};
-	return tmp.XOR(B);
-}
-
-
-
 
 } // namespace Sudoku
