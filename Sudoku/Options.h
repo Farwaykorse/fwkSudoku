@@ -69,7 +69,6 @@ public:
 
 	// combine available options
 	Options& operator+=(const Options&) noexcept;
-	Options operator+(const Options&) const noexcept;
 	// xor
 	Options& XOR(const Options&) noexcept;
 	// TODO difference; usecase?
@@ -94,6 +93,9 @@ private:
 
 template<int E>
 inline Options<E> XOR(Options<E>& A, Options<E>& B) noexcept;
+
+template<int E>
+Options<E> operator+(const Options<E>&, const Options<E>&) noexcept;
 
 // return shared options
 template<int E>
@@ -425,10 +427,11 @@ inline Options<E>& Options<E>::operator+=(const Options& other) noexcept
 }
 //	Combine (binary OR)
 template<int E>
-inline Options<E> Options<E>::operator+(const Options& other) const noexcept
+inline Options<E>
+	operator+(const Options<E>& left, const Options<E>& right) noexcept
 {
-	Options<E> tmp(*this);
-	return tmp += other;
+	Options<E> tmp{left};
+	return tmp += right;
 }
 
 //	Per element (binary) XOR, exclusive OR
