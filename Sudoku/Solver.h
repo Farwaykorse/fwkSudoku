@@ -1,7 +1,6 @@
 //===--	Sudoku/Solver.h													--===//
 //
-//	Solver function container-class
-//	Collects and gives access to solver functions acting on a Board<Options>&
+//	Solver functions acting on a Board<Options>&
 //===---------------------------------------------------------------------===//
 #pragma once
 
@@ -30,7 +29,22 @@
 
 namespace Sudoku
 {
-//===-- free functions ---------------------------------------------------===//
+//===-- solvers ----------------------------------------------------------===//
+template<int N, typename Options = Options<elem_size<N>>>
+int single_option(Board<Options, N>&, Location<N>);
+template<int N, typename Options = Options<elem_size<N>>>
+int single_option(Board<Options, N>&, Location<N>, unsigned int value);
+template<int N, typename Options = Options<elem_size<N>>>
+int dual_option(Board<Options, N>&, Location<N>);
+template<int N, typename Options = Options<elem_size<N>>>
+int multi_option(Board<Options, N>&, Location<N>, size_t = 0);
+
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+int unique_in_section(Board<Options, N>&, SectionT);
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+int section_exclusive(Board<Options, N>&, SectionT);
+
+//===-- find_locations ---------------------------------------------------===//
 template<int N, typename SectionT>
 auto find_locations(SectionT, unsigned int value, int rep_count = elem_size<N>);
 template<int N, typename ItrT>
@@ -39,16 +53,26 @@ auto find_locations(
 template<int N, typename SectionT>
 auto find_locations(SectionT, Options<elem_size<N>> value);
 
+//===-- set_options ------------------------------------------------------===//
 template<int N, typename Options = Options<elem_size<N>>>
 void setValue(Board<Options, N>&, Location<N>, unsigned int value);
-template<
-	int N,
-	typename Options = Options<elem_size<N>>,
-	typename ItrT,
-	typename = std::enable_if_t<Utility_::is_forward<ItrT>>>
+template<int N, typename Options = Options<elem_size<N>>, typename ItrT>
 void setValue(Board<Options, N>&, ItrT begin, ItrT end);
 
-// remove an option: triggers solvers single_option()
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+auto set_uniques(Board<Options, N>&, SectionT, Options worker);
+
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+int set_section_locals(
+	Board<Options, N>&, SectionT, int rep_count, Options worker);
+template<int N, typename Options = Options<elem_size<N>>>
+int set_section_locals(
+	Board<Options, N>&,
+	Board_Section::Block<Options, N>,
+	int rep_count,
+	Options worker);
+
+//===-- remove_option ----------------------------------------------------===//
 template<int N, typename Options = Options<elem_size<N>>>
 int remove_option(Board<Options, N>&, Location<N>, unsigned int value);
 
@@ -67,36 +91,10 @@ int remove_option_section(
 	SectionT,
 	const std::vector<Location<N>>& ignore,
 	const std::vector<unsigned int>& values);
+
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_outside_block(
 	Board<Options, N>&, SectionT, Location<N> block_loc, unsigned int value);
-
-template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-int set_section_locals(
-	Board<Options, N>&, SectionT, int rep_count, Options worker);
-template<int N, typename Options = Options<elem_size<N>>>
-int set_section_locals(
-	Board<Options, N>&,
-	Board_Section::Block<Options, N>,
-	int rep_count,
-	Options worker);
-
-template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-int unique_in_section(Board<Options, N>&, SectionT);
-template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-auto set_uniques(Board<Options, N>&, SectionT, Options worker);
-template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-int section_exclusive(Board<Options, N>&, SectionT);
-
-template<int N, typename Options = Options<elem_size<N>>>
-int single_option(Board<Options, N>&, Location<N>);
-template<int N, typename Options = Options<elem_size<N>>>
-int single_option(Board<Options, N>&, Location<N>, unsigned int value);
-
-template<int N, typename Options = Options<elem_size<N>>>
-int dual_option(Board<Options, N>&, Location<N>);
-template<int N, typename Options = Options<elem_size<N>>>
-int multi_option(Board<Options, N>&, Location<N>, size_t = 0);
 
 //===---------------------------------------------------------------------===//
 
@@ -117,7 +115,7 @@ inline void setValue(
 }
 
 //	set board_ using a transferable container of values
-template<int N, typename Options, typename ItrT, typename>
+template<int N, typename Options, typename ItrT>
 inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 {
 	using value_t = unsigned int;
