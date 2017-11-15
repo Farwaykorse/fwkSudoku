@@ -5,10 +5,10 @@
 #pragma once
 
 #include "Iterator_Utilities.h"
-#include "Location.h"
+#include "Location.h" // elem_size<N>
 #include "Options.h"
 #include <iterator>
-#include <type_traits>
+#include <type_traits> // is_base_of
 
 // Forward declarations
 #include "Board.fwd.h"
@@ -17,15 +17,24 @@
 
 namespace Sudoku
 {
-using namespace Sudoku::Utility_;
-// TODO rename: use a generalized function name
-// TODO 1. general version taking [int] 1-full_size for appearance count
-// TODO 2. default to base_size
-// TODO 3. specialize appearance_once version (unique?)
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+Options appearance_once(SectionT section);
+
+template<int N, typename Options = Options<elem_size<N>>, typename InItr_>
+Options appearance_once(const InItr_ begin, const InItr_ end);
+
+template<int N, typename SectionT>
+auto appearance_sets(const SectionT section);
+
+template<int N, typename InItr_>
+auto appearance_sets(const InItr_ begin, const InItr_ end);
+
+
+//===---------------------------------------------------------------------===//
 
 
 //	returning options collected by appearance count in input-dataset
-template<int N, typename InItr_, typename = std::enable_if_t<is_input<InItr_>>>
+template<int N, typename InItr_>
 auto appearance_sets(const InItr_ begin, const InItr_ end)
 {
 	// clang-format off
@@ -60,10 +69,11 @@ Step 3) xor [n-1]
 // More than 9: shouldn't be an issue
 */
 	// clang-format on
-	using Options = Sudoku::Options<elem_size<N>>;
 
-	static_assert(iterator_to<InItr_, const Options>);
-
+	using Options = Options<elem_size<N>>;
+	{
+		static_assert(Utility_::iterator_to<InItr_, const Options>);
+	}
 	// To limit processing time, counting up to N
 	constexpr size_t max = N; // default: (9x9 board) up-to 3 times
 	std::array<Options, max + 1> worker{};
@@ -110,28 +120,20 @@ Step 3) xor [n-1]
 
 //	returning options collected by appearance count in section
 template<int N, typename SectionT>
-auto appearance_sets(const SectionT section)
+inline auto appearance_sets(const SectionT section)
 { // referal function, creates iterators
-	using Board   = Sudoku::Board<Options<elem_size<N>>, N>;
-	using Options = Sudoku::Options<elem_size<N>>;
-
-	static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
-	static_assert(
-		iterator_to<typename SectionT::const_iterator, const Options>);
-
 	return appearance_sets<N>(section.cbegin(), section.cend());
 }
 
 
 //	return a mask for values with a single appearance
-template<int N, typename InItr_, typename = std::enable_if_t<is_input<InItr_>>>
-Options<elem_size<N>> appearance_once(const InItr_ begin, const InItr_ end)
+template<int N, typename Options, typename InItr_>
+Options appearance_once(const InItr_ begin, const InItr_ end)
 {
-	using Options = Options<elem_size<N>>;
-
-	static_assert(is_input<InItr_>);
-	static_assert(iterator_to<InItr_, const Options>);
-
+	{
+		static_assert(Utility_::is_input<InItr_>);
+		static_assert(Utility_::iterator_to<InItr_, const Options>);
+	}
 	Options sum(0);    // helper all used
 	Options worker(0); // multiple uses OR answer
 	for (auto itr = begin; itr != end; ++itr)
@@ -151,17 +153,16 @@ Options<elem_size<N>> appearance_once(const InItr_ begin, const InItr_ end)
 }
 
 // range-based-for
-template<int N, typename T>
-auto appearance_once(T section)
+template<int N, typename Options, typename SectionT>
+Options appearance_once(SectionT section)
 {
-	using Options = Options<elem_size<N>>;
-	using Board   = Board<Options, N>;
-
-	// Board_Sections are based on Section
-	static_assert(std::is_base_of_v<typename Board::Section, T>);
-	// check iterator traits
-	static_assert(iterator_to<typename T::const_iterator, const Options>);
-
+	{
+		using Section = typename Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Section, SectionT>);
+		using namespace Utility_;
+		static_assert(
+			iterator_to<typename SectionT::const_iterator, const Options>);
+	}
 	Options sum(0);    // helper all used
 	Options worker(0); // multiple uses OR answer
 	for (const Options& item : section)

@@ -12,6 +12,9 @@ class Board;
 namespace Board_Section
 {
 	template<typename T, int N>
+	class Section;
+
+	template<typename T, int N>
 	class Row;
 
 	template<typename T, int N>
