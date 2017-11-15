@@ -417,11 +417,15 @@ TEST(Options, mf_set)
 TEST(Options, mf_booleanComparison)
 {
 	// operator==(int) const
-	static_assert(noexcept(TE.A_1 == 1), "operator==(int) should be noexcept");
+	static_assert(noexcept(TE.A_1 == 1));
+	static_assert(noexcept(1 == TE.A_1));
 	EXPECT_EQ(TE.A_1, 1);
+	EXPECT_EQ(1, TE.A_1);
 	EXPECT_EQ(TE.A_2, 2);
-	static_assert(noexcept(TE.A_1 != 1), "operator==(int) should be noexcept");
+	static_assert(noexcept(TE.A_1 != 1));
+	static_assert(noexcept(1 != TE.A_1));
 	EXPECT_NE(TE.A_1, 2);
+	EXPECT_NE(2, TE.A_1);
 	EXPECT_NE(TE.A_2, 1);
 
 	//bool operator==(Options<E>&) const

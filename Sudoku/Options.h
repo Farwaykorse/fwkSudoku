@@ -61,8 +61,6 @@ public:
 	bool operator[](value_t) const noexcept;
 	auto operator[](value_t) noexcept;
 
-	bool operator==(value_t) const noexcept; // shorthand for is_answer(int)
-	bool operator!=(value_t) const noexcept; // shorthand for is_answer(int)
 	bool operator==(const Options<E>&) const noexcept;
 	bool operator<(const Options<E>&) const noexcept;
 
@@ -92,6 +90,15 @@ private:
 
 template<int E>
 bool operator!=(const Options<E>&, const Options<E>&) noexcept;
+
+template<int E>
+bool operator==(const Options<E>&, unsigned int) noexcept;
+template<int E>
+bool operator==(unsigned int, const Options<E>&) noexcept;
+template<int E>
+bool operator!=(const Options<E>&, unsigned int) noexcept;
+template<int E>
+bool operator!=(unsigned int, const Options<E>&) noexcept;
 
 template<int E>
 inline Options<E> XOR(Options<E>& A, Options<E>& B) noexcept;
@@ -402,16 +409,26 @@ inline bool operator!=(const Options<E>& left, const Options<E>& right) noexcept
 	return !(left == right);
 }
 
+// short for is_answer(value)
 template<int E>
-inline bool Options<E>::operator==(const value_t value) const noexcept
+inline bool operator==(const Options<E>& left, const unsigned int value) noexcept
 {
-	return is_answer(value);
+	return left.is_answer(value);
 }
-
 template<int E>
-inline bool Options<E>::operator!=(const value_t value) const noexcept
+inline bool operator==(const unsigned int value, const Options<E>& right) noexcept
 {
-	return !operator==(value);
+	return right.is_answer(value);
+}
+template<int E>
+inline bool operator!=(const Options<E>& left, const unsigned int value) noexcept
+{
+	return not(left.is_answer(value));
+}
+template<int E>
+inline bool operator!=(const unsigned int value, const Options<E>& right) noexcept
+{
+	return not(right.is_answer(value));
 }
 
 //	Basis for sorting
