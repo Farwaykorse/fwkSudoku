@@ -74,8 +74,6 @@ public:
 	Options& XOR(const Options&) noexcept;
 	// TODO difference; usecase?
 	Options operator-(const Options&) const noexcept;
-	// return shared options
-	Options operator&(const Options&)const noexcept;
 
 	// Debug Use Only, don't depend on it's result
 	std::string DebugString() const;
@@ -86,10 +84,24 @@ private:
 	bitset data_{};
 
 	value_t read_next(value_t start = 0) const noexcept;
-	Options& operator&=(const Options&) noexcept;
-	// NOTE might be risky while unused; private?
+	Options& operator&=(const Options&) noexcept; // NOTE might be risky
+	template<int E>
+	friend Options<E> operator&(const Options<E>&, const Options<E>&) noexcept;
 
 }; // class Options
+
+//===-- free-functions ---------------------------------------------------===//
+
+template<int E>
+inline Options<E> XOR(Options<E>& A, Options<E>& B) noexcept;
+
+// return shared options
+template<int E>
+inline Options<E> shared(Options<E>& A, Options<E>& B) noexcept;
+template<int E>
+Options<E> operator&(const Options<E>&, const Options<E>&) noexcept;
+
+//===---------------------------------------------------------------------===//
 
 namespace
 {
@@ -110,6 +122,7 @@ namespace
 	static_assert(exp2_(9) == 512);
 } // namespace
 
+//===---------------------------------------------------------------------===//
 
 //	construct with all options
 template<int E>
@@ -434,11 +447,20 @@ inline Options<E>& Options<E>::operator&=(const Options& other) noexcept
 	return *this;
 }
 //	Shared options (binary AND)
+//	Prefere: shared(left, right)
 template<int E>
-inline Options<E> Options<E>::operator&(const Options& other) const noexcept
+inline Options<E>
+	operator&(const Options<E>& left, const Options<E>& right) noexcept
 {
-	Options<E> tmp(*this);
-	return tmp &= other;
+	Options<E> tmp{left};
+	return tmp &= right;
+}
+
+// Shared options
+template<int E>
+inline Options<E> shared(const Options<E>& A, const Options<E>& B) noexcept
+{
+	return A & B;
 }
 
 template<int E>
@@ -475,12 +497,7 @@ inline Options<E> XOR(const Options<E>& A, const Options<E>& B) noexcept
 	return tmp.XOR(B);
 }
 
-// Shared options
-template<int E>
-inline Options<E> shared(const Options<E>& A, const Options<E>& B) noexcept
-{
-	return A & B;
-}
+
 
 
 } // namespace Sudoku
