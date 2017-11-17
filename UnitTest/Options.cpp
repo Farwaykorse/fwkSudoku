@@ -308,7 +308,7 @@ public:
 		Assert::IsTrue(TMP2.is_answer(3), L"copy-assign operator=(int) failed");
 		// move-assign
 		static_assert(noexcept(TMP.operator=(std::bitset<5>())), "operator= should be noexcept_2");
-		Sudoku::Options<4> O_6 = std::bitset<5>{};	// "00000"
+		Sudoku::Options<4> O_6 = Options<4>(std::bitset<5>{});	// "00000"
 		Assert::IsTrue(O_6 == E_2, L"copy-assign failed");
 	}
 	TEST_METHOD(T4_external)

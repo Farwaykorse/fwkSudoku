@@ -9,6 +9,7 @@
 #include "../Sudoku/Value.h"
 // additional
 #include <bitset>
+#include <string>
 #include <vector>
 #include <type_traits>
 #include <ostream>
@@ -40,7 +41,7 @@ namespace compiletime
 
 	static_assert(std::is_default_constructible_v<typeT>, "default constructor");
 	static_assert(std::is_nothrow_default_constructible_v<typeT>, "notrow default constructor");
-	static_assert(!std::is_trivially_default_constructible_v<typeT>, "tribial default constructor");
+	static_assert(!std::is_trivially_default_constructible_v<typeT>, "trivial default constructor");
 
 	static_assert(std::is_destructible_v<typeT>, "destructable");
 	static_assert(std::is_nothrow_destructible_v<typeT>, "nothrow destructable");
@@ -63,32 +64,41 @@ namespace compiletime
 	static_assert(std::is_trivially_move_assignable_v<typeT>, "trivially move assignable");
 
 	static_assert(std::is_trivially_copyable_v<typeT>, "trivially copyable");
-	//static_assert(std::is_swappable_v<typeT>, "swappable");			//C++17
-	//static_assert(std::is_nothrow_swappable_v<typeT>, "swappable");	//C++17
-
-	//static_assert(!std::is_swappable_with<typeT, std::bitset<10>>::value, "");	//C++17
-	//static_assert(!std::is_nothrow_swappable_with_v<typeT, std::bitset<10>>, "");	//C++17
+	static_assert(std::is_swappable_v<typeT>, "swappable");
+	static_assert(std::is_nothrow_swappable_v<typeT>, "swappable");
 
 	// type construction
-	static_assert(std::is_constructible_v<Options<3>, const std::bitset<4>&>, "construct from const std::bitset&");
-	static_assert(!noexcept(Options<3>{std::bitset<4>{}}), "");
-	static_assert(!std::is_constructible_v<Options<3>, const std::bitset<3>&>, "shouldn't accept non matching dimensions_1");
-	static_assert(std::is_assignable_v<Options<3>, std::bitset<4>>, "assign from std::bitset");
-	static_assert(noexcept(Options<3>() = std::bitset<4>{}), "assignment should be noexcept");
-	static_assert(!std::is_assignable_v<Options<3>, std::bitset<3>>, "shouldn't accept non matching dimensions_2");
-	static_assert(std::is_constructible_v<Options<3>, int>, "construct from int");
-	static_assert(noexcept(Options<3>{int{}}), "construction should be noexcept");
+	// from std::bitset
+	static_assert(std::is_constructible_v<Options<3>, const std::bitset<4>&>);
+	static_assert(std::is_assignable_v<Options<3>, std::bitset<4>>);
+	static_assert(!noexcept(Options<3>{std::bitset<4>{}}));
+	static_assert(noexcept(Options<3>() = std::bitset<4>{}));
+	// explicit:
+	static_assert(std::is_constructible_v<std::bitset<4>, std::string>);
+	static_assert(!std::is_constructible_v<typeT, std::string>, "explicit");
+	// size:
+	static_assert(!std::is_constructible_v<typeT, const std::bitset<9>&>);
+	static_assert(!std::is_assignable_v<Options<3>, std::bitset<3>>);
+
+	static_assert(!std::is_swappable_with_v<Options<4>, std::bitset<5>>);
+	static_assert(!std::is_nothrow_swappable_with_v<typeT, std::bitset<10>>);
+
+	// value_t
 	static_assert(std::is_constructible_v<Options<3>, value_t>);
-	static_assert(noexcept(Options<3>{value_t{}}), "noexcept construction");
-	static_assert(std::is_constructible_v<Options<3>, unsigned int>, "construct from unsigned int");
-	static_assert(noexcept(Options<3>{unsigned int{}}), "construction should be noexcept");
-	static_assert(std::is_assignable_v<Options<3>, int>, "assign from int");
-	static_assert(noexcept(Options<3>() = int{}), "assignment should be noexcept");
 	static_assert(std::is_assignable_v<Options<3>, value_t>);
-	static_assert(noexcept(Options<3>() = value_t{}), "noexcept assignment");
-	static_assert(std::is_assignable_v<Options<3>, unsigned int>, "assign from int");
-	static_assert(noexcept(Options<3>() = unsigned int{}), "assignment should be noexcept");
-}
+	static_assert(noexcept(Options<3>{value_t{}}));
+	static_assert(noexcept(Options<3>() = value_t{}));
+
+	static_assert(std::is_constructible_v<Options<3>, int>);
+	static_assert(std::is_assignable_v<Options<3>, int>);
+	static_assert(std::is_constructible_v<Options<3>, unsigned int>);
+	static_assert(std::is_assignable_v<Options<3>, unsigned int>);
+	static_assert(noexcept(Options<3>{int{}}));
+	static_assert(noexcept(Options<3>() = int{}));
+	static_assert(noexcept(Options<3>{unsigned int{}}));
+	static_assert(noexcept(Options<3>() = unsigned int{}));
+
+} // namespace compiletime
 TEST(Options, Construction)
 {
 	const Options<4> D_0{};
@@ -447,7 +457,7 @@ TEST(Options, mf_booleanComparison)
 
 	static_assert(noexcept(TE.O_1 < TE.O_4), "operator< should be noexcept");
 	EXPECT_FALSE(TE.D_1 < TE.O_4) << "both full";
-	EXPECT_FALSE(TE.E_1 < std::bitset<5>{"00000"}) << "both empty";
+	EXPECT_FALSE(TE.E_1 < Options<4>(std::bitset<5>{"00000"})) << "both empty";
 	EXPECT_LT(TE.E_1, TE.D_1) << "empty vs default";
 	EXPECT_FALSE(TE.D_1 < TE.E_1) << "empty vs default";
 	EXPECT_LT(TE.E_1, TE.A_1) << "empty vs answer";
@@ -470,9 +480,9 @@ TEST(Options, mf_booleanComparison)
 	EXPECT_FALSE(TE.X_0 < TE.A_2) << "answer vs answered all options";
 	EXPECT_LT(TE.A_2, TE.X_1) << "answer vs answered 2 options";
 	EXPECT_FALSE(TE.A_2 < TE.A_1) << "both answered";
-	EXPECT_LT(TE.O_2, std::bitset<5>{"10011"}) << "compare values";
-	EXPECT_LT(Options<6>{std::bitset<7>{"0111111"}}, std::bitset<7>{"1011111"});
-	EXPECT_FALSE(Options<6>{std::bitset<7>{"1011111"}} < std::bitset<7>{"0111111"});
+	EXPECT_LT(TE.O_2, Options<4>(std::bitset<5>{"10011"})) << "compare values";
+	EXPECT_LT(Options<6>{std::bitset<7>{"0111111"}}, Options<6>(std::bitset<7>{"1011111"}));
+	EXPECT_FALSE(Options<6>{std::bitset<7>{"1011111"}} < Options<6>(std::bitset<7>{"0111111"}));
 	EXPECT_LT(TE.A_2, TE.O_2) << "answer vs unanswered";
 	EXPECT_FALSE(TE.O_2 < TE.A_2) << "answer vs unanswered";
 	EXPECT_LT(TE.A_2, TE.O_2) << "answer vs unanswered";
@@ -557,7 +567,7 @@ TEST(Options, Operators)
 	EXPECT_TRUE(TMP2.is_answer(3));
 	// move-assign
 	static_assert(noexcept(TMP.operator=(std::bitset<5>())), "operator= should be noexcept_2");
-	Options<4> O_6 = std::bitset<5>{};	// "00000"
+	Options<4> O_6 = Options<4>(std::bitset<5>{});	// "00000"
 	EXPECT_TRUE(O_6 == E_2);
 }
 TEST(Options, External)
