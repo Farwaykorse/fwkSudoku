@@ -343,6 +343,7 @@
     <ClInclude Include="Solvers_Appearance.h" />
     <ClInclude Include="Iterator_Utilities.h" />
     <ClInclude Include="Sudoku.h" />
+    <ClInclude Include="Value.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="precompiled.cpp">
