@@ -106,7 +106,7 @@ inline void setValue(
 	Board<Options, N>& board, const Location<N> loc, const value_t value)
 {
 	assert(is_valid(loc));
-	assert(is_valid_value<N>(value));
+	assert(is_valid<N>(value));
 
 	if (!board.at(loc).test(value))
 	{ // value is option nor answer
@@ -146,7 +146,7 @@ int remove_option(
 	Board<Options, N>& board, const Location<N> loc, const value_t value)
 {
 	assert(is_valid(loc));
-	assert(is_valid_value<N>(value));
+	assert(is_valid<N>(value));
 
 	int changes{};
 	auto& item{board.at(loc)};
@@ -195,7 +195,7 @@ inline int single_option(
 	Board<Options, N>& board, const Location<N> loc, const value_t value)
 {
 	assert(is_valid(loc));
-	assert(is_valid_value<N>(value));
+	assert(is_valid<N>(value));
 
 	assert(board.at(loc).test(value));
 	assert(board[loc].count_all() == 1);
@@ -362,7 +362,7 @@ int remove_option_section(
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid(ignore));
-		assert(is_valid_value<N>(value));
+		assert(is_valid<N>(value));
 		assert(is_same_section(section, ignore));
 		assert(board.at(ignore).is_answer(value)); // first set as anwer!
 	}
@@ -397,7 +397,7 @@ int remove_option_outside_block(
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid(block_loc));
-		assert(is_valid_value<N>(value));
+		assert(is_valid<N>(value));
 		assert(intersect_block(section, block_loc));
 	}
 	int changes{0};
@@ -428,7 +428,7 @@ inline int remove_option_section(
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid(ignore));
-		assert(is_valid_value<N>(value));
+		assert(is_valid<N>(value));
 		assert(is_same_section(section, ignore));
 	}
 	int changes{0};
@@ -468,7 +468,7 @@ int remove_option_section(
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid(ignore));
-		assert(is_valid_value<N>(values));
+		assert(is_valid<N>(values));
 		assert(is_same_section(section, ignore));
 	}
 	int changes{0};
@@ -717,7 +717,7 @@ auto find_locations(
 		static_assert(Utility_::is_input<ItrT>);
 		using iterator = typename ItrT::const_iterator;
 		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(is_valid_value<N>(value));
+		assert(is_valid<N>(value));
 		assert(rep_count > 0 && rep_count <= full_size<N>);
 	}
 	std::vector<Location<N>> locations{};

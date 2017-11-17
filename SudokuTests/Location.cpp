@@ -517,32 +517,6 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_TRUE(is_valid_size<2>(1, 0));
 	EXPECT_FALSE(is_valid_size<2>(2, 4));
 
-	EXPECT_FALSE(is_valid_value<2>(-1));
-	EXPECT_FALSE(is_valid_value<2>(0));
-	EXPECT_TRUE(is_valid_value<2>(1));
-	EXPECT_TRUE(is_valid_value<2>(4));
-	EXPECT_FALSE(is_valid_value<2>(5));
-	EXPECT_TRUE(is_valid_value<3>(5));
-	EXPECT_FALSE(is_valid_value<3>(16));
-
-	// vector input
-	using list = std::vector<unsigned int>;
-	EXPECT_FALSE(is_valid_value<2>(list{})) << "can't be empty";
-	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{})) << "can't be empty";
-	EXPECT_TRUE(is_valid_value<2>(list{ 1, 2, 3, 4, 3, 1 }));
-	EXPECT_TRUE(is_valid_value<2>(std::vector<int>{ 1, 2, 3, 4, 3, 1 }));
-	EXPECT_TRUE(is_valid_value<2>(list{ 1 }));
-	EXPECT_TRUE(is_valid_value<2>(std::vector<int>{ 1 }));
-	EXPECT_FALSE(is_valid_value<2>(list{ 0 }));
-	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 0 }));
-	EXPECT_FALSE(is_valid_value<2>(list{ 5 }));
-	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 5 }));
-	EXPECT_FALSE(is_valid_value<2>(list{ 1, 2, 0, 4, 3, 1 }));
-	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 1, 2, 0, 4, 3, 1 }));
-	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 1, -2, 3, 4, 3, 1 }));
-	EXPECT_FALSE(is_valid_value<2>(list{ 1, 5, 3, 4, 3, 1 }));
-	EXPECT_FALSE(is_valid_value<2>(std::vector<int>{ 1, 5, 3, 4, 3, 1 }));
-
 	using L = Location<2>;
 	using list2 = std::vector<L>;
 	EXPECT_FALSE(is_valid(list2{})) << "can't be empty";
@@ -661,11 +635,6 @@ TEST(Location_Utilities, is_constexpr)
 	EXPECT_TRUE(noexcept(is_valid_size<2>(1, 2)));
 	EXPECT_TRUE(noexcept(is_valid_size<3>(7, 3)));
 
-	EXPECT_TRUE(noexcept(is_valid_value<2>(1)));
-	EXPECT_TRUE(noexcept(is_valid_value<3>(7)));
-
-	EXPECT_FALSE(
-		noexcept(is_valid_value<2>(std::vector<int>{1, 2, 3, 4, 3, 1})));
 	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<2>>{Location<2>(0)})));
 	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<3>>{Location<3>(0)})));
 	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<2>>{})));

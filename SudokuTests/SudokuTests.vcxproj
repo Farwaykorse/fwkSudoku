@@ -330,6 +330,7 @@
     <ClCompile Include="Solver.cpp" />
     <ClCompile Include="Solver_remove_option.cpp" />
     <ClCompile Include="SudokuTests.cpp" />
+    <ClCompile Include="Value.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.md" />

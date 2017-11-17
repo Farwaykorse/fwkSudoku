@@ -75,30 +75,6 @@ inline constexpr bool is_valid_size(const int row, const int col)
 	return is_valid_size<N>(row) && is_valid_size<N>(col);
 }
 
-// Test input value
-template<int N>
-inline constexpr bool is_valid_value(const unsigned int value)
-{
-	return value > 0 && value <= elem_size<N>;
-}
-
-// Test input value
-template<int N>
-inline constexpr bool is_valid_value(const int value)
-{
-	return value > 0 && value <= elem_size<N>;
-}
-
-// Test input values
-template<int N, typename T>
-inline constexpr bool is_valid_value(const std::vector<T>& values)
-{
-	return (
-		!values.empty() &&
-		std::all_of(values.cbegin(), values.cend(), [](T i) {
-			return is_valid_value<N>(i);
-		}));
-}
 
 //===---------------------------------------------------------------------===//
 
@@ -144,7 +120,7 @@ inline constexpr bool
 template<int N, typename InItr_>
 inline constexpr bool is_same_col(const InItr_ begin, const InItr_ end)
 {
-	const auto itr = begin+1;
+	const auto itr = begin + 1;
 	return std::all_of(
 		itr, end, [begin](Location<N> i) { return is_same_col<N>(*begin, i); });
 }

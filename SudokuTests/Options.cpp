@@ -5,6 +5,8 @@
 
 // Class under test
 #include "../Sudoku/Options.h"
+// Helpers
+#include "../Sudoku/Value.h"
 // additional
 #include <bitset>
 #include <vector>
@@ -76,10 +78,14 @@ namespace compiletime
 	static_assert(!std::is_assignable_v<Options<3>, std::bitset<3>>, "shouldn't accept non matching dimensions_2");
 	static_assert(std::is_constructible_v<Options<3>, int>, "construct from int");
 	static_assert(noexcept(Options<3>{int{}}), "construction should be noexcept");
+	static_assert(std::is_constructible_v<Options<3>, value_t>);
+	static_assert(noexcept(Options<3>{value_t{}}), "noexcept construction");
 	static_assert(std::is_constructible_v<Options<3>, unsigned int>, "construct from unsigned int");
 	static_assert(noexcept(Options<3>{unsigned int{}}), "construction should be noexcept");
 	static_assert(std::is_assignable_v<Options<3>, int>, "assign from int");
 	static_assert(noexcept(Options<3>() = int{}), "assignment should be noexcept");
+	static_assert(std::is_assignable_v<Options<3>, value_t>);
+	static_assert(noexcept(Options<3>() = value_t{}), "noexcept assignment");
 	static_assert(std::is_assignable_v<Options<3>, unsigned int>, "assign from int");
 	static_assert(noexcept(Options<3>() = unsigned int{}), "assignment should be noexcept");
 }

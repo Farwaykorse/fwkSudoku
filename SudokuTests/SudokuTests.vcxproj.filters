@@ -42,6 +42,9 @@
     <ClCompile Include="Solver_remove_option.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Value.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Coverage\coverage.ps1" />
