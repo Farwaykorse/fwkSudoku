@@ -8,6 +8,7 @@
 #include "Location_Utilities.h"
 #include "Options.h"
 #include "Solvers_Appearance.h"
+#include "Value.h"
 
 #include <array>
 #include <vector>
@@ -33,7 +34,7 @@ namespace Sudoku
 template<int N, typename Options = Options<elem_size<N>>>
 int single_option(Board<Options, N>&, Location<N>);
 template<int N, typename Options = Options<elem_size<N>>>
-int single_option(Board<Options, N>&, Location<N>, unsigned int value);
+int single_option(Board<Options, N>&, Location<N>, value_t);
 template<int N, typename Options = Options<elem_size<N>>>
 int dual_option(Board<Options, N>&, Location<N>);
 template<int N, typename Options = Options<elem_size<N>>>
@@ -46,16 +47,16 @@ int section_exclusive(Board<Options, N>&, SectionT);
 
 //===-- find_locations ---------------------------------------------------===//
 template<int N, typename SectionT>
-auto find_locations(SectionT, unsigned int value, int rep_count = elem_size<N>);
+auto find_locations(SectionT, value_t, int rep_count = elem_size<N>);
 template<int N, typename ItrT>
 auto find_locations(
-	ItrT begin, ItrT end, unsigned int value, int rep_count = elem_size<N>);
+	ItrT begin, ItrT end, value_t, int rep_count = elem_size<N>);
 template<int N, typename SectionT>
 auto find_locations(SectionT, Options<elem_size<N>> value);
 
 //===-- set_options ------------------------------------------------------===//
 template<int N, typename Options = Options<elem_size<N>>>
-void setValue(Board<Options, N>&, Location<N>, unsigned int value);
+void setValue(Board<Options, N>&, Location<N>, value_t);
 template<int N, typename Options = Options<elem_size<N>>, typename ItrT>
 void setValue(Board<Options, N>&, ItrT begin, ItrT end);
 
@@ -74,27 +75,27 @@ int set_section_locals(
 
 //===-- remove_option ----------------------------------------------------===//
 template<int N, typename Options = Options<elem_size<N>>>
-int remove_option(Board<Options, N>&, Location<N>, unsigned int value);
+int remove_option(Board<Options, N>&, Location<N>, value_t);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_section(
-	Board<Options, N>&, SectionT, Location<N> ignore, unsigned int value);
+	Board<Options, N>&, SectionT, Location<N> ignore, value_t);
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_section(
 	Board<Options, N>&,
 	SectionT,
 	const std::vector<Location<N>>& ignore,
-	unsigned int value);
+	value_t);
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_section(
 	Board<Options, N>&,
 	SectionT,
 	const std::vector<Location<N>>& ignore,
-	const std::vector<unsigned int>& values);
+	const std::vector<value_t>&);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_outside_block(
-	Board<Options, N>&, SectionT, Location<N> block_loc, unsigned int value);
+	Board<Options, N>&, SectionT, Location<N> block_loc, value_t);
 
 //===---------------------------------------------------------------------===//
 
@@ -102,7 +103,7 @@ int remove_option_outside_block(
 //	No processing
 template<int N, typename Options>
 inline void setValue(
-	Board<Options, N>& board, const Location<N> loc, const unsigned int value)
+	Board<Options, N>& board, const Location<N> loc, const value_t value)
 {
 	assert(is_valid(loc));
 	assert(is_valid_value<N>(value));
@@ -118,7 +119,6 @@ inline void setValue(
 template<int N, typename Options, typename ItrT>
 inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 {
-	using value_t = unsigned int;
 	{
 		static_assert(Utility_::is_forward<ItrT>);
 		static_assert(Utility_::iterator_to<ItrT, int>);
@@ -143,7 +143,7 @@ inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 //	remove option from element, make answer if last option
 template<int N, typename Options>
 int remove_option(
-	Board<Options, N>& board, const Location<N> loc, const unsigned int value)
+	Board<Options, N>& board, const Location<N> loc, const value_t value)
 {
 	assert(is_valid(loc));
 	assert(is_valid_value<N>(value));
@@ -179,7 +179,6 @@ int remove_option(
 template<int N, typename Options>
 inline int single_option(Board<Options, N>& board, const Location<N> loc)
 {
-	using value_t = unsigned int;
 	assert(is_valid(loc));
 
 	if (const value_t answer{board[loc].get_answer()})
@@ -193,7 +192,7 @@ inline int single_option(Board<Options, N>& board, const Location<N> loc)
 //	Remove option from rest of row, col and block
 template<int N, typename Options>
 inline int single_option(
-	Board<Options, N>& board, const Location<N> loc, const unsigned int value)
+	Board<Options, N>& board, const Location<N> loc, const value_t value)
 {
 	assert(is_valid(loc));
 	assert(is_valid_value<N>(value));
@@ -354,7 +353,7 @@ int remove_option_section(
 	Board<Options, N>& board,
 	const SectionT section,
 	const Location<N> ignore,
-	const unsigned int value)
+	const value_t value)
 {
 	{
 		using Board = Board<Options, N>;
@@ -386,7 +385,7 @@ int remove_option_outside_block(
 	Board<Options, N>& board,
 	const SectionT section,
 	const Location<N> block_loc,
-	const unsigned int value)
+	const value_t value)
 {
 	{
 		using Board = Board<Options, N>;
@@ -420,7 +419,7 @@ inline int remove_option_section(
 	Board<Options, N>& board,
 	const SectionT section,
 	const std::vector<Location<N>>& ignore,
-	const unsigned int value)
+	const value_t value)
 {
 	{
 		static_assert(
@@ -460,7 +459,7 @@ int remove_option_section(
 	Board<Options, N>& board,
 	const SectionT section,
 	const std::vector<Location<N>>& ignore,
-	const std::vector<unsigned int>& values)
+	const std::vector<value_t>& values)
 {
 	{
 		using Board = Board<Options, N>;
@@ -610,7 +609,6 @@ inline int set_section_locals(
 	const int rep_count,
 	const Options worker)
 {
-	using value_t = unsigned int;
 	{
 		using Board = Board<Options, N>;
 		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
@@ -652,7 +650,6 @@ inline int set_section_locals(
 	const int rep_count,
 	const Options worker)
 {
-	using value_t = unsigned int;
 	{
 		using BlockT   = Board_Section::Block<Options, N>;
 		using iterator = typename BlockT::const_iterator;
@@ -693,7 +690,7 @@ inline int set_section_locals(
 //	List locations in [section] where [value] is an option
 template<int N, typename SectionT>
 auto find_locations(
-	const SectionT section, unsigned int value, const int rep_count)
+	const SectionT section, value_t value, const int rep_count)
 {
 	{
 		using Options = Options<elem_size<N>>;
@@ -712,7 +709,7 @@ template<int N, typename ItrT>
 auto find_locations(
 	const ItrT begin,
 	const ItrT end,
-	const unsigned int value,
+	const value_t value,
 	const int rep_count)
 {
 	using Options = Options<elem_size<N>>;

@@ -7,6 +7,7 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
+#include "Value.h"
 #include <bitset>
 #include <vector>
 #include <utility>
@@ -18,7 +19,6 @@ template<int E>
 class Options
 {
 	using bitset  = std::bitset<E + 1>;
-	using value_t = unsigned int;
 
 public:
 	Options() noexcept;
@@ -82,7 +82,7 @@ private:
 	value_t read_next(value_t start = 0) const noexcept;
 	Options& operator&=(const Options&) noexcept; // NOTE might be risky
 	template<int E>
-	friend Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
+	friend Options<E> operator&(const Options<E>&, const Options<E>&) noexcept;
 
 }; // class Options
 
@@ -92,13 +92,13 @@ template<int E>
 bool operator!=(const Options<E>&, const Options<E>&) noexcept;
 
 template<int E>
-bool operator==(const Options<E>&, unsigned int) noexcept;
+bool operator==(const Options<E>&, value_t) noexcept;
 template<int E>
-bool operator==(unsigned int, const Options<E>&) noexcept;
+bool operator==(value_t, const Options<E>&) noexcept;
 template<int E>
-bool operator!=(const Options<E>&, unsigned int) noexcept;
+bool operator!=(const Options<E>&, value_t) noexcept;
 template<int E>
-bool operator!=(unsigned int, const Options<E>&) noexcept;
+bool operator!=(value_t, const Options<E>&) noexcept;
 
 template<int E>
 inline Options<E> XOR(Options<E>& A, Options<E>& B) noexcept;
@@ -117,7 +117,7 @@ Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
 namespace
 {
 	// convert to a number for use in std::bitset to use a unique bit per value
-	constexpr unsigned int exp2_(unsigned int value)
+	constexpr value_t exp2_(value_t value) noexcept
 	{
 		return (value < 1) ? 1 : (2 * exp2_(--value));
 	}
@@ -350,7 +350,7 @@ inline bool Options<E>::is_empty() const noexcept
 //	determine the answer value, even if not marked
 //	use with is_answer() to determine if flaged as anwer
 template<int E>
-inline typename Options<E>::value_t Options<E>::get_answer() const noexcept
+inline value_t Options<E>::get_answer() const noexcept
 {
 	// TODO	microbench simpler/faster way to read single value from data_
 	//		constexpr?
@@ -364,7 +364,7 @@ inline typename Options<E>::value_t Options<E>::get_answer() const noexcept
 
 //	all available options
 template<int E>
-inline std::vector<typename Options<E>::value_t> Options<E>::available() const
+inline std::vector<value_t> Options<E>::available() const
 {
 	std::vector<unsigned int> values{};
 	values.reserve(static_cast<size_t>(count()));
@@ -411,22 +411,22 @@ inline bool operator!=(const Options<E>& left, const Options<E>& right) noexcept
 
 // short for is_answer(value)
 template<int E>
-inline bool operator==(const Options<E>& left, const unsigned int value) noexcept
+inline bool operator==(const Options<E>& left, const value_t value) noexcept
 {
 	return left.is_answer(value);
 }
 template<int E>
-inline bool operator==(const unsigned int value, const Options<E>& right) noexcept
+inline bool operator==(const value_t value, const Options<E>& right) noexcept
 {
 	return right.is_answer(value);
 }
 template<int E>
-inline bool operator!=(const Options<E>& left, const unsigned int value) noexcept
+inline bool operator!=(const Options<E>& left, const value_t value) noexcept
 {
 	return not(left.is_answer(value));
 }
 template<int E>
-inline bool operator!=(const unsigned int value, const Options<E>& right) noexcept
+inline bool operator!=(const value_t value, const Options<E>& right) noexcept
 {
 	return not(right.is_answer(value));
 }
@@ -502,7 +502,7 @@ inline std::string Options<E>::DebugString() const
 
 //	return next option in data
 template<int E>
-inline typename Options<E>::value_t Options<E>::read_next(value_t start) const
+inline typename value_t Options<E>::read_next(value_t start) const
 	noexcept
 { // default value start = 0
 	++start;
