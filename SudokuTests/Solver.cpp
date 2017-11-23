@@ -24,6 +24,8 @@
 #include "../Sudoku/Location.h"
 #include "../Sudoku/Location_Utilities.h"
 #include "../Sudoku/Options.h"
+// Debug Output
+#include "print_Options.h"
 // library
 #include <bitset>
 #include <vector>

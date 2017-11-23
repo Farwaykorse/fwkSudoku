@@ -7,22 +7,14 @@
 #include "../Sudoku/Options.h"
 // Helpers
 #include "../Sudoku/Value.h"
+// Debug Output
+#include "print_Options.h"
+
 // additional
 #include <bitset>
 #include <string>
 #include <vector>
 #include <type_traits>
-#include <ostream>
-
-// Teaching gTest how to print Options
-namespace Sudoku
-{
-	template<int N>
-	std::ostream& operator<<(std::ostream& os, const Options<N>& Options)
-	{
-		return os << Options.DebugString();
-	}
-}
 
 using namespace Sudoku;
 
@@ -287,7 +279,7 @@ TEST(Options, mf_boolRequest)
 }
 TEST(Options, mf_dataRequest)
 {
-	std::vector<unsigned int> result{};
+	std::vector<value_t> result{};
 	//std::vector<int> available() const;	// return available options
 	static_assert(!noexcept(TE.O_1.available()), "available() should NOT be noexcept");
 	ASSERT_NO_THROW(result = TE.O_2.available());

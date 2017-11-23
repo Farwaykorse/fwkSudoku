@@ -20,7 +20,6 @@
 #include "../Sudoku/Board.h"
 // helpers
 #include "../Sudoku/Location.h"
-#include "../Sudoku/Options.h"
 
 // library
 #include <bitset>

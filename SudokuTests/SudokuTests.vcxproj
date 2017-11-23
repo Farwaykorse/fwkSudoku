@@ -346,6 +346,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="precompiled.h" />
+    <ClInclude Include="print_Options.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="$(VCLibPackagePath) == ''">
