@@ -4,13 +4,11 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
-#include "Location.h"
+#include "Size.h"
 
 #include <vector>
 #include <algorithm>
 
-// Forward declarations
-#include "Location.fwd.h"
 
 namespace Sudoku
 {

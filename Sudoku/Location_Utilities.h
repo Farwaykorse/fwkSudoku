@@ -5,6 +5,8 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
+#include "Size.h"
+
 #include <vector>
 #include <algorithm> // minmax_element, is_sorted, all_of
 #include <limits>    // numeric_limits
@@ -16,15 +18,6 @@
 
 namespace Sudoku
 {
-template<int N>
-static constexpr int base_size = Location<N>().base_size; // default 3
-template<int N>
-static constexpr int elem_size = Location<N>().elem_size; // default 9
-template<int N>
-static constexpr int full_size = Location<N>().full_size; // default 81
-
-//===---------------------------------------------------------------------===//
-
 // Compile-time only Test
 template<int N>
 constexpr void valid_dimensions()
@@ -48,7 +41,7 @@ constexpr void valid_dimensions()
 template<int N>
 inline constexpr bool is_valid(const Location<N> loc)
 {
-	return (loc.element() >= 0 && loc.element() < loc.full_size);
+	return (loc.element() >= 0 && loc.element() < full_size<N>);
 }
 
 // Test if Locations on Board and if sorted (ascending)

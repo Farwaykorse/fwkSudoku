@@ -337,11 +337,12 @@
     <ClInclude Include="Location_Utilities.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="precompiled.h" />
+    <ClInclude Include="Size.h" />
     <ClInclude Include="Solver.fwd.h" />
     <ClInclude Include="Solver.h" />
     <ClInclude Include="SolverBase.h" />
-    <ClInclude Include="Solvers_Appearance.h" />
     <ClInclude Include="Iterator_Utilities.h" />
+    <ClInclude Include="Solvers_Appearance.h" />
     <ClInclude Include="Sudoku.h" />
     <ClInclude Include="Value.h" />
   </ItemGroup>

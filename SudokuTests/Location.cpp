@@ -239,26 +239,12 @@ TEST(Location_Block, Construction)
 	EXPECT_EQ(Location<3>( Location_Block<3>{8, 8} ).element(), 80);
 	EXPECT_EQ(Location<3>{ Location_Block<3>(8, 8) }.element(), 80);
 }
-TEST(Location, Size_definitions)
-{
-	EXPECT_EQ(Location<2>().base_size, 2);
-	EXPECT_EQ(Location<2>().elem_size, 4);
-	EXPECT_EQ(Location<2>().full_size, 16);
-	EXPECT_EQ(Location<3>().base_size, 3);
-	EXPECT_EQ(Location<3>().elem_size, 9);
-	EXPECT_EQ(Location<3>().full_size, 81);
-	EXPECT_EQ(Location<4>().base_size, 4);
-	EXPECT_EQ(Location<4>().elem_size, 16);
-	EXPECT_EQ(Location<4>().full_size, 256);
-}
 
 template<int N>
 void SubProperties(Location<N> loc,
-	int base,	int elem,	int row,	int col,
+	int elem,	int row,	int col,
 	int block,	int b_elem,	int b_row,	int b_col)
 {
-	ASSERT_EQ(loc.base_size,	base);
-
 	EXPECT_EQ(loc.element(),	elem);
 	EXPECT_EQ(loc.row(),		row);
 	EXPECT_EQ(loc.col(),		col);
@@ -269,7 +255,6 @@ void SubProperties(Location<N> loc,
 }
 TEST(Location, Properties)
 {
-	ASSERT_EQ(Location<3>{36}.base_size, 3);
 	ASSERT_EQ(Location<3>{36}.element(), 36);
 
 	EXPECT_EQ(Location<3>{36}.row(), 4);
@@ -282,7 +267,7 @@ TEST(Location, Properties)
 		SCOPED_TRACE("Location<3> loc{ 52 }");
 		SubProperties(
 			Location<3>{ 52 },
-			3,	52,	5,	7,
+			52,	5,	7,
 			5,	7,	2,	1
 		);
 	}
@@ -290,7 +275,7 @@ TEST(Location, Properties)
 		SCOPED_TRACE("Location<3> loc(3, 2)");
 		SubProperties(
 			Location<3>(3, 2),
-			3,	29,	3,	2,
+			29,	3,	2,
 			3,	2,	0,	2
 		);
 	}
@@ -298,7 +283,7 @@ TEST(Location, Properties)
 		SCOPED_TRACE("Location<3> loc(0)");
 		SubProperties(
 			Location<3>(0),
-			3,	0,	0,	0,
+			0,	0,	0,
 			0,	0,	0,	0
 		);
 	}
@@ -306,7 +291,7 @@ TEST(Location, Properties)
 		SCOPED_TRACE("Location<3> loc(80)");
 		SubProperties(
 			Location<3>(80),
-			3,	80,	8,	8,
+			80,	8,	8,
 			8,	8,	2,	2
 		);
 	}
@@ -314,7 +299,7 @@ TEST(Location, Properties)
 		SCOPED_TRACE("Location<2> loc{}");
 		SubProperties(
 			Location<2>{},
-			2,	0,	0,	0,
+			0,	0,	0,
 			0,	0,	0,	0
 		);
 	}
@@ -322,7 +307,7 @@ TEST(Location, Properties)
 		SCOPED_TRACE("Location<2> loc{ 15 }");
 		SubProperties(
 			Location<2>{ 15 },
-			2,	15,	3,	3,
+			15,	3,	3,
 			3,	3,	1,	1
 		);
 	}
@@ -333,7 +318,7 @@ TEST(Location, OutOfBounds)
 		SCOPED_TRACE("Location<2> loc{ 16 }");
 		SubProperties(
 			Location<2>{ 16 },
-			2, 16, 4, 0,
+			16, 4, 0,
 			4, 0, 0, 0
 		);
 	}
@@ -341,7 +326,7 @@ TEST(Location, OutOfBounds)
 		SCOPED_TRACE("Location<3> loc{ 100 }");
 		SubProperties(
 			Location<3>{ 100 },
-			3, 100, 11, 1,
+			100, 11, 1,
 			9, 7, 2, 1
 		);
 	}
@@ -416,9 +401,6 @@ TEST(Location, is_constexpr)
 	EXPECT_TRUE(noexcept(Location<3>{}));
 	EXPECT_TRUE(noexcept(Location<3>{5}));
 	EXPECT_TRUE(noexcept(Location<3>{5, 3}));
-	EXPECT_TRUE(noexcept(Location<3>().base_size));
-	EXPECT_TRUE(noexcept(Location<3>().elem_size));
-	EXPECT_TRUE(noexcept(Location<3>().full_size));
 	EXPECT_TRUE(noexcept(Location<3>().element()));
 	EXPECT_TRUE(noexcept(Location<3>(0).element()));
 	EXPECT_TRUE(noexcept(Location<3>(1).element()));
@@ -435,7 +417,7 @@ TEST(Location, is_constexpr)
 	EXPECT_TRUE(noexcept(Location<3>() < Location<3>(0)));
 
 	EXPECT_TRUE(noexcept(Location<2>().element()));
-	EXPECT_TRUE(noexcept(Location<4>().element()));
+	EXPECT_FALSE(noexcept(Location<4>().element()));
 
 	// not precalculated
 	Location<3> L0{};

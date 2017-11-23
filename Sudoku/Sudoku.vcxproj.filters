@@ -54,13 +54,16 @@
     <ClInclude Include="Solver.fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Solvers_Appearance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Iterator_Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Size.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Solvers_Appearance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
