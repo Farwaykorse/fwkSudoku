@@ -5,11 +5,13 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
+#include "Iterator_Utilities.h"
 #include "Size.h"
 
 #include <vector>
 #include <algorithm> // minmax_element, is_sorted, all_of
 #include <limits>    // numeric_limits
+#include <xutility>  // back_inserter
 
 // Forward declarations
 #include "Board.fwd.h"
@@ -18,6 +20,58 @@
 
 namespace Sudoku
 {
+//===-- function declarations --------------------------------------------===//
+template<int N>
+constexpr void valid_dimensions();
+
+template<int N>
+constexpr bool is_valid(Location<N>);
+
+template<int N>
+constexpr bool is_valid_size(int row, int col);
+
+template<int N>
+constexpr bool is_same_row(Location<N>, Location<N>);
+template<int N>
+constexpr bool is_same_col(Location<N>, Location<N>);
+template<int N>
+constexpr bool is_same_block(Location<N>, Location<N>);
+
+template<int N, typename ItrT>
+constexpr bool is_same_row(ItrT begin, ItrT end);
+template<int N, typename ItrT>
+constexpr bool is_same_col(ItrT begin, ItrT end);
+template<int N, typename ItrT>
+constexpr bool is_same_block(ItrT begin, ItrT end);
+
+template<int N>
+std::vector<Location<N>>
+	get_same_row(const Location<N>, const std::vector<Location<N>>&);
+template<int N>
+std::vector<Location<N>>
+	get_same_col(const Location<N>, const std::vector<Location<N>>&);
+template<int N>
+std::vector<Location<N>>
+	get_same_block(const Location<N>, const std::vector<Location<N>>&);
+
+template<typename T, int N>
+bool is_same_section(Board_Section::const_Row<T, N>, Location<N>);
+template<typename T, int N>
+bool is_same_section(Board_Section::const_Col<T, N>, Location<N>);
+template<typename T, int N>
+bool is_same_section(Board_Section::const_Block<T, N>, Location<N>);
+
+template<typename SectionT, int N>
+bool is_same_section(SectionT, std::vector<Location<N>>);
+
+template<typename T, int N>
+bool intersect_block(Board_Section::const_Row<T, N>, Location<N>);
+template<typename T, int N>
+bool intersect_block(Board_Section::const_Col<T, N>, Location<N>);
+
+//===---------------------------------------------------------------------===//
+
+
 // Compile-time only Test
 template<int N>
 constexpr void valid_dimensions()
@@ -80,9 +134,12 @@ inline constexpr bool
 }
 
 // check: all in same row
-template<int N, typename InItr_>
-constexpr bool is_same_row(const InItr_ begin, const InItr_ end)
+template<int N, typename ItrT>
+constexpr bool is_same_row(const ItrT begin, const ItrT end)
 {
+	{
+		static_assert(Utility_::is_forward<ItrT>);
+	}
 	const auto itr = begin + 1;
 	return std::all_of(
 		itr, end, [begin](Location<N> i) { return is_same_row<N>(*begin, i); });
@@ -93,12 +150,13 @@ template<int N>
 std::vector<Location<N>>
 	get_same_row(const Location<N> left, const std::vector<Location<N>>& right)
 {
-	std::vector<Location<N>> tmp_{};
-	for (auto&& loc : right)
-	{
-		if (is_same_row(left, loc)) { tmp_.push_back(loc); }
-	}
-	return tmp_;
+	std::vector<Location<N>> output{};
+	auto predicate = [&left](Location<N> loc) {
+		return is_same_row(left, loc);
+	};
+	std::copy_if(
+		right.cbegin(), right.cend(), std::back_inserter(output), predicate);
+	return output;
 }
 
 // check
@@ -110,9 +168,12 @@ inline constexpr bool
 }
 
 // check: all in same col
-template<int N, typename InItr_>
-inline constexpr bool is_same_col(const InItr_ begin, const InItr_ end)
+template<int N, typename ItrT>
+inline constexpr bool is_same_col(const ItrT begin, const ItrT end)
 {
+	{
+		static_assert(Utility_::is_forward<ItrT>);
+	}
 	const auto itr = begin + 1;
 	return std::all_of(
 		itr, end, [begin](Location<N> i) { return is_same_col<N>(*begin, i); });
@@ -123,12 +184,13 @@ template<int N>
 std::vector<Location<N>>
 	get_same_col(const Location<N> left, const std::vector<Location<N>>& right)
 {
-	std::vector<Location<N>> tmp_{};
-	for (auto&& loc : right)
-	{
-		if (is_same_col(left, loc)) { tmp_.push_back(loc); }
-	}
-	return tmp_;
+	std::vector<Location<N>> output{};
+	auto predicate = [&left](Location<N> loc) {
+		return is_same_col(left, loc);
+	};
+	std::copy_if(
+		right.cbegin(), right.cend(), std::back_inserter(output), predicate);
+	return output;
 }
 
 // check
@@ -140,9 +202,12 @@ inline constexpr bool
 }
 
 // check all in same block
-template<int N, typename InItr_>
-inline constexpr bool is_same_block(const InItr_ begin, const InItr_ end)
+template<int N, typename ItrT>
+inline constexpr bool is_same_block(const ItrT begin, const ItrT end)
 {
+	{
+		static_assert(Utility_::is_forward<ItrT>);
+	}
 	const auto itr = begin + 1;
 	return std::all_of(itr, end, [begin](Location<N> i) {
 		return is_same_block<N>(*begin, i);
@@ -154,12 +219,13 @@ template<int N>
 std::vector<Location<N>> get_same_block(
 	const Location<N> left, const std::vector<Location<N>>& right)
 {
-	std::vector<Location<N>> tmp_{};
-	for (auto&& loc : right)
-	{
-		if (is_same_block(left, loc)) { tmp_.push_back(loc); }
-	}
-	return tmp_;
+	std::vector<Location<N>> output{};
+	auto predicate = [&left](Location<N> loc) {
+		return is_same_block(left, loc);
+	};
+	std::copy_if(
+		right.cbegin(), right.cend(), std::back_inserter(output), predicate);
+	return output;
 }
 
 // check: [loc] is in [section]
