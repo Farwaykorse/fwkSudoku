@@ -24,9 +24,6 @@
     <ClInclude Include="Solver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SolverBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="precompiled.h">
       <Filter>Header Files</Filter>
     </ClInclude>

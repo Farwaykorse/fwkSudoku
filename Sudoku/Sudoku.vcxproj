@@ -339,7 +339,6 @@
     <ClInclude Include="Size.h" />
     <ClInclude Include="Solver.fwd.h" />
     <ClInclude Include="Solver.h" />
-    <ClInclude Include="SolverBase.h" />
     <ClInclude Include="Iterator_Utilities.h" />
     <ClInclude Include="Solvers_find.h" />
     <ClInclude Include="Solvers_remove_option.h" />

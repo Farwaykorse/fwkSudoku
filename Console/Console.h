@@ -13,9 +13,6 @@
 
 namespace Sudoku
 {
-
-void test(const std::vector<int>& B_in, const std::vector<int>& A_in);
-
 template<int N>
 void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
 {
