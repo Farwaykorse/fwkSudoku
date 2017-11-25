@@ -100,7 +100,7 @@ auto find_locations(
 	return locations;
 }
 
-//	List locations in [section] where [value] is an option
+//	List locations in [section] equal to [value]
 template<int N, typename SectionT>
 auto find_locations(const SectionT section, const Options<elem_size<N>> value)
 {
