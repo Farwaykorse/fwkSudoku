@@ -187,7 +187,7 @@ Step 3) xor [n-1]
 		{
 			for (size_t i{max}; i > 0; --i)
 			{
-				worker[i] += (worker[i - 1] & *elem_itr); // OR( AND )
+				worker.at(i) += (worker.at(i - 1) & *elem_itr); // OR( AND )
 			}
 			worker[0] += *elem_itr; // OR
 		}
@@ -204,8 +204,8 @@ Step 3) xor [n-1]
 	// xor -> worker[n] options appearing n times
 	for (size_t i{max}; i > 1; --i)
 	{
-		worker[i].XOR(worker[i - 1]);
-		worker[i] += Options(0); // set not-answered
+		worker.at(i).XOR(worker.at(i - 1));
+		worker.at(i) += Options(0); // set not-answered
 	}
 	return worker;
 }
