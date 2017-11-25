@@ -18,7 +18,6 @@
 
 // Class under test
 #include "../Sudoku/Solver.h"
-#include "../Sudoku/Solvers_Appearance.h"
 // helpers
 #include "../Sudoku/Board.h"
 #include "../Sudoku/Location.h"

@@ -1,179 +1,32 @@
 //===--	Sudoku/Solver.h													--===//
 //
 //	Solver functions acting on a Board<Options>&
+// Declarations are in Solver.fwd.h
 //===---------------------------------------------------------------------===//
 #pragma once
 
+#include "Board.h"
 #include "Iterator_Utilities.h"
+#include "Location.h"
 #include "Location_Utilities.h"
 #include "Options.h"
-#include "Solvers_Appearance.h"
+#include "Size.h"
+#include "Solvers_find.h"
+#include "Solvers_remove_option.h"
+#include "Solvers_set_option.h"
 #include "Value.h"
 
-#include <array>
 #include <vector>
-#include <algorithm> // for_each, minmax, all_of, none_of
-#include <stdexcept>
+#include <algorithm>   // minmax
 #include <type_traits> // is_base_of
 #include <cassert>
 
 // Forward declarations
-#include "Board.fwd.h"
-#include "Location.fwd.h"
 #include "Solver.fwd.h"
 
-/* experiment flags */
-//! DO #undef at end of file!
-// activate algorithms on removing option
-#define DUAL_ON_REMOVE false
-#define MULTIPLE_ON_REMOVE false
 
 namespace Sudoku
 {
-//===-- solvers ----------------------------------------------------------===//
-template<int N, typename Options = Options<elem_size<N>>>
-int single_option(Board<Options, N>&, Location<N>);
-template<int N, typename Options = Options<elem_size<N>>>
-int single_option(Board<Options, N>&, Location<N>, value_t);
-template<int N, typename Options = Options<elem_size<N>>>
-int dual_option(Board<Options, N>&, Location<N>);
-template<int N, typename Options = Options<elem_size<N>>>
-int multi_option(Board<Options, N>&, Location<N>, size_t = 0);
-
-template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-int unique_in_section(Board<Options, N>&, SectionT);
-template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-int section_exclusive(Board<Options, N>&, SectionT);
-
-//===-- find_locations ---------------------------------------------------===//
-template<int N, typename SectionT>
-auto find_locations(SectionT, value_t, int rep_count = elem_size<N>);
-template<int N, typename ItrT>
-auto find_locations(
-	ItrT begin, ItrT end, value_t, int rep_count = elem_size<N>);
-template<int N, typename SectionT>
-auto find_locations(SectionT, Options<elem_size<N>> value);
-
-//===-- set_options ------------------------------------------------------===//
-template<int N, typename Options = Options<elem_size<N>>>
-void setValue(Board<Options, N>&, Location<N>, value_t);
-template<int N, typename Options = Options<elem_size<N>>, typename ItrT>
-void setValue(Board<Options, N>&, ItrT begin, ItrT end);
-
-template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-auto set_uniques(Board<Options, N>&, SectionT, Options worker);
-
-template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-int set_section_locals(
-	Board<Options, N>&, SectionT, int rep_count, Options worker);
-template<int N, typename Options = Options<elem_size<N>>>
-int set_section_locals(
-	Board<Options, N>&,
-	Board_Section::Block<Options, N>,
-	int rep_count,
-	Options worker);
-
-//===-- remove_option ----------------------------------------------------===//
-template<int N, typename Options = Options<elem_size<N>>>
-int remove_option(Board<Options, N>&, Location<N>, value_t);
-
-template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-int remove_option_section(
-	Board<Options, N>&, SectionT, Location<N> ignore, value_t);
-template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-int remove_option_section(
-	Board<Options, N>&,
-	SectionT,
-	const std::vector<Location<N>>& ignore,
-	value_t);
-template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-int remove_option_section(
-	Board<Options, N>&,
-	SectionT,
-	const std::vector<Location<N>>& ignore,
-	const std::vector<value_t>&);
-
-template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-int remove_option_outside_block(
-	Board<Options, N>&, SectionT, Location<N> block_loc, value_t);
-
-//===---------------------------------------------------------------------===//
-
-//	IF valid, Make [value] the answer for [loc]
-//	No processing
-template<int N, typename Options>
-inline void setValue(
-	Board<Options, N>& board, const Location<N> loc, const value_t value)
-{
-	assert(is_valid(loc));
-	assert(is_valid<N>(value));
-
-	if (!board.at(loc).test(value))
-	{ // value is option nor answer
-		throw std::logic_error{"Invalid Board"};
-	}
-	board[loc].set_nocheck(value);
-}
-
-//	set board_ using a transferable container of values
-template<int N, typename Options, typename ItrT>
-inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
-{
-	{
-		static_assert(Utility_::is_forward<ItrT>);
-		static_assert(Utility_::iterator_to<ItrT, int>);
-		assert(end - begin == full_size<N>);
-	}
-	int n{0};
-	for (auto itr = begin; itr != end; ++itr)
-	{
-		Location<N> loc(n++); // start at 0!
-		const auto value = static_cast<value_t>(*itr);
-		if (value > 0 && board.at(loc).is_option(value))
-		{
-			setValue(board, loc, value);
-			single_option(board, loc, value);
-		}
-		// check invalid value or conflict
-		assert(value == 0 || board.at(loc).is_answer(value));
-	}
-	assert(n == full_size<N>);
-}
-
-//	remove option from element, make answer if last option
-template<int N, typename Options>
-int remove_option(
-	Board<Options, N>& board, const Location<N> loc, const value_t value)
-{
-	assert(is_valid(loc));
-	assert(is_valid<N>(value));
-
-	int changes{};
-	auto& item{board.at(loc)};
-
-	if (item.is_option(value))
-	{
-		++changes;
-		const int count = item.remove_option(value).count();
-		assert(count > 0); // never trigger, removed last option
-
-		if (count == 1)
-		{
-			changes += single_option(board, loc);
-		}
-#if DUAL_ON_REMOVE == true
-		if (count == 2)
-		{
-			changes += dual_option(board, loc);
-		}
-#endif // dual
-#if MULTIPLE_ON_REMOVE == true
-		changes += multi_option(board, loc, count);
-#endif // multiple
-	}
-	return changes;
-}
-
 //	Check if only one option remaining
 //	IF true: process answer
 template<int N, typename Options>
@@ -347,207 +200,16 @@ inline int
 	return 0;
 }
 
-//	remove [value] in [ignore] from other elements in set
-template<int N, typename Options, typename SectionT>
-int remove_option_section(
-	Board<Options, N>& board,
-	const SectionT section,
-	const Location<N> ignore,
-	const value_t value)
-{
-	{
-		using Board = Board<Options, N>;
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::is_input<iterator>);
-		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(is_valid(ignore));
-		assert(is_valid<N>(value));
-		assert(is_same_section(section, ignore));
-		assert(board.at(ignore).is_answer(value)); // first set as anwer!
-	}
-	int changes{0};
-	const auto end = section.cend();
-
-	for (auto itr = section.cbegin(); itr != end; ++itr)
-	{
-		if (itr.location() != ignore)
-		{
-			changes += remove_option(board, itr.location(), value);
-		}
-	}
-	return changes;
-}
-
-//	remove [value] from elements not in same block as [block_loc]
-template<int N, typename Options, typename SectionT>
-int remove_option_outside_block(
-	Board<Options, N>& board,
-	const SectionT section,
-	const Location<N> block_loc,
-	const value_t value)
-{
-	{
-		using Board = Board<Options, N>;
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
-		static_assert(
-			not std::is_base_of_v<typename Board::const_Block, SectionT>,
-			"remove_option_outside_block is useless on bock");
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::is_input<iterator>);
-		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(is_valid(block_loc));
-		assert(is_valid<N>(value));
-		assert(intersect_block(section, block_loc));
-	}
-	int changes{0};
-	const auto end = section.cend();
-
-	for (auto itr = section.cbegin(); itr != end; ++itr)
-	{
-		if (not is_same_block(itr.location(), block_loc))
-		{
-			changes += remove_option(board, itr.location(), value);
-		}
-	}
-	return changes;
-}
-
-//	remove [value] from set if not part of [loc]s
-template<int N, typename Options, typename SectionT>
-inline int remove_option_section(
-	Board<Options, N>& board,
-	const SectionT section,
-	const std::vector<Location<N>>& ignore,
-	const value_t value)
-{
-	{
-		static_assert(
-			std::is_base_of_v<typename Board<Options, N>::Section, SectionT>);
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::is_input<iterator>);
-		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(is_valid(ignore));
-		assert(is_valid<N>(value));
-		assert(is_same_section(section, ignore));
-	}
-	int changes{0};
-	const auto begin = ignore.cbegin();
-	const auto end   = ignore.cend();
-
-	// TODO maybe faster to run get_same_row/col/block first?
-	// and than not to check is_option(), since it is already in remove_option
-
-	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
-	{
-		// TODO is the is_option check really faster?
-		if (itr->is_option(value) &&
-			std::none_of(begin, end, [L1 = itr.location()](Location<N> L2) {
-				return L1 == L2;
-			})) // <algorithm>
-		{
-			changes += remove_option(board, itr.location(), value);
-		}
-	}
-	return changes;
-}
-
-// remove [value]s from [section] if not part of [loc]s
-// the ignore Location vector must be sorted
-template<int N, typename Options, typename SectionT>
-int remove_option_section(
-	Board<Options, N>& board,
-	const SectionT section,
-	const std::vector<Location<N>>& ignore,
-	const std::vector<value_t>& values)
-{
-	{
-		using Board = Board<Options, N>;
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::is_input<iterator>);
-		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(is_valid(ignore));
-		assert(is_valid<N>(values));
-		assert(is_same_section(section, ignore));
-	}
-	int changes{0};
-	const auto begin = ignore.cbegin();
-	const auto end   = ignore.cend();
-
-	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
-	{
-		if (not(itr->is_answer()) and
-			std::none_of(begin, end, [L1 = itr.location()](Location<N> L2) {
-				return L1 == L2;
-			})) // <algorithm>
-		{
-			for (auto v : values)
-			{ //! Cascade (!)
-				changes += remove_option(board, itr.location(), v);
-			}
-		}
-	}
-	return changes;
-}
-
 //	Solver: Find and set options appearing only once in a section as answer
 template<int N, typename Options, typename SectionT>
 inline int unique_in_section(Board<Options, N>& board, const SectionT section)
 {
 	{
-		using Board = Board<Options, N>;
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using Board_Section = Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Board_Section, SectionT>);
 	}
 	const auto worker = appearance_once<N>(section);
 	return set_uniques(board, section, worker);
-}
-
-//	Set unique values in section as answer
-template<int N, typename Options, typename SectionT>
-inline auto set_uniques(
-	Board<Options, N>& board, const SectionT section, const Options worker)
-{
-	using value_t = unsigned int;
-	{
-		static_assert(
-			std::is_base_of_v<typename Board<Options, N>::Section, SectionT>);
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::is_input<iterator>);
-		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(worker.test(0)); // answer-bit always set (unanswered)
-								// not required when using count_all()
-	}
-	int changes{0};
-
-	if (worker.count_all() > 0) //! performs better (here) than count()
-	{
-		const auto begin = section.cbegin();
-		const auto end   = section.cend();
-
-		for (value_t value{1}; value < static_cast<value_t>(worker.size());
-			 ++value)
-		{
-			if (worker[value])
-			{
-				const auto itr = std::find_if( // <algorithm>
-					begin,
-					end,
-					[value](Options O) { return O.is_option(value); });
-				if (itr != end)
-				{
-					setValue(board, itr.location(), value);
-					changes += single_option(board, itr.location(), value);
-					++changes;
-				}
-				else
-				{
-					assert(false); // value is not an option
-				}
-			}
-		}
-	}
-	return changes;
 }
 
 //	Solver: find and process values appearing 1 to base_size times in section:
@@ -601,167 +263,6 @@ inline int section_exclusive(Board<Options, N>& board, const SectionT section)
 	return changes;
 }
 
-//	for [row/col]: if all in same block, remove [values] from rest block
-template<int N, typename Options, typename SectionT>
-inline int set_section_locals(
-	Board<Options, N>& board,
-	const SectionT section,
-	const int rep_count,
-	const Options worker)
-{
-	{
-		using Board = Board<Options, N>;
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(rep_count > 1);  // should have been cought by caller
-								// use the set_uniques specialization
-		assert(rep_count <= N); // won't fit in single block-row/col
-		assert(worker.count_all() > 0);
-	}
-	int changes{0};
-
-	for (value_t value{1}; // start at 1, to skip the answer-bit
-		 value < static_cast<value_t>(worker.size());
-		 ++value)
-	{
-		if (worker[value])
-		{
-			const auto locations = find_locations<N>(section, value, rep_count);
-			if (locations.size() != static_cast<size_t>(rep_count))
-			{
-				assert(changes > 0); // changed by earlier value in worker
-			}
-			else if (is_same_block<N>(locations.cbegin(), locations.cend()))
-			{ // remove from rest of block
-				changes += remove_option_section(
-					board, board.block(locations[0]), locations, value);
-			}
-		}
-	}
-	return changes;
-}
-
-//	remove found set in block from rest of its row/col
-template<int N, typename Options>
-inline int set_section_locals(
-	Board<Options, N>& board,
-	const Board_Section::Block<Options, N> block,
-	const int rep_count,
-	const Options worker)
-{
-	{
-		using BlockT   = Board_Section::Block<Options, N>;
-		using iterator = typename BlockT::const_iterator;
-		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(rep_count > 1);  // should have been cought by caller
-								// use the set_uniques specialization
-		assert(rep_count <= N); // won't fit in single block-row/col
-		assert(worker.count_all() > 0);
-	}
-	int changes{0};
-
-	for (value_t value{1}; // start at 1, to skip the answer-bit
-		 value < static_cast<value_t>(worker.size());
-		 ++value)
-	{
-		if (worker[value])
-		{
-			const auto locations = find_locations<N>(block, value, rep_count);
-			if (locations.size() != static_cast<size_t>(rep_count))
-			{
-				assert(changes > 0); // changed by earlier value in worker
-			}
-			else if (is_same_row<N>(locations.cbegin(), locations.cend()))
-			{ // remove from rest of row
-				changes += remove_option_outside_block(
-					board, board.row(locations[0]), locations[0], value);
-			}
-			else if (is_same_col<N>(locations.cbegin(), locations.cend()))
-			{ // remove from rest of col
-				changes += remove_option_outside_block(
-					board, board.col(locations[0]), locations[0], value);
-			}
-		}
-	}
-	return changes;
-}
-
-//	List locations in [section] where [value] is an option
-template<int N, typename SectionT>
-auto find_locations(
-	const SectionT section, value_t value, const int rep_count)
-{
-	{
-		using Options = Options<elem_size<N>>;
-		using Board   = Board<Options, N>;
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
-		assert(rep_count <= elem_size<N>);
-	}
-	const auto begin = section.cbegin();
-	const auto end   = section.cend();
-
-	return find_locations<N>(begin, end, value, rep_count);
-}
-
-//	List locations where [value] is an option
-template<int N, typename ItrT>
-auto find_locations(
-	const ItrT begin,
-	const ItrT end,
-	const value_t value,
-	const int rep_count)
-{
-	using Options = Options<elem_size<N>>;
-	{
-		static_assert(Utility_::is_input<ItrT>);
-		using iterator = typename ItrT::const_iterator;
-		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(is_valid<N>(value));
-		assert(rep_count > 0 && rep_count <= full_size<N>);
-	}
-	std::vector<Location<N>> locations{};
-	locations.reserve(static_cast<size_t>(rep_count));
-
-	auto last = begin;
-
-	for (int i{0}; i < rep_count; ++i)
-	{
-		last = std::find_if(
-			last, end, [value](Options O) { return O.is_option(value); });
-		if (last == end)
-		{ // rep_count too large
-			break;
-		}
-		locations.push_back(last.location());
-		++last;
-	}
-	assert(not locations.empty());
-	return locations;
-}
-
-//	List locations in [section] where [value] is an option
-template<int N, typename SectionT>
-auto find_locations(const SectionT section, const Options<elem_size<N>> value)
-{
-	{
-		using Options = Options<elem_size<N>>;
-		using Board   = Board<Options, N>;
-		static_assert(std::is_base_of_v<Board::Section, SectionT>);
-	}
-	std::vector<Location<N>> locations{};
-
-	auto last      = section.cbegin();
-	const auto end = section.cend();
-
-	for (last = std::find(last, end, value); last != end;
-		 last = std::find(last, end, value))
-	{
-		locations.push_back(last.location());
-		++last;
-	}
-	return locations;
-}
 
 // cell containing 2 options
 //	find in board_	size() == 2
@@ -778,10 +279,5 @@ auto find_locations(const SectionT section, const Options<elem_size<N>> value)
 //			IF found:	remove values from rest row
 //		find exact same in rest col
 //		find exact same in rest block
-
-
-/*	Remove local macros */
-#undef DUAL_ON_REMOVE
-#undef MULTIPLE_ON_REMOVE
 
 } // namespace Sudoku

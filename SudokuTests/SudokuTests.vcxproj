@@ -329,7 +329,9 @@
     </ClCompile>
     <ClCompile Include="Size.cpp" />
     <ClCompile Include="Solver.cpp" />
-    <ClCompile Include="Solver_remove_option.cpp" />
+    <ClCompile Include="Solvers_find.cpp" />
+    <ClCompile Include="Solvers_remove_option.cpp" />
+    <ClCompile Include="Solvers_set_option.cpp" />
     <ClCompile Include="SudokuTests.cpp" />
     <ClCompile Include="Value.cpp" />
   </ItemGroup>

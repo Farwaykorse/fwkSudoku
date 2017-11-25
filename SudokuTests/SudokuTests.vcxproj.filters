@@ -39,13 +39,19 @@
     <ClCompile Include="Board_Sections.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Solver_remove_option.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Value.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Size.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Solvers_find.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Solvers_remove_option.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Solvers_set_option.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

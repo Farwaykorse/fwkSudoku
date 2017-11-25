@@ -1,22 +1,41 @@
-﻿//===--	Sudoku/Appearance.h												--===//
+﻿//===--	Sudoku/Solver_find.h											--===//
 //
-//	Helper functions, collecting options by appearance count in a given set.
+// Helper functions
+// find_locations
+// Apperance_*: collecting options by appearance count in a given set.
 //===---------------------------------------------------------------------===//
 #pragma once
 
 #include "Iterator_Utilities.h"
-#include "Location.h" // elem_size<N>
+#include "Location.h"
 #include "Options.h"
+#include "Size.h"
+#include "Value.h"
+
+#include <array>
+#include <vector>
+#include <algorithm> // find, find_if
 #include <iterator>
 #include <type_traits> // is_base_of
+#include <cassert>
 
 // Forward declarations
 #include "Board.fwd.h"
-#include "Solver.fwd.h"
 
 
 namespace Sudoku
 {
+//===---------------------------------------------------------------------===//
+template<int N, typename SectionT>
+auto find_locations(SectionT, value_t, int rep_count = elem_size<N>);
+
+template<int N, typename ItrT>
+auto find_locations(
+	ItrT begin, ItrT end, value_t, int rep_count = elem_size<N>);
+
+template<int N, typename SectionT>
+auto find_locations(SectionT, Options<elem_size<N>> value);
+
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 Options appearance_once(SectionT section);
 
@@ -29,9 +48,82 @@ auto appearance_sets(const SectionT section);
 template<int N, typename InItr_>
 auto appearance_sets(const InItr_ begin, const InItr_ end);
 
-
 //===---------------------------------------------------------------------===//
 
+
+//	List locations in [section] where [value] is an option
+template<int N, typename SectionT>
+auto find_locations(const SectionT section, value_t value, const int rep_count)
+{
+	{
+		using Options       = Options<elem_size<N>>;
+		using Board_Section = Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Board_Section, SectionT>);
+		assert(rep_count <= elem_size<N>);
+	}
+	const auto begin = section.cbegin();
+	const auto end   = section.cend();
+
+	return find_locations<N>(begin, end, value, rep_count);
+}
+
+//	List locations where [value] is an option
+template<int N, typename ItrT>
+auto find_locations(
+	const ItrT begin, const ItrT end, const value_t value, const int rep_count)
+{
+	using Options = Options<elem_size<N>>;
+	{
+		static_assert(Utility_::is_input<ItrT>);
+		using iterator = typename ItrT::const_iterator;
+		static_assert(Utility_::iterator_to<iterator, const Options>);
+		assert(is_valid<N>(value));
+		assert(rep_count > 0 && rep_count <= full_size<N>);
+	}
+	std::vector<Location<N>> locations{};
+	locations.reserve(static_cast<size_t>(rep_count));
+
+	auto last = begin;
+
+	for (int i{0}; i < rep_count; ++i)
+	{
+		last = std::find_if(
+			last, end, [value](Options O) { return O.is_option(value); });
+		if (last == end)
+		{ // rep_count too large
+			break;
+		}
+		locations.push_back(last.location());
+		++last;
+	}
+	assert(not locations.empty());
+	return locations;
+}
+
+//	List locations in [section] where [value] is an option
+template<int N, typename SectionT>
+auto find_locations(const SectionT section, const Options<elem_size<N>> value)
+{
+	{
+		using Options       = Options<elem_size<N>>;
+		using Board_Section = Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Board_Section, SectionT>);
+	}
+	std::vector<Location<N>> locations{};
+
+	auto last      = section.cbegin();
+	const auto end = section.cend();
+
+	for (last = std::find(last, end, value); last != end;
+		 last = std::find(last, end, value))
+	{
+		locations.push_back(last.location());
+		++last;
+	}
+	return locations;
+}
+
+//===---------------------------------------------------------------------===//
 
 //	returning options collected by appearance count in input-dataset
 template<int N, typename InItr_>
