@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Value.h"
+
 #include <bitset>
 #include <vector>
 #include <utility>
@@ -18,21 +19,16 @@ namespace Sudoku
 template<int E>
 class Options
 {
-	using bitset  = std::bitset<E + 1>;
+	using bitset = std::bitset<E + 1>;
 
 public:
 	Options() noexcept;
-	Options(const Options&) = default;
-	Options& operator=(const Options&) = default;
-	Options(Options&&) noexcept        = default;
-	Options& operator=(Options&&) noexcept = default;
-	Options(const bitset&); // 0th bit is last in input
-	Options(bitset&&);
+	explicit Options(const bitset&); // 0th bit is last in input
+	explicit Options(bitset&&);
 	constexpr Options(value_t) noexcept;
 	Options& operator=(value_t) noexcept;
 	Options& operator=(const bitset&) noexcept;
 	Options& operator=(bitset&&) noexcept;
-	~Options()       = default;
 
 	Options& clear() noexcept; // remove all options
 	Options& reset() noexcept; // set all options
@@ -82,7 +78,7 @@ private:
 	value_t read_next(value_t start = 0) const noexcept;
 	Options& operator&=(const Options&) noexcept; // NOTE might be risky
 	template<int E>
-	friend Options<E> operator&(const Options<E>&, const Options<E>&) noexcept;
+	friend Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
 
 }; // class Options
 
@@ -502,8 +498,7 @@ inline std::string Options<E>::DebugString() const
 
 //	return next option in data
 template<int E>
-inline typename value_t Options<E>::read_next(value_t start) const
-	noexcept
+inline value_t Options<E>::read_next(value_t start) const noexcept
 { // default value start = 0
 	++start;
 	for (value_t i = start; i <= E; ++i)
