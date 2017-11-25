@@ -64,8 +64,6 @@ public:
 	Options& operator+=(const Options&) noexcept;
 	// xor
 	Options& XOR(const Options&) noexcept;
-	// TODO difference; usecase?
-	Options operator-(const Options&) const noexcept;
 
 	// Debug Use Only, don't depend on it's result
 	std::string DebugString() const;
@@ -101,6 +99,9 @@ inline Options<E> XOR(Options<E>& A, Options<E>& B) noexcept;
 
 template<int E>
 Options<E> operator+(const Options<E>&, const Options<E>&) noexcept;
+
+template<int E>
+Options<E> operator-(const Options<E>&, const Options<E>&) noexcept;
 
 // return shared options
 template<int E>
@@ -456,6 +457,14 @@ inline Options<E>& Options<E>::XOR(const Options& other) noexcept
 {
 	data_ ^= other.data_;
 	return *this;
+}
+
+// Only in left
+template<int E>
+inline Options<E>
+	operator-(const Options<E>& left, const Options<E>& right) noexcept
+{
+	return left & XOR(left, right);
 }
 
 // Exclusive OR

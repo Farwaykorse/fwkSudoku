@@ -543,9 +543,6 @@ TEST(Options, Operators)
 	EXPECT_TRUE(E_1 + O_1 == O_1);
 	EXPECT_TRUE(A_2 + E_3 == O_3);
 	EXPECT_TRUE(E_1 + A_2 == O_3);
-	//Options operator-(Options&) const		difference
-	static_assert(noexcept(O_1 - O_2), "operator- should be noexcept");
-
 
 	///// testing the constructors /////
 	EXPECT_TRUE(E_1 == E_3);
@@ -570,17 +567,28 @@ TEST(Options, External)
 	const Options<4> E_3{ std::bitset<5>{"00001"} };	// empty option
 	const Options<4> A_1{ 1 };							// answer 1
 	const Options<4> A_2{ std::bitset<5>{"00100"} };	// answer 2
-	//XOR(a,b)
+	// XOR(a,b)
 	static_assert(noexcept(XOR(O_3, O_3)), "XOR() should be noexcept");
 	EXPECT_EQ(XOR(E_3, A_2), O_3);
 	EXPECT_EQ(XOR(XOR(E_3, A_2), A_2), E_3);
-	//shared(a,b)
+	// shared(a,b)
 	static_assert(noexcept(shared(TE.D_1, TE.O_4)), "share(a,b) should be noexcept");
 	EXPECT_EQ(shared(TE.O_4, O_3), O_3);
 	EXPECT_EQ(shared(TE.D_1, TE.O_4), TE.D_1);
 	EXPECT_EQ(shared(TE.O_4, E_2), E_2);
 	EXPECT_EQ(shared(O_3, A_2), A_2);
 	EXPECT_EQ(shared(E_3, A_2), E_2);
+}
+TEST(Options, operator_min)
+{
+	const Options<9> O_1{std::bitset<10>{"0111011011"}};
+	const Options<9> O_2{std::bitset<10>{"1010101111"}};
+	const Options<9> A_1{std::bitset<10>{"0101010000"}};
+	const Options<9> A_2{std::bitset<10>{"1000100100"}};
+
+	static_assert(noexcept(O_1 - O_2));
+	EXPECT_EQ(O_1 - O_2, A_1);
+	EXPECT_EQ(O_2 - O_1, A_2);
 }
 TEST(Options, deathtests)
 {
