@@ -233,6 +233,7 @@ public:
 		Assert::IsTrue(L2.block_row() == 2);
 		Assert::IsTrue(L2.block_col() == 0);
 	}
+#if FALSE
 	TEST_METHOD(T4_is_constexpr)
 	{
 		// noexcept is always true for a constant expression.
@@ -288,6 +289,7 @@ public:
 		Assert::IsTrue(noexcept(Location<2>().element()));
 		Assert::IsFalse(noexcept(Location<4>().element()));
 	}
+#endif
 	TEST_METHOD(T5_external)
 	{
 		Assert::IsTrue(noexcept(is_same_row(Location<3>(0), Location<3>(8))));
