@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Iterator_Utilities.h"
+#include "Location.h"
 #include "Size.h"
 
 #include <vector>
@@ -15,7 +16,6 @@
 
 // Forward declarations
 #include "Board.fwd.h"
-#include "Location.fwd.h"
 
 
 namespace Sudoku

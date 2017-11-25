@@ -4,13 +4,8 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
-#include "Location_Utilities.h"
 #include "Size.h"
 
-#include <limits>
-
-// Forward declarations
-#include "Location.fwd.h"
 
 namespace Sudoku
 {
@@ -19,9 +14,9 @@ class Location
 {
 	static_assert(N > 1, "Location.h: base_size value too small");
 
-	using Size = Size<N>;
-	using self_type = Location;
-	using value_type = int;
+	using Size            = Size<N>;
+	using self_type       = Location;
+	using value_type      = int;
 	using difference_type = int;
 
 	static constexpr int location(int row, int col) noexcept
@@ -64,12 +59,14 @@ private:
 	const int id_{};
 };
 
+//===---------------------------------------------------------------------===//
+
 template<int N>
 class Location_Block
 {
 	static_assert(N > 1, "Location_Block: base_size value too small");
 
-	using Size = Size<N>;
+	using Size     = Size<N>;
 	using Location = Location<N>;
 
 	static constexpr int block_elem(int row, int col) noexcept
@@ -86,6 +83,7 @@ class Location_Block
 	{
 		return block_loc(id, block_elem(row, col));
 	}
+
 public:
 	explicit constexpr Location_Block(Location loc) : id_(loc.element()) {}
 	constexpr Location_Block(int id, int elem) : id_(block_loc(id, elem)) {}
@@ -110,23 +108,29 @@ private:
 	const int id_;
 };
 
+//===---------------------------------------------------------------------===//
 template<int N>
-inline constexpr bool
-	Location<N>::operator==(const Location<N>& right) const
+constexpr bool operator==(const Location<N>&, const Location_Block<N>&);
+template<int N>
+constexpr bool operator!=(const Location<N>&, const Location<N>&);
+
+//===---------------------------------------------------------------------===//
+
+template<int N>
+inline constexpr bool Location<N>::operator==(const Location<N>& right) const
 {
 	return id_ == right.id_;
 }
 
 template<int N>
-inline constexpr bool
-	Location_Block<N>::operator==(const Location_Block<N>& right) const
+inline constexpr bool Location_Block<N>::
+	operator==(const Location_Block<N>& right) const
 {
 	return id_ == right.id_;
 }
 
 template<int N>
-inline constexpr bool
-	Location_Block<N>::operator==(const Location& loc) const
+inline constexpr bool Location_Block<N>::operator==(const Location& loc) const
 {
 	return id_ == loc.element();
 }
@@ -148,10 +152,7 @@ template<int N>
 inline constexpr bool Location_Block<N>::
 	operator<(const Location_Block<N>& right) const
 {
-	return ( (id() < right.id()) ? true : (id_ < right.id_) );
-//	return (
-//		(left.id() < right.id()) ? true
-//								 : (Location<N>(left) < Location<N>(right)));
+	return ((id() < right.id()) ? true : (id_ < right.id_));
 }
 
 template<int N>

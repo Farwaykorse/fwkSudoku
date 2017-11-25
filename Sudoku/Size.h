@@ -3,6 +3,8 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
+#include <limits>
+
 namespace Sudoku
 {
 template<int N>

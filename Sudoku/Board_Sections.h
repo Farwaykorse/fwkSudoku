@@ -7,15 +7,17 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
+#include "Location.h"
 #include "Location_Utilities.h"
+#include "Size.h"
 #include <gsl/gsl>
+
 #include <iterator>
 #include <memory>
 #include <cassert>
 
 // Forward declarations
 #include "Board.fwd.h" // self
-#include "Location.fwd.h"
 
 namespace Sudoku::Board_Section
 {
