@@ -92,7 +92,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -113,7 +113,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -133,7 +133,7 @@
       <UseFullPaths>true</UseFullPaths>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -155,7 +155,7 @@
       <UseFullPaths>true</UseFullPaths>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>

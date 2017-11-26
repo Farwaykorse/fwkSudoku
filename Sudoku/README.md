@@ -41,7 +41,7 @@ Usefull:
 /showIncludes
 
 All:
-DiagnosticsFormat: Column
+/diagnostics:caret	DiagnosticsFormat: caret
 /std:c++17			
 /MP					Multiprocessor compilation
 /W4					Warning level 4 (=highest) (/Wall triggers to-many libraray warnings)
