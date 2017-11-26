@@ -18,7 +18,6 @@ Console project called: SudokuTest(s)
 <!----------------------------------------------------------------><a id="vs_settings"></a>
 ## Visual Studio Settings ##
 <!---------------------------------------------------------------->
-- Console Project, No precompiled headers
 - Add reference to the project under test (context menu)
 - Add: Configuration Properties > Linker > Input > Additional Dependencies:
 	$(VcpkgRoot)debug\lib\manual-link\gtest.lib			debug-mode (both x86 and x64)
