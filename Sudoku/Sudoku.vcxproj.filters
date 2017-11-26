@@ -42,9 +42,6 @@
     <ClInclude Include="Location_Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sudoku.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Solver.fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
