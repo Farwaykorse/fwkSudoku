@@ -75,7 +75,7 @@ AlignTrailingComments:			true
 SortIncludes:					true
 IncludeIsMainRegex:				''
 IncludeCategories:
-  - Regex:		'^"((P|p)recompiled|stdfx)/'
+  - Regex:		'^"((P|p)recompiled|stdafx)/'
     Priority:	-1
   - Regex:		'^<(gtest|gmock)/'
     Priority:	2
@@ -83,7 +83,7 @@ IncludeCategories:
     Priority:	3
   - Regex:		'\.h>$'
     Priority:	4
-  - Regex:		'^<(array|vector|(.+_)?list|set|map|(unordered_.*)|bitset)>'
+  - Regex:		'^<(array|vector|string|(.+_)?list|set|map|(unordered_.*)|bitset)>'
     Priority:	5
   - Regex:		'^<cassert>'
     Priority:	8

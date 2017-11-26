@@ -24,9 +24,6 @@
     <ClInclude Include="Solver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SolverBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="precompiled.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -45,19 +42,25 @@
     <ClInclude Include="Location_Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Location.fwd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sudoku.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Solver_Utilities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Solver.fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Solvers_Appearance.h">
+    <ClInclude Include="Iterator_Utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Size.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Solvers_find.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Solvers_remove_option.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Solvers_set_option.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

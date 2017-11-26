@@ -1,12 +1,13 @@
 // Sudoku.cpp : Defines the entry point for the console application.
 //
 
-#include "../Sudoku/SolverBase.h"
+#include "../Sudoku/Solver.h"
 #include "Console.h"
 
 #include <algorithm>	// min
 #include <iostream>
 #include <chrono>
+
 
 void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 {
@@ -15,63 +16,145 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 	std::copy(B_in.cbegin(), B_in.cend(), start.begin());
 	std::copy(A_in.cbegin(), A_in.cend(), answer.begin());
 
-	// working object:
-	Sudoku::SolverBase<3> other;
-
-	constexpr size_t repeat{ 10 };
-	Sudoku::SolverBase<3> test_board{};
+#ifdef _DEBUG
+	constexpr size_t repeat{1}; // runs (only keep fastest)
+	constexpr size_t reruns{1};   // reruns (fastest are summed)
+#else
+	constexpr size_t repeat{1000}; // runs (only keep fastest)
+	constexpr size_t reruns{10};   // reruns (fastest are summed)
+#endif // _DEBUG
 	using time = std::chrono::time_point<std::chrono::steady_clock>;
 	using duration = std::chrono::duration<long long, std::nano>;
-	time t0{};
-	time t1{};
-	time t2{};
-	duration tLoad{ duration::max() };
-	duration tSolver{ duration::max() };
-	duration tTotal{ duration::max() };
 
-	static duration tLoad_total{0};
-	static duration tSolver_total{0};
-	static duration tTotal_total{0};
-
-	// find uniques (should solve this board)
-	for (size_t i{}; i < repeat; ++i)
+	Sudoku::Board<Sudoku::Options<9>, 3> options{};
 	{
-		t0 = std::chrono::steady_clock::now();
-		test_board = start;
-		t1 = std::chrono::steady_clock::now();
-		test_board.solver_unique();
-		t2 = std::chrono::steady_clock::now();
+		time t0{};
+		time t1{};
+		time t2{};
+		duration tLoad{duration::max()};
+		duration tSolver{duration::max()};
+		duration tTotal{duration::max()};
 
-		tLoad = std::min(tLoad, t1 - t0);
-		tTotal = std::min(tTotal, t2 - t0);
-		tSolver = std::min(tSolver, tTotal - tLoad);
+		static int id{0};
+		static duration tLoad_total{0};
+		static duration tSolver_total{0};
+		static duration tTotal_total{0};
+		static bool last{};
+
+		for (size_t j{}; j < reruns; ++j)
+		{
+			for (size_t i{}; i < repeat; ++i)
+			{
+				t0 = std::chrono::steady_clock::now();
+				Sudoku::Board<Sudoku::Options<9>, 3> local{};
+				setValue(local, start.cbegin(), start.cend());
+				t1 = std::chrono::steady_clock::now();
+				Sudoku::test_solver_unique(local);
+				t2 = std::chrono::steady_clock::now();
+
+				// save fastest solving time
+				tLoad = std::min(tLoad, t1 - t0);
+				last = tTotal > (t2 - t0);
+				tTotal = std::min(tTotal, t2 - t0);
+				tSolver = std::min(tSolver, tTotal - tLoad);
+
+				options = local;
+			}
+			if (last)
+			{
+				std::cout << "Last run was fastest " << j << ": true\n";
+			}
+			// sum fastest times
+			tLoad_total += tLoad;
+			tSolver_total += tSolver;
+			tTotal_total += tTotal;
+		}
+		auto time_in_microsec = [](duration t_in)
+		{
+			return std::chrono::duration_cast<std::chrono::microseconds>(t_in).count();
+		};
+		std::cout << "ID: " << id << "\n"
+			<< "Load:\t" << time_in_microsec(tLoad) << " us"
+			<< " (" << time_in_microsec(tLoad_total) << " us)\n";
+		std::cout << "Solve:\t" << time_in_microsec(tSolver) << " us"
+			<< " (" << time_in_microsec(tSolver_total) << " us)\n";
+		std::cout << "Total:\t" << time_in_microsec(tTotal) << " us"
+			<< " (" << time_in_microsec(tTotal_total) << " us)\n";
+
+		auto result = Sudoku::getResult(options);
+		if (result == answer) { std::cout << " : ) Found the answer!\n"; }
+		else
+		{
+			std::cout << "Different from expected \n";
+			std::cout << Sudoku::Console().print_board(options).str();
+		}
+		++id;
 	}
-	tLoad_total += tLoad;
-	tSolver_total += tSolver;
-	tTotal_total += tTotal;
+	{
+		time t0{};
+		time t1{};
+		time t2{};
+		duration tLoad{duration::max()};
+		duration tSolver{duration::max()};
+		duration tTotal{duration::max()};
 
-	auto time_in_microsec = [](duration t_in)
-	{
-		return std::chrono::duration_cast<std::chrono::microseconds>(t_in).count();
-	};
-	std::cout << "Load:\t" << time_in_microsec(tLoad) << " us"
-		<< " (" << time_in_microsec(tLoad_total) << " us)\n";
-	std::cout << "Solve:\t" << time_in_microsec(tSolver) << " us"
-		<< " (" << time_in_microsec(tSolver_total) << " us)\n";
-	std::cout << "Total:\t" << time_in_microsec(tTotal) << " us"
-		<< " (" << time_in_microsec(tTotal_total) << " us)\n";
-	auto result = test_board.getResult();
-	if (result == answer) { std::cout << " : ) Found the answer!\n"; }
-	else
-	{
-		std::cout << "Different from expected \n";
-		auto options = test_board.getOptions();
-		std::cout << Sudoku::Console().print_board(options).str();
-		//test_board = start;
-		//Sudoku::Board<Sudoku::Options<9>,3> load = test_board.getOptions();
-		//std::cout << Sudoku::Console().print_board(load).str();
+		static int id{0};
+		static duration tLoad_total{0};
+		static duration tSolver_total{0};
+		static duration tTotal_total{0};
+		static bool last{};
+
+		for (size_t j{}; j < reruns; ++j)
+		{
+			for (size_t i{}; i < repeat; ++i)
+			{
+				t0 = std::chrono::steady_clock::now();
+				Sudoku::Board<Sudoku::Options<9>, 3> local{};
+				setValue(local, start.cbegin(), start.cend());
+				t1 = std::chrono::steady_clock::now();
+				Sudoku::test_solver_exclusive(local);
+				t2 = std::chrono::steady_clock::now();
+
+				// save fastest solving time
+				tLoad = std::min(tLoad, t1 - t0);
+				last = tTotal > (t2 - t0);
+				tTotal = std::min(tTotal, t2 - t0);
+				tSolver = std::min(tSolver, tTotal - tLoad);
+
+				options = local;
+			}
+			if (last)
+			{
+				std::cout << "Last run was fastest " << j << ": true\n";
+			}
+			// sum fastest times
+			tLoad_total += tLoad;
+			tSolver_total += tSolver;
+			tTotal_total += tTotal;
+		}
+		auto time_in_microsec = [](duration t_in)
+		{
+			return std::chrono::duration_cast<std::chrono::microseconds>(t_in).count();
+		};
+		std::cout << "ID: " << id << "\n"
+			<< "Load:\t" << time_in_microsec(tLoad) << " us"
+			<< " (" << time_in_microsec(tLoad_total) << " us)\n";
+		std::cout << "Solve:\t" << time_in_microsec(tSolver) << " us"
+			<< " (" << time_in_microsec(tSolver_total) << " us)\n";
+		std::cout << "Total:\t" << time_in_microsec(tTotal) << " us"
+			<< " (" << time_in_microsec(tTotal_total) << " us)\n";
+
+		auto result = Sudoku::getResult(options);
+		if (result == answer) { std::cout << " : ) Found the answer!\n"; }
+		else
+		{
+			std::cout << "Different from expected \n";
+			std::cout << Sudoku::Console().print_board(options).str();
+		}
+		++id;
 	}
 }
+
 
 int main()
 {
@@ -99,7 +182,6 @@ int main()
 		2, 8, 7,	3, 5, 6,	1, 4, 9,
 		3, 5, 1,	9, 4, 7,	6, 2, 8
 	};
-
 	test(b1, b1a);
 
 
@@ -144,7 +226,6 @@ int main()
 		0, 0, 4,	0, 0, 0,	0, 3, 0,
 		0, 0, 0,	0, 0, 9,	7, 0, 0
 	};
-	
 	test(b2, b2a);
 
 	// source: en.wikipedia.org
@@ -190,7 +271,6 @@ int main()
 		2, 8, 7,	4, 1, 9,	6, 3, 5,
 		3, 4, 5,	2, 8, 6,	1, 7, 9
 	};
-	
 	test(b3, b3a);
 
 	const std::vector<int> b4
@@ -441,5 +521,4 @@ int main()
 		0, 0, 0,	0, 0, 0,	0, 0, 0,
 		0, 0, 0,	0, 0, 0,	0, 0, 0
 	};
-
 }

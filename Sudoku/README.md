@@ -41,7 +41,7 @@ Usefull:
 /showIncludes
 
 All:
-DiagnosticsFormat: Column
+/diagnostics:caret	DiagnosticsFormat: caret
 /std:c++17			
 /MP					Multiprocessor compilation
 /W4					Warning level 4 (=highest) (/Wall triggers to-many libraray warnings)
@@ -90,6 +90,7 @@ Release:
 /w14905			wide string literal cast to 'LPSTR'
 /w14906			string literal cast to 'LPWSTR'
 /w14928			illegal copy-initialization; more than one user-defined conversion has been implicitly applied
+/w35038			wrong member initialization order
 
 
 #### Clang/C2 ####

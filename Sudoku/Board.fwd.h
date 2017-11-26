@@ -12,6 +12,9 @@ class Board;
 namespace Board_Section
 {
 	template<typename T, int N>
+	class Section;
+
+	template<typename T, int N>
 	class Row;
 
 	template<typename T, int N>
@@ -35,6 +38,6 @@ namespace Board_Section
 	template<typename T, int N, typename ownerT>
 	class iterator;
 
-} // namespace Baord_Section
+} // namespace Board_Section
 
 } // namespace Sudoku

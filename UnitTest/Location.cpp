@@ -162,13 +162,6 @@ public:
 	TEST_METHOD(T1_information)
 	{
 		// size definitions
-		Assert::IsTrue(Location<2>().base_size == 2, L"base_size error");
-		Assert::IsTrue(Location<2>().elem_size == 4);
-		Assert::IsTrue(Location<2>().full_size == 16);
-		Assert::IsTrue(Location<3>().base_size == 3, L"base_size<3> error");
-		Assert::IsTrue(Location<3>().elem_size == 9);
-		Assert::IsTrue(Location<3>().full_size == 81);
-
 		Sudoku::Location<3> loc1(52);
 		Assert::IsTrue(loc1.element() == 52, L"element()");
 		Assert::IsTrue(loc1.row() == 5, L"row()");
@@ -240,6 +233,7 @@ public:
 		Assert::IsTrue(L2.block_row() == 2);
 		Assert::IsTrue(L2.block_col() == 0);
 	}
+#if FALSE
 	TEST_METHOD(T4_is_constexpr)
 	{
 		// noexcept is always true for a constant expression.
@@ -248,9 +242,6 @@ public:
 		Assert::IsTrue(noexcept(Location<3>{}));
 		Assert::IsTrue(noexcept(Location<3>{5}));
 		Assert::IsTrue(noexcept(Location<3>{5, 3}));
-		Assert::IsTrue(noexcept(Location<3>().base_size));
-		Assert::IsTrue(noexcept(Location<3>().elem_size));
-		Assert::IsTrue(noexcept(Location<3>().full_size));
 		Assert::IsTrue(noexcept(Location<3>().element()));
 		Assert::IsTrue(noexcept(Location<3>(0).element()));
 		Assert::IsTrue(noexcept(Location<3>(1).element()));
@@ -298,17 +289,18 @@ public:
 		Assert::IsTrue(noexcept(Location<2>().element()));
 		Assert::IsFalse(noexcept(Location<4>().element()));
 	}
+#endif
 	TEST_METHOD(T5_external)
 	{
-		Assert::IsTrue(noexcept(shared_row(Location<3>(0), Location<3>(8))));
-		Assert::IsTrue(noexcept(shared_col(Location<3>(0), Location<3>(8))));
-		Assert::IsTrue(noexcept(shared_block(Location<3>(0), Location<3>(8))));
-		Assert::IsTrue(shared_row(Location<3>(0), Location<3>(8)));
-		Assert::IsFalse(shared_row(Location<3>(9), Location<3>(8)));
-		Assert::IsTrue(shared_col(Location<3>(0), Location<3>(18)));
-		Assert::IsFalse(shared_col(Location<3>(9), Location<3>(8)));
-		Assert::IsTrue(shared_block(Location<3>(0), Location<3>(11)));
-		Assert::IsFalse(shared_block(Location<3>(9), Location<3>(8)));
+		Assert::IsTrue(noexcept(is_same_row(Location<3>(0), Location<3>(8))));
+		Assert::IsTrue(noexcept(is_same_col(Location<3>(0), Location<3>(8))));
+		Assert::IsTrue(noexcept(is_same_block(Location<3>(0), Location<3>(8))));
+		Assert::IsTrue(is_same_row(Location<3>(0), Location<3>(8)));
+		Assert::IsFalse(is_same_row(Location<3>(9), Location<3>(8)));
+		Assert::IsTrue(is_same_col(Location<3>(0), Location<3>(18)));
+		Assert::IsFalse(is_same_col(Location<3>(9), Location<3>(8)));
+		Assert::IsTrue(is_same_block(Location<3>(0), Location<3>(11)));
+		Assert::IsFalse(is_same_block(Location<3>(9), Location<3>(8)));
 	}
 };
 }

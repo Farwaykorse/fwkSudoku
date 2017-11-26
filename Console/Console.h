@@ -1,14 +1,78 @@
+
 #pragma once
+
+#include "../Sudoku/Board.h"
+#include "../Sudoku/Location_Utilities.h"
+#include "../Sudoku/Options.h"
 
 #include <string>
 #include <sstream>
 #include <iomanip>		// setw(), setfill()
+#include <utility>
 
-#include "../Sudoku/Board.h"
-#include "../Sudoku/Options.h"
 
 namespace Sudoku
 {
+template<int N>
+void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
+{
+	int found{ 1 };
+	while (found > 0)
+	{
+		found = 0;
+		for (int i = 0; i < elem_size<N>; ++i)
+		{
+			found += unique_in_section(board, board.row(i));
+		}
+		for (int i = 0; i < elem_size<N>; ++i)
+		{
+			found += unique_in_section(board, board.col(i));
+		}
+		for (int i = 0; i < elem_size<N>; ++i)
+		{
+			found += unique_in_section(board, board.block(i));
+		}
+	}
+}
+
+template<int N>
+void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
+{
+	int found{ 1 };
+	while (found > 0)
+	{
+		found = 0;
+		for (int i = 0; i < elem_size<N>; ++i)
+		{
+			found += section_exclusive(board, board.row(i));
+		}
+		for (int i = 0; i < elem_size<N>; ++i)
+		{
+			found += section_exclusive(board, board.col(i));
+		}
+		for (int i = 0; i < elem_size<N>; ++i)
+		{
+			found += section_exclusive(board, board.block(i));
+		}
+	}
+}
+
+template<int N>
+Board<int, N> getResult(const Board<Options<elem_size<N>>, N>& options)
+{
+	Board<int, N> result{};
+	for (int i = 0; i < full_size<N>; ++i)
+	{
+		if (options[Location<N>(i)].is_answer())
+		{
+			result[Location<N>(i)] =
+				static_cast<int>(options[Location<N>(i)].get_answer());
+		}
+	}
+	return result;
+}
+
+
 class Console
 {
 public:
@@ -37,13 +101,13 @@ public:
 	//static const Format::delimiter xml;
 
 	Console();
-	Console(delimiter);
-	~Console() = default;
+	explicit Console(delimiter);
+	//~Console() = default;
 
 	template<int N>
-	std::stringstream print_row(const Board<int, N>&, int id) const;
+	std::stringstream print_row(const Board<int, N>&, int row_id) const;
 	template<int N, int E>
-	std::stringstream print_row(const Board<Options<E>, N>&, int id) const;
+	std::stringstream print_row(const Board<Options<E>, N>&, int row_id) const;
 	template<int N>
 	std::stringstream print_board(const Board<int, N>&) const;
 	template<int N, int E>
@@ -52,7 +116,7 @@ public:
 	delimiter d;
 private:
 	int charsize(int value) const;
-	int charsize(int, int counter) const;	// recursion
+	int charsize(int, int length) const;	// recursion
 //	bool Format::find_option(const Board<std::set<int>>&, Location, int value);
 	// format elem
 	// format col-block section
@@ -70,48 +134,47 @@ Console::Console() :
 
 inline
 Console::Console(delimiter del) :
-	d(del)
+	d(std::move(del))
 {
 	// empty constructor
 }
 
-inline
-int Console::charsize(int in) const
+inline int Console::charsize(int value) const
 {
-	assert(in >= 0);
-	if (in < 10) { return 1; }
-	return charsize(in, 2);
+	assert(value >= 0);
+	if (value < 10) { return 1; }
+	return charsize(value, 2);
 }
 
 inline
-int Console::charsize(int in, int length) const
+int Console::charsize(int value, int length) const
 {
-	if (in < pow(10, length))
+	if (value < pow(10, length))
 	{
 		return length;
 	}
 	++length;
-	return charsize(in, length);
+	return charsize(value, length);
 }
 
 template<int N>
-std::stringstream Console::print_row(const Board<int,N>& input, int row) const
+std::stringstream Console::print_row(const Board<int,N>& input, int row_id) const
 {
 	std::stringstream stream;
-	const int chars = charsize(input.elem_size) + 1;
+	const int chars = charsize(elem_size<N>) + 1;
 
 	stream << d.col_block << std::setfill(d.space);
-	for (int i = 0; i < input.elem_size; ++i)
+	for (int i = 0; i < elem_size<N>; ++i)
 	{
-		if (input[row][i] == 0)	// no value
+		if (input[row_id][i] == 0)	// no value
 		{
 			stream << std::setw(chars) << d.space;
 		}
 		else
 		{
-			stream << std::setw(chars) << input[row][i];
+			stream << std::setw(chars) << input[row_id][i];
 		}
-		if ((i + 1) % input.base_size == 0)
+		if ((i + 1) % base_size<N> == 0)
 		{
 			stream << std::setw(2) << d.col_block;
 		}
@@ -124,23 +187,23 @@ std::stringstream Console::print_board(const Board<int,N>& input) const
 {
 	std::stringstream stream;
 	std::stringstream temp;
-	const int chars = charsize(input.elem_size) + 1;
+	const int chars = charsize(elem_size<N>) + 1;
 
 	// opening bar
 	temp << d.block_cross;
-	for (int j = 0; j < input.base_size; ++j)
+	for (int j = 0; j < base_size<N>; ++j)
 	{
-		temp << std::setfill(d.row_block[0]) << std::setw(chars * input.base_size + 2) << d.block_cross;
+		temp << std::setfill(d.row_block[0]) << std::setw(chars * base_size<N> + 2) << d.block_cross;
 	}
 	std::string bar;
 	temp >> bar;
 	stream << bar << '\n';
 
 	// loop rows
-	for (int i = 0; i < input.elem_size; ++i)
+	for (int i = 0; i < elem_size<N>; ++i)
 	{
 		stream << print_row(input, i).str() << d.newl;
-		if ((i + 1) % input.base_size == 0)
+		if ((i + 1) % base_size<N> == 0)
 		{
 			stream << bar << '\n';
 		}
@@ -151,12 +214,10 @@ std::stringstream Console::print_board(const Board<int,N>& input) const
 template<int N, int E>
 std::stringstream Console::print_board(const Board<Options<E>,N>& input) const
 {
-	static_assert(E == N*N, "");
-	assert(input.elem_size == 9);	// no support for different sizes yet
-	const int base_size = input.base_size;
-	const int elem_size = input.elem_size;
-	const int block_size = elem_size + base_size + 2;
-	const int row_length = base_size * block_size;
+	static_assert(E == N*N);
+	assert(elem_size<N> == 9);	// no support for different sizes yet
+	const int block_size = elem_size<N> + base_size<N> + 2;
+	const int row_length = base_size<N> * block_size;
 	/*
 	9   9   9
 	o-----------------------------------------o
@@ -175,18 +236,18 @@ std::stringstream Console::print_board(const Board<Options<E>,N>& input) const
 	n0 << std::setfill(d.row_block[0]) << d.block_cross << std::setw(row_length) << d.block_cross << d.newl;
 	n4 << std::setfill(' ') << std::setw(block_size) << d.col_block;
 	//stream << std::endl;
-	//for (size_t col = 0; col < elem_size; ++col)
+	//for (size_t col = 0; col < elem_size<N>; ++col)
 	//{
 	//	stream << std::setfill(' ') << std::setw(4) << col_prop.count_unknown(col);
 	//}
 
-	stream << std::setfill(d.empty) << std::setw(base_size);
+	stream << std::setfill(d.empty) << std::setw(base_size<N>);
 	const std::string empty = stream.str();
 
 	stream << '\n' << n0.str();
 
 
-	for (int row{ 0 }; row < elem_size; ++row)
+	for (int row{ 0 }; row < elem_size<N>; ++row)
 	{
 
 		stream << print_row(input, row).str();
@@ -198,25 +259,23 @@ std::stringstream Console::print_board(const Board<Options<E>,N>& input) const
 }
 
 template<int N, int E>
-std::stringstream Console::print_row(const Board<Options<E>, N>& input, int row) const
+std::stringstream
+	Console::print_row(const Board<Options<E>, N>& input, int row_id) const
 {
-	const int base_size = input.base_size;
-	const int elem_size = input.elem_size;
-
 	std::stringstream stream;
 
-	int X{ 1 };
-	for (int k{ 0 }; k < base_size; ++k)
+	unsigned int X{ 1 };
+	for (int k{ 0 }; k < base_size<N>; ++k)
 	{
 		stream << d.col_block << d.space;
-		for (int col{ 0 }; col < elem_size; ++col)
+		for (int col{ 0 }; col < elem_size<N>; ++col)
 		{
-			for (int i{ X }; i < X + base_size; ++i)
+			for (unsigned int i{ X }; i < X + base_size<N>; ++i)
 			{
-				if (input[row][col].test(i)) { stream << i; }
+				if (input[row_id][col].test(i)) { stream << i; }
 				else { stream << d.empty; }
 			}
-			if ((col + 1) % base_size == 0)
+			if ((col + 1) % base_size<N> == 0)
 			{
 				stream << std::setfill(d.space) << std::setw(2) << d.col_block << d.space;
 			}
@@ -226,7 +285,7 @@ std::stringstream Console::print_row(const Board<Options<E>, N>& input, int row)
 			}
 		}
 		stream << d.newl;
-		X += base_size;
+		X += base_size<N>;
 	}
 	return stream;
 }

@@ -117,8 +117,6 @@ public:
 		Assert::IsFalse(O_3.test(1), L"test(value) inverse failed");
 		try { if (O_1.test(15) || true) { Assert::Fail(L"test(high) out-of-range expected"); } }
 		catch (const std::out_of_range&) {} // caught
-		try { if (O_1.test(-1) || true) { Assert::Fail(L"test(-1) out-of-range expected"); } }
-		catch (const std::out_of_range&) {} // caught
 		catch (...) { Assert::Fail(L"test() unexpected exception"); }
 		// is_answer() const
 		static_assert(noexcept(O_1.is_answer()), "is_answer() should be noexcept");
@@ -127,13 +125,13 @@ public:
 		Assert::IsFalse(O_4.is_answer(), L"is_answer() inverse failed_2");
 		Assert::IsFalse(E_2.is_answer(), L"is_answer() inverse failed_4");
 		// is_answer(int) const
-		static_assert(noexcept(O_1.is_answer(1)), "is_answer(int) is NOT noexcept");
+		//static_assert(noexcept(O_1.is_answer(1)), "is_answer(int) is NOT noexcept");
 		Assert::IsTrue(O_3.is_answer(2), L"is_answer(answer) failed");
 		Assert::IsFalse(O_3.is_answer(1), L"is_answer(int) failed");
 		Assert::IsFalse(O_1.is_answer(2), L"is_answer(random) failed");
-		Assert::IsFalse(O_1.is_answer(17), L"is_answer(high_value) failed");
+		//Assert::IsFalse(O_1.is_answer(17), L"is_answer(high_value) failed");
 		Assert::IsFalse(O_1.is_answer(0), L"is_answer(0) failed");
-		Assert::IsFalse(O_1.is_answer(-1), L"is_answer(-1) failed");
+		//Assert::IsFalse(O_1.is_answer(-1), L"is_answer(-1) failed");
 		// empty with answer flag
 		Assert::IsFalse(E_1.is_answer(), L"is_answer() on 0 answer");
 		Assert::IsFalse(E_1.is_answer(0), L"is_answer(0) returned true");
@@ -151,7 +149,7 @@ public:
 		// available() const
 		//std::vector<int> available() const;	// return available options
 		static_assert(!noexcept(O_1.available()), "available() should NOT be noexcept");
-		std::vector<int> result{};
+		std::vector<unsigned int> result{};
 		try { result = O_4.available(); }
 		catch (...) { Assert::Fail(L"available() failed"); }
 		Assert::IsTrue(result.size() == 2, L"available() failed_2");
@@ -294,15 +292,13 @@ public:
 		Assert::IsTrue(E_1 + O_1 == O_1, L"operation+ failed");
 		Assert::IsTrue(A_2 + E_3 == O_3, L"operation+= ans+=other failed");
 		Assert::IsTrue(E_1 + A_2 == O_3, L"operation+= other+=ans failed");
-		//Options operator-(Options&) const		difference
-		static_assert(noexcept(O_1 - O_2), "operator- should be noexcept");
 
 
 		///// testing the constructors /////
 		Assert::IsTrue(E_1 == E_3, L"Options{ 0 } the 0th bit is true");
 		// copy-assign
 		static_assert(noexcept(TMP.operator=(O_2)), "operator= should be noexcept");
-		static_assert(!noexcept(TMP.operator=(1)), "operator=(int) IS NOT noexcept");
+		static_assert(noexcept(TMP.operator=(1)), "operator=(int) IS NOT noexcept");
 		Sudoku::Options<4> TMP1 = A_2;
 		Assert::IsTrue(TMP1.is_answer(2), L"copy-assign failed");
 		Assert::IsTrue(TMP1 == A_2, L"copy-assign failed");
@@ -310,7 +306,7 @@ public:
 		Assert::IsTrue(TMP2.is_answer(3), L"copy-assign operator=(int) failed");
 		// move-assign
 		static_assert(noexcept(TMP.operator=(std::bitset<5>())), "operator= should be noexcept_2");
-		Sudoku::Options<4> O_6 = std::bitset<5>{};	// "00000"
+		Sudoku::Options<4> O_6 = Options<4>(std::bitset<5>{});	// "00000"
 		Assert::IsTrue(O_6 == E_2, L"copy-assign failed");
 	}
 	TEST_METHOD(T4_external)

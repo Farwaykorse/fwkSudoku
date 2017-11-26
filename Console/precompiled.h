@@ -1,4 +1,4 @@
-﻿//===--	SudokuTests/precompiled.h										--===//
+//===--	Console/precompiled.h											--===//
 //
 // - Compiled from precompiled.cpp
 // - Included in project by compiler configuration
@@ -11,19 +11,24 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
-// console requirements
+#include "targetver.h"
+
+// console
 #include <stdio.h>
 #include <tchar.h>
 
-// Main library
-#include <gtest/gtest.h>
+#define _setargv 0 // disable commandline arguments
+#define _setenvp 0 // disable environmental table
 
-// Common includes
-#include <bitset>
+// reference additional headers your program requires here
+#include <string>
 #include <vector>
-#include <numeric>
-#include <random>
-#include <type_traits>
+#include <iostream>
 
-// precompiled dependencies specified for Sudoku.lib
+#include <algorithm>
+#include <iomanip>
+#include <sstream>
+#include <chrono>
+
+// precompiled dependencies used in Sudoku.lib
 #include "../Sudoku/precompiled.h"

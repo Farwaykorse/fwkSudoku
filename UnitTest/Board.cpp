@@ -106,11 +106,11 @@ public:
 		Board<int, 3> copy2 = f3;
 
 		// using at(elem_id) !
-		Assert::IsTrue(f3.at(12) == 0 && f3.at(73) == 0,
+		Assert::IsTrue(f3.at(Location<3>(12)) == 0 && f3.at(Location<3>(73)) == 0,
 						L"Empty board isn't filled with 0's");
 		//Assert::IsTrue(f4.at(43) == s4, L"Options board value set doesn't match input");
-		Assert::IsTrue(A.at(21) == 2, L"move constructor value doesn't match input");
-		Assert::IsTrue(B.at(39) == 9, L"move assignment, value doesn't match input");
+		Assert::IsTrue(A.at(Location<3>(21)) == 2, L"move constructor value doesn't match input");
+		Assert::IsTrue(B.at(Location<3>(39)) == 9, L"move assignment, value doesn't match input");
 		Assert::IsTrue(f3 == copy, L"copy constructor failure");
 		Assert::IsTrue(f3 == copy2, L"copy operation failure 2");
 	}
@@ -144,10 +144,10 @@ public:
 		Assert::IsFalse(board != board, L"failure operator!= on self");
 		Assert::IsFalse(board != board2, L"failure operator!=");
 
-		Board<int,2> B;
-		Assert::IsTrue(B.base_size == 2, L"base_size error");
-		Assert::IsTrue(B.elem_size == 4, L"elem_size error");
-		Assert::IsTrue(B.full_size == 16, L"full_size error");
+		//Board<int,2> B;
+		//Assert::IsTrue(B.base_size == 2, L"base_size error");
+		//Assert::IsTrue(B.elem_size == 4, L"elem_size error");
+		//Assert::IsTrue(B.full_size == 16, L"full_size error");
 
 		//NEEDTEST	valid_size(int elem);
 		//NEEDTEST	valid_size(int row, int col);
@@ -157,12 +157,13 @@ public:
 		Sudoku::Board<int, 3> board;
 		Sudoku::Board<int, 3> board2;
 		Sudoku::Board<int, 3> empty;
+		using L = Sudoku::Location<3>;
 
 		// Writing
 		try { set_atValue(board); }
 		catch (...) { Assert::Fail(L"writing with atValue(elem) failed"); }
-		Assert::IsTrue(board.at(80) == 9, L"reading with atValue(elem) failed");
-		try { if (board.at(100)) { Assert::Fail(L"at(elem) should give out-of-bounds"); } }
+		Assert::IsTrue(board.at(L(80)) == 9, L"reading with atValue(elem) failed");
+		try { if (board.at(L(100))) { Assert::Fail(L"at(elem) should give out-of-bounds"); } }
 		catch (...) { } // caught
 
 		try { set_atValue_2(board2); }
@@ -205,22 +206,25 @@ public:
 	TEST_METHOD(T5_clear)
 	{
 		using namespace Sudoku;
+		using L2 = Location<2>;
+		using L3 = Location<3>;
+
 		// test objects
 		Board<int, 3> f3(5);
 		Board<std::set<int>, 2> b_set({ 1, 2 });
 		// check begin state
-		Assert::IsTrue(f3.size() == 81 && f3.at(45) == 5 && f3.at(32) == 5,
+		Assert::IsTrue(f3.size() == 81 && f3.at(L3(45)) == 5 && f3.at(L3(32)) == 5,
 					   L"Test Board incorrect");
-		Assert::IsTrue(b_set.size() == 16 && b_set.at(12).size() == 2,
+		Assert::IsTrue(b_set.size() == 16 && b_set.at(L2(12)).size() == 2,
 					   L"Test Board set incorrect");
 		// process
 		f3.clear();
 		b_set.clear();
 		// check result
 		Assert::IsTrue(f3.size() == 81, L"clear() not retaining size");
-		Assert::IsTrue(f3.at(17) == 0, L"clear() not removing values");
+		Assert::IsTrue(f3.at(L3(17)) == 0, L"clear() not removing values");
 		Assert::IsTrue(b_set.size() == 16, L"clear() not retaining board size");
-		Assert::IsTrue(b_set.at(8).empty(), L"clear() not removing values");
+		Assert::IsTrue(b_set.at(L2(8)).empty(), L"clear() not removing values");
 	}
 private:
 	template<typename T, int N>

@@ -5,116 +5,291 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
+#include "Iterator_Utilities.h"
+#include "Location.h"
+#include "Size.h"
+
 #include <vector>
-#include <limits>	// numeric_limits
+#include <algorithm> // minmax_element, is_sorted, all_of
+#include <limits>    // numeric_limits
+#include <xutility>  // back_inserter
 
 // Forward declarations
-#include "Location.fwd.h"
+#include "Board.fwd.h"
 
 
 namespace Sudoku
 {
+//===-- function declarations --------------------------------------------===//
 template<int N>
-constexpr bool shared_row(const Location<N> left, const Location<N> right)
-{
-	return left.row() == right.row();
-}
+constexpr void valid_dimensions();
 
 template<int N>
-std::vector<Location<N>> shared_row(const Location<N> left, const std::vector<Location<N>>& right)
-{
-	std::vector<Location<N>> tmp_{};
-	for (auto&& loc : right)
-	{
-		if (shared_row(left, loc)) { tmp_.push_back(loc); }
-	}
-	return tmp_;
-}
+constexpr bool is_valid(Location<N>);
 
 template<int N>
-constexpr bool shared_col(const Location<N> left, const Location<N> right)
-{
-	return left.col() == right.col();
-}
+constexpr bool is_valid_size(int row, int col);
 
 template<int N>
-std::vector<Location<N>> shared_col(const Location<N> left, const std::vector<Location<N>>& right)
-{
-	std::vector<Location<N>> tmp_{};
-	for (auto&& loc : right)
-	{
-		if (shared_col(left, loc)) { tmp_.push_back(loc); }
-	}
-	return tmp_;
-}
+constexpr bool is_same_row(Location<N>, Location<N>);
+template<int N>
+constexpr bool is_same_col(Location<N>, Location<N>);
+template<int N>
+constexpr bool is_same_block(Location<N>, Location<N>);
+
+template<int N, typename ItrT>
+constexpr bool is_same_row(ItrT begin, ItrT end);
+template<int N, typename ItrT>
+constexpr bool is_same_col(ItrT begin, ItrT end);
+template<int N, typename ItrT>
+constexpr bool is_same_block(ItrT begin, ItrT end);
 
 template<int N>
-constexpr bool shared_block(const Location<N> left, const Location<N> right)
-{
-	return left.block() == right.block();
-}
-
+std::vector<Location<N>>
+	get_same_row(const Location<N>, const std::vector<Location<N>>&);
 template<int N>
-std::vector<Location<N>> shared_block(const Location<N> left, const std::vector<Location<N>>& right)
-{
-	std::vector<Location<N>> tmp_{};
-	for (auto&& loc : right)
-	{
-		if (shared_block(left, loc)) { tmp_.push_back(loc); }
-	}
-	return tmp_;
-}
+std::vector<Location<N>>
+	get_same_col(const Location<N>, const std::vector<Location<N>>&);
+template<int N>
+std::vector<Location<N>>
+	get_same_block(const Location<N>, const std::vector<Location<N>>&);
 
+template<typename T, int N>
+bool is_same_section(Board_Section::const_Row<T, N>, Location<N>);
+template<typename T, int N>
+bool is_same_section(Board_Section::const_Col<T, N>, Location<N>);
+template<typename T, int N>
+bool is_same_section(Board_Section::const_Block<T, N>, Location<N>);
 
-// ############################################################################
+template<typename SectionT, int N>
+bool is_same_section(SectionT, std::vector<Location<N>>);
+
+template<typename T, int N>
+bool intersect_block(Board_Section::const_Row<T, N>, Location<N>);
+template<typename T, int N>
+bool intersect_block(Board_Section::const_Col<T, N>, Location<N>);
+
+//===---------------------------------------------------------------------===//
+
 
 // Compile-time only Test
 template<int N>
 constexpr void valid_dimensions()
 {
-	constexpr Location<N> L{};
 	// input check
-	static_assert(L.base_size > 1, "base_size too small");
+	static_assert(base_size<N> > 1, "base_size too small");
 	static_assert(
-		L.base_size < L.elem_size &&
-		L.elem_size <= L.full_size &&
-		L.base_size < std::numeric_limits<int>::max() &&	// <limits>
-		L.elem_size < std::numeric_limits<int>::max() &&
-		L.full_size < std::numeric_limits<int>::max(),
+		base_size<N> < elem_size<N> && elem_size<N> <= full_size<N> &&
+			base_size<N> < std::numeric_limits<int>::max() && // <limits>
+			elem_size<N> < std::numeric_limits<int>::max() &&
+			full_size<N> < std::numeric_limits<int>::max(),
 		"board size out of bounds");
 	// logic check
 	static_assert(
-		L.base_size*L.base_size == L.elem_size &&
-		L.elem_size*L.elem_size == L.full_size,
+		base_size<N> * base_size<N> == elem_size<N> &&
+			elem_size<N> * elem_size<N> == full_size<N>,
 		"size calculation broken");
 }
 
 // Test if Location on Board
 template<int N>
-constexpr bool is_valid(const Location<N> loc)
+inline constexpr bool is_valid(const Location<N> loc)
 {
-	return (loc.element() >= 0 && loc.element() < loc.full_size);
+	return (loc.element() >= 0 && loc.element() < full_size<N>);
+}
+
+// Test if Locations on Board and if sorted (ascending)
+template<int N>
+inline constexpr bool is_valid(const std::vector<Location<N>>& locs)
+{
+	return (
+		!locs.empty() && (std::is_sorted(locs.cbegin(), locs.cend()) &&
+						  locs.cbegin()->element() >= 0 &&
+						  locs.crbegin()->element() < full_size<N>));
 }
 
 // Test row/col/block-element
 template<int N>
-constexpr bool is_valid_size(const int elem)
+inline constexpr bool is_valid_size(const int elem)
 {
-	return (elem >= 0 && elem < Location<N>().elem_size);
+	return (elem >= 0 && elem < elem_size<N>);
 }
 
 // Test if location on Board
 template<int N>
-constexpr bool is_valid_size(const int row, const int col)
+inline constexpr bool is_valid_size(const int row, const int col)
 {
 	return is_valid_size<N>(row) && is_valid_size<N>(col);
 }
 
-// Test input value
+
+//===---------------------------------------------------------------------===//
+
+// check
 template<int N>
-constexpr bool is_valid_value(const int value)
+inline constexpr bool
+	is_same_row(const Location<N> left, const Location<N> right)
 {
-	return value > 0 && value <= Location<N>().elem_size;
+	return left.row() == right.row();
 }
 
-}	// namespace Sudoku
+// check: all in same row
+template<int N, typename ItrT>
+constexpr bool is_same_row(const ItrT begin, const ItrT end)
+{
+	{
+		static_assert(Utility_::is_forward<ItrT>);
+	}
+	const auto itr = begin + 1;
+	return std::all_of(
+		itr, end, [begin](Location<N> i) { return is_same_row<N>(*begin, i); });
+}
+
+// return all in same row
+template<int N>
+std::vector<Location<N>>
+	get_same_row(const Location<N> left, const std::vector<Location<N>>& right)
+{
+	std::vector<Location<N>> output{};
+	auto predicate = [&left](Location<N> loc) {
+		return is_same_row(left, loc);
+	};
+	std::copy_if(
+		right.cbegin(), right.cend(), std::back_inserter(output), predicate);
+	return output;
+}
+
+// check
+template<int N>
+inline constexpr bool
+	is_same_col(const Location<N> left, const Location<N> right)
+{
+	return left.col() == right.col();
+}
+
+// check: all in same col
+template<int N, typename ItrT>
+inline constexpr bool is_same_col(const ItrT begin, const ItrT end)
+{
+	{
+		static_assert(Utility_::is_forward<ItrT>);
+	}
+	const auto itr = begin + 1;
+	return std::all_of(
+		itr, end, [begin](Location<N> i) { return is_same_col<N>(*begin, i); });
+}
+
+// return all in same col
+template<int N>
+std::vector<Location<N>>
+	get_same_col(const Location<N> left, const std::vector<Location<N>>& right)
+{
+	std::vector<Location<N>> output{};
+	auto predicate = [&left](Location<N> loc) {
+		return is_same_col(left, loc);
+	};
+	std::copy_if(
+		right.cbegin(), right.cend(), std::back_inserter(output), predicate);
+	return output;
+}
+
+// check
+template<int N>
+inline constexpr bool
+	is_same_block(const Location<N> left, const Location<N> right)
+{
+	return left.block() == right.block();
+}
+
+// check all in same block
+template<int N, typename ItrT>
+inline constexpr bool is_same_block(const ItrT begin, const ItrT end)
+{
+	{
+		static_assert(Utility_::is_forward<ItrT>);
+	}
+	const auto itr = begin + 1;
+	return std::all_of(itr, end, [begin](Location<N> i) {
+		return is_same_block<N>(*begin, i);
+	});
+}
+
+// return all in same block
+template<int N>
+std::vector<Location<N>> get_same_block(
+	const Location<N> left, const std::vector<Location<N>>& right)
+{
+	std::vector<Location<N>> output{};
+	auto predicate = [&left](Location<N> loc) {
+		return is_same_block(left, loc);
+	};
+	std::copy_if(
+		right.cbegin(), right.cend(), std::back_inserter(output), predicate);
+	return output;
+}
+
+// check: [loc] is in [section]
+template<typename T, int N>
+inline bool is_same_section(
+	const Board_Section::const_Row<T, N> section, const Location<N> loc)
+{
+	return is_same_row(loc, section.cbegin().location());
+}
+
+// check: [loc] is in [section]
+template<typename T, int N>
+inline bool is_same_section(
+	const Board_Section::const_Col<T, N> section, const Location<N> loc)
+{
+	return is_same_col(loc, section.cbegin().location());
+}
+
+// check: [loc] is in [section]
+template<typename T, int N>
+inline bool is_same_section(
+	const Board_Section::const_Block<T, N> section, const Location<N> loc)
+{
+	return is_same_block(loc, section.cbegin().location());
+}
+
+// check: [section] intersects block containing [loc]
+template<typename T, int N>
+inline bool intersect_block(
+	const Board_Section::const_Row<T, N> section, const Location<N> block_loc)
+{
+	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
+	{
+		if (is_same_block(block_loc, itr.location()))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+// check: [section] intersects block containing [loc]
+template<typename T, int N>
+inline bool intersect_block(
+	const Board_Section::const_Col<T, N> section, const Location<N> block_loc)
+{
+	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
+	{
+		if (is_same_block(block_loc, itr.location()))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+// check: at least one [location] inside [section]
+template<typename SectionT, int N>
+inline bool
+	is_same_section(const SectionT section, const std::vector<Location<N>> locs)
+{
+	return std::any_of(locs.cbegin(), locs.cend(), [section](Location<N> L) {
+		return is_same_section(section, L);
+	});
+}
+
+} // namespace Sudoku
