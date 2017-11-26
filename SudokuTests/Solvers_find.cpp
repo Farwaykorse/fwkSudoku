@@ -1,16 +1,16 @@
 ﻿//===--	SudokuTests/Solver_find.cpp										--===//
 //
 //===---------------------------------------------------------------------===//
-//	Implemented with GoogleTest
+// Implemented with GoogleTest
 //
-//	Notes:
-//	gTest is limited for use with multiple template parameters.
-//	These expressions need to be implemented between extra parentheses
-//	- test elements implementing this are flagged with [gTest]
-//	- not implemented tests are flagged as NEEDTEST [gTest]
-//	gTest tries to print iterators if they use inheritance,
-//		if used in *_EQ/NE etc.
-//		use an explicit test like EXPECT_TRUE(.. == ..).
+// Notes:
+// gTest is limited for use with multiple template parameters.
+// These expressions need to be implemented between extra parentheses
+// - test elements implementing this are flagged with [gTest]
+// - not implemented tests are flagged as NEEDTEST [gTest]
+// gTest tries to print iterators if they use inheritance,
+//   if used in *_EQ/NE etc.
+//   use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //===---------------------------------------------------------------------===//
 #include <gtest/gtest.h>
@@ -18,10 +18,10 @@
 // Class under test
 #include "../Sudoku/Solvers_find.h"
 // helpers
-#include "../Sudoku/Solver.h"	// setvalue
 #include "../Sudoku/Board.h"
 #include "../Sudoku/Location.h"
 #include "../Sudoku/Options.h"
+#include "../Sudoku/Solver.h" // setvalue
 // Debug Output
 #include "print_Options.h"
 // library

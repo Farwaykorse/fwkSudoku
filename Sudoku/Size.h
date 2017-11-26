@@ -1,5 +1,6 @@
 ﻿//===--	Sudoku/Size.h													--===//
 //
+// The size definition that rules them all.
 //===---------------------------------------------------------------------===//
 #pragma once
 

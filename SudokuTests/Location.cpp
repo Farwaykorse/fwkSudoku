@@ -1,17 +1,17 @@
 //===--	SudokuTests/Location.cpp										--===//
 //
-//	Unit tests for the template class Sudoku::Location
+// Unit tests for the template class Sudoku::Location
 //===---------------------------------------------------------------------===//
-//	Implemented with GoogleTest
+// Implemented with GoogleTest
 //
-//	Notes:
-//	gTest is limited for use with multiple template parameters.
-//	These expressions need to be implemented between extra parentheses
-//	- test elements implementing this are flagged with [gTest]
-//	- not implemented tests are flagged as NEEDTEST [gTest]
-//	gTest tries to print iterators if they use inheritance,
-//		if used in *_EQ/NE etc.
-//		use an explicit test like EXPECT_TRUE(.. == ..).
+// Notes:
+// gTest is limited for use with multiple template parameters.
+// These expressions need to be implemented between extra parentheses
+// - test elements implementing this are flagged with [gTest]
+// - not implemented tests are flagged as NEEDTEST [gTest]
+// gTest tries to print iterators if they use inheritance,
+//   if used in *_EQ/NE etc.
+//   use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //===---------------------------------------------------------------------===//
 #include <gtest/gtest.h>
@@ -22,8 +22,9 @@
 // Helpers
 #include "../Sudoku/Board.h"
 // aditional
-#include <type_traits>
 #include <vector>
+#include <type_traits>
+
 
 using namespace Sudoku;
 
@@ -33,123 +34,130 @@ namespace compiletime
 {
 	// Type properties
 	using typeT = Location<3>;
-	static_assert(std::is_class<typeT>::value, "-- a class, hiding datarepresentation");
-	static_assert(!std::is_trivial<typeT>::value, "trivial default constructors & trivially copyable");
+	static_assert(std::is_class_v<typeT>);
+	static_assert(!std::is_trivial_v<typeT>);
 	//! different between VC++ / Clang
-	//static_assert(!std::is_trivially_copyable<typeT>::value, "-- compatible with std::memcpy & binary copy from/to files");
-	static_assert(std::is_standard_layout<typeT>::value, "-- StandardLayoutType");	// can be converted with reinterpret_cast
-	static_assert(!std::is_pod<typeT>::value, "++ Plain Old Data, both trivial and standard-layout, C compatible");
-	//static_assert(std::has_unique_object_representations<typeT>::value, "");	//C++17	trivially_copyable same object representation
-	static_assert(!std::is_empty<typeT>::value, "-- class with no datamembers");	// nothing virtual
-	static_assert(!std::is_polymorphic<typeT>::value, "-- inherits atleast one virtual function");
-	static_assert(!std::is_final<typeT>::value, "-- cannot be used as base class");
-	static_assert(!std::is_abstract<typeT>::value, "-- inherits or declares at least one pure virtual function");
+	// static_assert(!std::is_trivially_copyable_v<typeT>);
+	static_assert(std::is_standard_layout_v<typeT>);
+	// can be converted with reinterpret_cast
+	static_assert(!std::is_pod_v<typeT>);
+	// static_assert(std::has_unique_object_representations_v<typeT>);
+	// C++17	trivially_copyable same object representation
+	static_assert(!std::is_empty_v<typeT>); // nothing virtual
+	static_assert(!std::is_polymorphic_v<typeT>);
+	static_assert(!std::is_final_v<typeT>);
+	static_assert(!std::is_abstract_v<typeT>);
 
 	// default constructor: typeT()
-	static_assert(std::is_default_constructible<typeT>::value, "-- default constructor");
-	static_assert(std::is_nothrow_default_constructible<typeT>::value, "-- notrow default constructor");
-	static_assert(!std::is_trivially_default_constructible<typeT>::value, "++ default, nothing virtual");
+	static_assert(std::is_default_constructible_v<typeT>);
+	static_assert(std::is_nothrow_default_constructible_v<typeT>);
+	static_assert(!std::is_trivially_default_constructible_v<typeT>);
 
 	// copy constructor: typeT(const typeT&)
-	static_assert(std::is_copy_constructible<typeT>::value, "-- copy constructor");
-	static_assert(std::is_nothrow_copy_constructible<typeT>::value, "-- notrow copy constructor");
-	static_assert(std::is_trivially_copy_constructible<typeT>::value, "-- trivially copy constructor"); // = default
+	static_assert(std::is_copy_constructible_v<typeT>);
+	static_assert(std::is_nothrow_copy_constructible_v<typeT>);
+	static_assert(std::is_trivially_copy_constructible_v<typeT>); // = default
 
 	// move constructor: typeT(typeT&&)
-	static_assert(std::is_move_constructible<typeT>::value, "-- move constructor");
-	static_assert(std::is_nothrow_move_constructible<typeT>::value, "-- nothrow move constructor");
-	static_assert(std::is_trivially_move_constructible<typeT>::value, "-- trivially move constructor");
+	static_assert(std::is_move_constructible_v<typeT>);
+	static_assert(std::is_nothrow_move_constructible_v<typeT>);
+	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
 	// copy assingment
-	static_assert(!std::is_copy_assignable<typeT>::value, "-- copy assignable");
-	static_assert(!std::is_nothrow_copy_assignable<typeT>::value, "-- notrow copy assignable");
-	static_assert(!std::is_trivially_copy_assignable<typeT>::value, "-- trivially copy assignable");
+	static_assert(!std::is_copy_assignable_v<typeT>);
+	static_assert(!std::is_nothrow_copy_assignable_v<typeT>);
+	static_assert(!std::is_trivially_copy_assignable_v<typeT>);
 
-	static_assert(!std::is_move_assignable<typeT>::value, "-- move assignable");
-	static_assert(!std::is_nothrow_move_assignable<typeT>::value, "-- move assignable");
-	static_assert(!std::is_trivially_move_assignable<typeT>::value, "-- trivially move assignable");
+	static_assert(!std::is_move_assignable_v<typeT>);
+	static_assert(!std::is_nothrow_move_assignable_v<typeT>);
+	static_assert(!std::is_trivially_move_assignable_v<typeT>);
 
-	static_assert(std::is_destructible<typeT>::value, "-- destructable");
-	static_assert(std::is_nothrow_destructible<typeT>::value, "-- nothrow destructable");
-	static_assert(std::is_trivially_destructible<typeT>::value, "-- trivially destructable");
-	static_assert(!std::has_virtual_destructor<typeT>::value, "-- virtual destructor");
+	static_assert(std::is_destructible_v<typeT>);
+	static_assert(std::is_nothrow_destructible_v<typeT>);
+	static_assert(std::is_trivially_destructible_v<typeT>);
+	static_assert(!std::has_virtual_destructor_v<typeT>);
 
-	//static_assert(!std::is_swappable<typeT>::value, "-- swappable");			//C++17
-	//static_assert(!std::is_nothrow_swappable<typeT>::value, "-- nothrow swappable");	//C++17
+	static_assert(!std::is_swappable_v<typeT>);         // C++17
+	static_assert(!std::is_nothrow_swappable_v<typeT>); // C++17
 	// other types
-	static_assert(std::is_constructible<typeT, int>::value, "-- should construct from int");
-	static_assert(std::is_constructible<typeT, unsigned int>::value, "-- construct from unsigned int");
-	static_assert(std::is_constructible<typeT, size_t>::value, "-- construct from size_t");
-	static_assert(std::is_constructible<typeT, Location_Block<3>>::value, "-- should construct from Location_Block");
-	static_assert(!std::is_constructible<typeT, Location_Block<2>>::value, "-- shouldn't accept non matching dimensions_1");
-	static_assert(!std::is_assignable<typeT, Location_Block<3>>::value, "--");
-	static_assert(!std::is_assignable<typeT, int>::value, "-- shouldn't be assignable from int, prevent with explicit!!");
+	static_assert(std::is_constructible<typeT, int>::value);
+	static_assert(std::is_constructible<typeT, unsigned int>::value);
+	static_assert(std::is_constructible<typeT, size_t>::value);
+	static_assert(std::is_constructible<typeT, Location_Block<3>>::value);
+	static_assert(!std::is_constructible<typeT, Location_Block<2>>::value);
+	static_assert(!std::is_assignable<typeT, Location_Block<3>>::value);
+	static_assert(!std::is_assignable<typeT, int>::value);
 
-	//static_assert(!std::is_swappable_with<typeT, Location_Block<3>>::value, "++");	//C++17
-	//static_assert(!std::is_nothrow_swappable_with<typeT, Location_Block<3>>::value, "++");	//C++17
-}
+	static_assert(
+		!std::is_swappable_with<typeT, Location_Block<3>>::value); // C++17
+	static_assert(!std::is_nothrow_swappable_with<typeT, Location_Block<3>>::
+					  value); // C++17
+} // namespace compiletime
 
 namespace Location_Block_compiletime
 {
 	// Type properties
 	using typeT = Location_Block<3>;
-	static_assert(std::is_class<typeT>::value, "-- a class, hiding datarepresentation");
-	static_assert(!std::is_trivial<typeT>::value, "trivial default constructors & trivially copyable");
+	static_assert(std::is_class_v<typeT>);
+	static_assert(!std::is_trivial_v<typeT>);
 	//! different between VC++ / Clang
-	//static_assert(!std::is_trivially_copyable<typeT>::value, "++ compatible with std::memcpy & binary copy from/to files");
-	static_assert(std::is_standard_layout<typeT>::value, "-- StandardLayoutType");	// can be converted with reinterpret_cast
-	static_assert(!std::is_pod<typeT>::value, "++ Plain Old Data, both trivial and standard-layout, C compatible");
-	//static_assert(std::has_unique_object_representations<typeT>::value, "");	//C++17	trivially_copyable same object representation
-	static_assert(!std::is_empty<typeT>::value, "-- class with no datamembers");	// nothing virtual
-	static_assert(!std::is_polymorphic<typeT>::value, "-- inherits atleast one virtual function");
-	static_assert(!std::is_final<typeT>::value, "-- cannot be used as base class");
-	static_assert(!std::is_abstract<typeT>::value, "-- inherits or declares at least one pure virtual function");
+	// static_assert(!std::is_trivially_copyable_v<typeT>);
+	static_assert(std::is_standard_layout_v<typeT>);
+	// can be converted with reinterpret_cast
+	static_assert(!std::is_pod_v<typeT>);
+	// static_assert(std::has_unique_object_representations_v<typeT>); //C++17
+	// trivially_copyable same object representation
+	static_assert(!std::is_empty_v<typeT>); // nothing virtual
+	static_assert(!std::is_polymorphic_v<typeT>);
+	static_assert(!std::is_final_v<typeT>);
+	static_assert(!std::is_abstract_v<typeT>);
 
 	// default constructor: typeT()
-	static_assert(!std::is_default_constructible<typeT>::value, "-- default constructor");
-	static_assert(!std::is_nothrow_default_constructible<typeT>::value, "-- notrow default constructor");
-	static_assert(!std::is_trivially_default_constructible<typeT>::value, "++ default, nothing virtual");
+	static_assert(!std::is_default_constructible_v<typeT>);
+	static_assert(!std::is_nothrow_default_constructible_v<typeT>);
+	static_assert(!std::is_trivially_default_constructible_v<typeT>);
 
 	// copy constructor: typeT(const typeT&)
-	static_assert(std::is_copy_constructible<typeT>::value, "-- copy constructor");
-	static_assert(std::is_nothrow_copy_constructible<typeT>::value, "-- notrow copy constructor");
-	static_assert(std::is_trivially_copy_constructible<typeT>::value, "-- trivially copy constructor"); // = default
+	static_assert(std::is_copy_constructible_v<typeT>);
+	static_assert(std::is_nothrow_copy_constructible_v<typeT>);
+	static_assert(std::is_trivially_copy_constructible_v<typeT>); // = default
 
 	// move constructor: typeT(typeT&&)
-	static_assert(std::is_move_constructible<typeT>::value, "-- move constructor");
-	static_assert(std::is_nothrow_move_constructible<typeT>::value, "-- nothrow move constructor");
-	static_assert(std::is_trivially_move_constructible<typeT>::value, "-- trivially move constructor");
+	static_assert(std::is_move_constructible_v<typeT>);
+	static_assert(std::is_nothrow_move_constructible_v<typeT>);
+	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
 	// copy assingment
-	static_assert(!std::is_copy_assignable<typeT>::value, "copy assignable");
-	static_assert(!std::is_nothrow_copy_assignable<typeT>::value, "notrow copy assignable");
-	static_assert(!std::is_trivially_copy_assignable<typeT>::value, "trivially copy assignable");
+	static_assert(!std::is_copy_assignable_v<typeT>);
+	static_assert(!std::is_nothrow_copy_assignable_v<typeT>);
+	static_assert(!std::is_trivially_copy_assignable_v<typeT>);
 
-	static_assert(!std::is_move_assignable<typeT>::value, "move assignable");
-	static_assert(!std::is_nothrow_move_assignable<typeT>::value, "move assignable");
-	static_assert(!std::is_trivially_move_assignable<typeT>::value, "trivially move assignable");
+	static_assert(!std::is_move_assignable_v<typeT>);
+	static_assert(!std::is_nothrow_move_assignable_v<typeT>);
+	static_assert(!std::is_trivially_move_assignable_v<typeT>);
 
-	static_assert(std::is_destructible<typeT>::value, "-- destructable");
-	static_assert(std::is_nothrow_destructible<typeT>::value, "-- nothrow destructable");
-	static_assert(std::is_trivially_destructible<typeT>::value, "-- trivially destructable");
-	static_assert(!std::has_virtual_destructor<typeT>::value, "-- virtual destructor");
+	static_assert(std::is_destructible_v<typeT>);
+	static_assert(std::is_nothrow_destructible_v<typeT>);
+	static_assert(std::is_trivially_destructible_v<typeT>);
+	static_assert(!std::has_virtual_destructor_v<typeT>);
 
-	//static_assert(!std::is_swappable<typeT>::value, "swappable");			//C++17
-	//static_assert(!std::is_nothrow_swappable<typeT>::value, "nothrow swappable");	//C++17
+	static_assert(!std::is_swappable_v<typeT>);         // C++17
+	static_assert(!std::is_nothrow_swappable_v<typeT>); // C++17
 	// other types
-	static_assert(!std::is_constructible<typeT, int>::value, "-- should not construct from int");
-	static_assert(std::is_constructible<typeT, Location<3>>::value, "-- should construct from Location");
-	static_assert(!std::is_constructible<typeT, Location_Block<2>>::value, "-- shouldn't accept non matching dimensions_1");
-	static_assert(!std::is_constructible<typeT, Location<2>>::value, "-- should not construct from non matching Location");
+	static_assert(!std::is_constructible_v<typeT, int>);
+	static_assert(std::is_constructible_v<typeT, Location<3>>);
+	static_assert(!std::is_constructible_v<typeT, Location_Block<2>>);
+	static_assert(!std::is_constructible_v<typeT, Location<2>>);
 
-	static_assert(!std::is_assignable<typeT, Location<3>>::value, "assignable from Location");
-	static_assert(!std::is_assignable<typeT, Location_Block<2>>::value, "-- assignable wrong size");
-	static_assert(!std::is_assignable<typeT, Location<2>>::value, "-- assignable Location wrong size");
-	static_assert(!std::is_assignable<typeT, int>::value, "-- shouldn't be assignable from int, prevent with explicit!!");
+	static_assert(!std::is_assignable_v<typeT, Location<3>>);
+	static_assert(!std::is_assignable_v<typeT, Location_Block<2>>);
+	static_assert(!std::is_assignable_v<typeT, Location<2>>);
+	static_assert(!std::is_assignable_v<typeT, int>);
 
-	//static_assert(!std::is_swappable_with<typeT, Location<3>>::value, "++");	//C++17
-	//static_assert(!std::is_nothrow_swappable_with<typeT, Location<3>>::value, "++");	//C++17
-}
+	// static_assert(!std::is_swappable_with<typeT, Location<3>>::value, "++");
+	// //C++17  static_assert(!std::is_nothrow_swappable_with<typeT,
+	// Location<3>>::value, "++");	//C++17
+} // namespace Location_Block_compiletime
 
 // Shared data used for all tests
 // Initiate tests with: TEST_F(LocationTest, test_name)
@@ -159,16 +167,16 @@ protected:
 	// Per-test-case, used for all tests
 	// Use for objects that are expensive to generate
 	// but are not changed by the tests
-	//static void SetUpTestCase() {}
-	//static void TearDownTestCase() {}
+	// static void SetUpTestCase() {}
+	// static void TearDownTestCase() {}
 
 	// Per-test
-	//virtual void SetUp() {}
-	//virtual void TearDown() {}
+	// virtual void SetUp() {}
+	// virtual void TearDown() {}
 	const Location<3> locE{};
-	const Location<3> loc0{ 0 };
-	const Location<3> loc1{ 1 };
-	const Location<3> loc52{ 52 };
+	const Location<3> loc0{0};
+	const Location<3> loc1{1};
+	const Location<3> loc52{52};
 };
 
 TEST(Location, Construction)
@@ -177,13 +185,13 @@ TEST(Location, Construction)
 	EXPECT_NO_THROW(Location<3>{});
 	EXPECT_NO_THROW(Location<3> LL2{});
 	EXPECT_NO_THROW(Location<2> LL3);
-	
+
 	EXPECT_NO_THROW(Location<3>(12));
 	EXPECT_EQ(Location<3>(12).element(), 12);
 	EXPECT_EQ(Location<3>{12}.element(), 12);
 
 	EXPECT_NO_THROW(Location<3>(1, 8));
-	EXPECT_EQ(Location<3>(1,8).element(), 17);
+	EXPECT_EQ(Location<3>(1, 8).element(), 17);
 
 	EXPECT_NO_THROW(Location<3>(Location<3>(6)));
 	EXPECT_EQ(Location<3>(Location<3>(6)).element(), 6);
@@ -208,12 +216,10 @@ TEST(Location_Block, Construction)
 	Location_Block<3> B1(8, 8);
 	EXPECT_EQ(B1.element(), 8);
 	EXPECT_EQ(Location_Block<3>(8, 8).element(), 8);
-	//??? ERROR if using {}
-	//EXPECT_EQ(Location_Block<3>{8, 8}.element(), 8);
-	Location_Block<3> B6{ 0, 0, 2 };
+	EXPECT_EQ((Location_Block<3>{8, 8}.element()), 8);
+	Location_Block<3> B6{0, 0, 2};
 	EXPECT_EQ(B6.element(), 2);
-	//??? ERROR if using {}
-	//EXPECT_EQ(Location_Block<3>{0, 0, 2}.element(), 2);
+	EXPECT_EQ((Location_Block<3>{0, 0, 2}.element()), 2);
 	EXPECT_EQ(Location_Block<3>(0, 0, 2).element(), 2);
 	Location_Block<3> B2(B1);
 	EXPECT_EQ(B2.element(), 8) << "Copy constructor";
@@ -223,23 +229,22 @@ TEST(Location_Block, Construction)
 	EXPECT_EQ(B3.element(), 8) << "Copy";
 	Location_Block<3> B4(Location_Block<3>(0, 2));
 	EXPECT_EQ(B4.element(), 2) << "Move constructor";
-	EXPECT_EQ(Location_Block<3>(Location_Block<3>(0,2)).element(), 2) << "Move constructor";
-	EXPECT_EQ(Location_Block<3>(Location_Block<3>{0,2}).element(), 2) << "Move constructor";
-	//??? ERROR if using {}
-	//EXPECT_EQ(Location_Block<3>{Location_Block<3>{0,2}}.element(), 2) << "Move constructor";
-	EXPECT_EQ(Location_Block<3>{Location_Block<3>(0,2)}.element(), 2) << "Move constructor";
+	EXPECT_EQ(Location_Block<3>(Location_Block<3>(0, 2)).element(), 2);
+	EXPECT_EQ(Location_Block<3>(Location_Block<3>{0, 2}).element(), 2);
+	EXPECT_EQ((Location_Block<3>{Location_Block<3>{0, 2}}.element()), 2);
+	EXPECT_EQ(Location_Block<3>{Location_Block<3>(0, 2)}.element(), 2);
 	Location_Block<3> B5 = Location_Block<3>(8, 8);
 	EXPECT_EQ(B5.element(), 8) << "Move";
 
 	// back and forth
 	ASSERT_NO_THROW(Location<3>(Location_Block<3>(1, 3)));
-	EXPECT_EQ(Location_Block<3>{ Location<3>{12} }.id(), 1);
-	//??? ERROR if using {} 
-	//EXPECT_EQ(Location<3>{ Location_Block<3>{8, 8} }.element(), 80);
-	EXPECT_EQ(Location<3>( Location_Block<3>{8, 8} ).element(), 80);
-	EXPECT_EQ(Location<3>{ Location_Block<3>(8, 8) }.element(), 80);
+	EXPECT_EQ(Location_Block<3>{Location<3>{12}}.id(), 1);
+	EXPECT_EQ((Location<3>{Location_Block<3>{8, 8}}.element()), 80);
+	EXPECT_EQ(Location<3>(Location_Block<3>{8, 8}).element(), 80);
+	EXPECT_EQ(Location<3>{Location_Block<3>(8, 8)}.element(), 80);
 }
 
+// clang-format off
 template<int N>
 void SubProperties(Location<N> loc,
 	int elem,	int row,	int col,
@@ -253,6 +258,7 @@ void SubProperties(Location<N> loc,
 	EXPECT_EQ(loc.block_row(),	b_row);
 	EXPECT_EQ(loc.block_col(),	b_col);
 }
+// clang-format on
 TEST(Location, Properties)
 {
 	ASSERT_EQ(Location<3>{36}.element(), 36);
@@ -265,70 +271,38 @@ TEST(Location, Properties)
 	EXPECT_EQ(Location<3>{36}.block_elem(), 3);
 	{
 		SCOPED_TRACE("Location<3> loc{ 52 }");
-		SubProperties(
-			Location<3>{ 52 },
-			52,	5,	7,
-			5,	7,	2,	1
-		);
+		SubProperties(Location<3>{52}, 52, 5, 7, 5, 7, 2, 1);
 	}
 	{
 		SCOPED_TRACE("Location<3> loc(3, 2)");
-		SubProperties(
-			Location<3>(3, 2),
-			29,	3,	2,
-			3,	2,	0,	2
-		);
+		SubProperties(Location<3>(3, 2), 29, 3, 2, 3, 2, 0, 2);
 	}
 	{
 		SCOPED_TRACE("Location<3> loc(0)");
-		SubProperties(
-			Location<3>(0),
-			0,	0,	0,
-			0,	0,	0,	0
-		);
+		SubProperties(Location<3>(0), 0, 0, 0, 0, 0, 0, 0);
 	}
 	{
 		SCOPED_TRACE("Location<3> loc(80)");
-		SubProperties(
-			Location<3>(80),
-			80,	8,	8,
-			8,	8,	2,	2
-		);
+		SubProperties(Location<3>(80), 80, 8, 8, 8, 8, 2, 2);
 	}
 	{
 		SCOPED_TRACE("Location<2> loc{}");
-		SubProperties(
-			Location<2>{},
-			0,	0,	0,
-			0,	0,	0,	0
-		);
+		SubProperties(Location<2>{}, 0, 0, 0, 0, 0, 0, 0);
 	}
 	{
 		SCOPED_TRACE("Location<2> loc{ 15 }");
-		SubProperties(
-			Location<2>{ 15 },
-			15,	3,	3,
-			3,	3,	1,	1
-		);
+		SubProperties(Location<2>{15}, 15, 3, 3, 3, 3, 1, 1);
 	}
 }
 TEST(Location, OutOfBounds)
 {
 	{
 		SCOPED_TRACE("Location<2> loc{ 16 }");
-		SubProperties(
-			Location<2>{ 16 },
-			16, 4, 0,
-			4, 0, 0, 0
-		);
+		SubProperties(Location<2>{16}, 16, 4, 0, 4, 0, 0, 0);
 	}
 	{
 		SCOPED_TRACE("Location<3> loc{ 100 }");
-		SubProperties(
-			Location<3>{ 100 },
-			100, 11, 1,
-			9, 7, 2, 1
-		);
+		SubProperties(Location<3>{100}, 100, 11, 1, 9, 7, 2, 1);
 	}
 }
 TEST(Location_Block, Properties)
@@ -370,22 +344,25 @@ TEST(Location, Comparisson)
 	EXPECT_NE(Location<3>(0), Location<3>(13)) << "verifies a != b";
 	EXPECT_LT(Location<3>(0, 5), Location<3>(3, 2)) << "verifies a < b";
 	EXPECT_FALSE(Location<3>(80) < Location<3>(8, 3));
-	//TODO EXPECT_LE(Location<3>(3), Location<3>(4))		<< "verifies a <= b";
-	//EXPECT_LE(Location<3>(4), Location<3>(4, 0))	<< "verifies a <= b";
-	//EXPECT_FALSE(Location<3>(80) <= Location<3>(0));
-	//TODO EXPECT_GT(Location<3>(12), Location<3>(9))		<< "verifies a > b";
-	//EXPECT_FALSE(Location<3>(8) > Location<3>(19));
-	//TODO EXPECT_GE(Location<3>(3), Location<3>(4))		<< "verifies a >= b";
-	//EXPECT_GE(Location<3>(3), Location<3>(3))		<< "verifies a >= b";
-	//EXPECT_FALSE(Location<3>(8) >= Location<3>(19));
+	// TODO EXPECT_LE(Location<3>(3), Location<3>(4))	<< "verifies a <= b";
+	// EXPECT_LE(Location<3>(4), Location<3>(4, 0))	<< "verifies a <= b";
+	// EXPECT_FALSE(Location<3>(80) <= Location<3>(0));
+	// TODO EXPECT_GT(Location<3>(12), Location<3>(9))	<< "verifies a > b";
+	// EXPECT_FALSE(Location<3>(8) > Location<3>(19));
+	// TODO EXPECT_GE(Location<3>(3), Location<3>(4))	<< "verifies a >= b";
+	// EXPECT_GE(Location<3>(3), Location<3>(3))		<< "verifies a >= b";
+	// EXPECT_FALSE(Location<3>(8) >= Location<3>(19));
 }
 TEST(Location_Block, Comparisson)
 {
-	EXPECT_EQ(Location_Block<3>(0, 0), Location_Block<3>(0, 0, 0))	<< "verifies a == b";
+	EXPECT_EQ(Location_Block<3>(0, 0), Location_Block<3>(0, 0, 0))
+		<< "verifies a == b";
 	EXPECT_FALSE(Location_Block<3>(4, 3) == Location_Block<3>(4, 4));
-	//TODO EXPECT_NE(Location_Block<3>(0, 0), Location_Block<3>(0, 13))		<< "verifies a != b";
-	//EXPECT_FALSE(Location_Block<3>(4, 4) != Location_Block<3>(4, 4));
-	EXPECT_LT(Location_Block<3>(0, 5), Location_Block<3>(3, 2))		<< "verifies a < b";
+	// TODO EXPECT_NE(Location_Block<3>(0, 0), Location_Block<3>(0, 13))		<<
+	// "verifies a != b";  EXPECT_FALSE(Location_Block<3>(4, 4) !=
+	// Location_Block<3>(4, 4));
+	EXPECT_LT(Location_Block<3>(0, 5), Location_Block<3>(3, 2))
+		<< "verifies a < b";
 	EXPECT_FALSE(Location_Block<3>(0, 5) < Location_Block<3>(0, 2));
 	EXPECT_FALSE(Location_Block<3>(8, 2, 2) < Location_Block<3>(8, 8));
 
@@ -396,7 +373,8 @@ TEST(Location_Block, Comparisson)
 TEST(Location, is_constexpr)
 {
 	// noexcept is always true for a constant expression.
-	// therefor it can be used to check if a particular invocation takes the constexpr branch
+	// therefor it can be used to check if a particular invocation takes the
+	// constexpr branch
 	EXPECT_TRUE(noexcept(Location<3>()));
 	EXPECT_TRUE(noexcept(Location<3>{}));
 	EXPECT_TRUE(noexcept(Location<3>{5}));
@@ -450,12 +428,12 @@ TEST(Location_Block, is_constexpr)
 	// not precalculated
 	Location<3> L0{};
 	EXPECT_FALSE(noexcept(Location_Block<3>(L0)));
-	Location_Block<3> B0{ L0 };
+	Location_Block<3> B0{L0};
 	EXPECT_FALSE(noexcept(B0.id()));
 	EXPECT_FALSE(noexcept(B0.element()));
 	EXPECT_FALSE(noexcept(B0.row()));
 	EXPECT_FALSE(noexcept(B0.col()));
-	Location_Block<3> B1{ 2, 4 };
+	Location_Block<3> B1{2, 4};
 	EXPECT_FALSE(noexcept(B1.id()));
 	EXPECT_FALSE(noexcept(B1.element()));
 	EXPECT_FALSE(noexcept(B1.row()));
@@ -499,13 +477,14 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_TRUE(is_valid_size<2>(1, 0));
 	EXPECT_FALSE(is_valid_size<2>(2, 4));
 
-	using L = Location<2>;
+	using L     = Location<2>;
 	using list2 = std::vector<L>;
 	EXPECT_FALSE(is_valid(list2{})) << "can't be empty";
 	EXPECT_TRUE(is_valid(list2{L(0), L(12), L(13)}));
 	EXPECT_TRUE(is_valid(list2{L(8)})) << "must except single";
 	EXPECT_FALSE(is_valid(list2{L(5), L(2), L(16)})) << "must be sorted";
-	EXPECT_FALSE(is_valid(list2{L(15), L(2), L(1)})) << "must be sorted ascending";
+	EXPECT_FALSE(is_valid(list2{L(15), L(2), L(1)}))
+		<< "must be sorted ascending";
 	EXPECT_FALSE(is_valid(list2{L(0), L(15), L(16)}));
 	EXPECT_FALSE(is_valid(list2{L(-1), L(0), L(1)}));
 	EXPECT_TRUE(is_valid(list2{L(0)}));
@@ -588,13 +567,13 @@ TEST(Location_Utilities, is_same_section)
 TEST(Location_Utilities, get_same_section)
 {
 	std::vector<Location<3>> list1{};
-	//std::vector<Location<3>> list2{};
+	// std::vector<Location<3>> list2{};
 	std::vector<Location<3>> list3{};
 	for (int i{}; i < 9; ++i)
 	{
 		list1.push_back(Location<3>{i});
-		//list2.push_back(Location<3>{i*3});
-		list3.push_back(Location<3>{i*9});
+		// list2.push_back(Location<3>{i*3});
+		list3.push_back(Location<3>{i * 9});
 	}
 	const std::vector<Location<3>> clist1{list1};
 
@@ -632,4 +611,4 @@ TEST(Location_Utilities, is_constexpr)
 	EXPECT_FALSE(noexcept(get_same_block(Location<3>(0), list1)));
 }
 
-}	// namespace SudokuTests::LocationTest
+} // namespace SudokuTests::LocationTest

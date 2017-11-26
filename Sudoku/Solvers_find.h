@@ -1,6 +1,7 @@
 ﻿//===--	Sudoku/Solver_find.h											--===//
 //
-// Helper functions
+// Helper functions, to find available options
+//===---------------------------------------------------------------------===//
 // find_locations
 // Apperance_*: collecting options by appearance count in a given set.
 //===---------------------------------------------------------------------===//

@@ -1,17 +1,17 @@
 ﻿//===--	SudokuTests/Solver_remove_option.cpp							--===//
 //
-//	Unit tests for the option removing functions in Sudoku::Solver
+// Unit tests for the option removing functions in Sudoku::Solver
 //===---------------------------------------------------------------------===//
-//	Implemented with GoogleTest
+// Implemented with GoogleTest
 //
-//	Notes:
-//	gTest is limited for use with multiple template parameters.
-//	These expressions need to be implemented between extra parentheses
-//	- test elements implementing this are flagged with [gTest]
-//	- not implemented tests are flagged as NEEDTEST [gTest]
-//	gTest tries to print iterators if they use inheritance,
-//		if used in *_EQ/NE etc.
-//		use an explicit test like EXPECT_TRUE(.. == ..).
+// Notes:
+// gTest is limited for use with multiple template parameters.
+// These expressions need to be implemented between extra parentheses
+// - test elements implementing this are flagged with [gTest]
+// - not implemented tests are flagged as NEEDTEST [gTest]
+// gTest tries to print iterators if they use inheritance,
+//   if used in *_EQ/NE etc.
+//   use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //===---------------------------------------------------------------------===//
 #include <gtest/gtest.h>
@@ -287,11 +287,9 @@ TEST(Solver, deathtests_remove_option)
 		remove_option(B, Location<2>(20), 3), "Assertion failed: is_valid");
 	// value out of bounds (2-sided)
 	EXPECT_DEBUG_DEATH(
-		remove_option(B, Location<2>(2), 9),
-		"Assertion failed: is_valid");
+		remove_option(B, Location<2>(2), 9), "Assertion failed: is_valid");
 	EXPECT_DEBUG_DEATH(
-		remove_option(B, Location<2>(2), 0),
-		"Assertion failed: is_valid");
+		remove_option(B, Location<2>(2), 0), "Assertion failed: is_valid");
 #endif // _DEBUG
 
 	//===-----------------------------------------------------------------===//

@@ -1,6 +1,6 @@
 ﻿//===--	Sudoku/Solver_remove_option.h									--===//
 //
-// Helper functions
+// Helper functions, to remove options
 //===---------------------------------------------------------------------===//
 #pragma once
 
@@ -98,8 +98,8 @@ int remove_option_section(
 	const value_t value)
 {
 	{
-		using Board = Board<Options, N>;
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using Board_Section = typename Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Board_Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
@@ -130,8 +130,8 @@ inline int remove_option_section(
 	const value_t value)
 {
 	{
-		static_assert(
-			std::is_base_of_v<typename Board<Options, N>::Section, SectionT>);
+		using Board_Section = typename Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Board_Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
@@ -170,8 +170,8 @@ int remove_option_section(
 	const std::vector<value_t>& values)
 {
 	{
-		using Board = Board<Options, N>;
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using Board_Section = typename Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Board_Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
@@ -208,10 +208,11 @@ int remove_option_outside_block(
 	const value_t value)
 {
 	{
-		using Board = Board<Options, N>;
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using Section_ = typename Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Section_, SectionT>);
+		using Block_ = typename Board_Section::const_Block<Options, N>;
 		static_assert(
-			not std::is_base_of_v<typename Board::const_Block, SectionT>,
+			not std::is_base_of_v<Block_, SectionT>,
 			"remove_option_outside_block is useless on bock");
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);

@@ -1,9 +1,12 @@
 ﻿//===--	Sudoku/Board_Sections.h											--===//
 //
-//	Section access for Board<T,N>, as if a seperate object
-//	using iterators and operator[]
-//	The iterator can return a Location object.
-//	included by Board.h
+// Section access for Board<T,N>, as if a seperate object
+// using iterators and operator[]
+//===---------------------------------------------------------------------===//
+//
+// The iterator can return a Location object.
+// included by Board.h
+//
 //===---------------------------------------------------------------------===//
 #pragma once
 
@@ -12,8 +15,8 @@
 #include "Size.h"
 #include <gsl/gsl>
 
-#include <iterator>
-#include <memory>
+#include <iterator> // make_reverse_iterator; *_iterator_tag
+#include <memory>   // addressof
 #include <cassert>
 
 // Forward declarations
@@ -26,28 +29,27 @@ class Section
 { // empty base-class
 };
 
+//===---------------------------------------------------------------------===//
 template<typename T, int N>
-class const_Row
-	: public Section<T, N>
+class const_Row : public Section<T, N>
 {
 	using self_type = const_Row;
-	using Location = Sudoku::Location<N>;
+	using Location  = Sudoku::Location<N>;
 
-	friend class Board<T, N>;		// access to private constructor
+	friend class Board<T, N>; // access to private constructor
 	friend class Row<T, N>;
 	friend class const_Col<T, N>;
 	friend class const_Block<T, N>;
-	friend class const_iterator<T,N,self_type>;			// access to owner_
-	friend class const_iterator<T,N,const_Col<T,N>>;
-	friend class const_iterator<T,N,const_Block<T,N>>;
+	friend class const_iterator<T, N, self_type>; // access to owner_
+	friend class const_iterator<T, N, const_Col<T, N>>;
+	friend class const_iterator<T, N, const_Block<T, N>>;
 
-	const_Row(const Board<T, N>& owner, const int row)
-		:	owner_(owner), id_(row)
+	const_Row(const Board<T, N>& owner, const int row) : owner_(owner), id_(row)
 	{
 		assert(is_valid_size<N>(row));
 	}
 	const_Row(const Board<T, N>& owner, const Location loc)
-		:	owner_(owner), id_(loc.row())
+		: owner_(owner), id_(loc.row())
 	{
 		assert(is_valid(loc));
 	}
@@ -61,26 +63,28 @@ public:
 
 	int id() const noexcept { return id_; }
 
-	const T& operator[] (const int col) const noexcept
+	const T& operator[](const int col) const noexcept
 	{
 		assert(is_valid_size<N>(col));
 		return no_check(Location(id(), col));
 	}
-	using const_iterator = const_iterator<T,N, self_type>;
-	const_iterator cbegin() const	{ return const_iterator(this); }
-	const_iterator cend() const		{ return const_iterator(this, size()); }
-	const_iterator begin() const	{ return cbegin(); }
-	const_iterator end() const		{ return cend(); }
-	constexpr auto crbegin() const	{ return std::make_reverse_iterator(cend()); }
-	constexpr auto crend() const	{ return std::make_reverse_iterator(cbegin()); }
-	auto rbegin() const				{ return crbegin(); }
-	auto rend() const				{ return crend(); }
-
+	// clang-format off
+	using const_iterator = const_iterator<T, N, self_type>;
+	const_iterator cbegin() const  {return const_iterator(this);}
+	const_iterator cend() const    {return const_iterator(this, size());}
+	const_iterator begin() const   {return cbegin();}
+	const_iterator end() const     {return cend();}
+	constexpr auto crbegin() const {return std::make_reverse_iterator(cend());}
+	constexpr auto crend() const   {return std::make_reverse_iterator(cbegin());}
+	auto rbegin() const            {return crbegin();}
+	auto rend() const              {return crend();}
+	// clang-format on
 	constexpr Location location(const int element) const noexcept
 	{
 		assert(is_valid_size<N>(element));
 		return Location(id(), element);
 	}
+
 protected:
 	// Data-access for child-objects
 	const T& no_check(const Location loc) const noexcept
@@ -88,26 +92,25 @@ protected:
 		assert(is_valid(loc));
 		return owner_[loc];
 	}
+
 private:
 	const Board<T, N>& owner_; // const-pointer-to-const-object
 	const int id_;
 };
 
-
+//===---------------------------------------------------------------------===//
 template<typename T, int N>
-class const_Col
-	: public const_Row<T, N>
+class const_Col : public const_Row<T, N>
 {
 	using self_type = const_Col;
 	using const_Row = const_Row<T, N>;
-	using Location = Sudoku::Location<N>;
+	using Location  = Sudoku::Location<N>;
 
-	friend class Board<T, N>;		// access to private constructor
-	friend class Col<T,N>;
-	friend class const_iterator<T,N,self_type>;
+	friend class Board<T, N>; // access to private constructor
+	friend class Col<T, N>;
+	friend class const_iterator<T, N, self_type>;
 
-	const_Col(const Board<T, N>& owner, const int col)
-		: const_Row(owner, col)
+	const_Col(const Board<T, N>& owner, const int col) : const_Row(owner, col)
 	{
 	}
 	const_Col(const Board<T, N>& owner, const Location loc)
@@ -116,26 +119,27 @@ class const_Col
 		assert(is_valid(loc));
 	}
 	using const_Row::no_check;
+
 public:
 	using const_Row::id;
 	using const_Row::size;
 
-	const T& operator[] (const int row) const noexcept
+	const T& operator[](const int row) const noexcept
 	{
 		assert(is_valid_size<N>(row));
 		return no_check(Location(row, id()));
 	}
-
-	using const_iterator = const_iterator<T,N, self_type>;
-	const_iterator cbegin() const	{ return const_iterator(this); }
-	const_iterator cend() const		{ return const_iterator(this, size()); }
-	const_iterator begin() const	{ return cbegin(); }
-	const_iterator end() const		{ return cend(); }
-	constexpr auto crbegin() const	{ return std::make_reverse_iterator(cend()); }
-	constexpr auto crend() const	{ return std::make_reverse_iterator(cbegin()); }
-	auto rbegin() const				{ return crbegin(); }
-	auto rend() const				{ return crend(); }
-
+	// clang-format off
+	using const_iterator = const_iterator<T, N, self_type>;
+	const_iterator cbegin() const  { return const_iterator(this); }
+	const_iterator cend() const    { return const_iterator(this, size()); }
+	const_iterator begin() const   { return cbegin(); }
+	const_iterator end() const     { return cend(); }
+	constexpr auto crbegin() const { return std::make_reverse_iterator(cend()); }
+	constexpr auto crend() const   { return std::make_reverse_iterator(cbegin()); }
+	auto rbegin() const            { return crbegin(); }
+	auto rend() const              { return crend(); }
+	// clang-format on
 	constexpr Location location(const int element) const noexcept
 	{
 		assert(is_valid_size<N>(element));
@@ -143,21 +147,19 @@ public:
 	}
 };
 
-
+//===---------------------------------------------------------------------===//
 template<typename T, int N>
-class const_Block
-	: public const_Row<T, N>
+class const_Block : public const_Row<T, N>
 {
 	using self_type = const_Block;
 	using const_Row = const_Row<T, N>;
-	using Location = Sudoku::Location<N>;
+	using Location  = Sudoku::Location<N>;
 
 	friend class Board<T, N>;
-	friend class Block<T,N>;
-	friend class const_iterator<T,N,self_type>;
+	friend class Block<T, N>;
+	friend class const_iterator<T, N, self_type>;
 
-	const_Block(const Board<T, N>& owner, const int id)
-		: const_Row(owner, id)
+	const_Block(const Board<T, N>& owner, const int id) : const_Row(owner, id)
 	{
 	}
 	const_Block(const Board<T, N>& owner, const Location loc)
@@ -166,26 +168,27 @@ class const_Block
 		assert(is_valid(loc));
 	}
 	using const_Row::no_check;
+
 public:
 	using const_Row::id;
 	using const_Row::size;
 
-	const T& operator[] (const int elem) const noexcept
+	const T& operator[](const int elem) const noexcept
 	{
 		assert(is_valid_size<N>(elem));
 		return no_check(location(elem));
 	}
-
-	using const_iterator = const_iterator<T,N, self_type>;
-	const_iterator cbegin() const	{ return const_iterator(this); }
-	const_iterator cend() const		{ return const_iterator(this, size()); }
-	const_iterator begin() const	{ return cbegin(); }
-	const_iterator end() const		{ return cend(); }
-	constexpr auto crbegin() const	{ return std::make_reverse_iterator(cend()); }
-	constexpr auto crend() const	{ return std::make_reverse_iterator(cbegin()); }
-	auto rbegin() const				{ return crbegin(); }
-	auto rend() const				{ return crend(); }
-
+	// clang-format off
+	using const_iterator = const_iterator<T, N, self_type>;
+	const_iterator cbegin() const  { return const_iterator(this); }
+	const_iterator cend() const    { return const_iterator(this, size()); }
+	const_iterator begin() const   { return cbegin(); }
+	const_iterator end() const     { return cend(); }
+	constexpr auto crbegin() const { return std::make_reverse_iterator(cend()); }
+	constexpr auto crend() const   { return std::make_reverse_iterator(cbegin()); }
+	auto rbegin() const            { return crbegin(); }
+	auto rend() const              { return crend(); }
+	// clang-format on
 	constexpr Location location(const int element) const noexcept
 	{
 		assert(is_valid_size<N>(element));
@@ -193,43 +196,44 @@ public:
 	}
 };
 
-
+//===---------------------------------------------------------------------===//
 template<typename T, int N>
-class Row
-	: public const_Row<T, N>
+class Row : public const_Row<T, N>
 {
 	using self_type = Row;
-	using Location = Sudoku::Location<N>;
+	using Location  = Sudoku::Location<N>;
 
-	friend class Sudoku::Board<T,N>;		// access private constructor
-	friend class const_Row<T,N>;
-	friend class iterator<T,N,self_type>;
-	friend class const_iterator<T,N, self_type>;
+	friend class Sudoku::Board<T, N>; // access private constructor
+	friend class const_Row<T, N>;
+	friend class iterator<T, N, self_type>;
+	friend class const_iterator<T, N, self_type>;
 
 	Row(Board<T, N>& owner, int row)
-		: const_Row<T,N>(owner, row), owner_(owner), id_(row)
+		: const_Row<T, N>(owner, row), owner_(owner), id_(row)
 	{
 	}
 	Row(Board<T, N>& owner, Location loc)
-		: const_Row<T,N>(owner, loc.row()), owner_(owner), id_(loc.row())
+		: const_Row<T, N>(owner, loc.row()), owner_(owner), id_(loc.row())
 	{
 		assert(is_valid(loc));
 	}
-public:
-	using const_Row<T,N>::size;
-	using const_Row<T,N>::id;
 
-	T& operator[] (const int col) noexcept
+public:
+	using const_Row<T, N>::size;
+	using const_Row<T, N>::id;
+
+	T& operator[](const int col) noexcept
 	{
 		assert(is_valid_size<N>(col));
 		return no_check(Location(id(), col));
 	}
-
-	using iterator = iterator<T,N, self_type>;
-	iterator begin()		{ return iterator(this); }
-	iterator end()			{ return iterator(this, size()); }
+	// clang-format off
+	using iterator = iterator<T, N, self_type>;
+	iterator begin()        { return iterator(this); }
+	iterator end()          { return iterator(this, size()); }
 	constexpr auto rbegin() { return std::make_reverse_iterator(end()); }
-	constexpr auto rend()	{ return std::make_reverse_iterator(begin()); }
+	constexpr auto rend()   { return std::make_reverse_iterator(begin()); }
+	// clang-format on
 
 private:
 	Board<T, N>& owner_; // const-pointer
@@ -242,46 +246,43 @@ private:
 	}
 };
 
-
+//===---------------------------------------------------------------------===//
 template<typename T, int N>
-class Col
-	:	public const_Col<T,N>
+class Col : public const_Col<T, N>
 {
 	using self_type = Col;
-	using Location = Sudoku::Location<N>;
-	using const_Col = const_Col<T,N>;
+	using Location  = Sudoku::Location<N>;
+	using const_Col = const_Col<T, N>;
 
-	friend class Sudoku::Board<T,N>;		// access private constructor
+	friend class Sudoku::Board<T, N>; // access private constructor
 
-	friend class iterator<T,N, self_type>;
-	friend class const_iterator<T,N, self_type>;
+	friend class iterator<T, N, self_type>;
+	friend class const_iterator<T, N, self_type>;
 
-	Col(Board<T, N>& owner, int col)
-		:	const_Col(owner, col),
-			owner_(owner)
-	{
-	}
+	Col(Board<T, N>& owner, int col) : const_Col(owner, col), owner_(owner) {}
 	Col(Board<T, N>& owner, Location loc)
-		:	const_Col(owner, loc.col()),
-			owner_(owner)
+		: const_Col(owner, loc.col()), owner_(owner)
 	{
 		assert(is_valid(loc));
 	}
+
 public:
 	using const_Col::id;
 	using const_Col::size;
 
-	T& operator[] (const int row) noexcept
+	T& operator[](const int row) noexcept
 	{
 		assert(is_valid_size<N>(row));
 		return no_check(Location(row, id()));
 	}
-
-	using iterator = iterator<T,N, self_type>;
-	iterator begin()		{ return iterator(this); }
-	iterator end()			{ return iterator(this, size()); }
+	// clang-format off
+	using iterator = iterator<T, N, self_type>;
+	iterator begin()        { return iterator(this); }
+	iterator end()          { return iterator(this, size()); }
 	constexpr auto rbegin() { return std::make_reverse_iterator(end()); }
-	constexpr auto rend()	{ return std::make_reverse_iterator(begin()); }
+	constexpr auto rend()   { return std::make_reverse_iterator(begin()); }
+	// clang-format on
+
 private:
 	Board<T, N>& owner_; // const-pointer
 
@@ -292,45 +293,41 @@ private:
 	}
 };
 
-
+//===---------------------------------------------------------------------===//
 template<typename T, int N>
-class Block
-	:	public const_Block<T,N>
+class Block : public const_Block<T, N>
 {
-	using self_type = Block;
-	using const_Block = const_Block<T,N>;
-	using Location = Sudoku::Location<N>;
+	using self_type   = Block;
+	using const_Block = const_Block<T, N>;
+	using Location    = Sudoku::Location<N>;
 
-	friend class Sudoku::Board<T,N>;		// access private constructor
-	friend class iterator<T,N, self_type>;
-	friend class const_iterator<T,N, self_type>;
+	friend class Sudoku::Board<T, N>; // access private constructor
+	friend class iterator<T, N, self_type>;
+	friend class const_iterator<T, N, self_type>;
 
-	Block(Board<T, N>& owner, int id)
-		:	const_Block(owner, id),
-			owner_(owner)
-	{
-	}
+	Block(Board<T, N>& owner, int id) : const_Block(owner, id), owner_(owner) {}
 	Block(Board<T, N>& owner, Location loc)
-		:	const_Block(owner, loc.block()),
-			owner_(owner)
+		: const_Block(owner, loc.block()), owner_(owner)
 	{
 		assert(is_valid(loc));
 	}
+
 public:
 	using const_Block::id;
 	using const_Block::size;
 
-	T& operator[] (const int elem) noexcept
+	T& operator[](const int elem) noexcept
 	{
 		assert(is_valid_size<N>(elem));
 		return no_check(Location_Block<N>(id(), elem));
 	}
-
-	using iterator = iterator<T,N, self_type>;
-	iterator begin()		{ return iterator(this); }
-	iterator end()			{ return iterator(this, size()); }
+	// clang-format off
+	using iterator = iterator<T, N, self_type>;
+	iterator begin()        { return iterator(this); }
+	iterator end()          { return iterator(this, size()); }
 	constexpr auto rbegin() { return std::make_reverse_iterator(end()); }
-	constexpr auto rend()	{ return std::make_reverse_iterator(begin()); }
+	constexpr auto rend()   { return std::make_reverse_iterator(begin()); }
+	// clang-format on
 private:
 	Board<T, N>& owner_; // const-pointer
 
@@ -344,29 +341,32 @@ private:
 
 //===---------------------------------------------------------------------===//
 // Board_Sections Iterators
+//===---------------------------------------------------------------------===//
 template<typename T, int N, typename ownerT>
 class const_iterator
 {
-	using self_type = const_iterator;
+	using self_type  = const_iterator;
 	using owner_type = ownerT;
+
 public:
 	using iterator_category = std::random_access_iterator_tag;
-	using value_type = const T;
-	using difference_type = int;
-	using reference = value_type&;
-	using pointer = value_type*;
+	using value_type        = const T;
+	using difference_type   = int;
+	using reference         = value_type&;
+	using pointer           = value_type*;
 
-	const_iterator(gsl::not_null<const owner_type*> owner)
-		: owner_(owner)
-	{
-	}
+	const_iterator(gsl::not_null<const owner_type*> owner) : owner_(owner) {}
 	const_iterator(gsl::not_null<const owner_type*> owner, int elem)
 		: owner_(owner), elem_(elem)
 	{
 	}
 
 	// All iterator categories
-	self_type& operator++() { ++elem_; return *this; }
+	self_type& operator++()
+	{
+		++elem_;
+		return *this;
+	}
 	const self_type operator++(int)
 	{
 		const self_type pre{*this};
@@ -403,8 +403,12 @@ public:
 	}
 
 	// Bidirectional iterator
-	self_type& operator--() { --elem_; 	return *this; }	//predecrement
-	const self_type operator--(int)	// postdecrement
+	self_type& operator--()
+	{
+		--elem_;
+		return *this;
+	}                               // predecrement
+	const self_type operator--(int) // postdecrement
 	{
 		const self_type pre{*this};
 		operator--();
@@ -414,11 +418,12 @@ public:
 	// RandomAccess iterator
 	self_type& operator+=(const difference_type offset)
 	{
-		elem_ += offset; return *this;
+		elem_ += offset;
+		return *this;
 	}
 	self_type operator+(const difference_type offset) const
 	{
-		self_type tmp{ *this };
+		self_type tmp{*this};
 		return (tmp += offset);
 	}
 	self_type& operator-=(const difference_type offset)
@@ -427,7 +432,7 @@ public:
 	}
 	self_type operator-(const difference_type offset) const
 	{
-		self_type tmp{ *this };
+		self_type tmp{*this};
 		return (tmp += -offset);
 	}
 	difference_type operator-(const self_type& other) const
@@ -445,7 +450,7 @@ public:
 		assert(is_same(other));
 		return elem_ < other.elem_;
 	}
-	bool operator> (const self_type& other) const { return (other < *this); }
+	bool operator>(const self_type& other) const { return (other < *this); }
 	bool operator<=(const self_type& other) const { return (!(other < *this)); }
 	bool operator>=(const self_type& other) const { return (!(*this < other)); }
 
@@ -463,33 +468,33 @@ private:
 	}
 };
 
-
+//===---------------------------------------------------------------------===//
 template<typename T, int N, typename ownerT>
-class iterator
-	: public Board_Section::const_iterator<T,N,ownerT>
+class iterator : public Board_Section::const_iterator<T, N, ownerT>
 {
-	using self_type = iterator;
-	using owner_type = ownerT;
-	using const_iterator = const_iterator<T,N,ownerT>;
-	
+	using self_type      = iterator;
+	using owner_type     = ownerT;
+	using const_iterator = const_iterator<T, N, ownerT>;
+
 public:
 	using iterator_category = std::random_access_iterator_tag;
-	using value_type = T;
-	using difference_type = int;
-	using reference = value_type&;
-	using pointer = value_type*;
+	using value_type        = T;
+	using difference_type   = int;
+	using reference         = value_type&;
+	using pointer           = value_type*;
 
-	iterator(gsl::not_null<owner_type*> owner)
-		: owner_(owner)
-	{
-	}
+	iterator(gsl::not_null<owner_type*> owner) : owner_(owner) {}
 	iterator(gsl::not_null<owner_type*> owner, int elem)
 		: owner_(owner), elem_(elem)
 	{
 	}
 
 	// All iterator categories
-	self_type& operator++() { ++elem_; 	return *this; }
+	self_type& operator++()
+	{
+		++elem_;
+		return *this;
+	}
 	const self_type operator++(int)
 	{
 		const self_type pre = *this;
@@ -526,8 +531,12 @@ public:
 	}
 
 	// Bidirectional iterator
-	self_type& operator--() { --elem_; return *this; }	//predecrement
-	const self_type operator--(int)	// postdecrement
+	self_type& operator--()
+	{
+		--elem_;
+		return *this;
+	}                               // predecrement
+	const self_type operator--(int) // postdecrement
 	{
 		const self_type pre{*this};
 		operator--();
@@ -542,7 +551,7 @@ public:
 	}
 	self_type operator+(const difference_type offset) const
 	{
-		self_type tmp{ *this };
+		self_type tmp{*this};
 		return (tmp += offset);
 	}
 	self_type& operator-=(const difference_type offset)
@@ -551,7 +560,7 @@ public:
 	}
 	self_type operator-(const difference_type offset) const
 	{
-		self_type tmp{ *this };
+		self_type tmp{*this};
 		return (tmp += -offset);
 	}
 	difference_type operator-(const self_type& other) const
@@ -568,7 +577,7 @@ public:
 		assert(is_same(other));
 		return elem_ < other.elem_;
 	}
-	bool operator> (const self_type& other) const { return (other < *this); }
+	bool operator>(const self_type& other) const { return (other < *this); }
 	bool operator<=(const self_type& other) const { return (!(other < *this)); }
 	bool operator>=(const self_type& other) const { return (!(*this < other)); }
 

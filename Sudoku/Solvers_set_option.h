@@ -14,8 +14,8 @@
 #include "Solvers_remove_option.h"
 #include "Value.h"
 
-#include <algorithm> // find_if
-#include <stdexcept> // logic_error
+#include <algorithm>   // find_if
+#include <stdexcept>   // logic_error
 #include <type_traits> // is_base_of
 #include <cassert>
 
@@ -94,8 +94,8 @@ inline auto set_uniques(
 	Board<Options, N>& board, const SectionT section, const Options worker)
 {
 	{
-		static_assert(
-			std::is_base_of_v<typename Board<Options, N>::Section, SectionT>);
+		using Section_ = typename Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Section_, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
@@ -143,8 +143,8 @@ inline int set_section_locals(
 	const Options worker)
 {
 	{
-		using Board = Board<Options, N>;
-		static_assert(std::is_base_of_v<typename Board::Section, SectionT>);
+		using Section_ = typename Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Section_, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(rep_count > 1);  // should have been cought by caller

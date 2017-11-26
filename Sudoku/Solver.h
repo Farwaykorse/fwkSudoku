@@ -219,8 +219,8 @@ template<int N, typename Options, typename SectionT>
 inline int section_exclusive(Board<Options, N>& board, const SectionT section)
 {
 	{
-		static_assert(
-			std::is_base_of_v<typename Board<Options, N>::Section, SectionT>);
+		using Board_Section = Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Board_Section, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::iterator_to<iterator, const Options>);
 	}

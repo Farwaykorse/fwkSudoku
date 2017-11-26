@@ -32,11 +32,11 @@ namespace compileTime
 {
 	using typeT = value_t;
 	// TODO
-}
+} // namespace compileTime
 
 TEST(Value, is_valid)
 {
-	//EXPECT_FALSE(is_valid<2>(-1));
+	// EXPECT_FALSE(is_valid<2>(-1));
 	EXPECT_FALSE(is_valid<2>(0));
 	EXPECT_TRUE(is_valid<2>(1));
 	EXPECT_TRUE(is_valid<2>(4));
@@ -58,15 +58,14 @@ TEST(Value, is_valid)
 	EXPECT_FALSE(is_valid<2>(std::vector<value_t>{5}));
 	EXPECT_FALSE(is_valid<2>(list{1, 2, 0, 4, 3, 1}));
 	EXPECT_FALSE(is_valid<2>(std::vector<value_t>{1, 2, 0, 4, 3, 1}));
-	//EXPECT_FALSE(is_valid<2>(std::vector<value_t>{1, -2, 3, 4, 3, 1}));
+	// EXPECT_FALSE(is_valid<2>(std::vector<value_t>{1, -2, 3, 4, 3, 1}));
 	EXPECT_FALSE(is_valid<2>(list{1, 5, 3, 4, 3, 1}));
 	EXPECT_FALSE(is_valid<2>(std::vector<value_t>{1, 5, 3, 4, 3, 1}));
 
 	// is constexpr
 	EXPECT_TRUE(noexcept(is_valid<2>(1)));
 	EXPECT_TRUE(noexcept(is_valid<3>(7)));
-	EXPECT_FALSE(
-		noexcept(is_valid<2>(std::vector<value_t>{1, 2, 3, 4, 3, 1})));
+	EXPECT_FALSE(noexcept(is_valid<2>(std::vector<value_t>{1, 2, 3, 4, 3, 1})));
 }
 
 } // namespace SudokuTests::LocationTest
