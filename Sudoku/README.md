@@ -30,17 +30,24 @@ This project uses the STL and GSL.
 
 #### VC++ ####
 Don't use:
+```
 /Gm				Prefere /MP
+```
 
 Not sure:
+```
 /guard:cf		Control Flow Guard, compiler analizes control flow for indirect calls at compile time and records the results in the compiled binary. During runtime Windows checks before every indirect call and raises an exception if any check fails at runtime. 
-	can't be used with /ZI (edit and continue)
+				can't be used with /ZI (edit and continue)
+```
 Usefull:
+```
 /E
 /EP
 /showIncludes
+```
 
 All:
+```
 /diagnostics:caret	DiagnosticsFormat: caret
 /std:c++17			
 /MP					Multiprocessor compilation
@@ -50,25 +57,33 @@ All:
 /Zc:rvaluecast		Enforce type-conversion rules (C++11) Needed for conformance
 /Yu"precompiled.h"	Use precompiled headers
 /FI"precompiled.h"	Force include, add precompiled to all files
+```
 
 Linker: (in projects using this library)
+```
 	/incremental	enable incremental linking
 	/debug:fastlink	Debug information format, allowing for faster linking
 					Enable generation of full-program database is needed for OpenCppCoverage
+```
 
 Debug:
+```
 /MTd		Run-time library for linking: Multi-threaded debug (use .lib)
 /ZI			Program database for edit-and-continue (sets /Gy and /FC)
 /Gy			Function-level linking
 /FC			Full-path of source code file in diagnostics
+```
 
 Release:
+```
 /O2			Maximize Speed
 /GL			Whole program optimization
 /MT			Runtime library for linking: Multi-threaded (use static libraries .lib)
+```
 
 
 ##### Additional command-line options: #####
+```
 /permissive-	dissable non-conforming constructs in Visual C++: [1]
 				Enables: /Zc:rvaluecast /Zc:strictStrings and more! (updated compiler conformance)
 /w14242			'identfier': conversion from 'type1' to 'type1', possible loss of data
@@ -91,11 +106,11 @@ Release:
 /w14906			string literal cast to 'LPWSTR'
 /w14928			illegal copy-initialization; more than one user-defined conversion has been implicitly applied
 /w35038			wrong member initialization order
-
+```
 
 #### Clang/C2 ####
 ```
-`-Wmisleading-indentation` not supported
+-Wmisleading-indentation	not supported
 -std=c++1z				Enable suported C++17 features
 -Weverything			Enable ALL warnings (dissable unwanted)
 	-Wno-c++98-compat		Dissabled since compatibility is not needed
