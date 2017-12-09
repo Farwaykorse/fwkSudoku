@@ -52,8 +52,12 @@ All:
 /std:c++17			
 /MP					Multiprocessor compilation
 /W4					Warning level 4 (=highest) (/Wall triggers to-many libraray warnings)
+
 /GS					Buffer Security Check.
 /sdl				Enable SDL checks, additional warnings focused on security
+/permissive-       dissable non-conforming constructs in Visual C++: [1]
+                   Enables: /Zc:rvaluecast /Zc:strictStrings and more!
+				   (updated compiler conformance)
 /Zc:rvaluecast		Enforce type-conversion rules (C++11) Needed for conformance
 /Yu"precompiled.h"	Use precompiled headers
 /FI"precompiled.h"	Force include, add precompiled to all files
@@ -84,22 +88,30 @@ Release:
 
 ##### Additional command-line options: #####
 ```
-/permissive-	dissable non-conforming constructs in Visual C++: [1]
-				Enables: /Zc:rvaluecast /Zc:strictStrings and more! (updated compiler conformance)
+*/w14062		C4062 enumerator 'identifier' in switch of enum 'enumeration'is not handled
+*/w14191		C4191 'operator/operation': unsave conversion from 'type of exression' to 'type required'
 /w14242			'identfier': conversion from 'type1' to 'type1', possible loss of data
+*/w14244		'conversion' conversion from 'type1' to 'type2', possible loss of data
 /w14254			'operator': conversion from 'type1:field_bits' to 'type2:field_bits', possible loss of data
 /w14263			'function': member function does not override any base class virtual member function
+*/w14264		'virtual_function': no override available for virtual member function from base 'class'; function is hidden
 /w14265			'classname': class has virtual functions, but destructor is not virtual instances of this class may not be destructed correctly
+*/w14266		'function': no override available for virtual member function from base 'type'; function is hidden
 /w14287			'operator': unsigned/negative constant mismatch
 /we4289			nonstandard extension used: 'variable': loop control variable declared in the for-loop is used outside the for-loop scope
 /w14296			'operator': expression is always 'boolean_value'
+*/w14302		'conversion': truncation from 'type1' to 'type 2'
 /w14311			'variable': pointer truncation from 'type1' to 'type2'
+*/w14355		'this': used in base member initializer list
+*/w14388		signed/unsigned mismatch
+*/w14431		missing type specifier - int assumed.
 /w14545			expression before comma evaluates to a function which is missing an argument list
 /w14546			function call before comma missing argument list
 /w14547			'operator': operator before comma has no effect; expected operator with side-effect
 /w14549			'operator': operator before comma has no effect; did you intend 'operator'?
 /w14555			expression has no effect; expected expression with side-effect
 /w14619			pragma warning: there is no warning number 'number'
+*/w14623		'derived classs': default constructor was implicitly defined as deleted because a base class default constructor is inaccessible or deleted
 /w14640			Enable warning on thread un-safe static member initialization
 /w14826			Conversion from 'type1' to 'type_2' is sign-extended. This may cause unexpected runtime behavior.
 /w14905			wide string literal cast to 'LPSTR'
@@ -108,10 +120,12 @@ Release:
 /w35038			wrong member initialization order
 ```
 
-#### Clang/C2 ####
+#### Clang ####
 ```
+-Xclang                  Pass comands to the compiler
+-std=c++17               Set language version to C++17
+
 -Wmisleading-indentation	not supported
--std=c++1z				Enable suported C++17 features
 -Weverything			Enable ALL warnings (dissable unwanted)
 	-Wno-c++98-compat		Dissabled since compatibility is not needed
 
