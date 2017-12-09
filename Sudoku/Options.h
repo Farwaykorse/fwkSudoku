@@ -365,7 +365,7 @@ inline value_t Options<E>::get_answer() const noexcept
 template<int E>
 inline std::vector<value_t> Options<E>::available() const
 {
-	std::vector<unsigned int> values{};
+	std::vector<value_t> values{};
 	values.reserve(static_cast<size_t>(count()));
 	if (!is_answer() && !is_empty())
 	{
