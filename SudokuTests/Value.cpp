@@ -17,7 +17,7 @@
 #include <gtest/gtest.h>
 
 // Class under test
-#include "../Sudoku/Value.h"
+#include <Sudoku/Value.h>
 // Helpers
 
 // aditional

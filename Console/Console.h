@@ -1,9 +1,9 @@
 
 #pragma once
 
-#include "../Sudoku/Board.h"
-#include "../Sudoku/Location_Utilities.h"
-#include "../Sudoku/Options.h"
+#include <Sudoku/Board.h>
+#include <Sudoku/Location_Utilities.h>
+#include <Sudoku/Options.h>
 
 #include <string>
 #include <sstream>

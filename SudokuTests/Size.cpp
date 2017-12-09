@@ -17,7 +17,7 @@
 #include <gtest/gtest.h>
 
 // Class under test
-#include "../Sudoku/Size.h"
+#include <Sudoku/Size.h>
 
 // Helpers
 

@@ -16,12 +16,12 @@
 #include <gtest/gtest.h>
 
 // Class under test
-#include "../Sudoku/Solvers_find.h"
+#include <Sudoku/Solvers_find.h>
 // helpers
-#include "../Sudoku/Board.h"
-#include "../Sudoku/Location.h"
-#include "../Sudoku/Options.h"
-#include "../Sudoku/Solver.h" // setvalue
+#include <Sudoku/Board.h>
+#include <Sudoku/Location.h>
+#include <Sudoku/Options.h>
+#include <Sudoku/Solver.h> // setvalue
 // Debug Output
 #include "print_Options.h"
 // library

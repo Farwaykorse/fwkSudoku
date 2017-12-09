@@ -17,9 +17,9 @@
 #include <gtest/gtest.h>
 
 // Class under test
-#include "../Sudoku/Options.h"
+#include <Sudoku/Options.h>
 // Helpers
-#include "../Sudoku/Value.h"
+#include <Sudoku/Value.h>
 // Debug Output
 #include "print_Options.h"
 

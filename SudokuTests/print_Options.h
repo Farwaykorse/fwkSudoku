@@ -5,7 +5,7 @@
 #pragma once
 
 #include <gtest/gtest.h>
-#include "../Sudoku/Options.h"
+#include <Sudoku/Options.h>
 #include <ostream>
 
 namespace Sudoku
