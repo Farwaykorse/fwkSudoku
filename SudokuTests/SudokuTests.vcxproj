@@ -152,7 +152,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>$(VcpkgRoot)debug\lib\manual-link\gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(VcpkgRoot)debug\lib\manual-link\gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
     <PostBuildEvent>
@@ -207,7 +207,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>$(VcpkgRoot)debug\lib\manual-link\gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(VcpkgRoot)debug\lib\manual-link\gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>
