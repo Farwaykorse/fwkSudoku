@@ -368,7 +368,6 @@ TEST(Solver, set_uniques)
 
 TEST(Solver, deathtest_set_option)
 {
-	using L = Location<2>;
 	Board<Options<4>, 2> B{};
 
 	// SetValue(Itr, Itr)
@@ -435,7 +434,6 @@ TEST(Solver, deathtest_set_option)
 	{
 		// option doesn't excist in section
 		using set = std::bitset<5>;
-		using loc = Location<2>;
 		Board<Options<4>, 2> B5{};
 		B5[0][0] = set{"00100"}; // ans 2
 		B5[0][1] = set{"11111"};
