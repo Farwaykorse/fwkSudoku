@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sudoku", "Sudoku\Sudoku.vcxproj", "{14B76E47-7B5D-43C1-B056-A82FCA671CC5}"
 EndProject
@@ -89,11 +89,11 @@ Global
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Release|x86.ActiveCfg = Release|Win32
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Release|x86.Build.0 = Release|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangDebug|x64.ActiveCfg = ClangDebug|x64
-		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangDebug|x64.Build.0 = ClangDebug|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangDebug|x86.ActiveCfg = ClangDebug|Win32
-		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangDebug|x86.Build.0 = ClangDebug|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x64.ActiveCfg = ClangRelease|x64
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x64.Build.0 = ClangRelease|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x86.ActiveCfg = ClangRelease|Win32
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x86.Build.0 = ClangRelease|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangTidy|x64.ActiveCfg = ClangTidy|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangTidy|x86.ActiveCfg = ClangTidy|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x64.ActiveCfg = Debug|x64

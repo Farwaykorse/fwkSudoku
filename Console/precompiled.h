@@ -31,4 +31,4 @@
 #include <chrono>
 
 // precompiled dependencies used in Sudoku.lib
-#include "../Sudoku/precompiled.h"
+#include <Sudoku/precompiled.h>

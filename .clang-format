@@ -63,25 +63,27 @@ AlignTrailingComments:			true
 # 	#pragma once			// if header file
 # 	-1. Precompiled header	// if cpp and using a precompiled header
 #	0. Main Module Header	// if cpp
-# 	1. Prototype/interface 	// if cpp
-# 	2. Main framework		// e.g. gTest to show intent
-# 	3. Local components		// if used
-# 	4. Aditional components, libraries
+# 	1. Main framework		// e.g. gTest to show intent
+# 	2. Local components		// if used "..."
+# 	3. External components <..\*.h>
+#	4. libraries ???
 # 	5. STL data-structures	// ! 
 # 	6. STL other			// ! add all used!	habbit
 # 	7. Standard C headers
-#	8.	cassert
+# 	8. cassert
 # 	9. Forward declaration	// *.fwd.h for recursive external definitions
 SortIncludes:					true
 IncludeIsMainRegex:				''
 IncludeCategories:
-  - Regex:		'^"((P|p)recompiled|stdafx)/'
+  - Regex:		'^"((P|p)recompiled|stdafx)'
     Priority:	-1
-  - Regex:		'^<(gtest|gmock)/'
+  - Regex:		'^<(gtest|gmock|catch)'
+    Priority:	1
+  - Regex:		'^"'
     Priority:	2
-  - Regex:		'^"\.\.(\\|\/)'
+  - Regex:		'.+(/|\\).+\.h(pp)?>$'
     Priority:	3
-  - Regex:		'\.h>$'
+  - Regex:		'\.h(pp)?>$'
     Priority:	4
   - Regex:		'^<(array|vector|string|(.+_)?list|set|map|(unordered_.*)|bitset)>'
     Priority:	5
@@ -89,12 +91,12 @@ IncludeCategories:
     Priority:	8
   - Regex:		'^<c[a-z]+>'
     Priority:	7
-  - Regex:		'^<.*>'
+  - Regex:		'^<[a-z]+>'
     Priority:	6
   - Regex:		'.*\.fwd\.h"$'
     Priority:	9
   - Regex:		'.*'
-    Priority:	1
+    Priority:	10
 
 ##	Namespace
 NamespaceIndentation:			Inner

@@ -26,4 +26,4 @@
 #include <type_traits>
 
 // precompiled dependencies specified for Sudoku.lib
-#include "../Sudoku/precompiled.h"
+#include <Sudoku/precompiled.h>

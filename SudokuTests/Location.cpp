@@ -17,10 +17,10 @@
 #include <gtest/gtest.h>
 
 // Class under test
-#include "../Sudoku/Location.h"
-#include "../Sudoku/Location_Utilities.h"
+#include <Sudoku/Location.h>
+#include <Sudoku/Location_Utilities.h>
 // Helpers
-#include "../Sudoku/Board.h"
+#include <Sudoku/Board.h>
 // aditional
 #include <vector>
 #include <type_traits>

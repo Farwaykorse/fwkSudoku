@@ -17,11 +17,11 @@
 #include <gtest/gtest.h>
 
 // Class under test
-#include "../Sudoku/Solver.h"
+#include <Sudoku/Solver.h>
 // helpers
-#include "../Sudoku/Board.h"
-#include "../Sudoku/Location.h"
-#include "../Sudoku/Options.h"
+#include <Sudoku/Board.h>
+#include <Sudoku/Location.h>
+#include <Sudoku/Options.h>
 // Debug Output
 #include "print_Options.h"
 // library

@@ -17,9 +17,9 @@
 #include <gtest/gtest.h>
 
 // Class under test
-#include "../Sudoku/Options.h"
+#include <Sudoku/Options.h>
 // Helpers
-#include "../Sudoku/Value.h"
+#include <Sudoku/Value.h>
 // Debug Output
 #include "print_Options.h"
 
@@ -100,8 +100,8 @@ namespace compiletime
 	static_assert(std::is_assignable_v<Options<3>, unsigned int>);
 	static_assert(noexcept(Options<3>{int{}}));
 	static_assert(noexcept(Options<3>() = int{}));
-	static_assert(noexcept(Options<3>{unsigned int{}}));
-	static_assert(noexcept(Options<3>() = unsigned int{}));
+	static_assert(noexcept(Options<3>{size_t{}}));
+	static_assert(noexcept(Options<3>() = size_t{}));
 
 } // namespace compiletime
 TEST(Options, Construction)

@@ -1,7 +1,7 @@
 // Sudoku.cpp : Defines the entry point for the console application.
 //
 
-#include "../Sudoku/Solver.h"
+#include <Sudoku/Solver.h>
 #include "Console.h"
 
 #include <algorithm>	// min
