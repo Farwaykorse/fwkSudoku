@@ -100,8 +100,8 @@ namespace compiletime
 	static_assert(std::is_assignable_v<Options<3>, unsigned int>);
 	static_assert(noexcept(Options<3>{int{}}));
 	static_assert(noexcept(Options<3>() = int{}));
-	static_assert(noexcept(Options<3>{unsigned int{}}));
-	static_assert(noexcept(Options<3>() = unsigned int{}));
+	static_assert(noexcept(Options<3>{size_t{}}));
+	static_assert(noexcept(Options<3>() = size_t{}));
 
 } // namespace compiletime
 TEST(Options, Construction)
