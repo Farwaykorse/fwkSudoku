@@ -80,7 +80,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>LLVM-vs2014</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <VcpkgConfiguration>Debug</VcpkgConfiguration>
   </PropertyGroup>
@@ -97,6 +97,7 @@
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">
     <PlatformToolset>LLVM-vs2014</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <VcpkgConfiguration>Debug</VcpkgConfiguration>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -267,16 +268,16 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -Wreorder -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++17-extensions -Wno-deprecated-declarations -Wno-covered-switch-default -Wno-global-constructors -Wno-keyword-macro -Wno-undef -Wno-unused-comparison -Wno-unused-value -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant -fno-ms-compatibility -fno-strict-aliasing -gline-tables-only </AdditionalOptions>
+      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-comparison -Wno-unused-value -Wno-injected-class-name -Wno-sign-compare -Wno-zero-as-null-pointer-constant -Wno-global-constructors -Wno-used-but-marked-unused -Wno-sign-conversion -Wno-covered-switch-default %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <MinimalRebuild />
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <TargetMachine>NotSet</TargetMachine>
     </Link>
     <Lib>
       <AdditionalDependencies>$(VcpkgRoot)debug\lib\manual-link\gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -288,13 +289,13 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>
-      </AdditionalOptions>
+      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-comparison -Wno-unused-value -Wno-injected-class-name -Wno-sign-compare -Wno-zero-as-null-pointer-constant -Wno-global-constructors -Wno-used-but-marked-unused -Wno-sign-conversion -Wno-covered-switch-default %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <MinimalRebuild />
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -310,9 +311,12 @@
     </Link>
     <ClCompile />
     <ClCompile>
-      <AdditionalOptions>-fno-ms-compatibility -fno-strict-aliasing -Wno-c++17-extensions -Wextra -Wconversion -Wcast-align -Wformat=2 -Woverloaded-virtual -Wreorder %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-comparison -Wno-unused-value -Wno-injected-class-name -Wno-sign-compare -Wno-zero-as-null-pointer-constant -Wno-global-constructors -Wno-used-but-marked-unused -Wno-sign-conversion -Wno-covered-switch-default %(AdditionalOptions)</AdditionalOptions>
       <MinimalRebuild />
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">
@@ -321,9 +325,12 @@
     </Link>
     <ClCompile />
     <ClCompile>
-      <AdditionalOptions>-fno-ms-compatibility -fno-strict-aliasing -Wno-c++17-extensions -Wextra -Wconversion -Wcast-align -Wformat=2 -Woverloaded-virtual -Wreorder %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-comparison -Wno-unused-value -Wno-injected-class-name -Wno-sign-compare -Wno-zero-as-null-pointer-constant -Wno-global-constructors -Wno-used-but-marked-unused -Wno-sign-conversion -Wno-covered-switch-default %(AdditionalOptions)</AdditionalOptions>
       <MinimalRebuild />
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -340,6 +347,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'">Create</PrecompiledHeader>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">-Wno-deprecated-declarations -Wno-undef -Wno-language-extension-token -Wno-missing-noreturn %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'">-Wno-deprecated-declarations -Wno-undef -Wno-language-extension-token -Wno-missing-noreturn %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">Create</PrecompiledHeader>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">-Wno-deprecated-declarations -Wno-undef -Wno-language-extension-token -Wno-missing-noreturn %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">-Wno-deprecated-declarations -Wno-undef -Wno-language-extension-token -Wno-missing-noreturn %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="Size.cpp" />
     <ClCompile Include="Solver.cpp" />

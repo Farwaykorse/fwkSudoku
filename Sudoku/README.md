@@ -202,33 +202,62 @@ levels. "Nonstandard extension" warnings are promoted to errors.
         warning(pop)
 ````
 
-#### Clang ####
-```
--Xclang                  Pass comands to the compiler
--std=c++17               Set language version to C++17
+#### Clang-cl ####
+Inactive settings are indented.  
+Use `-###` to output the commands that actually reach the compiler.  
+Use `-Xclang ` before a command to actually force it to the clang.
+`````
+-Xclang -std=c++17    Set language version to C++17
+-fno-strict-aliasing
+-Xclang -fms-compatibility-version=19.10  upgrade to actual vs version
+  -fms-compatibility Excepting enough invalid C++ to parse most MS headers
+  -fno-ms-compatibility
 
--Wmisleading-indentation	not supported
--Weverything			Enable ALL warnings (dissable unwanted)
-	-Wno-c++98-compat		Dissabled since compatibility is not needed
+Debug:
+...
+Release:
+...
+`````
+Enable warnings:  
+[lefiticus/cppbestpractices](https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#gcc--clang)  
+Some warnings are explicitly mentioned so they stay active when an encompassing
+set is dissabled.
+````
+-Weverything         Enable all warnings (includes -pedantic)
+/W4                  Enable -Wall and -Wextra
+-Wall                standard
+-Wextra              standard
+-Xclang -pedantic    using non-standard language extensions
 
--Wextra
--Wshadow
--Wnon-virtual-dtor
--Wold-style-cast
--Wcast-align
--Wunused
--Woverloaded-virtual
--pedantic
--Wconversion
--Wsign-conversion
--Weffc++
--Wformat=2
--fno-common
--Wreorder
- ```
+-Weffc++             
+-Wshadow             A variable declaration overshadows one from the parent
+                     context. (Same name.)
+-Wunused             Anything declared but unused.
+-Wold-style-cast     Warn for c-style casts
+-Wconversion         Type conversions that may lose data
+-Wsign-conversion    Sign conversion
+-Wnull-dereference   Null dereference detected
+-Wdouble-promotion   `float` implicit promoted to `double`
+-Wformat=2           Security issues in output formating (ie printf)
+-Woverloaded-virtual Overloading (not overriding) a virtual function
+-Wnon-virtual-dtor   Class with virtual member functions has a non-virtual
+                     destructor. Can result in memory errors.
+-Wreorder            
+-Wcast-align         
 
-
-
+Unknown warnings:
+  -Wmisleading-indentation Indentation implies blocks that don't exist
+  -Wduplicated-cond        if/else chain has duplicated conditions
+  -Wduplicated-branches    if/else branches have duplicated code
+  -Wlogical-op             Logical operations used where probably bitwise is wanted
+  -Wuseless-cast           Casting to the same type
+````
+Disable (temporary) unwanted/uncompatible warnings:
+``````
+-Wno-c++98-compat   (Weverything) Compatibility with C++98 is not needed
+-Wno-c++98-compat-pedantic
+-Wno-keyword-macro  GSL: keyword hidden by macro definition
+``````
 
 <!----------------------------------------------------------------><a id="elements"></a>
 ## Classes ##

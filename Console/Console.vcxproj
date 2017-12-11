@@ -220,7 +220,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MinimalRebuild>
       </MinimalRebuild>
-      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -Wreorder -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++17-extensions -gline-tables-only -fno-ms-compatibility -fno-strict-aliasing %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <Verbose>true</Verbose>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -229,6 +229,7 @@
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation />
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <SDLCheck />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -269,6 +270,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
+      <SDLCheck />
+      <MultiProcessorCompilation />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -328,10 +332,12 @@
     <ClCompile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MinimalRebuild />
-      <AdditionalOptions>-fno-ms-compatibility -fno-strict-aliasing -Wno-c++17-extensions -Wextra -Wconversion -Wcast-align -Wformat=2 -Woverloaded-virtual -Wreorder %(AdditionalOptions)</AdditionalOptions>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -341,10 +347,12 @@
     <ClCompile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MinimalRebuild />
-      <AdditionalOptions>-fno-ms-compatibility -fno-strict-aliasing -Wno-c++17-extensions -Wextra -Wconversion -Wcast-align -Wformat=2 -Woverloaded-virtual -Wreorder %(AdditionalOptions)</AdditionalOptions>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -364,6 +372,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'">Create</PrecompiledHeader>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">-Wno-nonportable-system-include-path %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'">-Wno-nonportable-system-include-path %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">Create</PrecompiledHeader>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">-Wno-nonportable-system-include-path %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">-Wno-nonportable-system-include-path %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="Console.cpp" />
   </ItemGroup>

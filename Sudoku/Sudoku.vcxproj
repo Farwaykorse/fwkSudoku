@@ -275,7 +275,7 @@
     <ClCompile>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>-Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Weffc++ -Wformat=2 -Wreorder -Weverything -Wno-c++98-compat -Wno-c++17-extensions -gline-tables-only -fno-ms-compatibility -fno-strict-aliasing </AdditionalOptions>
+      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic</AdditionalOptions>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -298,8 +298,7 @@
       <Optimization>Disabled</Optimization>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>
-      </AdditionalOptions>
+      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic</AdditionalOptions>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -315,23 +314,23 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">
     <ClCompile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalOptions>-fno-ms-compatibility -fno-strict-aliasing -Wno-c++17-extensions -Wextra -Wconversion -Wcast-align -Wformat=2 -Woverloaded-virtual -Wreorder %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <MinimalRebuild />
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">
     <ClCompile>
-      <AdditionalOptions>-fno-ms-compatibility -fno-strict-aliasing -Wno-c++17-extensions -Wextra -Wconversion -Wcast-align -Wformat=2 -Woverloaded-virtual -Wreorder %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wunused -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <MinimalRebuild />
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -361,6 +360,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Sudoku.cpp" />
   </ItemGroup>
