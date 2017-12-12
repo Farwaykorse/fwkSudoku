@@ -30,27 +30,27 @@ namespace Sudoku
 {
 //===---------------------------------------------------------------------===//
 template<int N, typename Options = Options<elem_size<N>>>
-int remove_option(Board<Options, N>&, Location<N>, value_t);
+int remove_option(Board<Options, N>&, Location<N>, Value);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_section(
-	Board<Options, N>&, SectionT, Location<N> ignore, value_t);
+	Board<Options, N>&, SectionT, Location<N> ignore, Value);
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_section(
 	Board<Options, N>&,
 	SectionT,
 	const std::vector<Location<N>>& ignore,
-	value_t);
+	Value);
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_section(
 	Board<Options, N>&,
 	SectionT,
 	const std::vector<Location<N>>& ignore,
-	const std::vector<value_t>&);
+	const std::vector<Value>&);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_outside_block(
-	Board<Options, N>&, SectionT, Location<N> block_loc, value_t);
+	Board<Options, N>&, SectionT, Location<N> block_loc, Value);
 
 //===---------------------------------------------------------------------===//
 
@@ -58,7 +58,7 @@ int remove_option_outside_block(
 //	remove option from element, make answer if last option
 template<int N, typename Options>
 int remove_option(
-	Board<Options, N>& board, const Location<N> loc, const value_t value)
+	Board<Options, N>& board, const Location<N> loc, const Value value)
 {
 	assert(is_valid(loc));
 	assert(is_valid<N>(value));
@@ -95,7 +95,7 @@ int remove_option_section(
 	Board<Options, N>& board,
 	const SectionT section,
 	const Location<N> ignore,
-	const value_t value)
+	const Value value)
 {
 	{
 		using Board_Section = typename Board_Section::Section<Options, N>;
@@ -127,7 +127,7 @@ inline int remove_option_section(
 	Board<Options, N>& board,
 	const SectionT section,
 	const std::vector<Location<N>>& ignore,
-	const value_t value)
+	const Value value)
 {
 	{
 		using Board_Section = typename Board_Section::Section<Options, N>;
@@ -167,7 +167,7 @@ int remove_option_section(
 	Board<Options, N>& board,
 	const SectionT section,
 	const std::vector<Location<N>>& ignore,
-	const std::vector<value_t>& values)
+	const std::vector<Value>& values)
 {
 	{
 		using Board_Section = typename Board_Section::Section<Options, N>;
@@ -205,7 +205,7 @@ int remove_option_outside_block(
 	Board<Options, N>& board,
 	const SectionT section,
 	const Location<N> block_loc,
-	const value_t value)
+	const Value value)
 {
 	{
 		using Section_ = typename Board_Section::Section<Options, N>;

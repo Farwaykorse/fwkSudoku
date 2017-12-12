@@ -27,7 +27,7 @@ namespace Sudoku
 {
 //===---------------------------------------------------------------------===//
 template<int N, typename Options = Options<elem_size<N>>>
-void setValue(Board<Options, N>&, Location<N>, value_t);
+void setValue(Board<Options, N>&, Location<N>, Value);
 template<int N, typename Options = Options<elem_size<N>>, typename ItrT>
 void setValue(Board<Options, N>&, ItrT begin, ItrT end);
 
@@ -50,8 +50,8 @@ int set_section_locals(
 //	IF valid, Make [value] the answer for [loc]
 //	No processing
 template<int N, typename Options>
-inline void setValue(
-	Board<Options, N>& board, const Location<N> loc, const value_t value)
+inline void
+	setValue(Board<Options, N>& board, const Location<N> loc, const Value value)
 {
 	assert(is_valid(loc));
 	assert(is_valid<N>(value));
@@ -76,7 +76,7 @@ inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		Location<N> loc(n++); // start at 0!
-		const auto value = static_cast<value_t>(*itr);
+		const auto value = static_cast<Value>(*itr);
 		if (value > Value{0} && board.at(loc).is_option(value))
 		{
 			setValue(board, loc, value);
@@ -155,7 +155,7 @@ inline int set_section_locals(
 	// start at 1, to skip the answer-bit
 	for (size_t val{1}; val < worker.size(); ++val)
 	{
-		const auto value = gsl::narrow_cast<Value>(val); 
+		const auto value = gsl::narrow_cast<Value>(val);
 		if (worker[value])
 		{
 			const auto locations = find_locations<N>(section, value, rep_count);

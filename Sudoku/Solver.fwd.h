@@ -10,7 +10,7 @@ namespace Sudoku
 template<int N, typename Options = Options<elem_size<N>>>
 int single_option(Board<Options, N>&, Location<N>);
 template<int N, typename Options = Options<elem_size<N>>>
-int single_option(Board<Options, N>&, Location<N>, value_t);
+int single_option(Board<Options, N>&, Location<N>, Value);
 template<int N, typename Options = Options<elem_size<N>>>
 int dual_option(Board<Options, N>&, Location<N>);
 template<int N, typename Options = Options<elem_size<N>>>

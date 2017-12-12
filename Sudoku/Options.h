@@ -27,37 +27,37 @@ public:
 	Options() noexcept;
 	explicit Options(const bitset&); // 0th bit is last in input
 	explicit Options(bitset&&);
-	constexpr Options(value_t) noexcept;
-	Options& operator=(value_t) noexcept;
+	constexpr Options(Value) noexcept;
+	Options& operator=(Value) noexcept;
 	Options& operator=(const bitset&) noexcept;
 	Options& operator=(bitset&&) noexcept;
 
 	Options& clear() noexcept; // remove all options
 	Options& reset() noexcept; // set all options
 	Options& flip() noexcept;
-	Options& remove_option(value_t) noexcept; // remove single option
+	Options& remove_option(Value) noexcept; // remove single option
 	// TODO Options& remove_option(int value, ...);	// remove mentioned
-	Options& add(value_t);                  // add single option
-	Options& set(value_t);                  // set to answer
-	Options& add_nocheck(value_t) noexcept; // add single option
-	Options& set_nocheck(value_t) noexcept; // set to answer
+	Options& add(Value);                  // add single option
+	Options& set(Value);                  // set to answer
+	Options& add_nocheck(Value) noexcept; // add single option
+	Options& set_nocheck(Value) noexcept; // set to answer
 
 	constexpr size_t size() const noexcept;
 	int count() const noexcept;      // count available options
 	int count_all() const noexcept;  // count all options (incl answer)
 	bool all() const noexcept;       // if all options available = all bits set
-	bool test(value_t) const;        // if an option, or answer
+	bool test(Value) const;          // if an option, or answer
 	bool is_answer() const noexcept; // is set to answer
-	bool is_answer(value_t) const noexcept; // is set to answer value
-	bool is_option(value_t) const noexcept; // is an option
+	bool is_answer(Value) const noexcept; // is set to answer value
+	bool is_option(Value) const noexcept; // is an option
 	bool is_empty() const noexcept;
 
-	value_t get_answer() const noexcept;    // return answer or 0
-											// (won't confirm is_answer())
-	std::vector<value_t> available() const; // return available options
+	Value get_answer() const noexcept;    // return answer or 0
+										  // (won't confirm is_answer())
+	std::vector<Value> available() const; // return available options
 
-	bool operator[](value_t) const noexcept;
-	auto operator[](value_t) noexcept;
+	bool operator[](Value) const noexcept;
+	auto operator[](Value) noexcept;
 
 	bool operator==(const Options<E>&) const noexcept;
 	bool operator<(const Options<E>&) const noexcept;
@@ -88,13 +88,13 @@ template<int E>
 bool operator!=(const Options<E>&, const Options<E>&) noexcept;
 
 template<int E>
-bool operator==(const Options<E>&, value_t) noexcept;
+bool operator==(const Options<E>&, Value) noexcept;
 template<int E>
-bool operator==(value_t, const Options<E>&) noexcept;
+bool operator==(Value, const Options<E>&) noexcept;
 template<int E>
-bool operator!=(const Options<E>&, value_t) noexcept;
+bool operator!=(const Options<E>&, Value) noexcept;
 template<int E>
-bool operator!=(value_t, const Options<E>&) noexcept;
+bool operator!=(Value, const Options<E>&) noexcept;
 
 template<int E>
 inline Options<E> XOR(Options<E>& A, Options<E>& B) noexcept;
@@ -153,7 +153,7 @@ inline Options<E>::Options(bitset&& other) : data_{other}
 
 //	construct with single option set to answer
 template<int E>
-constexpr Options<E>::Options(const value_t value) noexcept
+constexpr Options<E>::Options(const Value value) noexcept
 	: data_{exp2_(size_t(value))}
 {
 	assert(value <= Value{E});
@@ -161,7 +161,7 @@ constexpr Options<E>::Options(const value_t value) noexcept
 
 //	set to answer value
 template<int E>
-inline Options<E>& Options<E>::operator=(const value_t value) noexcept
+inline Options<E>& Options<E>::operator=(const Value value) noexcept
 {
 	data_ = exp2_(size_t(value));
 	return *this;
@@ -210,7 +210,7 @@ inline Options<E>& Options<E>::flip() noexcept
 
 //	remove single option
 template<int E>
-inline Options<E>& Options<E>::remove_option(const value_t value) noexcept
+inline Options<E>& Options<E>::remove_option(const Value value) noexcept
 {
 	assert(value <= Value{E});
 	assert(!is_answer(value));
@@ -221,7 +221,7 @@ inline Options<E>& Options<E>::remove_option(const value_t value) noexcept
 
 //	add single option
 template<int E>
-inline Options<E>& Options<E>::add(const value_t value)
+inline Options<E>& Options<E>::add(const Value value)
 {
 	data_.set(value, true);
 	return *this;
@@ -229,7 +229,7 @@ inline Options<E>& Options<E>::add(const value_t value)
 
 //	add single option
 template<int E>
-inline Options<E>& Options<E>::add_nocheck(const value_t value) noexcept
+inline Options<E>& Options<E>::add_nocheck(const Value value) noexcept
 {
 	assert(value <= Value{E});
 	data_[size_t(value)] = true;
@@ -238,7 +238,7 @@ inline Options<E>& Options<E>::add_nocheck(const value_t value) noexcept
 
 //	set to answer
 template<int E>
-inline Options<E>& Options<E>::set(const value_t value)
+inline Options<E>& Options<E>::set(const Value value)
 {
 	clear();
 	return add(value); // if 0: -> not answer = [0] = true
@@ -246,7 +246,7 @@ inline Options<E>& Options<E>::set(const value_t value)
 
 //	set to answer
 template<int E>
-inline Options<E>& Options<E>::set_nocheck(const value_t value) noexcept
+inline Options<E>& Options<E>::set_nocheck(const Value value) noexcept
 {
 	clear();
 	return add_nocheck(value);
@@ -298,7 +298,7 @@ inline bool Options<E>::all() const noexcept
 
 //	if an option, or the answer
 template<int E>
-inline bool Options<E>::test(const value_t value) const
+inline bool Options<E>::test(const Value value) const
 {
 	return data_.test(size_t(value));
 }
@@ -313,7 +313,7 @@ inline bool Options<E>::is_answer() const noexcept
 //	check if set to answer value
 //! no input checks!
 template<int E>
-inline bool Options<E>::is_answer(const value_t value) const noexcept
+inline bool Options<E>::is_answer(const Value value) const noexcept
 {
 	assert(value <= Value{E});
 	return (is_answer() && operator[](value));
@@ -325,7 +325,7 @@ inline bool Options<E>::is_answer(const value_t value) const noexcept
 //	check if option available
 //! no input checks!
 template<int E>
-inline bool Options<E>::is_option(const value_t value) const noexcept
+inline bool Options<E>::is_option(const Value value) const noexcept
 {
 	assert(value != Value{0} && value <= Value{E});
 	// benched: this order is ~1.3 times faster
@@ -350,7 +350,7 @@ inline bool Options<E>::is_empty() const noexcept
 //	determine the answer value, even if not marked
 //	use with is_answer() to determine if flaged as anwer
 template<int E>
-inline value_t Options<E>::get_answer() const noexcept
+inline Value Options<E>::get_answer() const noexcept
 {
 	// TODO	microbench simpler/faster way to read single value from data_
 	//		constexpr?
@@ -364,9 +364,9 @@ inline value_t Options<E>::get_answer() const noexcept
 
 //	all available options
 template<int E>
-inline std::vector<value_t> Options<E>::available() const
+inline std::vector<Value> Options<E>::available() const
 {
-	std::vector<value_t> values{};
+	std::vector<Value> values{};
 	values.reserve(static_cast<size_t>(count()));
 	if (!is_answer() && !is_empty())
 	{
@@ -382,7 +382,7 @@ inline std::vector<value_t> Options<E>::available() const
 
 //	no-check access read only
 template<int E>
-inline bool Options<E>::operator[](const value_t value) const noexcept
+inline bool Options<E>::operator[](const Value value) const noexcept
 {
 	assert(value <= Value{E});
 	return data_[size_t(value)];
@@ -390,7 +390,7 @@ inline bool Options<E>::operator[](const value_t value) const noexcept
 
 //	no-check access
 template<int E>
-inline auto Options<E>::operator[](const value_t value) noexcept
+inline auto Options<E>::operator[](const Value value) noexcept
 {
 	assert(value <= Value{E});
 	return data_[size_t(value)];
@@ -411,22 +411,22 @@ inline bool operator!=(const Options<E>& left, const Options<E>& right) noexcept
 
 // short for is_answer(value)
 template<int E>
-inline bool operator==(const Options<E>& left, const value_t value) noexcept
+inline bool operator==(const Options<E>& left, const Value value) noexcept
 {
 	return left.is_answer(value);
 }
 template<int E>
-inline bool operator==(const value_t value, const Options<E>& right) noexcept
+inline bool operator==(const Value value, const Options<E>& right) noexcept
 {
 	return right.is_answer(value);
 }
 template<int E>
-inline bool operator!=(const Options<E>& left, const value_t value) noexcept
+inline bool operator!=(const Options<E>& left, const Value value) noexcept
 {
 	return not(left.is_answer(value));
 }
 template<int E>
-inline bool operator!=(const value_t value, const Options<E>& right) noexcept
+inline bool operator!=(const Value value, const Options<E>& right) noexcept
 {
 	return not(right.is_answer(value));
 }

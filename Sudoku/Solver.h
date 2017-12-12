@@ -34,7 +34,7 @@ inline int single_option(Board<Options, N>& board, const Location<N> loc)
 {
 	assert(is_valid(loc));
 
-	if (const value_t answer{board[loc].get_answer()})
+	if (const Value answer{board[loc].get_answer()})
 	{
 		return single_option(board, loc, answer);
 	}
@@ -45,7 +45,7 @@ inline int single_option(Board<Options, N>& board, const Location<N> loc)
 //	Remove option from rest of row, col and block
 template<int N, typename Options>
 inline int single_option(
-	Board<Options, N>& board, const Location<N> loc, const value_t value)
+	Board<Options, N>& board, const Location<N> loc, const Value value)
 {
 	assert(is_valid(loc));
 	assert(is_valid<N>(value));

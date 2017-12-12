@@ -28,11 +28,10 @@ namespace Sudoku
 {
 //===---------------------------------------------------------------------===//
 template<int N, typename SectionT>
-auto find_locations(SectionT, value_t, int rep_count = elem_size<N>);
+auto find_locations(SectionT, Value, int rep_count = elem_size<N>);
 
 template<int N, typename ItrT>
-auto find_locations(
-	ItrT begin, ItrT end, value_t, int rep_count = elem_size<N>);
+auto find_locations(ItrT begin, ItrT end, Value, int rep_count = elem_size<N>);
 
 template<int N, typename SectionT>
 auto find_locations(SectionT, Options<elem_size<N>> value);
@@ -54,7 +53,7 @@ auto appearance_sets(const InItr_ begin, const InItr_ end);
 
 //	List locations in [section] where [value] is an option
 template<int N, typename SectionT>
-auto find_locations(const SectionT section, value_t value, const int rep_count)
+auto find_locations(const SectionT section, Value value, const int rep_count)
 {
 	{
 		using Options       = Options<elem_size<N>>;
@@ -71,7 +70,7 @@ auto find_locations(const SectionT section, value_t value, const int rep_count)
 //	List locations where [value] is an option
 template<int N, typename ItrT>
 auto find_locations(
-	const ItrT begin, const ItrT end, const value_t value, const int rep_count)
+	const ItrT begin, const ItrT end, const Value value, const int rep_count)
 {
 	using Options = Options<elem_size<N>>;
 	{
