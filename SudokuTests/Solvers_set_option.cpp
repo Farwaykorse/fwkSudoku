@@ -382,11 +382,7 @@ TEST(Solver, deathtest_set_option)
 	// set_uniques
 	{
 		Board<Options<4>, 2> B1{};
-		// deathtest: worker[0] has to be true
-		EXPECT_DEBUG_DEATH(
-			set_uniques(B1, B1.row(0), Options<4>{std::bitset<5>{"10110"}}),
-			"Assertion failed: worker.test.0.");
-		// deathtest: an unique in worker doesn't exist in the section
+		// deathtest: a unique Value in worker doesn't exist in the section
 		// 1	24	324	24
 		B1[0][0] = std::bitset<5>{"00010"}; // ans 1
 		EXPECT_FALSE(B1[0][0].is_option(1));
