@@ -76,7 +76,7 @@ inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		Location<N> loc(n++); // start at 0!
-		const auto value = static_cast<Value>(*itr);
+		const auto value = *itr;
 		if (value > Value{0} && board.at(loc).is_option(value))
 		{
 			setValue(board, loc, value);
