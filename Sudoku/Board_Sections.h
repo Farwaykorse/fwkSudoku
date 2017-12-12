@@ -44,7 +44,8 @@ class const_Row : public Section<T, N>
 	friend class const_iterator<T, N, const_Col<T, N>>;
 	friend class const_iterator<T, N, const_Block<T, N>>;
 
-	const_Row(const Board<T, N>& owner, const int row) : owner_(owner), id_(row)
+	const_Row(const Board<T, N>& owner, const int row) noexcept
+		: owner_(owner), id_(row)
 	{
 		assert(is_valid_size<N>(row));
 	}
@@ -57,7 +58,7 @@ class const_Row : public Section<T, N>
 public:
 	template<typename OtherT>
 	const_Row(OtherT) = delete; // stop inheritance parent constructing
-	const_Row(Row<T, N> row) : owner_(row.owner_), id_(row.id_) {}
+	const_Row(Row<T, N> row) noexcept : owner_(row.owner_), id_(row.id_) {}
 
 	constexpr int size() const noexcept { return elem_size<N>; }
 
@@ -355,14 +356,17 @@ public:
 	using reference         = value_type&;
 	using pointer           = value_type*;
 
-	const_iterator(gsl::not_null<const owner_type*> owner) : owner_(owner) {}
-	const_iterator(gsl::not_null<const owner_type*> owner, int elem)
+	const_iterator(gsl::not_null<const owner_type*> owner) noexcept
+		: owner_(owner)
+	{
+	}
+	const_iterator(gsl::not_null<const owner_type*> owner, int elem) noexcept
 		: owner_(owner), elem_(elem)
 	{
 	}
 
 	// All iterator categories
-	self_type& operator++()
+	self_type& operator++() noexcept
 	{
 		++elem_;
 		return *this;
@@ -373,7 +377,7 @@ public:
 		operator++();
 		return pre;
 	}
-	reference operator*() const
+	reference operator*() const noexcept
 	{
 		assert(is_valid_size<N>(elem_));
 		return (*owner_)[elem_];
@@ -398,7 +402,7 @@ public:
 	}
 
 	// Forward iterator
-	const_iterator() : owner_()
+	const_iterator() noexcept : owner_()
 	{ // construct with null pointer
 	}
 
@@ -460,7 +464,7 @@ private:
 	const owner_type* owner_;
 	int elem_{0}; // element within the section
 
-	bool is_same(const self_type& other) const
+	bool is_same(const self_type& other) const noexcept
 	{
 		// compare address of:
 		return (&(owner_->owner_) == &(other.owner_->owner_)) &&
@@ -483,14 +487,14 @@ public:
 	using reference         = value_type&;
 	using pointer           = value_type*;
 
-	iterator(gsl::not_null<owner_type*> owner) : owner_(owner) {}
-	iterator(gsl::not_null<owner_type*> owner, int elem)
+	iterator(gsl::not_null<owner_type*> owner) noexcept : owner_(owner) {}
+	iterator(gsl::not_null<owner_type*> owner, int elem) noexcept
 		: owner_(owner), elem_(elem)
 	{
 	}
 
 	// All iterator categories
-	self_type& operator++()
+	self_type& operator++() noexcept
 	{
 		++elem_;
 		return *this;
@@ -501,7 +505,7 @@ public:
 		operator++();
 		return pre;
 	}
-	reference operator*() const
+	reference operator*() const noexcept
 	{
 		assert(is_valid_size<N>(elem_));
 		return owner_->operator[](elem_);
@@ -587,7 +591,7 @@ private:
 	owner_type* owner_;
 	int elem_{0}; // element within the section
 
-	bool is_same(const self_type& other) const
+	bool is_same(const self_type& other) const noexcept
 	{
 		// compare address of:
 		return (&(owner_->owner_) == &(other.owner_->owner_)) &&

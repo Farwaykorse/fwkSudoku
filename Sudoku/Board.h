@@ -1,13 +1,13 @@
-﻿//===--	Sudoku/Board.h													--===//
+﻿//===--- Sudoku/Board.h													---===//
 //
 // Data container for sudoku puzzles
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 //
 // accepts only squared dimensions
 // gives full, row, collumn and block access
 // no processing functionality
 //
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #pragma once
 
 #include "Board_Sections.h"
@@ -41,7 +41,7 @@ class Board
 	using const_Block = Board_Section::const_Block<T, N>;
 
 public:
-	Board();
+	Board() noexcept;
 	// initialize with non-default value
 	explicit Board(const T&);
 	Board(std::initializer_list<T>); // construct from initializer_list
@@ -116,12 +116,12 @@ private:
 
 }; // class Board
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Board - memberfunctions
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Board - Constructors
 template<typename T, int N>
-Board<T, N>::Board() : board_(full_size<N>)
+Board<T, N>::Board() noexcept : board_(full_size<N>)
 {
 	valid_dimensions<N>();
 }
@@ -140,7 +140,7 @@ Board<T, N>::Board(std::initializer_list<T> list) : board_(list)
 	valid_dimensions<N>();
 }
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // properties
 template<typename T, int N>
 bool Board<T, N>::operator==(const Board& other) const
@@ -148,7 +148,7 @@ bool Board<T, N>::operator==(const Board& other) const
 	return board_ == other.board_;
 }
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Board - Operations
 template<typename T, int N>
 inline void Board<T, N>::clear()
@@ -157,7 +157,7 @@ inline void Board<T, N>::clear()
 	board_.resize(full_size<N>);
 }
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Board - element access
 template<typename T, int N>
 T& Board<T, N>::at(const Location loc)
@@ -233,7 +233,7 @@ const T& Board<T, N>::operator[](Location loc) const noexcept
 	return board_[static_cast<size_t>(loc.element())];
 }
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Proxy object for Element Selection Operator
 template<typename T, int N>
 class Board<T, N>::InBetween
@@ -260,7 +260,7 @@ template<typename T, int N>
 class Board<T, N>::const_InBetween
 {
 	friend class Board<T, N>; // access to private constructor
-	const_InBetween(gsl::not_null<const Board<T, N>*> owner, int row)
+	const_InBetween(gsl::not_null<const Board<T, N>*> owner, int row) noexcept
 		: owner_(owner), row_(row)
 	{ // private constructor prevents creation out of class
 	}
@@ -295,7 +295,7 @@ const typename Board<T, N>::const_InBetween Board<T, N>::
 }
 // InBetween
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Board - Iterators
 template<typename T, int N>
 constexpr typename Board<T, N>::iterator Board<T, N>::begin() noexcept

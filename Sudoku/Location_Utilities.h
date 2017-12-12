@@ -1,8 +1,8 @@
-﻿//===--	Sudoku/Location_Utilities.h										--===//
+﻿//===--- Sudoku/Location_Utilities.h									---===//
 //
 //	Utilities for class Sudoku::Location
 //	Included in Location.h
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #pragma once
 
 #include "Iterator_Utilities.h"
@@ -20,9 +20,9 @@
 
 namespace Sudoku
 {
-//===-- function declarations --------------------------------------------===//
+//===-- function declarations ---------------------------------------------===//
 template<int N>
-constexpr void valid_dimensions();
+constexpr void valid_dimensions() noexcept;
 
 template<int N>
 constexpr bool is_valid(Location<N>);
@@ -69,12 +69,12 @@ bool intersect_block(Board_Section::const_Row<T, N>, Location<N>);
 template<typename T, int N>
 bool intersect_block(Board_Section::const_Col<T, N>, Location<N>);
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 
 
 // Compile-time only Test
 template<int N>
-constexpr void valid_dimensions()
+constexpr void valid_dimensions() noexcept
 {
 	// input check
 	static_assert(base_size<N> > 1, "base_size too small");

@@ -100,7 +100,7 @@ public:
 	//static const Format::delimiter csv;
 	//static const Format::delimiter xml;
 
-	Console();
+	Console() noexcept;
 	explicit Console(delimiter);
 	//~Console() = default;
 
@@ -121,13 +121,9 @@ private:
 	// format elem
 	// format col-block section
 	// format row-block = seperator line
-
-
 };
 
-inline
-Console::Console() :
-	d(display)
+inline Console::Console() noexcept : d(display)
 {
 	// empty constructor
 }
