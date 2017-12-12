@@ -13,6 +13,7 @@
 #include "Solvers_find.h"
 #include "Solvers_remove_option.h"
 #include "Value.h"
+#include <gsl/gsl>
 #include <algorithm>   // find_if
 #include <stdexcept>   // logic_error
 #include <type_traits> // is_base_of
@@ -108,7 +109,8 @@ inline auto set_uniques(
 
 		for (size_t val{1}; val < worker.size(); ++val)
 		{
-			if (const Value value{val}; worker[value])
+			const auto value = gsl::narrow_cast<Value>(val);
+			if (worker[value])
 			{
 				const auto itr = std::find_if( // <algorithm>
 					begin,
@@ -153,7 +155,8 @@ inline int set_section_locals(
 	// start at 1, to skip the answer-bit
 	for (size_t val{1}; val < worker.size(); ++val)
 	{
-		if (const Value value{val}; worker[value])
+		const auto value = gsl::narrow_cast<Value>(val); 
+		if (worker[value])
 		{
 			const auto locations = find_locations<N>(section, value, rep_count);
 			if (locations.size() != static_cast<size_t>(rep_count))
@@ -192,7 +195,8 @@ inline int set_section_locals(
 	// start at 1, to skip the answer-bit
 	for (size_t val{1}; val < worker.size(); ++val)
 	{
-		if (const Value value{val}; worker[value])
+		const auto value = gsl::narrow_cast<Value>(val);
+		if (worker[value])
 		{
 			const auto locations = find_locations<N>(block, value, rep_count);
 			if (locations.size() != static_cast<size_t>(rep_count))

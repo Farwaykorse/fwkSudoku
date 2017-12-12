@@ -10,7 +10,7 @@
 #pragma once
 
 #include "Value.h"
-
+#include <gsl/gsl>
 #include <bitset>
 #include <vector>
 #include <utility>
@@ -518,7 +518,7 @@ inline Value Options<E>::read_next(Value start) const noexcept
 	{
 		if (data_[i])
 		{
-			return Value{i};
+			return gsl::narrow_cast<Value>(i);
 		}
 	}
 	return Value{0}; // never triggered
