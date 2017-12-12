@@ -59,44 +59,41 @@ AlignTrailingComments:			true
 # 
 # Order: (alphabetic within each)
 # Headers should not depend upon other headers being included first.
-# 
-# 	#pragma once			// if header file
-# 	-1. Precompiled header	// if cpp and using a precompiled header
-#	0. Main Module Header	// if cpp
-# 	1. Main framework		// e.g. gTest to show intent
-# 	2. Local components		// if used "..."
-# 	3. External components <..\*.h>
-#	4. libraries ???
-# 	5. STL data-structures	// ! 
-# 	6. STL other			// ! add all used!	habbit
-# 	7. Standard C headers
-# 	8. cassert
-# 	9. Forward declaration	// *.fwd.h for recursive external definitions
-SortIncludes:					true
-IncludeIsMainRegex:				''
+#
+#   #pragma once            // if header file
+#   -1. Precompiled header  // if cpp and using a precompiled header
+#   0. Main Module Header   // if cpp
+#   1. Main framework       // e.g. gTest to show intent
+#   2. Local components     // if used "..."
+#   3. External components  // <../*.h>
+#   4. libraries            //
+#   5. STL data-structures  // ! 
+#   6. STL other            // ! add all used!
+#   7. Forward declaration  // *.fwd.h for recursive external definitions
+#   8. macros files         // like cassert
+SortIncludes:       true
+IncludeIsMainRegex: ''
 IncludeCategories:
-  - Regex:		'^"((P|p)recompiled|stdafx)'
-    Priority:	-1
-  - Regex:		'^<(gtest|gmock|catch)'
-    Priority:	1
-  - Regex:		'^"'
-    Priority:	2
-  - Regex:		'.+(/|\\).+\.h(pp)?>$'
-    Priority:	3
-  - Regex:		'\.h(pp)?>$'
-    Priority:	4
-  - Regex:		'^<(array|vector|string|(.+_)?list|set|map|(unordered_.*)|bitset)>'
-    Priority:	5
-  - Regex:		'^<cassert>'
-    Priority:	8
-  - Regex:		'^<c[a-z]+>'
-    Priority:	7
-  - Regex:		'^<[a-z]+>'
-    Priority:	6
-  - Regex:		'.*\.fwd\.h"$'
-    Priority:	9
-  - Regex:		'.*'
-    Priority:	10
+  - Regex:    '^"((P|p)recompiled|stdafx)'
+    Priority: -1
+  - Regex:    '^<(gtest|gmock|catch)'
+    Priority: 1
+  - Regex:    '.*\.fwd\.h"$'
+    Priority: 7
+  - Regex:    '^"'
+    Priority: 2
+  - Regex:    '^<(abseil|boost|gsl)'
+    Priority: 4
+  - Regex:    '.+(/|\\).+\.h(pp)?>$'
+    Priority: 3
+  - Regex:    '^<(array|vector|deque|stack|queue|string(_view)?|(.+_)?list|(unordered_)?(set|map)|bitset|tuple|optional|variant|any)>'
+    Priority: 5
+  - Regex:    '^<c(assert|errno|std(lib|int)|limits|float|fenv|inttypes|signal)>'
+    Priority: 8
+  - Regex:    '^<[a-z/\\_]+>'
+    Priority: 6
+  - Regex:    '.*'
+    Priority: 10
 
 ##	Namespace
 NamespaceIndentation:			Inner
