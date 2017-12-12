@@ -13,7 +13,6 @@
 #include "Solvers_find.h"
 #include "Solvers_remove_option.h"
 #include "Value.h"
-
 #include <algorithm>   // find_if
 #include <stdexcept>   // logic_error
 #include <type_traits> // is_base_of
@@ -69,7 +68,7 @@ inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 {
 	{
 		static_assert(Utility_::is_forward<ItrT>);
-		static_assert(Utility_::iterator_to<ItrT, int>);
+		static_assert(Utility_::iterator_to<ItrT, Value>);
 		assert(end - begin == full_size<N>);
 	}
 	int n{0};
@@ -77,13 +76,13 @@ inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 	{
 		Location<N> loc(n++); // start at 0!
 		const auto value = static_cast<value_t>(*itr);
-		if (value > 0 && board.at(loc).is_option(value))
+		if (value > Value{0} && board.at(loc).is_option(value))
 		{
 			setValue(board, loc, value);
 			single_option(board, loc, value);
 		}
 		// check invalid value or conflict
-		assert(value == 0 || board.at(loc).is_answer(value));
+		assert(value == Value{0} || board.at(loc).is_answer(value));
 	}
 	assert(n == full_size<N>);
 }
@@ -99,25 +98,22 @@ inline auto set_uniques(
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(worker.test(0)); // answer-bit always set (unanswered)
-								// not required when using count_all()
 	}
 	int changes{0};
 
-	if (worker.count_all() > 0) //! performs better (here) than count()
+	if (worker.count_all() > 0)
 	{
 		const auto begin = section.cbegin();
 		const auto end   = section.cend();
 
-		for (value_t value{1}; value < static_cast<value_t>(worker.size());
-			 ++value)
+		for (size_t val{1}; val < worker.size(); ++val)
 		{
-			if (worker[value])
+			if (const Value value{val}; worker[value])
 			{
 				const auto itr = std::find_if( // <algorithm>
 					begin,
 					end,
-					[value](Options O) { return O.is_option(value); });
+					[value](Options O) { return O.test(value); });
 				if (itr != end)
 				{
 					setValue(board, itr.location(), value);
@@ -154,11 +150,10 @@ inline int set_section_locals(
 	}
 	int changes{0};
 
-	for (value_t value{1}; // start at 1, to skip the answer-bit
-		 value < static_cast<value_t>(worker.size());
-		 ++value)
+	// start at 1, to skip the answer-bit
+	for (size_t val{1}; val < worker.size(); ++val)
 	{
-		if (worker[value])
+		if (const Value value{val}; worker[value])
 		{
 			const auto locations = find_locations<N>(section, value, rep_count);
 			if (locations.size() != static_cast<size_t>(rep_count))
@@ -194,11 +189,10 @@ inline int set_section_locals(
 	}
 	int changes{0};
 
-	for (value_t value{1}; // start at 1, to skip the answer-bit
-		 value < static_cast<value_t>(worker.size());
-		 ++value)
+	// start at 1, to skip the answer-bit
+	for (size_t val{1}; val < worker.size(); ++val)
 	{
-		if (worker[value])
+		if (const Value value{val}; worker[value])
 		{
 			const auto locations = find_locations<N>(block, value, rep_count);
 			if (locations.size() != static_cast<size_t>(rep_count))

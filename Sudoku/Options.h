@@ -1,12 +1,12 @@
-//===--	Sudoku/Options.h												--===//
+//===--- Sudoku/Options.h												---===//
 //
 // Data object containing and managing available options.
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Templated with element size.
 //
 // The 0-bit is the inverse answer-bit. if [0]==0 the answer is set.
 //
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #pragma once
 
 #include "Value.h"
@@ -42,7 +42,7 @@ public:
 	Options& add_nocheck(value_t) noexcept; // add single option
 	Options& set_nocheck(value_t) noexcept; // set to answer
 
-	constexpr int size() const noexcept;
+	constexpr size_t size() const noexcept;
 	int count() const noexcept;      // count available options
 	int count_all() const noexcept;  // count all options (incl answer)
 	bool all() const noexcept;       // if all options available = all bits set
@@ -75,7 +75,7 @@ private:
 	// false if answer has been set = inverse of answer
 	bitset data_{};
 
-	value_t read_next(value_t start = 0) const noexcept;
+	Value read_next(Value start = Value{0}) const noexcept;
 	Options& operator&=(const Options&) noexcept; // NOTE might be risky
 	template<int E>
 	friend Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
@@ -116,7 +116,7 @@ Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
 namespace
 {
 	// convert to a number for use in std::bitset to use a unique bit per value
-	constexpr value_t exp2_(value_t value) noexcept
+	constexpr size_t exp2_(size_t value) noexcept
 	{
 		return (value < 1) ? 1 : (2 * exp2_(--value));
 	}
@@ -154,16 +154,16 @@ inline Options<E>::Options(bitset&& other) : data_{other}
 //	construct with single option set to answer
 template<int E>
 constexpr Options<E>::Options(const value_t value) noexcept
-	: data_{exp2_(value)}
+	: data_{exp2_(size_t(value))}
 {
-	assert(value <= E);
+	assert(value <= Value{E});
 }
 
 //	set to answer value
 template<int E>
 inline Options<E>& Options<E>::operator=(const value_t value) noexcept
 {
-	data_ = exp2_(value);
+	data_ = exp2_(size_t(value));
 	return *this;
 }
 
@@ -212,10 +212,10 @@ inline Options<E>& Options<E>::flip() noexcept
 template<int E>
 inline Options<E>& Options<E>::remove_option(const value_t value) noexcept
 {
-	assert(value <= E);
+	assert(value <= Value{E});
 	assert(!is_answer(value));
 
-	data_[value] = false;
+	data_[size_t(value)] = false;
 	return *this;
 }
 
@@ -231,8 +231,8 @@ inline Options<E>& Options<E>::add(const value_t value)
 template<int E>
 inline Options<E>& Options<E>::add_nocheck(const value_t value) noexcept
 {
-	assert(value <= E);
-	data_[value] = true;
+	assert(value <= Value{E});
+	data_[size_t(value)] = true;
 	return *this;
 }
 
@@ -253,10 +253,11 @@ inline Options<E>& Options<E>::set_nocheck(const value_t value) noexcept
 }
 
 template<int E>
-inline constexpr int Options<E>::size() const noexcept
+inline constexpr size_t Options<E>::size() const noexcept
 {
-	return static_cast<int>(data_.size()); // bits
-										   //??? size() -1 better?
+	return data_.size(); // bits
+
+	//??? size() -1 better?
 	// The current implementation works with size() being 1 past the last
 	// element But the usage allows for size()-1 options to be stored Where the
 	// direct value to location implementation is just convenient The 0th
@@ -299,7 +300,7 @@ inline bool Options<E>::all() const noexcept
 template<int E>
 inline bool Options<E>::test(const value_t value) const
 {
-	return data_.test(value);
+	return data_.test(size_t(value));
 }
 
 //	check if set to answer
@@ -314,7 +315,7 @@ inline bool Options<E>::is_answer() const noexcept
 template<int E>
 inline bool Options<E>::is_answer(const value_t value) const noexcept
 {
-	assert(value <= E);
+	assert(value <= Value{E});
 	return (is_answer() && operator[](value));
 	// return *this == Options<E>(value);
 	// return data_ == std::bitset<E + 1>{static_cast<unsigned long
@@ -326,7 +327,7 @@ inline bool Options<E>::is_answer(const value_t value) const noexcept
 template<int E>
 inline bool Options<E>::is_option(const value_t value) const noexcept
 {
-	assert(value != 0 && value <= E);
+	assert(value != Value{0} && value <= Value{E});
 	// benched: this order is ~1.3 times faster
 	return (operator[](value) && !is_answer());
 
@@ -358,7 +359,7 @@ inline value_t Options<E>::get_answer() const noexcept
 	{
 		return read_next();
 	}
-	return 0;
+	return Value{0};
 }
 
 //	all available options
@@ -383,16 +384,16 @@ inline std::vector<value_t> Options<E>::available() const
 template<int E>
 inline bool Options<E>::operator[](const value_t value) const noexcept
 {
-	assert(value <= E);
-	return data_[value];
+	assert(value <= Value{E});
+	return data_[size_t(value)];
 }
 
 //	no-check access
 template<int E>
 inline auto Options<E>::operator[](const value_t value) noexcept
 {
-	assert(value <= E);
-	return data_[value];
+	assert(value <= Value{E});
+	return data_[size_t(value)];
 }
 
 template<int E>
@@ -509,17 +510,18 @@ inline std::string Options<E>::DebugString() const
 
 //	return next option in data
 template<int E>
-inline value_t Options<E>::read_next(value_t start) const noexcept
+inline Value Options<E>::read_next(Value start) const noexcept
 { // default value start = 0
-	++start;
-	for (value_t i = start; i <= E; ++i)
+	size_t i{start};
+	++i;
+	for (; i <= size_t{E}; ++i)
 	{
 		if (data_[i])
 		{
-			return i;
+			return Value{i};
 		}
 	}
-	return 0; // never triggered
+	return Value{0}; // never triggered
 }
 
 } // namespace Sudoku

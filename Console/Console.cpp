@@ -1,29 +1,33 @@
 // Sudoku.cpp : Defines the entry point for the console application.
 //
 
-#include <Sudoku/Solver.h>
 #include "Console.h"
+#include <Sudoku/Solver.h>
+#include <Sudoku/Value.h>
 
-#include <algorithm>	// min
-#include <iostream>
+#include <algorithm> // min
 #include <chrono>
+#include <iostream>
 
 
 void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 {
-	Sudoku::Board<int, 3> start;
-	Sudoku::Board<int, 3> answer;
-	std::copy(B_in.cbegin(), B_in.cend(), start.begin());
-	std::copy(A_in.cbegin(), A_in.cend(), answer.begin());
+	using Value = Sudoku::Value;
+
+	Sudoku::Board<Value, 3> start;
+	Sudoku::Board<Value, 3> answer;
+	std::transform(B_in.cbegin(), B_in.cend(), start.begin(), Sudoku::to_Value);
+	std::transform(
+		A_in.cbegin(), A_in.cend(), answer.begin(), Sudoku::to_Value);
 
 #ifdef _DEBUG
-	constexpr size_t repeat{1}; // runs (only keep fastest)
-	constexpr size_t reruns{1};   // reruns (fastest are summed)
+	constexpr int repeat{1}; // runs (only keep fastest)
+	constexpr int reruns{1}; // reruns (fastest are summed)
 #else
-	constexpr size_t repeat{1000}; // runs (only keep fastest)
-	constexpr size_t reruns{10};   // reruns (fastest are summed)
+	constexpr int repeat{1000}; // runs (only keep fastest)
+	constexpr int reruns{10};   // reruns (fastest are summed)
 #endif // _DEBUG
-	using time = std::chrono::time_point<std::chrono::steady_clock>;
+	using time     = std::chrono::time_point<std::chrono::steady_clock>;
 	using duration = std::chrono::duration<long long, std::nano>;
 
 	Sudoku::Board<Sudoku::Options<9>, 3> options{};
@@ -41,9 +45,9 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 		static duration tTotal_total{0};
 		static bool last{};
 
-		for (size_t j{}; j < reruns; ++j)
+		for (auto j{0}; j < reruns; ++j)
 		{
-			for (size_t i{}; i < repeat; ++i)
+			for (auto i{0}; i < repeat; ++i)
 			{
 				t0 = std::chrono::steady_clock::now();
 				Sudoku::Board<Sudoku::Options<9>, 3> local{};
@@ -104,9 +108,9 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 		static duration tTotal_total{0};
 		static bool last{};
 
-		for (size_t j{}; j < reruns; ++j)
+		for (auto j{0}; j < reruns; ++j)
 		{
-			for (size_t i{}; i < repeat; ++i)
+			for (auto i{0}; i < repeat; ++i)
 			{
 				t0 = std::chrono::steady_clock::now();
 				Sudoku::Board<Sudoku::Options<9>, 3> local{};

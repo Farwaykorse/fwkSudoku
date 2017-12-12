@@ -5,9 +5,10 @@
 #include <Sudoku/Location_Utilities.h>
 #include <Sudoku/Options.h>
 
+#include <gsl/gsl>
 #include <string>
+#include <iomanip> // setw(), setfill()
 #include <sstream>
-#include <iomanip>		// setw(), setfill()
 #include <utility>
 
 
@@ -58,15 +59,14 @@ void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
 }
 
 template<int N>
-Board<int, N> getResult(const Board<Options<elem_size<N>>, N>& options)
+Board<Value, N> getResult(const Board<Options<elem_size<N>>, N>& options)
 {
-	Board<int, N> result{};
+	Board<Value, N> result{};
 	for (int i = 0; i < full_size<N>; ++i)
 	{
 		if (options[Location<N>(i)].is_answer())
 		{
-			result[Location<N>(i)] =
-				static_cast<int>(options[Location<N>(i)].get_answer());
+			result[Location<N>(i)] = options[Location<N>(i)].get_answer();
 		}
 	}
 	return result;
@@ -260,15 +260,18 @@ std::stringstream
 {
 	std::stringstream stream;
 
-	unsigned int X{ 1 };
-	for (int k{ 0 }; k < base_size<N>; ++k)
+	auto X{1};
+	for (auto k{0}; k < base_size<N>; ++k)
 	{
 		stream << d.col_block << d.space;
-		for (int col{ 0 }; col < elem_size<N>; ++col)
+		for (auto col{0}; col < elem_size<N>; ++col)
 		{
-			for (unsigned int i{ X }; i < X + base_size<N>; ++i)
+			for (auto i{ X }; i < X + base_size<N>; ++i)
 			{
-				if (input[row_id][col].test(i)) { stream << i; }
+				if (input[row_id][col].test(to_Value(i)))
+				{
+					stream << i;
+				}
 				else { stream << d.empty; }
 			}
 			if ((col + 1) % base_size<N> == 0)
