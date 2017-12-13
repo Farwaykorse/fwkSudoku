@@ -200,13 +200,13 @@ TEST(Location, Construction)
 	EXPECT_EQ(Location<3>{Location<3>{6}}.element(), 6);
 
 	ASSERT_NO_THROW(Location<3> L1(12));
-	Location<3> L1(12);
+	const Location<3> L1(12);
 	EXPECT_EQ(L1.element(), 12);
 	ASSERT_NO_THROW(Location<3> L2(1, 8));
-	Location<3> L2(1, 8);
+	const Location<3> L2(1, 8);
 	EXPECT_EQ(L2.element(), 17);
 	ASSERT_NO_THROW([[maybe_unused]] Location<3> L3(Location<3>(6)));
-	Location<3> L3(Location<3>(6));
+	const Location<3> L3(Location<3>(6));
 	EXPECT_EQ(L3.element(), 6);
 	EXPECT_EQ(Location<3>(L3).element(), 6);
 	EXPECT_EQ(Location<3>{L3}.element(), 6);
@@ -312,25 +312,25 @@ TEST(Location_Block, Properties)
 	EXPECT_EQ(Location_Block<3>(2, 6).row(), 2);
 	EXPECT_EQ(Location_Block<3>(2, 6).col(), 0);
 
-	Location_Block<3> B1(2, 6);
+	const Location_Block<3> B1(2, 6);
 	EXPECT_EQ(B1.id(), 2);
 	EXPECT_EQ(B1.element(), 6);
 	EXPECT_EQ(B1.row(), 2);
 	EXPECT_EQ(B1.col(), 0);
 
-	Location<3> L1(B1);
+	const Location<3> L1(B1);
 	EXPECT_EQ(L1.block(), B1.id());
 	EXPECT_EQ(L1.block_elem(), B1.element());
 	EXPECT_EQ(L1.block_row(), B1.row());
 	EXPECT_EQ(L1.block_col(), B1.col());
 
-	Location_Block<3> B2(2, 1, 0);
+	const Location_Block<3> B2(2, 1, 0);
 	EXPECT_EQ(B2.id(), 2);
 	EXPECT_EQ(B2.element(), 3);
 	EXPECT_EQ(B2.row(), 1);
 	EXPECT_EQ(B2.col(), 0);
 
-	Location<3> L2(B2);
+	const Location<3> L2(B2);
 	EXPECT_EQ(L2.block(), B2.id());
 	EXPECT_EQ(L2.block_elem(), B2.element());
 	EXPECT_EQ(L2.block_row(), B2.row());
@@ -426,14 +426,14 @@ TEST(Location_Block, is_constexpr)
 	EXPECT_TRUE(noexcept(Location<3>() == Location_Block<3>(0, 2)));
 
 	// not precalculated
-	Location<3> L0{};
+	const Location<3> L0{};
 	EXPECT_FALSE(noexcept(Location_Block<3>(L0)));
-	Location_Block<3> B0{L0};
+	const Location_Block<3> B0{L0};
 	EXPECT_FALSE(noexcept(B0.id()));
 	EXPECT_FALSE(noexcept(B0.element()));
 	EXPECT_FALSE(noexcept(B0.row()));
 	EXPECT_FALSE(noexcept(B0.col()));
-	Location_Block<3> B1{2, 4};
+	const Location_Block<3> B1{2, 4};
 	EXPECT_FALSE(noexcept(B1.id()));
 	EXPECT_FALSE(noexcept(B1.element()));
 	EXPECT_FALSE(noexcept(B1.row()));

@@ -69,7 +69,7 @@ namespace compiletime
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);            // ++
-	static_assert(!std::is_nothrow_default_constructible_v<typeT>);   // --
+	static_assert(std::is_nothrow_default_constructible_v<typeT>);    // --
 	static_assert(!std::is_trivially_default_constructible_v<typeT>); // ++
 
 	// copy constructor: typeT(const typeT&)

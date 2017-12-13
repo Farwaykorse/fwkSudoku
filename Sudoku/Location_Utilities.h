@@ -55,19 +55,19 @@ std::vector<Location<N>>
 	get_same_block(const Location<N>, const std::vector<Location<N>>&);
 
 template<typename T, int N>
-bool is_same_section(Board_Section::const_Row<T, N>, Location<N>);
+bool is_same_section(Board_Section::const_Row<T, N>, Location<N>) noexcept;
 template<typename T, int N>
-bool is_same_section(Board_Section::const_Col<T, N>, Location<N>);
+bool is_same_section(Board_Section::const_Col<T, N>, Location<N>) noexcept;
 template<typename T, int N>
-bool is_same_section(Board_Section::const_Block<T, N>, Location<N>);
+bool is_same_section(Board_Section::const_Block<T, N>, Location<N>) noexcept;
 
 template<typename SectionT, int N>
 bool is_same_section(SectionT, std::vector<Location<N>>);
 
 template<typename T, int N>
-bool intersect_block(Board_Section::const_Row<T, N>, Location<N>);
+bool intersect_block(Board_Section::const_Row<T, N>, Location<N>) noexcept;
 template<typename T, int N>
-bool intersect_block(Board_Section::const_Col<T, N>, Location<N>);
+bool intersect_block(Board_Section::const_Col<T, N>, Location<N>) noexcept;
 
 //===----------------------------------------------------------------------===//
 
@@ -77,7 +77,7 @@ template<int N>
 constexpr void valid_dimensions() noexcept
 {
 	// input check
-	static_assert(base_size<N> > 1, "base_size too small");
+	static_assert((base_size<N>) > 1, "base_size too small");
 	static_assert(
 		base_size<N> < elem_size<N> && elem_size<N> <= full_size<N> &&
 			base_size<N> < std::numeric_limits<int>::max() && // <limits>
@@ -151,7 +151,7 @@ std::vector<Location<N>>
 	get_same_row(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> output{};
-	auto predicate = [&left](Location<N> loc) {
+	const auto predicate = [&left](Location<N> loc) {
 		return is_same_row(left, loc);
 	};
 	std::copy_if(
@@ -185,7 +185,7 @@ std::vector<Location<N>>
 	get_same_col(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> output{};
-	auto predicate = [&left](Location<N> loc) {
+	const auto predicate = [&left](Location<N> loc) {
 		return is_same_col(left, loc);
 	};
 	std::copy_if(
@@ -220,7 +220,7 @@ std::vector<Location<N>> get_same_block(
 	const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> output{};
-	auto predicate = [&left](Location<N> loc) {
+	const auto predicate = [&left](Location<N> loc) {
 		return is_same_block(left, loc);
 	};
 	std::copy_if(
@@ -231,7 +231,8 @@ std::vector<Location<N>> get_same_block(
 // check: [loc] is in [section]
 template<typename T, int N>
 inline bool is_same_section(
-	const Board_Section::const_Row<T, N> section, const Location<N> loc)
+	const Board_Section::const_Row<T, N> section,
+	const Location<N> loc) noexcept
 {
 	return is_same_row(loc, section.cbegin().location());
 }
@@ -239,7 +240,8 @@ inline bool is_same_section(
 // check: [loc] is in [section]
 template<typename T, int N>
 inline bool is_same_section(
-	const Board_Section::const_Col<T, N> section, const Location<N> loc)
+	const Board_Section::const_Col<T, N> section,
+	const Location<N> loc) noexcept
 {
 	return is_same_col(loc, section.cbegin().location());
 }
@@ -247,7 +249,8 @@ inline bool is_same_section(
 // check: [loc] is in [section]
 template<typename T, int N>
 inline bool is_same_section(
-	const Board_Section::const_Block<T, N> section, const Location<N> loc)
+	const Board_Section::const_Block<T, N> section,
+	const Location<N> loc) noexcept
 {
 	return is_same_block(loc, section.cbegin().location());
 }
@@ -255,7 +258,8 @@ inline bool is_same_section(
 // check: [section] intersects block containing [loc]
 template<typename T, int N>
 inline bool intersect_block(
-	const Board_Section::const_Row<T, N> section, const Location<N> block_loc)
+	const Board_Section::const_Row<T, N> section,
+	const Location<N> block_loc) noexcept
 {
 	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
 	{
@@ -270,7 +274,8 @@ inline bool intersect_block(
 // check: [section] intersects block containing [loc]
 template<typename T, int N>
 inline bool intersect_block(
-	const Board_Section::const_Col<T, N> section, const Location<N> block_loc)
+	const Board_Section::const_Col<T, N> section,
+	const Location<N> block_loc) noexcept
 {
 	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
 	{
@@ -287,9 +292,10 @@ template<typename SectionT, int N>
 inline bool
 	is_same_section(const SectionT section, const std::vector<Location<N>> locs)
 {
-	return std::any_of(locs.cbegin(), locs.cend(), [section](Location<N> L) {
-		return is_same_section(section, L);
-	});
+	return std::any_of(
+		locs.cbegin(), locs.cend(), [section](Location<N> L) noexcept {
+			return is_same_section(section, L);
+		});
 }
 
 } // namespace Sudoku

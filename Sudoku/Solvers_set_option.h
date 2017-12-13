@@ -74,8 +74,8 @@ inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 	int n{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		Location<N> loc(n++); // start at 0!
-		Value value{};
+		const Location<N> loc(n++); // start at 0!
+		const Value value{};
 		if constexpr (Utility_::iterator_to<ItrT, Value>)
 		{
 			value = *itr;

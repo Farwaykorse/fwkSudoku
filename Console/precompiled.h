@@ -14,7 +14,7 @@
 #include "targetver.h"
 
 // console
-#include <stdio.h>
+#include <cstdio>
 #include <tchar.h>
 
 #define _setargv 0 // disable commandline arguments

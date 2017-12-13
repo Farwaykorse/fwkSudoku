@@ -99,7 +99,7 @@ TEST(Solver, unique_in_section)
 	}; // clang-format on
 	Board<Options<4>, 2> B3;
 	// reset
-	auto reset_B3 = [&]() {
+	const auto reset_B3 = [&]() {
 		B3.clear();
 		ASSERT_TRUE(B3[0][0].all());
 		EXPECT_NO_THROW(setValue(B3, v3.cbegin(), v3.cend()));
@@ -138,7 +138,7 @@ TEST(Solver, section_exclusive)
 		}; // clang-format on
 		Board<Options<4>, 2> B3;
 		// reset
-		auto reset_B3 = [&]() {
+		const auto reset_B3 = [&]() {
 			B3.clear();
 			ASSERT_TRUE(B3[0][0].all());
 			EXPECT_NO_THROW(setValue(B3, v3.cbegin(), v3.cend()));
@@ -579,7 +579,7 @@ TEST(Solver, section_exclusive)
 	//		double: 1 in row 2;	2 not paired
 	// block 2
 	//		unique: 8=3
-	int count_s = section_exclusive(B2, B2.block(2));
+	const int count_s = section_exclusive(B2, B2.block(2));
 
 	EXPECT_GE(count_s, 1)
 		<< "section_exclusive(block) should find at least 1 value";

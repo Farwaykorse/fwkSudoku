@@ -437,7 +437,7 @@ TEST(Solver, deathtest_set_option)
 		B5[0][3] = set{"11011"};
 		B5[1][0] = set{"11011"};
 		B5[1][1] = set{"11011"};
-		Options<4> worker{2};
+		const Options<4> worker{2};
 		ASSERT_TRUE(worker[2]);
 		EXPECT_DEBUG_DEATH(
 			set_section_locals(B5, B5.block(0), 2, worker),

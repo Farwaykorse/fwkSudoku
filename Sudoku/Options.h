@@ -25,8 +25,8 @@ class Options
 
 public:
 	Options() noexcept;
-	explicit Options(const bitset&); // 0th bit is last in input
-	explicit Options(bitset&&);
+	explicit Options(const bitset&) noexcept; // 0th bit is last in input
+	explicit Options(bitset&&) noexcept;
 	constexpr Options(Value) noexcept;
 	Options& operator=(Value) noexcept;
 	Options& operator=(const bitset&) noexcept;
@@ -142,12 +142,12 @@ Options<E>::Options() noexcept
 }
 
 template<int E>
-inline Options<E>::Options(const bitset& other) : data_(other)
+inline Options<E>::Options(const bitset& other) noexcept : data_(other)
 { // empty constructor
 }
 
 template<int E>
-inline Options<E>::Options(bitset&& other) : data_{other}
+inline Options<E>::Options(bitset&& other) noexcept : data_{other}
 { // empty constructor
 }
 
