@@ -69,14 +69,21 @@ inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 {
 	{
 		static_assert(Utility_::is_forward<ItrT>);
-		static_assert(Utility_::iterator_to<ItrT, Value>);
 		assert(end - begin == full_size<N>);
 	}
 	int n{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		Location<N> loc(n++); // start at 0!
-		const auto value = *itr;
+		Value value{};
+		if constexpr (Utility_::iterator_to<ItrT, Value>)
+		{
+			value = *itr;
+		}
+		else
+		{
+			value = to_Value(*itr);
+		}
 		if (value > Value{0} && board.at(loc).is_option(value))
 		{
 			setValue(board, loc, value);
