@@ -557,7 +557,7 @@ public:
 		--elem_;
 		return *this;
 	}
-	self_type operator--(int) noexcept // postdecrement
+	const self_type operator--(int) noexcept // postdecrement
 	{
 		const self_type pre{*this};
 		operator--();
