@@ -49,7 +49,7 @@ class const_Row : public Section<T, N>
 	{
 		assert(is_valid_size<N>(row));
 	}
-	const_Row(const Board<T, N>& owner, const Location loc)
+	const_Row(const Board<T, N>& owner, const Location loc) noexcept
 		: owner_(owner), id_(loc.row())
 	{
 		assert(is_valid(loc));
@@ -71,14 +71,14 @@ public:
 	}
 	// clang-format off
 	using const_iterator = const_iterator<T, N, self_type>;
-	const_iterator cbegin() const  {return const_iterator(this);}
-	const_iterator cend() const    {return const_iterator(this, size());}
-	const_iterator begin() const   {return cbegin();}
-	const_iterator end() const     {return cend();}
+	const_iterator cbegin() const noexcept {return const_iterator(this);}
+	const_iterator cend() const noexcept  {return const_iterator(this, size());}
+	const_iterator begin() const noexcept {return cbegin();}
+	const_iterator end() const noexcept   {return cend();}
 	constexpr auto crbegin() const {return std::make_reverse_iterator(cend());}
-	constexpr auto crend() const   {return std::make_reverse_iterator(cbegin());}
-	auto rbegin() const            {return crbegin();}
-	auto rend() const              {return crend();}
+	constexpr auto crend() const {return std::make_reverse_iterator(cbegin());}
+	auto rbegin() const noexcept {return crbegin();}
+	auto rend() const noexcept   {return crend();}
 	// clang-format on
 	constexpr Location location(const int element) const noexcept
 	{
@@ -111,10 +111,11 @@ class const_Col : public const_Row<T, N>
 	friend class Col<T, N>;
 	friend class const_iterator<T, N, self_type>;
 
-	const_Col(const Board<T, N>& owner, const int col) : const_Row(owner, col)
+	const_Col(const Board<T, N>& owner, const int col) noexcept
+		: const_Row(owner, col)
 	{
 	}
-	const_Col(const Board<T, N>& owner, const Location loc)
+	const_Col(const Board<T, N>& owner, const Location loc) noexcept
 		: const_Row(owner, loc.col())
 	{
 		assert(is_valid(loc));
@@ -132,14 +133,14 @@ public:
 	}
 	// clang-format off
 	using const_iterator = const_iterator<T, N, self_type>;
-	const_iterator cbegin() const  { return const_iterator(this); }
-	const_iterator cend() const    { return const_iterator(this, size()); }
-	const_iterator begin() const   { return cbegin(); }
-	const_iterator end() const     { return cend(); }
-	constexpr auto crbegin() const { return std::make_reverse_iterator(cend()); }
-	constexpr auto crend() const   { return std::make_reverse_iterator(cbegin()); }
-	auto rbegin() const            { return crbegin(); }
-	auto rend() const              { return crend(); }
+	const_iterator cbegin() const noexcept {return const_iterator(this);}
+	const_iterator cend() const noexcept  {return const_iterator(this, size());}
+	const_iterator begin() const noexcept {return cbegin();}
+	const_iterator end() const noexcept   {return cend();}
+	constexpr auto crbegin() const {return std::make_reverse_iterator(cend());}
+	constexpr auto crend() const   {return std::make_reverse_iterator(cbegin());}
+	auto rbegin() const noexcept   {return crbegin();}
+	auto rend() const noexcept     {return crend();}
 	// clang-format on
 	constexpr Location location(const int element) const noexcept
 	{
@@ -160,10 +161,11 @@ class const_Block : public const_Row<T, N>
 	friend class Block<T, N>;
 	friend class const_iterator<T, N, self_type>;
 
-	const_Block(const Board<T, N>& owner, const int id) : const_Row(owner, id)
+	const_Block(const Board<T, N>& owner, const int id) noexcept
+		: const_Row(owner, id)
 	{
 	}
-	const_Block(const Board<T, N>& owner, const Location loc)
+	const_Block(const Board<T, N>& owner, const Location loc) noexcept
 		: const_Row(owner, loc.block())
 	{
 		assert(is_valid(loc));
@@ -181,14 +183,14 @@ public:
 	}
 	// clang-format off
 	using const_iterator = const_iterator<T, N, self_type>;
-	const_iterator cbegin() const  { return const_iterator(this); }
-	const_iterator cend() const    { return const_iterator(this, size()); }
-	const_iterator begin() const   { return cbegin(); }
-	const_iterator end() const     { return cend(); }
-	constexpr auto crbegin() const { return std::make_reverse_iterator(cend()); }
-	constexpr auto crend() const   { return std::make_reverse_iterator(cbegin()); }
-	auto rbegin() const            { return crbegin(); }
-	auto rend() const              { return crend(); }
+	const_iterator cbegin() const noexcept {return const_iterator(this);}
+	const_iterator cend() const noexcept  {return const_iterator(this, size());}
+	const_iterator begin() const noexcept {return cbegin();}
+	const_iterator end() const noexcept   {return cend();}
+	constexpr auto crbegin() const {return std::make_reverse_iterator(cend());}
+	constexpr auto crend() const  {return std::make_reverse_iterator(cbegin());}
+	auto rbegin() const noexcept  {return crbegin();}
+	auto rend() const noexcept    {return crend();}
 	// clang-format on
 	constexpr Location location(const int element) const noexcept
 	{
@@ -209,11 +211,11 @@ class Row : public const_Row<T, N>
 	friend class iterator<T, N, self_type>;
 	friend class const_iterator<T, N, self_type>;
 
-	Row(Board<T, N>& owner, int row)
+	Row(Board<T, N>& owner, int row) noexcept
 		: const_Row<T, N>(owner, row), owner_(owner), id_(row)
 	{
 	}
-	Row(Board<T, N>& owner, Location loc)
+	Row(Board<T, N>& owner, Location loc) noexcept
 		: const_Row<T, N>(owner, loc.row()), owner_(owner), id_(loc.row())
 	{
 		assert(is_valid(loc));
@@ -230,10 +232,10 @@ public:
 	}
 	// clang-format off
 	using iterator = iterator<T, N, self_type>;
-	iterator begin()        { return iterator(this); }
-	iterator end()          { return iterator(this, size()); }
-	constexpr auto rbegin() { return std::make_reverse_iterator(end()); }
-	constexpr auto rend()   { return std::make_reverse_iterator(begin()); }
+	iterator begin() noexcept { return iterator(this); }
+	iterator end() noexcept   { return iterator(this, size()); }
+	constexpr auto rbegin()   { return std::make_reverse_iterator(end()); }
+	constexpr auto rend()     { return std::make_reverse_iterator(begin()); }
 	// clang-format on
 
 private:
@@ -260,8 +262,11 @@ class Col : public const_Col<T, N>
 	friend class iterator<T, N, self_type>;
 	friend class const_iterator<T, N, self_type>;
 
-	Col(Board<T, N>& owner, int col) : const_Col(owner, col), owner_(owner) {}
-	Col(Board<T, N>& owner, Location loc)
+	Col(Board<T, N>& owner, int col) noexcept
+		: const_Col(owner, col), owner_(owner)
+	{
+	}
+	Col(Board<T, N>& owner, Location loc) noexcept
 		: const_Col(owner, loc.col()), owner_(owner)
 	{
 		assert(is_valid(loc));
@@ -278,10 +283,10 @@ public:
 	}
 	// clang-format off
 	using iterator = iterator<T, N, self_type>;
-	iterator begin()        { return iterator(this); }
-	iterator end()          { return iterator(this, size()); }
-	constexpr auto rbegin() { return std::make_reverse_iterator(end()); }
-	constexpr auto rend()   { return std::make_reverse_iterator(begin()); }
+	iterator begin() noexcept { return iterator(this); }
+	iterator end() noexcept   { return iterator(this, size()); }
+	constexpr auto rbegin()   { return std::make_reverse_iterator(end()); }
+	constexpr auto rend()     { return std::make_reverse_iterator(begin()); }
 	// clang-format on
 
 private:
@@ -306,8 +311,11 @@ class Block : public const_Block<T, N>
 	friend class iterator<T, N, self_type>;
 	friend class const_iterator<T, N, self_type>;
 
-	Block(Board<T, N>& owner, int id) : const_Block(owner, id), owner_(owner) {}
-	Block(Board<T, N>& owner, Location loc)
+	Block(Board<T, N>& owner, int id) noexcept
+		: const_Block(owner, id), owner_(owner)
+	{
+	}
+	Block(Board<T, N>& owner, Location loc) noexcept
 		: const_Block(owner, loc.block()), owner_(owner)
 	{
 		assert(is_valid(loc));
@@ -324,10 +332,10 @@ public:
 	}
 	// clang-format off
 	using iterator = iterator<T, N, self_type>;
-	iterator begin()        { return iterator(this); }
-	iterator end()          { return iterator(this, size()); }
-	constexpr auto rbegin() { return std::make_reverse_iterator(end()); }
-	constexpr auto rend()   { return std::make_reverse_iterator(begin()); }
+	iterator begin() noexcept { return iterator(this); }
+	iterator end() noexcept   { return iterator(this, size()); }
+	constexpr auto rbegin()   { return std::make_reverse_iterator(end()); }
+	constexpr auto rend()     { return std::make_reverse_iterator(begin()); }
 	// clang-format on
 private:
 	Board<T, N>& owner_; // const-pointer
@@ -371,7 +379,7 @@ public:
 		++elem_;
 		return *this;
 	}
-	const self_type operator++(int)
+	const self_type operator++(int) noexcept
 	{
 		const self_type pre{*this};
 		operator++();
@@ -384,12 +392,12 @@ public:
 	}
 
 	// Input iterator
-	bool operator==(const self_type& other) const
+	bool operator==(const self_type& other) const noexcept
 	{
 		assert(is_same(other));
 		return elem_ == other.elem_ && is_same(other);
 	}
-	bool operator!=(const self_type& other) const
+	bool operator!=(const self_type& other) const noexcept
 	{
 		return (!(*this == other));
 	}
@@ -407,12 +415,12 @@ public:
 	}
 
 	// Bidirectional iterator
-	self_type& operator--()
+	self_type& operator--() noexcept // predecrement
 	{
 		--elem_;
 		return *this;
-	}                               // predecrement
-	const self_type operator--(int) // postdecrement
+	}
+	const self_type operator--(int) noexcept // postdecrement
 	{
 		const self_type pre{*this};
 		operator--();
@@ -420,26 +428,26 @@ public:
 	}
 
 	// RandomAccess iterator
-	self_type& operator+=(const difference_type offset)
+	self_type& operator+=(const difference_type offset) noexcept
 	{
 		elem_ += offset;
 		return *this;
 	}
-	self_type operator+(const difference_type offset) const
+	self_type operator+(const difference_type offset) const noexcept
 	{
 		self_type tmp{*this};
 		return (tmp += offset);
 	}
-	self_type& operator-=(const difference_type offset)
+	self_type& operator-=(const difference_type offset) noexcept
 	{
 		return operator+=(-offset);
 	}
-	self_type operator-(const difference_type offset) const
+	self_type operator-(const difference_type offset) const noexcept
 	{
 		self_type tmp{*this};
 		return (tmp += -offset);
 	}
-	difference_type operator-(const self_type& other) const
+	difference_type operator-(const self_type& other) const noexcept
 	{
 		assert(is_same(other));
 		return elem_ - other.elem_;
@@ -449,14 +457,23 @@ public:
 		return (*(*this + offset));
 	}
 
-	bool operator<(const self_type& other) const
+	bool operator<(const self_type& other) const noexcept
 	{
 		assert(is_same(other));
 		return elem_ < other.elem_;
 	}
-	bool operator>(const self_type& other) const { return (other < *this); }
-	bool operator<=(const self_type& other) const { return (!(other < *this)); }
-	bool operator>=(const self_type& other) const { return (!(*this < other)); }
+	bool operator>(const self_type& other) const noexcept
+	{
+		return (other < *this);
+	}
+	bool operator<=(const self_type& other) const noexcept
+	{
+		return (!(other < *this));
+	}
+	bool operator>=(const self_type& other) const noexcept
+	{
+		return (!(*this < other));
+	}
 
 	Location<N> location() const noexcept { return owner_->location(elem_); }
 
@@ -499,7 +516,7 @@ public:
 		++elem_;
 		return *this;
 	}
-	const self_type operator++(int)
+	const self_type operator++(int) noexcept
 	{
 		const self_type pre = *this;
 		operator++();
@@ -512,12 +529,12 @@ public:
 	}
 
 	// Input iterator
-	bool operator==(const self_type& other) const
+	bool operator==(const self_type& other) const noexcept
 	{
 		assert(is_same(other));
 		return elem_ == other.elem_ && is_same(other);
 	}
-	bool operator!=(const self_type& other) const
+	bool operator!=(const self_type& other) const noexcept
 	{
 		return !(operator==(other));
 	}
@@ -530,17 +547,17 @@ public:
 	}
 
 	// Forward iterator
-	iterator() : owner_()
+	iterator() noexcept : owner_()
 	{ // construct with null pointer
 	}
 
 	// Bidirectional iterator
-	self_type& operator--()
+	self_type& operator--() noexcept // predecrement
 	{
 		--elem_;
 		return *this;
-	}                               // predecrement
-	const self_type operator--(int) // postdecrement
+	}
+	self_type operator--(int) noexcept // postdecrement
 	{
 		const self_type pre{*this};
 		operator--();
@@ -548,26 +565,26 @@ public:
 	}
 
 	// RandomAccess iterator
-	self_type& operator+=(const difference_type offset)
+	self_type& operator+=(const difference_type offset) noexcept
 	{
 		elem_ += offset;
 		return *this;
 	}
-	self_type operator+(const difference_type offset) const
+	self_type operator+(const difference_type offset) const noexcept
 	{
 		self_type tmp{*this};
 		return (tmp += offset);
 	}
-	self_type& operator-=(const difference_type offset)
+	self_type& operator-=(const difference_type offset) noexcept
 	{
 		return operator+=(-offset);
 	}
-	self_type operator-(const difference_type offset) const
+	self_type operator-(const difference_type offset) const noexcept
 	{
 		self_type tmp{*this};
 		return (tmp += -offset);
 	}
-	difference_type operator-(const self_type& other) const
+	difference_type operator-(const self_type& other) const noexcept
 	{
 		assert(is_same(other));
 		return elem_ - other.elem_;
@@ -576,14 +593,23 @@ public:
 	{
 		return (*(*this + offset));
 	}
-	bool operator<(const self_type& other) const
+	bool operator<(const self_type& other) const noexcept
 	{
 		assert(is_same(other));
 		return elem_ < other.elem_;
 	}
-	bool operator>(const self_type& other) const { return (other < *this); }
-	bool operator<=(const self_type& other) const { return (!(other < *this)); }
-	bool operator>=(const self_type& other) const { return (!(*this < other)); }
+	bool operator>(const self_type& other) const noexcept
+	{
+		return (other < *this);
+	}
+	bool operator<=(const self_type& other) const noexcept
+	{
+		return (!(other < *this));
+	}
+	bool operator>=(const self_type& other) const noexcept
+	{
+		return (!(*this < other));
+	}
 
 	Location<N> location() const noexcept { return owner_->location(elem_); }
 

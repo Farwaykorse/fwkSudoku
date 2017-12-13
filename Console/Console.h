@@ -58,7 +58,7 @@ void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
 }
 
 template<int N>
-Board<int, N> getResult(const Board<Options<elem_size<N>>, N>& options)
+Board<int, N> getResult(const Board<Options<elem_size<N>>, N>& options) noexcept
 {
 	Board<int, N> result{};
 	for (int i = 0; i < full_size<N>; ++i)

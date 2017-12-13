@@ -76,7 +76,7 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 		assert(is_valid(loc));
 		assert(board.at(loc).count() == 2);
 	}
-	auto sorted_loc = [loc](const Location L) {
+	const auto sorted_loc = [loc](const Location L) {
 		const auto result = std::minmax(loc, L);
 		return std::vector<Location>{result.first, result.second};
 	};

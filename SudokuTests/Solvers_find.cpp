@@ -90,7 +90,7 @@ TEST(Solver, find_locations)
 	EXPECT_EQ(list[1], loc(3));
 
 	// find Options
-	Options<4> value{set{"10011"}};
+	const Options<4> value{set{"10011"}};
 	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), value));
 	EXPECT_EQ(list.size(), 1);
 	EXPECT_EQ(list[0], loc(2));
@@ -233,7 +233,7 @@ TEST(Solvers_, appearance_sets)
 
 	// Using iterators
 	{
-		auto result =
+		const auto result =
 			appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
 		EXPECT_EQ(result[0], Ans_0);
 		EXPECT_EQ(result[1], Ans_1);
@@ -245,7 +245,7 @@ TEST(Solvers_, appearance_sets)
 	board[0][8] = std::bitset<10>{"0000010000"}; // ans 4
 	board[0][5] = std::bitset<10>{"0100001011"};
 	{
-		auto result =
+		const auto result =
 			appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
 		EXPECT_EQ(result[0], Ans_0);
 		EXPECT_EQ(result[1], Ans_1);
@@ -256,7 +256,7 @@ TEST(Solvers_, appearance_sets)
 	board[0][8] = std::bitset<10>{"1001100101"};
 	board[0][7] = std::bitset<10>{"0000010000"}; // ans 4
 	{
-		auto result =
+		const auto result =
 			appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
 		EXPECT_EQ(result[0], Ans_0);
 		EXPECT_EQ(result[1], Ans_1);
@@ -274,7 +274,7 @@ TEST(Solvers_, appearance_sets)
 	board[0][1] = std::bitset<10>{"1001100101"};
 	board[0][8] = std::bitset<10>{"0100001011"}; // 8 -> 8
 	{
-		auto result =
+		const auto result =
 			appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
 		EXPECT_EQ(result[0], Ans_0);
 		EXPECT_EQ(result[1], Ans_1);
@@ -292,7 +292,7 @@ TEST(Solvers_, appearance_sets)
 	board[0][7] = std::bitset<10>{"1001100101"};
 	board[0][8] = std::bitset<10>{"0100001011"};
 	{
-		auto result = appearance_sets<3>(board.row(0));
+		const auto result = appearance_sets<3>(board.row(0));
 		EXPECT_EQ(result[0], Ans_0);
 		EXPECT_EQ(result[1], Ans_1);
 		EXPECT_EQ(result[2], Ans_2);
@@ -303,7 +303,7 @@ TEST(Solvers_, appearance_sets)
 	board[0][8] = std::bitset<10>{"0000010000"}; // ans 4
 	board[0][5] = std::bitset<10>{"0100001011"};
 	{
-		auto result = appearance_sets<3>(board.row(0));
+		const auto result = appearance_sets<3>(board.row(0));
 		EXPECT_EQ(result[0], Ans_0);
 		EXPECT_EQ(result[1], Ans_1);
 		EXPECT_EQ(result[2], Ans_2);
@@ -313,7 +313,7 @@ TEST(Solvers_, appearance_sets)
 	board[0][8] = std::bitset<10>{"1001100101"};
 	board[0][7] = std::bitset<10>{"0000010000"}; // ans 4
 	{
-		auto result = appearance_sets<3>(board.row(0));
+		const auto result = appearance_sets<3>(board.row(0));
 		EXPECT_EQ(result[0], Ans_0);
 		EXPECT_EQ(result[1], Ans_1);
 		EXPECT_EQ(result[2], Ans_2);
@@ -333,14 +333,15 @@ TEST(Solvers_, appearance_sets)
 	B2[7][0] = std::bitset<10>{"1001100101"};
 	B2[8][0] = std::bitset<10>{"0100001011"};
 	{ // Using iterators
-		auto result = appearance_sets<3>(B2.col(0).cbegin(), B2.col(0).cend());
+		const auto result =
+			appearance_sets<3>(B2.col(0).cbegin(), B2.col(0).cend());
 		EXPECT_EQ(result[0], Ans_0);
 		EXPECT_EQ(result[1], Ans_1);
 		EXPECT_EQ(result[2], Ans_2);
 		EXPECT_EQ(result[3], Ans_3);
 	}
 	{ // using Col
-		auto result = appearance_sets<3>(B2.col(0));
+		const auto result = appearance_sets<3>(B2.col(0));
 		EXPECT_EQ(result[0], Ans_0);
 		EXPECT_EQ(result[1], Ans_1);
 		EXPECT_EQ(result[2], Ans_2);
@@ -360,7 +361,7 @@ TEST(Solvers_, appearance_sets)
 	B3[B(2, 7)] = std::bitset<10>{"1001100101"};
 	B3[B(2, 8)] = std::bitset<10>{"0100001011"};
 	{ // using iterators
-		auto result =
+		const auto result =
 			appearance_sets<3>(B3.block(2).cbegin(), B3.block(2).cend());
 		EXPECT_EQ(result[0], Ans_0);
 		EXPECT_EQ(result[1], Ans_1);
@@ -368,7 +369,7 @@ TEST(Solvers_, appearance_sets)
 		EXPECT_EQ(result[3], Ans_3);
 	}
 	{ // using Block
-		auto result = appearance_sets<3>(B3.block(2));
+		const auto result = appearance_sets<3>(B3.block(2));
 		EXPECT_EQ(result[0], Ans_0);
 		EXPECT_EQ(result[1], Ans_1);
 		EXPECT_EQ(result[2], Ans_2);

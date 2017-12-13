@@ -38,10 +38,10 @@ template<int N, typename SectionT>
 auto find_locations(SectionT, Options<elem_size<N>> value);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-Options appearance_once(SectionT section);
+Options appearance_once(SectionT section) noexcept;
 
 template<int N, typename Options = Options<elem_size<N>>, typename InItr_>
-Options appearance_once(const InItr_ begin, const InItr_ end);
+Options appearance_once(const InItr_ begin, const InItr_ end) noexcept;
 
 template<int N, typename SectionT>
 auto appearance_sets(const SectionT section);
@@ -88,8 +88,9 @@ auto find_locations(
 
 	for (int i{0}; i < rep_count; ++i)
 	{
-		last = std::find_if(
-			last, end, [value](Options O) { return O.is_option(value); });
+		last = std::find_if(last, end, [value](Options O) noexcept {
+			return O.is_option(value);
+		});
 		if (last == end)
 		{ // rep_count too large
 			break;
@@ -222,7 +223,7 @@ inline auto appearance_sets(const SectionT section)
 // return a mask for values with a single appearance
 //   answer-bit won't be set when all elements are answered
 template<int N, typename Options, typename InItr_>
-Options appearance_once(const InItr_ begin, const InItr_ end)
+Options appearance_once(const InItr_ begin, const InItr_ end) noexcept
 {
 	{
 		static_assert(Utility_::is_input<InItr_>);
@@ -247,7 +248,7 @@ Options appearance_once(const InItr_ begin, const InItr_ end)
 
 // range-based-for
 template<int N, typename Options, typename SectionT>
-Options appearance_once(SectionT section)
+Options appearance_once(SectionT section) noexcept
 {
 	{
 		using Section = typename Board_Section::Section<Options, N>;

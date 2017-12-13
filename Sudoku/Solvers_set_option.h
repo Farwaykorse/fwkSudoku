@@ -75,7 +75,7 @@ inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 	int n{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		Location<N> loc(n++); // start at 0!
+		const Location<N> loc(n++); // start at 0!
 		const auto value = static_cast<value_t>(*itr);
 		if (value > 0 && board.at(loc).is_option(value))
 		{
@@ -117,7 +117,7 @@ inline auto set_uniques(
 				const auto itr = std::find_if( // <algorithm>
 					begin,
 					end,
-					[value](Options O) { return O.is_option(value); });
+					[value](Options O) noexcept { return O.is_option(value); });
 				if (itr != end)
 				{
 					setValue(board, itr.location(), value);

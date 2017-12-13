@@ -76,7 +76,7 @@ namespace compiletime
 	// from std::bitset
 	static_assert(std::is_constructible_v<Options<3>, const std::bitset<4>&>);
 	static_assert(std::is_assignable_v<Options<3>, std::bitset<4>>);
-	static_assert(!noexcept(Options<3>{std::bitset<4>{}}));
+	static_assert(noexcept(Options<3>{std::bitset<4>{}}));
 	static_assert(noexcept(Options<3>() = std::bitset<4>{}));
 	// explicit:
 	static_assert(std::is_constructible_v<std::bitset<4>, std::string>);
@@ -451,7 +451,7 @@ TEST(Options, mf_booleanComparison)
 
 	// bool operator==(Options<E>&) const
 	static_assert(noexcept(TE.O_1 == TE.O_2));
-	Options<4> TMP{std::bitset<5>{"00101"}};
+	const Options<4> TMP{std::bitset<5>{"00101"}};
 	EXPECT_EQ(TE.O_1, TMP);
 	EXPECT_FALSE(TE.O_1 == TE.E_1);
 
@@ -569,11 +569,11 @@ TEST(Options, Operators)
 	Options<4> TMP1 = A_2;
 	EXPECT_TRUE(TMP1.is_answer(2));
 	EXPECT_TRUE(TMP1 == A_2);
-	Options<4> TMP2 = 3;
+	const Options<4> TMP2 = 3;
 	EXPECT_TRUE(TMP2.is_answer(3));
 	// move-assign
 	static_assert(noexcept(TMP.operator=(std::bitset<5>())));
-	Options<4> O_6 = Options<4>(std::bitset<5>{}); // "00000"
+	const Options<4> O_6 = Options<4>(std::bitset<5>{}); // "00000"
 	EXPECT_TRUE(O_6 == E_2);
 }
 TEST(Options, External)
@@ -631,7 +631,7 @@ TEST(Options, deathtests)
 	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(15); }, "Assertion failed: .*");
 	// mf_constOperators
 	EXPECT_DEBUG_DEATH({ TE.O_3[9]; }, "Assertion failed: .*");
-	bool a;
+	bool a{};
 	EXPECT_DEBUG_DEATH({ a = TE.O_3[5]; }, "Assertion failed: .*");
 	// operator[]
 #ifdef _DEBUG
