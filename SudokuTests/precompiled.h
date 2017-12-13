@@ -12,7 +12,7 @@
 #pragma once
 
 // console requirements
-#include <stdio.h>
+#include <cstdio>
 #include <tchar.h>
 
 // Main library
