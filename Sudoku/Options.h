@@ -370,7 +370,7 @@ inline std::vector<Value> Options<E>::available() const
 	values.reserve(static_cast<size_t>(count()));
 	if (!is_answer() && !is_empty())
 	{
-		auto item{0};
+		Value item{0};
 		for (auto i{0}; i < count(); ++i)
 		{
 			item = read_next(item);
@@ -512,13 +512,13 @@ inline std::string Options<E>::DebugString() const
 template<int E>
 inline Value Options<E>::read_next(Value start) const noexcept
 { // default value start = 0
-	size_t i{start};
+	unsigned int i{start};
 	++i;
-	for (; i <= size_t{E}; ++i)
+	for (; i <= static_cast<unsigned int>(E); ++i)
 	{
 		if (data_[i])
 		{
-			return gsl::narrow_cast<Value>(i);
+			return Value{i};
 		}
 	}
 	return Value{0}; // never triggered

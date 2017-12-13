@@ -28,7 +28,7 @@ public:
 
 	explicit constexpr operator unsigned_int() const noexcept
 	{
-		return static_cast<unsigned int>(value_);
+		return value_;
 	}
 	explicit constexpr operator u64_int() const noexcept
 	{
@@ -85,7 +85,7 @@ inline auto to_Value(int val)
 {
 	if (val >= 0)
 	{
-		return Value(unsigned(val));
+		return static_cast<Value>(unsigned(val));
 	}
 	else
 		throw std::domain_error("negative Value");
