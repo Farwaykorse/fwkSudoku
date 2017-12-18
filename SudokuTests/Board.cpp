@@ -232,7 +232,7 @@ TEST(Board, operator_equal)
 	EXPECT_FALSE((Board<int, 2>() == B1)); // [gTest]
 	// value-type: Options
 	EXPECT_EQ((Board<Options<4>, 2>()), (Board<Options<4>, 2>()));
-	EXPECT_FALSE((Board<Options<4>, 2>(1)) == (Board<Options<4>, 2>()));
+	EXPECT_FALSE((Board<Options<4>, 2>(Value{1})) == (Board<Options<4>, 2>()));
 }
 TEST(Board_Utilities, operator_not_equal)
 {
@@ -247,7 +247,7 @@ TEST(Board_Utilities, operator_not_equal)
 	EXPECT_NO_THROW(B1[Location<2>(13)] = 3);
 	EXPECT_NE((Board<int, 2>()), B1); // [gTest]
 	// value-type: Options
-	EXPECT_NE((Board<Options<4>, 2>(1)), (Board<Options<4>, 2>()));
+	EXPECT_NE((Board<Options<4>, 2>(Value{1})), (Board<Options<4>, 2>()));
 	EXPECT_FALSE((Board<Options<4>, 2>()) != (Board<Options<4>, 2>()));
 }
 TEST(Board, elementaccess)
@@ -319,8 +319,8 @@ TEST(Board, clear)
 	EXPECT_NO_THROW(Obj.clear());
 	EXPECT_EQ(Obj[Location<2>(2)], 0);
 
-	Board<Options<4>, 2> Opt(2);
-	ASSERT_EQ(Opt[Location<2>(2)], 2);
+	Board<Options<4>, 2> Opt(Value{2});
+	ASSERT_EQ(Opt[Location<2>(2)], Value{2});
 	ASSERT_EQ(Opt[Location<2>(2)], Options<4>{2});
 
 	EXPECT_FALSE(noexcept(Opt.clear()));
@@ -342,8 +342,8 @@ TEST(Board, InBetween)
 	Board<Options<4>, 2> board2{};
 	EXPECT_TRUE(noexcept(board2[0][0]));
 	EXPECT_NO_THROW(board2[2][0] = 2);
-	EXPECT_EQ(board2[2][0], 2);
-	EXPECT_NE(board2[2][0], 1);
+	EXPECT_EQ(board2[2][0], Value{2}); // short for is_answer(value)
+	EXPECT_NE(board2[2][0], Value{1});
 	// see deathtests
 
 	// const_InBetween

@@ -47,19 +47,19 @@ TEST(Solver, setValue)
 	// Set single value
 	Board<Options<4>, 2> board;
 	ASSERT_EQ(board[1][0], Options<4>{}) << "incorrect instantiation";
-	EXPECT_NO_THROW(setValue(board, L(2), 3));
-	EXPECT_EQ(board[0][2], 3);
-	EXPECT_NO_THROW(setValue(board, L(0), 4));
-	EXPECT_EQ(board[0][0], 4);
+	EXPECT_NO_THROW(setValue(board, L(2), Value{3}));
+	EXPECT_EQ(board[0][2], Value{3});
+	EXPECT_NO_THROW(setValue(board, L(0), Value{4}));
+	EXPECT_EQ(board[0][0], Value{4});
 	// test: already set to THIS answer (allow to overwrite with same)
-	EXPECT_NO_THROW(setValue(board, L(15), 4));
-	ASSERT_EQ(board[3][3], 4);
-	EXPECT_NO_THROW(setValue(board, L(3, 3), 4));
+	EXPECT_NO_THROW(setValue(board, L(15), Value{4}));
+	ASSERT_EQ(board[3][3], Value{4});
+	EXPECT_NO_THROW(setValue(board, L(3, 3), Value{4}));
 	// test: value is not an option
 	board[1][1] = std::bitset<5>{"11011"}; // options: 1,3,4
-	EXPECT_THROW(setValue(board, L(1, 1), 2), std::logic_error);
+	EXPECT_THROW(setValue(board, L(1, 1), Value{2}), std::logic_error);
 	// test: already set to another answer
-	EXPECT_THROW(setValue(board, L(0), 1), std::logic_error);
+	EXPECT_THROW(setValue(board, L(0), Value{1}), std::logic_error);
 
 	// clang-format off
 	const std::vector<int> v1
@@ -73,18 +73,18 @@ TEST(Solver, setValue)
 	// Copy data from vector
 	Board<Options<4>, 2> B2;
 	EXPECT_NO_THROW(setValue(B2, v1.cbegin(), v1.cend()));
-	EXPECT_EQ(B2[0][1], 2);
-	EXPECT_EQ(B2[1][0], 4);
-	EXPECT_EQ(B2[2][1], 1);
-	EXPECT_EQ(B2[2][2], 4);
+	EXPECT_EQ(B2[0][1], Value{2});
+	EXPECT_EQ(B2[1][0], Value{4});
+	EXPECT_EQ(B2[2][1], Value{1});
+	EXPECT_EQ(B2[2][2], Value{4});
 	// check if processed single option cells:
-	EXPECT_EQ(B2[0][3], 4);
-	EXPECT_EQ(B2[3][1], 4);
+	EXPECT_EQ(B2[0][3], Value{4});
+	EXPECT_EQ(B2[3][1], Value{4});
 	// from vector didn't cascade over single option cells
-	EXPECT_EQ(B2[0][0], 1);
-	EXPECT_EQ(B2[0][2], 3);
-	EXPECT_EQ(B2[1][1], 3);
-	EXPECT_EQ(B2[3][1], 4);
+	EXPECT_EQ(B2[0][0], Value{1});
+	EXPECT_EQ(B2[0][2], Value{3});
+	EXPECT_EQ(B2[1][1], Value{3});
+	EXPECT_EQ(B2[3][1], Value{4});
 }
 TEST(Solver, set_section_locals)
 {
@@ -216,7 +216,7 @@ TEST(Solver, set_section_locals)
 	B3[2][2] = 9;
 	ASSERT_TRUE(B3[0][0].all());
 	ASSERT_TRUE(B3[0][5].all());
-	ASSERT_TRUE(B3[1][0].is_answer(4));
+	ASSERT_TRUE(B3[1][0].is_answer(Value{4}));
 	ASSERT_TRUE(B3[1][8].all());
 	worker3 = std::bitset<10>{"0000001111"};
 	EXPECT_EQ(set_section_locals(B3, B3.block(0), 3, worker3), 3 * 6);
@@ -249,7 +249,7 @@ TEST(Solver, set_section_locals)
 	EXPECT_TRUE(B3[0][4].all()); // rest row
 	EXPECT_TRUE(B3[0][8].all()); // rest row
 	EXPECT_TRUE(B3[1][0].all()); // self
-	EXPECT_TRUE(B3[1][1].is_answer(5));
+	EXPECT_TRUE(B3[1][1].is_answer(Value{5}));
 	EXPECT_EQ(B3[3][0].count(), 6); // rest col
 	EXPECT_TRUE(B3[3][1].all());
 	EXPECT_EQ(B3[4][0].count(), 6); // rest col
@@ -274,7 +274,7 @@ TEST(Solver, set_section_locals)
 	EXPECT_TRUE(B3[0][4].all()); // rest row
 	EXPECT_TRUE(B3[0][8].all()); // rest row
 	EXPECT_TRUE(B3[1][0].all()); // self
-	EXPECT_TRUE(B3[1][1].is_answer(5));
+	EXPECT_TRUE(B3[1][1].is_answer(Value{5}));
 	EXPECT_TRUE(B3[2][1].all()); // self
 	EXPECT_TRUE(B3[3][0].all()); // rest col
 	EXPECT_TRUE(B3[3][1].all());
@@ -319,11 +319,11 @@ TEST(Solver, set_uniques)
 	EXPECT_EQ(B1[0][0].count(), 3); // no change
 	EXPECT_EQ(B1[0][1].count(), 3); // no change
 	EXPECT_EQ(B1[0][2].count(), 3); // no change
-	EXPECT_TRUE(B1[0][3].is_answer(1));
+	EXPECT_TRUE(B1[0][3].is_answer(Value{1}));
 	worker = appearance_once<2>(B1.row(2));
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
 	EXPECT_EQ(set_uniques(B1, B1.row(2), worker), 1);
-	EXPECT_TRUE(B1[2][1].is_answer(1));
+	EXPECT_TRUE(B1[2][1].is_answer(Value{1}));
 	// Col (one value)
 	B1 = cB1; // reset
 	ASSERT_EQ(B1[0][3].count(), 4);
@@ -333,7 +333,7 @@ TEST(Solver, set_uniques)
 	EXPECT_EQ(set_uniques(B1, B1.col(1), worker), 1);
 	EXPECT_EQ(B1[0][1].count(), 3); // no change
 	EXPECT_EQ(B1[1][1].count(), 3); // no change
-	EXPECT_TRUE(B1[2][1].is_answer(1));
+	EXPECT_TRUE(B1[2][1].is_answer(Value{1}));
 	EXPECT_EQ(B1[3][1].count(), 3); // no change
 	// Block (one value)
 	B1 = cB1; // reset
@@ -342,7 +342,7 @@ TEST(Solver, set_uniques)
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
 	EXPECT_EQ(set_uniques(B1, B1.block(2), worker), 1);
 	EXPECT_EQ(B1[2][0].count(), 3); // no change
-	EXPECT_TRUE(B1[2][1].is_answer(1));
+	EXPECT_TRUE(B1[2][1].is_answer(Value{1}));
 	EXPECT_EQ(B1[3][0].count(), 3); // no change
 	EXPECT_EQ(B1[3][1].count(), 3); // no change
 
@@ -359,11 +359,11 @@ TEST(Solver, set_uniques)
 	EXPECT_EQ(set_uniques(B2, B2.row(0), worker), 10);
 	// 10 = ans(0){1} + col(0){3} + block(0){1}
 	//		ans(2){1} + col(2){3} + block(1){1}
-	EXPECT_TRUE(B2[0][0].is_answer(1));
-	EXPECT_TRUE(B2[0][2].is_answer(3));
+	EXPECT_TRUE(B2[0][0].is_answer(Value{1}));
+	EXPECT_TRUE(B2[0][2].is_answer(Value{3}));
 	EXPECT_EQ(B2[0][1].count(), 2); // no change
 	EXPECT_EQ(B2[0][3].count(), 2); // no change
-	EXPECT_FALSE(B2[3][0].is_option(1));
+	EXPECT_FALSE(B2[3][0].is_option(Value{1}));
 }
 
 TEST(Solver, deathtest_set_option)
@@ -385,7 +385,7 @@ TEST(Solver, deathtest_set_option)
 		// deathtest: a unique Value in worker doesn't exist in the section
 		// 1	24	324	24
 		B1[0][0] = std::bitset<5>{"00010"}; // ans 1
-		EXPECT_FALSE(B1[0][0].is_option(1));
+		EXPECT_FALSE(B1[0][0].is_option(Value{1}));
 		B1[0][1]    = std::bitset<5>{"10101"};
 		B1[0][2]    = std::bitset<5>{"11101"};
 		B1[0][3]    = std::bitset<5>{"10101"};
@@ -438,7 +438,7 @@ TEST(Solver, deathtest_set_option)
 		B5[1][0] = set{"11011"};
 		B5[1][1] = set{"11011"};
 		const Options<4> worker{2};
-		ASSERT_TRUE(worker[2]);
+		ASSERT_TRUE(worker[Value{2}]);
 		EXPECT_DEBUG_DEATH(
 			set_section_locals(B5, B5.block(0), 2, worker),
 			"Assertion failed: changes > 0");

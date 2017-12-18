@@ -49,42 +49,42 @@ TEST(Solver, find_locations)
 	B[3][0] = set{"10011"};
 	std::vector<loc> list{};
 	// row/col/block
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), 1, 3));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), Value{1}, 3));
 	EXPECT_EQ(list.size(), 3);
 	EXPECT_EQ(list[0], loc(1));
 	EXPECT_EQ(list[1], loc(2));
 	EXPECT_EQ(list[2], loc(3));
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.col(0), 1, 3));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.col(0), Value{1}, 3));
 	EXPECT_EQ(list.size(), 3);
 	EXPECT_EQ(list[0], loc(1, 0));
 	EXPECT_EQ(list[1], loc(2, 0));
 	EXPECT_EQ(list[2], loc(3, 0));
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), 1, 2));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), Value{1}, 2));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[0], loc(0, 1));
 	EXPECT_EQ(list[1], loc(1, 0));
 	// incorrect rep_count: too low
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), 1, 2));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), Value{1}, 2));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[1], loc(2));
 	// incorrect rep_count: too high
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), 1, 3));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), Value{1}, 3));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[1], loc(1, 0));
 	EXPECT_NO_FATAL_FAILURE(
-		find_locations<2>(B.row(0).cbegin(), B.row(0).cend(), 3, 5));
+		find_locations<2>(B.row(0).cbegin(), B.row(0).cend(), Value{3}, 5));
 	// no rep_count
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), 1));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), Value{1}));
 	EXPECT_EQ(list.size(), 3);
 	EXPECT_EQ(list[0], loc(1));
 	EXPECT_EQ(list[1], loc(2));
 	EXPECT_EQ(list[2], loc(3));
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), 1));
+	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), Value{1}));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[1], loc(1, 0));
 	// partial section
 	EXPECT_NO_FATAL_FAILURE(
-		list = find_locations<2>(B.row(0).cbegin() + 2, B.row(0).cend(), 1, 2));
+		list = find_locations<2>(B.row(0).cbegin() + 2, B.row(0).cend(), Value{1}, 2));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[0], loc(2));
 	EXPECT_EQ(list[1], loc(3));
@@ -112,12 +112,12 @@ TEST(Solver, appearance_once)
 	// Using iterators
 	EXPECT_NO_THROW(setValue(B1, v1.cbegin(), v1.cend()));
 	EXPECT_EQ(B1[3][3].count(), 4);
-	EXPECT_TRUE(B1[3][3].is_option(1));
+	EXPECT_TRUE(B1[3][3].is_option(Value{1}));
 	// on row
 	EXPECT_NO_THROW(
 		result = appearance_once<2>(B1.row(3).cbegin(), B1.row(3).cend()));
 	EXPECT_EQ(result.count_all(), 1);
-	EXPECT_TRUE(result.test(1));
+	EXPECT_TRUE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_answer()); // NOT needed
 	// on col
 	result.clear(); // reset
@@ -125,7 +125,7 @@ TEST(Solver, appearance_once)
 	EXPECT_NO_THROW(
 		result = appearance_once<2>(B1.col(3).cbegin(), B1.col(3).cend()));
 	EXPECT_EQ(result.count_all(), 1);
-	EXPECT_TRUE(result.test(1));
+	EXPECT_TRUE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_answer()); // NOT needed
 	// on block
 	result.clear(); // reset
@@ -133,7 +133,7 @@ TEST(Solver, appearance_once)
 	EXPECT_NO_THROW(
 		result = appearance_once<2>(B1.block(3).cbegin(), B1.block(3).cend()));
 	EXPECT_EQ(result.count_all(), 1);
-	EXPECT_TRUE(result.test(1));
+	EXPECT_TRUE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_answer()); // NOT needed
 	// nothing
 	result.clear(); // reset
@@ -141,7 +141,7 @@ TEST(Solver, appearance_once)
 	EXPECT_NO_THROW(
 		result = appearance_once<2>(B1.row(0).cbegin(), B1.row(0).cend()));
 	EXPECT_EQ(result.count_all(), 0);
-	EXPECT_FALSE(result.test(1));
+	EXPECT_FALSE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_answer()); // NOT needed
 
 	// Using Sections
@@ -150,28 +150,28 @@ TEST(Solver, appearance_once)
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(result = appearance_once<2>(B1.row(3)));
 	EXPECT_EQ(result.count_all(), 1);
-	EXPECT_TRUE(result.test(1));
+	EXPECT_TRUE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_answer()); // NOT needed
 	// Col
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(result = appearance_once<2>(B1.col(3)));
 	EXPECT_EQ(result.count_all(), 1);
-	EXPECT_TRUE(result.test(1));
+	EXPECT_TRUE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_answer()); // NOT needed
 	// Block
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(result = appearance_once<2>(B1.block(3)));
 	EXPECT_EQ(result.count_all(), 1);
-	EXPECT_TRUE(result.test(1));
+	EXPECT_TRUE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_answer()); // NOT needed
 	// nothing, Row
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(result = appearance_once<2>(B1.row(0)));
 	EXPECT_EQ(result.count_all(), 0);
-	EXPECT_FALSE(result.test(1));
+	EXPECT_FALSE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_answer()); // NOT needed
 	//===-----------------------------------------------------------------===//
 	// also in the test: appearance_sets
@@ -191,25 +191,25 @@ TEST(Solver, appearance_once)
 		EXPECT_EQ(B4[0][3].count(), 4);
 		EXPECT_EQ(B4[2][1].count(), 4);
 		auto result4 = appearance_once<2>(B4.row(0));
-		EXPECT_TRUE(result4[0]); // answer bit
+		EXPECT_TRUE(result4[Value{0}]); // answer bit
 		EXPECT_EQ(result4.count(), 1);
-		EXPECT_TRUE(result4[1]);
+		EXPECT_TRUE(result4[Value{1}]);
 		result4 = appearance_once<2>(B4.row(1));
-		EXPECT_TRUE(result4[0]); // answer bit
+		EXPECT_TRUE(result4[Value{0}]); // answer bit
 		EXPECT_EQ(result4.count(), 0);
 		EXPECT_TRUE(result4.is_empty());
 		result4 = appearance_once<2>(B4.row(2));
-		EXPECT_TRUE(result4[0]); // answer bit
+		EXPECT_TRUE(result4[Value{0}]); // answer bit
 		EXPECT_EQ(result4.count(), 1);
-		EXPECT_TRUE(result4[1]);
+		EXPECT_TRUE(result4[Value{1}]);
 		result4 = appearance_once<2>(B4.col(3));
-		EXPECT_TRUE(result4[0]); // answer bit
+		EXPECT_TRUE(result4[Value{0}]); // answer bit
 		EXPECT_EQ(result4.count(), 1);
-		EXPECT_TRUE(result4[1]);
+		EXPECT_TRUE(result4[Value{1}]);
 		result4 = appearance_once<2>(B4.block(1));
-		EXPECT_TRUE(result4[0]); // answer bit
+		EXPECT_TRUE(result4[Value{0}]); // answer bit
 		EXPECT_EQ(result4.count(), 1);
-		EXPECT_TRUE(result4[1]);
+		EXPECT_TRUE(result4[Value{1}]);
 	}
 }
 
@@ -395,9 +395,9 @@ TEST(Solvers_, appearance_sets)
 		auto result = appearance_sets<2>(B4.row(0));
 		EXPECT_EQ(result.size(), 3); // max = N
 		EXPECT_TRUE(result[0].is_empty());
-		EXPECT_TRUE(result[1][0]); // answer bit
+		EXPECT_TRUE(result[1][Value{0}]); // answer bit
 		EXPECT_EQ(result[1].count(), 1);
-		EXPECT_TRUE(result[1][1]);
+		EXPECT_TRUE(result[1][Value{1}]);
 		EXPECT_EQ(result[2].count(), 0);
 		result = appearance_sets<2>(B4.row(1));
 		EXPECT_TRUE(result[0].is_empty());
@@ -407,15 +407,15 @@ TEST(Solvers_, appearance_sets)
 		result = appearance_sets<2>(B4.row(2));
 		EXPECT_TRUE(result[0].is_empty());
 		EXPECT_EQ(result[1].count(), 1);
-		EXPECT_TRUE(result[1][1]);
+		EXPECT_TRUE(result[1][Value{1}]);
 		result = appearance_sets<2>(B4.col(3));
 		EXPECT_TRUE(result[0].is_empty());
 		EXPECT_EQ(result[1].count(), 1);
-		EXPECT_TRUE(result[1][1]);
+		EXPECT_TRUE(result[1][Value{1}]);
 		result = appearance_sets<2>(B4.block(1));
 		EXPECT_TRUE(result[0].is_empty());
 		EXPECT_EQ(result[1].count(), 1);
-		EXPECT_TRUE(result[1][1]);
+		EXPECT_TRUE(result[1][Value{1}]);
 	}
 }
 
@@ -437,18 +437,18 @@ TEST(Solver, deathtest_find)
 		std::vector<loc> list{};
 		// rep_count = 0
 		EXPECT_DEBUG_DEATH(
-			find_locations<2>(B5.row(0), 3, 0),
+			find_locations<2>(B5.row(0), Value{3}, 0),
 			"Assertion failed: rep_count > 0");
 		// section -> rep_count > elem_size
 		EXPECT_DEBUG_DEATH(
-			find_locations<2>(B5.row(0), 3, 5),
+			find_locations<2>(B5.row(0), Value{3}, 5),
 			"Assertion failed: .* <= elem_size");
 		// itr -> rep_count > full_size
 		EXPECT_DEBUG_DEATH(
-			find_locations<2>(B5.row(0).cbegin(), B5.row(0).cend(), 3, 17),
+			find_locations<2>(B5.row(0).cbegin(), B5.row(0).cend(), Value{3}, 17),
 			"Assertion failed: .* <= full_size");
 		EXPECT_DEBUG_DEATH(
-			find_locations<2>(B5.row(0).cbegin(), B5.row(0).cend(), 2),
+			find_locations<2>(B5.row(0).cbegin(), B5.row(0).cend(), Value{2}),
 			"Assertion failed: not.*empty..");
 	}
 }

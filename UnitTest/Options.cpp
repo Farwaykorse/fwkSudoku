@@ -195,26 +195,26 @@ public:
 		Assert::IsTrue(O_2.count_all() == 0, L"flip() failed on count_all()");
 		// remove_option(int)
 		TMP.reset();
-		static_assert(noexcept(TMP.remove_option(Value{3})), "remove_option(int) should be noexcept");
-		//Assert::IsTrue(TMP.remove_option(Value{3}), L"remove_option(int) failed");
+		static_assert(noexcept(TMP.remove_option(Value{3})));
+		//Assert::IsTrue(TMP.remove_option(3), L"remove_option(int) failed");
 		//Assert::IsTrue(TMP.count() == 8, L"remove_option(int) failed_2");
 		//Assert::IsFalse(TMP.remove_option(Value{3}), L"remove_option(int) on false should return false");
 		// add(int)
 		//Options& add(int value);			// add single option
-		static_assert(!noexcept(O_1.add(Value{4})), "add(int) should NOT be noexcept");
+		static_assert(not noexcept(O_1.add(Value{4})));
 		try { O_1.add(Value{4}); }
 		catch (...) { Assert::Fail(L"add(int) failed"); }
 		try { O_1.add(Value{12}); }
 		catch (const std::out_of_range&) {} // caught
 		catch (...) { Assert::Fail(L"add(high val) exception wasn't caught"); }
 		// set(int)
-		static_assert(!noexcept(O_1.set(Value{4})), "set(int) should NOT be noexcept");
+		static_assert(not noexcept(O_1.set(Value{4})));
 		Assert::IsTrue(O_1.set(Value{4}).is_answer(), L"set(int) failed");
 		Assert::IsTrue(O_1.is_answer(Value{4}), L"set(int) failed_2");
 		Assert::IsTrue(O_1.count() == 0, L"count() failed after set(int)");
 		Assert::IsTrue(O_1.set(Value{1}).is_answer(Value{1}), L"set(int) failed when changing");
 		Assert::IsFalse(O_1.is_answer(Value{4}), L"set(int) failed to remove value");
-		Assert::IsTrue(O_1.set(Value{0}).is_empty(), L"set(Value{0}) should remove all values");
+		Assert::IsTrue(O_1.set(Value{0}).is_empty(), L"set(0) should remove all values");
 		//add_noexcept(int)
 		TMP.clear();
 		static_assert(noexcept(TMP.add_nocheck(Value{1})), "add_noexcept(int) should be noexcept");
@@ -230,20 +230,20 @@ public:
 	TEST_METHOD(T3_operators)
 	{
 		// _test-data
-		const Sudoku::Options<4> O_1{};								// all options
-		const Sudoku::Options<4> O_2{std::bitset<5>{"11111"}};	// all options
-		const Sudoku::Options<4> O_3{std::bitset<5>{"00101"}};	// single option 2
-		const Sudoku::Options<4> E_1{0};							// empty answer "00001"
-		const Sudoku::Options<4> E_2{std::bitset<5>{"00000"}};	// empty
-		const Sudoku::Options<4> E_3{std::bitset<5>{"00001"}};	// empty option
-		const Sudoku::Options<4> A_1{1};							// answer 1
-		const Sudoku::Options<4> A_2{std::bitset<5>{"00100"}};	// answer 2
-		Sudoku::Options<4> TMP{};									// per test, reset this option
+		const Sudoku::Options<4> O_1{};                        // all options
+		const Sudoku::Options<4> O_2{std::bitset<5>{"11111"}}; // all options
+		const Sudoku::Options<4> O_3{std::bitset<5>{"00101"}}; // single option2
+		const Sudoku::Options<4> E_1{Value{0}}; // empty answer "00001"
+		const Sudoku::Options<4> E_2{std::bitset<5>{"00000"}}; // empty
+		const Sudoku::Options<4> E_3{std::bitset<5>{"00001"}}; // empty option
+		const Sudoku::Options<4> A_1{Value{1}};                // answer 1
+		const Sudoku::Options<4> A_2{std::bitset<5>{"00100"}}; // answer 2
+		Sudoku::Options<4> TMP{}; // per test, reset this option
 
 		///// CONST operators /////
 		// operator==(int) const
 		static_assert(noexcept(A_1 == Value{1}), "operator==(int) should be noexcept");
-		Assert::IsTrue(A_1 == Value{1}, L"operator==(int) should behave like is_answer(int)");
+		Assert::IsTrue(A_1 == Value{1}, L"operator==(Value) should behave like is_answer(Value)");
 		Assert::IsTrue(A_2 == Value{2}, L"operator==(int) should behave like is_answer(int)_2");
 		//bool operator==(Options<E>&) const
 		static_assert(noexcept(O_1 == O_2), "operator== should be noexcept");
@@ -304,7 +304,8 @@ public:
 		Assert::IsTrue(TMP1.is_answer(Value{2}), L"copy-assign failed");
 		Assert::IsTrue(TMP1 == A_2, L"copy-assign failed");
 		Sudoku::Options<4> TMP2 = Value{3};
-		Assert::IsTrue(TMP2.is_answer(Value{3}), L"copy-assign operator=(int) failed");
+		Assert::IsTrue(
+			TMP2.is_answer(Value{3}), L"copy-assign operator=(int) failed");
 		// move-assign
 		static_assert(noexcept(TMP.operator=(std::bitset<5>())), "operator= should be noexcept_2");
 		Sudoku::Options<4> O_6 = Options<4>(std::bitset<5>{});	// "00000"
