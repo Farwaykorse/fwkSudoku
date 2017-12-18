@@ -43,10 +43,6 @@ private:
 	unsigned int value_{0};
 };
 
-// using value_t = unsigned int;
-using value_t = Value;
-// allows use as a bitmask
-
 //===---------------------------------------------------------------------===//
 constexpr bool operator!=(const Value&, const Value&) noexcept;
 constexpr bool operator>(const Value&, const Value&) noexcept;
