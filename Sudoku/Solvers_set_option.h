@@ -1,7 +1,7 @@
-﻿//===--	Sudoku/Solver_set_option.h										--===//
+﻿//===--- Sudoku/Solver_set_option.h                                     ---===//
 //
 // Helper functions
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #pragma once
 
 #include "Board.h"
@@ -25,7 +25,7 @@
 
 namespace Sudoku
 {
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 template<int N, typename Options = Options<elem_size<N>>>
 void setValue(Board<Options, N>&, Location<N>, Value);
 template<int N, typename Options = Options<elem_size<N>>, typename ItrT>
@@ -44,7 +44,7 @@ int set_section_locals(
 	int rep_count,
 	Options worker);
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 
 
 //	IF valid, Make [value] the answer for [loc]

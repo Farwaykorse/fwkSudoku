@@ -1,8 +1,8 @@
-//===--	Sudoku/Solver.h													--===//
+//===--- Sudoku/Solver.h                                                ---===//
 //
 //	Solver functions acting on a Board<Options>&
 // Declarations are in Solver.fwd.h
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #pragma once
 
 #include "Board.h"

@@ -1,7 +1,7 @@
-﻿//===--	Sudoku/Solver_remove_option.h									--===//
+﻿//===--- Sudoku/Solver_remove_option.h                                  ---===//
 //
 // Helper functions, to remove options
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #pragma once
 
 #include "Board.h"
@@ -28,7 +28,7 @@
 
 namespace Sudoku
 {
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 template<int N, typename Options = Options<elem_size<N>>>
 int remove_option(Board<Options, N>&, Location<N>, Value);
 
@@ -52,7 +52,7 @@ template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_outside_block(
 	Board<Options, N>&, SectionT, Location<N> block_loc, Value);
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 
 
 //	remove option from element, make answer if last option

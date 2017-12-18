@@ -1,10 +1,10 @@
-﻿//===--	Sudoku/Solver_find.h											--===//
+﻿//===--- Sudoku/Solver_find.h                                           ---===//
 //
 // Helper functions, to find available options
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // find_locations
 // Apperance_*: collecting options by appearance count in a given set.
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #pragma once
 
 #include "Iterator_Utilities.h"
@@ -26,7 +26,7 @@
 
 namespace Sudoku
 {
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 template<int N, typename SectionT>
 auto find_locations(SectionT, Value, int rep_count = elem_size<N>);
 
@@ -48,7 +48,7 @@ auto appearance_sets(const SectionT section);
 template<int N, typename InItr_>
 auto appearance_sets(const InItr_ begin, const InItr_ end);
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 
 
 //	List locations in [section] where [value] is an option
@@ -124,7 +124,7 @@ auto find_locations(const SectionT section, const Options<elem_size<N>> value)
 	return locations;
 }
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 
 //	returning options collected by appearance count in input-dataset
 template<int N, typename InItr_>

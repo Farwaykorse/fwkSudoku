@@ -1,7 +1,7 @@
-﻿//===--	Sudoku/Iterator_Utilities.h										--===//
+﻿//===--- Sudoku/Iterator_Utilities.h                                    ---===//
 //
 //	Helper-functions, to check iterator properties
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #pragma once
 
 #include <iterator>

@@ -1,7 +1,7 @@
-﻿//===--	SudokuTests/Solver.cpp											--===//
+﻿//===--- SudokuTests/Solver.cpp                                         ---===//
 //
 //	Unit tests for the template class Sudoku::Solver
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 //	Implemented with GoogleTest
 //
 //	Notes:
@@ -13,7 +13,7 @@
 //		if used in *_EQ/NE etc.
 //		use an explicit test like EXPECT_TRUE(.. == ..).
 //
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #include <gtest/gtest.h>
 
 // Class under test
@@ -499,7 +499,7 @@ TEST(Solver, section_exclusive)
 	}
 
 	// reproduce functionality of unique
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// clang-format off
 	static const std::vector<int> V1
 	{
@@ -543,7 +543,7 @@ TEST(Solver, section_exclusive)
 	EXPECT_EQ(found1, 0) << "shouldn't find any others";
 
 	// working for more than 1 unique (use set_section_locals)
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// clang-format off
 	const std::vector<int> V2
 	{

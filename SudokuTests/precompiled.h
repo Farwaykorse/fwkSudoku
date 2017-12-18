@@ -1,4 +1,4 @@
-﻿//===--	SudokuTests/precompiled.h										--===//
+﻿//===--- SudokuTests/precompiled.h                                      ---===//
 //
 // - Compiled from precompiled.cpp
 // - Included in project by compiler configuration
@@ -8,7 +8,7 @@
 // file for standard system include files,
 // or project specific include files that are used frequently, but
 // are changed infrequently
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #pragma once
 
 // console requirements

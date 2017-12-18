@@ -1,4 +1,4 @@
-﻿//===--- Sudoku/Location_Utilities.h									---===//
+﻿//===--- Sudoku/Location_Utilities.h                                    ---===//
 //
 //	Utilities for class Sudoku::Location
 //	Included in Location.h
@@ -123,7 +123,7 @@ inline constexpr bool is_valid_size(const int row, const int col)
 }
 
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 
 // check
 template<int N>

@@ -1,7 +1,7 @@
-//===--	Sudoku/Location.h												--===//
+//===--- Sudoku/Location.h                                              ---===//
 //
 // Calculate locations within a board
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #pragma once
 
 #include "Size.h"
@@ -59,7 +59,7 @@ private:
 	const int id_{};
 };
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 
 template<int N>
 class Location_Block
@@ -108,13 +108,13 @@ private:
 	const int id_;
 };
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 template<int N>
 constexpr bool operator==(const Location<N>&, const Location_Block<N>&);
 template<int N>
 constexpr bool operator!=(const Location<N>&, const Location<N>&);
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 
 template<int N>
 inline constexpr bool Location<N>::operator==(const Location<N>& right) const

@@ -1,7 +1,7 @@
-﻿//===--	SudokuTests/Value.cpp											--===//
+﻿//===--- SudokuTests/Value.cpp                                          ---===//
 //
 //	Unit tests for the template class Sudoku::Value
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 //	Implemented with GoogleTest
 //
 //	Notes:
@@ -13,7 +13,7 @@
 //		if used in *_EQ/NE etc.
 //		use an explicit test like EXPECT_TRUE(.. == ..).
 //
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #include <gtest/gtest.h>
 
 // Class under test
@@ -165,6 +165,12 @@ TEST(Value, is_valid)
 	EXPECT_TRUE(is_valid<3>(Value{5}));
 	EXPECT_FALSE(is_valid<3>(Value{16}));
 
+	// is constexpr
+	EXPECT_TRUE(noexcept(is_valid<2>(Value(1))));
+	EXPECT_TRUE(noexcept(is_valid<3>(Value{7})));
+}
+TEST(Value, is_valid_vector)
+{
 	// vector input
 	using list = std::vector<Value>;
 	const std::vector<Value> cList{
@@ -173,6 +179,7 @@ TEST(Value, is_valid)
 	EXPECT_FALSE(is_valid<2>(list{})) << "can't be empty";
 	EXPECT_TRUE(is_valid<2>(List));
 	EXPECT_TRUE(is_valid<2>(list{Value{1}}));
+	EXPECT_TRUE(is_valid<2>(list{Value{4}}));
 	EXPECT_FALSE(is_valid<2>(list{Value{0}}));
 	EXPECT_FALSE(is_valid<2>(list{Value{5}}));
 	List.at(2) = Value{0}; // 1, 2, 0, 4, 3, 1
@@ -183,8 +190,6 @@ TEST(Value, is_valid)
 	EXPECT_FALSE(is_valid<2>(List));
 
 	// is constexpr
-	EXPECT_TRUE(noexcept(is_valid<2>(Value(1))));
-	EXPECT_TRUE(noexcept(is_valid<3>(Value{7})));
 	EXPECT_FALSE(noexcept(is_valid<2>(cList)));
 	EXPECT_FALSE(noexcept(is_valid<2>(List)));
 }

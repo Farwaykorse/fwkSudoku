@@ -1,7 +1,7 @@
-//===--	SudokuTests/Board.cpp											--===//
+//===--- SudokuTests/Board.cpp                                          ---===//
 //
 // Unit tests for the template class Sudoku::Board
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
 //
 // Notes:
@@ -13,7 +13,7 @@
 //   if used in *_EQ/NE etc.
 //   use an explicit test like EXPECT_TRUE(.. == ..).
 //
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #include <gtest/gtest.h>
 
 // Class under test
@@ -125,7 +125,7 @@ namespace compiletime
 	static_assert(
 		!std::is_nothrow_swappable_with_v<typeT, Options<9>>); // C++17
 } // namespace compiletime
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 
 TEST(Board, Construction)
 {

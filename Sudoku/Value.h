@@ -1,4 +1,4 @@
-﻿//===--- Sudoku/Value.h													---===//
+﻿//===--- Sudoku/Value.h                                                 ---===//
 //
 //	Value type
 //===----------------------------------------------------------------------===//
@@ -33,20 +33,20 @@ private:
 	size_t value_{0};
 };
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 constexpr bool operator!=(const Value&, const Value&) noexcept;
 constexpr bool operator>(const Value&, const Value&) noexcept;
 constexpr bool operator<=(const Value&, const Value&) noexcept;
 constexpr bool operator>=(const Value&, const Value&) noexcept;
 
 auto to_Value(int val);
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 template<int N>
 constexpr bool is_valid(const Value&);
 template<int N>
 constexpr bool is_valid(const std::vector<Value>&);
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 
 // Test input value
 template<int N>
@@ -66,7 +66,7 @@ constexpr bool is_valid(const std::vector<Value>& values)
 		}));
 }
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 inline auto to_Value(int val)
 {
 	if (val >= 0)
@@ -77,7 +77,7 @@ inline auto to_Value(int val)
 		throw std::domain_error("negative Value");
 };
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 inline constexpr bool Value::operator==(const Value& right) const noexcept
 {
 	return value_ == right.value_;

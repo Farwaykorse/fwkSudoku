@@ -1,6 +1,6 @@
-﻿//===--	SudokuTests/Solver_set_option.cpp								--===//
+﻿//===--- SudokuTests/Solver_set_option.cpp                              ---===//
 //
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
 //
 // Notes:
@@ -12,7 +12,7 @@
 //   if used in *_EQ/NE etc.
 //   use an explicit test like EXPECT_TRUE(.. == ..).
 //
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #include <gtest/gtest.h>
 
 // Class under test
@@ -286,7 +286,7 @@ TEST(Solver, set_section_locals)
 TEST(Solver, set_uniques)
 {
 	// Solver<N>::set_uniques(const SectionT section, const Options& worker)
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// processing only one value per section.
 	// also in the test: appearance_sets and appearance_once
 	//
@@ -346,7 +346,7 @@ TEST(Solver, set_uniques)
 	EXPECT_EQ(B1[3][0].count(), 3); // no change
 	EXPECT_EQ(B1[3][1].count(), 3); // no change
 
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// multiple values in a single go
 	// 12	24	324	24
 	Board<Options<4>, 2> B2{};

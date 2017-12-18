@@ -1,7 +1,7 @@
-//===--	SudokuTests/Location.cpp										--===//
+//===--- SudokuTests/Location.cpp                                       ---===//
 //
 // Unit tests for the template class Sudoku::Location
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
 //
 // Notes:
@@ -13,7 +13,7 @@
 //   if used in *_EQ/NE etc.
 //   use an explicit test like EXPECT_TRUE(.. == ..).
 //
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #include <gtest/gtest.h>
 
 // Class under test
@@ -440,7 +440,7 @@ TEST(Location_Block, is_constexpr)
 	EXPECT_FALSE(noexcept(B1.col()));
 }
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 TEST(Location_Utilities, Size_definitions)
 {
 	EXPECT_EQ(base_size<2>, 2);

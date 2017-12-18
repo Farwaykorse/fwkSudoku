@@ -1,7 +1,7 @@
-﻿//===--	SudokuTests/Board_Iterators.cpp									--===//
+﻿//===--- SudokuTests/Board_Iterators.cpp                                ---===//
 //
 // Unit tests for the template class Sudoku::Board
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
 //
 // Notes:
@@ -13,7 +13,7 @@
 //   if used in *_EQ/NE etc.
 //   use an explicit test like EXPECT_TRUE(.. == ..).
 //
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #include <gtest/gtest.h>
 
 // Class under test

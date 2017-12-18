@@ -1,12 +1,12 @@
-﻿//===--	Sudoku/Solver.fwd.h												--===//
+﻿//===--- Sudoku/Solver.fwd.h                                            ---===//
 //
 //	Forward declaration header for Solver.h
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #pragma once
 
 namespace Sudoku
 {
-//===-- Solver.h ---------------------------------------------------------===//
+//===-- Solver.h ----------------------------------------------------------===//
 template<int N, typename Options = Options<elem_size<N>>>
 int single_option(Board<Options, N>&, Location<N>);
 template<int N, typename Options = Options<elem_size<N>>>

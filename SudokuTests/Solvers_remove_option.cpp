@@ -1,7 +1,7 @@
-﻿//===--	SudokuTests/Solver_remove_option.cpp							--===//
+﻿//===--- SudokuTests/Solver_remove_option.cpp                           ---===//
 //
 // Unit tests for the option removing functions in Sudoku::Solver
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
 //
 // Notes:
@@ -13,7 +13,7 @@
 //   if used in *_EQ/NE etc.
 //   use an explicit test like EXPECT_TRUE(.. == ..).
 //
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #include <gtest/gtest.h>
 
 // Class under test
@@ -277,7 +277,7 @@ TEST(Solver, remove_option_outside_block)
 	EXPECT_EQ(remove_option_outside_block(B1, B1.row(2), L(2, 0), Value{2}), 0);
 }
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 TEST(Solver, deathtests_remove_option)
 {
 	using L  = Location<2>;
@@ -286,7 +286,7 @@ TEST(Solver, deathtests_remove_option)
 	using vV = std::vector<Value>;
 
 	Board<Options<4>, 2> B{};
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// remove_option(location, int value)
 	// last option (not answer)
 	B[0][2] = std::bitset<5>{"01001"}; // 3
@@ -311,7 +311,7 @@ TEST(Solver, deathtests_remove_option)
 		"Assertion failed: is_valid");
 #endif // _DEBUG
 
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// remove_option_section(SectionT, Location ignore, int value)
 	// deathtest: loc-> !is_answer(value)
 	ASSERT_FALSE(B[0][0].is_answer());
@@ -333,7 +333,7 @@ TEST(Solver, deathtests_remove_option)
 		remove_option_section(B, B.block(1), L(0), Value{2}),
 		"Assertion failed: is_same_section.*");
 
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// remove_option_section(SectionT, const std::vector<Location>& ignore, int)
 	// what if ignore is empty?
 	B[0][0] = Value{3};
@@ -366,7 +366,7 @@ TEST(Solver, deathtests_remove_option)
 			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, Value{1}),
 		"Assertion failed: is_same_section.*");
 
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// remove_option_section(SectionT, std::vector<Location>, std::vector<int>)
 	// ignore is empty
 	EXPECT_DEBUG_DEATH(
@@ -393,7 +393,7 @@ TEST(Solver, deathtests_remove_option)
 			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, vV{v{1}, v{2}}),
 		"Assertion failed: is_same_section.*");
 
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// remove_option_outside_block(Board, SectionT, Location, int)
 	// invalid location
 	B[0][0] = Value{3};

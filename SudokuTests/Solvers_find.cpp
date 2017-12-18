@@ -1,6 +1,6 @@
-﻿//===--	SudokuTests/Solver_find.cpp										--===//
+﻿//===--- SudokuTests/Solver_find.cpp                                    ---===//
 //
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
 //
 // Notes:
@@ -12,7 +12,7 @@
 //   if used in *_EQ/NE etc.
 //   use an explicit test like EXPECT_TRUE(.. == ..).
 //
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #include <gtest/gtest.h>
 
 // Class under test
@@ -173,7 +173,7 @@ TEST(Solver, appearance_once)
 	EXPECT_EQ(result.count_all(), 0);
 	EXPECT_FALSE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_answer()); // NOT needed
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// also in the test: appearance_sets
 	//
 	//	0	0	0	0	234	234	234	1234
@@ -319,7 +319,7 @@ TEST(Solvers_, appearance_sets)
 		EXPECT_EQ(result[2], Ans_2);
 		EXPECT_EQ(result[3], Ans_3);
 	}
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// Col
 	// Example as shown in implementation
 	Board<Options<9>, 3> B2{};
@@ -347,7 +347,7 @@ TEST(Solvers_, appearance_sets)
 		EXPECT_EQ(result[2], Ans_2);
 		EXPECT_EQ(result[3], Ans_3);
 	}
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// Block
 	using B = Location_Block<3>;
 	Board<Options<9>, 3> B3{};
@@ -375,7 +375,7 @@ TEST(Solvers_, appearance_sets)
 		EXPECT_EQ(result[2], Ans_2);
 		EXPECT_EQ(result[3], Ans_3);
 	}
-	//===-----------------------------------------------------------------===//
+	//===------------------------------------------------------------------===//
 	// also in the test: appearance_once
 	//
 	//	0	0	0	0	234	234	234	1234

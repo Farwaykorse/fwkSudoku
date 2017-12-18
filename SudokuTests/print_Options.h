@@ -1,7 +1,7 @@
-﻿//===--	SudokuTests/print_Options.h										--===//
+﻿//===--- SudokuTests/print_Options.h                                    ---===//
 //
 // Teaching gTest how to print Options
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 #pragma once
 
 #include <gtest/gtest.h>

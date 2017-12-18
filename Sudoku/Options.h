@@ -1,4 +1,4 @@
-//===--- Sudoku/Options.h												---===//
+//===--- Sudoku/Options.h                                               ---===//
 //
 // Data object containing and managing available options.
 //===----------------------------------------------------------------------===//
@@ -112,7 +112,7 @@ inline Options<E> shared(Options<E>& A, Options<E>& B) noexcept;
 template<int E>
 Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 
 namespace
 {
@@ -133,7 +133,7 @@ namespace
 	static_assert(exp2_(9) == 512);
 } // namespace
 
-//===---------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
 
 //	construct with all options
 template<int E>
