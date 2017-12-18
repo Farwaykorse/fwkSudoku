@@ -40,7 +40,8 @@ namespace compiletime
 	static_assert(std::is_class_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>, "standard layout");
-	static_assert(not std::is_trivial_v<typeT>, "not user-provided, no virtuals");
+	static_assert(
+		not std::is_trivial_v<typeT>, "not user-provided, no virtuals");
 	static_assert(not std::is_pod_v<typeT>);
 	// static_assert(std::has_unique_object_representations_v<typeT>); //C++17
 
@@ -94,14 +95,12 @@ namespace compiletime
 	static_assert(noexcept(Options<3>{Value{}}));
 	static_assert(noexcept(Options<3>() = Value{}));
 
-	static_assert(std::is_constructible_v<Options<3>, int>);
-	static_assert(std::is_assignable_v<Options<3>, int>);
-	static_assert(std::is_constructible_v<Options<3>, unsigned int>);
-	static_assert(std::is_assignable_v<Options<3>, unsigned int>);
-	static_assert(noexcept(Options<3>{int{}}));
-	static_assert(noexcept(Options<3>() = int{}));
-	static_assert(noexcept(Options<3>{size_t{}}));
-	static_assert(noexcept(Options<3>() = size_t{}));
+	static_assert(not std::is_constructible_v<Options<3>, int>);
+	static_assert(not std::is_assignable_v<Options<3>, int>);
+	static_assert(not std::is_constructible_v<Options<3>, unsigned int>);
+	static_assert(not std::is_assignable_v<Options<3>, unsigned int>);
+	static_assert(not std::is_constructible_v<Options<3>, size_t>);
+	static_assert(not std::is_assignable_v<Options<3>, size_t>);
 
 } // namespace compiletime
 TEST(Options, Construction)
@@ -161,24 +160,24 @@ TEST(Options, Construction)
 	}
 	{
 		SCOPED_TRACE("Options(Value)");
-		const Options<4> A_1{2}; // set() // clear() // add()
-		const Options<4> A_2 = Value{2};
+		const Options<4> A_1{Value{2}}; // set() // clear() // add()
+		Options<4> A_2 = Value{2};
 		EXPECT_EQ(A_1.DebugString(), "00100");
 		EXPECT_EQ(A_2.DebugString(), "00100");
-		EXPECT_EQ(Options<4>{0}.DebugString(), "00001"); // [count-0]
-		EXPECT_EQ(Options<4>{4}.DebugString(), "10000");
-		EXPECT_EQ(Options<4>{4}.DebugString(), "10000");
-		EXPECT_EQ(Options<9>{9}.DebugString(), "1000000000");
-		EXPECT_EQ(Options<9>{2}.DebugString(), "0000000100");
+		EXPECT_EQ(Options<4>{Value{0}}.DebugString(), "00001"); // [count-0]
+		EXPECT_EQ(Options<4>{Value{4}}.DebugString(), "10000");
+		EXPECT_EQ(Options<4>{Value{4}}.DebugString(), "10000");
+		EXPECT_EQ(Options<9>{Value{9}}.DebugString(), "1000000000");
+		EXPECT_EQ(Options<9>{Value{2}}.DebugString(), "0000000100");
 		// assertion see deathtests
 	}
 	{
 		SCOPED_TRACE("Options& operator=(int value)");
 		Options<4> TMP{};
-		TMP = 1; // set() // clear() // add()
+		TMP = Value{1}; // set() // clear() // add()
 		EXPECT_EQ(TMP.DebugString(), "00010");
-		EXPECT_EQ((TMP = 3).DebugString(), "01000");
-		EXPECT_EQ((TMP = 0).DebugString(), "00001"); // [count-0]
+		EXPECT_EQ((TMP = Value{3}).DebugString(), "01000");
+		EXPECT_EQ((TMP = Value{0}).DebugString(), "00001"); // [count-0]
 	}
 	{
 		SCOPED_TRACE("Options& operator=(const bitset&)");
@@ -290,8 +289,8 @@ TEST(Options, mf_boolRequest)
 	EXPECT_FALSE(TE.A_2.is_option(Value{2}));
 	EXPECT_FALSE(TE.O_3.is_option(Value{1}));
 	EXPECT_TRUE(TE.O_3.is_option(Value{2}));
-	EXPECT_TRUE(TE.X_0.is_option(Value{2})); // proper result even with incorrect
-									  // answer-flag
+	EXPECT_TRUE(TE.X_0.is_option(Value{2})); // proper result even with
+											 // incorrect answer-flag
 }
 
 TEST(Options, mf_dataRequest)
@@ -379,8 +378,8 @@ TEST(Options, mf_add)
 	// add(int)
 	// Options& add(int value);			// add single option
 	Options<4> Opt{std::bitset<5>{"00000"}};
-	static_assert(!noexcept(Opt.add(Value{4})));
-	ASSERT_NO_THROW(Opt.add(Value{4})) << "add(int)";
+	static_assert(not noexcept(Opt.add(Value{4})));
+	ASSERT_NO_THROW(Opt.add(Value{4})) << "add(Value)";
 	EXPECT_EQ(Opt.DebugString(), "10000");
 	ASSERT_THROW(Opt.add(Value{5}), std::out_of_range);
 	ASSERT_NO_THROW(Opt.add(Value{0}));
@@ -566,7 +565,7 @@ TEST(Options, Operators)
 	EXPECT_TRUE(E_1 == E_3);
 	// copy-assign
 	static_assert(noexcept(TMP.operator=(O_2)));
-	static_assert(noexcept(TMP.operator=(1)));
+	static_assert(noexcept(TMP.operator=(Value{1})));
 	Options<4> TMP1 = A_2;
 	EXPECT_TRUE(TMP1.is_answer(Value{2}));
 	EXPECT_TRUE(TMP1 == A_2);
@@ -580,10 +579,10 @@ TEST(Options, Operators)
 TEST(Options, External)
 {
 	const Options<4> O_3{std::bitset<5>{"00101"}}; // single option 2
-	const Options<4> E_1{0};                       // empty answer "00001"
+	const Options<4> E_1{Value{0}};                // empty answer "00001"
 	const Options<4> E_2{std::bitset<5>{"00000"}}; // empty
 	const Options<4> E_3{std::bitset<5>{"00001"}}; // empty option
-	const Options<4> A_1{1};                       // answer 1
+	const Options<4> A_1{Value{1}};                // answer 1
 	const Options<4> A_2{std::bitset<5>{"00100"}}; // answer 2
 	// XOR(a,b)
 	static_assert(noexcept(XOR(O_3, O_3)));
@@ -629,7 +628,8 @@ TEST(Options, deathtests)
 	EXPECT_DEATH({ TE.A_1.is_answer(Value{15}); }, "Assertion failed: .*");
 #endif // _DEBUG
 
-	EXPECT_DEBUG_DEATH({ TE.O_1.is_option(Value{15}); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH(
+		{ TE.O_1.is_option(Value{15}); }, "Assertion failed: .*");
 	// mf_constOperators
 	EXPECT_DEBUG_DEATH({ TE.O_3[Value{9}]; }, "Assertion failed: .*");
 	bool a{};
@@ -638,7 +638,8 @@ TEST(Options, deathtests)
 #ifdef _DEBUG
 	//! supposed to be noexcept, and no bounds-checks in release-mode
 	Options<4> Opp{std::bitset<5>{"00000"}};
-	// EXPECT_DEBUG_DEATH({ Opp[Value{3}] == Opp[-2]; }, "Assertion failed: .*");
+	// EXPECT_DEBUG_DEATH({ Opp[Value{3}] == Opp[-2]; }, "Assertion failed:
+	// .*");
 	EXPECT_DEBUG_DEATH({ Opp[Value{5}] = true; }, "Assertion failed: .*");
 	// mf_add
 	Options<4> Opt{std::bitset<5>{"00000"}};

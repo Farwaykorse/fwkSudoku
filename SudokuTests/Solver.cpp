@@ -251,12 +251,12 @@ TEST(Solver, section_exclusive)
 		//	4	5	6
 		//	7	8	9
 		//
-		B3[1][0] = 4;
-		B3[1][1] = 5;
-		B3[1][2] = 6;
-		B3[2][0] = 7;
-		B3[2][1] = 8;
-		B3[2][2] = 9;
+		B3[1][0] = Value{4};
+		B3[1][1] = Value{5};
+		B3[1][2] = Value{6};
+		B3[2][0] = Value{7};
+		B3[2][1] = Value{8};
+		B3[2][2] = Value{9};
 		ASSERT_TRUE(B3[0][0].all());
 		ASSERT_TRUE(B3[0][5].all());
 		ASSERT_TRUE(B3[1][0].is_answer(Value{4}));
@@ -279,12 +279,12 @@ TEST(Solver, section_exclusive)
 		//	0	8	9
 		//
 		B3       = cB3;
-		B3[0][1] = 2;
-		B3[0][2] = 3;
-		B3[1][1] = 5;
-		B3[1][2] = 6;
-		B3[2][1] = 8;
-		B3[2][2] = 9;
+		B3[0][1] = Value{2};
+		B3[0][2] = Value{3};
+		B3[1][1] = Value{5};
+		B3[1][2] = Value{6};
+		B3[2][1] = Value{8};
+		B3[2][2] = Value{9};
 		EXPECT_EQ(section_exclusive(B3, B3.block(0)), 3 * 6);
 		EXPECT_EQ(B3[0][0].count(), 9);
 		EXPECT_TRUE(B3[0][4].all()); // rest row
@@ -303,12 +303,12 @@ TEST(Solver, section_exclusive)
 		//	7	0	9
 		//
 		B3       = cB3;
-		B3[0][1] = 2;
-		B3[0][2] = 3;
-		B3[1][1] = 5;
-		B3[1][2] = 6;
-		B3[2][0] = 7;
-		B3[2][2] = 9;
+		B3[0][1] = Value{2};
+		B3[0][2] = Value{3};
+		B3[1][1] = Value{5};
+		B3[1][2] = Value{6};
+		B3[2][0] = Value{7};
+		B3[2][2] = Value{9};
 		EXPECT_EQ(section_exclusive(B3, B3.block(0)), 0);
 		EXPECT_TRUE(B3[0][0].all()); // self
 		EXPECT_TRUE(B3[0][4].all()); // rest row
@@ -611,7 +611,7 @@ TEST(Solver, single_option)
 	EXPECT_FALSE(B1[0][0].is_option(Value{2}));
 	EXPECT_FALSE(B1[0][2].is_option(Value{2}) || B1[0][3].is_option(Value{2}));
 	// is answer (loc, value)
-	B1[1][0] = 4;
+	B1[1][0] = Value{4};
 	ASSERT_TRUE(B1[1][0].is_answer(Value{4}));
 	EXPECT_EQ(B1[1][2].count(), 4);
 	EXPECT_EQ(B1[2][0].count(), 4);
@@ -619,7 +619,7 @@ TEST(Solver, single_option)
 	EXPECT_EQ(B1[0][0].count(), 2);
 	EXPECT_EQ(B1[1][2].count(), 3);
 	// cascase
-	B1[2][1] = 1;
+	B1[2][1] = Value{1};
 	ASSERT_TRUE(B1[2][1].is_answer(Value{1}));
 	EXPECT_EQ(B1[0][0].count(), 2);
 	EXPECT_EQ(B1[1][1].count(), 2);
@@ -646,7 +646,7 @@ TEST(Solver, single_option)
 	EXPECT_FALSE(B2[0][0].is_option(Value{2}));
 	EXPECT_FALSE(B2[0][2].is_option(Value{2}) || B2[0][3].is_option(Value{2}));
 	// is answer (loc, value)
-	B2[1][0] = 4;
+	B2[1][0] = Value{4};
 	ASSERT_TRUE(B2[1][0].is_answer(Value{4}));
 	EXPECT_EQ(B2[1][2].count(), 4);
 	EXPECT_EQ(B2[2][0].count(), 4);
@@ -654,7 +654,7 @@ TEST(Solver, single_option)
 	EXPECT_EQ(B2[0][0].count(), 2);
 	EXPECT_EQ(B2[1][2].count(), 3);
 	// cascase
-	B2[2][1] = 1;
+	B2[2][1] = Value{1};
 	ASSERT_TRUE(B2[2][1].is_answer(Value{1}));
 	EXPECT_EQ(B2[0][0].count(), 2);
 	EXPECT_EQ(B2[1][1].count(), 2);

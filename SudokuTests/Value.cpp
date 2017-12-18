@@ -147,7 +147,7 @@ TEST(Value, comparisons)
 	EXPECT_FALSE(Value{4} < Value{3});
 	EXPECT_TRUE(Value{1} <= Value{3});
 	EXPECT_TRUE(Value{5} <= Value{5});
-	EXPECT_FALSE(Value{1} <= Value{5});
+	EXPECT_FALSE(Value{7} <= Value{5});
 	EXPECT_TRUE(Value{5} >= Value{5});
 	EXPECT_TRUE(Value{6} >= Value{5});
 	EXPECT_FALSE(Value{6} >= Value{8});
@@ -172,9 +172,9 @@ TEST(Value, is_valid)
 	std::vector<Value> List{cList};
 	EXPECT_FALSE(is_valid<2>(list{})) << "can't be empty";
 	EXPECT_TRUE(is_valid<2>(List));
-	EXPECT_TRUE(is_valid<2>(list{1}));
-	EXPECT_FALSE(is_valid<2>(list{0}));
-	EXPECT_FALSE(is_valid<2>(list{5}));
+	EXPECT_TRUE(is_valid<2>(list{Value{1}}));
+	EXPECT_FALSE(is_valid<2>(list{Value{0}}));
+	EXPECT_FALSE(is_valid<2>(list{Value{5}}));
 	List.at(2) = Value{0}; // 1, 2, 0, 4, 3, 1
 	EXPECT_FALSE(is_valid<2>(List));
 	// EXPECT_FALSE(is_valid<2>(std::vector<Value>{1, -2, 3, 4, 3, 1}));

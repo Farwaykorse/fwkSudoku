@@ -64,17 +64,17 @@ public:
 		static_assert(!std::is_constructible<Options<3>, const std::bitset<3>&>(), "shouldn't accept non matching dimensions_1");
 		static_assert(std::is_assignable<Options<3>, std::bitset<4>>(), "assign from std::bitset");
 		static_assert(!std::is_assignable<Options<3>, std::bitset<3>>(), "shouldn't accept non matching dimensions_2");
-		static_assert(std::is_constructible<Options<3>, int>(), "construct from int");
-		static_assert(std::is_constructible<Options<3>, unsigned int>(), "construct from unsigned int");
-		static_assert(std::is_assignable<Options<3>, int>(), "assign from int");
-		static_assert(std::is_assignable<Options<3>, unsigned int>(), "assign from int");
+		static_assert(not std::is_constructible<Options<3>, int>(), "construct from int");
+		static_assert(not std::is_constructible<Options<3>, unsigned int>(), "construct from unsigned int");
+		static_assert(not std::is_assignable<Options<3>, int>(), "assign from int");
+		static_assert(not std::is_assignable<Options<3>, unsigned int>(), "assign from int");
 
 		Sudoku::Options<9> two{};
 		try { Sudoku::Options<4> O_3{ std::bitset<5>() }; }
 		catch (...) { Assert::Fail(L"Construction with bitset()"); }
 		try { Sudoku::Options<4> O_3{ std::bitset<5>{"00100"} }; }
 		catch (...) { Assert::Fail(L"Construction with bitset with data"); }
-		try { Sudoku::Options<4> O_4{ 2 }; }
+		try { Sudoku::Options<4> O_4{Value{2}}; }
 		catch (...) { Assert::Fail(L"Construction with int"); }
 	}
 	TEST_METHOD(T1_memberfunctions)
@@ -299,7 +299,7 @@ public:
 		Assert::IsTrue(E_1 == E_3, L"Options{ 0 } the 0th bit is true");
 		// copy-assign
 		static_assert(noexcept(TMP.operator=(O_2)), "operator= should be noexcept");
-		static_assert(noexcept(TMP.operator=(1)), "operator=(int) IS NOT noexcept");
+		static_assert(noexcept(TMP.operator=(Value{1})));
 		Sudoku::Options<4> TMP1 = A_2;
 		Assert::IsTrue(TMP1.is_answer(Value{2}), L"copy-assign failed");
 		Assert::IsTrue(TMP1 == A_2, L"copy-assign failed");
@@ -316,11 +316,11 @@ public:
 		const Sudoku::Options<4> O_1{};								// all options
 		const Sudoku::Options<4> O_2{ std::bitset<5>{"11111"} };	// all options
 		const Sudoku::Options<4> O_3{ std::bitset<5>{"00101"} };	// single option 2
-		const Sudoku::Options<4> E_1{ 0 };							// empty answer "00001"
-		const Sudoku::Options<4> E_2{ std::bitset<5>{"00000"} };	// empty
-		const Sudoku::Options<4> E_3{ std::bitset<5>{"00001"} };	// empty option
-		const Sudoku::Options<4> A_1{ 1 };							// answer 1
-		const Sudoku::Options<4> A_2{ std::bitset<5>{"00100"} };	// answer 2
+		const Sudoku::Options<4> E_1{Value{0}}; // empty answer "00001"
+		const Sudoku::Options<4> E_2{ std::bitset<5>{"00000"} }; // empty
+		const Sudoku::Options<4> E_3{ std::bitset<5>{"00001"} }; // empty option
+		const Sudoku::Options<4> A_1{Value{1}};                  // answer 1
+		const Sudoku::Options<4> A_2{ std::bitset<5>{"00100"} }; // answer 2
 		//XOR(a,b)
 		static_assert(noexcept(XOR(O_3, O_3)), "XOR() should be noexcept");
 		Assert::IsTrue(XOR(E_3, A_2) == O_3, L"XOR(A,B) failed");
@@ -335,3 +335,4 @@ public:
 	}
 };
 }	//namespace Sudoku_Test
+

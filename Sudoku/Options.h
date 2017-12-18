@@ -25,6 +25,7 @@ class Options
 
 public:
 	Options() noexcept;
+	Options(int) = delete;                    // by bitset
 	explicit Options(const bitset&) noexcept; // 0th bit is last in input
 	explicit Options(bitset&&) noexcept;
 	constexpr Options(Value) noexcept;
@@ -153,17 +154,17 @@ inline Options<E>::Options(bitset&& other) noexcept : data_{other}
 
 //	construct with single option set to answer
 template<int E>
-constexpr Options<E>::Options(const Value value) noexcept
-	: data_{exp2_(size_t(value))}
+constexpr Options<E>::Options(Value value) noexcept
+	: data_{exp2_(size_t{value})}
 {
 	assert(value <= Value{E});
 }
 
 //	set to answer value
 template<int E>
-inline Options<E>& Options<E>::operator=(const Value value) noexcept
+inline Options<E>& Options<E>::operator=(Value value) noexcept
 {
-	data_ = exp2_(size_t(value));
+	data_ = exp2_(size_t{value});
 	return *this;
 }
 
@@ -215,7 +216,7 @@ inline Options<E>& Options<E>::remove_option(const Value value) noexcept
 	assert(value <= Value{E});
 	assert(!is_answer(value));
 
-	data_[size_t(value)] = false;
+	data_[size_t{value}] = false;
 	return *this;
 }
 
@@ -223,7 +224,7 @@ inline Options<E>& Options<E>::remove_option(const Value value) noexcept
 template<int E>
 inline Options<E>& Options<E>::add(const Value value)
 {
-	data_.set(value, true);
+	data_.set(size_t{value}, true);
 	return *this;
 }
 
@@ -232,7 +233,7 @@ template<int E>
 inline Options<E>& Options<E>::add_nocheck(const Value value) noexcept
 {
 	assert(value <= Value{E});
-	data_[size_t(value)] = true;
+	data_[size_t{value}] = true;
 	return *this;
 }
 
@@ -300,7 +301,7 @@ inline bool Options<E>::all() const noexcept
 template<int E>
 inline bool Options<E>::test(const Value value) const
 {
-	return data_.test(size_t(value));
+	return data_.test(size_t{value});
 }
 
 //	check if set to answer
@@ -385,7 +386,7 @@ template<int E>
 inline bool Options<E>::operator[](const Value value) const noexcept
 {
 	assert(value <= Value{E});
-	return data_[size_t(value)];
+	return data_[size_t{value}];
 }
 
 //	no-check access
@@ -393,7 +394,7 @@ template<int E>
 inline auto Options<E>::operator[](const Value value) noexcept
 {
 	assert(value <= Value{E});
-	return data_[size_t(value)];
+	return data_[size_t{value}];
 }
 
 template<int E>

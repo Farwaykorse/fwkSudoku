@@ -21,6 +21,7 @@
 // helpers
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
+#include <Sudoku/Value.h>
 // Debug Output
 #include "print_Options.h"
 // library
@@ -321,7 +322,7 @@ TEST(Board, clear)
 
 	Board<Options<4>, 2> Opt(Value{2});
 	ASSERT_EQ(Opt[Location<2>(2)], Value{2});
-	ASSERT_EQ(Opt[Location<2>(2)], Options<4>{2});
+	ASSERT_EQ(Opt[Location<2>(2)], Options<4>{Value{2}});
 
 	EXPECT_FALSE(noexcept(Opt.clear()));
 	EXPECT_NO_THROW(Opt.clear());
@@ -341,7 +342,7 @@ TEST(Board, InBetween)
 	EXPECT_NE(board[3][3], 10);
 	Board<Options<4>, 2> board2{};
 	EXPECT_TRUE(noexcept(board2[0][0]));
-	EXPECT_NO_THROW(board2[2][0] = 2);
+	EXPECT_NO_THROW(board2[2][0] = Value{2});
 	EXPECT_EQ(board2[2][0], Value{2}); // short for is_answer(value)
 	EXPECT_NE(board2[2][0], Value{1});
 	// see deathtests

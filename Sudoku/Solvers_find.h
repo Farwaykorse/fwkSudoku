@@ -170,7 +170,7 @@ Step 3) xor [n-1]
 	// To limit processing time, counting up to N
 	constexpr size_t max = N; // default: (9x9 board) up-to 3 times
 	std::array<Options, max + 1> worker{};
-	worker.fill(Options(0));
+	worker.fill(Options(Value{0}));
 
 	// Collect options by appearence count
 	// worker[n] contains options appearing more than n times (or answer)
@@ -206,7 +206,7 @@ Step 3) xor [n-1]
 	for (size_t i{max}; i > 1; --i)
 	{
 		worker.at(i).XOR(worker.at(i - 1));
-		worker.at(i) += Options(0); // set not-answered
+		worker.at(i) += Options(Value{0}); // set not-answered
 	}
 	return worker;
 }
@@ -228,8 +228,8 @@ Options appearance_once(const InItr_ begin, const InItr_ end) noexcept
 		static_assert(Utility_::is_input<InItr_>);
 		static_assert(Utility_::iterator_to<InItr_, const Options>);
 	}
-	Options sum(0);    // helper all used
-	Options worker(0); // multiple uses OR answer
+	Options sum(Value{0});    // helper all used
+	Options worker(Value{0}); // multiple uses OR answer
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		if (itr->is_answer())
@@ -256,8 +256,8 @@ Options appearance_once(SectionT section) noexcept
 		static_assert(
 			iterator_to<typename SectionT::const_iterator, const Options>);
 	}
-	Options sum(0);    // helper all used
-	Options worker(0); // multiple uses OR answer
+	Options sum(Value{0});    // helper all used
+	Options worker(Value{0}); // multiple uses OR answer
 	for (const Options& item : section)
 	{
 		if (item.is_answer())

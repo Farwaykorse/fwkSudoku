@@ -79,16 +79,16 @@ TEST(Solver, remove_option_section)
 	// SEE deathtest: loc-> !is_answer(value)
 	const Board<Options<4>, 2> cB1;
 	Board<Options<4>, 2> B1;
-	B1[0][0] = 1;
+	B1[0][0] = Value{1};
 	ASSERT_TRUE(B1[0][0].is_answer(Value{1}));
 	// row
 	ASSERT_EQ(B1[0][1].count(), 4);
 	EXPECT_NO_THROW(remove_option_section(B1, B1.row(0), L(0), Value{1}));
 	EXPECT_EQ(B1[0][1].count(), 3);
-	B1[0][1] = 2;
+	B1[0][1] = Value{2};
 	EXPECT_EQ(remove_option_section(B1, B1.row(0), L(0, 1), Value{2}), 2);
 	// trigger single_option
-	B1[0][2] = 3;
+	B1[0][2] = Value{3};
 	EXPECT_EQ(remove_option_section(B1, B1.row(0), L(0, 2), Value{3}), 6);
 	EXPECT_TRUE(B1[0][3].is_answer(Value{4}));
 	EXPECT_EQ(B1[3][3].count(), 3);
@@ -101,14 +101,14 @@ TEST(Solver, remove_option_section)
 
 	// col
 	B1       = cB1;
-	B1[0][0] = 1;
+	B1[0][0] = Value{1};
 	ASSERT_EQ(B1[1][0].count(), 4);
 	EXPECT_NO_THROW(remove_option_section(B1, B1.col(0), L(0), Value{1}));
 	EXPECT_EQ(B1[1][0].count(), 3);
-	B1[1][0] = 2;
+	B1[1][0] = Value{2};
 	EXPECT_EQ(remove_option_section(B1, B1.col(0), L(1, 0), Value{2}), 2);
 	// trigger single_option
-	B1[2][0] = 3;
+	B1[2][0] = Value{3};
 	EXPECT_EQ(remove_option_section(B1, B1.col(0), L(2, 0), Value{3}), 6);
 	EXPECT_TRUE(B1[3][0].is_answer(Value{4}));
 	EXPECT_EQ(B1[3][3].count(), 3);
@@ -121,14 +121,14 @@ TEST(Solver, remove_option_section)
 
 	// block
 	B1       = cB1;
-	B1[0][0] = 1;
+	B1[0][0] = Value{1};
 	ASSERT_EQ(B1[1][1].count(), 4);
 	EXPECT_NO_THROW(remove_option_section(B1, B1.block(0), L(0), Value{1}));
 	EXPECT_EQ(B1[1][1].count(), 3);
-	B1[0][1] = 2;
+	B1[0][1] = Value{2};
 	EXPECT_EQ(remove_option_section(B1, B1.block(0), L(0, 1), Value{2}), 2);
 	// trigger single_option
-	B1[1][0] = 3;
+	B1[1][0] = Value{3};
 	EXPECT_EQ(remove_option_section(B1, B1.block(0), L(1, 0), Value{3}), 6);
 	EXPECT_TRUE(B1[1][1].is_answer(Value{4}));
 	EXPECT_EQ(B1[1][2].count(), 3);
@@ -141,8 +141,8 @@ TEST(Solver, remove_option_section)
 
 	// conflict handling? (none, use setValue)
 	B1       = cB1;
-	B1[0][0] = 2;
-	B1[0][1] = 2;
+	B1[0][0] = Value{2};
+	B1[0][1] = Value{2};
 	EXPECT_NO_THROW(remove_option_section(B1, B1.row(0), L(0), Value{2}));
 	EXPECT_TRUE(B1[0][0].is_answer(Value{2}));
 	EXPECT_TRUE(B1[0][1].is_answer(Value{2}));
@@ -270,8 +270,8 @@ TEST(Solver, remove_option_outside_block)
 	// EXPECT_EQ(remove_option_outside_block(B1, B1.block(0), L(1, 1),
 	// 4), 0);
 	// element is answer
-	B1[2][2] = 4;
-	B1[2][3] = 3;
+	B1[2][2] = Value{4};
+	B1[2][3] = Value{3};
 	ASSERT_TRUE(B1[2][2].is_answer(Value{4}));
 	ASSERT_TRUE(B1[2][3].is_answer(Value{3}));
 	EXPECT_EQ(remove_option_outside_block(B1, B1.row(2), L(2, 0), Value{2}), 0);
@@ -319,7 +319,7 @@ TEST(Solver, deathtests_remove_option)
 		remove_option_section(B, B.row(0), L(0), Value{2}),
 		"Assertion failed: .*is_answer.*");
 	// ignore is part of section
-	B[0][0] = 2;
+	B[0][0] = Value{2};
 	ASSERT_TRUE(B[0][0].is_answer(Value{2}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(1), L(0), Value{2}),
@@ -336,14 +336,14 @@ TEST(Solver, deathtests_remove_option)
 	//===-----------------------------------------------------------------===//
 	// remove_option_section(SectionT, const std::vector<Location>& ignore, int)
 	// what if ignore is empty?
-	B[0][0] = 3;
+	B[0][0] = Value{3};
 	ASSERT_TRUE(B[0][0].is_answer(Value{3}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{}, Value{3}),
 		"Assertion failed: is_valid.ignore.");
 	// ignore-location out of bounds (1-sided, assume check tested earlier)
 #ifdef _DEBUG
-	B[0][0] = 3;
+	B[0][0] = Value{3};
 	ASSERT_TRUE(B[0][0].is_answer(Value{3}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{L(0), L(1), L(16)}, Value{3}),
@@ -396,14 +396,14 @@ TEST(Solver, deathtests_remove_option)
 	//===-----------------------------------------------------------------===//
 	// remove_option_outside_block(Board, SectionT, Location, int)
 	// invalid location
-	B[0][0] = 3;
+	B[0][0] = Value{3};
 	ASSERT_TRUE(B[0][0].is_answer(Value{3}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_outside_block(B, B.row(0), L(21), Value{3}),
 		"Assertion failed: is_valid.block_loc.");
 	// invalid value
 #ifdef _DEBUG
-	B[0][0] = 3;
+	B[0][0] = Value{3};
 	ASSERT_TRUE(B[0][0].is_answer(Value{3}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_outside_block(B, B.row(0), L(0), Value{23}),
@@ -414,7 +414,7 @@ TEST(Solver, deathtests_remove_option)
 	EXPECT_DEBUG_DEATH(
 		remove_option_outside_block(B, B.row(2), L(0), Value{3}),
 		"Assertion failed: intersect_block.*");
-	B[3][2] = 4;
+	B[3][2] = Value{4};
 	ASSERT_TRUE(B[3][2].is_answer(Value{4}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_outside_block(B, B.col(1), L(3, 2), Value{4}),
