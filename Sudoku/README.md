@@ -1,6 +1,6 @@
-﻿<!----------------------------------------------------------------><a id="top"></a>
+﻿<!-------------------------------------------------------------><a id="top"></a>
 # Sudoku #
-<!---------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 <!-- Group > Package(this) > Component -->
 <!-- Description -->
 Data structure and solvers.
@@ -15,9 +15,9 @@ Data structure and solvers.
 	Natvis
 [Links](#link)
 
-<!----------------------------------------------------------------><a id="general"></a>
+<!---------------------------------------------------------><a id="general"></a>
 ## General Information ##
-<!---------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 <!-- Usage -->
 This project generates a static library.
 
@@ -25,7 +25,7 @@ This project generates a static library.
 <!-- libraries -->
 This project uses the STL and GSL.
 
-<!---------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 ### Compiler Settings ###
 
 #### VC++ ####
@@ -48,8 +48,8 @@ Usefull:
 
 All:
 ```
-/diagnostics:caret	DiagnosticsFormat: caret
-/std:c++17			
+/diagnostics:caret DiagnosticsFormat: caret
+/std:c++17
 /MP					Multiprocessor compilation
 /W4					Warning level 4 (=highest) (/Wall triggers to-many libraray warnings)
 
@@ -58,31 +58,33 @@ All:
 /permissive-       dissable non-conforming constructs in Visual C++: [1]
                    Enables: /Zc:rvaluecast /Zc:strictStrings and more!
 				   (updated compiler conformance)
-/Zc:rvaluecast		Enforce type-conversion rules (C++11) Needed for conformance
-/Yu"precompiled.h"	Use precompiled headers
-/FI"precompiled.h"	Force include, add precompiled to all files
+/Zc:rvaluecast     Enforce type-conversion rules (C++11) Needed for conformance
+/Yu"precompiled.h" Use precompiled headers
+/FI"precompiled.h" Force include, add precompiled to all files
 ```
 
 Linker: (in projects using this library)
 ```
-	/incremental	enable incremental linking
-	/debug:fastlink	Debug information format, allowing for faster linking
-					Enable generation of full-program database is needed for OpenCppCoverage
+/incremental    enable incremental linking
+/debug:fastlink Debug information format, allowing for faster linking
+                Enable generation of full-program database is needed for
+                OpenCppCoverage
 ```
 
 Debug:
-```
-/MTd		Run-time library for linking: Multi-threaded debug (use .lib)
-/ZI			Program database for edit-and-continue (sets /Gy and /FC)
-/Gy			Function-level linking
-/FC			Full-path of source code file in diagnostics
-```
+`````
+/MTd	Run-time library for linking: Multi-threaded debug (use .lib)
+/ZI		Program database for edit-and-continue (sets /Gy and /FC)
+/Gy		Function-level linking
+/FC		Full-path of source code file in diagnostics
+`````
 
 Release:
 ```
-/O2			Maximize Speed
-/GL			Whole program optimization
-/MT			Runtime library for linking: Multi-threaded (use static libraries .lib)
+/O2		Maximize Speed
+/GL		Whole program optimization
+/MT		Runtime library for linking: Multi-threaded
+        (use static libraries .lib)
 ```
 
 
@@ -122,7 +124,8 @@ levels. "Nonstandard extension" warnings are promoted to errors.
         in the for-loop is used outside the for-loop scope (level 3)
 /w44296 'operator': expression is always false
 /w14355 'this': used in base member initializer list
---*/w44365 'action': conversion from 'type_1' to 'type_2', signed/unsigned mismatch
+--*/w44365 'action': conversion from 'type_1' to 'type_2', signed/unsigned
+        mismatch
         223 hist, in stl headers: but most int -> size_t issue;
 		that should be possible to improve on
 /w14388 signed/unsigned mismatch
@@ -151,19 +154,20 @@ levels. "Nonstandard extension" warnings are promoted to errors.
 /w14605 '/Dmacro' specified on current command line, but was not specified when
         precompiled header was built
 /w34619 pragma warning: there is no warning number 'number'
---*/w44623 'derived class': default constructor was implicitly defined as deleted
-        because a base class default constructor is inaccessible or deleted
+--*/w44623 'derived class': default constructor was implicitly defined as
+        deleted because a base class default constructor is inaccessible or
+        deleted
 		1 hit
---*/w44625 'derived class': copy constructor could not be generated because a base
-        class copy constructor is inaccessible
+--*/w44625 'derived class': copy constructor could not be generated because a
+        base class copy constructor is inaccessible
 	hits on stl
 --*/w44626 'derived class': assignment operator could not be generated because a
         base assignment operator is inaccessible
 	hits on gsl and stl
 /w34640 'instance': construction of local static object is not thread-safe
 /w44654 Code placed before include of precompiled header line will be ignored.
---*/w44668 'symbol' is not defined as a preprocessor macro, replacing with '0' for
-        'directives'
+--*/w44668 'symbol' is not defined as a preprocessor macro, replacing with '0'
+        for 'directives'
 	hits on gtest
 /w34686 'user-defined type': possible change in behavior, change in UDT return
         calling convention
@@ -259,9 +263,9 @@ Disable (temporary) unwanted/uncompatible warnings:
 -Wno-keyword-macro  GSL: keyword hidden by macro definition
 ``````
 
-<!----------------------------------------------------------------><a id="elements"></a>
+<!--------------------------------------------------------><a id="elements"></a>
 ## Classes ##
-<!---------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 - Board  
 	public data structure
 - Options
@@ -269,29 +273,28 @@ Disable (temporary) unwanted/uncompatible warnings:
 - Location
 - ...
 
-<!----------------------------------------------------------------><a id="test"></a>
+<!------------------------------------------------------------><a id="test"></a>
 ## Unit-Testing ##
-<!---------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 Unit tests are written for gTest and collected in the SudokuTests project.
 
 
-<!----------------------------------------------------------------><a id="other"></a>
+<!-----------------------------------------------------------><a id="other"></a>
 ## Other ##
-<!---------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 ### .natvis ###
-<!---------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 Natvis files in the project.
 Generate custom views for objects in the Visual Studio debugger.
 - Board
 - Location
 - Options (TODO)
 
-<!---------------------------------------------------------------->
 
 
-<!----------------------------------------------------------------><a id="link"></a>
+<!------------------------------------------------------------><a id="link"></a>
 ## Links ##
-<!---------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 Visual C++ compiler options (documentation):
 	[0](https://docs.microsoft.com/en-gb/cpp/build/reference/compiler-options-listed-by-category)
 Visual C++ conformance mode, using the permissive- switch
@@ -305,4 +308,5 @@ Speed up builds:
 https://blogs.msdn.microsoft.com/vcblog/2016/11/16/permissive-switch/
 
 
+----
 [top](#top)
