@@ -19,28 +19,18 @@ namespace Sudoku
 {
 class Value
 {
-	using unsigned_int = unsigned int;
-	using u64_int      = unsigned long long int;
-
 public:
 	Value() noexcept {}
-	explicit constexpr Value(unsigned int val) noexcept : value_(val) {}
+	explicit constexpr Value(size_t val) noexcept : value_(val) {}
 
-	explicit constexpr operator unsigned_int() const noexcept
-	{
-		return value_;
-	}
-	explicit constexpr operator u64_int() const noexcept
-	{
-		return static_cast<unsigned long long int>(value_);
-	}
+	explicit constexpr operator size_t() const noexcept { return value_; }
 	constexpr operator bool() const noexcept { return value_ != 0; }
 
 	constexpr bool operator==(const Value&) const noexcept;
 	constexpr bool operator<(const Value&) const noexcept;
 
 private:
-	unsigned int value_{0};
+	size_t value_{0};
 };
 
 //===---------------------------------------------------------------------===//
@@ -81,7 +71,7 @@ inline auto to_Value(int val)
 {
 	if (val >= 0)
 	{
-		return static_cast<Value>(unsigned(val));
+		return static_cast<Value>(static_cast<size_t>(val));
 	}
 	else
 		throw std::domain_error("negative Value");
