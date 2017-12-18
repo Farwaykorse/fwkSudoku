@@ -2,12 +2,12 @@
 *
 */
 #include "stdafx.h"
-#include "CppUnitTest.h"
+#include <CppUnitTest.h>
 
 // Class under test
-#include "../Sudoku/Board.h"
+#include <Sudoku/Board.h>
 // aditional
-#include "../Sudoku/Location.h"
+#include <Sudoku/Location.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

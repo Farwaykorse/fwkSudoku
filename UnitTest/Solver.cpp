@@ -2,7 +2,7 @@
 *
 */
 #include "stdafx.h"
-#include "CppUnitTest.h"
+#include <CppUnitTest.h>
 
 // File under test
 #include <Sudoku/Solver.h>

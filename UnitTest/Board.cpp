@@ -2,13 +2,13 @@
 *
 */
 #include "stdafx.h"
-#include "CppUnitTest.h"
+#include <CppUnitTest.h>
 
 // Class under test
-#include "../Sudoku/Board.h"
+#include <Sudoku/Board.h>
 // helpers
-#include "../Sudoku/Location.h"
-#include "../Sudoku/Options.h"
+#include <Sudoku/Location.h>
+#include <Sudoku/Options.h>
 
 // library
 #include <set>

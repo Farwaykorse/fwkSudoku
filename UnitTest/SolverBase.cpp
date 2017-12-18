@@ -2,10 +2,10 @@
 *
 */
 #include "stdafx.h"
-#include "CppUnitTest.h"
+#include <CppUnitTest.h>
 
 // Class under test
-#include "../Sudoku/SolverBase.h"
+#include <Sudoku/SolverBase.h>
 // helpers
 
 // library

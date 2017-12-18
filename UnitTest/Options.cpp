@@ -2,10 +2,10 @@
 *
 */
 #include "stdafx.h"
-#include "CppUnitTest.h"
+#include <CppUnitTest.h>
 
 // Class under test
-#include "../Sudoku/Options.h"
+#include <Sudoku/Options.h>
 // additional
 #include <Sudoku/Value.h>
 

@@ -2,8 +2,7 @@
 //
 #pragma once
 #include "stdafx.h"
-#include "../Sudoku/Board.h"
-#include "../Sudoku/Board.h"
+#include <Sudoku/Board.h>
 
 #include <vector>
 

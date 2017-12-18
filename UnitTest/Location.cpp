@@ -2,11 +2,11 @@
 *
 */
 #include "stdafx.h"
-#include "CppUnitTest.h"
+#include <CppUnitTest.h>
 
 // Class under test
-#include "../Sudoku/Location.h"
-#include "../Sudoku/Location_Utilities.h"
+#include <Sudoku/Location.h>
+#include <Sudoku/Location_Utilities.h>
 // aditional
 
 
