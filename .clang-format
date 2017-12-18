@@ -71,8 +71,9 @@ AlignTrailingComments:			true
 #   6. STL other            // ! add all used!
 #   7. Forward declaration  // *.fwd.h for recursive external definitions
 #   8. macros files         // like cassert
+IncludeBlocks:      Preserve
 SortIncludes:       true
-IncludeIsMainRegex: ''
+IncludeIsMainRegex: '(_test)?'
 IncludeCategories:
   - Regex:    '^"((P|p)recompiled|stdafx)'
     Priority: -1
@@ -129,9 +130,9 @@ BraceWrapping:
 
 ###	Single-Line Statements
 AllowShortBlocksOnASingleLine:			false
-AllowShortFunctionsOnASingleLine:		InlineOnly
+AllowShortFunctionsOnASingleLine:		Inline
 AllowShortIfStatementsOnASingleLine:	true
-AllowShortLoopsOnASingleLine:			true
+AllowShortLoopsOnASingleLine:			false
 AllowShortCaseLabelsOnASingleLine:		true
 
 ##	Braces
@@ -178,7 +179,7 @@ PointerAlignment:				Left
 
 ##	Strings
 BreakStringLiterals:				true
-AlignEscapedNewlines:				Left
+AlignEscapedNewlines:				Right
 AlwaysBreakBeforeMultilineStrings:	true
 
 ##	Penalties:
