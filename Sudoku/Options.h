@@ -87,7 +87,7 @@ bool is_option(const Options<E>&, const Value);
 template<int E>
 inline Value get_answer(const Options<E>&) noexcept;
 template<int E>
-inline std::vector<Value> available(const Options<E>&);
+inline std::vector<Value> available(const Options<E>&) noexcept;
 template<int E>
 inline Value read_next(const Options<E>&, Value start = Value{0}) noexcept;
 
@@ -365,8 +365,8 @@ inline Value get_answer(const Options<E>& options) noexcept
 
 // all available options
 template<int E>
-inline std::vector<Value> available(const Options<E>& options)
-{
+inline std::vector<Value> available(const Options<E>& options) noexcept
+{ // noexcept: only allocation can throw. Terminate, all is lost anyway.
 	std::vector<Value> values{};
 	values.reserve(static_cast<size_t>(options.count()));
 	if (not is_answer(options) && not options.is_empty())

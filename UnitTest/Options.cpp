@@ -149,7 +149,7 @@ public:
 		Assert::IsTrue(E_2.is_empty(), L"is_empty() failed on special case");
 		// available() const
 		//std::vector<int> available() const;	// return available options
-		static_assert(!noexcept(available(O_1)), "available() should NOT be noexcept");
+		static_assert(noexcept(available(O_1)), "available() should NOT be noexcept");
 		std::vector<Value> result{};
 		try { result = available(O_4); }
 		catch (...) { Assert::Fail(L"available() failed"); }

@@ -249,6 +249,7 @@ TEST(Options, mf_counting)
 	EXPECT_FALSE(TE.O_1.is_empty());
 	EXPECT_FALSE(TE.X_1.is_empty());
 }
+
 TEST(Options, test_Value)
 {
 	static_assert(not noexcept(TE.O_1.test(Value{2})));
@@ -364,17 +365,32 @@ TEST(Options, available)
 {
 	std::vector<Value> result{};
 
-	static_assert(not noexcept(available(TE.O_1)));
+	static_assert(noexcept(available(TE.O_1)));
 	ASSERT_NO_THROW(result = available(TE.O_2));
 	EXPECT_EQ(result.size(), 2);
 	EXPECT_EQ(result[0], Value{1});
 	EXPECT_EQ(result[1], Value{3});
+	// empty
 	ASSERT_NO_THROW(result = available(TE.E_1));
 	EXPECT_EQ(result.size(), 0);
 	ASSERT_NO_THROW(result = available(TE.E_2));
 	EXPECT_EQ(result.size(), 0);
+	// invalid answer-bit
 	ASSERT_NO_THROW(result = available(TE.X_1));
 	EXPECT_EQ(result.size(), 0); //??? won't work for is_option() ...
+	ASSERT_NO_THROW(result = available(TE.D_1));
+	EXPECT_EQ(result.size(), 4);
+	// answer set
+	ASSERT_NO_THROW(result = available(TE.A_1));
+	EXPECT_EQ(result.size(), 0);
+	// answer not set
+	ASSERT_NO_THROW(result = available(TE.O_1));
+	EXPECT_EQ(result.size(), 1);
+	ASSERT_NO_THROW(result = available(TE.O_3));
+	EXPECT_EQ(result.size(), 3);
+	EXPECT_EQ(result[0], Value{2});
+	EXPECT_EQ(result[1], Value{3});
+	EXPECT_EQ(result[2], Value{4});
 }
 
 TEST(Options, get_answer)
