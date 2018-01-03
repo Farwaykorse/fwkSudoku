@@ -249,7 +249,7 @@ TEST(Options, mf_counting)
 	EXPECT_FALSE(TE.O_1.is_empty());
 	EXPECT_FALSE(TE.X_1.is_empty());
 }
-TEST(Options, mf_boolRequest)
+TEST(Options, test_Value)
 {
 	static_assert(not noexcept(TE.O_1.test(Value{2})));
 	EXPECT_THROW(TE.O_1.test(Value{15}), std::out_of_range);
@@ -258,6 +258,10 @@ TEST(Options, mf_boolRequest)
 	EXPECT_FALSE(TE.O_3.test(Value{1}));
 	EXPECT_FALSE(TE.E_1.test(Value{1}));
 	EXPECT_TRUE(TE.X_0.test(Value{1}));
+}
+
+TEST(Options, is_answer)
+{
 	static_assert(noexcept(TE.O_1.is_answer()));
 	EXPECT_TRUE(TE.A_1.is_answer());
 	EXPECT_TRUE(TE.A_2.is_answer());
@@ -278,7 +282,6 @@ TEST(Options, mf_boolRequest)
 	EXPECT_FALSE(is_answer(TE.X_0));
 	EXPECT_FALSE(is_answer(TE.X_1));
 
-
 	static_assert(not noexcept(is_answer(TE.O_1, Value{1})));
 	static_assert(not noexcept(is_answer(TE.A_1, Value{100})));
 	// assertion see deathtests
@@ -288,7 +291,10 @@ TEST(Options, mf_boolRequest)
 	EXPECT_FALSE(is_answer(TE.O_1, Value{2}));
 	EXPECT_FALSE(is_answer(TE.O_1, Value{2}));
 	EXPECT_FALSE(is_answer(TE.E_1, Value{0}));
+}
 
+TEST(Options, is_option)
+{
 	static_assert(not noexcept(is_option(TE.O_1, Value{2})));
 	// assertion see deathtests
 #ifndef _DEBUG
@@ -304,11 +310,61 @@ TEST(Options, mf_boolRequest)
 											  // incorrect answer-flag
 }
 
-TEST(Options, mf_dataRequest)
+TEST(Options, read_next)
+{
+	// must work on const objects
+	static_assert(std::is_const_v<decltype(TE.O_1)>);
+
+	static_assert(noexcept(read_next(TE.O_1)));
+	// on all available, walk over it
+	// Value = 0
+	EXPECT_EQ(read_next(TE.D_0, Value{0}), Value{1});
+	// Value not set
+	EXPECT_EQ(read_next(TE.D_0), Value{1});
+	// Value = E-1
+	EXPECT_EQ(read_next(TE.D_0, Value{8}), Value{9});
+	// Value > E-1
+	EXPECT_EQ(read_next(TE.D_0, Value{9}), Value{0});
+	// on multiple available (1 & 3)
+	EXPECT_EQ(read_next(TE.O_2, Value{0}), Value{1});
+	EXPECT_EQ(read_next(TE.O_2), Value{1});
+	EXPECT_EQ(read_next(TE.O_2, Value{1}), Value{3});
+	EXPECT_EQ(read_next(TE.O_2, Value{2}), Value{3});
+	EXPECT_EQ(read_next(TE.O_2, Value{3}), Value{0});
+	EXPECT_EQ(read_next(TE.O_2, Value{4}), Value{0});
+	// on multiple available (2,3,4)
+	EXPECT_EQ(read_next(TE.O_3, Value{0}), Value{2});
+	EXPECT_EQ(read_next(TE.O_3), Value{2});
+	EXPECT_EQ(read_next(TE.O_3, Value{2}), Value{3});
+	EXPECT_EQ(read_next(TE.O_3, Value{3}), Value{4});
+	EXPECT_EQ(read_next(TE.O_3, Value{4}), Value{0});
+	// on empty
+	EXPECT_EQ(read_next(TE.E_1, Value{0}), Value{0});
+	EXPECT_EQ(read_next(TE.E_1), Value{0});
+	EXPECT_EQ(read_next(TE.E_1, Value{3}), Value{0});
+	EXPECT_EQ(read_next(TE.E_2, Value{0}), Value{0});
+	EXPECT_EQ(read_next(TE.E_2), Value{0});
+	// on answer (set)
+	EXPECT_EQ(read_next(TE.A_2, Value{0}), Value{2});
+	EXPECT_EQ(read_next(TE.A_2), Value{2});
+	EXPECT_EQ(read_next(TE.A_2, Value{1}), Value{2});
+	EXPECT_EQ(read_next(TE.A_2, Value{2}), Value{0});
+	// on answer (not set)
+	EXPECT_EQ(read_next(TE.O_1, Value{0}), Value{2});
+	EXPECT_EQ(read_next(TE.O_1), Value{2});
+	EXPECT_EQ(read_next(TE.O_1, Value{3}), Value{0});
+	EXPECT_EQ(read_next(TE.O_1, Value{4}), Value{0});
+	// answer-bit fault
+	EXPECT_EQ(read_next(TE.X_0, Value{0}), Value{1});
+	EXPECT_EQ(read_next(TE.X_0), Value{1});
+	EXPECT_EQ(read_next(TE.X_0, Value{1}), Value{2});
+}
+
+TEST(Options, available)
 {
 	std::vector<Value> result{};
-	// std::vector<int> available() const;	// return available options
-	static_assert(!noexcept(available(TE.O_1)));
+
+	static_assert(not noexcept(available(TE.O_1)));
 	ASSERT_NO_THROW(result = available(TE.O_2));
 	EXPECT_EQ(result.size(), 2);
 	EXPECT_EQ(result[0], Value{1});
@@ -319,7 +375,10 @@ TEST(Options, mf_dataRequest)
 	EXPECT_EQ(result.size(), 0);
 	ASSERT_NO_THROW(result = available(TE.X_1));
 	EXPECT_EQ(result.size(), 0); //??? won't work for is_option() ...
-	// int get_answer() const noexcept;		// return get_answer or 0
+}
+
+TEST(Options, get_answer)
+{
 	static_assert(noexcept(get_answer(TE.O_1)));
 	EXPECT_EQ(get_answer(TE.A_1), Value{1});
 	EXPECT_EQ(get_answer(TE.O_1), Value{2});
@@ -329,6 +388,7 @@ TEST(Options, mf_dataRequest)
 	EXPECT_EQ(get_answer(TE.X_0), Value{0});
 	EXPECT_EQ(get_answer(TE.X_1), Value{0});
 }
+
 TEST(Options, mf_changeAll)
 {
 	// Setup

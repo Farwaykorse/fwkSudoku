@@ -522,7 +522,7 @@ inline Value read_next(const Options<E>& options, Value start) noexcept
 			return Value{i};
 		}
 	}
-	return Value{0}; // never triggered
+	return Value{0};
 }
 
 } // namespace Sudoku
