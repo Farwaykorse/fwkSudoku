@@ -20,7 +20,7 @@ namespace Sudoku
 class Value
 {
 public:
-	Value() noexcept {}
+	Value() noexcept = default;
 	explicit constexpr Value(size_t val) noexcept : value_(val) {}
 
 	explicit constexpr operator size_t() const noexcept { return value_; }
@@ -69,12 +69,14 @@ constexpr bool is_valid(const std::vector<Value>& values)
 //===----------------------------------------------------------------------===//
 inline auto to_Value(int val)
 {
-	if (val >= 0)
+	if (val < 0)
+	{
+		throw std::domain_error("negative Value");
+	}
+	else
 	{
 		return static_cast<Value>(static_cast<size_t>(val));
 	}
-	else
-		throw std::domain_error("negative Value");
 };
 
 //===----------------------------------------------------------------------===//
