@@ -86,7 +86,7 @@ inline constexpr bool Value::operator==(const Value& right) const noexcept
 }
 inline constexpr bool operator!=(const Value& left, const Value& right) noexcept
 {
-	return not(left == right);
+	return !(left == right);
 }
 inline constexpr bool Value::operator<(const Value& right) const noexcept
 {
@@ -94,7 +94,7 @@ inline constexpr bool Value::operator<(const Value& right) const noexcept
 }
 inline constexpr bool operator<=(const Value& left, const Value& right) noexcept
 {
-	return not(right < left);
+	return !(right < left);
 }
 inline constexpr bool operator>(const Value& left, const Value& right) noexcept
 {
@@ -102,7 +102,7 @@ inline constexpr bool operator>(const Value& left, const Value& right) noexcept
 }
 inline constexpr bool operator>=(const Value& left, const Value& right) noexcept
 {
-	return not(left < right);
+	return !(left < right);
 }
 static_assert(Value{7} == Value{7});
 static_assert(Value{1} != Value{0});
