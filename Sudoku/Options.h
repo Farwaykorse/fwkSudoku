@@ -36,7 +36,7 @@ public:
 	Options& clear() noexcept; // remove all options
 	Options& reset() noexcept; // set all options
 	Options& flip() noexcept;
-	Options& remove_option(Value) noexcept; // remove single option
+	Options& remove_option(Value); // remove single option
 	// TODO Options& remove_option(int value, ...);	// remove mentioned
 	Options& add(Value);                  // add single option
 	Options& set(Value);                  // set to answer
@@ -49,13 +49,7 @@ public:
 	bool all() const noexcept;       // if all options available = all bits set
 	bool test(Value) const;          // if an option, or answer
 	bool is_answer() const noexcept; // is set to answer
-	bool is_answer(Value) const noexcept; // is set to answer value
-	bool is_option(Value) const noexcept; // is an option
 	bool is_empty() const noexcept;
-
-	Value get_answer() const noexcept;    // return answer or 0
-										  // (won't confirm is_answer())
-	std::vector<Value> available() const; // return available options
 
 	bool operator[](Value) const noexcept;
 	auto operator[](Value) noexcept;
@@ -76,14 +70,26 @@ private:
 	// false if answer has been set = inverse of answer
 	bitset data_{};
 
-	Value read_next(Value start = Value{0}) const noexcept;
 	Options& operator&=(const Options&) noexcept; // NOTE might be risky
 	template<int E>
 	friend Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
 
 }; // class Options
 
-//===-- free-functions ---------------------------------------------------===//
+//===--- free-functions ---------------------------------------------------===//
+
+template<int E>
+bool is_answer(const Options<E>&) noexcept;
+template<int E>
+bool is_answer(const Options<E>&, const Value);
+template<int E>
+bool is_option(const Options<E>&, const Value);
+template<int E>
+inline Value get_answer(const Options<E>&) noexcept;
+template<int E>
+inline std::vector<Value> available(const Options<E>&);
+template<int E>
+inline Value read_next(const Options<E>&, Value start = Value{0}) noexcept;
 
 template<int E>
 bool operator!=(const Options<E>&, const Options<E>&) noexcept;
@@ -195,7 +201,7 @@ inline Options<E>& Options<E>::clear() noexcept
 template<int E>
 inline Options<E>& Options<E>::reset() noexcept
 {
-	data_.set(); // all true
+	data_.set(); // all true, default starting state
 	return *this;
 }
 
@@ -211,12 +217,12 @@ inline Options<E>& Options<E>::flip() noexcept
 
 //	remove single option
 template<int E>
-inline Options<E>& Options<E>::remove_option(const Value value) noexcept
+inline Options<E>& Options<E>::remove_option(const Value value)
 {
 	assert(value <= Value{E});
-	assert(!is_answer(value));
+	assert(not Sudoku::is_answer(*this, value));
 
-	data_[size_t{value}] = false;
+	data_.set(size_t{value}, false);
 	return *this;
 }
 
@@ -311,36 +317,33 @@ inline bool Options<E>::is_answer() const noexcept
 	return !data_[0] && data_.count() == 1;
 }
 
-//	check if set to answer value
-//! no input checks!
+// check if set to answer
 template<int E>
-inline bool Options<E>::is_answer(const Value value) const noexcept
+inline bool is_answer(const Options<E>& options) noexcept
+{ // convenience function
+	return options.is_answer();
+}
+
+// check if set to answer value
+template<int E>
+inline bool is_answer(const Options<E>& options, const Value value)
 {
 	assert(value <= Value{E});
-	return (is_answer() && operator[](value));
-	// return *this == Options<E>(value);
-	// return data_ == std::bitset<E + 1>{static_cast<unsigned long
-	// long>(exp2_(value))};
+
+	return (is_answer(options) && options.test(value));
+	// return (is_answer(options) && options[value]);
 }
 
-//	check if option available
-//! no input checks!
+// check if option available
 template<int E>
-inline bool Options<E>::is_option(const Value value) const noexcept
+inline bool is_option(const Options<E>& options, const Value value)
 {
 	assert(value != Value{0} && value <= Value{E});
-	// benched: this order is ~1.3 times faster
-	return (operator[](value) && !is_answer());
 
-	//! ... much slower ...
-	// constexpr auto not_answered =
-	//	std::bitset<E + 1>{static_cast<unsigned long long>(1)};
-	// return data_ ==
-	//	   ((std::bitset<E + 1>{static_cast<unsigned long long>(exp2_(value))}
-	//|= 		 not_answered) |= data_);
+	return (options.test(value) && not is_answer(options));
 }
 
-//_Test if no options or answers available
+// Test if no options or answers available
 template<int E>
 inline bool Options<E>::is_empty() const noexcept
 {
@@ -348,33 +351,30 @@ inline bool Options<E>::is_empty() const noexcept
 	return (data_.none() || data_ == std::bitset<E + 1>{1});
 }
 
-//	determine the answer value, even if not marked
-//	use with is_answer() to determine if flaged as anwer
+// determine the answer value, even if not marked
+//   use with is_answer() to determine if flaged as anwer
 template<int E>
-inline Value Options<E>::get_answer() const noexcept
+inline Value get_answer(const Options<E>& options) noexcept
 {
-	// TODO	microbench simpler/faster way to read single value from data_
-	//		constexpr?
-	//		bit operations?
-	if (count_all() == 1)
+	if (options.count_all() == 1)
 	{
-		return read_next();
+		return read_next(options);
 	}
 	return Value{0};
 }
 
-//	all available options
+// all available options
 template<int E>
-inline std::vector<Value> Options<E>::available() const
+inline std::vector<Value> available(const Options<E>& options)
 {
 	std::vector<Value> values{};
-	values.reserve(static_cast<size_t>(count()));
-	if (!is_answer() && !is_empty())
+	values.reserve(static_cast<size_t>(options.count()));
+	if (not is_answer(options) && not options.is_empty())
 	{
 		Value item{0};
-		for (auto i{0}; i < count(); ++i)
+		for (auto i{0}; i < options.count(); ++i)
 		{
-			item = read_next(item);
+			item = read_next(options, item);
 			values.emplace_back(item);
 		}
 	}
@@ -414,22 +414,22 @@ inline bool operator!=(const Options<E>& left, const Options<E>& right) noexcept
 template<int E>
 inline bool operator==(const Options<E>& left, const Value value) noexcept
 {
-	return left.is_answer(value);
+	return is_answer(left, value);
 }
 template<int E>
 inline bool operator==(const Value value, const Options<E>& right) noexcept
 {
-	return right.is_answer(value);
+	return is_answer(right, value);
 }
 template<int E>
 inline bool operator!=(const Options<E>& left, const Value value) noexcept
 {
-	return not(left.is_answer(value));
+	return not(is_answer(left, value));
 }
 template<int E>
 inline bool operator!=(const Value value, const Options<E>& right) noexcept
 {
-	return not(right.is_answer(value));
+	return not(is_answer(right, value));
 }
 
 //	Basis for sorting
@@ -509,15 +509,15 @@ inline std::string Options<E>::DebugString() const
 	return data_.to_string();
 }
 
-//	return next option in data
+// return next option in data
 template<int E>
-inline Value Options<E>::read_next(Value start) const noexcept
+inline Value read_next(const Options<E>& options, Value start) noexcept
 { // default value start = 0
-	unsigned int i{start};
+	size_t i{start};
 	++i;
-	for (; i <= static_cast<unsigned int>(E); ++i)
+	for (; i <= static_cast<size_t>(E); ++i)
 	{
-		if (data_[i])
+		if (options[Value{i}])
 		{
 			return Value{i};
 		}

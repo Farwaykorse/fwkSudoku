@@ -88,7 +88,7 @@ auto find_locations(
 	for (int i{0}; i < rep_count; ++i)
 	{
 		last = std::find_if(last, end, [value](Options O) noexcept {
-			return O.is_option(value);
+			return is_option(O, value);
 		});
 		if (last == end)
 		{ // rep_count too large
@@ -176,7 +176,7 @@ Step 3) xor [n-1]
 	// worker[n] contains options appearing more than n times (or answer)
 	for (auto elem_itr = begin; elem_itr != end; ++elem_itr)
 	{
-		if (elem_itr->is_answer())
+		if (is_answer(*elem_itr))
 		{
 			// add answer to all
 			for (auto& set : worker)
@@ -232,7 +232,7 @@ Options appearance_once(const InItr_ begin, const InItr_ end) noexcept
 	Options worker(Value{0}); // multiple uses OR answer
 	for (auto itr = begin; itr != end; ++itr)
 	{
-		if (itr->is_answer())
+		if (is_answer(*itr))
 		{
 			worker = *itr + worker;
 		}
@@ -260,7 +260,7 @@ Options appearance_once(SectionT section) noexcept
 	Options worker(Value{0}); // multiple uses OR answer
 	for (const Options& item : section)
 	{
-		if (item.is_answer())
+		if (is_answer(item))
 		{
 			worker = item + worker; // OR
 		}

@@ -34,7 +34,7 @@ inline int single_option(Board<Options, N>& board, const Location<N> loc)
 {
 	assert(is_valid(loc));
 
-	if (const Value answer{board[loc].get_answer()})
+	if (const Value answer{get_answer(board[loc])})
 	{
 		return single_option(board, loc, answer);
 	}
@@ -54,7 +54,7 @@ inline int single_option(
 	assert(board[loc].count_all() == 1);
 
 	int changes{};
-	if (!board[loc].is_answer(value))
+	if (not is_answer(board[loc], value))
 	{
 		setValue(board, loc, value);
 		++changes;
@@ -95,7 +95,7 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 					board,
 					board.row(loc),
 					sorted_loc(Location(i)),
-					item.available());
+					available(item));
 			}
 			else if (is_same_col(loc, Location(i)))
 			{
@@ -103,7 +103,7 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 					board,
 					board.col(loc),
 					sorted_loc(Location(i)),
-					item.available());
+					available(item));
 			}
 			// run don't if already answered in one of the previous
 			if (is_same_block(loc, Location(i)) && !item.is_answer())
@@ -113,7 +113,7 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 					board,
 					board.block(loc),
 					sorted_loc(Location(i)),
-					item.available());
+					available(item));
 			}
 		}
 	}
@@ -179,20 +179,20 @@ inline int
 				in_row.size() == count)
 			{
 				changes += remove_option_section(
-					board, board.row(loc), in_row, item.available());
+					board, board.row(loc), in_row, available(item));
 			}
 			if (const auto in_col{get_same_col(loc, list)};
 				in_col.size() == count)
 			{
 				changes += remove_option_section(
-					board, board.col(loc), in_col, item.available());
+					board, board.col(loc), in_col, available(item));
 			}
 			if (const auto in_block{get_same_block(loc, list)};
 				in_block.size() == count)
 			{
 				// NOTE this is slow
 				changes += remove_option_section(
-					board, board.block(loc), in_block, item.available());
+					board, board.block(loc), in_block, available(item));
 			}
 		}
 		return changes;

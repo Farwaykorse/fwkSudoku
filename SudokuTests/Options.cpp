@@ -251,7 +251,7 @@ TEST(Options, mf_counting)
 }
 TEST(Options, mf_boolRequest)
 {
-	static_assert(!noexcept(TE.O_1.test(Value{2})));
+	static_assert(not noexcept(TE.O_1.test(Value{2})));
 	EXPECT_THROW(TE.O_1.test(Value{15}), std::out_of_range);
 	EXPECT_TRUE(TE.O_1.test(Value{2}));
 	EXPECT_TRUE(TE.O_3.test(Value{2}));
@@ -267,56 +267,67 @@ TEST(Options, mf_boolRequest)
 	EXPECT_FALSE(TE.E_2.is_answer());
 	EXPECT_FALSE(TE.X_0.is_answer());
 	EXPECT_FALSE(TE.X_1.is_answer());
+	// convenience function: exactly the same
+	static_assert(noexcept(is_answer(TE.O_1)));
+	EXPECT_TRUE(is_answer(TE.A_1));
+	EXPECT_TRUE(is_answer(TE.A_2));
+	EXPECT_FALSE(is_answer(TE.O_1));
+	EXPECT_FALSE(is_answer(TE.O_4));
+	EXPECT_FALSE(is_answer(TE.E_1));
+	EXPECT_FALSE(is_answer(TE.E_2));
+	EXPECT_FALSE(is_answer(TE.X_0));
+	EXPECT_FALSE(is_answer(TE.X_1));
 
-	static_assert(noexcept(TE.O_1.is_answer(Value{1})));
-	static_assert(noexcept(TE.A_1.is_answer(Value{100})));
+
+	static_assert(not noexcept(is_answer(TE.O_1, Value{1})));
+	static_assert(not noexcept(is_answer(TE.A_1, Value{100})));
 	// assertion see deathtests
-	EXPECT_TRUE(TE.A_2.is_answer(Value{2}));
-	EXPECT_FALSE(TE.A_2.is_answer(Value{3}));
-	EXPECT_FALSE(TE.A_1.is_answer(Value{0}));
-	EXPECT_FALSE(TE.O_1.is_answer(Value{2}));
-	EXPECT_FALSE(TE.O_1.is_answer(Value{2}));
-	EXPECT_FALSE(TE.E_1.is_answer(Value{0}));
+	EXPECT_TRUE(is_answer(TE.A_2, Value{2}));
+	EXPECT_FALSE(is_answer(TE.A_2, Value{3}));
+	EXPECT_FALSE(is_answer(TE.A_1, Value{0}));
+	EXPECT_FALSE(is_answer(TE.O_1, Value{2}));
+	EXPECT_FALSE(is_answer(TE.O_1, Value{2}));
+	EXPECT_FALSE(is_answer(TE.E_1, Value{0}));
 
-	static_assert(noexcept(TE.O_1.is_option(Value{2})));
+	static_assert(not noexcept(is_option(TE.O_1, Value{2})));
 	// assertion see deathtests
 #ifndef _DEBUG
-	EXPECT_NO_THROW(TE.O_1.is_option(Value{15})); // undefined behaviour
-	EXPECT_NO_THROW(TE.A_1.is_option(Value{15}));
+	EXPECT_THROW(is_option(TE.O_1, Value{15}), std::out_of_range);
+	EXPECT_THROW(is_option(TE.A_1, Value{15}), std::out_of_range);
 #endif // _DEBUG
-	EXPECT_TRUE(TE.D_1.is_option(Value{4}));
-	EXPECT_TRUE(TE.O_1.is_option(Value{2}));
-	EXPECT_FALSE(TE.A_2.is_option(Value{2}));
-	EXPECT_FALSE(TE.O_3.is_option(Value{1}));
-	EXPECT_TRUE(TE.O_3.is_option(Value{2}));
-	EXPECT_TRUE(TE.X_0.is_option(Value{2})); // proper result even with
-											 // incorrect answer-flag
+	EXPECT_TRUE(is_option(TE.D_1, Value{4}));
+	EXPECT_TRUE(is_option(TE.O_1, Value{2}));
+	EXPECT_FALSE(is_option(TE.A_2, Value{2}));
+	EXPECT_FALSE(is_option(TE.O_3, Value{1}));
+	EXPECT_TRUE(is_option(TE.O_3, Value{2}));
+	EXPECT_TRUE(is_option(TE.X_0, Value{2})); // proper result even with
+											  // incorrect answer-flag
 }
 
 TEST(Options, mf_dataRequest)
 {
 	std::vector<Value> result{};
 	// std::vector<int> available() const;	// return available options
-	static_assert(!noexcept(TE.O_1.available()));
-	ASSERT_NO_THROW(result = TE.O_2.available());
+	static_assert(!noexcept(available(TE.O_1)));
+	ASSERT_NO_THROW(result = available(TE.O_2));
 	EXPECT_EQ(result.size(), 2);
 	EXPECT_EQ(result[0], Value{1});
 	EXPECT_EQ(result[1], Value{3});
-	ASSERT_NO_THROW(result = TE.E_1.available());
+	ASSERT_NO_THROW(result = available(TE.E_1));
 	EXPECT_EQ(result.size(), 0);
-	ASSERT_NO_THROW(result = TE.E_2.available());
+	ASSERT_NO_THROW(result = available(TE.E_2));
 	EXPECT_EQ(result.size(), 0);
-	ASSERT_NO_THROW(result = TE.X_1.available());
+	ASSERT_NO_THROW(result = available(TE.X_1));
 	EXPECT_EQ(result.size(), 0); //??? won't work for is_option() ...
 	// int get_answer() const noexcept;		// return get_answer or 0
-	static_assert(noexcept(TE.O_1.get_answer()));
-	EXPECT_EQ(TE.A_1.get_answer(), Value{1});
-	EXPECT_EQ(TE.O_1.get_answer(), Value{2});
-	EXPECT_EQ(TE.O_2.get_answer(), Value{0});
-	EXPECT_EQ(TE.E_1.get_answer(), Value{0});
-	EXPECT_EQ(TE.E_2.get_answer(), Value{0});
-	EXPECT_EQ(TE.X_0.get_answer(), Value{0});
-	EXPECT_EQ(TE.X_1.get_answer(), Value{0});
+	static_assert(noexcept(get_answer(TE.O_1)));
+	EXPECT_EQ(get_answer(TE.A_1), Value{1});
+	EXPECT_EQ(get_answer(TE.O_1), Value{2});
+	EXPECT_EQ(get_answer(TE.O_2), Value{0});
+	EXPECT_EQ(get_answer(TE.E_1), Value{0});
+	EXPECT_EQ(get_answer(TE.E_2), Value{0});
+	EXPECT_EQ(get_answer(TE.X_0), Value{0});
+	EXPECT_EQ(get_answer(TE.X_1), Value{0});
 }
 TEST(Options, mf_changeAll)
 {
@@ -345,7 +356,7 @@ TEST(Options, mf_changeAll)
 	EXPECT_FALSE(TMP.is_empty());
 	EXPECT_EQ(TMP.count(), 4);
 	EXPECT_EQ(TMP.count_all(), 4);
-	EXPECT_TRUE(TMP.is_option(Value{2}));
+	EXPECT_TRUE(is_option(TMP, Value{2}));
 	EXPECT_TRUE(TMP.all());
 	TMP = TE.D_1;
 	EXPECT_TRUE(TMP.reset().all());
@@ -362,7 +373,7 @@ TEST(Options, mf_changeAll)
 TEST(Options, mf_remove_option)
 {
 	Options<4> TMP{};
-	static_assert(noexcept(TMP.remove_option(Value{3})));
+	static_assert(not noexcept(TMP.remove_option(Value{3})));
 	ASSERT_NO_THROW(TMP.remove_option(Value{3}));
 	// EXPECT_THROW(TMP.remove_option(Value{15}), std::out_of_range);
 	// EXPECT_THROW(TMP.remove_option(-5), std::out_of_range);
@@ -413,11 +424,11 @@ TEST(Options, mf_set)
 	EXPECT_NO_THROW(TMP.set(Value{4}));
 	EXPECT_THROW(TMP.set(Value{5}), std::out_of_range);
 	EXPECT_NO_THROW(TMP.set(Value{0}));
-	EXPECT_TRUE(TMP.set(Value{4}).is_answer());
-	EXPECT_TRUE(TMP.is_answer(Value{4}));
+	EXPECT_TRUE(is_answer(TMP.set(Value{4})));
+	EXPECT_TRUE(is_answer(TMP, Value{4}));
 	EXPECT_EQ(TMP.count(), 0);
-	EXPECT_TRUE(TMP.set(Value{1}).is_answer(Value{1}));
-	EXPECT_FALSE(TMP.is_answer(Value{4}));
+	EXPECT_TRUE(is_answer(TMP.set(Value{1}), Value{1}));
+	EXPECT_FALSE(is_answer(TMP, Value{4}));
 	EXPECT_TRUE(TMP.set(Value{0}).is_empty());
 	EXPECT_EQ(TMP.count_all(), 0);
 	EXPECT_EQ(TMP.DebugString(), "00001");
@@ -427,7 +438,7 @@ TEST(Options, mf_set)
 	EXPECT_TRUE(TMP.clear().is_empty());
 	EXPECT_NO_THROW(TMP.set_nocheck(Value{1}));
 	EXPECT_EQ(TMP.DebugString(), "00010");
-	EXPECT_TRUE(TMP.set_nocheck(Value{2}).is_answer(Value{2}));
+	EXPECT_TRUE(is_answer(TMP.set_nocheck(Value{2}), Value{2}));
 	// assertion see deathtests
 #ifndef _DEBUG
 	// EXPECT_NO_THROW(TMP.set_nocheck(Value{15}));
@@ -567,10 +578,10 @@ TEST(Options, Operators)
 	static_assert(noexcept(TMP.operator=(O_2)));
 	static_assert(noexcept(TMP.operator=(Value{1})));
 	Options<4> TMP1 = A_2;
-	EXPECT_TRUE(TMP1.is_answer(Value{2}));
+	EXPECT_TRUE(is_answer(TMP1, Value{2}));
 	EXPECT_TRUE(TMP1 == A_2);
 	const Options<4> TMP2 = Value{3};
-	EXPECT_TRUE(TMP2.is_answer(Value{3}));
+	EXPECT_TRUE(is_answer(TMP2, Value{3}));
 	// move-assign
 	static_assert(noexcept(TMP.operator=(std::bitset<5>())));
 	const Options<4> O_6 = Options<4>(std::bitset<5>{}); // "00000"
@@ -625,17 +636,16 @@ TEST(Options, deathtests)
 
 	// mf_boolRequest
 #ifdef _DEBUG
-	EXPECT_DEATH({ TE.A_1.is_answer(Value{15}); }, "Assertion failed: .*");
-#endif // _DEBUG
+	EXPECT_DEATH({ is_answer(TE.A_1, Value{15}); }, "Assertion failed: .*");
 
 	EXPECT_DEBUG_DEATH(
-		{ TE.O_1.is_option(Value{15}); }, "Assertion failed: .*");
+		{ is_option(TE.O_1, Value{15}); }, "Assertion failed: .*");
 	// mf_constOperators
 	EXPECT_DEBUG_DEATH({ TE.O_3[Value{9}]; }, "Assertion failed: .*");
 	bool a{};
 	EXPECT_DEBUG_DEATH({ a = TE.O_3[Value{5}]; }, "Assertion failed: .*");
 	// operator[]
-#ifdef _DEBUG
+
 	//! supposed to be noexcept, and no bounds-checks in release-mode
 	Options<4> Opp{std::bitset<5>{"00000"}};
 	// EXPECT_DEBUG_DEATH({ Opp[Value{3}] == Opp[-2]; }, "Assertion failed:

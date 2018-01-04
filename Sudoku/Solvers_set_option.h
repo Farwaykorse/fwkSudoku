@@ -84,13 +84,13 @@ inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 		{
 			value = to_Value(*itr);
 		}
-		if (value > Value{0} && board.at(loc).is_option(value))
+		if (value > Value{0} && is_option(board.at(loc), value))
 		{
 			setValue(board, loc, value);
 			single_option(board, loc, value);
 		}
 		// check invalid value or conflict
-		assert(value == Value{0} || board.at(loc).is_answer(value));
+		assert(value == Value{0} || is_answer(board.at(loc), value));
 	}
 	assert(n == full_size<N>);
 }

@@ -216,7 +216,7 @@ TEST(Solver, set_section_locals)
 	B3[2][2] = Value{9};
 	ASSERT_TRUE(B3[0][0].all());
 	ASSERT_TRUE(B3[0][5].all());
-	ASSERT_TRUE(B3[1][0].is_answer(Value{4}));
+	ASSERT_TRUE(is_answer(B3[1][0], Value{4}));
 	ASSERT_TRUE(B3[1][8].all());
 	worker3 = std::bitset<10>{"0000001111"};
 	EXPECT_EQ(set_section_locals(B3, B3.block(0), 3, worker3), 3 * 6);
@@ -249,7 +249,7 @@ TEST(Solver, set_section_locals)
 	EXPECT_TRUE(B3[0][4].all()); // rest row
 	EXPECT_TRUE(B3[0][8].all()); // rest row
 	EXPECT_TRUE(B3[1][0].all()); // self
-	EXPECT_TRUE(B3[1][1].is_answer(Value{5}));
+	EXPECT_TRUE(is_answer(B3[1][1], Value{5}));
 	EXPECT_EQ(B3[3][0].count(), 6); // rest col
 	EXPECT_TRUE(B3[3][1].all());
 	EXPECT_EQ(B3[4][0].count(), 6); // rest col
@@ -274,7 +274,7 @@ TEST(Solver, set_section_locals)
 	EXPECT_TRUE(B3[0][4].all()); // rest row
 	EXPECT_TRUE(B3[0][8].all()); // rest row
 	EXPECT_TRUE(B3[1][0].all()); // self
-	EXPECT_TRUE(B3[1][1].is_answer(Value{5}));
+	EXPECT_TRUE(is_answer(B3[1][1], Value{5}));
 	EXPECT_TRUE(B3[2][1].all()); // self
 	EXPECT_TRUE(B3[3][0].all()); // rest col
 	EXPECT_TRUE(B3[3][1].all());
@@ -319,11 +319,11 @@ TEST(Solver, set_uniques)
 	EXPECT_EQ(B1[0][0].count(), 3); // no change
 	EXPECT_EQ(B1[0][1].count(), 3); // no change
 	EXPECT_EQ(B1[0][2].count(), 3); // no change
-	EXPECT_TRUE(B1[0][3].is_answer(Value{1}));
+	EXPECT_TRUE(is_answer(B1[0][3], Value{1}));
 	worker = appearance_once<2>(B1.row(2));
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
 	EXPECT_EQ(set_uniques(B1, B1.row(2), worker), 1);
-	EXPECT_TRUE(B1[2][1].is_answer(Value{1}));
+	EXPECT_TRUE(is_answer(B1[2][1], Value{1}));
 	// Col (one value)
 	B1 = cB1; // reset
 	ASSERT_EQ(B1[0][3].count(), 4);
@@ -333,7 +333,7 @@ TEST(Solver, set_uniques)
 	EXPECT_EQ(set_uniques(B1, B1.col(1), worker), 1);
 	EXPECT_EQ(B1[0][1].count(), 3); // no change
 	EXPECT_EQ(B1[1][1].count(), 3); // no change
-	EXPECT_TRUE(B1[2][1].is_answer(Value{1}));
+	EXPECT_TRUE(is_answer(B1[2][1], Value{1}));
 	EXPECT_EQ(B1[3][1].count(), 3); // no change
 	// Block (one value)
 	B1 = cB1; // reset
@@ -342,7 +342,7 @@ TEST(Solver, set_uniques)
 	EXPECT_EQ(worker, Options<4>{std::bitset<5>{"00011"}});
 	EXPECT_EQ(set_uniques(B1, B1.block(2), worker), 1);
 	EXPECT_EQ(B1[2][0].count(), 3); // no change
-	EXPECT_TRUE(B1[2][1].is_answer(Value{1}));
+	EXPECT_TRUE(is_answer(B1[2][1], Value{1}));
 	EXPECT_EQ(B1[3][0].count(), 3); // no change
 	EXPECT_EQ(B1[3][1].count(), 3); // no change
 
@@ -359,11 +359,11 @@ TEST(Solver, set_uniques)
 	EXPECT_EQ(set_uniques(B2, B2.row(0), worker), 10);
 	// 10 = ans(0){1} + col(0){3} + block(0){1}
 	//		ans(2){1} + col(2){3} + block(1){1}
-	EXPECT_TRUE(B2[0][0].is_answer(Value{1}));
-	EXPECT_TRUE(B2[0][2].is_answer(Value{3}));
+	EXPECT_TRUE(is_answer(B2[0][0], Value{1}));
+	EXPECT_TRUE(is_answer(B2[0][2], Value{3}));
 	EXPECT_EQ(B2[0][1].count(), 2); // no change
 	EXPECT_EQ(B2[0][3].count(), 2); // no change
-	EXPECT_FALSE(B2[3][0].is_option(Value{1}));
+	EXPECT_FALSE(is_option(B2[3][0], Value{1}));
 }
 
 TEST(Solver, deathtest_set_option)
@@ -385,7 +385,7 @@ TEST(Solver, deathtest_set_option)
 	//	// deathtest: a unique Value in worker doesn't exist in the section
 	//	// 1	24	324	24
 	//	B1[0][0] = std::bitset<5>{"00010"}; // ans 1
-	//	EXPECT_FALSE(B1[0][0].is_option(Value{1}));
+	//	EXPECT_FALSE(is_option(B1[0][0], Value{1}));
 	//	B1[0][1]    = std::bitset<5>{"10101"};
 	//	B1[0][2]    = std::bitset<5>{"11101"};
 	//	B1[0][3]    = std::bitset<5>{"10101"};

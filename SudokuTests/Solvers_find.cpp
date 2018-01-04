@@ -84,7 +84,8 @@ TEST(Solver, find_locations)
 	EXPECT_EQ(list[1], loc(1, 0));
 	// partial section
 	EXPECT_NO_FATAL_FAILURE(
-		list = find_locations<2>(B.row(0).cbegin() + 2, B.row(0).cend(), Value{1}, 2));
+		list = find_locations<2>(
+			B.row(0).cbegin() + 2, B.row(0).cend(), Value{1}, 2));
 	EXPECT_EQ(list.size(), 2);
 	EXPECT_EQ(list[0], loc(2));
 	EXPECT_EQ(list[1], loc(3));
@@ -112,7 +113,7 @@ TEST(Solver, appearance_once)
 	// Using iterators
 	EXPECT_NO_THROW(setValue(B1, v1.cbegin(), v1.cend()));
 	EXPECT_EQ(B1[3][3].count(), 4);
-	EXPECT_TRUE(B1[3][3].is_option(Value{1}));
+	EXPECT_TRUE(is_option(B1[3][3], Value{1}));
 	// on row
 	EXPECT_NO_THROW(
 		result = appearance_once<2>(B1.row(3).cbegin(), B1.row(3).cend()));
@@ -445,7 +446,8 @@ TEST(Solver, deathtest_find)
 			"Assertion failed: .* <= elem_size");
 		// itr -> rep_count > full_size
 		EXPECT_DEBUG_DEATH(
-			find_locations<2>(B5.row(0).cbegin(), B5.row(0).cend(), Value{3}, 17),
+			find_locations<2>(
+				B5.row(0).cbegin(), B5.row(0).cend(), Value{3}, 17),
 			"Assertion failed: .* <= full_size");
 		EXPECT_DEBUG_DEATH(
 			find_locations<2>(B5.row(0).cbegin(), B5.row(0).cend(), Value{2}),

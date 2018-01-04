@@ -66,7 +66,7 @@ Board<Value, N> getResult(const Board<Options<elem_size<N>>, N>& options) noexce
 	{
 		if (options[Location<N>(i)].is_answer())
 		{
-			result[Location<N>(i)] = options[Location<N>(i)].get_answer();
+			result[Location<N>(i)] = get_answer(options[Location<N>(i)]);
 		}
 	}
 	return result;

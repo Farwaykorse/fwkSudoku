@@ -66,7 +66,7 @@ int remove_option(
 	int changes{};
 	auto& item{board.at(loc)};
 
-	if (item.is_option(value))
+	if (is_option(item, value))
 	{
 		++changes;
 		const int count = item.remove_option(value).count();
@@ -106,7 +106,7 @@ int remove_option_section(
 		assert(is_valid(ignore));
 		assert(is_valid<N>(value));
 		assert(is_same_section(section, ignore));
-		assert(board.at(ignore).is_answer(value)); // first set as anwer!
+		assert(is_answer(board.at(ignore), value)); // first set as anwer!
 	}
 	int changes{0};
 	const auto end = section.cend();
@@ -149,7 +149,7 @@ inline int remove_option_section(
 	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
 	{
 		// TODO is the is_option check really faster?
-		if (itr->is_option(value) &&
+		if (is_option(*itr, value) &&
 			std::none_of(begin, end, [L1 = itr.location()](Location<N> L2) {
 				return L1 == L2;
 			})) // <algorithm>
