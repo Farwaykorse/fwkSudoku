@@ -51,14 +51,16 @@ All:
 /diagnostics:caret DiagnosticsFormat: caret
 /std:c++17
 /MP					Multiprocessor compilation
-/W4					Warning level 4 (=highest) (/Wall triggers to-many libraray warnings)
-
+/W4					Warning level 4 (=highest) (/Wall triggers to-many libraray
+					warnings)
 /GS					Buffer Security Check.
 /sdl				Enable SDL checks, additional warnings focused on security
 /permissive-       dissable non-conforming constructs in Visual C++: [1]
                    Enables: /Zc:rvaluecast /Zc:strictStrings and more!
 				   (updated compiler conformance)
 /Zc:rvaluecast     Enforce type-conversion rules (C++11) Needed for conformance
+/GR-               Dissable rtti (run-time type information) smaller image
+                   Turn on (default) to use dynameic_cast or typeid
 /Yu"precompiled.h" Use precompiled headers
 /FI"precompiled.h" Force include, add precompiled to all files
 ```
