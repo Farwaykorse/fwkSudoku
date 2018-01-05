@@ -123,7 +123,7 @@ Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
 namespace
 {
 	// convert to a number for use in std::bitset to use a unique bit per value
-	constexpr size_t exp2_(size_t value) noexcept
+	inline constexpr size_t exp2_(size_t value) noexcept
 	{
 		return (value < 1) ? 1 : (2 * exp2_(--value));
 	}
