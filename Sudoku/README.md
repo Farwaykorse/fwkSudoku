@@ -61,6 +61,8 @@ All:
 /Zc:rvaluecast     Enforce type-conversion rules (C++11) Needed for conformance
 /GR-               Dissable rtti (run-time type information) smaller image
                    Turn on (default) to use dynameic_cast or typeid
+/GY                Enable function-level linking. Little more build-time, lets
+                   linker remove unreferenced code.
 /Yu"precompiled.h" Use precompiled headers
 /FI"precompiled.h" Force include, add precompiled to all files
 ```
