@@ -51,14 +51,9 @@ inline int single_option(
 	assert(is_valid<N>(value));
 
 	assert(board.at(loc).test(value));
-	assert(board[loc].count_all() == 1);
 
 	int changes{};
-	if (not is_answer(board[loc], value))
-	{
-		setValue(board, loc, value);
-		++changes;
-	}
+	changes += setValue(board, loc, value);
 	changes += remove_option_section(board, board.row(loc), loc, value);
 	changes += remove_option_section(board, board.col(loc), loc, value);
 	changes += remove_option_section(board, board.block(loc), loc, value);

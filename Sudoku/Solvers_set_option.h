@@ -15,6 +15,7 @@
 #include "Value.h"
 #include <gsl/gsl>
 #include <algorithm>   // find_if
+#include <iterator>    // next
 #include <stdexcept>   // logic_error
 #include <type_traits> // is_base_of
 #include <cassert>
@@ -27,12 +28,14 @@ namespace Sudoku
 {
 //===----------------------------------------------------------------------===//
 template<int N, typename Options = Options<elem_size<N>>>
-void setValue(Board<Options, N>&, Location<N>, Value);
+int setValue(Board<Options, N>&, Location<N>, Value);
 template<int N, typename Options = Options<elem_size<N>>, typename ItrT>
-void setValue(Board<Options, N>&, ItrT begin, ItrT end);
+int setValue(Board<Options, N>&, ItrT begin, ItrT end);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
-auto set_uniques(Board<Options, N>&, SectionT, Options worker);
+int set_unique(Board<Options, N>&, SectionT, Value);
+template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
+int set_uniques(Board<Options, N>&, SectionT, Options worker);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int set_section_locals(
@@ -47,34 +50,44 @@ int set_section_locals(
 //===----------------------------------------------------------------------===//
 
 
-//	IF valid, Make [value] the answer for [loc]
-//	No processing
+// IF a possible option, Make [value] the answer for [loc]
 template<int N, typename Options>
-inline void
+inline int
 	setValue(Board<Options, N>& board, const Location<N> loc, const Value value)
 {
 	assert(is_valid(loc));
 	assert(is_valid<N>(value));
 
-	if (!board.at(loc).test(value))
+	int changes{0};
+	auto& elem = board.at(loc);
+	if (not elem.test(value))
 	{ // value is option nor answer
 		throw std::logic_error{"Invalid Board"};
+		// Invalid_Board{"not an option"}
 	}
-	board[loc].set_nocheck(value);
+	else if (not is_answer(elem))
+	{
+		changes = elem.count_all();
+		elem.set_nocheck(value);
+	}
+	return changes;
 }
 
-//	set board_ using a transferable container of values
+// set board_ using a transferable container of values
 template<int N, typename Options, typename ItrT>
-inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
+int setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 {
 	{
 		static_assert(Utility_::is_forward<ItrT>);
 		assert(end - begin == full_size<N>);
 	}
+	int changes{0};
 	int n{0};
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		const Location<N> loc(n++); // start at 0!
+
+		// handle different input types
 		Value value{};
 		if constexpr (Utility_::iterator_to<ItrT, Value>)
 		{
@@ -84,21 +97,53 @@ inline void setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
 		{
 			value = to_Value(*itr);
 		}
-		if (value > Value{0} && is_option(board.at(loc), value))
+
+		if (value != Value{0})
 		{
-			setValue(board, loc, value);
-			single_option(board, loc, value);
+			if (not is_valid<N>(value))
+			{
+				throw std::domain_error{"Invalid Value"};
+			}
+
+			if (is_option(board.at(loc), value))
+			{ // update options on board
+				changes += single_option(board, loc, value);
+			}
+			assert(is_answer(board.at(loc), value));
 		}
-		// check invalid value or conflict
-		assert(value == Value{0} || is_answer(board.at(loc), value));
 	}
 	assert(n == full_size<N>);
+	return changes;
 }
 
-//	Set unique values in section as answer
+// Set unique values in section as answer
 template<int N, typename Options, typename SectionT>
-inline auto set_uniques(
+inline int set_uniques(
 	Board<Options, N>& board, const SectionT section, const Options worker)
+{
+	{
+		using Section_ = typename Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Section_, SectionT>);
+	}
+	int changes{0};
+
+	if (worker.count_all() > 0)
+	{
+		for (size_t val{1}; val < worker.size(); ++val)
+		{
+			if (worker[Value{val}])
+			{
+				changes += set_unique(board, section, Value{val});
+			}
+		}
+	}
+	return changes;
+}
+
+// Set unique value in section as answer
+template<int N, typename Options, typename SectionT>
+inline int set_unique(
+	Board<Options, N>& board, const SectionT section, const Value value)
 {
 	{
 		using Section_ = typename Board_Section::Section<Options, N>;
@@ -106,37 +151,18 @@ inline auto set_uniques(
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::is_input<iterator>);
 		static_assert(Utility_::iterator_to<iterator, const Options>);
+		assert(is_valid<N>(value));
 	}
-	int changes{0};
+	const auto end = section.cend();
+	auto condition = [value](const Options& O) { return O.test(value); };
 
-	if (worker.count_all() > 0)
-	{
-		const auto begin = section.cbegin();
-		const auto end   = section.cend();
+	const auto itr = std::find_if(section.cbegin(), end, condition);
 
-		for (size_t val{1}; val < worker.size(); ++val)
-		{
-			const auto value = gsl::narrow_cast<Value>(val);
-			if (worker[value])
-			{
-				const auto itr = std::find_if( // <algorithm>
-					begin,
-					end,
-					[value](Options O) { return O.test(value); });
-				if (itr != end)
-				{
-					setValue(board, itr.location(), value);
-					changes += single_option(board, itr.location(), value);
-					++changes;
-				}
-				else
-				{
-					assert(false); // value is not an option
-				}
-			}
-		}
-	}
-	return changes;
+	assert(itr != end);                        // value is not an option
+	assert(&(*itr) == &board[itr.location()]); // section must be part of board
+	assert(std::find_if(std::next(itr), end, condition) == end); // unique
+
+	return single_option(board, itr.location(), value);
 }
 
 //	for [row/col]: if all in same block, remove [values] from rest block
@@ -227,3 +253,4 @@ inline int set_section_locals(
 
 
 } // namespace Sudoku
+

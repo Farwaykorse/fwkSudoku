@@ -358,7 +358,7 @@ TEST(Solver, section_exclusive)
 
 		EXPECT_EQ(section_exclusive(B1, B1.row(0)), 6);
 		EXPECT_EQ(section_exclusive(B1, B1.row(1)), 2);
-		EXPECT_EQ(section_exclusive(B1, B1.row(2)), 4);
+		EXPECT_EQ(section_exclusive(B1, B1.row(2)), 8);
 		EXPECT_EQ(section_exclusive(B1, B1.row(3)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.row(4)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.row(5)), 0);
@@ -368,12 +368,12 @@ TEST(Solver, section_exclusive)
 		EXPECT_NE(A1, B1);
 
 		EXPECT_EQ(section_exclusive(B1, B1.col(0)), 3);
-		EXPECT_EQ(section_exclusive(B1, B1.col(1)), 2);
+		EXPECT_EQ(section_exclusive(B1, B1.col(1)), 6);
 		EXPECT_EQ(section_exclusive(B1, B1.col(2)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(3)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(4)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(5)), 0);
-		EXPECT_EQ(section_exclusive(B1, B1.col(6)), 65);
+		EXPECT_EQ(section_exclusive(B1, B1.col(6)), 74);
 		EXPECT_EQ(section_exclusive(B1, B1.col(7)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(8)), 0);
 		EXPECT_NE(A1, B1);
@@ -384,16 +384,16 @@ TEST(Solver, section_exclusive)
 		EXPECT_EQ(section_exclusive(B1, B1.block(3)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.block(4)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.block(5)), 0);
-		EXPECT_EQ(section_exclusive(B1, B1.block(6)), 24);
+		EXPECT_EQ(section_exclusive(B1, B1.block(6)), 35);
 		EXPECT_EQ(section_exclusive(B1, B1.block(7)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.block(8)), 0);
 		EXPECT_NE(A1, B1);
 
 		EXPECT_EQ(section_exclusive(B1, B1.row(0)), 0);
-		EXPECT_EQ(section_exclusive(B1, B1.row(1)), 23);
-		EXPECT_EQ(section_exclusive(B1, B1.row(2)), 7);
+		EXPECT_EQ(section_exclusive(B1, B1.row(1)), 27);
+		EXPECT_EQ(section_exclusive(B1, B1.row(2)), 15);
 		EXPECT_EQ(section_exclusive(B1, B1.row(3)), 0);
-		EXPECT_EQ(section_exclusive(B1, B1.row(4)), 2);
+		EXPECT_EQ(section_exclusive(B1, B1.row(4)), 5);
 		EXPECT_EQ(section_exclusive(B1, B1.row(5)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.row(6)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.row(7)), 0);
@@ -401,11 +401,11 @@ TEST(Solver, section_exclusive)
 		EXPECT_NE(A1, B1);
 
 		EXPECT_EQ(section_exclusive(B1, B1.col(0)), 0);
-		EXPECT_EQ(section_exclusive(B1, B1.col(1)), 23);
-		EXPECT_EQ(section_exclusive(B1, B1.col(2)), 1);
+		EXPECT_EQ(section_exclusive(B1, B1.col(1)), 30);
+		EXPECT_EQ(section_exclusive(B1, B1.col(2)), 5);
 		EXPECT_EQ(section_exclusive(B1, B1.col(3)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(4)), 0);
-		EXPECT_EQ(section_exclusive(B1, B1.col(5)), 82);
+		EXPECT_EQ(section_exclusive(B1, B1.col(5)), 86);
 		EXPECT_EQ(section_exclusive(B1, B1.col(6)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(7)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(8)), 0);
@@ -451,27 +451,27 @@ TEST(Solver, section_exclusive)
 		EXPECT_EQ(section_exclusive(B5, B5.row(0)), 0);
 		EXPECT_EQ(section_exclusive(B5, B5.row(1)), 0);
 		EXPECT_EQ(section_exclusive(B5, B5.row(2)), 0);
-		EXPECT_EQ(section_exclusive(B5, B5.row(3)), 3);
-		EXPECT_EQ(section_exclusive(B5, B5.row(4)), 4);
+		EXPECT_EQ(section_exclusive(B5, B5.row(3)), 6);
+		EXPECT_EQ(section_exclusive(B5, B5.row(4)), 9);
 		EXPECT_EQ(section_exclusive(B5, B5.row(5)), 0);
-		EXPECT_EQ(section_exclusive(B5, B5.row(6)), 4);
+		EXPECT_EQ(section_exclusive(B5, B5.row(6)), 5);
 		EXPECT_EQ(section_exclusive(B5, B5.row(7)), 0);
-		EXPECT_EQ(section_exclusive(B5, B5.row(8)), 1);
+		EXPECT_EQ(section_exclusive(B5, B5.row(8)), 5);
 		EXPECT_NE(A5, B5);
 
-		EXPECT_EQ(section_exclusive(B5, B5.col(0)), 14);
-		EXPECT_EQ(section_exclusive(B5, B5.col(1)), 2);
-		EXPECT_EQ(section_exclusive(B5, B5.col(2)), 3);
+		EXPECT_EQ(section_exclusive(B5, B5.col(0)), 16);
+		EXPECT_EQ(section_exclusive(B5, B5.col(1)), 5);
+		EXPECT_EQ(section_exclusive(B5, B5.col(2)), 7);
 		EXPECT_EQ(section_exclusive(B5, B5.col(3)), 0);
 		EXPECT_EQ(section_exclusive(B5, B5.col(4)), 0);
 		EXPECT_EQ(section_exclusive(B5, B5.col(5)), 0);
-		EXPECT_EQ(section_exclusive(B5, B5.col(6)), 9);
+		EXPECT_EQ(section_exclusive(B5, B5.col(6)), 13);
 		EXPECT_EQ(section_exclusive(B5, B5.col(7)), 0);
 		EXPECT_EQ(section_exclusive(B5, B5.col(8)), 0);
 		EXPECT_NE(A5, B5);
 
-		EXPECT_EQ(section_exclusive(B5, B5.block(0)), 14);
-		EXPECT_EQ(section_exclusive(B5, B5.block(1)), 89);
+		EXPECT_EQ(section_exclusive(B5, B5.block(0)), 17);
+		EXPECT_EQ(section_exclusive(B5, B5.block(1)), 98);
 		EXPECT_EQ(section_exclusive(B5, B5.block(2)), 0);
 		EXPECT_EQ(section_exclusive(B5, B5.block(3)), 0);
 		EXPECT_EQ(section_exclusive(B5, B5.block(4)), 0);
@@ -491,10 +491,10 @@ TEST(Solver, section_exclusive)
 		EXPECT_EQ(section_exclusive(B6, B6.col(0)), 0);
 		EXPECT_EQ(section_exclusive(B6, B6.block(0)), 0);
 		EXPECT_EQ(section_exclusive(B6, B6.row(1)), 0);
-		EXPECT_EQ(section_exclusive(B6, B6.col(1)), 5);
+		EXPECT_EQ(section_exclusive(B6, B6.col(1)), 8);
 		EXPECT_EQ(section_exclusive(B6, B6.block(1)), 0);
 		EXPECT_EQ(section_exclusive(B6, B6.row(2)), 0);
-		EXPECT_EQ(section_exclusive(B6, B6.col(2)), 4);
+		EXPECT_EQ(section_exclusive(B6, B6.col(2)), 9);
 		EXPECT_NO_FATAL_FAILURE(section_exclusive(B6, B6.block(2)));
 	}
 
@@ -531,8 +531,8 @@ TEST(Solver, section_exclusive)
 		EXPECT_FALSE(is_answer(B1[3][3]));
 	}
 	// block_exclusive:
-	EXPECT_EQ(1, section_exclusive(B1, B1.block(3)))
-		<< "section_exclusive(Block) should find 1 value";
+	EXPECT_EQ(section_exclusive(B1, B1.block(3)), 4)
+		<< "section_exclusive(Block) should remove 4 options";
 	EXPECT_EQ(B1[3][3], Value{1})
 		<< "section_exclusive(Block) unique value failed";
 	int found1{0};
@@ -679,6 +679,12 @@ TEST(Solver, single_option)
 	ASSERT_EQ(B3[1][0], Options<4>{}) << "incorrect instantiation";
 	EXPECT_NO_THROW(setValue(B3, v1.cbegin(), v1.cend()));
 	EXPECT_EQ(B1, B3);
+	{ // when more than 1 option available
+		using L = Location<2>;
+		Board<Options<4>, 2> B{};
+		B[1][2] = std::bitset<5>{"10011"}; // 1, 4
+		EXPECT_NO_THROW(single_option(B, L(1, 2), Value{1}));
+	}
 }
 TEST(Solver, dual_option)
 {
@@ -941,10 +947,6 @@ TEST(Solver, deathtest)
 	EXPECT_DEBUG_DEATH(
 		single_option(B, L(1, 2), Value{4}), "Assertion failed: .*test.*");
 #endif // _DEBUG
-	// when more than 1 option available
-	B[1][2] = std::bitset<5>{"10011"}; // 1, 4
-	EXPECT_DEBUG_DEATH(
-		single_option(B, L(1, 2), Value{1}), "Assertion failed: .*count_all.*");
 }
 
 } // namespace SudokuTests::SolversTest
