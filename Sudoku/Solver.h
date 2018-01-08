@@ -53,7 +53,7 @@ inline int single_option(
 	assert(board.at(loc).test(value));
 
 	int changes{};
-	changes += setValue(board, loc, value);
+	changes += set_Value(board, loc, value);
 	changes += remove_option_section(board, board.row(loc), loc, value);
 	changes += remove_option_section(board, board.col(loc), loc, value);
 	changes += remove_option_section(board, board.block(loc), loc, value);

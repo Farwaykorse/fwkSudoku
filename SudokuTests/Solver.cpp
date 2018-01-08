@@ -40,7 +40,7 @@ TEST(Solver, unique_in_section)
 	// clang-format off
 	const std::vector<int> v1
 	{
-		// start	// after setValue
+		// start	// after set_Value
 		0,2, 0,0,	// 1	2	3	4
 		4,0, 0,0,	// 4	3	1,2	1,2
 		0,1, 4,0,	// 2,3	1	4	2,3
@@ -48,7 +48,7 @@ TEST(Solver, unique_in_section)
 	}; // clang-format on
 	Board<Options<4>, 2> B1;
 	ASSERT_EQ(B1[0][0], Options<4>{}) << "incorrect instantiation";
-	EXPECT_NO_THROW(setValue(B1, v1.cbegin(), v1.cend()));
+	EXPECT_NO_THROW(set_Value(B1, v1.cbegin(), v1.cend()));
 	const Board<Options<4>, 2> cB1{B1}; // copy to compare with
 	EXPECT_EQ(B1[0][1], Value{2}) << "setup error";
 	EXPECT_EQ(B1[1][0], Value{4}) << "setup error";
@@ -56,12 +56,12 @@ TEST(Solver, unique_in_section)
 	EXPECT_EQ(B1, cB1) << "copy error";
 	// single row
 	EXPECT_NO_THROW(unique_in_section(B1, B1.row(0)));
-	EXPECT_EQ(B1, cB1) << "row 0 was completely fixed by setValue";
+	EXPECT_EQ(B1, cB1) << "row 0 was completely fixed by set_Value";
 
 	// clang-format off
 	const std::vector<int> v2
 	{
-		//start		// after setValue
+		//start		// after set_Value
 		3,2, 0,0,	// 3	2	14	14		3	2	14	14
 		0,0, 0,0,	// 14	14	3	2		14	14	3	2
 		0,0, 2,0,	// 14	134	2	134		14	134	2	134
@@ -69,11 +69,11 @@ TEST(Solver, unique_in_section)
 	}; // clang-format on
 
 	Board<Options<4>, 2> B2{}; // working copy
-	EXPECT_NO_THROW(setValue(B2, v2.cbegin(), v2.cend()));
+	EXPECT_NO_THROW(set_Value(B2, v2.cbegin(), v2.cend()));
 	const Board<Options<4>, 2> cB2{B2}; // copy to compare with
 	// single row 0
 	EXPECT_NO_THROW(unique_in_section(B2, B2.row(0)));
-	EXPECT_EQ(B2, cB2) << "row 0 was completely fixed by setValue";
+	EXPECT_EQ(B2, cB2) << "row 0 was completely fixed by set_Value";
 	// single row 1
 	EXPECT_NO_THROW(unique_in_section(B2, B2.row(3)));
 	EXPECT_NE(B2, cB2) << "row 3 should have changed";
@@ -91,7 +91,7 @@ TEST(Solver, unique_in_section)
 	// clang-format off
 	const std::vector<int> v3
 	{
-		// start	// after setValue
+		// start	// after set_Value
 		0,0, 1,0,	// 
 		1,0, 0,0,	// 
 		0,1, 0,0,	// 
@@ -102,7 +102,7 @@ TEST(Solver, unique_in_section)
 	const auto reset_B3 = [&]() {
 		B3.clear();
 		ASSERT_TRUE(B3[0][0].all());
-		EXPECT_NO_THROW(setValue(B3, v3.cbegin(), v3.cend()));
+		EXPECT_NO_THROW(set_Value(B3, v3.cbegin(), v3.cend()));
 	};
 	reset_B3();
 	EXPECT_EQ(B3[3][3].count(), 4);
@@ -130,7 +130,7 @@ TEST(Solver, section_exclusive)
 		// clang-format off
 		const std::vector<int> v3
 		{
-			// start	// after setValue
+			// start	// after set_Value
 			0,0, 1,0,	// 
 			1,0, 0,0,	// 
 			0,1, 0,0,	// 
@@ -141,7 +141,7 @@ TEST(Solver, section_exclusive)
 		const auto reset_B3 = [&]() {
 			B3.clear();
 			ASSERT_TRUE(B3[0][0].all());
-			EXPECT_NO_THROW(setValue(B3, v3.cbegin(), v3.cend()));
+			EXPECT_NO_THROW(set_Value(B3, v3.cbegin(), v3.cend()));
 		};
 		reset_B3();
 		EXPECT_EQ(B3[3][3].count(), 4);
@@ -351,9 +351,9 @@ TEST(Solver, section_exclusive)
 		};
 		// clang-format on
 		Board<Options<9>, 3> B1{};
-		setValue(B1, b1.cbegin(), b1.cend());
+		set_Value(B1, b1.cbegin(), b1.cend());
 		Board<Options<9>, 3> A1{};
-		setValue(A1, b1a.cbegin(), b1a.cend());
+		set_Value(A1, b1a.cbegin(), b1a.cend());
 		EXPECT_NE(A1, B1);
 
 		EXPECT_EQ(section_exclusive(B1, B1.row(0)), 6);
@@ -443,9 +443,9 @@ TEST(Solver, section_exclusive)
 		};
 		// clang-format on
 		Board<Options<9>, 3> B5{};
-		setValue(B5, b5.cbegin(), b5.cend());
+		set_Value(B5, b5.cbegin(), b5.cend());
 		Board<Options<9>, 3> A5{};
-		setValue(A5, b5a.cbegin(), b5a.cend());
+		set_Value(A5, b5a.cbegin(), b5a.cend());
 		EXPECT_NE(A5, B5);
 
 		EXPECT_EQ(section_exclusive(B5, B5.row(0)), 0);
@@ -484,7 +484,7 @@ TEST(Solver, section_exclusive)
 		// Triggered a bug while testing, on B5
 		Board<Options<9>, 3> B6{};
 		const auto& A6 = A5;
-		setValue(B6, b5.cbegin(), b5.cend());
+		set_Value(B6, b5.cbegin(), b5.cend());
 		ASSERT_NE(A6, B6);
 
 		EXPECT_EQ(section_exclusive(B6, B6.row(0)), 0);
@@ -503,14 +503,14 @@ TEST(Solver, section_exclusive)
 	// clang-format off
 	static const std::vector<int> V1
 	{
-		// start	// after setValue	// unique_block
+		// start	// after set_Value	// unique_block
 		0,0, 1,0,	// 
 		1,0, 0,0,	// 
 		0,1, 0,0,	// 
 		0,0, 0,0	//					//	0	0	0	1
 	}; // clang-format on
 	Board<Options<4>, 2> B1{};
-	setValue(B1, V1.cbegin(), V1.cend());
+	set_Value(B1, V1.cbegin(), V1.cend());
 	// check input:
 	{
 		EXPECT_FALSE(is_answer(B1[0][0]));
@@ -573,7 +573,7 @@ TEST(Solver, section_exclusive)
 	};
 	// clang-format on
 	Sudoku::Board<Options<9>, 3> B2{};
-	setValue(B2, V2.cbegin(), V2.cend());
+	set_Value(B2, V2.cbegin(), V2.cend());
 	// block 0
 	//		nothing
 	// block 1
@@ -670,14 +670,14 @@ TEST(Solver, single_option)
 	// clang-format off
 	const std::vector<int> v1
 	{
-		// start	// after setValue
+		// start	// after set_Value
 		0,2, 0,0,	// 1	2	34	34
 		4,0, 0,0,	// 4	3	12	12
 		0,1, 0,0,	// 23	1	234	234
 		0,0, 0,0	// 23	4	123	123
 	}; // clang-format on
 	ASSERT_EQ(B3[1][0], Options<4>{}) << "incorrect instantiation";
-	EXPECT_NO_THROW(setValue(B3, v1.cbegin(), v1.cend()));
+	EXPECT_NO_THROW(set_Value(B3, v1.cbegin(), v1.cend()));
 	EXPECT_EQ(B1, B3);
 	{ // when more than 1 option available
 		using L = Location<2>;
@@ -718,8 +718,8 @@ TEST(Solver, dual_option)
 		0, 0, 0,	0, 0, 0,	7, 8, 0
 	}; // clang-format on
 	Board<Options<9>, 3> B1;
-	EXPECT_NO_THROW(setValue(B1, b1.cbegin(), b1.cend()))
-		<< "setValue failed in copying from vector";
+	EXPECT_NO_THROW(set_Value(B1, b1.cbegin(), b1.cend()))
+		<< "set_Value failed in copying from vector";
 	EXPECT_EQ(B1[0][0].count(), 2) << "dual_option before 1";
 	EXPECT_EQ(B1[0][8].count(), 8) << "dual_option before 2";
 	EXPECT_EQ(B1[4][4].count(), 9) << "dual_option before 3";
@@ -773,8 +773,8 @@ TEST(Solver, multi_option)
 		0, 0, 0,	0, 0, 0,	7, 8, 0
 	}; // clang-format on
 	Board<Options<9>, 3> B1;
-	EXPECT_NO_THROW(setValue(B1, b1.cbegin(), b1.cend()))
-		<< "setValue failed in copying from vector";
+	EXPECT_NO_THROW(set_Value(B1, b1.cbegin(), b1.cend()))
+		<< "set_Value failed in copying from vector";
 	EXPECT_EQ(B1[0][0].count(), 3) << "before 1";
 	EXPECT_EQ(B1[0][8].count(), 9) << "before 2";
 	EXPECT_EQ(B1[4][4].count(), 9) << "before 3";
@@ -812,8 +812,8 @@ TEST(Solver, multi_option)
 		0, 0, 0,  0, 0, 0,  0, 0, 0	 // |_ _ _ _|_ _ _ _|_ _ _ _|
 	}; // clang-format on
 	Board<Options<9>, 3> B2;
-	EXPECT_NO_THROW(setValue(B2, b2.cbegin(), b2.cend()))
-		<< "setValue failed in copying from vector 4";
+	EXPECT_NO_THROW(set_Value(B2, b2.cbegin(), b2.cend()))
+		<< "set_Value failed in copying from vector 4";
 	EXPECT_EQ(B2[0][0].count(), 3) << "before 31";
 	EXPECT_EQ(B2[1][1].count(), 3) << "before 32";
 	EXPECT_EQ(B2[2][2].count(), 3) << "before 33";
@@ -854,8 +854,8 @@ TEST(Solver, multi_option)
 		0, 0, 0,  0, 0, 0,  7, 8, 0  // |_ _ _ _|_ _ _5_|_7_8_ _|		 3,6,9
 	}; // clang-format on
 	Board<Options<9>, 3> B3;
-	EXPECT_NO_THROW(setValue(B3, b3.cbegin(), b3.cend()))
-		<< "setValue failed in copying from vector 3";
+	EXPECT_NO_THROW(set_Value(B3, b3.cbegin(), b3.cend()))
+		<< "set_Value failed in copying from vector 3";
 	EXPECT_EQ(B3[0][0].count(), 2) << "before 41";
 	EXPECT_EQ(B3[0][1].count(), 3) << "before 42";
 	EXPECT_EQ(B3[0][2].count(), 3) << "before 43";
@@ -929,7 +929,7 @@ TEST(Solver, solve_board)
 	Board<int, 3> answer;
 	std::copy(b1a.cbegin(), b1a.cend(), answer.begin());
 	Board<Options<9>, 3> options{};
-	setValue(options, b1.cbegin(), b1.cend());
+	set_Value(options, b1.cbegin(), b1.cend());
 	for (int i = 0; i < elem_size<3>; ++i)
 	{
 		unique_in_section(options, options.row(i));

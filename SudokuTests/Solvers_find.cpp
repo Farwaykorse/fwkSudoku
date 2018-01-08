@@ -101,7 +101,7 @@ TEST(Solver, appearance_once)
 	// clang-format off
 	const std::vector<int> v1
 	{
-		// start	// after setValue
+		// start	// after set_Value
 		0,0, 1,0,	// 
 		1,0, 0,0,	// 
 		0,1, 0,0,	// 
@@ -111,7 +111,7 @@ TEST(Solver, appearance_once)
 	Options<4> result{};
 
 	// Using iterators
-	EXPECT_NO_THROW(setValue(B1, v1.cbegin(), v1.cend()));
+	EXPECT_NO_THROW(set_Value(B1, v1.cbegin(), v1.cend()));
 	EXPECT_EQ(B1[3][3].count(), 4);
 	EXPECT_TRUE(is_option(B1[3][3], Value{1}));
 	// on row
@@ -181,7 +181,7 @@ TEST(Solver, appearance_once)
 		Board<Options<4>, 2> B4{};
 		const std::vector<int> v4{
 			0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
-		setValue(B4, v4.cbegin(), v4.cend());
+		set_Value(B4, v4.cbegin(), v4.cend());
 		EXPECT_EQ(B4[0][0].count(), 3);
 		EXPECT_EQ(B4[0][1].count(), 3);
 		EXPECT_EQ(B4[0][2].count(), 3);
@@ -221,7 +221,7 @@ TEST(Solver, appearance_once)
 		Board<Options<4>, 2> B5{};
 		const std::vector<int> v5{
 			1, 2, 3, 4, 3, 4, 1, 2, 2, 1, 4, 3, 4, 3, 2, 1};
-		setValue(B5, v5.cbegin(), v5.cend());
+		set_Value(B5, v5.cbegin(), v5.cend());
 		EXPECT_TRUE(is_answer(B5[0][0], Value{1}));
 		EXPECT_TRUE(is_answer(B5[0][1], Value{2}));
 		EXPECT_TRUE(is_answer(B5[0][2], Value{3}));
@@ -414,7 +414,7 @@ TEST(Solvers_, appearance_sets)
 		Board<Options<4>, 2> B4{};
 		const std::vector<int> v4{
 			0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
-		setValue(B4, v4.cbegin(), v4.cend());
+		set_Value(B4, v4.cbegin(), v4.cend());
 		EXPECT_EQ(B4[0][0].count(), 3);
 		EXPECT_EQ(B4[0][1].count(), 3);
 		EXPECT_EQ(B4[0][2].count(), 3);

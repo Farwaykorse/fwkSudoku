@@ -140,7 +140,7 @@ TEST(Solver, remove_option_section)
 	EXPECT_TRUE(is_answer(B1[1][0], Value{3}));
 	EXPECT_TRUE(B1[3][3].all());
 
-	// conflict handling? (none, use setValue)
+	// conflict handling? (none, use set_Value)
 	B1       = cB1;
 	B1[0][0] = Value{2};
 	B1[0][1] = Value{2};

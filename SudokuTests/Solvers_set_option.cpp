@@ -33,7 +33,7 @@ using namespace Sudoku;
 
 namespace SudokuTests::SolversTest
 {
-TEST(Solver, setValue)
+TEST(Solver, set_Value)
 {
 	using L = Location<2>;
 	// clang-format off
@@ -46,23 +46,23 @@ TEST(Solver, setValue)
 	// Set single value
 	Board<Options<4>, 2> board;
 	ASSERT_EQ(board[1][0], Options<4>{}) << "incorrect instantiation";
-	EXPECT_EQ(setValue(board, L(2), Value{3}), 4);
+	EXPECT_EQ(set_Value(board, L(2), Value{3}), 4);
 	EXPECT_EQ(board[0][2], Value{3});
-	EXPECT_EQ(setValue(board, L(0), Value{4}), 4);
+	EXPECT_EQ(set_Value(board, L(0), Value{4}), 4);
 	EXPECT_EQ(board[0][0], Value{4});
 	// test: already set to THIS answer (allow to overwrite with same)
-	EXPECT_EQ(setValue(board, L(15), Value{4}), 4);
+	EXPECT_EQ(set_Value(board, L(15), Value{4}), 4);
 	ASSERT_EQ(board[3][3], Value{4});
-	EXPECT_EQ(setValue(board, L(3, 3), Value{4}), 0); // <==
+	EXPECT_EQ(set_Value(board, L(3, 3), Value{4}), 0); // <==
 	// test: value is not an option
 	board[1][1] = std::bitset<5>{"11011"}; // options: 1,3,4
-	EXPECT_THROW(setValue(board, L(1, 1), Value{2}), std::logic_error);
+	EXPECT_THROW(set_Value(board, L(1, 1), Value{2}), std::logic_error);
 	// test: already set to another answer
-	EXPECT_THROW(setValue(board, L(0), Value{1}), std::logic_error);
+	EXPECT_THROW(set_Value(board, L(0), Value{1}), std::logic_error);
 	// test: handle incorrectly marked as answer
 	board[1][2] = std::bitset<5>{"11110"};
 	ASSERT_FALSE(board[1][2].test(Value{0}));
-	EXPECT_EQ(setValue(board, L(1, 2), Value{1}), 4);
+	EXPECT_EQ(set_Value(board, L(1, 2), Value{1}), 4);
 	EXPECT_EQ(board[1][2].count_all(), 1);
 
 	{ // using Value as input
@@ -76,7 +76,7 @@ TEST(Solver, setValue)
 			V{0},V{0}, V{0},V{0}
 		}; // clang-format on
 		Board<Options<4>, 2> B2;
-		EXPECT_EQ(setValue(B2, v1.cbegin(), v1.cend()), 49);
+		EXPECT_EQ(set_Value(B2, v1.cbegin(), v1.cend()), 49);
 		EXPECT_EQ(B2[0][1], Value{2});
 		EXPECT_EQ(B2[1][0], Value{4});
 		EXPECT_EQ(B2[2][1], Value{1});
@@ -93,7 +93,7 @@ TEST(Solver, setValue)
 	{ // using int as input
 		// clang-format off
 		const std::vector<int> v1
-		{	// start	// after setValue
+		{	// start	// after set_Value
 			0,2, 0,0,	// 1	2	3	4
 			4,0, 0,0,	// 4	3	1,2	1,2
 			0,1, 4,0,	// 2,3	1	4	2,3
@@ -101,7 +101,7 @@ TEST(Solver, setValue)
 		}; // clang-format on
 		// Copy data from vector
 		Board<Options<4>, 2> B2;
-		EXPECT_EQ(setValue(B2, v1.cbegin(), v1.cend()), 49);
+		EXPECT_EQ(set_Value(B2, v1.cbegin(), v1.cend()), 49);
 		EXPECT_EQ(B2[0][1], Value{2});
 		EXPECT_EQ(B2[1][0], Value{4});
 		EXPECT_EQ(B2[2][1], Value{1});
@@ -319,7 +319,7 @@ TEST(Solver, set_unique)
 	using L = Location<2>;
 	Board<Options<4>, 2> board{};
 	const std::vector<int> v1{0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
-	setValue(board, v1.cbegin(), v1.cend());
+	set_Value(board, v1.cbegin(), v1.cend());
 	const Board<Options<4>, 2> cB1{board}; // to reset board
 
 	static_assert(not noexcept(set_unique(board, board.row(0), Value{3})));
@@ -369,7 +369,7 @@ TEST(Solver, set_uniques)
 	//
 	Board<Options<4>, 2> B1{};
 	const std::vector<int> v1{0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
-	setValue(B1, v1.cbegin(), v1.cend());
+	set_Value(B1, v1.cbegin(), v1.cend());
 	const Board<Options<4>, 2> cB1{B1}; // to reset B1
 	// verify setup
 	ASSERT_EQ(B1[0][0].count(), 3);
@@ -444,12 +444,12 @@ TEST(Solver, deathtest_set_option)
 	{ // precondition checks
 #ifdef _DEBUG
 		EXPECT_DEBUG_DEATH(
-			setValue(B, Location<2>{18}, Value{1}), ".*is_valid.loc.");
+			set_Value(B, Location<2>{18}, Value{1}), ".*is_valid.loc.");
 		EXPECT_DEBUG_DEATH(
-			setValue(B, Location<2>{1}, Value{6}), ".*is_valid<N>.value.");
+			set_Value(B, Location<2>{1}, Value{6}), ".*is_valid<N>.value.");
 #else
-		EXPECT_ANY_THROW(setValue(B, Location<2>{18}, Value{1}));
-		EXPECT_ANY_THROW(setValue(B, Location<2>{1}, Value{6}));
+		EXPECT_ANY_THROW(set_Value(B, Location<2>{18}, Value{1}));
+		EXPECT_ANY_THROW(set_Value(B, Location<2>{1}, Value{6}));
 #endif // _DEBUG
 	}
 	{ // SetValue(Itr, Itr)
@@ -457,9 +457,9 @@ TEST(Solver, deathtest_set_option)
 		const std::vector<int> v2(18);
 		// input too short / too long
 		EXPECT_DEBUG_DEATH(
-			setValue(B, v1.cbegin(), v1.cend()), "Assertion failed:");
+			set_Value(B, v1.cbegin(), v1.cend()), "Assertion failed:");
 		EXPECT_DEBUG_DEATH(
-			setValue(B, v2.cbegin(), v2.cend()), "Assertion failed:");
+			set_Value(B, v2.cbegin(), v2.cend()), "Assertion failed:");
 	}
 	// set_uniques
 	//{

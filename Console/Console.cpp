@@ -51,7 +51,7 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 			{
 				t0 = std::chrono::steady_clock::now();
 				Sudoku::Board<Sudoku::Options<9>, 3> local{};
-				setValue(local, start.cbegin(), start.cend());
+				set_Value(local, start.cbegin(), start.cend());
 				t1 = std::chrono::steady_clock::now();
 				Sudoku::test_solver_unique(local);
 				t2 = std::chrono::steady_clock::now();
@@ -114,7 +114,7 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 			{
 				t0 = std::chrono::steady_clock::now();
 				Sudoku::Board<Sudoku::Options<9>, 3> local{};
-				setValue(local, start.cbegin(), start.cend());
+				set_Value(local, start.cbegin(), start.cend());
 				t1 = std::chrono::steady_clock::now();
 				Sudoku::test_solver_exclusive(local);
 				t2 = std::chrono::steady_clock::now();
@@ -526,3 +526,4 @@ int main()
 		0, 0, 0,	0, 0, 0,	0, 0, 0
 	};
 }
+

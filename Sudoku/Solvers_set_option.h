@@ -28,9 +28,9 @@ namespace Sudoku
 {
 //===----------------------------------------------------------------------===//
 template<int N, typename Options = Options<elem_size<N>>>
-int setValue(Board<Options, N>&, Location<N>, Value);
+int set_Value(Board<Options, N>&, Location<N>, Value);
 template<int N, typename Options = Options<elem_size<N>>, typename ItrT>
-int setValue(Board<Options, N>&, ItrT begin, ItrT end);
+int set_Value(Board<Options, N>&, ItrT begin, ItrT end);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int set_unique(Board<Options, N>&, SectionT, Value);
@@ -52,8 +52,8 @@ int set_section_locals(
 
 // IF a possible option, Make [value] the answer for [loc]
 template<int N, typename Options>
-inline int
-	setValue(Board<Options, N>& board, const Location<N> loc, const Value value)
+inline int set_Value(
+	Board<Options, N>& board, const Location<N> loc, const Value value)
 {
 	assert(is_valid(loc));
 	assert(is_valid<N>(value));
@@ -75,7 +75,7 @@ inline int
 
 // set board_ using a transferable container of values
 template<int N, typename Options, typename ItrT>
-int setValue(Board<Options, N>& board, const ItrT begin, const ItrT end)
+int set_Value(Board<Options, N>& board, const ItrT begin, const ItrT end)
 {
 	{
 		static_assert(Utility_::is_forward<ItrT>);
@@ -253,4 +253,3 @@ inline int set_section_locals(
 
 
 } // namespace Sudoku
-
