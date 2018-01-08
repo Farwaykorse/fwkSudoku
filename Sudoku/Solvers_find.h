@@ -220,7 +220,6 @@ inline auto appearance_sets(const SectionT section)
 
 
 // return a mask for values with a single appearance
-//   answer-bit won't be set when all elements are answered
 template<int N, typename Options, typename InItr_>
 Options appearance_once(const InItr_ begin, const InItr_ end) noexcept
 {
