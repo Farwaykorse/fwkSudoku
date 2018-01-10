@@ -145,6 +145,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <ControlFlowGuard>Guard</ControlFlowGuard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -170,6 +171,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <ControlFlowGuard>Guard</ControlFlowGuard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

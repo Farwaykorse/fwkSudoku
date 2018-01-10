@@ -34,11 +34,6 @@ Don't use:
 /Gm				Prefere /MP
 ```
 
-Not sure:
-```
-/guard:cf		Control Flow Guard, compiler analizes control flow for indirect calls at compile time and records the results in the compiled binary. During runtime Windows checks before every indirect call and raises an exception if any check fails at runtime. 
-				can't be used with /ZI (edit and continue)
-```
 Usefull:
 ```
 /E
@@ -85,10 +80,12 @@ Debug:
 
 Release:
 ```
-/O2		Maximize Speed
-/GL		Whole program optimization
-/MT		Runtime library for linking: Multi-threaded
-        (use static libraries .lib)
+/O2        Maximize Speed
+/GL        Whole program optimization
+/MT        Runtime library for linking: Multi-threaded
+           (use static libraries .lib)
+/guard:cf  Control Flow Guard, compiler analizes control flow for indirect calls at compile time and records the results in the compiled binary. During runtime Windows checks before every indirect call and raises an exception if any check fails at runtime. 
+           can't be used with /ZI (edit and continue)
 ```
 
 
