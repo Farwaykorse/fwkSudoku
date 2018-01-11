@@ -49,7 +49,7 @@ public:
 	void clear();
 
 	// Query properties
-	constexpr int size() const noexcept { return full_size<N>; }
+	constexpr size_t size() const noexcept { return full_size<N>; }
 	bool operator==(const Board&) const;
 
 	// Element access
@@ -127,20 +127,25 @@ template<typename T, int N>
 Board<T, N>::Board() noexcept : board_(full_size<N>)
 {
 	valid_dimensions<N>();
+	assert(board_.size() == size());
+	assert(board_.capacity() == size());
 }
 
 template<typename T, int N>
 Board<T, N>::Board(const T& def_value) : board_(full_size<N>, def_value)
 {
 	valid_dimensions<N>();
+	assert(board_.size() == size());
+	assert(board_.capacity() == size());
 }
 
 template<typename T, int N>
 Board<T, N>::Board(std::initializer_list<T> list) : board_(list)
 {
 	assert(list.size() == full_size<N>);
-	board_.resize(full_size<N>);
 	valid_dimensions<N>();
+	assert(board_.size() == size());
+	assert(board_.capacity() == size());
 }
 
 //===----------------------------------------------------------------------===//

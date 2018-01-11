@@ -403,9 +403,9 @@ TEST(Board_Iterator, RandomAccessIterator)
 	EXPECT_NO_THROW(A.begin() - (-12));
 
 	EXPECT_NO_THROW(A.end() - A.begin());
-	EXPECT_TRUE((A.end() - A.begin()) == A.size());
-	EXPECT_TRUE((A.begin() - A.end()) == -A.size());
-	EXPECT_TRUE((A.begin() - A.end()) == -A.size());
+	EXPECT_TRUE((A.end() - A.begin()) == static_cast<int>(A.size()));
+	EXPECT_TRUE((A.begin() - A.end()) == -static_cast<int>(A.size()));
+	EXPECT_TRUE((A.begin() - A.end()) == -static_cast<int>(A.size()));
 
 	EXPECT_NO_THROW(A.begin()[2]); // return value_type reference
 	EXPECT_NO_THROW(A.cbegin()[2]);
