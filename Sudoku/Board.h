@@ -97,18 +97,21 @@ public:
 
 	// Sections
 	// clang-format off
-	Row         row(int id) noexcept       { return Row(*this, id); }
-	const_Row   row(int id) const noexcept { return const_Row(*this, id); }
-	Row         row(Location loc) noexcept { return Row(*this, loc); }
-	const_Row   row(Location loc) const    { return const_Row(*this, loc); }
-	Col         col(int id) noexcept       { return Col(*this, id); }
-	const_Col   col(int id) const noexcept { return const_Col(*this, id); }
-	Col         col(Location loc) noexcept { return Col(*this, loc); }
-	const_Col   col(Location loc) const    { return const_Col(*this, loc); }
-	Block       block(int id) noexcept     { return Block(*this, id); }
+	Row         row(int id) noexcept         { return Row(*this, id); }
+	const_Row   row(int id) const noexcept   { return const_Row(*this, id); }
+	Row         row(Location loc) noexcept   { return Row(*this, loc); }
+	const_Row   row(Location loc) const noexcept
+											 { return const_Row(*this, loc); }
+	Col         col(int id) noexcept         { return Col(*this, id); }
+	const_Col   col(int id) const noexcept   { return const_Col(*this, id); }
+	Col         col(Location loc) noexcept   { return Col(*this, loc); }
+	const_Col   col(Location loc) const noexcept
+											 { return const_Col(*this, loc); }
+	Block       block(int id) noexcept       { return Block(*this, id); }
 	const_Block block(int id) const noexcept { return const_Block(*this, id); }
 	Block       block(Location loc) noexcept { return Block(*this, loc); }
-	const_Block block(Location loc) const  { return const_Block(*this, loc); }
+	const_Block block(Location loc) const noexcept
+											 { return const_Block(*this, loc); }
 	// clang-format on
 
 private:
