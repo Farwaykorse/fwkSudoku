@@ -209,7 +209,7 @@ struct TestElements
 	const Options<4> X_0{std::bitset<5>{"11110"}}; // answered, alle options
 	const Options<4> X_1{std::bitset<5>{"10100"}}; // answered, 2 options
 };
-TestElements TE;
+static TestElements TE;
 
 TEST(Options, mf_counting)
 {

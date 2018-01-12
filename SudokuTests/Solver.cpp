@@ -501,7 +501,7 @@ TEST(Solver, section_exclusive)
 	// reproduce functionality of unique
 	//===------------------------------------------------------------------===//
 	// clang-format off
-	static const std::vector<int> V1
+	const std::vector<int> V1
 	{
 		// start	// after set_Value	// unique_block
 		0,0, 1,0,	// 
@@ -680,7 +680,6 @@ TEST(Solver, single_option)
 	EXPECT_NO_THROW(set_Value(B3, v1.cbegin(), v1.cend()));
 	EXPECT_EQ(B1, B3);
 	{ // when more than 1 option available
-		using L = Location<2>;
 		Board<Options<4>, 2> B{};
 		B[1][2] = std::bitset<5>{"10011"}; // 1, 4
 		EXPECT_NO_THROW(single_option(B, L(1, 2), Value{1}));
@@ -937,7 +936,6 @@ TEST(Solver, solve_board)
 }
 TEST(Solver, deathtest)
 {
-	using L = Location<2>;
 	Board<Options<4>, 2> B{};
 
 	// single_option()
@@ -945,7 +943,8 @@ TEST(Solver, deathtest)
 	// when wrong value
 	B[1][2] = std::bitset<5>{"00011"}; // 1, not answer
 	EXPECT_DEBUG_DEATH(
-		single_option(B, L(1, 2), Value{4}), "Assertion failed: .*test.*");
+		single_option(B, Location<2>(1, 2), Value{4}),
+		"Assertion failed: .*test.*");
 #endif // _DEBUG
 }
 
