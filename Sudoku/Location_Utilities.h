@@ -147,7 +147,7 @@ constexpr bool is_same_row(const ItrT begin, const ItrT end)
 
 // return all in same row
 template<int N>
-std::vector<Location<N>>
+[[nodiscard]] std::vector<Location<N>>
 	get_same_row(const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> output{};
@@ -181,8 +181,8 @@ inline constexpr bool is_same_col(const ItrT begin, const ItrT end)
 
 // return all in same col
 template<int N>
-std::vector<Location<N>>
-	get_same_col(const Location<N> left, const std::vector<Location<N>>& right)
+[[nodiscard]] std::vector<Location<N>> get_same_col(
+	const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> output{};
 	const auto predicate = [&left](Location<N> loc) {
@@ -195,8 +195,8 @@ std::vector<Location<N>>
 
 // check
 template<int N>
-inline constexpr bool
-	is_same_block(const Location<N> left, const Location<N> right)
+inline constexpr bool is_same_block(
+	const Location<N> left, const Location<N> right)
 {
 	return left.block() == right.block();
 }
@@ -216,7 +216,7 @@ inline constexpr bool is_same_block(const ItrT begin, const ItrT end)
 
 // return all in same block
 template<int N>
-std::vector<Location<N>> get_same_block(
+[[nodiscard]] std::vector<Location<N>> get_same_block(
 	const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> output{};
