@@ -15,7 +15,7 @@
 #include "Solvers_remove_option.h"
 #include "Solvers_set_option.h"
 #include "Value.h"
-
+#include <gsl/gsl>
 #include <vector>
 #include <algorithm>   // minmax
 #include <type_traits> // is_base_of
@@ -240,7 +240,7 @@ inline int section_exclusive(Board<Options, N>& board, const SectionT section)
 			// for [row/col]: if in same block: remove from rest block
 			// for [block]: if in same row/col: remove from rest row/col
 			if (const int tmp_ = set_section_locals(
-					board, section, static_cast<int>(i), appearing.at(i)))
+					board, section, gsl::narrow_cast<int>(i), appearing.at(i)))
 			{
 				changes += tmp_;
 				renew_appearing();

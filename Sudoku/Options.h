@@ -278,7 +278,7 @@ inline int Options<E>::count() const noexcept
 {
 	if (data_[0])
 	{
-		return static_cast<int>(data_.count()) - 1;
+		return gsl::narrow_cast<int>(data_.count()) - 1;
 	}
 	return 0; // NO protection vs incorrect answer bit
 }
@@ -291,9 +291,9 @@ inline int Options<E>::count_all() const noexcept
 {
 	if (data_[0])
 	{
-		return static_cast<int>(data_.count()) - 1;
+		return gsl::narrow_cast<int>(data_.count()) - 1;
 	}
-	return static_cast<int>(data_.count());
+	return gsl::narrow_cast<int>(data_.count());
 }
 
 //_Test if all bits are set
@@ -515,7 +515,7 @@ inline Value read_next(const Options<E>& options, Value start) noexcept
 { // default value start = 0
 	size_t i{start};
 	++i;
-	for (; i <= static_cast<size_t>(E); ++i)
+	for (; i <= gsl::narrow_cast<size_t>(E); ++i)
 	{
 		if (options[Value{i}])
 		{

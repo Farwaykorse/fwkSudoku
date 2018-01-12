@@ -153,8 +153,8 @@ inline int set_unique(
 		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(is_valid<N>(value));
 	}
-	const auto end = section.cend();
-	auto condition = [value](const Options& O) { return O.test(value); };
+	const auto end       = section.cend();
+	const auto condition = [value](const Options& O) { return O.test(value); };
 
 	const auto itr = std::find_if(section.cbegin(), end, condition);
 
@@ -192,7 +192,7 @@ inline int set_section_locals(
 		if (worker[value])
 		{
 			const auto locations = find_locations<N>(section, value, rep_count);
-			if (locations.size() != static_cast<size_t>(rep_count))
+			if (locations.size() != gsl::narrow_cast<size_t>(rep_count))
 			{
 				assert(changes > 0); // changed by earlier value in worker
 			}
@@ -228,11 +228,11 @@ inline int set_section_locals(
 	// start at 1, to skip the answer-bit
 	for (size_t val{1}; val < worker.size(); ++val)
 	{
-		const auto value = gsl::narrow_cast<Value>(val);
+		const auto value = Value{val};
 		if (worker[value])
 		{
 			const auto locations = find_locations<N>(block, value, rep_count);
-			if (locations.size() != static_cast<size_t>(rep_count))
+			if (locations.size() != gsl::narrow_cast<size_t>(rep_count))
 			{
 				assert(changes > 0); // changed by earlier value in worker
 			}

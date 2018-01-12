@@ -13,6 +13,7 @@
 #include "Size.h"
 #include "Value.h"
 
+#include <gsl/gsl>
 #include <array>
 #include <vector>
 #include <algorithm> // find, find_if
@@ -81,7 +82,7 @@ auto find_locations(
 		assert(rep_count > 0 && rep_count <= full_size<N>);
 	}
 	std::vector<Location<N>> locations{};
-	locations.reserve(static_cast<size_t>(rep_count));
+	locations.reserve(gsl::narrow_cast<size_t>(rep_count));
 
 	auto last = begin;
 
