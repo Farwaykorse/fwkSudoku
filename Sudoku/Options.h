@@ -365,7 +365,7 @@ inline Value get_answer(const Options<E>& options) noexcept
 
 // all available options
 template<int E>
-inline std::vector<Value> available(const Options<E>& options) noexcept
+inline std::vector<Value> available(const Options<E>& options) noexcept(true)
 { // noexcept: only allocation can throw. Terminate, all is lost anyway.
 	std::vector<Value> values{};
 	values.reserve(static_cast<size_t>(options.count()));
