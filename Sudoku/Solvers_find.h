@@ -76,8 +76,7 @@ auto find_locations(
 	using Options = Options<elem_size<N>>;
 	{
 		static_assert(Utility_::is_input<ItrT>);
-		using iterator = typename ItrT::const_iterator;
-		static_assert(Utility_::iterator_to<iterator, const Options>);
+		static_assert(Utility_::iterator_to<ItrT, const Options>);
 		assert(is_valid<N>(value));
 		assert(rep_count > 0 && rep_count <= full_size<N>);
 	}
