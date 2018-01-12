@@ -207,12 +207,12 @@ TEST(Board, Construction)
 }
 TEST(Board, size)
 {
-	EXPECT_EQ((Board<int, 2>().size()), 16); // [gTest]
-	EXPECT_EQ(Board<int>().size(), 81);
-	EXPECT_EQ((Board<int, 3>().size()), 81); // [gTest]
+	EXPECT_EQ((Board<int, 2>().size()), size_t{16}); // [gTest]
+	EXPECT_EQ(Board<int>().size(), size_t{81});
+	EXPECT_EQ((Board<int, 3>().size()), size_t{81}); // [gTest]
 	const Board<int> D_0;
-	EXPECT_EQ(D_0.size(), 81);
-	EXPECT_EQ((Board<int, 4>().size()), 256); // [gTest]
+	EXPECT_EQ(D_0.size(), size_t{81});
+	EXPECT_EQ((Board<int, 4>().size()), size_t{256}); // [gTest]
 }
 TEST(Board, operator_equal)
 {

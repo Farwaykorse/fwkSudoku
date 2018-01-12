@@ -50,50 +50,50 @@ TEST(Solver, find_locations)
 	std::vector<loc> list{};
 	// row/col/block
 	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), Value{1}, 3));
-	EXPECT_EQ(list.size(), 3);
+	EXPECT_EQ(list.size(), size_t{3});
 	EXPECT_EQ(list[0], loc(1));
 	EXPECT_EQ(list[1], loc(2));
 	EXPECT_EQ(list[2], loc(3));
 	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.col(0), Value{1}, 3));
-	EXPECT_EQ(list.size(), 3);
+	EXPECT_EQ(list.size(), size_t{3});
 	EXPECT_EQ(list[0], loc(1, 0));
 	EXPECT_EQ(list[1], loc(2, 0));
 	EXPECT_EQ(list[2], loc(3, 0));
 	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), Value{1}, 2));
-	EXPECT_EQ(list.size(), 2);
+	EXPECT_EQ(list.size(), size_t{2});
 	EXPECT_EQ(list[0], loc(0, 1));
 	EXPECT_EQ(list[1], loc(1, 0));
 	// incorrect rep_count: too low
 	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), Value{1}, 2));
-	EXPECT_EQ(list.size(), 2);
+	EXPECT_EQ(list.size(), size_t{2});
 	EXPECT_EQ(list[1], loc(2));
 	// incorrect rep_count: too high
 	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), Value{1}, 3));
-	EXPECT_EQ(list.size(), 2);
+	EXPECT_EQ(list.size(), size_t{2});
 	EXPECT_EQ(list[1], loc(1, 0));
 	EXPECT_NO_FATAL_FAILURE(
 		find_locations<2>(B.row(0).cbegin(), B.row(0).cend(), Value{3}, 5));
 	// no rep_count
 	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), Value{1}));
-	EXPECT_EQ(list.size(), 3);
+	EXPECT_EQ(list.size(), size_t{3});
 	EXPECT_EQ(list[0], loc(1));
 	EXPECT_EQ(list[1], loc(2));
 	EXPECT_EQ(list[2], loc(3));
 	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), Value{1}));
-	EXPECT_EQ(list.size(), 2);
+	EXPECT_EQ(list.size(), size_t{2});
 	EXPECT_EQ(list[1], loc(1, 0));
 	// partial section
 	EXPECT_NO_FATAL_FAILURE(
 		list = find_locations<2>(
 			B.row(0).cbegin() + 2, B.row(0).cend(), Value{1}, 2));
-	EXPECT_EQ(list.size(), 2);
+	EXPECT_EQ(list.size(), size_t{2});
 	EXPECT_EQ(list[0], loc(2));
 	EXPECT_EQ(list[1], loc(3));
 
 	// find Options
 	const Options<4> value{set{"10011"}};
 	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), value));
-	EXPECT_EQ(list.size(), 1);
+	EXPECT_EQ(list.size(), size_t{1});
 	EXPECT_EQ(list[0], loc(2));
 }
 TEST(Solver, appearance_once)
@@ -421,7 +421,7 @@ TEST(Solvers_, appearance_sets)
 		EXPECT_EQ(B4[0][3].count(), 4);
 		EXPECT_EQ(B4[2][1].count(), 4);
 		auto result = appearance_sets<2>(B4.row(0));
-		EXPECT_EQ(result.size(), 3); // max = N
+		EXPECT_EQ(result.size(), size_t{3}); // max = N
 		EXPECT_TRUE(result[0].is_empty());
 		EXPECT_TRUE(result[1][Value{0}]); // answer bit
 		EXPECT_EQ(result[1].count(), 1);

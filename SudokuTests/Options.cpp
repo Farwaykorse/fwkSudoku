@@ -111,7 +111,7 @@ TEST(Options, Construction)
 		static_assert(noexcept(Options<4>()), "Options() should be noexcept");
 		static_assert(noexcept(Options<4>{}), "Options{} should be noexcept");
 		const Options<4> D;
-		EXPECT_EQ(D_0.size(), 5);
+		EXPECT_EQ(D_0.size(), size_t{5});
 		EXPECT_EQ(D_0, D_0) << "operator== failed, required";
 		EXPECT_EQ(D_0, D);
 		EXPECT_EQ(D_0.DebugString(), "11111");
@@ -120,28 +120,28 @@ TEST(Options, Construction)
 		SCOPED_TRACE("Copy Constructor : Options(const Options&)");
 		static_assert(noexcept(Options<4>(D_0)));
 		const Options<4> Opt(D_0);
-		EXPECT_EQ(Opt.size(), 5);
+		EXPECT_EQ(Opt.size(), size_t{5});
 		EXPECT_EQ(Opt, D_0);
 		EXPECT_EQ(Opt.DebugString(), "11111");
 	}
 	{
 		SCOPED_TRACE("Copy Assignment : Options& operator=(const Options&)");
 		const Options<4> Opt = D_0;
-		EXPECT_EQ(Opt.size(), 5);
+		EXPECT_EQ(Opt.size(), size_t{5});
 		EXPECT_EQ(Opt, D_0);
 		EXPECT_EQ(Opt.DebugString(), "11111");
 	}
 	{
 		SCOPED_TRACE("Move Constructor : Options(Options&&)");
 		const Options<4> Opt{D_0};
-		EXPECT_EQ(Opt.size(), 5);
+		EXPECT_EQ(Opt.size(), size_t{5});
 		EXPECT_EQ(Opt, D_0);
 		EXPECT_EQ(Opt.DebugString(), "11111");
 	}
 	{
 		SCOPED_TRACE("Move Assignment : Options& operator=(Options&&)");
 		const Options<4> Opt = Options<4>{};
-		EXPECT_EQ(Opt.size(), 5);
+		EXPECT_EQ(Opt.size(), size_t{5});
 		EXPECT_EQ(Opt, D_0);
 		EXPECT_EQ(Opt.DebugString(), "11111");
 	}
@@ -149,13 +149,13 @@ TEST(Options, Construction)
 		SCOPED_TRACE("Options(const bitset&)"); // 0th bit is last in input
 		const std::bitset<5> bit{"10101"};
 		const Options<4> Opt{bit};
-		EXPECT_EQ(Opt.size(), 5);
+		EXPECT_EQ(Opt.size(), size_t{5});
 		EXPECT_EQ(Opt.DebugString(), "10101");
 	}
 	{
 		SCOPED_TRACE("Options(bitset&&)");
 		const Options<4> A_0{std::bitset<5>{"01000"}};
-		EXPECT_EQ(A_0.size(), 5);
+		EXPECT_EQ(A_0.size(), size_t{5});
 		EXPECT_EQ(A_0.DebugString(), "01000");
 	}
 	{
@@ -214,10 +214,10 @@ TestElements TE;
 TEST(Options, mf_counting)
 {
 	static_assert(noexcept(TE.D_0.size()));
-	EXPECT_EQ(TE.D_0.size(), 10);
-	EXPECT_EQ(TE.D_1.size(), 5);
-	EXPECT_EQ(TE.O_1.size(), 5);
-	EXPECT_EQ(TE.E_1.size(), 5);
+	EXPECT_EQ(TE.D_0.size(), size_t{10});
+	EXPECT_EQ(TE.D_1.size(), size_t{5});
+	EXPECT_EQ(TE.O_1.size(), size_t{5});
+	EXPECT_EQ(TE.E_1.size(), size_t{5});
 	static_assert(noexcept(TE.O_1.count()));
 	static_assert(noexcept(TE.O_1.count_all()));
 	// clang-format off
@@ -367,27 +367,27 @@ TEST(Options, available)
 
 	static_assert(noexcept(available(TE.O_1)));
 	ASSERT_NO_THROW(result = available(TE.O_2));
-	EXPECT_EQ(result.size(), 2);
+	EXPECT_EQ(result.size(), size_t{2});
 	EXPECT_EQ(result[0], Value{1});
 	EXPECT_EQ(result[1], Value{3});
 	// empty
 	ASSERT_NO_THROW(result = available(TE.E_1));
-	EXPECT_EQ(result.size(), 0);
+	EXPECT_EQ(result.size(), size_t{0});
 	ASSERT_NO_THROW(result = available(TE.E_2));
-	EXPECT_EQ(result.size(), 0);
+	EXPECT_EQ(result.size(), size_t{0});
 	// invalid answer-bit
 	ASSERT_NO_THROW(result = available(TE.X_1));
-	EXPECT_EQ(result.size(), 0); //??? won't work for is_option() ...
+	EXPECT_EQ(result.size(), size_t{0}); //??? won't work for is_option() ...
 	ASSERT_NO_THROW(result = available(TE.D_1));
-	EXPECT_EQ(result.size(), 4);
+	EXPECT_EQ(result.size(), size_t{4});
 	// answer set
 	ASSERT_NO_THROW(result = available(TE.A_1));
-	EXPECT_EQ(result.size(), 0);
+	EXPECT_EQ(result.size(), size_t{0});
 	// answer not set
 	ASSERT_NO_THROW(result = available(TE.O_1));
-	EXPECT_EQ(result.size(), 1);
+	EXPECT_EQ(result.size(), size_t{1});
 	ASSERT_NO_THROW(result = available(TE.O_3));
-	EXPECT_EQ(result.size(), 3);
+	EXPECT_EQ(result.size(), size_t{3});
 	EXPECT_EQ(result[0], Value{2});
 	EXPECT_EQ(result[1], Value{3});
 	EXPECT_EQ(result[2], Value{4});
@@ -409,7 +409,7 @@ TEST(Options, mf_changeAll)
 {
 	// Setup
 	Options<4> TMP{};
-	ASSERT_EQ(TMP.size(), 5) << "Invalid object";
+	ASSERT_EQ(TMP.size(), size_t{5}) << "Invalid object";
 	ASSERT_TRUE(TMP.all()) << "All options should be available";
 	EXPECT_EQ(TMP.count(), 4);
 	EXPECT_EQ(TMP.count_all(), 4);
@@ -454,7 +454,7 @@ TEST(Options, mf_remove_option)
 	// EXPECT_THROW(TMP.remove_option(Value{15}), std::out_of_range);
 	// EXPECT_THROW(TMP.remove_option(-5), std::out_of_range);
 	ASSERT_TRUE(TMP.reset().all()) << "Reset testdata failed";
-	ASSERT_EQ(TMP.size(), 5) << "Test requires Options<4> object";
+	ASSERT_EQ(TMP.size(), size_t{5}) << "Test requires Options<4> object";
 	EXPECT_TRUE(TMP.test(Value{3}));
 	EXPECT_NO_THROW(TMP.remove_option(Value{3}));
 	EXPECT_FALSE(TMP.test(Value{3}));

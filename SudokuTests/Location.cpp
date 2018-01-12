@@ -358,7 +358,7 @@ TEST(Location_Block, Comparisson)
 	EXPECT_EQ(Location_Block<3>(0, 0), Location_Block<3>(0, 0, 0))
 		<< "verifies a == b";
 	EXPECT_FALSE(Location_Block<3>(4, 3) == Location_Block<3>(4, 4));
-	// TODO EXPECT_NE(Location_Block<3>(0, 0), Location_Block<3>(0, 13))		<<
+	// TODO EXPECT_NE(Location_Block<3>(0, 0), Location_Block<3>(0, 13)) <<
 	// "verifies a != b";  EXPECT_FALSE(Location_Block<3>(4, 4) !=
 	// Location_Block<3>(4, 4));
 	EXPECT_LT(Location_Block<3>(0, 5), Location_Block<3>(3, 2))
@@ -578,10 +578,13 @@ TEST(Location_Utilities, get_same_section)
 	const std::vector<Location<3>> clist1{list1};
 
 	EXPECT_EQ(get_same_row(Location<3>(0), list1), list1);
-	EXPECT_EQ(get_same_row(Location<3>(0), list1).size(), 9) << "vector length";
+	EXPECT_EQ(get_same_row(Location<3>(0), list1).size(), size_t{9})
+		<< "vector length";
 	EXPECT_EQ(get_same_col(Location<3>(0), list3), list3);
-	EXPECT_EQ(get_same_col(Location<3>(0), list3).size(), 9) << "vector length";
-	EXPECT_EQ(get_same_block(Location<3>(0), list1).size(), 3) << "length";
+	EXPECT_EQ(get_same_col(Location<3>(0), list3).size(), size_t{9})
+		<< "vector length";
+	EXPECT_EQ(get_same_block(Location<3>(0), list1).size(), size_t{3})
+		<< "length";
 	EXPECT_EQ(get_same_row(Location<3>(0), clist1), list1);
 }
 TEST(Location_Utilities, is_constexpr)
