@@ -175,7 +175,7 @@ T& Board<T, N>::at(const Location loc)
 	{
 		throw std::out_of_range{"Board::at(Location)"};
 	}
-	return board_.at(gsl::narrow_cast<size_t>(loc.element()));
+	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
 
 template<typename T, int N>
@@ -185,7 +185,7 @@ const T& Board<T, N>::at(const Location loc) const
 	{
 		throw std::out_of_range{"Board::at(Location) const"};
 	}
-	return board_.at(gsl::narrow_cast<size_t>(loc.element()));
+	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
 
 template<typename T, int N>
@@ -195,7 +195,7 @@ T& Board<T, N>::at(const int row, const int col)
 	{
 		throw std::out_of_range{"Board::at(int row, col)"}; // <stdexcept>
 	}
-	return board_.at(gsl::narrow_cast<size_t>(Location(row, col).element()));
+	return board_[gsl::narrow_cast<size_t>(Location(row, col).element())];
 }
 
 template<typename T, int N>
@@ -205,7 +205,7 @@ const T& Board<T, N>::at(const int row, const int col) const
 	{
 		throw std::out_of_range{"Board::at(row, col) const"};
 	}
-	return board_.at(gsl::narrow_cast<size_t>(Location(row, col).element()));
+	return board_[gsl::narrow_cast<size_t>(Location(row, col).element())];
 }
 
 // deprecated
