@@ -191,7 +191,8 @@ inline int set_section_locals(
 		const auto value = gsl::narrow_cast<Value>(val);
 		if (worker[value])
 		{
-			const auto locations = find_locations<N>(section, value, rep_count);
+			std::vector<Location<N>> locations{};
+			locations = find_locations<N>(section, value, rep_count);
 			if (locations.size() != gsl::narrow_cast<size_t>(rep_count))
 			{
 				assert(changes > 0); // changed by earlier value in worker
@@ -231,7 +232,8 @@ inline int set_section_locals(
 		const auto value = Value{val};
 		if (worker[value])
 		{
-			const auto locations = find_locations<N>(block, value, rep_count);
+			std::vector<Location<N>> locations{};
+			locations = find_locations<N>(block, value, rep_count);
 			if (locations.size() != gsl::narrow_cast<size_t>(rep_count))
 			{
 				assert(changes > 0); // changed by earlier value in worker
