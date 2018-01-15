@@ -144,6 +144,7 @@ template<typename T, int N>
 Board<T, N>::Board(std::initializer_list<T> list) : board_(list)
 {
 	assert(list.size() == full_size<N>);
+	// TODO exception on invalid length
 	valid_dimensions<N>();
 	assert(board_.size() == size());
 	assert(board_.capacity() == size());
@@ -248,7 +249,7 @@ template<typename T, int N>
 class Board<T, N>::InBetween
 {
 	friend class Board<T, N>; // access to private constructor
-	InBetween(gsl::not_null<Board<T, N>*> owner, int row)
+	InBetween(gsl::not_null<Board<T, N>*> owner, int row) noexcept
 		: owner_(owner), row_(row)
 	{ // private constructor prevents creation out of class
 	}
