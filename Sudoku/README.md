@@ -31,11 +31,12 @@ This project uses the STL and GSL.
 #### VC++ ####
 Don't use:
 ```
-/Gm				Prefere /MP
+/Gm	      Prefere /MP (disabling sets /Gm-)
 ```
 
 Usefull:
 ```
+/nologo   Disable to see the command-line input
 /E
 /EP
 /showIncludes
@@ -209,12 +210,17 @@ levels. "Nonstandard extension" warnings are promoted to errors.
 
 #### Clang-cl ####
 Inactive settings are indented.  
-Use `-###` to output the commands that actually reach the compiler.  
-Use `-Xclang ` before a command to actually force it to the clang.
+Use `-###` to output the commands that actually reach the compiler, per file.  
+    `-v`   Verbose mode (as above?)  
+Use `-Xclang ` before a command to actually force it to the compiler.
 `````
 -Xclang -std=c++17    Set language version to C++17
+                      (v5.0.1 still defaults to C++14)
 -fno-strict-aliasing
--Xclang -fms-compatibility-version=19.10  upgrade to actual vs version
+-Xclang -fms-compatibility-version=19.12
+                      Upgrade to actual VS version, override
+                      -fmsc-version=1912 as set in the toolset
+                      for actual version see macro _MSC_FULL_VER
   -fms-compatibility Excepting enough invalid C++ to parse most MS headers
   -fno-ms-compatibility
 
