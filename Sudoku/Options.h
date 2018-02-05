@@ -127,16 +127,16 @@ namespace
 	{
 		return (value < 1) ? 1 : (2 * exp2_(--value));
 	}
-	static_assert(exp2_(0) == 1);
-	static_assert(exp2_(1) == 2);
-	static_assert(exp2_(2) == 4);
-	static_assert(exp2_(3) == 8);
-	static_assert(exp2_(4) == 16);
-	static_assert(exp2_(5) == 32);
-	static_assert(exp2_(6) == 64);
-	static_assert(exp2_(7) == 128);
-	static_assert(exp2_(8) == 256);
-	static_assert(exp2_(9) == 512);
+	static_assert(exp2_(0) == 0x1U);
+	static_assert(exp2_(1) == 0x2U);
+	static_assert(exp2_(2) == 0x4U);
+	static_assert(exp2_(3) == 0x8U);
+	static_assert(exp2_(4) == 0x10U);
+	static_assert(exp2_(5) == 0x20U);
+	static_assert(exp2_(6) == 0x40U);
+	static_assert(exp2_(7) == 0x80U);
+	static_assert(exp2_(8) == 0x100U);
+	static_assert(exp2_(9) == 0x200U);
 } // namespace
 
 //===----------------------------------------------------------------------===//
