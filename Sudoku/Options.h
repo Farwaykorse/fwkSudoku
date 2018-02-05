@@ -13,6 +13,7 @@
 #include <gsl/gsl>
 #include <bitset>
 #include <vector>
+#include <cstddef> // size_t
 #include <utility>
 #include <cassert>
 

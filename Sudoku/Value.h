@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <cstddef> // size_t
 #include <exception>
 
 
