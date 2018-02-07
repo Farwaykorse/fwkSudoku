@@ -44,22 +44,22 @@ constexpr bool operator>=(const Value&, const Value&) noexcept;
 auto to_Value(int val);
 //===----------------------------------------------------------------------===//
 template<int N>
-constexpr bool is_valid(const Value&);
+constexpr bool is_valid(const Value&) noexcept;
 template<int N>
-constexpr bool is_valid(const std::vector<Value>&);
+constexpr bool is_valid(const std::vector<Value>&) noexcept;
 
 //===----------------------------------------------------------------------===//
 
 // Test input value
 template<int N>
-inline constexpr bool is_valid(const Value& value)
+inline constexpr bool is_valid(const Value& value) noexcept
 {
 	return value > Value{0} && value <= static_cast<Value>(elem_size<N>);
 }
 
 // Test input values
 template<int N>
-constexpr bool is_valid(const std::vector<Value>& values)
+constexpr bool is_valid(const std::vector<Value>& values) noexcept
 {
 	return (
 		!values.empty() &&

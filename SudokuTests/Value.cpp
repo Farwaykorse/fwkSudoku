@@ -165,9 +165,12 @@ TEST(Value, is_valid)
 	EXPECT_TRUE(is_valid<3>(Value{5}));
 	EXPECT_FALSE(is_valid<3>(Value{16}));
 
+	static_assert(noexcept(is_valid<2>(Value{1})));
+	static_assert(noexcept(is_valid<2>(Value{7})));
+
 	// is constexpr
-	EXPECT_TRUE(noexcept(is_valid<2>(Value(1))));
-	EXPECT_TRUE(noexcept(is_valid<3>(Value{7})));
+	static_assert(is_valid<2>(Value{1}));
+	static_assert(is_valid<2>(Value{2}));
 }
 TEST(Value, is_valid_vector)
 {
@@ -189,9 +192,8 @@ TEST(Value, is_valid_vector)
 	List.at(1) = Value{5}; // 1, 5, 3, 4, 3, 1
 	EXPECT_FALSE(is_valid<2>(List));
 
-	// is constexpr
-	EXPECT_FALSE(noexcept(is_valid<2>(cList)));
-	EXPECT_FALSE(noexcept(is_valid<2>(List)));
+	static_assert(noexcept(is_valid<2>(cList)));
+	static_assert(noexcept(is_valid<2>(List)));
 }
 
 } // namespace SudokuTests::ValueTest
