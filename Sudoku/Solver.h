@@ -234,26 +234,20 @@ inline int section_exclusive(Board<Options, N>& board, const SectionT section)
 		{
 			changes += set_uniques(board, section, appearing[1]);
 			renew_appearing();
+			continue;
 		}
-		else if (appearing.at(i).count_all() > 0)
-		{
-			// for [row/col]: if in same block: remove from rest block
+		if (appearing.at(i).count_all() > 0)
+		{ // for [row/col]: if in same block: remove from rest block
 			// for [block]: if in same row/col: remove from rest row/col
 			if (const int tmp_ = set_section_locals(
 					board, section, gsl::narrow_cast<int>(i), appearing.at(i)))
 			{
 				changes += tmp_;
 				renew_appearing();
-			}
-			else
-			{
-				++i;
+				continue;
 			}
 		}
-		else
-		{
-			++i;
-		}
+		++i;
 	}
 	return changes;
 }
