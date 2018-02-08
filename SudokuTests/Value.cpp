@@ -178,6 +178,20 @@ TEST(Value, is_valid)
 	static_assert(is_valid<3>(Value{1}));
 	static_assert(is_valid<3>(Value{9}));
 	static_assert(!is_valid<3>(Value{10}));
+
+	static_assert(noexcept(is_valid_option<3>(Value{0})));
+	static_assert(noexcept(is_valid_option<3>(Value{1})));
+	static_assert(noexcept(is_valid_option<3>(Value{9})));
+	static_assert(noexcept(is_valid_option<3>(Value{10})));
+
+	static_assert(!is_valid_option<4>(Value{0}));
+	static_assert(is_valid_option<4>(Value{1}));
+	static_assert(is_valid_option<4>(Value{4}));
+	static_assert(!is_valid_option<4>(Value{5}));
+	static_assert(!is_valid_option<9>(Value{0}));
+	static_assert(is_valid_option<9>(Value{1}));
+	static_assert(is_valid_option<9>(Value{9}));
+	static_assert(!is_valid_option<9>(Value{10}));
 }
 TEST(Value, is_valid_vector)
 {

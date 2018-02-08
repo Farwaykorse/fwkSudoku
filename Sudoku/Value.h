@@ -45,6 +45,8 @@ constexpr auto to_Value(int val);
 //===----------------------------------------------------------------------===//
 template<int N>
 constexpr bool is_valid(const Value&) noexcept;
+template<int E>
+inline constexpr bool is_valid_option(const Value&) noexcept;
 template<int N>
 bool is_valid(const std::vector<Value>&) noexcept;
 
@@ -54,7 +56,14 @@ bool is_valid(const std::vector<Value>&) noexcept;
 template<int N>
 inline constexpr bool is_valid(const Value& value) noexcept
 {
-	return value > Value{0} && value <= static_cast<Value>(elem_size<N>);
+	return is_valid_option<elem_size<N>>(value);
+}
+
+// Test input value, for use with Options<E>
+template<int E>
+inline constexpr bool is_valid_option(const Value& value) noexcept
+{
+	return value > Value{0} && value <= Value{E};
 }
 
 // Test input values
