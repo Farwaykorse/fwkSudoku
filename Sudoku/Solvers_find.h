@@ -112,10 +112,9 @@ auto find_locations(const SectionT section, const Options<elem_size<N>> value)
 	}
 	std::vector<Location<N>> locations{};
 
-	auto last      = section.cbegin();
 	const auto end = section.cend();
 
-	for (last = std::find(last, end, value); last != end;
+	for (auto last{std::find(section.cbegin(), end, value)}; last != end;
 		 last = std::find(last, end, value))
 	{
 		locations.push_back(last.location());
