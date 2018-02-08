@@ -157,7 +157,6 @@ TEST(Value, comparisons)
 }
 TEST(Value, is_valid)
 {
-	// EXPECT_FALSE(is_valid<2>(-1));
 	EXPECT_FALSE(is_valid<2>(Value{0}));
 	EXPECT_TRUE(is_valid<2>(Value{1}));
 	EXPECT_TRUE(is_valid<2>(Value(4)));
@@ -165,12 +164,20 @@ TEST(Value, is_valid)
 	EXPECT_TRUE(is_valid<3>(Value{5}));
 	EXPECT_FALSE(is_valid<3>(Value{16}));
 
-	static_assert(noexcept(is_valid<2>(Value{1})));
-	static_assert(noexcept(is_valid<2>(Value{7})));
+	static_assert(noexcept(is_valid<3>(Value{0})));
+	static_assert(noexcept(is_valid<3>(Value{1})));
+	static_assert(noexcept(is_valid<3>(Value{9})));
+	static_assert(noexcept(is_valid<3>(Value{10})));
 
 	// is constexpr
+	static_assert(!is_valid<2>(Value{0}));
 	static_assert(is_valid<2>(Value{1}));
-	static_assert(is_valid<2>(Value{2}));
+	static_assert(is_valid<2>(Value{4}));
+	static_assert(!is_valid<2>(Value{5}));
+	static_assert(!is_valid<3>(Value{0}));
+	static_assert(is_valid<3>(Value{1}));
+	static_assert(is_valid<3>(Value{9}));
+	static_assert(!is_valid<3>(Value{10}));
 }
 TEST(Value, is_valid_vector)
 {
@@ -194,6 +201,23 @@ TEST(Value, is_valid_vector)
 
 	static_assert(noexcept(is_valid<2>(cList)));
 	static_assert(noexcept(is_valid<2>(List)));
+}
+
+TEST(Value, to_Value)
+{
+	// at compile-time
+	static_assert(to_Value<3>(0) == Value{0});
+	static_assert(to_Value<3>(1) == Value{1});
+	static_assert(to_Value<3>(9) == Value{9});
+	static_assert(noexcept(to_Value<3>(2)));
+	static_assert(not noexcept(to_Value<3>(-2)));
+	static_assert(not noexcept(to_Value<3>(21)));
+	static_assert(not noexcept(to_Value<3>(10)));
+
+	EXPECT_NO_THROW(to_Value<3>(0));
+	EXPECT_NO_THROW(to_Value<3>(9));
+	EXPECT_THROW(to_Value<3>(-1), std::domain_error);
+	EXPECT_THROW(to_Value<3>(10), std::domain_error);
 }
 
 } // namespace SudokuTests::ValueTest

@@ -41,12 +41,12 @@ constexpr bool operator>(const Value&, const Value&) noexcept;
 constexpr bool operator<=(const Value&, const Value&) noexcept;
 constexpr bool operator>=(const Value&, const Value&) noexcept;
 
-auto to_Value(int val);
+constexpr auto to_Value(int val);
 //===----------------------------------------------------------------------===//
 template<int N>
 constexpr bool is_valid(const Value&) noexcept;
 template<int N>
-constexpr bool is_valid(const std::vector<Value>&) noexcept;
+bool is_valid(const std::vector<Value>&) noexcept;
 
 //===----------------------------------------------------------------------===//
 
@@ -59,7 +59,7 @@ inline constexpr bool is_valid(const Value& value) noexcept
 
 // Test input values
 template<int N>
-constexpr bool is_valid(const std::vector<Value>& values) noexcept
+bool is_valid(const std::vector<Value>& values) noexcept
 {
 	return (
 		!values.empty() &&
@@ -69,16 +69,13 @@ constexpr bool is_valid(const std::vector<Value>& values) noexcept
 }
 
 //===----------------------------------------------------------------------===//
-inline auto to_Value(int val)
+template<int N>
+inline constexpr auto to_Value(int val)
 {
-	if (val < 0)
-	{
-		throw std::domain_error("negative Value");
-	}
-	else
-	{
-		return static_cast<Value>(static_cast<size_t>(val));
-	}
+	if (val < 0) throw std::domain_error("negative Value");
+	if (val > elem_size<N>) throw std::domain_error("invalid Value");
+
+	return Value{static_cast<size_t>(val)};
 };
 
 //===----------------------------------------------------------------------===//

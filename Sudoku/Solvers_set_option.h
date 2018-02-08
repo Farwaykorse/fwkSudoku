@@ -95,7 +95,7 @@ int set_Value(Board<Options, N>& board, const ItrT begin, const ItrT end)
 		}
 		else
 		{
-			value = to_Value(*itr);
+			value = to_Value<3>(*itr);
 		}
 
 		if (value != Value{0})
