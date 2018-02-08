@@ -10,6 +10,7 @@
 
 #include "Size.h"
 
+#include <gsl/gsl>
 #include <vector>
 #include <algorithm>
 #include <cstddef> // size_t
@@ -81,10 +82,12 @@ bool is_valid(const std::vector<Value>& values) noexcept
 template<int N>
 inline constexpr auto to_Value(int val)
 {
-	if (val < 0) throw std::domain_error("negative Value");
-	if (val > elem_size<N>) throw std::domain_error("invalid Value");
+	if (val < 0 || val > elem_size<N>)
+	{
+		throw std::domain_error("invalid Value");
+	}
 
-	return Value{static_cast<size_t>(val)};
+	return Value{gsl::narrow_cast<size_t>(val)};
 };
 
 //===----------------------------------------------------------------------===//
