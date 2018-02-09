@@ -110,6 +110,13 @@ TEST(Options, Construction)
 		SCOPED_TRACE("Default Constructor : Options()");
 		static_assert(noexcept(Options<4>()), "Options() should be noexcept");
 		static_assert(noexcept(Options<4>{}), "Options{} should be noexcept");
+
+		EXPECT_EQ(Options<0>().DebugString(), "1");
+		EXPECT_EQ(Options<1>().DebugString(), "11");
+		EXPECT_EQ(Options<2>().DebugString(), "111");
+		EXPECT_EQ(Options<4>().DebugString(), "11111");
+		EXPECT_TRUE(is_option(Options<4>{}, Value{1}));
+
 		const Options<4> D;
 		EXPECT_EQ(D_0.size(), size_t{5});
 		EXPECT_EQ(D_0, D_0) << "operator== failed, required";
@@ -170,6 +177,8 @@ TEST(Options, Construction)
 		EXPECT_EQ(Options<9>{Value{9}}.DebugString(), "1000000000");
 		EXPECT_EQ(Options<9>{Value{2}}.DebugString(), "0000000100");
 		// assertion see deathtests
+		static_assert(noexcept(Options<4>{Value{2}}));
+		static_assert(noexcept(Options<4>{Value{4}}));
 	}
 	{
 		SCOPED_TRACE("Options& operator=(int value)");
@@ -218,6 +227,11 @@ TEST(Options, mf_counting)
 	EXPECT_EQ(TE.D_1.size(), size_t{5});
 	EXPECT_EQ(TE.O_1.size(), size_t{5});
 	EXPECT_EQ(TE.E_1.size(), size_t{5});
+	constexpr Options<9> X1{Value{1}};
+	static_assert(X1.size() == size_t{10});
+	constexpr Options<4> X2{Value{1}};
+	static_assert(X2.size() == size_t{5});
+
 	static_assert(noexcept(TE.O_1.count()));
 	static_assert(noexcept(TE.O_1.count_all()));
 	// clang-format off
@@ -283,8 +297,8 @@ TEST(Options, is_answer)
 	EXPECT_FALSE(is_answer(TE.X_0));
 	EXPECT_FALSE(is_answer(TE.X_1));
 
-	static_assert(not noexcept(is_answer(TE.O_1, Value{1})));
-	static_assert(not noexcept(is_answer(TE.A_1, Value{100})));
+	static_assert(noexcept(is_answer(TE.O_1, Value{1})));
+	static_assert(noexcept(is_answer(TE.A_1, Value{4})));
 	// assertion see deathtests
 	EXPECT_TRUE(is_answer(TE.A_2, Value{2}));
 	EXPECT_FALSE(is_answer(TE.A_2, Value{3}));
@@ -600,6 +614,15 @@ TEST(Options, mf_constOperators)
 	static_assert(noexcept(TE.O_1[Value{2}]));
 	EXPECT_NO_THROW(TE.O_3[Value{2}]);
 	EXPECT_NO_THROW(TE.O_3[Value{0}]);
+
+	constexpr Options<4> x{Value{1}};
+	static_assert(x[Value{1}]);
+	static_assert(not x[Value{2}]);
+	constexpr Options<9> y1{Value{1}};
+	static_assert(y1[Value{1}]);
+	constexpr Options<9> y9{Value{1}};
+	static_assert(y9[Value{1}]);
+
 	// assertion see deathtests
 #ifndef _DEBUG
 	EXPECT_NO_THROW(TE.O_3[Value{9}]);
@@ -623,7 +646,6 @@ TEST(Options, Operators)
 	Options<4> TMP{}; // per test, reset this option
 
 	///// non-const operators /////
-	// NEEDTEST constexpr bool operator[](int)
 	static_assert(noexcept(TMP.operator[](Value{0}) = true));
 	TMP.clear();
 	EXPECT_TRUE(TMP[Value{0}] = true);
@@ -735,4 +757,5 @@ TEST(Options, deathtests)
 	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(Value{15}); }, "Assertion failed: .*");
 #endif // _DEBUG
 }
+
 } // namespace SudokuTests::OptionsTest

@@ -52,7 +52,7 @@ public:
 	bool is_answer() const noexcept; // is set to answer
 	bool is_empty() const noexcept;
 
-	bool operator[](Value) const noexcept;
+	constexpr bool operator[](Value) const noexcept;
 	auto operator[](Value) noexcept;
 
 	bool operator==(const Options<E>&) const noexcept;
@@ -82,7 +82,7 @@ private:
 template<int E>
 bool is_answer(const Options<E>&) noexcept;
 template<int E>
-bool is_answer(const Options<E>&, const Value);
+bool is_answer(const Options<E>&, const Value) noexcept;
 template<int E>
 bool is_option(const Options<E>&, const Value);
 template<int E>
@@ -121,32 +121,39 @@ Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
 
 //===----------------------------------------------------------------------===//
 
-namespace
+namespace impl
 {
 	// convert to a number for use in std::bitset to use a unique bit per value
 	inline constexpr size_t exp2_(size_t value) noexcept
 	{
-		return (value < 1) ? 1 : (2 * exp2_(--value));
+		return (value < 1U) ? 1U : (2U * exp2_(--value));
 	}
-	static_assert(exp2_(0) == 0x1U);
-	static_assert(exp2_(1) == 0x2U);
-	static_assert(exp2_(2) == 0x4U);
-	static_assert(exp2_(3) == 0x8U);
-	static_assert(exp2_(4) == 0x10U);
-	static_assert(exp2_(5) == 0x20U);
-	static_assert(exp2_(6) == 0x40U);
-	static_assert(exp2_(7) == 0x80U);
-	static_assert(exp2_(8) == 0x100U);
-	static_assert(exp2_(9) == 0x200U);
-} // namespace
+	static_assert(exp2_(0U) == 0x1U);
+	static_assert(exp2_(1U) == 0x2U);
+	static_assert(exp2_(2U) == 0x4U);
+	static_assert(exp2_(3U) == 0x8U);
+	static_assert(exp2_(4U) == 0x10U);
+	static_assert(exp2_(5U) == 0x20U);
+	static_assert(exp2_(6U) == 0x40U);
+	static_assert(exp2_(7U) == 0x80U);
+	static_assert(exp2_(8U) == 0x100U);
+	static_assert(exp2_(9U) == 0x200U);
+
+	// generate a bitmask to set all bits in std::bitset
+	inline constexpr size_t all_set(size_t value) noexcept
+	{
+		return (exp2_(++value) - 1U);
+	}
+} // namespace impl
 
 //===----------------------------------------------------------------------===//
 
-//	construct with all options
+//	construct with all options set
 template<int E>
-Options<E>::Options() noexcept
+//constexpr Options<E>::Options() noexcept : data_{impl::all_set(E)}
+inline Options<E>::Options() noexcept
 {
-	data_.set(); // all true
+	data_.flip();
 }
 
 template<int E>
@@ -161,8 +168,8 @@ inline Options<E>::Options(bitset&& other) noexcept : data_{other}
 
 //	construct with single option set to answer
 template<int E>
-constexpr Options<E>::Options(Value value) noexcept
-	: data_{exp2_(size_t{value})}
+inline constexpr Options<E>::Options(Value value) noexcept
+	: data_{impl::exp2_(size_t{value})}
 {
 	assert(value <= Value{E});
 }
@@ -171,7 +178,7 @@ constexpr Options<E>::Options(Value value) noexcept
 template<int E>
 inline Options<E>& Options<E>::operator=(Value value) noexcept
 {
-	data_ = exp2_(size_t{value});
+	data_ = impl::exp2_(size_t{value});
 	return *this;
 }
 
@@ -220,7 +227,7 @@ inline Options<E>& Options<E>::flip() noexcept
 template<int E>
 inline Options<E>& Options<E>::remove_option(const Value value)
 {
-	assert(value <= Value{E});
+	assert(is_valid_option<E>(value));
 	assert(not Sudoku::is_answer(*this, value));
 
 	data_.set(size_t{value}, false);
@@ -267,9 +274,9 @@ inline constexpr size_t Options<E>::size() const noexcept
 
 	//??? size() -1 better?
 	// The current implementation works with size() being 1 past the last
-	// element But the usage allows for size()-1 options to be stored Where the
-	// direct value to location implementation is just convenient The 0th
-	// element in this immplementation is just a flag (more could be added)
+	// element. But this allows for size()-1 options to be stored. The
+	// direct value to location implementation is convenient. The 0th
+	// element in this implementation is just a flag (more could be added).
 }
 
 //	available options
@@ -327,20 +334,16 @@ inline bool is_answer(const Options<E>& options) noexcept
 
 // check if set to answer value
 template<int E>
-inline bool is_answer(const Options<E>& options, const Value value)
+inline bool is_answer(const Options<E>& options, const Value value) noexcept
 {
-	assert(value <= Value{E});
-
-	return (is_answer(options) && options.test(value));
-	// return (is_answer(options) && options[value]);
+	return options == Options<E>{value};
 }
 
 // check if option available
 template<int E>
 inline bool is_option(const Options<E>& options, const Value value)
 {
-	assert(value != Value{0} && value <= Value{E});
-
+	assert(is_valid_option<E>(value));
 	return (options.test(value) && not is_answer(options));
 }
 
@@ -384,7 +387,7 @@ inline std::vector<Value> available(const Options<E>& options) noexcept(true)
 
 //	no-check access read only
 template<int E>
-inline bool Options<E>::operator[](const Value value) const noexcept
+inline constexpr bool Options<E>::operator[](const Value value) const noexcept
 {
 	assert(value <= Value{E});
 	return data_[size_t{value}];
