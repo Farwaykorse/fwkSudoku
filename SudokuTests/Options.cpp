@@ -313,35 +313,58 @@ TEST(Options, test_Value)
 
 TEST(Options, is_answer)
 {
-	static_assert(noexcept(TE.O_1.is_answer()));
-	EXPECT_TRUE(TE.A_1.is_answer());
-	EXPECT_TRUE(TE.A_2.is_answer());
-	EXPECT_FALSE(TE.O_1.is_answer());
-	EXPECT_FALSE(TE.O_4.is_answer());
-	EXPECT_FALSE(TE.E_1.is_answer());
-	EXPECT_FALSE(TE.E_2.is_answer());
-	EXPECT_FALSE(TE.X_0.is_answer());
-	EXPECT_FALSE(TE.X_1.is_answer());
-	// convenience function: exactly the same
-	static_assert(noexcept(is_answer(TE.O_1)));
-	EXPECT_TRUE(is_answer(TE.A_1));
-	EXPECT_TRUE(is_answer(TE.A_2));
-	EXPECT_FALSE(is_answer(TE.O_1));
-	EXPECT_FALSE(is_answer(TE.O_4));
-	EXPECT_FALSE(is_answer(TE.E_1));
-	EXPECT_FALSE(is_answer(TE.E_2));
-	EXPECT_FALSE(is_answer(TE.X_0));
-	EXPECT_FALSE(is_answer(TE.X_1));
+	{ // memberfunction
+		static_assert(noexcept(TE.O_1.is_answer()));
+		EXPECT_TRUE(TE.A_1.is_answer());
+		EXPECT_TRUE(TE.A_2.is_answer());
+		EXPECT_FALSE(TE.O_1.is_answer());
+		EXPECT_FALSE(TE.O_4.is_answer());
+		EXPECT_FALSE(TE.E_1.is_answer());
+		EXPECT_FALSE(TE.E_2.is_answer());
+		EXPECT_FALSE(TE.X_0.is_answer());
+		EXPECT_FALSE(TE.X_1.is_answer());
+	}
+	{// convenience function: exactly the same
+		static_assert(noexcept(is_answer(TE.O_1)));
+		EXPECT_TRUE(is_answer(TE.A_1));
+		EXPECT_TRUE(is_answer(TE.A_2));
+		EXPECT_FALSE(is_answer(TE.O_1));
+		EXPECT_FALSE(is_answer(TE.O_4));
+		EXPECT_FALSE(is_answer(TE.E_1));
+		EXPECT_FALSE(is_answer(TE.E_2));
+		EXPECT_FALSE(is_answer(TE.X_0));
+		EXPECT_FALSE(is_answer(TE.X_1));
+	}
+	{ // test for specific answer
+		static_assert(noexcept(is_answer(TE.O_1, Value{1})));
+		static_assert(noexcept(is_answer(TE.A_1, Value{4})));
+		// assertion see deathtests
+		EXPECT_TRUE(is_answer(TE.A_2, Value{2}));
+		EXPECT_FALSE(is_answer(TE.A_2, Value{3}));
+		EXPECT_FALSE(is_answer(TE.A_1, Value{0}));
+		EXPECT_FALSE(is_answer(TE.O_1, Value{2}));
+		EXPECT_FALSE(is_answer(TE.O_1, Value{2}));
+		EXPECT_FALSE(is_answer(TE.E_1, Value{0}));
+	}
+	{ // test if answer flag set
+		static_assert(noexcept(is_answer_fast(TE.O_1)));
 
-	static_assert(noexcept(is_answer(TE.O_1, Value{1})));
-	static_assert(noexcept(is_answer(TE.A_1, Value{4})));
-	// assertion see deathtests
-	EXPECT_TRUE(is_answer(TE.A_2, Value{2}));
-	EXPECT_FALSE(is_answer(TE.A_2, Value{3}));
-	EXPECT_FALSE(is_answer(TE.A_1, Value{0}));
-	EXPECT_FALSE(is_answer(TE.O_1, Value{2}));
-	EXPECT_FALSE(is_answer(TE.O_1, Value{2}));
-	EXPECT_FALSE(is_answer(TE.E_1, Value{0}));
+		constexpr Options<9> ans{Value{2}};
+		static_assert(is_answer_fast(ans), "Failure: constexpr is_answer_fast");
+		static_assert(!ans[Value{0}]); // dependencies
+		static_assert(!ans[Value{1}]); //
+		static_assert(ans[Value{2}]);  //
+
+		EXPECT_TRUE(is_answer_fast(TE.A_1));
+		EXPECT_TRUE(is_answer_fast(TE.A_2));
+		EXPECT_FALSE(is_answer_fast(TE.O_1));
+		EXPECT_FALSE(is_answer_fast(TE.O_4));
+		// invalid data:
+		EXPECT_TRUE(is_answer_fast(TE.E_1));  // 00000 false for is_answer
+		EXPECT_FALSE(is_answer_fast(TE.E_2)); // 00001
+		EXPECT_TRUE(is_answer_fast(TE.X_0));  // 11110 false for is_answer
+		EXPECT_TRUE(is_answer_fast(TE.X_1));  // 10100 false for is_answer
+	}
 }
 
 TEST(Options, is_option)

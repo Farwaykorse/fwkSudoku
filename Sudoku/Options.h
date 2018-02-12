@@ -82,6 +82,8 @@ private:
 template<int E>
 bool is_answer(const Options<E>&) noexcept;
 template<int E>
+constexpr bool is_answer_fast(const Options<E>&) noexcept;
+template<int E>
 bool is_answer(const Options<E>&, const Value) noexcept;
 template<int E>
 bool is_option(const Options<E>&, const Value);
@@ -336,6 +338,13 @@ inline bool is_answer(const Options<E>& options) noexcept
 	return options.is_answer();
 }
 
+// check if set to answer without validation
+template<int E>
+inline constexpr bool is_answer_fast(const Options<E>& options) noexcept
+{
+	return !options[Value{0}];
+}
+
 // check if set to answer value
 template<int E>
 inline bool is_answer(const Options<E>& options, const Value value) noexcept
@@ -360,7 +369,7 @@ inline bool Options<E>::is_empty() const noexcept
 }
 
 // determine the answer value, even if not marked
-//   use with is_answer() to determine if flaged as anwer
+//   use with is_answer[_fast]() to determine if flaged as answer
 template<int E>
 inline Value get_answer(const Options<E>& options) noexcept
 {
