@@ -123,7 +123,6 @@ Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
 
 namespace impl
 {
-	// convert to a number for use in std::bitset to use a unique bit per value
 	inline constexpr size_t exp2_(size_t value) noexcept
 	{
 		return (value < 1U) ? 1U : (2U * exp2_(--value));
@@ -139,10 +138,15 @@ namespace impl
 	static_assert(exp2_(8U) == 0x100U);
 	static_assert(exp2_(9U) == 0x200U);
 
-	// generate a bitmask to set all bits in std::bitset
-	inline constexpr size_t all_set(size_t value) noexcept
+	// generate a bitmask to use a unique bit per value
+	inline constexpr size_t exp2_(Value value) noexcept
 	{
-		return (exp2_(++value) - 1U);
+		return exp2_(static_cast<size_t>(value));
+	}
+	// generate a bitmask to set all bits in std::bitset
+	inline constexpr size_t all_set(size_t elements) noexcept
+	{
+		return (exp2_(++elements) - 1U);
 	}
 } // namespace impl
 
@@ -169,7 +173,7 @@ inline Options<E>::Options(bitset&& other) noexcept : data_{other}
 //	construct with single option set to answer
 template<int E>
 inline constexpr Options<E>::Options(Value value) noexcept
-	: data_{impl::exp2_(size_t{value})}
+	: data_{impl::exp2_(value)}
 {
 	assert(value <= Value{E});
 }
@@ -178,7 +182,7 @@ inline constexpr Options<E>::Options(Value value) noexcept
 template<int E>
 inline Options<E>& Options<E>::operator=(Value value) noexcept
 {
-	data_ = impl::exp2_(size_t{value});
+	data_ = impl::exp2_(value);
 	return *this;
 }
 

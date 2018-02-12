@@ -100,6 +100,44 @@ namespace compiletime
 	static_assert(not std::is_constructible_v<Options<3>, size_t>);
 	static_assert(not std::is_assignable_v<Options<3>, size_t>);
 
+	namespace impl
+	{
+		using namespace Sudoku::impl;
+
+		static_assert(exp2_(0U) == 0x1U);
+		static_assert(exp2_(1U) == 0x2U);
+		static_assert(exp2_(2U) == 0x4U);
+		static_assert(exp2_(3U) == 0x8U);
+		static_assert(exp2_(4U) == 0x10U);
+		static_assert(exp2_(5U) == 0x20U);
+		static_assert(exp2_(6U) == 0x40U);
+		static_assert(exp2_(7U) == 0x80U);
+		static_assert(exp2_(8U) == 0x100U);
+		static_assert(exp2_(9U) == 0x200U);
+
+		static_assert(exp2_(Value{0}) == 0x1U);
+		static_assert(exp2_(Value{1}) == 0x2U);
+		static_assert(exp2_(Value{2}) == 0x4U);
+		static_assert(exp2_(Value{3}) == 0x8U);
+		static_assert(exp2_(Value{4}) == 0x10U);
+		static_assert(exp2_(Value{5}) == 0x20U);
+		static_assert(exp2_(Value{6}) == 0x40U);
+		static_assert(exp2_(Value{7}) == 0x80U);
+		static_assert(exp2_(Value{8}) == 0x100U);
+		static_assert(exp2_(Value{9}) == 0x200U);
+
+		static_assert(all_set(0U) == 0x1U);
+		static_assert(all_set(1U) == 0x3U);
+		static_assert(all_set(2U) == 0x7U);
+		static_assert(all_set(3U) == 0xFU);
+		static_assert(all_set(4U) == 0x1FU);
+		static_assert(all_set(5U) == 0x3FU);
+		static_assert(all_set(6U) == 0x7FU);
+		static_assert(all_set(7U) == 0xFFU);
+		static_assert(all_set(8U) == 0x1FFU);
+		static_assert(all_set(9U) == 0x3FFU);
+	}
+
 } // namespace compiletime
 TEST(Options, Construction)
 {
