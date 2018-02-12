@@ -357,7 +357,7 @@ template<int E>
 inline bool is_option(const Options<E>& options, const Value value)
 {
 	assert(is_valid_option<E>(value));
-	return (options.test(value) && not is_answer(options));
+	return (options.test(value) && not is_answer_fast(options));
 }
 
 // Test if no options or answers available

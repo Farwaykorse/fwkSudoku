@@ -380,8 +380,7 @@ TEST(Options, is_option)
 	EXPECT_FALSE(is_option(TE.A_2, Value{2}));
 	EXPECT_FALSE(is_option(TE.O_3, Value{1}));
 	EXPECT_TRUE(is_option(TE.O_3, Value{2}));
-	EXPECT_TRUE(is_option(TE.X_0, Value{2})); // proper result even with
-											  // incorrect answer-flag
+	EXPECT_FALSE(is_option(TE.X_0, Value{2})); // incorrect answer flag
 }
 
 TEST(Options, read_next)
