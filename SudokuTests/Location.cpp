@@ -41,8 +41,6 @@ namespace compiletime
 	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
 	static_assert(!std::is_pod_v<typeT>);
-	// static_assert(std::has_unique_object_representations_v<typeT>);
-	// C++17	trivially_copyable same object representation
 	static_assert(!std::is_empty_v<typeT>); // nothing virtual
 	static_assert(!std::is_polymorphic_v<typeT>);
 	static_assert(!std::is_final_v<typeT>);
@@ -80,18 +78,16 @@ namespace compiletime
 	static_assert(!std::is_swappable_v<typeT>);         // C++17
 	static_assert(!std::is_nothrow_swappable_v<typeT>); // C++17
 	// other types
-	static_assert(std::is_constructible<typeT, int>::value);
-	static_assert(std::is_constructible<typeT, unsigned int>::value);
-	static_assert(std::is_constructible<typeT, size_t>::value);
-	static_assert(std::is_constructible<typeT, Location_Block<3>>::value);
-	static_assert(!std::is_constructible<typeT, Location_Block<2>>::value);
-	static_assert(!std::is_assignable<typeT, Location_Block<3>>::value);
-	static_assert(!std::is_assignable<typeT, int>::value);
+	static_assert(std::is_constructible_v<typeT, int>);
+	static_assert(std::is_constructible_v<typeT, unsigned int>);
+	static_assert(std::is_constructible_v<typeT, size_t>);
+	static_assert(std::is_constructible_v<typeT, Location_Block<3>>);
+	static_assert(!std::is_constructible_v<typeT, Location_Block<2>>);
+	static_assert(!std::is_assignable_v<typeT, Location_Block<3>>);
+	static_assert(!std::is_assignable_v<typeT, int>);
 
-	static_assert(
-		!std::is_swappable_with<typeT, Location_Block<3>>::value); // C++17
-	static_assert(!std::is_nothrow_swappable_with<typeT, Location_Block<3>>::
-					  value); // C++17
+	static_assert(!std::is_swappable_with_v<typeT, Location_Block<3>>); // C++17
+	static_assert(!std::is_nothrow_swappable_with_v<typeT, Location_Block<3>>);
 } // namespace compiletime
 
 namespace Location_Block_compiletime

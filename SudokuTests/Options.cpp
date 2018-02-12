@@ -39,11 +39,9 @@ namespace compiletime
 	using typeT = Sudoku::Options<9>;
 	static_assert(std::is_class_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>);
-	static_assert(std::is_standard_layout_v<typeT>, "standard layout");
-	static_assert(
-		not std::is_trivial_v<typeT>, "not user-provided, no virtuals");
+	static_assert(std::is_standard_layout_v<typeT>);
+	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(not std::is_pod_v<typeT>);
-	// static_assert(std::has_unique_object_representations_v<typeT>); //C++17
 
 	static_assert(std::is_default_constructible_v<typeT>);
 	static_assert(std::is_nothrow_default_constructible_v<typeT>);
