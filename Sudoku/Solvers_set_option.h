@@ -67,7 +67,7 @@ inline int set_Value(
 	}
 	else if (not is_answer(elem))
 	{
-		changes = elem.count_all();
+		changes = gsl::narrow_cast<int>(elem.count_all());
 		elem.set_nocheck(value);
 	}
 	return changes;

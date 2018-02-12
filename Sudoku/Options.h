@@ -45,8 +45,8 @@ public:
 	Options& set_nocheck(Value) noexcept; // set to answer
 
 	constexpr size_t size() const noexcept;
-	int count() const noexcept;      // count available options
-	int count_all() const noexcept;  // count all options (incl answer)
+	size_t count() const noexcept;      // count available options
+	size_t count_all() const noexcept;  // count all options (incl answer)
 	bool all() const noexcept;       // if all options available = all bits set
 	bool test(Value) const;          // if an option, or answer
 	bool is_answer() const noexcept; // is set to answer
@@ -282,11 +282,11 @@ inline constexpr size_t Options<E>::size() const noexcept
 //	available options
 //	if 1, a not processed answer
 template<int E>
-inline int Options<E>::count() const noexcept
+inline size_t Options<E>::count() const noexcept
 {
 	if (data_[0])
 	{
-		return gsl::narrow_cast<int>(data_.count()) - 1;
+		return data_.count() - 1U;
 	}
 	return 0; // NO protection vs incorrect answer bit
 }
@@ -295,13 +295,13 @@ inline int Options<E>::count() const noexcept
 //	Returns 1 if {1 option, set as answer} || {1 option, not set as anwer}
 //	Returns 0 if {empty} || {no option, but not set as answer}
 template<int E>
-inline int Options<E>::count_all() const noexcept
+inline size_t Options<E>::count_all() const noexcept
 {
 	if (data_[0])
 	{
-		return gsl::narrow_cast<int>(data_.count()) - 1;
+		return data_.count() - 1U;
 	}
-	return gsl::narrow_cast<int>(data_.count());
+	return data_.count();
 }
 
 //_Test if all bits are set
@@ -372,11 +372,11 @@ template<int E>
 inline std::vector<Value> available(const Options<E>& options) noexcept(true)
 { // noexcept: only allocation can throw. Terminate, all is lost anyway.
 	std::vector<Value> values{};
-	values.reserve(static_cast<size_t>(options.count()));
+	values.reserve(options.count());
 	if (not is_answer(options) && not options.is_empty())
 	{
 		Value item{0};
-		for (auto i{0}; i < options.count(); ++i)
+		for (size_t i{0}; i < options.count(); ++i)
 		{
 			item = read_next(options, item);
 			values.emplace_back(item);

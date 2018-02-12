@@ -1840,6 +1840,7 @@ TEST(Board_Iterator, deathtest)
 
 	// invalid location on dereferencing out-of-bounds iterator
 	int tmp_{};
+	size_t tmp2{};
 	EXPECT_NO_FATAL_FAILURE(tmp_ = *((cA.row(0).cbegin())--));
 	EXPECT_NO_FATAL_FAILURE(tmp_ = *(--(cA.row(0).cend()))++);
 #ifdef _DEBUG
@@ -1850,10 +1851,10 @@ TEST(Board_Iterator, deathtest)
 	EXPECT_DEBUG_DEATH(tmp_ = *((A.row(0).begin()) += 8), ".*: is_valid_size");
 #endif // _DEBUG
 	Board<Options<4>, 2> Opt{};
-	EXPECT_NO_FATAL_FAILURE(tmp_ = (Opt.row(0).begin())->count());
+	EXPECT_NO_FATAL_FAILURE(tmp2 = (Opt.row(0).begin())->count());
 #ifdef _DEBUG
 	EXPECT_DEBUG_DEATH(
-		tmp_ = (--(Opt.row(0).begin()))->count(), ".*: is_valid_size");
+		tmp2 = (--(Opt.row(0).begin()))->count(), ".*: is_valid_size");
 #endif // _DEBUG
 }
 

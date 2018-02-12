@@ -69,7 +69,7 @@ int remove_option(
 	if (is_option(item, value))
 	{
 		++changes;
-		const int count = item.remove_option(value).count();
+		const auto count = item.remove_option(value).count();
 		assert(count > 0); // never trigger, removed last option
 
 		if (count == 1)
