@@ -43,7 +43,8 @@ constexpr bool operator>(const Value&, const Value&) noexcept;
 constexpr bool operator<=(const Value&, const Value&) noexcept;
 constexpr bool operator>=(const Value&, const Value&) noexcept;
 
-constexpr auto to_Value(int val);
+template<typename T, int N>
+constexpr Value to_Value(T val);
 //===----------------------------------------------------------------------===//
 template<int N>
 constexpr bool is_valid(const Value&) noexcept;
@@ -80,17 +81,28 @@ bool is_valid(const std::vector<Value>& values) noexcept
 }
 
 //===----------------------------------------------------------------------===//
-// Checked input for Value
-template<int N>
-inline constexpr auto to_Value(int val)
+// Checked conversion to Value
+template<int N, typename T>
+inline constexpr Value to_Value(T val)
 {
-	if (val < 0 || val > elem_size<N>)
+	if constexpr (std::is_same_v<Value, T>)
 	{
-		throw std::domain_error("invalid Value");
+		if (val > static_cast<Value>(elem_size<N>))
+		{
+			throw std::domain_error("Value input too large");
+		}
+		return val;
 	}
-
-	return Value{gsl::narrow_cast<size_t>(val)};
-};
+	else if constexpr (std::is_unsigned_v<T>)
+	{
+		return to_Value<N>(static_cast<Value>(val));
+	}
+	else
+	{
+		if (val < 0) throw std::domain_error("Value can not be negative");
+		return to_Value<N>(gsl::narrow_cast<size_t>(val));
+	}
+}
 
 //===----------------------------------------------------------------------===//
 inline constexpr bool Value::operator==(const Value& right) const noexcept

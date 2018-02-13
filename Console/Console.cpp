@@ -17,9 +17,9 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 	Sudoku::Board<Value, 3> start;
 	Sudoku::Board<Value, 3> answer;
 	std::transform(
-		B_in.cbegin(), B_in.cend(), start.begin(), Sudoku::to_Value<3>);
+		B_in.cbegin(), B_in.cend(), start.begin(), Sudoku::to_Value<3, int>);
 	std::transform(
-		A_in.cbegin(), A_in.cend(), answer.begin(), Sudoku::to_Value<3>);
+		A_in.cbegin(), A_in.cend(), answer.begin(), Sudoku::to_Value<3, int>);
 
 #ifdef _DEBUG
 	constexpr int repeat{1}; // runs (only keep fastest)
