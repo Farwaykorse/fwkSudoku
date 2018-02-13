@@ -89,16 +89,14 @@ namespace compiletime
 
 	// other types
 	static_assert(std::is_constructible_v<typeT, int>);
-	static_assert(std::is_constructible_v<int, typeT>);
+	static_assert(not std::is_constructible_v<int, typeT>);
 	static_assert(std::is_constructible_v<typeT, unsigned int>);
-	static_assert(std::is_constructible_v<unsigned int, typeT>);
+	static_assert(not std::is_constructible_v<unsigned int, typeT>);
 	static_assert(std::is_constructible_v<typeT, unsigned long long int>);
 	static_assert(std::is_constructible_v<unsigned long long int, typeT>);
 	static_assert(std::is_constructible_v<typeT, size_t>);
 	static_assert(std::is_constructible_v<size_t, typeT>);
-	static_assert(std::is_constructible_v<typeT, unsigned>);
-	static_assert(std::is_constructible_v<unsigned, typeT>);
-	static_assert(std::is_constructible_v<typeT, bool>);
+	static_assert(std::is_constructible_v<typeT, bool>); // ... via size_t
 	static_assert(std::is_constructible_v<bool, typeT>);
 
 	static_assert(not std::is_assignable_v<typeT, int>);
@@ -106,12 +104,15 @@ namespace compiletime
 	static_assert(not std::is_assignable_v<typeT, unsigned int>);
 	static_assert(not std::is_assignable_v<unsigned int, typeT>);
 	static_assert(not std::is_assignable_v<typeT, size_t>);
+	static_assert(not std::is_assignable_v<typeT, bool>);
+	static_assert(not std::is_assignable_v<bool, typeT>);
 
 	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
 } // namespace compiletime
+
 TEST(Value, comparisons)
 {
 	static_assert(noexcept(Value{5} == Value{2}));
@@ -155,6 +156,7 @@ TEST(Value, comparisons)
 	EXPECT_FALSE(Value{1} > Value{1});
 	EXPECT_FALSE(Value{2} > Value{5});
 }
+
 TEST(Value, is_valid)
 {
 	EXPECT_FALSE(is_valid<2>(Value{0}));
@@ -193,6 +195,20 @@ TEST(Value, is_valid)
 	static_assert(is_valid_option<9>(Value{9}));
 	static_assert(!is_valid_option<9>(Value{10}));
 }
+
+TEST(Value, operator_bool)
+{
+	static_assert(noexcept(Value{0}));
+	static_assert(noexcept(Value{1}));
+	static_assert(noexcept(Value{999}));
+	static_assert(not Value{0}); // seems to result in an explicit conversion
+	static_assert(Value{1});
+	static_assert(Value{999});
+
+	EXPECT_EQ(bool{Value{0}}, false); // requires explicit conversion
+	EXPECT_EQ(bool{Value{1}}, true);
+}
+
 TEST(Value, is_valid_vector)
 {
 	// vector input

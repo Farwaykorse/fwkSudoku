@@ -27,7 +27,8 @@ public:
 	explicit constexpr Value(size_t val) noexcept : value_(val) {}
 
 	explicit constexpr operator size_t() const noexcept { return value_; }
-	constexpr operator bool() const noexcept { return value_ != 0; }
+	explicit constexpr operator bool() const noexcept { return value_ != 0; }
+	// note: static_assert performs an explicit conversion to bool
 
 	constexpr bool operator==(const Value&) const noexcept;
 	constexpr bool operator<(const Value&) const noexcept;
