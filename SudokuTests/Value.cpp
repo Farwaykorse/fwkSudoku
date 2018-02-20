@@ -24,10 +24,11 @@
 #include <vector>
 #include <type_traits>
 
-using namespace Sudoku;
 
 namespace SudokuTests::ValueTest
 {
+using namespace ::Sudoku;
+
 namespace compiletime
 {
 	// Type properties

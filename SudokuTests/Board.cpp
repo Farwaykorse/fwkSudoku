@@ -32,10 +32,11 @@
 #include <random>  // randomaccess tests
 #include <type_traits>
 
-using namespace Sudoku;
 
 namespace SudokuTests::BoardTest
 {
+using namespace ::Sudoku;
+
 namespace compiletime
 {
 	// try initializing a board in different ways

@@ -29,10 +29,10 @@
 #include <type_traits>
 
 
-using namespace Sudoku;
-
 namespace SudokuTests::SolversTest
 {
+using namespace ::Sudoku;
+
 TEST(Solver, set_Value)
 {
 	using L = Location<2>;

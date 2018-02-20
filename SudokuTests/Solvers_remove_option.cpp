@@ -30,10 +30,10 @@
 #include <type_traits>
 
 
-using namespace Sudoku;
-
 namespace SudokuTests::SolversTest
 {
+using namespace ::Sudoku;
+
 TEST(Solver, remove_option)
 {
 	// remove_option(location, int value)

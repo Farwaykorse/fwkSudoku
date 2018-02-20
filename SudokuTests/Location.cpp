@@ -26,10 +26,10 @@
 #include <type_traits>
 
 
-using namespace Sudoku;
-
 namespace SudokuTests::LocationTest
 {
+using namespace ::Sudoku;
+
 namespace compiletime
 {
 	// Type properties

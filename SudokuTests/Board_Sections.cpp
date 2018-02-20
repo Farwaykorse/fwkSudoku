@@ -29,10 +29,11 @@
 #include <random>  // randomaccess tests
 #include <type_traits>
 
-using namespace Sudoku;
 
 namespace SudokuTests::Board_SectionsTest
 {
+using namespace ::Sudoku;
+
 namespace compiletime
 {
 	// Type properties

@@ -29,10 +29,11 @@
 #include <vector>
 #include <type_traits>
 
-using namespace Sudoku;
 
 namespace SudokuTests::OptionsTest
 {
+using namespace ::Sudoku;
+
 namespace compiletime
 {
 	// Class properties
@@ -102,7 +103,7 @@ namespace compiletime
 
 	namespace impl
 	{
-		using namespace Sudoku::impl;
+		using namespace ::Sudoku::impl;
 
 		static_assert(exp2_(0U) == 0x1U);
 		static_assert(exp2_(1U) == 0x2U);

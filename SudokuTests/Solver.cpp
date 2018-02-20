@@ -31,10 +31,10 @@
 #include <type_traits>
 
 
-using namespace Sudoku;
-
 namespace SudokuTests::SolversTest
 {
+using namespace ::Sudoku;
+
 TEST(Solver, unique_in_section)
 {
 	// clang-format off
@@ -215,11 +215,11 @@ TEST(Solver, section_exclusive)
 		B[2][0] = set{"11001"};
 		B[2][1] = set{"11001"};
 		EXPECT_EQ(section_exclusive(B, B.block(2)), 4);
-		EXPECT_TRUE(B[3][0].all());    // self block
-		EXPECT_TRUE(B[3][1].all());    // self block
+		EXPECT_TRUE(B[3][0].all());     // self block
+		EXPECT_TRUE(B[3][1].all());     // self block
 		EXPECT_EQ(B[3][2].count(), 2U); // rest row
 		EXPECT_EQ(B[3][3].count(), 2U); // rest row
-		EXPECT_TRUE(B[0][1].all());    // rest col
+		EXPECT_TRUE(B[0][1].all());     // rest col
 		EXPECT_TRUE(B[0][2].all());
 		EXPECT_TRUE(B[0][3].all());
 		// same block, same col
@@ -227,11 +227,11 @@ TEST(Solver, section_exclusive)
 		B[0][1] = set{"00111"};
 		B[1][1] = set{"00111"};
 		EXPECT_EQ(section_exclusive(B, B.block(0)), 4);
-		EXPECT_TRUE(B[0][0].all());    // self block
+		EXPECT_TRUE(B[0][0].all());     // self block
 		EXPECT_EQ(B[0][1].count(), 2U); // self block
-		EXPECT_TRUE(B[0][2].all());    // rest row
-		EXPECT_TRUE(B[0][3].all());    // rest row
-		EXPECT_TRUE(B[1][0].all());    // self block
+		EXPECT_TRUE(B[0][2].all());     // rest row
+		EXPECT_TRUE(B[0][3].all());     // rest row
+		EXPECT_TRUE(B[1][0].all());     // self block
 		EXPECT_EQ(B[1][1].count(), 2U); // self block
 		EXPECT_TRUE(B[1][2].all());
 		EXPECT_TRUE(B[1][3].all());

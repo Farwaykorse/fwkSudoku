@@ -30,10 +30,10 @@
 #include <type_traits>
 
 
-using namespace Sudoku;
-
 namespace SudokuTests::SolversTest
 {
+using namespace ::Sudoku;
+
 TEST(Solver, find_locations)
 {
 	using set = std::bitset<5>;
@@ -241,7 +241,7 @@ TEST(Solver, appearance_once)
 	}
 }
 
-TEST(Solvers_, appearance_sets)
+TEST(Solver, appearance_sets)
 {
 	// Example as shown in implementation
 	Board<Options<9>, 3> board{};
