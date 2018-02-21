@@ -30,8 +30,14 @@ public:
 	explicit constexpr operator bool() const noexcept { return value_ != 0; }
 	// note: static_assert performs an explicit conversion to bool
 
-	constexpr bool operator==(const Value&) const noexcept;
-	constexpr bool operator<(const Value&) const noexcept;
+	friend constexpr bool operator==(const Value& a, const Value& b) noexcept
+	{ // Friend definitions: https://abseil.io/tips/99
+		return a.value_ == b.value_;
+	}
+	friend constexpr bool operator<(const Value& a, const Value& b) noexcept
+	{
+		return a.value_ < b.value_;
+	}
 
 private:
 	size_t value_{0};
@@ -105,17 +111,9 @@ inline constexpr Value to_Value(T val)
 }
 
 //===----------------------------------------------------------------------===//
-inline constexpr bool Value::operator==(const Value& right) const noexcept
-{
-	return value_ == right.value_;
-}
 inline constexpr bool operator!=(const Value& left, const Value& right) noexcept
 {
 	return !(left == right);
-}
-inline constexpr bool Value::operator<(const Value& right) const noexcept
-{
-	return value_ < right.value_;
 }
 inline constexpr bool operator<=(const Value& left, const Value& right) noexcept
 {
