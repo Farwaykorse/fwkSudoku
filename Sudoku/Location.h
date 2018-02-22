@@ -152,7 +152,7 @@ template<int N>
 inline constexpr bool Location_Block<N>::
 	operator<(const Location_Block<N>& right) const
 {
-	return ((id() < right.id()) ? true : (id_ < right.id_));
+	return (id() == right.id()) ? (id_ < right.id_) : id() < right.id();
 }
 
 template<int N>
