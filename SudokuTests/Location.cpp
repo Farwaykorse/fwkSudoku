@@ -35,21 +35,21 @@ namespace compiletime
 	// Type properties
 	using typeT = Location<3>;
 	static_assert(std::is_class_v<typeT>);
-	static_assert(!std::is_trivial_v<typeT>);
+	static_assert(not std::is_trivial_v<typeT>);
 	//! different between VC++ / Clang
-	// static_assert(!std::is_trivially_copyable_v<typeT>);
+	// static_assert(not std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
-	static_assert(!std::is_pod_v<typeT>);
-	static_assert(!std::is_empty_v<typeT>); // nothing virtual
-	static_assert(!std::is_polymorphic_v<typeT>);
-	static_assert(!std::is_final_v<typeT>);
-	static_assert(!std::is_abstract_v<typeT>);
+	static_assert(not std::is_pod_v<typeT>);
+	static_assert(not std::is_empty_v<typeT>); // nothing virtual
+	static_assert(not std::is_polymorphic_v<typeT>);
+	static_assert(not std::is_final_v<typeT>);
+	static_assert(not std::is_abstract_v<typeT>);
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
 	static_assert(std::is_nothrow_default_constructible_v<typeT>);
-	static_assert(!std::is_trivially_default_constructible_v<typeT>);
+	static_assert(not std::is_trivially_default_constructible_v<typeT>);
 
 	// copy constructor: typeT(const typeT&)
 	static_assert(std::is_copy_constructible_v<typeT>);
@@ -62,32 +62,38 @@ namespace compiletime
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
 	// copy assingment
-	static_assert(!std::is_copy_assignable_v<typeT>);
-	static_assert(!std::is_nothrow_copy_assignable_v<typeT>);
-	static_assert(!std::is_trivially_copy_assignable_v<typeT>);
+	static_assert(not std::is_copy_assignable_v<typeT>);
+	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);
+	static_assert(not std::is_trivially_copy_assignable_v<typeT>);
 
-	static_assert(!std::is_move_assignable_v<typeT>);
-	static_assert(!std::is_nothrow_move_assignable_v<typeT>);
-	static_assert(!std::is_trivially_move_assignable_v<typeT>);
+	static_assert(not std::is_move_assignable_v<typeT>);
+	static_assert(not std::is_nothrow_move_assignable_v<typeT>);
+	static_assert(not std::is_trivially_move_assignable_v<typeT>);
 
 	static_assert(std::is_destructible_v<typeT>);
 	static_assert(std::is_nothrow_destructible_v<typeT>);
 	static_assert(std::is_trivially_destructible_v<typeT>);
-	static_assert(!std::has_virtual_destructor_v<typeT>);
+	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-	static_assert(!std::is_swappable_v<typeT>);         // C++17
-	static_assert(!std::is_nothrow_swappable_v<typeT>); // C++17
+	static_assert(not std::is_swappable_v<typeT>);         // C++17
+	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
 	// other types
 	static_assert(std::is_constructible_v<typeT, int>);
+	static_assert(not std::is_constructible_v<int, typeT>);
 	static_assert(std::is_constructible_v<typeT, unsigned int>);
+	static_assert(std::is_constructible_v<typeT, char>);
+	static_assert(std::is_constructible_v<typeT, bool>);
+	static_assert(not std::is_constructible_v<bool, typeT>);
 	static_assert(std::is_constructible_v<typeT, size_t>);
+	static_assert(not std::is_constructible_v<size_t, typeT>);
 	static_assert(std::is_constructible_v<typeT, Location_Block<3>>);
-	static_assert(!std::is_constructible_v<typeT, Location_Block<2>>);
-	static_assert(!std::is_assignable_v<typeT, Location_Block<3>>);
-	static_assert(!std::is_assignable_v<typeT, int>);
+	static_assert(not std::is_constructible_v<typeT, Location_Block<2>>);
+	static_assert(not std::is_assignable_v<typeT, Location_Block<3>>);
+	static_assert(not std::is_assignable_v<typeT, int>);
 
-	static_assert(!std::is_swappable_with_v<typeT, Location_Block<3>>); // C++17
-	static_assert(!std::is_nothrow_swappable_with_v<typeT, Location_Block<3>>);
+	static_assert(not std::is_swappable_with_v<typeT, Location_Block<3>>);
+	static_assert(
+		not std::is_nothrow_swappable_with_v<typeT, Location_Block<3>>);
 } // namespace compiletime
 
 namespace Location_Block_compiletime
@@ -95,23 +101,21 @@ namespace Location_Block_compiletime
 	// Type properties
 	using typeT = Location_Block<3>;
 	static_assert(std::is_class_v<typeT>);
-	static_assert(!std::is_trivial_v<typeT>);
+	static_assert(not std::is_trivial_v<typeT>);
 	//! different between VC++ / Clang
-	// static_assert(!std::is_trivially_copyable_v<typeT>);
+	// static_assert(not std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
-	static_assert(!std::is_pod_v<typeT>);
-	// static_assert(std::has_unique_object_representations_v<typeT>); //C++17
-	// trivially_copyable same object representation
-	static_assert(!std::is_empty_v<typeT>); // nothing virtual
-	static_assert(!std::is_polymorphic_v<typeT>);
-	static_assert(!std::is_final_v<typeT>);
-	static_assert(!std::is_abstract_v<typeT>);
+	static_assert(not std::is_pod_v<typeT>);
+	static_assert(not std::is_empty_v<typeT>); // nothing virtual
+	static_assert(not std::is_polymorphic_v<typeT>);
+	static_assert(not std::is_final_v<typeT>);
+	static_assert(not std::is_abstract_v<typeT>);
 
 	// default constructor: typeT()
-	static_assert(!std::is_default_constructible_v<typeT>);
-	static_assert(!std::is_nothrow_default_constructible_v<typeT>);
-	static_assert(!std::is_trivially_default_constructible_v<typeT>);
+	static_assert(std::is_default_constructible_v<typeT>);
+	static_assert(std::is_nothrow_default_constructible_v<typeT>);
+	static_assert(not std::is_trivially_default_constructible_v<typeT>);
 
 	// copy constructor: typeT(const typeT&)
 	static_assert(std::is_copy_constructible_v<typeT>);
@@ -124,35 +128,31 @@ namespace Location_Block_compiletime
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
 	// copy assingment
-	static_assert(!std::is_copy_assignable_v<typeT>);
-	static_assert(!std::is_nothrow_copy_assignable_v<typeT>);
-	static_assert(!std::is_trivially_copy_assignable_v<typeT>);
+	static_assert(not std::is_copy_assignable_v<typeT>);
+	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);
+	static_assert(not std::is_trivially_copy_assignable_v<typeT>);
 
-	static_assert(!std::is_move_assignable_v<typeT>);
-	static_assert(!std::is_nothrow_move_assignable_v<typeT>);
-	static_assert(!std::is_trivially_move_assignable_v<typeT>);
+	static_assert(not std::is_move_assignable_v<typeT>);
+	static_assert(not std::is_nothrow_move_assignable_v<typeT>);
+	static_assert(not std::is_trivially_move_assignable_v<typeT>);
 
 	static_assert(std::is_destructible_v<typeT>);
 	static_assert(std::is_nothrow_destructible_v<typeT>);
 	static_assert(std::is_trivially_destructible_v<typeT>);
-	static_assert(!std::has_virtual_destructor_v<typeT>);
+	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-	static_assert(!std::is_swappable_v<typeT>);         // C++17
-	static_assert(!std::is_nothrow_swappable_v<typeT>); // C++17
+	static_assert(not std::is_swappable_v<typeT>);         // C++17
+	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
 	// other types
-	static_assert(!std::is_constructible_v<typeT, int>);
+	static_assert(not std::is_constructible_v<typeT, int>);
 	static_assert(std::is_constructible_v<typeT, Location<3>>);
-	static_assert(!std::is_constructible_v<typeT, Location_Block<2>>);
-	static_assert(!std::is_constructible_v<typeT, Location<2>>);
+	static_assert(not std::is_constructible_v<typeT, Location_Block<2>>);
+	static_assert(not std::is_constructible_v<typeT, Location<2>>);
 
-	static_assert(!std::is_assignable_v<typeT, Location<3>>);
-	static_assert(!std::is_assignable_v<typeT, Location_Block<2>>);
-	static_assert(!std::is_assignable_v<typeT, Location<2>>);
-	static_assert(!std::is_assignable_v<typeT, int>);
-
-	// static_assert(!std::is_swappable_with<typeT, Location<3>>::value, "++");
-	// //C++17  static_assert(!std::is_nothrow_swappable_with<typeT,
-	// Location<3>>::value, "++");	//C++17
+	static_assert(not std::is_assignable_v<typeT, Location<3>>);
+	static_assert(not std::is_assignable_v<typeT, Location_Block<2>>);
+	static_assert(not std::is_assignable_v<typeT, Location<2>>);
+	static_assert(not std::is_assignable_v<typeT, int>);
 } // namespace Location_Block_compiletime
 
 // Shared data used for all tests
@@ -177,63 +177,199 @@ protected:
 
 TEST(Location, Construction)
 {
+	static_assert(noexcept(Location<3>()));
+	static_assert(noexcept(Location<3>{}));
+	static_assert(noexcept(Location<2>()));
 	EXPECT_NO_THROW(Location<3>());
 	EXPECT_NO_THROW(Location<3>{});
 	EXPECT_NO_THROW(Location<3> LL2{});
 	EXPECT_NO_THROW(Location<2> LL3);
 
+	static_assert(noexcept(Location<3>(-171)));
+	static_assert(noexcept(Location<3>(-1))); // expected when past the begin
+	static_assert(noexcept(Location<3>(0)));  // begin
+	static_assert(noexcept(Location<3>(1)));
+	static_assert(noexcept(Location<3>(12)));
+	static_assert(noexcept(Location<3>(80))); // end
+	static_assert(noexcept(Location<3>(81))); // expected when past the end
+	static_assert(noexcept(Location<3>(92))); // two rows past the end
+	static_assert(noexcept(Location<3>(1091)));
 	EXPECT_NO_THROW(Location<3>(12));
+	EXPECT_NO_THROW(Location<3> L1(12));
+
+	static_assert(noexcept(Location<3>(-51, 7)));
+	static_assert(noexcept(Location<3>(1, -83)));
+	static_assert(noexcept(Location<3>(-1, 7)));
+	static_assert(noexcept(Location<3>(1, -1)));
+	static_assert(noexcept(Location<3>(0, 0)));
+	static_assert(noexcept(Location<3>(0, 1)));
+	static_assert(noexcept(Location<3>(1, 0)));
+	static_assert(noexcept(Location<3>(8, 1)));
+	static_assert(noexcept(Location<3>(1, 8)));
+	static_assert(noexcept(Location<3>(9, 1)));
+	static_assert(noexcept(Location<3>(1, 9)));
+	static_assert(noexcept(Location<3>(90, 1)));
+	static_assert(noexcept(Location<3>(1, 71)));
+	EXPECT_NO_THROW(Location<3>(1, 8));
+	EXPECT_NO_THROW(Location<3> L2(1, 8));
+
+	// move construct
+	EXPECT_NO_THROW(Location<3>(Location<3>(6)));
+	EXPECT_NO_THROW(Location<3> L3(Location<3>(6)));
+	static_assert(noexcept(Location<3>(Location<3>(6))));
+	constexpr Location<3> c2(Location<3>(6));
+	// copy construct
+	constexpr Location<3> c1(12);
+	static_assert(noexcept(Location<3>(c1)));
+	EXPECT_NO_THROW(Location<3>(L3));
+}
+
+TEST(Location, Construction_result)
+{ // depends on Location::element()
+	static_assert(noexcept(Location<3>(12).element()));
+	static_assert(Location<3>(12).element() == 12);
 	EXPECT_EQ(Location<3>(12).element(), 12);
+	static_assert(noexcept(Location<3>{51}.element()));
+	static_assert(Location<3>{12}.element() == 12);
 	EXPECT_EQ(Location<3>{12}.element(), 12);
 
-	EXPECT_NO_THROW(Location<3>(1, 8));
+	static_assert(Location<3>(1, 8).element() == 17);
+	static_assert(Location<3>{1, 8}.element() == 17);
 	EXPECT_EQ(Location<3>(1, 8).element(), 17);
 
-	EXPECT_NO_THROW(Location<3>(Location<3>(6)));
+	static_assert(Location<3>(Location<3>(6)).element() == 6);
 	EXPECT_EQ(Location<3>(Location<3>(6)).element(), 6);
+	static_assert(Location<3>(Location<3>{6}).element() == 6);
 	EXPECT_EQ(Location<3>(Location<3>{6}).element(), 6);
+	static_assert(Location<3>{Location<3>(6)}.element() == 6);
 	EXPECT_EQ(Location<3>{Location<3>(6)}.element(), 6);
+	static_assert(Location<3>{Location<3>{6}}.element() == 6);
 	EXPECT_EQ(Location<3>{Location<3>{6}}.element(), 6);
 
-	ASSERT_NO_THROW(Location<3> L1(12));
 	const Location<3> L1(12);
-	EXPECT_EQ(L1.element(), 12);
-	ASSERT_NO_THROW(Location<3> L2(1, 8));
+	constexpr Location<3> c1(12);
 	const Location<3> L2(1, 8);
-	EXPECT_EQ(L2.element(), 17);
-	ASSERT_NO_THROW([[maybe_unused]] Location<3> L3(Location<3>(6)));
+	constexpr Location<3> c2(1, 8);
+	EXPECT_EQ(L1.element(), 12);
+	static_assert(c1.element() == 12);
 	const Location<3> L3(Location<3>(6));
+	constexpr Location<3> c3(Location<3>(6));
 	EXPECT_EQ(L3.element(), 6);
+	EXPECT_EQ(c3.element(), 6);
+	static_assert(c3.element() == 6);
+
+	// copy construct
 	EXPECT_EQ(Location<3>(L3).element(), 6);
+	static_assert(Location<3>(c3).element() == 6);
 	EXPECT_EQ(Location<3>{L3}.element(), 6);
+	static_assert(Location<3>{c3}.element() == 6);
 }
-TEST(Location_Block, Construction)
-{
-	Location_Block<3> B1(8, 8);
-	EXPECT_EQ(B1.element(), 8);
+
+TEST(Location, Construction_Block)
+{ // depends on Location
+	static_assert(noexcept(Location_Block<3>()));
+	static_assert(noexcept(Location_Block<3>{}));
+	EXPECT_NO_THROW(Location_Block<3> L1{});
+	EXPECT_NO_THROW(Location_Block<3> LL1);
+	static_assert(noexcept(Location_Block<3>(Location<3>())));
+	static_assert(noexcept(Location_Block<2>(Location<2>())));
+	static_assert(noexcept(Location_Block<3>(Location<3>(-31))));
+	static_assert(noexcept(Location_Block<3>(Location<3>(-1))));
+	static_assert(noexcept(Location_Block<3>(Location<3>(0))));
+	static_assert(noexcept(Location_Block<3>(Location<3>(12))));
+	static_assert(noexcept(Location_Block<3>(Location<3>(80))));
+	static_assert(noexcept(Location_Block<3>(Location<3>(81))));
+	static_assert(noexcept(Location_Block<3>(Location<3>(981))));
+	EXPECT_NO_THROW(Location_Block<3> L2(Location<3>{}));
+	static_assert(noexcept(Location_Block<3>(-1, 0)));
+	static_assert(noexcept(Location_Block<3>(0, -1)));
+	static_assert(noexcept(Location_Block<3>(0, 0)));
+	static_assert(noexcept(Location_Block<3>(8, 0)));
+	static_assert(noexcept(Location_Block<3>(8, 8)));
+	static_assert(noexcept(Location_Block<3>(0, 8)));
+	static_assert(noexcept(Location_Block<3>(9, 0)));
+	static_assert(noexcept(Location_Block<3>(9, 9)));
+	static_assert(noexcept(Location_Block<3>(0, 9)));
+	static_assert(noexcept(Location_Block<3>(992, 9)));
+	EXPECT_NO_THROW(Location_Block<3> L3(0, 0));
+	static_assert(noexcept(Location_Block<3>(-1, 0, 0)));
+	static_assert(noexcept(Location_Block<3>(0, 0, 0)));
+	static_assert(noexcept(Location_Block<3>(0, 2, 0)));
+	static_assert(noexcept(Location_Block<3>(0, 2, 2)));
+	static_assert(noexcept(Location_Block<3>(0, 0, 2)));
+	static_assert(noexcept(Location_Block<3>(8, 0, 0)));
+	static_assert(noexcept(Location_Block<3>(8, 2, 0)));
+	static_assert(noexcept(Location_Block<3>(8, 2, 2)));
+	static_assert(noexcept(Location_Block<3>(8, 0, 2)));
+	static_assert(noexcept(Location_Block<3>(9, 0, 0)));
+	static_assert(noexcept(Location_Block<3>(5, 0, 3)));
+	static_assert(noexcept(Location_Block<3>(5, 3, 3)));
+	static_assert(noexcept(Location_Block<3>(5, 3, 0)));
+	EXPECT_NO_THROW(Location_Block<3> L4(0, 0, 0));
+
+	// move construct
+	static_assert(noexcept(Location_Block<3>(Location_Block<3>())));
+	EXPECT_NO_THROW(Location_Block<3>(Location_Block<3>(6, 3)));
+
+	// copy construct
+	constexpr Location_Block<3> c1{1, 3};
+	static_assert(noexcept(Location_Block<3>(c1)));
+	EXPECT_NO_THROW(Location_Block<3>(L3));
+
+	static_assert(noexcept(Location_Block<3>{Location<3>{12}}));
+	static_assert(noexcept(Location<3>{Location_Block<3>{4, 2}}));
+	ASSERT_NO_THROW(Location<3>(Location_Block<3>(1, 3)));
+}
+
+TEST(Location, Construction_result_Block)
+{ // check if initialized to correct value
+	static_assert(noexcept(Location_Block<3>(1, 4)));
+	static_assert(noexcept(Location_Block<3>(1, 4).element()));
+	static_assert(Location_Block<3>(1, 4).element() == 4);
 	EXPECT_EQ(Location_Block<3>(8, 8).element(), 8);
+	static_assert(noexcept(Location_Block<3>{2, 3}));
+	static_assert(Location_Block<3>{2, 3}.element() == 3);
 	EXPECT_EQ((Location_Block<3>{8, 8}.element()), 8);
-	Location_Block<3> B6{0, 0, 2};
-	EXPECT_EQ(B6.element(), 2);
+	constexpr Location_Block<3> c1{3, 7};
+	static_assert(noexcept(c1.element()));
+	static_assert(c1.element() == 7);
+	Location_Block<3> B1(7, 8);
+	EXPECT_EQ(B1.element(), 8);
+
+	static_assert(Location_Block<3>{1, 2, 0}.element() == 6);
 	EXPECT_EQ((Location_Block<3>{0, 0, 2}.element()), 2);
+	static_assert(Location_Block<3>{6, 1, 1}.element() == 4);
 	EXPECT_EQ(Location_Block<3>(0, 0, 2).element(), 2);
-	Location_Block<3> B2(B1);
-	EXPECT_EQ(B2.element(), 8) << "Copy constructor";
-	EXPECT_EQ(Location_Block<3>(B1).element(), 8) << "Copy constructor";
-	EXPECT_EQ(Location_Block<3>{B1}.element(), 8) << "Copy constructor";
-	Location_Block<3> B3 = B1;
-	EXPECT_EQ(B3.element(), 8) << "Copy";
+	constexpr Location_Block<3> c2{2, 0, 1};
+	static_assert(c2.element() == 1);
+	EXPECT_EQ(c2.element(), 1);
+	const Location_Block<3> B6{0, 0, 2};
+	EXPECT_EQ(B6.element(), 2);
+
+	static_assert(Location_Block<3>(Location_Block<3>(0, 2)).element() == 2);
 	Location_Block<3> B4(Location_Block<3>(0, 2));
 	EXPECT_EQ(B4.element(), 2) << "Move constructor";
 	EXPECT_EQ(Location_Block<3>(Location_Block<3>(0, 2)).element(), 2);
 	EXPECT_EQ(Location_Block<3>(Location_Block<3>{0, 2}).element(), 2);
 	EXPECT_EQ((Location_Block<3>{Location_Block<3>{0, 2}}.element()), 2);
 	EXPECT_EQ(Location_Block<3>{Location_Block<3>(0, 2)}.element(), 2);
+
+	static_assert(Location_Block<3>(c1).element() == 7);
+	static_assert(Location_Block<3>{c2}.element() == 1);
+	constexpr Location_Block<3> c3{c1};
+	static_assert(c3.element() == 7);
+	Location_Block<3> B2(B1);
+	EXPECT_EQ(B2.element(), 8) << "Copy constructor";
+	EXPECT_EQ(Location_Block<3>(B1).element(), 8) << "Copy constructor";
+	EXPECT_EQ(Location_Block<3>{B1}.element(), 8) << "Copy constructor";
+	Location_Block<3> B3 = B1;
+	EXPECT_EQ(B3.element(), 8) << "Copy";
 	Location_Block<3> B5 = Location_Block<3>(8, 8);
 	EXPECT_EQ(B5.element(), 8) << "Move";
 
 	// back and forth
-	ASSERT_NO_THROW(Location<3>(Location_Block<3>(1, 3)));
+	static_assert(Location_Block<3>(Location<3>{12}).element() == 3);
+	static_assert(Location<3>(Location_Block<3>{1, 3}).element() == 12);
 	EXPECT_EQ(Location_Block<3>{Location<3>{12}}.id(), 1);
 	EXPECT_EQ((Location<3>{Location_Block<3>{8, 8}}.element()), 80);
 	EXPECT_EQ(Location<3>(Location_Block<3>{8, 8}).element(), 80);
@@ -257,14 +393,130 @@ void SubProperties(Location<N> loc,
 // clang-format on
 TEST(Location, Properties)
 {
-	ASSERT_EQ(Location<3>{36}.element(), 36);
+	using Loc = Location<3>;
 
-	EXPECT_EQ(Location<3>{36}.row(), 4);
-	EXPECT_EQ(Location<3>{36}.col(), 0);
-	EXPECT_EQ(Location<3>{36}.block(), 3);
-	EXPECT_EQ(Location<3>{36}.block_row(), 1);
-	EXPECT_EQ(Location<3>{36}.block_col(), 0);
-	EXPECT_EQ(Location<3>{36}.block_elem(), 3);
+	ASSERT_EQ(Loc{36}.element(), 36);
+	static_assert(noexcept(Loc{-1}.element()));
+	static_assert(noexcept(Loc{0}.element()));
+	static_assert(noexcept(Loc{1}.element()));
+	static_assert(noexcept(Loc{80}.element()));
+	static_assert(noexcept(Loc{81}.element()));
+	static_assert(Loc{-1}.element() == -1);
+	static_assert(Loc{0}.element() == 0);
+	static_assert(Loc{8}.element() == 8);
+	static_assert(Loc{36}.element() == 36);
+	static_assert(Loc{80}.element() == 80);
+	static_assert(Loc{81}.element() == 81);
+	// sanity check: operator==(int, int)
+	static_assert(not(Loc{36}.element() == 35));
+	static_assert(!(Loc{36}.element() == 35));
+
+	EXPECT_EQ(Loc{36}.row(), 4);
+	static_assert(noexcept(Loc{-1}.row()));
+	static_assert(noexcept(Loc{0}.row()));
+	static_assert(noexcept(Loc{18}.row()));
+	static_assert(noexcept(Loc{80}.row()));
+	static_assert(noexcept(Loc{81}.row()));
+	static_assert(Loc{-9}.row() == -1);
+	static_assert(Loc{-8}.row() == -0);
+	static_assert(Loc{-1}.row() == -0);
+	static_assert(Loc{-1}.row() == 0); // tricky
+	static_assert(Loc{0}.row() == 0);
+	static_assert(Loc{8}.row() == 0);
+	static_assert(Loc{9}.row() == 1);
+	static_assert(Loc{36}.row() == 4);
+	static_assert(Loc{80}.row() == 8);
+	static_assert(Loc{81}.row() == 9);
+
+	EXPECT_EQ(Loc{36}.col(), 0);
+	static_assert(noexcept(Loc{-1}.col()));
+	static_assert(noexcept(Loc{0}.col()));
+	static_assert(noexcept(Loc{18}.col()));
+	static_assert(noexcept(Loc{80}.col()));
+	static_assert(noexcept(Loc{81}.col()));
+	static_assert(Loc{-9}.col() == -0);
+	static_assert(Loc{-8}.col() == -8);
+	static_assert(Loc{-1}.col() == -1);
+	static_assert(Loc{0}.col() == 0);
+	static_assert(Loc{1}.col() == 1);
+	static_assert(Loc{8}.col() == 8);
+	static_assert(Loc{9}.col() == 0);
+	static_assert(Loc{33}.col() == 6);
+	static_assert(Loc{80}.col() == 8);
+	static_assert(Loc{81}.col() == 0);
+
+	EXPECT_EQ(Loc{36}.block(), 3);
+	static_assert(noexcept(Loc{-1}.block()));
+	static_assert(noexcept(Loc{0}.block()));
+	static_assert(noexcept(Loc{18}.block()));
+	static_assert(noexcept(Loc{80}.block()));
+	static_assert(noexcept(Loc{81}.block()));
+	static_assert(Loc{-18}.block() == -0);
+	static_assert(Loc{-8}.block() == -2);
+	static_assert(Loc{-1}.block() == -0);
+	static_assert(Loc{-1}.block() == 0); // tricky
+	static_assert(Loc{0}.block() == 0);
+	static_assert(Loc{2}.block() == 0);
+	static_assert(Loc{3}.block() == 1);
+	static_assert(Loc{8}.block() == 2);
+	static_assert(Loc{18}.block() == 0);
+	static_assert(Loc{36}.block() == 3);
+	static_assert(Loc{80}.block() == 8);
+	static_assert(Loc{81}.block() == 9);
+
+	EXPECT_EQ(Loc{36}.block_row(), 1);
+	EXPECT_EQ(Loc{36}.block_col(), 0);
+	EXPECT_EQ(Loc{36}.block_elem(), 3);
+	static_assert(noexcept(Loc{-1}.block_row()));
+	static_assert(noexcept(Loc{0}.block_row()));
+	static_assert(noexcept(Loc{18}.block_row()));
+	static_assert(noexcept(Loc{80}.block_row()));
+	static_assert(noexcept(Loc{81}.block_row()));
+
+	static_assert(noexcept(Loc{-1}.block_col()));
+	static_assert(noexcept(Loc{0}.block_col()));
+	static_assert(noexcept(Loc{18}.block_col()));
+	static_assert(noexcept(Loc{80}.block_col()));
+	static_assert(noexcept(Loc{81}.block_col()));
+
+	static_assert(noexcept(Loc{-1}.block_elem()));
+	static_assert(noexcept(Loc{0}.block_elem()));
+	static_assert(noexcept(Loc{18}.block_elem()));
+	static_assert(noexcept(Loc{80}.block_elem()));
+	static_assert(noexcept(Loc{81}.block_elem()));
+
+	static_assert(Loc{-1}.block_row() == 0);
+	static_assert(Loc{-1}.block_col() == -1);
+	static_assert(Loc{-1}.block_elem() == -1);
+	static_assert(Loc{-18}.block() == -0); //
+	static_assert(Loc{-8}.block() == -2);  //
+	static_assert(Loc{-1}.block() == -0);  //
+	static_assert(Loc{-1}.block() == 0);   // tricky
+	static_assert(Loc{0}.block_row() == 0);
+	static_assert(Loc{0}.block_col() == 0);
+	static_assert(Loc{0}.block_elem() == 0);
+	static_assert(Loc{2}.block_row() == 0);
+	static_assert(Loc{2}.block_col() == 2);
+	static_assert(Loc{2}.block_elem() == 2);
+	static_assert(Loc{38}.block_row() == 1);
+	static_assert(Loc{38}.block_col() == 2);
+	static_assert(Loc{38}.block_elem() == 5);
+	static_assert(Loc{80}.block_row() == 2);
+	static_assert(Loc{80}.block_col() == 2);
+	static_assert(Loc{80}.block_elem() == 8);
+
+	// sanity check: inverse construction
+	static_assert(Loc(1, 2).row() == 1);
+	static_assert(Loc(1, 2).col() == 2);
+	static_assert(Loc(8, 7).row() == 8);
+	static_assert(Loc(7, 8).col() == 8);
+	static_assert(Loc(-1, 2).row() == 0);  // tricky
+	static_assert(Loc(-2, 2).row() == -1); //
+	static_assert(Loc(-3, 2).row() == -2); //
+	static_assert(Loc(1, -1).col() == 8);
+	// TODO consider throwing when a row() is requested for a negative id_
+	// This would effect: block(); block_row(); block_elem()
+	// And form Location_BLock: id(); element(); row()
 	{
 		SCOPED_TRACE("Location<3> loc{ 52 }");
 		SubProperties(Location<3>{52}, 52, 5, 7, 5, 7, 2, 1);
@@ -289,10 +541,7 @@ TEST(Location, Properties)
 		SCOPED_TRACE("Location<2> loc{ 15 }");
 		SubProperties(Location<2>{15}, 15, 3, 3, 3, 3, 1, 1);
 	}
-}
-TEST(Location, OutOfBounds)
-{
-	{
+	{ // out of bounds
 		SCOPED_TRACE("Location<2> loc{ 16 }");
 		SubProperties(Location<2>{16}, 16, 4, 0, 4, 0, 0, 0);
 	}
@@ -301,14 +550,115 @@ TEST(Location, OutOfBounds)
 		SubProperties(Location<3>{100}, 100, 11, 1, 9, 7, 2, 1);
 	}
 }
-TEST(Location_Block, Properties)
-{
-	EXPECT_EQ(Location_Block<3>(2, 6).id(), 2);
-	EXPECT_EQ(Location_Block<3>(2, 6).element(), 6);
-	EXPECT_EQ(Location_Block<3>(2, 6).row(), 2);
-	EXPECT_EQ(Location_Block<3>(2, 6).col(), 0);
 
-	const Location_Block<3> B1(2, 6);
+TEST(Location, Properties_Block)
+{
+	using LB = Location_Block<3>;
+
+	// Location_Block::id()
+	EXPECT_EQ(LB(2, 6).id(), 2);
+	static_assert(noexcept(LB(-1, 4).id()));
+	static_assert(noexcept(LB(0, -1).id()));
+	static_assert(noexcept(LB(0, 0).id()));
+	static_assert(noexcept(LB(1, 4).id()));
+	static_assert(noexcept(LB(8, 8).id()));
+	static_assert(noexcept(LB(9, 8).id()));
+	static_assert(noexcept(LB(8, 9).id()));
+	static_assert(LB(-1, 4).id() == 2); // tricky
+	static_assert(LB(0, -1).id() == 0); //
+	static_assert(LB(0, 0).id() == 0);
+	static_assert(LB(1, 4).id() == 1);
+	static_assert(LB(8, 8).id() == 8);
+	static_assert(LB(9, 8).id() == 9);
+	static_assert(LB(8, 9).id() == 11); // tricky
+
+	// Location_Block::element()
+	EXPECT_EQ(LB(2, 6).element(), 6);
+	static_assert(noexcept(LB(-1, 4).element()));
+	static_assert(noexcept(LB(0, -1).element()));
+	static_assert(noexcept(LB(0, 0).element()));
+	static_assert(noexcept(LB(1, 4).element()));
+	static_assert(noexcept(LB(8, 8).element()));
+	static_assert(noexcept(LB(9, 8).element()));
+	static_assert(noexcept(LB(8, 9).element()));
+	static_assert(LB(-1, 0).element() == 0);
+	static_assert(LB(-1, 1).element() == -2); // tricky
+	static_assert(LB(-1, 2).element() == -1); //
+	static_assert(LB(-1, 3).element() == 0);  //
+	static_assert(LB(-1, 4).element() == 1);  //
+	static_assert(LB(0, -1).element() == -1);
+	static_assert(LB(0, -5).element() == -5);
+	static_assert(LB(0, 0).element() == 0);
+	static_assert(LB(1, 4).element() == 4);
+	static_assert(LB(8, 8).element() == 8);
+	static_assert(LB(9, 8).element() == 8);
+	static_assert(LB(8, 9).element() == 0); // overflow
+
+	// Location_Block::row()
+	EXPECT_EQ(LB(2, 6).row(), 2);
+	EXPECT_EQ(LB(2, 2, 1).row(), 2);
+	static_assert(noexcept(LB(1, 4).row()));
+	static_assert(noexcept(LB(-1, 4).row()));
+	static_assert(noexcept(LB(0, -1).row()));
+	static_assert(noexcept(LB(0, 0).row()));
+	static_assert(noexcept(LB(1, 4).row()));
+	static_assert(noexcept(LB(8, 8).row()));
+	static_assert(noexcept(LB(9, 8).row()));
+	static_assert(noexcept(LB(8, 9).row()));
+	static_assert(LB(-3, 0, 0).row() == 0);
+	static_assert(LB(-1, 0, 0).row() == 0);
+	static_assert(LB(-1, 1, 0).row() == 0); // tricky
+	static_assert(LB(-1, 2, 0).row() == 1); //
+	static_assert(LB(-1, 2, 2).row() == 1); //
+	static_assert(LB(0, -1, 0).row() == -1);
+	static_assert(LB(0, -2, 0).row() == -2);
+	static_assert(LB(0, -1, -1).row() == -1);
+	static_assert(LB(0, 0, -1).row() == 0); // tricky
+	static_assert(LB(0, 0, 0).row() == 0);
+	static_assert(LB(0, 0, 2).row() == 0);
+	static_assert(LB(0, 0, 3).row() == 1);  // overflow
+	static_assert(LB(0, 2, -1).row() == 1); //
+	static_assert(LB(0, 2, 0).row() == 2);
+	static_assert(LB(0, 2, 2).row() == 2);
+	static_assert(LB(0, 2, 3).row() == 0); // overflow
+	static_assert(LB(0, 3, 0).row() == 0); //
+
+	// Location_Block::col()
+	EXPECT_EQ(LB(2, 6).col(), 0);
+	static_assert(noexcept(LB(1, 4).col()));
+	static_assert(noexcept(LB(1, 4).col()));
+	static_assert(noexcept(LB(-1, 4).col()));
+	static_assert(noexcept(LB(0, -1).col()));
+	static_assert(noexcept(LB(0, 0).col()));
+	static_assert(noexcept(LB(1, 4).col()));
+	static_assert(noexcept(LB(8, 8).col()));
+	static_assert(noexcept(LB(9, 8).col()));
+	static_assert(noexcept(LB(8, 9).col()));
+	static_assert(LB(-3, 0, 0).col() == 0);
+	static_assert(LB(-3, 0, 1).col() == -2); // tricky
+	static_assert(LB(-3, 0, 2).col() == -1); // tricky
+	static_assert(LB(-1, 0, 0).col() == 0);
+	static_assert(LB(-1, 1, 0).col() == 0);
+	static_assert(LB(-1, 2, -1).col() == 2); // overflow
+	static_assert(LB(-1, 2, 0).col() == 0);
+	static_assert(LB(-1, 2, 2).col() == 2);
+	static_assert(LB(-1, 2, 3).col() == 0); // overflow
+	static_assert(LB(0, -1, 0).col() == 0);
+	static_assert(LB(0, -2, 0).col() == 0);
+	static_assert(LB(0, -1, -1).col() == -1); // tricky
+	static_assert(LB(0, -1, 2).col() == -1);  // tricky
+	static_assert(LB(0, -1, 3).col() == 0);   // tricky
+	static_assert(LB(0, 0, -1).col() == -1);  // tricky
+	static_assert(LB(0, 0, 0).col() == 0);
+	static_assert(LB(0, 0, 2).col() == 2);
+	static_assert(LB(0, 0, 3).col() == 0);  // overflow
+	static_assert(LB(0, 2, -1).col() == 2); // overflow
+	static_assert(LB(0, 2, 0).col() == 0);
+	static_assert(LB(0, 2, 2).col() == 2);
+	static_assert(LB(0, 2, 3).col() == 0); // overflow
+	static_assert(LB(0, 3, 0).col() == 0);
+
+	const LB B1(2, 6);
 	EXPECT_EQ(B1.id(), 2);
 	EXPECT_EQ(B1.element(), 6);
 	EXPECT_EQ(B1.row(), 2);
@@ -320,7 +670,7 @@ TEST(Location_Block, Properties)
 	EXPECT_EQ(L1.block_row(), B1.row());
 	EXPECT_EQ(L1.block_col(), B1.col());
 
-	const Location_Block<3> B2(2, 1, 0);
+	const LB B2(2, 1, 0);
 	EXPECT_EQ(B2.id(), 2);
 	EXPECT_EQ(B2.element(), 3);
 	EXPECT_EQ(B2.row(), 1);
@@ -335,105 +685,200 @@ TEST(Location_Block, Properties)
 
 TEST(Location, Comparisson)
 {
-	EXPECT_EQ(Location<3>(4), Location<3>(4)) << "verifies a == b";
-	EXPECT_FALSE(Location<3>(0) == Location<3>(13));
-	EXPECT_NE(Location<3>(0), Location<3>(13)) << "verifies a != b";
-	EXPECT_LT(Location<3>(0, 5), Location<3>(3, 2)) << "verifies a < b";
-	EXPECT_FALSE(Location<3>(80) < Location<3>(8, 3));
-	// TODO EXPECT_LE(Location<3>(3), Location<3>(4))	<< "verifies a <= b";
-	// EXPECT_LE(Location<3>(4), Location<3>(4, 0))	<< "verifies a <= b";
-	// EXPECT_FALSE(Location<3>(80) <= Location<3>(0));
-	// TODO EXPECT_GT(Location<3>(12), Location<3>(9))	<< "verifies a > b";
-	// EXPECT_FALSE(Location<3>(8) > Location<3>(19));
-	// TODO EXPECT_GE(Location<3>(3), Location<3>(4))	<< "verifies a >= b";
-	// EXPECT_GE(Location<3>(3), Location<3>(3))		<< "verifies a >= b";
-	// EXPECT_FALSE(Location<3>(8) >= Location<3>(19));
+	using Loc = Location<3>;
+
+	// operator==(Location, Location)
+	static_assert(noexcept(Loc(1) == Loc(3)));
+	static_assert(noexcept(Loc(1) == Loc(-3)));
+	static_assert(noexcept(Loc(0) == Loc(94)));
+	static_assert(noexcept(Loc(0) == Loc(-94)));
+	static_assert(noexcept(Loc(1, 4) == Loc(3)));
+	EXPECT_EQ(Loc(4), Loc(4)) << "verifies a == b";
+	static_assert(Loc(4) == Loc{4});
+	static_assert(Loc(0, 0) == Loc{0});
+	static_assert(Loc(29) == Loc{3, 2});
+	static_assert(Loc(3, 2) == Loc{3, 2});
+	static_assert(not(Loc(14) == Loc{0}));
+	static_assert(not(Loc(1) == Loc(12)));
+	static_assert(not(Loc(1, 0) == Loc(12)));
+	static_assert(not(Loc(1, 0) == Loc(1, 2)));
+	EXPECT_FALSE(Loc(0) == Loc(13));
+
+	// operator!=(Location, Location)
+	static_assert(noexcept(Loc(1) != Loc(2)));
+	static_assert(noexcept(Loc(1) != Loc(1)));
+	static_assert(Loc(1) != Loc(2));
+	static_assert(not(Loc(1) != Loc(1)));
+	static_assert(Loc(0) != Loc(81));
+	EXPECT_NE(Loc(0), Loc(13)) << "verifies a != b";
+
+	// operator<(Location, Location)
+	static_assert(noexcept(Loc(1) < Loc(3)));
+	static_assert(noexcept(Loc(1) < Loc(1)));
+	static_assert(noexcept(Loc(1, 0) < Loc(1, 8)));
+	static_assert(noexcept(Loc(8, 0) < Loc(1, 8)));
+	static_assert(Loc(1) < Loc(3));
+	static_assert(Loc(8) < Loc(72));
+	static_assert(Loc(-1) < Loc(0));
+	static_assert(not(Loc(0) < Loc(0)));
+	static_assert(not(Loc(80) < Loc(80)));
+	static_assert(not(Loc(80) < Loc(0)));
+	EXPECT_LT(Loc(0, 5), Loc(3, 2)) << "verifies a < b";
+	EXPECT_FALSE(Loc(80) < Loc(8, 3));
+
+	// operator<=(Location, Location)
+	static_assert(noexcept(Loc(1) <= Loc(-3)));
+	static_assert(noexcept(Loc(1) <= Loc(3)));
+	static_assert(noexcept(Loc(3) <= Loc(3)));
+	static_assert(noexcept(Loc(18) <= Loc(2)));
+	static_assert(noexcept(Loc(112) <= Loc(92)));
+	static_assert(Loc(1) <= Loc(3));
+	static_assert(Loc(3) <= Loc(3));
+	static_assert(not(Loc(4) <= Loc(3)));
+	EXPECT_LE(Loc(3), Loc(4)) << "verifies a <= b";
+	EXPECT_LE(Loc(4), Loc(4, 0)) << "verifies a <= b";
+	EXPECT_FALSE(Loc(80) <= Loc(0));
+
+	// operator>=(Location, Location)
+	static_assert(noexcept(Loc(1) >= Loc(-3)));
+	static_assert(noexcept(Loc(1) >= Loc(3)));
+	static_assert(noexcept(Loc(3) >= Loc(3)));
+	static_assert(noexcept(Loc(18) >= Loc(2)));
+	static_assert(noexcept(Loc(112) >= Loc(92)));
+	static_assert(Loc(4) >= Loc(3));
+	static_assert(Loc(5) >= Loc(5));
+	static_assert(not(Loc(0) >= Loc(8)));
+	EXPECT_GE(Loc(5), Loc(4)) << "verifies a >= b";
+	EXPECT_GE(Loc(3), Loc(3)) << "verifies a >= b";
+	EXPECT_FALSE(Loc(8) >= Loc(19));
+
+	// operator>(Location, Location)
+	static_assert(noexcept(Loc(1) > Loc(-3)));
+	static_assert(noexcept(Loc(1) > Loc(3)));
+	static_assert(noexcept(Loc(3) > Loc(3)));
+	static_assert(noexcept(Loc(18) > Loc(2)));
+	static_assert(noexcept(Loc(112) > Loc(92)));
+	static_assert(Loc(4) > Loc(3));
+	static_assert(not(Loc(5) > Loc(5)));
+	static_assert(not(Loc(0) > Loc(8)));
+	EXPECT_GT(Loc(12), Loc(9)) << "verifies a > b";
+	EXPECT_FALSE(Loc(8) > Loc(19));
 }
-TEST(Location_Block, Comparisson)
-{
-	EXPECT_EQ(Location_Block<3>(0, 0), Location_Block<3>(0, 0, 0))
-		<< "verifies a == b";
-	EXPECT_FALSE(Location_Block<3>(4, 3) == Location_Block<3>(4, 4));
-	// TODO EXPECT_NE(Location_Block<3>(0, 0), Location_Block<3>(0, 13)) <<
-	// "verifies a != b";  EXPECT_FALSE(Location_Block<3>(4, 4) !=
-	// Location_Block<3>(4, 4));
-	EXPECT_LT(Location_Block<3>(0, 5), Location_Block<3>(3, 2))
-		<< "verifies a < b";
-	EXPECT_FALSE(Location_Block<3>(0, 5) < Location_Block<3>(0, 2));
-	EXPECT_FALSE(Location_Block<3>(8, 2, 2) < Location_Block<3>(8, 8));
 
-	EXPECT_EQ(Location_Block<3>(0, 0), Location<3>(0));
-	EXPECT_EQ(Location<3>(1), Location_Block<3>(0, 1));
+TEST(Location, Comparisson_Block)
+{
+	using LB = Location_Block<3>;
+
+	// operator==(Location_Block, Location_Block)
+	static_assert(noexcept(LB(3, 0) == LB(3, 0)));
+	static_assert(noexcept(LB(-1, 0) == LB(-1, 0)));
+	static_assert(noexcept(LB(-1, 0) == LB(0, 0)));
+	static_assert(noexcept(LB(1, 0) == LB(-3, 0)));
+	static_assert(noexcept(LB(0, 0) == LB(94, 0)));
+	static_assert(noexcept(LB(0, 0) == LB(-94, 1)));
+	static_assert(noexcept(LB(1, 4) == LB(1, 1, 1)));
+	EXPECT_EQ(LB(4, 0), LB(4, 0));
+	static_assert(LB(4, 2) == LB{4, 2});
+	static_assert(LB(3, 0) == LB(0, 9));
+	static_assert(not(LB(12, 0) == LB{1, 0}));
+	EXPECT_FALSE(LB(0, 1) == LB(3, 1));
+	static_assert(LB(2, 7) == LB(2, 2, 1));
+	EXPECT_EQ(LB(0, 0), LB(0, 0, 0));
+
+	// operator!=(Location_Block, Location_Block)
+	static_assert(noexcept(LB(1, 1) != LB(2, 1)));
+	static_assert(noexcept(LB(1, 1) != LB(1, 1)));
+	static_assert(LB(1, 2) != LB(2, 1));
+	static_assert(not(LB(0, 1) != LB(0, 0, 1)));
+	static_assert(LB(0, 0) != LB(8, 8));
+	EXPECT_NE(LB(0, 0), LB(0, 13));
+	EXPECT_FALSE(LB(4, 4) != LB(4, 4));
+
+	// operator<(Location_Block, Location_Block)
+	static_assert(noexcept(LB(0, 5) < LB(1, 8)));
+	static_assert(noexcept(LB(0, 5) < LB(0, 5)));
+	static_assert(noexcept(LB(-1, 0) < LB(0, 0)));
+	static_assert(noexcept(LB(1, -1) < LB(0, 0)));
+	static_assert(noexcept(LB(1, 1) < LB(-1, 0)));
+	static_assert(noexcept(LB(1, 1) < LB(1, -1)));
+	static_assert(LB(-1, 0) < LB(0, 0));
+	static_assert(LB(0, -1) < LB(0, 0));
+	static_assert(LB(0, 0) < LB(0, 1));
+	static_assert(not(LB(0, 1) < LB(0, 1)));
+	static_assert(not(LB(0, 1) < LB(0, 0)));
+	static_assert(LB(0, 0) < LB(1, 0));
+	static_assert(not(LB(1, 0) < LB(1, 0)));
+	static_assert(not(LB(1, 0) < LB(0, 0)));
+	static_assert(LB(0, 0) < LB(8, 8));
+	static_assert(LB(0, 0) < LB(9, 0));
+	static_assert(LB(1, 0) < LB(0, 9));
+	static_assert(LB(1, 1, 2) < LB(2, 2, 2));
+	static_assert(not(LB(2, 2, 2) < LB(1, 1, 2)));
+	static_assert(LB(1, 2, 1) < LB(2, 1, 2));
+	static_assert(not(LB(2, 1, 2) < LB(1, 2, 1)));
+	static_assert(not(LB(3, 0) < LB(0, 9)));
+	static_assert(not(LB(0, 9) < LB(3, 0)));
+	static_assert(not(LB(1, 0) < LB(0, 8)));
+	static_assert(LB(1, 0) < LB(0, 9));
+	EXPECT_LT(LB(0, 5), LB(3, 2)) << "verifies a < b";
+	EXPECT_FALSE(LB(0, 5) < LB(0, 2));
+	EXPECT_FALSE(LB(8, 2, 2) < LB(8, 8));
+
+	// operator<=
+	static_assert(noexcept(LB(8, 3) <= LB(7, 3)));
+	static_assert(noexcept(LB(7, 3) <= LB(7, 3)));
+	static_assert(not(LB(8, 3) <= LB(7, 3)));
+	static_assert(not(LB(7, 3) <= LB(7, 2)));
+	static_assert(LB(7, 3) <= LB(7, 3));
+	static_assert(LB(7, 3) <= LB(7, 4));
+	static_assert(LB(6, 4) <= LB(7, 4));
+
+	// operator>=
+	static_assert(noexcept(LB(8, 3) >= LB(7, 3)));
+	static_assert(noexcept(LB(7, 3) >= LB(7, 3)));
+	static_assert(not(LB(8, 3) >= LB(8, 8)));
+	static_assert(not(LB(7, 3) >= LB(7, 4)));
+	static_assert(LB(2, 5) >= LB(2, 5));
+	static_assert(LB(2, 7) >= LB(2, 5));
+	static_assert(LB(5, 4) >= LB(2, 4));
+
+	// operator>
+	static_assert(noexcept(LB(8, 3) > LB(7, 3)));
+	static_assert(noexcept(LB(7, 3) > LB(7, 3)));
+	static_assert(not(LB(8, 3) > LB(8, 8)));
+	static_assert(not(LB(7, 3) > LB(7, 4)));
+	static_assert(LB(2, 5) > LB(2, 3));
+	static_assert(LB(2, 7) > LB(2, 5));
+	static_assert(LB(5, 4) > LB(2, 4));
 }
 
-TEST(Location, is_constexpr)
-{
-	// noexcept is always true for a constant expression.
-	// therefor it can be used to check if a particular invocation takes the
-	// constexpr branch
-	EXPECT_TRUE(noexcept(Location<3>()));
-	EXPECT_TRUE(noexcept(Location<3>{}));
-	EXPECT_TRUE(noexcept(Location<3>{5}));
-	EXPECT_TRUE(noexcept(Location<3>{5, 3}));
-	EXPECT_TRUE(noexcept(Location<3>().element()));
-	EXPECT_TRUE(noexcept(Location<3>(0).element()));
-	EXPECT_TRUE(noexcept(Location<3>(1).element()));
-	EXPECT_TRUE(noexcept(Location<3>(2).element()));
-	EXPECT_TRUE(noexcept(Location<3>(79).element()));
-	EXPECT_TRUE(noexcept(Location<3>(2, 7).element()));
-	EXPECT_TRUE(noexcept(Location<3>(79).row()));
-	EXPECT_TRUE(noexcept(Location<3>(79).col()));
-	EXPECT_TRUE(noexcept(Location<3>(79).block_row()));
-	EXPECT_TRUE(noexcept(Location<3>(80).block_col()));
-	EXPECT_TRUE(noexcept(Location<3>(80).block_elem()));
-	EXPECT_TRUE(noexcept(Location<3>() == Location<3>(0)));
-	EXPECT_TRUE(noexcept(Location<3>() != Location<3>(0)));
-	EXPECT_TRUE(noexcept(Location<3>() < Location<3>(0)));
+TEST(Location, Comparisson_Location_and_Block)
+{ // Compare Location with Location_Block
+	using LB = Location_Block<3>;
 
-	EXPECT_TRUE(noexcept(Location<2>().element()));
-	EXPECT_FALSE(noexcept(Location<4>().element()));
+	// operator==
+	static_assert(noexcept(LB(1, 4) == Location<3>(2)));
+	static_assert(noexcept(Location<3>(2) == LB(1, 4)));
+	static_assert(noexcept(LB(1, 4) == Location<3>(1, 4)));
+	static_assert(noexcept(Location<3>(1, 4) == LB(1, 4)));
+	static_assert(LB(0, 0) == Location<3>(0));
+	static_assert(Location<3>(0) == LB(0, 0));
+	static_assert(LB(0, 0, 0) == Location<3>(0));
+	static_assert(Location<3>(0) == LB(0, 0, 0));
+	static_assert(LB(3, 3) == Location<3>(4, 0));
+	static_assert(Location<3>(4, 0) == LB(3, 3));
+	static_assert(not(LB{1, 1} == Location<3>{1, 1}));
+	static_assert(not(Location<3>{1, 1} == LB{1, 1}));
+	EXPECT_EQ(LB(0, 0), Location<3>(0));
+	EXPECT_EQ(Location<3>(1), LB(0, 1));
 
-	// not precalculated
-	Location<3> L0{};
-	EXPECT_FALSE(noexcept(L0.element()));
-	EXPECT_FALSE(noexcept(L0.row()));
-	EXPECT_FALSE(noexcept(L0.col()));
-	EXPECT_FALSE(noexcept(L0.block()));
-	EXPECT_FALSE(noexcept(L0.block_row()));
-	EXPECT_FALSE(noexcept(L0.block_col()));
-	EXPECT_FALSE(noexcept(L0.block_elem()));
-
-	EXPECT_FALSE(noexcept(Location<5>().element()));
-}
-TEST(Location_Block, is_constexpr)
-{
-	EXPECT_TRUE(noexcept(Location_Block<3>{Location<3>(12)}));
-	EXPECT_TRUE(noexcept(Location_Block<3>{5, 3}));
-	EXPECT_TRUE(noexcept(Location_Block<3>{5, 3, 2}));
-	EXPECT_TRUE(noexcept(Location_Block<3>{5, 3}.id()));
-	EXPECT_TRUE(noexcept(Location_Block<3>{5, 3}.element()));
-	EXPECT_TRUE(noexcept(Location_Block<3>{5, 3}.row()));
-	EXPECT_TRUE(noexcept(Location_Block<3>{5, 3}.col()));
-	EXPECT_TRUE(noexcept(Location_Block<3>(0, 1) == Location_Block<3>(0, 2)));
-	EXPECT_TRUE(noexcept(Location_Block<3>(0, 2) < Location_Block<3>(0, 2)));
-
-	EXPECT_TRUE(noexcept(Location<3>(Location_Block<3>{5, 3}).element()));
-	EXPECT_TRUE(noexcept(Location_Block<3>(0, 2) == Location<3>(0)));
-	EXPECT_TRUE(noexcept(Location<3>() == Location_Block<3>(0, 2)));
-
-	// not precalculated
-	const Location<3> L0{};
-	EXPECT_FALSE(noexcept(Location_Block<3>(L0)));
-	const Location_Block<3> B0{L0};
-	EXPECT_FALSE(noexcept(B0.id()));
-	EXPECT_FALSE(noexcept(B0.element()));
-	EXPECT_FALSE(noexcept(B0.row()));
-	EXPECT_FALSE(noexcept(B0.col()));
-	const Location_Block<3> B1{2, 4};
-	EXPECT_FALSE(noexcept(B1.id()));
-	EXPECT_FALSE(noexcept(B1.element()));
-	EXPECT_FALSE(noexcept(B1.row()));
-	EXPECT_FALSE(noexcept(B1.col()));
+	// operator!=
+	static_assert(noexcept(LB{1, 4} != Location<3>(12)));
+	static_assert(noexcept(Location<3>(12) != LB{1, 4}));
+	static_assert(noexcept(LB{8, 8} != Location<3>(80)));
+	static_assert(noexcept(Location<3>(80) != LB{8, 8}));
+	static_assert(LB{1, 1} != Location<3>{1, 1});
+	static_assert(Location<3>{1, 1} != LB{1, 1});
 }
 
 //===----------------------------------------------------------------------===//
@@ -449,6 +894,7 @@ TEST(Location_Utilities, Size_definitions)
 	EXPECT_EQ(elem_size<4>, 16);
 	EXPECT_EQ(full_size<4>, 256);
 }
+
 TEST(Location_Utilities, is_valid)
 {
 	EXPECT_FALSE(is_valid(Location<2>(-1)));
@@ -487,6 +933,7 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_FALSE(is_valid(list2{L(16)}));
 	EXPECT_FALSE(is_valid(list2{L(-6)}));
 }
+
 TEST(Location_Utilities, is_same_section)
 {
 	EXPECT_TRUE(is_same_row(Location<3>(0), Location<3>(8)));
@@ -560,6 +1007,7 @@ TEST(Location_Utilities, is_same_section)
 	EXPECT_TRUE(intersect_block(B1.col(0), L(11)));
 	EXPECT_FALSE(intersect_block(B1.col(8), L(2)));
 }
+
 TEST(Location_Utilities, get_same_section)
 {
 	std::vector<Location<3>> list1{};
@@ -583,6 +1031,7 @@ TEST(Location_Utilities, get_same_section)
 		<< "length";
 	EXPECT_EQ(get_same_row(Location<3>(0), clist1), list1);
 }
+
 TEST(Location_Utilities, is_constexpr)
 {
 	EXPECT_TRUE(noexcept(is_valid(Location<2>(10))));
