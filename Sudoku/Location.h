@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Size.h"
+#include <type_traits> // is_signed
 
 
 namespace Sudoku
@@ -18,6 +19,10 @@ class Location
 	using self_type       = Location;
 	using value_type      = int;
 	using difference_type = int;
+
+	// prefere signed integers for calculations
+	static_assert(std::is_signed_v<decltype(Size::base)>);
+	static_assert(std::is_signed_v<decltype(Size::elem)>);
 
 	static constexpr int location(int row, int col) noexcept
 	{
@@ -68,6 +73,9 @@ class Location_Block
 
 	using Size     = Size<N>;
 	using Location = Location<N>;
+
+	// prefere signed integers for calculations
+	static_assert(std::is_signed_v<decltype(Size::base)>);
 
 	static constexpr int block_elem(int row, int col) noexcept
 	{
