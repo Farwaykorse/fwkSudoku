@@ -66,7 +66,11 @@ public:
 	} // default [0,9)
 
 	// comparison
-	constexpr bool operator==(const Location&) const noexcept;
+	friend constexpr bool
+		operator==(const Location& a, const Location& b) noexcept
+	{ // Friend definitions: abseil.io/tips/99
+		return a.id_ == b.id_;
+	}
 
 private:
 	const int id_{};
@@ -170,13 +174,6 @@ constexpr bool
 
 //===----------------------------------------------------------------------===//
 // definitions
-
-template<int N>
-inline constexpr bool Location<N>::operator==(const Location<N>& right) const
-	noexcept
-{
-	return id_ == right.id_;
-}
 
 template<int N>
 constexpr bool operator==(
