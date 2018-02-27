@@ -215,9 +215,8 @@ TEST(Location, Construction)
 
 	// move construct
 	EXPECT_NO_THROW(Location<3>(Location<3>(6)));
-	EXPECT_NO_THROW(Location<3> L3(Location<3>(6)));
+	EXPECT_NO_THROW([[maybe_unused]] Location<3> L3(Location<3>(6)));
 	static_assert(noexcept(Location<3>(Location<3>(6))));
-	constexpr Location<3> c2(Location<3>(6));
 	// copy construct
 	constexpr Location<3> c1(12);
 	static_assert(noexcept(Location<3>(c1)));
@@ -884,19 +883,45 @@ TEST(Location, Comparisson_Location_and_Block)
 //===----------------------------------------------------------------------===//
 TEST(Location_Utilities, Size_definitions)
 {
+	static_assert(base_size<2> == 2);
+	static_assert(elem_size<2> == 4);
+	static_assert(full_size<2> == 16);
 	EXPECT_EQ(base_size<2>, 2);
 	EXPECT_EQ(elem_size<2>, 4);
 	EXPECT_EQ(full_size<2>, 16);
+	static_assert(base_size<3> == 3);
+	static_assert(elem_size<3> == 9);
+	static_assert(full_size<3> == 81);
 	EXPECT_EQ(base_size<3>, 3);
 	EXPECT_EQ(elem_size<3>, 9);
 	EXPECT_EQ(full_size<3>, 81);
+	static_assert(base_size<4> == 4);
+	static_assert(elem_size<4> == 16);
+	static_assert(full_size<4> == 256);
 	EXPECT_EQ(base_size<4>, 4);
 	EXPECT_EQ(elem_size<4>, 16);
 	EXPECT_EQ(full_size<4>, 256);
+
+	valid_dimensions<2>();
+	valid_dimensions<3>();
+	valid_dimensions<4>();
 }
 
 TEST(Location_Utilities, is_valid)
 {
+	static_assert(noexcept(is_valid(Location<2>(-1))));
+	static_assert(noexcept(is_valid(Location<2>(0))));
+	static_assert(noexcept(is_valid(Location<2>(15))));
+	static_assert(noexcept(is_valid(Location<2>(16))));
+	static_assert(noexcept(is_valid(Location<2>(18))));
+	static_assert(noexcept(is_valid(Location<3>(81))));
+	static_assert(not(is_valid(Location<2>(-1))));
+	static_assert(is_valid(Location<2>(0)));
+	static_assert(is_valid(Location<2>(15)));
+	static_assert(not(is_valid(Location<2>(16))));
+	static_assert(is_valid(Location<3>(16)));
+	static_assert(is_valid(Location<3>(80)));
+	static_assert(not(is_valid(Location<3>(81))));
 	EXPECT_FALSE(is_valid(Location<2>(-1)));
 	EXPECT_TRUE(is_valid(Location<2>(0)));
 	EXPECT_TRUE(is_valid(Location<2>(1)));
@@ -906,21 +931,16 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_TRUE(is_valid(Location<3>(80)));
 	EXPECT_FALSE(is_valid(Location<3>(81)));
 
-	EXPECT_FALSE(is_valid_size<2>(-1));
-	EXPECT_TRUE(is_valid_size<2>(0));
-	EXPECT_TRUE(is_valid_size<2>(1));
-	EXPECT_FALSE(is_valid_size<2>(4));
-	EXPECT_TRUE(is_valid_size<3>(4));
-	EXPECT_TRUE(is_valid_size<3>(8));
-	EXPECT_FALSE(is_valid_size<3>(9));
-
-	EXPECT_FALSE(is_valid_size<2>(-1, 3));
-	EXPECT_FALSE(is_valid_size<2>(2, -3));
-	EXPECT_TRUE(is_valid_size<2>(1, 0));
-	EXPECT_FALSE(is_valid_size<2>(2, 4));
-
 	using L     = Location<2>;
 	using list2 = std::vector<L>;
+	static_assert(noexcept(is_valid(list2{})));
+	EXPECT_FALSE(noexcept(is_valid(list2{Location<2>(0)})));
+	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<3>>{Location<3>(0)})));
+	EXPECT_TRUE(noexcept(list2{}));
+	EXPECT_TRUE(noexcept(is_valid(std::vector<Location<3>>{})));
+	// std::is_sorted can throw std::bad_aloc
+	// TODO From C++20 std::is_sorted will be constexpr
+	// static_assert(!is_valid<2>(list2{})); // empty()
 	EXPECT_FALSE(is_valid(list2{})) << "can't be empty";
 	EXPECT_TRUE(is_valid(list2{L(0), L(12), L(13)}));
 	EXPECT_TRUE(is_valid(list2{L(8)})) << "must except single";
@@ -934,12 +954,103 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_FALSE(is_valid(list2{L(-6)}));
 }
 
+TEST(Location_Utilities, is_valid_size)
+{
+	static_assert(noexcept(is_valid_size<2>(-1)));
+	static_assert(noexcept(is_valid_size<2>(0)));
+	static_assert(noexcept(is_valid_size<2>(3)));
+	static_assert(noexcept(is_valid_size<2>(4)));
+	static_assert(not(is_valid_size<2>(-1)));
+	static_assert(is_valid_size<2>(0));
+	static_assert(is_valid_size<2>(3));
+	static_assert(not(is_valid_size<2>(4)));
+	static_assert(is_valid_size<3>(4));
+	static_assert(is_valid_size<3>(8));
+	static_assert(not(is_valid_size<3>(9)));
+	EXPECT_FALSE(is_valid_size<2>(-1));
+	EXPECT_TRUE(is_valid_size<2>(0));
+	EXPECT_TRUE(is_valid_size<2>(1));
+	EXPECT_FALSE(is_valid_size<2>(4));
+	EXPECT_TRUE(is_valid_size<3>(4));
+	EXPECT_TRUE(is_valid_size<3>(8));
+	EXPECT_FALSE(is_valid_size<3>(9));
+
+	static_assert(noexcept(is_valid_size<3>(-1, 8)));
+	static_assert(noexcept(is_valid_size<3>(0, 8)));
+	static_assert(noexcept(is_valid_size<3>(0, 9)));
+	static_assert(not(is_valid_size<2>(-1, 3)));
+	static_assert(not(is_valid_size<2>(2, -3)));
+	static_assert(is_valid_size<2>(0, 0));
+	static_assert(is_valid_size<2>(1, 2));
+	static_assert(is_valid_size<2>(3, 3));
+	static_assert(not(is_valid_size<2>(2, 4)));
+	static_assert(not(is_valid_size<2>(4, 1)));
+	EXPECT_FALSE(is_valid_size<2>(-1, 3));
+	EXPECT_FALSE(is_valid_size<2>(2, -3));
+	EXPECT_TRUE(is_valid_size<2>(1, 0));
+	EXPECT_FALSE(is_valid_size<2>(2, 4));
+}
+
 TEST(Location_Utilities, is_same_section)
 {
+	static_assert(std::is_same_v<
+				  bool,
+				  decltype(is_same_row(Location<3>(), Location<3>()))>);
+	static_assert(noexcept(is_same_row(Location<3>(-1), Location<3>(1))));
+	static_assert(noexcept(is_same_row(Location<3>(0), Location<3>(0))));
+	static_assert(noexcept(is_same_row(Location<3>(80), Location<3>(80))));
+	static_assert(noexcept(is_same_row(Location<3>(81), Location<3>(80))));
+	static_assert(noexcept(is_same_row(Location<3>(80), Location<3>(81))));
+	static_assert(not(is_same_row(Location<3>(-1), Location<3>(0))));
+	static_assert(not(is_same_row(Location<3>(0), Location<3>(-1))));
+	static_assert(is_same_row(Location<3>(0), Location<3>(0)));
+	static_assert(is_same_row(Location<3>(0), Location<3>(1)));
+	static_assert(is_same_row(Location<3>(0), Location<3>(8)));
+	static_assert(not(is_same_row(Location<3>(0), Location<3>(9))));
+	static_assert(is_same_row(Location<3>(17), Location<3>(9)));
+	static_assert(is_same_row(Location<3>(72), Location<3>(80)));
+	static_assert(not(is_same_row(Location<3>(72), Location<3>(81))));
+	static_assert(not(is_same_row(Location<3>(82), Location<3>(81))));
 	EXPECT_TRUE(is_same_row(Location<3>(0), Location<3>(8)));
 	EXPECT_FALSE(is_same_row(Location<3>(9), Location<3>(8)));
+	static_assert(std::is_same_v<
+				  bool,
+				  decltype(is_same_col(Location<3>(), Location<3>()))>);
+	static_assert(noexcept(is_same_col(Location<3>(-1), Location<3>(1))));
+	static_assert(noexcept(is_same_col(Location<3>(0), Location<3>(0))));
+	static_assert(noexcept(is_same_col(Location<3>(80), Location<3>(80))));
+	static_assert(noexcept(is_same_col(Location<3>(81), Location<3>(72))));
+	static_assert(noexcept(is_same_col(Location<3>(72), Location<3>(81))));
+	static_assert(not(is_same_col(Location<3>(-1), Location<3>(0))));
+	static_assert(not(is_same_col(Location<3>(0), Location<3>(-1))));
+	static_assert(is_same_col(Location<3>(0), Location<3>(0)));
+	static_assert(is_same_col(Location<3>(0), Location<3>(9)));
+	static_assert(is_same_col(Location<3>(0), Location<3>(72)));
+	static_assert(is_same_col(Location<3>(72), Location<3>(0)));
+	static_assert(not(is_same_col(Location<3>(0), Location<3>(81))));
+	static_assert(is_same_col(Location<3>(17), Location<3>(8)));
+	static_assert(is_same_col(Location<3>(75), Location<3>(21)));
+	static_assert(not(is_same_col(Location<3>(72), Location<3>(81))));
+	static_assert(not(is_same_col(Location<3>(90), Location<3>(81))));
 	EXPECT_TRUE(is_same_col(Location<3>(0), Location<3>(18)));
 	EXPECT_FALSE(is_same_col(Location<3>(9), Location<3>(8)));
+	static_assert(std::is_same_v<
+				  bool,
+				  decltype(is_same_block(Location<3>(), Location<3>()))>);
+	static_assert(noexcept(is_same_block(Location<3>(-1), Location<3>(1))));
+	static_assert(noexcept(is_same_block(Location<3>(0), Location<3>(0))));
+	static_assert(noexcept(is_same_block(Location<3>(80), Location<3>(80))));
+	static_assert(noexcept(is_same_block(Location<3>(81), Location<3>(72))));
+	static_assert(noexcept(is_same_block(Location<3>(72), Location<3>(81))));
+	static_assert(not(is_same_block(Location<3>(-1), Location<3>(0))));
+	static_assert(not(is_same_block(Location<3>(0), Location<3>(-1))));
+	static_assert(is_same_block(Location<3>(0), Location<3>(2)));
+	static_assert(is_same_block(Location<3>(0), Location<3>(20)));
+	static_assert(is_same_block(Location<3>(3, 3), Location<3>(5, 5)));
+	static_assert(is_same_block(Location<3>(80), Location<3>(6, 6)));
+	static_assert(not(is_same_block(Location<3>(80), Location<3>(81))));
+	static_assert(not(is_same_block(Location<3>(72), Location<3>(81))));
+	static_assert(not(is_same_block(Location<3>(90), Location<3>(81))));
 	EXPECT_TRUE(is_same_block(Location<3>(0), Location<3>(11)));
 	EXPECT_FALSE(is_same_block(Location<3>(9), Location<3>(8)));
 
@@ -955,50 +1066,82 @@ TEST(Location_Utilities, is_same_section)
 		L(5), L(3), L(2), L(0), L(4), L(8), L(6), L(7), L(1)};
 	const std::vector<L> duplicate{
 		L(0), L(1), L(2), L(0), L(4), L(0), L(6), L(1), L(0)};
-
-	EXPECT_NO_THROW(is_same_row<3>(row.begin(), row.end()));
-	EXPECT_NO_THROW(is_same_row<3>(row.cbegin(), row.cend()));
-	EXPECT_NO_THROW(is_same_col<3>(col.cbegin(), col.cend()));
+	static_assert(
+		std::is_same_v<bool, decltype(is_same_row<3>(row.begin(), row.end()))>);
+	static_assert(noexcept(is_same_row<3>(row.begin(), row.end())));
+	static_assert(noexcept(is_same_row<3>(row.cbegin(), row.cend())));
+	static_assert(noexcept(is_same_row<3>(col.cbegin(), col.cend())));
+	static_assert(
+		noexcept(is_same_row<3>(notsortedrow.cbegin(), notsortedrow.cend())));
+	EXPECT_TRUE(is_same_row<3>(row.begin(), row.end()));
 	EXPECT_TRUE(is_same_row<3>(row.cbegin(), row.cend()));
-	EXPECT_TRUE(is_same_col<3>(col.cbegin(), col.cend()));
-	EXPECT_TRUE(is_same_block<3>(blo.cbegin(), blo.cend()));
 	EXPECT_TRUE(is_same_row<3>(notsortedrow.cbegin(), notsortedrow.cend()));
 	EXPECT_TRUE(is_same_row<3>(duplicate.cbegin(), duplicate.cend()));
+	static_assert(
+		std::is_same_v<bool, decltype(is_same_col<3>(col.begin(), col.end()))>);
+	static_assert(noexcept(is_same_col<3>(col.begin(), col.end())));
+	static_assert(noexcept(is_same_col<3>(col.cbegin(), col.cend())));
+	static_assert(noexcept(is_same_col<3>(row.cbegin(), row.cend())));
+	EXPECT_TRUE(is_same_col<3>(col.cbegin(), col.cend()));
 	EXPECT_FALSE(is_same_col<3>(row.cbegin(), row.cend()));
+	static_assert(std::is_same_v<
+				  bool,
+				  decltype(is_same_block<3>(blo.begin(), blo.end()))>);
+	static_assert(noexcept(is_same_block<3>(blo.begin(), blo.end())));
+	static_assert(noexcept(is_same_block<3>(blo.cbegin(), blo.cend())));
+	static_assert(noexcept(is_same_block<3>(row.cbegin(), row.cend())));
+	EXPECT_TRUE(is_same_block<3>(blo.cbegin(), blo.cend()));
 	EXPECT_FALSE(is_same_block<3>(row.cbegin(), row.cend()));
 
 	// is_same_section (taking a section)
 	const Board<int, 3> B1;
+	static_assert(
+		std::is_same_v<bool, decltype(is_same_section(B1.row(0), L()))>);
+	static_assert(noexcept(is_same_section(B1.row(0), L(12))));
 	EXPECT_NO_THROW(is_same_section(B1.row(0), L(12)));
-	EXPECT_NO_THROW(is_same_section(B1.col(0), L(12)));
-	EXPECT_NO_THROW(is_same_section(B1.block(0), L(12)));
 	EXPECT_TRUE(is_same_section(B1.row(0), L(8)));
 	EXPECT_TRUE(is_same_section(B1.row(1), L(12)));
 	EXPECT_TRUE(is_same_section(B1.row(7), L(70)));
 	EXPECT_FALSE(is_same_section(B1.row(2), L(15)));
+	static_assert(
+		std::is_same_v<bool, decltype(is_same_section(B1.col(0), L()))>);
+	static_assert(noexcept(is_same_section(B1.col(0), L(12))));
+	EXPECT_NO_THROW(is_same_section(B1.col(0), L(12)));
 	EXPECT_TRUE(is_same_section(B1.col(0), L(0)));
 	EXPECT_TRUE(is_same_section(B1.col(0), L(72)));
 	EXPECT_FALSE(is_same_section(B1.col(1), L(9)));
+	static_assert(
+		std::is_same_v<bool, decltype(is_same_section(B1.block(0), L()))>);
+	static_assert(noexcept(is_same_section(B1.block(0), L(12))));
+	EXPECT_NO_THROW(is_same_section(B1.block(0), L(12)));
 	EXPECT_TRUE(is_same_section(B1.block(0), L(10)));
 	EXPECT_FALSE(is_same_section(B1.block(1), L(16)));
 
 	// is_same_section (taking a section and a vector)
+	static_assert(
+		std::is_same_v<bool, decltype(is_same_section(B1.row(0), row))>);
+	// static_assert(noexcept(is_same_section(B1.row(0), row)));
 	EXPECT_NO_THROW(is_same_section(B1.row(0), row));
-	EXPECT_NO_THROW(is_same_section(B1.col(0), row));
-	EXPECT_NO_THROW(is_same_section(B1.block(0), row));
 	EXPECT_TRUE(is_same_section(B1.row(0), row));
 	EXPECT_TRUE(is_same_section(B1.row(0), col));
 	EXPECT_FALSE(is_same_section(B1.row(0), blo));
 	EXPECT_FALSE(is_same_section(B1.row(1), row));
+	static_assert(
+		std::is_same_v<bool, decltype(is_same_section(B1.col(0), col))>);
+	EXPECT_NO_THROW(is_same_section(B1.col(0), row));
 	EXPECT_TRUE(is_same_section(B1.col(0), row));
 	EXPECT_TRUE(is_same_section(B1.col(6), col));
 	EXPECT_FALSE(is_same_section(B1.col(0), col));
 	EXPECT_FALSE(is_same_section(B1.col(0), blo));
 	EXPECT_TRUE(is_same_section(B1.col(5), blo));
+	static_assert(
+		std::is_same_v<bool, decltype(is_same_section(B1.col(0), col))>);
+	EXPECT_NO_THROW(is_same_section(B1.block(0), row));
 	EXPECT_TRUE(is_same_section(B1.block(4), blo));
 	EXPECT_FALSE(is_same_section(B1.block(5), blo));
 
 	// intersect_block
+	static_assert(noexcept(intersect_block(B1.row(0), L(12))));
 	EXPECT_NO_THROW(intersect_block(B1.row(0), L(55)));
 	EXPECT_NO_THROW(intersect_block(B1.col(0), L(55)));
 	EXPECT_TRUE(intersect_block(B1.row(0), L(8)));
@@ -1021,6 +1164,12 @@ TEST(Location_Utilities, get_same_section)
 	}
 	const std::vector<Location<3>> clist1{list1};
 
+	static_assert(std::is_same_v<
+				  std::vector<Location<3>>,
+				  decltype(get_same_row(Location<3>(0), list1))>);
+	static_assert(not(noexcept(get_same_row(Location<3>(0), list1))));
+	static_assert(not(noexcept(get_same_col(Location<3>(0), list1))));
+	static_assert(not(noexcept(get_same_block(Location<3>(0), list1))));
 	EXPECT_EQ(get_same_row(Location<3>(0), list1), list1);
 	EXPECT_EQ(get_same_row(Location<3>(0), list1).size(), size_t{9})
 		<< "vector length";
@@ -1030,33 +1179,6 @@ TEST(Location_Utilities, get_same_section)
 	EXPECT_EQ(get_same_block(Location<3>(0), list1).size(), size_t{3})
 		<< "length";
 	EXPECT_EQ(get_same_row(Location<3>(0), clist1), list1);
-}
-
-TEST(Location_Utilities, is_constexpr)
-{
-	EXPECT_TRUE(noexcept(is_valid(Location<2>(10))));
-	EXPECT_TRUE(noexcept(is_valid(Location<3>(67))));
-	EXPECT_TRUE(noexcept(is_valid(Location<3>(97)))); //
-
-	EXPECT_TRUE(noexcept(is_valid_size<2>(3)));
-	EXPECT_TRUE(noexcept(is_valid_size<3>(8)));
-
-	EXPECT_TRUE(noexcept(is_valid_size<2>(1, 2)));
-	EXPECT_TRUE(noexcept(is_valid_size<3>(7, 3)));
-
-	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<2>>{Location<2>(0)})));
-	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<3>>{Location<3>(0)})));
-	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<2>>{})));
-	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<3>>{})));
-
-	EXPECT_TRUE(noexcept(is_same_row(Location<3>(0), Location<3>(8))));
-	EXPECT_TRUE(noexcept(is_same_col(Location<3>(0), Location<3>(8))));
-	EXPECT_TRUE(noexcept(is_same_block(Location<3>(0), Location<3>(8))));
-
-	std::vector<Location<3>> list1{};
-	EXPECT_FALSE(noexcept(get_same_row(Location<3>(0), list1)));
-	EXPECT_FALSE(noexcept(get_same_col(Location<3>(0), list1)));
-	EXPECT_FALSE(noexcept(get_same_block(Location<3>(0), list1)));
 }
 
 } // namespace SudokuTests::LocationTest

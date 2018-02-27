@@ -1,7 +1,10 @@
 ﻿//===--- Sudoku/Location_Utilities.h                                    ---===//
 //
-//	Utilities for class Sudoku::Location
-//	Included in Location.h
+// Utilities for class Sudoku::Location
+//===----------------------------------------------------------------------===//
+//
+// Included in Location.h
+//
 //===----------------------------------------------------------------------===//
 #pragma once
 
@@ -25,24 +28,28 @@ template<int N>
 constexpr void valid_dimensions() noexcept;
 
 template<int N>
-constexpr bool is_valid(Location<N>);
+constexpr bool is_valid(Location<N>) noexcept;
+template<int N>
+constexpr bool is_valid(const std::vector<Location<N>>& locs) noexcept(true);
 
 template<int N>
-constexpr bool is_valid_size(int row, int col);
+constexpr bool is_valid_size(int elem) noexcept;
+template<int N>
+constexpr bool is_valid_size(int row, int col) noexcept;
 
 template<int N>
-constexpr bool is_same_row(Location<N>, Location<N>);
+constexpr bool is_same_row(Location<N>, Location<N>) noexcept;
 template<int N>
-constexpr bool is_same_col(Location<N>, Location<N>);
+constexpr bool is_same_col(Location<N>, Location<N>) noexcept;
 template<int N>
-constexpr bool is_same_block(Location<N>, Location<N>);
+constexpr bool is_same_block(Location<N>, Location<N>) noexcept;
 
 template<int N, typename ItrT>
-constexpr bool is_same_row(ItrT begin, ItrT end);
+constexpr bool is_same_row(ItrT begin, ItrT end) noexcept;
 template<int N, typename ItrT>
-constexpr bool is_same_col(ItrT begin, ItrT end);
+constexpr bool is_same_col(ItrT begin, ItrT end) noexcept;
 template<int N, typename ItrT>
-constexpr bool is_same_block(ItrT begin, ItrT end);
+constexpr bool is_same_block(ItrT begin, ItrT end) noexcept;
 
 template<int N>
 std::vector<Location<N>>
@@ -55,14 +62,17 @@ std::vector<Location<N>>
 	get_same_block(const Location<N>, const std::vector<Location<N>>&);
 
 template<typename T, int N>
-bool is_same_section(Board_Section::const_Row<T, N>, Location<N>) noexcept;
+constexpr bool
+	is_same_section(Board_Section::const_Row<T, N>, Location<N>) noexcept;
 template<typename T, int N>
-bool is_same_section(Board_Section::const_Col<T, N>, Location<N>) noexcept;
+constexpr bool
+	is_same_section(Board_Section::const_Col<T, N>, Location<N>) noexcept;
 template<typename T, int N>
-bool is_same_section(Board_Section::const_Block<T, N>, Location<N>) noexcept;
+constexpr bool
+	is_same_section(Board_Section::const_Block<T, N>, Location<N>) noexcept;
 
 template<typename SectionT, int N>
-bool is_same_section(SectionT, std::vector<Location<N>>);
+bool is_same_section(SectionT, std::vector<Location<N>>) noexcept;
 
 template<typename T, int N>
 bool intersect_block(Board_Section::const_Row<T, N>, Location<N>) noexcept;
@@ -93,15 +103,16 @@ constexpr void valid_dimensions() noexcept
 
 // Test if Location on Board
 template<int N>
-inline constexpr bool is_valid(const Location<N> loc)
+inline constexpr bool is_valid(const Location<N> loc) noexcept
 {
 	return (loc.element() >= 0 && loc.element() < full_size<N>);
 }
 
 // Test if Locations on Board and if sorted (ascending)
 template<int N>
-inline constexpr bool is_valid(const std::vector<Location<N>>& locs)
-{
+inline constexpr bool
+	is_valid(const std::vector<Location<N>>& locs) noexcept(true)
+{ // std::is_sorted can throw std::bad_aloc
 	return (
 		!locs.empty() && (std::is_sorted(locs.cbegin(), locs.cend()) &&
 						  locs.cbegin()->element() >= 0 &&
@@ -110,14 +121,14 @@ inline constexpr bool is_valid(const std::vector<Location<N>>& locs)
 
 // Test row/col/block-element
 template<int N>
-inline constexpr bool is_valid_size(const int elem)
+inline constexpr bool is_valid_size(const int elem) noexcept
 {
 	return (elem >= 0 && elem < elem_size<N>);
 }
 
 // Test if location on Board
 template<int N>
-inline constexpr bool is_valid_size(const int row, const int col)
+inline constexpr bool is_valid_size(const int row, const int col) noexcept
 {
 	return is_valid_size<N>(row) && is_valid_size<N>(col);
 }
@@ -128,14 +139,15 @@ inline constexpr bool is_valid_size(const int row, const int col)
 // check
 template<int N>
 inline constexpr bool
-	is_same_row(const Location<N> left, const Location<N> right)
+	is_same_row(const Location<N> left, const Location<N> right) noexcept
 {
-	return left.row() == right.row();
+	return (is_valid<N>(left) && is_valid<N>(right)) &&
+		   left.row() == right.row();
 }
 
 // check: all in same row
 template<int N, typename ItrT>
-constexpr bool is_same_row(const ItrT begin, const ItrT end)
+constexpr bool is_same_row(const ItrT begin, const ItrT end) noexcept
 {
 	{
 		static_assert(Utility_::is_forward<ItrT>);
@@ -147,8 +159,8 @@ constexpr bool is_same_row(const ItrT begin, const ItrT end)
 
 // return all in same row
 template<int N>
-[[nodiscard]] std::vector<Location<N>>
-	get_same_row(const Location<N> left, const std::vector<Location<N>>& right)
+[[nodiscard]] std::vector<Location<N>> get_same_row(
+	const Location<N> left, const std::vector<Location<N>>& right)
 {
 	std::vector<Location<N>> output{};
 	const auto predicate = [&left](Location<N> loc) {
@@ -161,15 +173,16 @@ template<int N>
 
 // check
 template<int N>
-inline constexpr bool
-	is_same_col(const Location<N> left, const Location<N> right)
+inline constexpr bool is_same_col(
+	const Location<N> left, const Location<N> right) noexcept
 {
-	return left.col() == right.col();
+	return (is_valid<N>(left) && is_valid<N>(right)) &&
+		   left.col() == right.col();
 }
 
 // check: all in same col
 template<int N, typename ItrT>
-inline constexpr bool is_same_col(const ItrT begin, const ItrT end)
+inline constexpr bool is_same_col(const ItrT begin, const ItrT end) noexcept
 {
 	{
 		static_assert(Utility_::is_forward<ItrT>);
@@ -196,14 +209,15 @@ template<int N>
 // check
 template<int N>
 inline constexpr bool is_same_block(
-	const Location<N> left, const Location<N> right)
+	const Location<N> left, const Location<N> right) noexcept
 {
-	return left.block() == right.block();
+	return (is_valid<N>(left) && is_valid<N>(right)) &&
+		   left.block() == right.block();
 }
 
 // check all in same block
 template<int N, typename ItrT>
-inline constexpr bool is_same_block(const ItrT begin, const ItrT end)
+inline constexpr bool is_same_block(const ItrT begin, const ItrT end) noexcept
 {
 	{
 		static_assert(Utility_::is_forward<ItrT>);
@@ -230,7 +244,7 @@ template<int N>
 
 // check: [loc] is in [section]
 template<typename T, int N>
-inline bool is_same_section(
+inline constexpr bool is_same_section(
 	const Board_Section::const_Row<T, N> section,
 	const Location<N> loc) noexcept
 {
@@ -239,7 +253,7 @@ inline bool is_same_section(
 
 // check: [loc] is in [section]
 template<typename T, int N>
-inline bool is_same_section(
+inline constexpr bool is_same_section(
 	const Board_Section::const_Col<T, N> section,
 	const Location<N> loc) noexcept
 {
@@ -248,7 +262,7 @@ inline bool is_same_section(
 
 // check: [loc] is in [section]
 template<typename T, int N>
-inline bool is_same_section(
+inline constexpr bool is_same_section(
 	const Board_Section::const_Block<T, N> section,
 	const Location<N> loc) noexcept
 {
@@ -289,13 +303,12 @@ inline bool intersect_block(
 
 // check: at least one [location] inside [section]
 template<typename SectionT, int N>
-inline bool
-	is_same_section(const SectionT section, const std::vector<Location<N>> locs)
+inline bool is_same_section(
+	const SectionT section, const std::vector<Location<N>> locs) noexcept
 {
-	return std::any_of(
-		locs.cbegin(), locs.cend(), [section](Location<N> L) noexcept {
-			return is_same_section(section, L);
-		});
+	return std::any_of(locs.cbegin(), locs.cend(), [section](Location<N> L) {
+		return is_same_section(section, L);
+	});
 }
 
 } // namespace Sudoku
