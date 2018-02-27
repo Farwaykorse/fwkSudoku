@@ -37,107 +37,107 @@ using namespace ::Sudoku;
 namespace compiletime
 {
 	// Class properties
-	using typeT = Sudoku::Options<9>;
-	static_assert(std::is_class_v<typeT>);
-	static_assert(not std::is_empty_v<typeT>);
-	static_assert(std::is_standard_layout_v<typeT>);
-	static_assert(not std::is_trivial_v<typeT>);
-	static_assert(not std::is_pod_v<typeT>);
+using typeT = Sudoku::Options<9>;
+static_assert(std::is_class_v<typeT>);
+static_assert(not std::is_empty_v<typeT>);
+static_assert(std::is_standard_layout_v<typeT>);
+static_assert(not std::is_trivial_v<typeT>);
+static_assert(not std::is_pod_v<typeT>);
 
-	static_assert(std::is_default_constructible_v<typeT>);
-	static_assert(std::is_nothrow_default_constructible_v<typeT>);
-	static_assert(not std::is_trivially_default_constructible_v<typeT>);
+static_assert(std::is_default_constructible_v<typeT>);
+static_assert(std::is_nothrow_default_constructible_v<typeT>);
+static_assert(not std::is_trivially_default_constructible_v<typeT>);
 
-	static_assert(std::is_destructible_v<typeT>);
-	static_assert(std::is_nothrow_destructible_v<typeT>);
-	static_assert(std::is_trivially_destructible_v<typeT>);
+static_assert(std::is_destructible_v<typeT>);
+static_assert(std::is_nothrow_destructible_v<typeT>);
+static_assert(std::is_trivially_destructible_v<typeT>);
 
-	static_assert(std::is_copy_constructible_v<typeT>);
-	static_assert(std::is_nothrow_copy_constructible_v<typeT>);
-	static_assert(std::is_trivially_copy_constructible_v<typeT>);
+static_assert(std::is_copy_constructible_v<typeT>);
+static_assert(std::is_nothrow_copy_constructible_v<typeT>);
+static_assert(std::is_trivially_copy_constructible_v<typeT>);
 
-	static_assert(std::is_move_constructible_v<typeT>);
-	static_assert(std::is_nothrow_move_constructible_v<typeT>);
-	static_assert(std::is_trivially_move_constructible_v<typeT>);
+static_assert(std::is_move_constructible_v<typeT>);
+static_assert(std::is_nothrow_move_constructible_v<typeT>);
+static_assert(std::is_trivially_move_constructible_v<typeT>);
 
-	static_assert(std::is_copy_assignable_v<typeT>);
-	static_assert(std::is_nothrow_copy_assignable_v<typeT>);
-	static_assert(std::is_trivially_copy_assignable_v<typeT>);
+static_assert(std::is_copy_assignable_v<typeT>);
+static_assert(std::is_nothrow_copy_assignable_v<typeT>);
+static_assert(std::is_trivially_copy_assignable_v<typeT>);
 
-	static_assert(std::is_move_assignable_v<typeT>);
-	static_assert(std::is_nothrow_move_assignable_v<typeT>);
-	static_assert(std::is_trivially_move_assignable_v<typeT>);
+static_assert(std::is_move_assignable_v<typeT>);
+static_assert(std::is_nothrow_move_assignable_v<typeT>);
+static_assert(std::is_trivially_move_assignable_v<typeT>);
 
-	static_assert(std::is_trivially_copyable_v<typeT>);
-	static_assert(std::is_swappable_v<typeT>);
-	static_assert(std::is_nothrow_swappable_v<typeT>);
+static_assert(std::is_trivially_copyable_v<typeT>);
+static_assert(std::is_swappable_v<typeT>);
+static_assert(std::is_nothrow_swappable_v<typeT>);
 
-	// type construction
-	// from std::bitset
-	static_assert(std::is_constructible_v<Options<3>, const std::bitset<4>&>);
-	static_assert(std::is_assignable_v<Options<3>, std::bitset<4>>);
-	static_assert(noexcept(Options<3>{std::bitset<4>{}}));
-	static_assert(noexcept(Options<3>() = std::bitset<4>{}));
-	// explicit:
-	static_assert(std::is_constructible_v<std::bitset<4>, std::string>);
-	static_assert(not std::is_constructible_v<typeT, std::string>, "explicit");
-	// size:
-	static_assert(not std::is_constructible_v<typeT, const std::bitset<9>&>);
-	static_assert(not std::is_assignable_v<Options<3>, std::bitset<3>>);
+// type construction
+// from std::bitset
+static_assert(std::is_constructible_v<Options<3>, const std::bitset<4>&>);
+static_assert(std::is_assignable_v<Options<3>, std::bitset<4>>);
+static_assert(noexcept(Options<3>{std::bitset<4>{}}));
+static_assert(noexcept(Options<3>() = std::bitset<4>{}));
+// explicit:
+static_assert(std::is_constructible_v<std::bitset<4>, std::string>);
+static_assert(not std::is_constructible_v<typeT, std::string>, "explicit");
+// size:
+static_assert(not std::is_constructible_v<typeT, const std::bitset<9>&>);
+static_assert(not std::is_assignable_v<Options<3>, std::bitset<3>>);
 
-	static_assert(not std::is_swappable_with_v<Options<4>, std::bitset<5>>);
-	static_assert(not std::is_nothrow_swappable_with_v<typeT, std::bitset<10>>);
+static_assert(not std::is_swappable_with_v<Options<4>, std::bitset<5>>);
+static_assert(not std::is_nothrow_swappable_with_v<typeT, std::bitset<10>>);
 
-	// Value
-	static_assert(std::is_constructible_v<Options<3>, Value>);
-	static_assert(std::is_assignable_v<Options<3>, Value>);
-	static_assert(noexcept(Options<3>{Value{}}));
-	static_assert(noexcept(Options<3>() = Value{}));
+// Value
+static_assert(std::is_constructible_v<Options<3>, Value>);
+static_assert(std::is_assignable_v<Options<3>, Value>);
+static_assert(noexcept(Options<3>{Value{}}));
+static_assert(noexcept(Options<3>() = Value{}));
 
-	static_assert(not std::is_constructible_v<Options<3>, int>);
-	static_assert(not std::is_assignable_v<Options<3>, int>);
-	static_assert(not std::is_constructible_v<Options<3>, unsigned int>);
-	static_assert(not std::is_assignable_v<Options<3>, unsigned int>);
-	static_assert(not std::is_constructible_v<Options<3>, size_t>);
-	static_assert(not std::is_assignable_v<Options<3>, size_t>);
+static_assert(not std::is_constructible_v<Options<3>, int>);
+static_assert(not std::is_assignable_v<Options<3>, int>);
+static_assert(not std::is_constructible_v<Options<3>, unsigned int>);
+static_assert(not std::is_assignable_v<Options<3>, unsigned int>);
+static_assert(not std::is_constructible_v<Options<3>, size_t>);
+static_assert(not std::is_assignable_v<Options<3>, size_t>);
 
-	namespace impl
-	{
-		using namespace ::Sudoku::impl;
+namespace impl
+{
+using namespace ::Sudoku::impl;
 
-		static_assert(exp2_(0U) == 0x1U);
-		static_assert(exp2_(1U) == 0x2U);
-		static_assert(exp2_(2U) == 0x4U);
-		static_assert(exp2_(3U) == 0x8U);
-		static_assert(exp2_(4U) == 0x10U);
-		static_assert(exp2_(5U) == 0x20U);
-		static_assert(exp2_(6U) == 0x40U);
-		static_assert(exp2_(7U) == 0x80U);
-		static_assert(exp2_(8U) == 0x100U);
-		static_assert(exp2_(9U) == 0x200U);
+static_assert(exp2_(0U) == 0x1U);
+static_assert(exp2_(1U) == 0x2U);
+static_assert(exp2_(2U) == 0x4U);
+static_assert(exp2_(3U) == 0x8U);
+static_assert(exp2_(4U) == 0x10U);
+static_assert(exp2_(5U) == 0x20U);
+static_assert(exp2_(6U) == 0x40U);
+static_assert(exp2_(7U) == 0x80U);
+static_assert(exp2_(8U) == 0x100U);
+static_assert(exp2_(9U) == 0x200U);
 
-		static_assert(exp2_(Value{0}) == 0x1U);
-		static_assert(exp2_(Value{1}) == 0x2U);
-		static_assert(exp2_(Value{2}) == 0x4U);
-		static_assert(exp2_(Value{3}) == 0x8U);
-		static_assert(exp2_(Value{4}) == 0x10U);
-		static_assert(exp2_(Value{5}) == 0x20U);
-		static_assert(exp2_(Value{6}) == 0x40U);
-		static_assert(exp2_(Value{7}) == 0x80U);
-		static_assert(exp2_(Value{8}) == 0x100U);
-		static_assert(exp2_(Value{9}) == 0x200U);
+static_assert(exp2_(Value{0}) == 0x1U);
+static_assert(exp2_(Value{1}) == 0x2U);
+static_assert(exp2_(Value{2}) == 0x4U);
+static_assert(exp2_(Value{3}) == 0x8U);
+static_assert(exp2_(Value{4}) == 0x10U);
+static_assert(exp2_(Value{5}) == 0x20U);
+static_assert(exp2_(Value{6}) == 0x40U);
+static_assert(exp2_(Value{7}) == 0x80U);
+static_assert(exp2_(Value{8}) == 0x100U);
+static_assert(exp2_(Value{9}) == 0x200U);
 
-		static_assert(all_set(0U) == 0x1U);
-		static_assert(all_set(1U) == 0x3U);
-		static_assert(all_set(2U) == 0x7U);
-		static_assert(all_set(3U) == 0xFU);
-		static_assert(all_set(4U) == 0x1FU);
-		static_assert(all_set(5U) == 0x3FU);
-		static_assert(all_set(6U) == 0x7FU);
-		static_assert(all_set(7U) == 0xFFU);
-		static_assert(all_set(8U) == 0x1FFU);
-		static_assert(all_set(9U) == 0x3FFU);
-	}
+static_assert(all_set(0U) == 0x1U);
+static_assert(all_set(1U) == 0x3U);
+static_assert(all_set(2U) == 0x7U);
+static_assert(all_set(3U) == 0xFU);
+static_assert(all_set(4U) == 0x1FU);
+static_assert(all_set(5U) == 0x3FU);
+static_assert(all_set(6U) == 0x7FU);
+static_assert(all_set(7U) == 0xFFU);
+static_assert(all_set(8U) == 0x1FFU);
+static_assert(all_set(9U) == 0x3FFU);
+}
 
 } // namespace compiletime
 TEST(Options, Construction)
@@ -272,20 +272,20 @@ TEST(Options, mf_counting)
 	static_assert(noexcept(TE.O_1.count()));
 	static_assert(noexcept(TE.O_1.count_all()));
 	// clang-format off
-	EXPECT_EQ(TE.D_0.count(),		9u);
-	EXPECT_EQ(TE.D_0.count_all(),	9u);
-	EXPECT_EQ(TE.A_2.count(),		0u); // different
-	EXPECT_EQ(TE.A_2.count_all(),	1u); //
-	EXPECT_EQ(TE.O_1.count(),		1u);
-	EXPECT_EQ(TE.O_1.count_all(),	1u);
-	EXPECT_EQ(TE.O_2.count(),		2u);
-	EXPECT_EQ(TE.O_2.count_all(),	2u);
-	EXPECT_EQ(TE.O_3.count(),		3u);
-	EXPECT_EQ(TE.O_3.count_all(),	3u);
-	EXPECT_EQ(TE.E_1.count(),		0u);
-	EXPECT_EQ(TE.E_1.count_all(),	0u);
-	EXPECT_EQ(TE.E_2.count(),		0u);
-	EXPECT_EQ(TE.E_2.count_all(),	0u);
+	EXPECT_EQ(TE.D_0.count(), 9u);
+	EXPECT_EQ(TE.D_0.count_all(), 9u);
+	EXPECT_EQ(TE.A_2.count(), 0u); // different
+	EXPECT_EQ(TE.A_2.count_all(), 1u); //
+	EXPECT_EQ(TE.O_1.count(), 1u);
+	EXPECT_EQ(TE.O_1.count_all(), 1u);
+	EXPECT_EQ(TE.O_2.count(), 2u);
+	EXPECT_EQ(TE.O_2.count_all(), 2u);
+	EXPECT_EQ(TE.O_3.count(), 3u);
+	EXPECT_EQ(TE.O_3.count_all(), 3u);
+	EXPECT_EQ(TE.E_1.count(), 0u);
+	EXPECT_EQ(TE.E_1.count_all(), 0u);
+	EXPECT_EQ(TE.E_2.count(), 0u);
+	EXPECT_EQ(TE.E_2.count_all(), 0u);
 	// clang-format on
 	static_assert(noexcept(TE.O_1.all()));
 	EXPECT_TRUE(TE.D_1.all());
@@ -303,8 +303,9 @@ TEST(Options, mf_counting)
 
 TEST(Options, test_Value)
 {
+	[[maybe_unused]] bool set{};
 	static_assert(not noexcept(TE.O_1.test(Value{2})));
-	EXPECT_THROW(TE.O_1.test(Value{15}), std::out_of_range);
+	EXPECT_THROW(set = TE.O_1.test(Value{15}), std::out_of_range);
 	EXPECT_TRUE(TE.O_1.test(Value{2}));
 	EXPECT_TRUE(TE.O_3.test(Value{2}));
 	EXPECT_FALSE(TE.O_3.test(Value{1}));
@@ -671,8 +672,6 @@ TEST(Options, mf_constOperators)
 
 	// constexpr bool operator[](int) const
 	static_assert(noexcept(TE.O_1[Value{2}]));
-	EXPECT_NO_THROW(TE.O_3[Value{2}]);
-	EXPECT_NO_THROW(TE.O_3[Value{0}]);
 
 	constexpr Options<4> x{Value{1}};
 	static_assert(x[Value{1}]);
@@ -682,9 +681,14 @@ TEST(Options, mf_constOperators)
 	constexpr Options<9> y9{Value{1}};
 	static_assert(y9[Value{1}]);
 
-	// assertion see deathtests
-#ifndef _DEBUG
-	EXPECT_NO_THROW(TE.O_3[Value{9}]);
+#ifdef _DEBUG
+	[[maybe_unused]] bool a;
+	EXPECT_DEATH({ a = TE.O_3[Value{5}]; }, "Assertion failed: .*");
+#else
+	//! supposed to be noexcept, and no bounds-checks in release-mode
+	//  might still trigger SEH error?
+	[[maybe_unused]] bool val;
+	EXPECT_NO_THROW(val = TE.O_3[Value{9}]);
 #endif // _DEBUG
 	EXPECT_TRUE(TE.O_1[Value{2}]);
 	EXPECT_TRUE(TE.A_2[Value{2}]);
@@ -798,7 +802,8 @@ TEST(Options, deathtests)
 	EXPECT_DEBUG_DEATH(
 		{ is_option(TE.O_1, Value{15}); }, "Assertion failed: .*");
 	// mf_constOperators
-	EXPECT_DEBUG_DEATH({ TE.O_3[Value{9}]; }, "Assertion failed: .*");
+	[[maybe_unused]] bool val;
+	EXPECT_DEBUG_DEATH({ val = TE.O_3[Value{9}]; }, "Assertion failed: .*");
 	bool a{};
 	EXPECT_DEBUG_DEATH({ a = TE.O_3[Value{5}]; }, "Assertion failed: .*");
 	// operator[]

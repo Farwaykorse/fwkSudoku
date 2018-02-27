@@ -215,10 +215,10 @@ TEST(Board_Iterator, InputIterator)
 	EXPECT_EQ(*cA.rbegin(), 15);
 	EXPECT_FALSE(*cA.rbegin() == 5);
 	// i->member
-	EXPECT_NO_THROW(Opt.begin()->size());
-	EXPECT_NO_THROW(Opt.cbegin()->size());
-	EXPECT_NO_THROW(Opt.rbegin()->size());
-	EXPECT_NO_THROW(Opt.crbegin()->size());
+	static_assert(not(noexcept(Opt.begin()->size())));
+	static_assert(not(noexcept(Opt.cbegin()->size())));
+	static_assert(not(noexcept(Opt.rbegin()->size())));
+	static_assert(not(noexcept(Opt.crbegin()->size())));
 	EXPECT_NO_THROW(
 		(Opt.begin()->size() == (*Opt.begin()).size()));     // equivalent
 	EXPECT_EQ((Opt.begin()->size()), (*Opt.begin()).size()); // equivalent
@@ -624,11 +624,11 @@ TEST(Board_Iterator, RowInputIterator)
 	EXPECT_EQ(*cA.row(0).rbegin(), 3);
 	EXPECT_FALSE(*cA.row(0).rbegin() == 5);
 	// i->member
-	EXPECT_NO_THROW(Opt.row(0).begin()->size());
-	EXPECT_NO_THROW(Opt.row(0).cbegin()->size());
-	EXPECT_NO_THROW(cOpt.row(0).cbegin()->size());
-	EXPECT_NO_THROW(Opt.row(0).rbegin()->size());
-	EXPECT_NO_THROW(Opt.row(0).crbegin()->size());
+	static_assert(noexcept(Opt.row(0).begin()->size()));
+	static_assert(noexcept(Opt.row(0).cbegin()->size()));
+	static_assert(noexcept(cOpt.row(0).cbegin()->size()));
+	static_assert(not(noexcept(Opt.row(0).rbegin()->size())));
+	static_assert(not(noexcept(Opt.row(0).crbegin()->size())));
 	EXPECT_NO_THROW(
 		(Opt.row(0).begin()->size() ==
 		 (*Opt.row(0).begin()).size())); // equivalent
@@ -1098,11 +1098,11 @@ TEST(Board_Iterator, ColInputIterator)
 	EXPECT_EQ(*cA.col(0).rbegin(), 12);
 	EXPECT_FALSE(*cA.col(0).rbegin() == 5);
 	// i->member
-	EXPECT_NO_THROW(Opt.col(0).begin()->size());
-	EXPECT_NO_THROW(Opt.col(0).cbegin()->size());
-	EXPECT_NO_THROW(cOpt.col(0).cbegin()->size());
-	EXPECT_NO_THROW(Opt.col(0).rbegin()->size());
-	EXPECT_NO_THROW(Opt.col(0).crbegin()->size());
+	static_assert(noexcept(Opt.col(0).begin()->size()));
+	static_assert(noexcept(Opt.col(0).cbegin()->size()));
+	static_assert(noexcept(cOpt.col(0).cbegin()->size()));
+	static_assert(not(noexcept(Opt.col(0).rbegin()->size())));
+	static_assert(not(noexcept(Opt.col(0).crbegin()->size())));
 	EXPECT_NO_THROW(
 		(Opt.col(0).begin()->size() ==
 		 (*Opt.col(0).begin()).size())); // equivalent
@@ -1528,11 +1528,11 @@ TEST(Board_Iterator, BlockInputIterator)
 	EXPECT_EQ(*cA.block(0).rbegin(), 5);
 	EXPECT_FALSE(*cA.block(0).rbegin() == 3);
 	// i->member
-	EXPECT_NO_THROW(Opt.block(0).begin()->size());
-	EXPECT_NO_THROW(Opt.block(0).cbegin()->size());
-	EXPECT_NO_THROW(cOpt.block(0).cbegin()->size());
-	EXPECT_NO_THROW(Opt.block(0).rbegin()->size());
-	EXPECT_NO_THROW(Opt.block(0).crbegin()->size());
+	static_assert(noexcept(Opt.block(0).begin()->size()));
+	static_assert(noexcept(Opt.block(0).cbegin()->size()));
+	static_assert(noexcept(cOpt.block(0).cbegin()->size()));
+	static_assert(not(noexcept(Opt.block(0).rbegin()->size())));
+	static_assert(not(noexcept(Opt.block(0).crbegin()->size())));
 	EXPECT_NO_THROW(
 		(Opt.block(0).begin()->size() ==
 		 (*Opt.block(0).begin()).size())); // equivalent
