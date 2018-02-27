@@ -93,13 +93,13 @@ class Location_Block
 	{
 		return row * Size::base + col;
 	}
-	static constexpr int block_loc(int id, int elem) noexcept
+	static constexpr Location block_loc(int id, int elem) noexcept
 	{
 		const int row{(id / Size::base) * Size::base + elem / Size::base};
 		const int col{(id % Size::base) * Size::base + elem % Size::base};
-		return Location(row, col).element();
+		return Location(row, col);
 	}
-	static constexpr int block_loc(int id, int row, int col) noexcept
+	static constexpr Location block_loc(int id, int row, int col) noexcept
 	{
 		return block_loc(id, block_element(row, col));
 	}
@@ -107,30 +107,30 @@ class Location_Block
 public:
 	constexpr Location_Block() = default;
 	explicit constexpr Location_Block(Location loc) noexcept
-		: id_(loc.element())
+		: loc_(loc)
 	{ // empty constructor
 	}
 	constexpr Location_Block(int id, int elem) noexcept
-		: id_(block_loc(id, elem))
+		: loc_(block_loc(id, elem))
 	{ // empty constructor
 	}
 	constexpr Location_Block(int id, int row, int col) noexcept
-		: id_(block_loc(id, row, col))
+		: loc_(block_loc(id, row, col))
 	{ // empty constructor
 	}
 
-	constexpr int id() const noexcept { return Location(id_).block(); }
+	constexpr int id() const noexcept { return loc_.block(); }
 	constexpr int element() const noexcept
 	{
-		return Location(id_).block_elem();
+		return loc_.block_elem();
 	}
-	constexpr int row() const noexcept { return Location(id_).block_row(); }
-	constexpr int col() const noexcept { return Location(id_).block_col(); }
+	constexpr int row() const noexcept { return loc_.block_row(); }
+	constexpr int col() const noexcept { return loc_.block_col(); }
 
-	constexpr operator Location() const noexcept { return Location(id_); }
+	constexpr operator Location() const noexcept { return loc_; }
 
 private:
-	const int id_{};
+	const Location loc_{};
 };
 
 //===----------------------------------------------------------------------===//
