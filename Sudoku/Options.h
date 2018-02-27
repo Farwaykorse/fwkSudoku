@@ -57,8 +57,25 @@ public:
 	[[nodiscard]] constexpr bool operator[](Value) const noexcept;
 	auto operator[](Value) noexcept;
 
-	[[nodiscard]] bool operator==(const Options<E>&) const noexcept;
-	[[nodiscard]] bool operator<(const Options<E>&) const noexcept;
+	[[nodiscard]] friend bool
+		operator==(const Options<E>& left, const Options<E>& right) noexcept
+	{
+		//? operator== what about the 0th 'is answer' bit?
+		return left.data_ == right.data_;
+	}
+	[[nodiscard]] friend bool
+		operator<(const Options<E>& left, const Options<E>& right) noexcept(
+			sizeof(Options<E>) <= sizeof(unsigned long long))
+	{
+		if constexpr (sizeof(Options<E>) <= sizeof(unsigned long))
+		{
+			return left.data_.to_ulong() < right.data_.to_ulong();
+		}
+		else
+		{
+			return left.data_.to_ullong() < right.data_.to_ullong();
+		}
+	}
 
 	// combine available options
 	Options& operator+=(const Options&) noexcept;
@@ -420,13 +437,6 @@ inline auto Options<E>::operator[](const Value value) noexcept
 }
 
 template<int E>
-inline bool Options<E>::operator==(const Options& other) const noexcept
-{
-	//?? operator== what about the 0th 'is answer' bit?
-	return data_ == other.data_;
-}
-
-template<int E>
 inline bool operator!=(const Options<E>& left, const Options<E>& right) noexcept
 {
 	return !(left == right);
@@ -452,13 +462,6 @@ template<int E>
 inline bool operator!=(const Value value, const Options<E>& right) noexcept
 {
 	return not(is_answer(right, value));
-}
-
-//	Basis for sorting
-template<int E>
-bool Options<E>::operator<(const Options<E>& other) const noexcept
-{
-	return data_.to_ulong() < other.data_.to_ulong();
 }
 
 //	Combine available options (binary OR)
