@@ -88,16 +88,18 @@ namespace compiletime
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
 
 	// other types
-	static_assert(std::is_constructible_v<typeT, int>);
-	static_assert(not std::is_constructible_v<int, typeT>);
-	static_assert(std::is_constructible_v<typeT, unsigned int>);
-	static_assert(not std::is_constructible_v<unsigned int, typeT>);
-	static_assert(std::is_constructible_v<typeT, unsigned long long int>);
-	static_assert(std::is_constructible_v<unsigned long long int, typeT>);
 	static_assert(std::is_constructible_v<typeT, size_t>);
-	static_assert(std::is_constructible_v<size_t, typeT>);
+	// all by implicit conversion to size_t
+	static_assert(std::is_constructible_v<typeT, int>);
+	static_assert(std::is_constructible_v<typeT, unsigned int>);
+	static_assert(std::is_constructible_v<typeT, unsigned long int>);
+	static_assert(std::is_constructible_v<typeT, unsigned long long int>);
 	static_assert(std::is_constructible_v<typeT, bool>); // ... via size_t
+	// explicit construction from Value:
+	static_assert(std::is_constructible_v<size_t, typeT>);
 	static_assert(std::is_constructible_v<bool, typeT>);
+	static_assert(not std::is_constructible_v<int, typeT>);
+	// all others fail, unless same as size_t
 
 	static_assert(not std::is_assignable_v<typeT, int>);
 	static_assert(not std::is_assignable_v<int, typeT>);
@@ -244,8 +246,8 @@ TEST(Value, to_Value)
 	// static_assert(noexcept(to_Value<3>(Value{0}))); // fails with Clang
 	// static_assert(noexcept(to_Value<3>(Value{9}))); // fails with Clang
 	static_assert(noexcept(Value{10}));
-	static_assert(not noexcept(to_Value<3>(Value{10})));
-	static_assert(not noexcept(to_Value<3>(Value{21})));
+	static_assert(not(noexcept(to_Value<3>(Value{10}))));
+	static_assert(not(noexcept(to_Value<3>(Value{21}))));
 
 	EXPECT_NO_THROW(to_Value<3>(Value{0}));
 	EXPECT_NO_THROW(to_Value<3>(Value{9}));
@@ -256,9 +258,9 @@ TEST(Value, to_Value)
 	static_assert(to_Value<3>(1) == Value{1});
 	static_assert(to_Value<3>(9) == Value{9});
 	// static_assert(noexcept(to_Value<3>(2))); // fails with Clang
-	static_assert(not noexcept(to_Value<3>(-2)));
-	static_assert(not noexcept(to_Value<3>(10)));
-	static_assert(not noexcept(to_Value<3>(21)));
+	static_assert(not(noexcept(to_Value<3>(-2))));
+	static_assert(not(noexcept(to_Value<3>(10))));
+	static_assert(not(noexcept(to_Value<3>(21))));
 
 	EXPECT_NO_THROW(to_Value<3>(0));
 	EXPECT_NO_THROW(to_Value<3>(9));
@@ -273,8 +275,8 @@ TEST(Value, to_Value)
 	// static_assert(noexcept(to_Value<3>(size_t{0}))); // fails with Clang
 	// static_assert(noexcept(to_Value<3>(size_t{9}))); // fails with Clang
 	static_assert(noexcept(size_t{10}));
-	static_assert(not noexcept(to_Value<3>(size_t{10})));
-	static_assert(not noexcept(to_Value<3>(size_t{21})));
+	static_assert(not(noexcept(to_Value<3>(size_t{10}))));
+	static_assert(not(noexcept(to_Value<3>(size_t{21}))));
 
 	EXPECT_NO_THROW(to_Value<3>(size_t{0}));
 	EXPECT_NO_THROW(to_Value<3>(size_t{9}));
@@ -285,17 +287,17 @@ TEST(Value, to_Value)
 	static_assert(to_Value<3>(1u) == Value{1});
 	static_assert(to_Value<3>(9u) == Value{9});
 	// static_assert(noexcept(to_Value<3>(2u))); // fails with Clang
-	static_assert(not noexcept(to_Value<3>(10u)));
-	static_assert(not noexcept(to_Value<3>(21u)));
+	static_assert(not(noexcept(to_Value<3>(10u))));
+	static_assert(not(noexcept(to_Value<3>(21u))));
 
 	// Input: long int
 	static_assert(to_Value<3>(0L) == Value{0});
 	static_assert(to_Value<3>(1L) == Value{1});
 	static_assert(to_Value<3>(9L) == Value{9});
 	// static_assert(noexcept(to_Value<3>(2L))); // fails with Clang
-	static_assert(not noexcept(to_Value<3>(-1L)));
-	static_assert(not noexcept(to_Value<3>(10L)));
-	static_assert(not noexcept(to_Value<3>(21L)));
+	static_assert(not(noexcept(to_Value<3>(-1L))));
+	static_assert(not(noexcept(to_Value<3>(10L))));
+	static_assert(not(noexcept(to_Value<3>(21L))));
 }
 
 } // namespace SudokuTests::ValueTest
