@@ -39,7 +39,7 @@ public:
 	Options& reset() noexcept; // set all options
 	Options& flip() noexcept;
 	Options& remove_option(Value); // remove single option
-	// TODO Options& remove_option(int value, ...);	// remove mentioned
+	// TODO Options& remove_option(Value, ...);	// remove mentioned
 	Options& add(Value);                  // add single option
 	Options& set(Value);                  // set to answer
 	Options& add_nocheck(Value) noexcept; // add single option
@@ -48,8 +48,7 @@ public:
 	[[nodiscard]] constexpr size_t size() const noexcept;
 	[[nodiscard]] size_t count() const noexcept;     // count available options
 	[[nodiscard]] size_t count_all() const noexcept; // count all (incl answer)
-	[[nodiscard]] bool all() const noexcept; // if all options available = all
-											 // bits set
+	[[nodiscard]] bool all() const noexcept; // test all options available
 	[[nodiscard]] bool test(Value) const;    // if an option, or answer
 	[[nodiscard]] bool is_answer() const noexcept; // is set to answer
 	[[nodiscard]] bool is_empty() const noexcept;
@@ -92,8 +91,6 @@ private:
 	// 0th bit is "need to solve":
 	// false if answer has been set = inverse of answer
 	bitset data_{};
-
-	Options& operator&=(const Options&) noexcept; // NOTE might be risky
 
 }; // class Options
 
@@ -332,7 +329,7 @@ inline size_t Options<E>::count_all() const noexcept
 	return data_.count();
 }
 
-//_Test if all bits are set
+// Test if all bits are set
 template<int E>
 inline bool Options<E>::all() const noexcept
 {
@@ -504,13 +501,6 @@ inline Options<E> XOR(const Options<E>& A, const Options<E>& B) noexcept
 	return tmp.XOR(B);
 }
 
-//	Retain only shared options (binary AND)
-template<int E>
-inline Options<E>& Options<E>::operator&=(const Options& other) noexcept
-{
-	data_ &= other.data_;
-	return *this;
-}
 //	Shared options (binary AND)
 //	Prefere: shared(left, right)
 template<int E>
@@ -518,7 +508,8 @@ inline Options<E>
 	operator&(const Options<E>& left, const Options<E>& right) noexcept
 {
 	Options<E> tmp{left};
-	return tmp &= right;
+	tmp.data_ &= right.data_;
+	return tmp;
 }
 
 // Shared options
