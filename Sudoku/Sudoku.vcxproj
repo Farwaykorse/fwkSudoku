@@ -370,6 +370,7 @@
     <ClInclude Include="Solvers_find.h" />
     <ClInclude Include="Solvers_remove_option.h" />
     <ClInclude Include="Solvers_set_option.h" />
+    <ClInclude Include="Transpose.h" />
     <ClInclude Include="Value.h" />
   </ItemGroup>
   <ItemGroup>
