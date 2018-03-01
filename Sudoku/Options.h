@@ -161,9 +161,11 @@ namespace impl
 	static_assert(exp2_(9U) == 0x200U);
 
 	// generate a bitmask to use a unique bit per value
+	//   empty for Value outside domain.
+	template<int E>
 	[[nodiscard]] inline constexpr size_t exp2_(Value value) noexcept
 	{
-		return exp2_(static_cast<size_t>(value));
+		return (value > Value{E}) ? 0U : exp2_(static_cast<size_t>(value));
 	}
 	// generate a bitmask to set all bits in std::bitset
 	[[nodiscard]] inline constexpr size_t all_set(size_t elements) noexcept
@@ -194,7 +196,7 @@ inline Options<E>::Options(bitset&& other) noexcept : data_{other}
 //	construct with single option set to answer
 template<int E>
 inline constexpr Options<E>::Options(Value value) noexcept
-	: data_{impl::exp2_(value)}
+	: data_{impl::exp2_<E>(value)}
 {
 	assert(value <= Value{E});
 }
@@ -203,7 +205,9 @@ inline constexpr Options<E>::Options(Value value) noexcept
 template<int E>
 inline Options<E>& Options<E>::operator=(Value value) noexcept
 {
-	data_ = impl::exp2_(value);
+	assert(value <= Value{E});
+
+	data_ = impl::exp2_<E>(value);
 	return *this;
 }
 

@@ -242,7 +242,7 @@ public:
 
 		///// CONST operators /////
 		// operator==(int) const
-		static_assert(noexcept(A_1 == Value{1}), "operator==(int) should be noexcept");
+		static_assert(not noexcept(A_1 == Value{1}), "operator==(int) should be noexcept");
 		Assert::IsTrue(A_1 == Value{1}, L"operator==(Value) should behave like is_answer(Value)");
 		Assert::IsTrue(A_2 == Value{2}, L"operator==(int) should behave like is_answer(int)_2");
 		//bool operator==(Options<E>&) const
