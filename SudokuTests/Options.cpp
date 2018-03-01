@@ -92,7 +92,14 @@ static_assert(not std::is_nothrow_swappable_with_v<typeT, std::bitset<10>>);
 static_assert(std::is_constructible_v<Options<3>, Value>);
 static_assert(std::is_assignable_v<Options<3>, Value>);
 static_assert(noexcept(Options<3>{Value{}}));
+static_assert(noexcept(Options<3>{Value{0}}));
+static_assert(noexcept(Options<3>{Value{9}}));
+static_assert(noexcept(Options<3>{Value{10}}));
 static_assert(noexcept(Options<3>() = Value{}));
+static_assert(noexcept(Options<3>() = Value{0}));
+static_assert(noexcept(Options<3>() = Value{1}));
+static_assert(noexcept(Options<3>() = Value{9}));
+static_assert(noexcept(Options<3>() = Value{10}));
 
 static_assert(not std::is_constructible_v<Options<3>, int>);
 static_assert(not std::is_assignable_v<Options<3>, int>);
@@ -336,6 +343,11 @@ TEST(Options, is_answer)
 		EXPECT_FALSE(is_answer(TE.E_2));
 		EXPECT_FALSE(is_answer(TE.X_0));
 		EXPECT_FALSE(is_answer(TE.X_1));
+#ifdef _DEBUG
+		EXPECT_DEATH(
+			{ is_answer(TE.A_1, Value{15}); },
+			"Assertion failed: value <= Value.E."); // constructor
+#endif // _DEBUG
 	}
 	{ // test for specific answer
 		static_assert(noexcept(is_answer(TE.O_1, Value{1})));
@@ -372,8 +384,10 @@ TEST(Options, is_answer)
 TEST(Options, is_option)
 {
 	static_assert(not noexcept(is_option(TE.O_1, Value{2})));
-	// assertion see deathtests
-#ifndef _DEBUG
+#ifdef _DEBUG
+	EXPECT_DEBUG_DEATH(
+		{ is_option(TE.O_1, Value{15}); }, "Assertion failed: .*");
+#else
 	EXPECT_THROW(is_option(TE.O_1, Value{15}), std::out_of_range);
 	EXPECT_THROW(is_option(TE.A_1, Value{15}), std::out_of_range);
 #endif // _DEBUG
@@ -555,11 +569,12 @@ TEST(Options, mf_add)
 	// add_noexcept(int)
 	Options<4> TMP{std::bitset<5>{"00000"}};
 	static_assert(noexcept(TMP.add_nocheck(Value{1})));
-	// assertion see deathtests
-#ifndef _DEBUG
+#ifdef _DEBUG
+	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(Value{5}); }, "Assertion failed: .*");
+#else
 	// EXPECT_NO_THROW(TMP.add_nocheck(Value{6}));
 	// EXPECT_NO_THROW(TMP.add_nocheck(-1));
-#endif // !_DEBUG
+#endif // _DEBUG
 	EXPECT_NO_THROW(TMP.add_nocheck(Value{3}));
 	EXPECT_EQ(TMP.DebugString(), "01000");
 	EXPECT_FALSE(TMP.count_all() == 0u);
@@ -589,8 +604,10 @@ TEST(Options, mf_set)
 	EXPECT_NO_THROW(TMP.set_nocheck(Value{1}));
 	EXPECT_EQ(TMP.DebugString(), "00010");
 	EXPECT_TRUE(is_answer(TMP.set_nocheck(Value{2}), Value{2}));
-	// assertion see deathtests
-#ifndef _DEBUG
+#ifdef _DEBUG
+	EXPECT_TRUE(TMP.clear().is_empty());
+	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(Value{15}); }, "Assertion failed: .*");
+#else
 	// EXPECT_NO_THROW(TMP.set_nocheck(Value{15}));
 	// EXPECT_NO_THROW(TMP.set_nocheck(-5));
 #endif // _DEBUG
@@ -797,10 +814,6 @@ TEST(Options, deathtests)
 
 	// mf_boolRequest
 #ifdef _DEBUG
-	EXPECT_DEATH({ is_answer(TE.A_1, Value{15}); }, "Assertion failed: .*");
-
-	EXPECT_DEBUG_DEATH(
-		{ is_option(TE.O_1, Value{15}); }, "Assertion failed: .*");
 	// mf_constOperators
 	[[maybe_unused]] bool val;
 	EXPECT_DEBUG_DEATH({ val = TE.O_3[Value{9}]; }, "Assertion failed: .*");
@@ -813,12 +826,6 @@ TEST(Options, deathtests)
 	// EXPECT_DEBUG_DEATH({ Opp[Value{3}] == Opp[-2]; }, "Assertion failed:
 	// .*");
 	EXPECT_DEBUG_DEATH({ Opp[Value{5}] = true; }, "Assertion failed: .*");
-	// mf_add
-	Options<4> Opt{std::bitset<5>{"00000"}};
-	EXPECT_DEBUG_DEATH({ Opt.add_nocheck(Value{5}); }, "Assertion failed: .*");
-	// mf_set
-	EXPECT_TRUE(TMP.clear().is_empty());
-	EXPECT_DEBUG_DEATH({ TMP.set_nocheck(Value{15}); }, "Assertion failed: .*");
 #endif // _DEBUG
 }
 
