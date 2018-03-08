@@ -22,6 +22,7 @@
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
 #include <Sudoku/Value.h>
+#include <exception>
 // Debug Output
 #include "print_Options.h"
 // library
@@ -203,9 +204,17 @@ TEST(Board, Construction)
 		Board<int, 2> Opt2{};
 		EXPECT_NO_THROW(Opt2 = list); // [gTest]
 		EXPECT_EQ(Opt, Opt2);
-		// see deathtests
+		// deathtests
+		EXPECT_DEBUG_DEATH({ (Board<int, 2>{0, 1, 2, 3}); }, "");
+		EXPECT_DEBUG_DEATH(
+			{
+				(Board<int, 2>{
+					0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16});
+			},
+			"");
 	}
 }
+
 TEST(Board, size)
 {
 	EXPECT_EQ((Board<int, 2>().size()), size_t{16}); // [gTest]
@@ -215,6 +224,7 @@ TEST(Board, size)
 	EXPECT_EQ(D_0.size(), size_t{81});
 	EXPECT_EQ((Board<int, 4>().size()), size_t{256}); // [gTest]
 }
+
 TEST(Board, operator_equal)
 {
 	EXPECT_EQ(Board<int>(), Board<int>());
@@ -236,6 +246,7 @@ TEST(Board, operator_equal)
 	EXPECT_EQ((Board<Options<4>, 2>()), (Board<Options<4>, 2>()));
 	EXPECT_FALSE((Board<Options<4>, 2>(Value{1})) == (Board<Options<4>, 2>()));
 }
+
 TEST(Board_Utilities, operator_not_equal)
 {
 	EXPECT_NE(Board<int>(), Board<int>(4));
@@ -252,12 +263,13 @@ TEST(Board_Utilities, operator_not_equal)
 	EXPECT_NE((Board<Options<4>, 2>(Value{1})), (Board<Options<4>, 2>()));
 	EXPECT_FALSE((Board<Options<4>, 2>()) != (Board<Options<4>, 2>()));
 }
+
 TEST(Board, elementaccess)
 {
 	Board<int, 2> B1{};
-	EXPECT_FALSE(noexcept(B1.at(Location<2>(0)) = 2));
-	EXPECT_FALSE(noexcept(B1.at(Location<2>(0)) == 1));
 	// at(Location)
+	static_assert(not noexcept(B1.at(Location<2>(0)) = 2));
+	static_assert(not noexcept(B1.at(Location<2>(0)) == 2));
 	EXPECT_NO_THROW(B1.at(Location<2>(2)) = 2);
 	EXPECT_EQ(B1.at(Location<2>(2)), 2);
 	EXPECT_NO_THROW(B1.at(Location<2>(0, 3)) = 3);
@@ -267,40 +279,45 @@ TEST(Board, elementaccess)
 	EXPECT_NO_THROW(B1.at(Location_Block<2>(0, 1, 1)) = 5);
 	EXPECT_EQ(B1.at(Location<2>(5)), 5);
 	EXPECT_THROW(B1.at(Location<2>(16)), std::out_of_range);
+	EXPECT_THROW(B1.at(Location<2>(16)), error::invalid_Location);
 	EXPECT_THROW(B1.at(Location<2>(-1)), std::out_of_range);
+	EXPECT_THROW(B1.at(Location<2>(-1)), error::invalid_Location);
 	// at(Location) const
 	const Board<int, 2> cB{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-	EXPECT_FALSE(noexcept(cB.at(Location<2>(0)) == 1));
+	static_assert(not noexcept(cB.at(Location<2>(0)) == 1));
 	EXPECT_EQ(cB.at(Location<2>(2)), 2) << "at(Location) const";
 	EXPECT_THROW(cB.at(Location<2>(16)), std::out_of_range);
+	EXPECT_THROW(cB.at(Location<2>(16)), error::invalid_Location);
 	EXPECT_THROW(cB.at(Location<2>(-1)), std::out_of_range);
+	EXPECT_THROW(cB.at(Location<2>(-1)), error::invalid_Location);
 
 	// at(row, col)
 	EXPECT_NO_THROW(B1.at(1, 1) = 5);
-	EXPECT_THROW(B1.at(1, 4), std::out_of_range);
-	EXPECT_THROW(B1.at(4, 0), std::out_of_range);
-	EXPECT_THROW(B1.at(-1, 0), std::out_of_range);
-	EXPECT_THROW(B1.at(1, -2), std::out_of_range);
+	EXPECT_THROW(B1.at(1, 4), error::invalid_Location);
+	EXPECT_THROW(B1.at(4, 0), error::invalid_Location);
+	EXPECT_THROW(B1.at(-1, 0), error::invalid_Location);
+	EXPECT_THROW(B1.at(1, -2), error::invalid_Location);
 	// at(Location) const
 	EXPECT_NO_THROW(cB.at(2, 1));
-	EXPECT_THROW(cB.at(1, 4), std::out_of_range);
-	EXPECT_THROW(cB.at(4, 0), std::out_of_range);
-	EXPECT_THROW(cB.at(-1, 0), std::out_of_range);
-	EXPECT_THROW(cB.at(1, -2), std::out_of_range);
+	EXPECT_THROW(cB.at(1, 4), error::invalid_Location);
+	EXPECT_THROW(cB.at(4, 0), error::invalid_Location);
+	EXPECT_THROW(cB.at(-1, 0), error::invalid_Location);
+	EXPECT_THROW(cB.at(1, -2), error::invalid_Location);
 	EXPECT_EQ(cB.at(0, 0), 0);
 	EXPECT_EQ(cB.at(3, 1), 13);
 
 	// operator[](Location)
-	EXPECT_TRUE(noexcept(B1[Location<2>(0)] = 0));
-	EXPECT_TRUE(noexcept(B1[Location<2>(0)] == 1));
+	static_assert(noexcept(B1[Location<2>(0)] = 0));
+	static_assert(noexcept(B1[Location<2>(0)] == 1));
 	B1[Location<2>(0)] = 0;
 	B1[Location<2>(1)] = 1;
 	EXPECT_EQ(B1[Location<2>(0)], 0);
 	EXPECT_EQ(B1[Location<2>(1)], 1);
-	EXPECT_TRUE(noexcept(cB[Location<2>(0)] == 1));
+	static_assert(noexcept(cB[Location<2>(0)] == 1));
 	EXPECT_EQ(cB[Location<2>(5)], 5);
 }
+
 TEST(Board, default_values)
 {
 	// for int, all 0
@@ -312,12 +329,13 @@ TEST(Board, default_values)
 	EXPECT_TRUE(B_opt[Location<2>(0)].all());
 	EXPECT_TRUE(B_opt[Location<2>(7)].all());
 }
+
 TEST(Board, clear)
 {
 	Board<int, 2> Obj(3);
 	ASSERT_EQ(Obj[Location<2>(2)], 3);
 
-	EXPECT_FALSE(noexcept(Obj.clear()));
+	static_assert(not(noexcept(Obj.clear())));
 	EXPECT_NO_THROW(Obj.clear());
 	EXPECT_EQ(Obj[Location<2>(2)], 0);
 
@@ -325,7 +343,7 @@ TEST(Board, clear)
 	ASSERT_EQ(Opt[Location<2>(2)], Value{2});
 	ASSERT_EQ(Opt[Location<2>(2)], Options<4>{Value{2}});
 
-	EXPECT_FALSE(noexcept(Opt.clear()));
+	static_assert(not(noexcept(Opt.clear())));
 	EXPECT_NO_THROW(Opt.clear());
 	EXPECT_EQ(Opt[Location<2>(2)], Options<4>());
 }
@@ -333,20 +351,21 @@ TEST(Board, clear)
 TEST(Board, InBetween)
 {
 	Board<int, 2> board{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-	EXPECT_TRUE(noexcept(board[0][0]));
-	EXPECT_TRUE(noexcept(board[4][5]));
-	EXPECT_TRUE(noexcept(board[-4][-5]));
-	EXPECT_NO_THROW(board[1][0] = 9);
+	static_assert(noexcept(board[0][0]));
+	static_assert(noexcept(board[4][5]));
+	static_assert(noexcept(board[-4][-5]));
+	static_assert(noexcept(board[0][0] = 1));
+	board[1][0] = 9;
 	EXPECT_EQ(board[1][0], 9);
 	EXPECT_EQ(board[0][3], 3);
 	EXPECT_EQ(board[3][3], 15);
 	EXPECT_NE(board[3][3], 10);
 	Board<Options<4>, 2> board2{};
-	EXPECT_TRUE(noexcept(board2[0][0]));
-	EXPECT_NO_THROW(board2[2][0] = Value{2});
+	static_assert(noexcept(board2[0][0]));
+	static_assert(noexcept(board2[0][0] = Value{1}));
+	board2[2][0] = Value{2};
 	EXPECT_EQ(board2[2][0], Value{2}); // short for is_answer(value)
 	EXPECT_NE(board2[2][0], Value{1});
-	// see deathtests
 
 	// const_InBetween
 	const Board<int, 2> cboard{
@@ -354,24 +373,6 @@ TEST(Board, InBetween)
 	EXPECT_NO_THROW(cboard[1][0]);
 	EXPECT_EQ(cboard[3][3], 15);
 	EXPECT_NE(cboard[3][3], 10);
-	// see deathtests
-}
-TEST(Board, deathtests)
-{
-	// Board.h
-	// Initializer_list construction
-	EXPECT_DEBUG_DEATH({ (Board<int, 2>{0, 1, 2, 3}); },
-					   ""); // [gTest]
-	EXPECT_DEBUG_DEATH(
-		{
-			(Board<int, 2>{
-				0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16});
-		},
-		""); // [gTest]
-
-	// ERROR assert in vector escapes test context
-	// Board<int, 2> board{};
-	// EXPECT_DEBUG_DEATH({ board[4][4]; }, "") << "Out of bounds";	// [gTest]
 }
 
 } // namespace SudokuTests::BoardTest

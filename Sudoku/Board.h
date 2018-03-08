@@ -14,11 +14,11 @@
 #include "Board_Utilities.h"
 #include "Location.h"
 #include "Size.h"
+#include "exceptions.h"
 
 #include <gsl/gsl>
 #include <initializer_list>
 #include <vector>
-#include <stdexcept> // out_of_range
 #include <cassert>
 
 // Forward declarations
@@ -173,7 +173,7 @@ T& Board<T, N>::at(const Location loc)
 {
 	if (!is_valid<N>(loc))
 	{
-		throw std::out_of_range{"Board::at(Location)"};
+		throw error::invalid_Location{"Board::at(Location)"};
 	}
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
@@ -183,7 +183,7 @@ const T& Board<T, N>::at(const Location loc) const
 {
 	if (!is_valid<N>(loc))
 	{
-		throw std::out_of_range{"Board::at(Location) const"};
+		throw error::invalid_Location{"Board::at(Location) const"};
 	}
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
@@ -193,7 +193,7 @@ T& Board<T, N>::at(const int row, const int col)
 {
 	if (!is_valid_size<N>(row, col))
 	{
-		throw std::out_of_range{"Board::at(int row, col)"}; // <stdexcept>
+		throw error::invalid_Location{"Board::at(int row, col)"}; // <stdexcept>
 	}
 	return board_[gsl::narrow_cast<size_t>(Location(row, col).element())];
 }
@@ -203,7 +203,7 @@ const T& Board<T, N>::at(const int row, const int col) const
 {
 	if (!is_valid_size<N>(row, col))
 	{
-		throw std::out_of_range{"Board::at(row, col) const"};
+		throw error::invalid_Location{"Board::at(row, col) const"};
 	}
 	return board_[gsl::narrow_cast<size_t>(Location(row, col).element())];
 }
@@ -214,7 +214,7 @@ T& Board<T, N>::at(const int elem)
 {
 	if (!is_valid_size<N>(elem))
 	{
-		throw std::out_of_range{"Board::at(int)"};
+		throw error::invalid_Location{"Board::at(int)"};
 	}
 	return board_.at(gsl::narrow_cast<size_t>(elem));
 }
@@ -225,7 +225,7 @@ const T& Board<T, N>::at(const int elem) const
 {
 	if (!is_valid_size<N>(elem))
 	{
-		throw std::out_of_range{"Board::at(int) const"};
+		throw error::invalid_Location{"Board::at(int) const"};
 	}
 	return board_.at(gsl::narrow_cast<size_t>(elem));
 }
