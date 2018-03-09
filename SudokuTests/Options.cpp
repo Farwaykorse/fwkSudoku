@@ -785,14 +785,13 @@ TEST(Options, mf_constOperators)
 	constexpr Options<9> y9{Value{1}};
 	static_assert(y9[Value{1}]);
 
+	[[maybe_unused]] bool val{};
 #ifdef _DEBUG
-	[[maybe_unused]] bool a;
-	EXPECT_DEATH({ a = TE.O_3[Value{5}]; }, "Assertion failed: .*");
+	EXPECT_DEATH({ val = TE.O_3[Value{5}]; }, "Assertion failed: .*");
 #else
 	//! supposed to be noexcept, and no bounds-checks in release-mode
 	//  might still trigger SEH error?
-	EXPECT_NO_THROW(TE.O_3[Value{9}]);
-	[[maybe_unused]] bool val;
+	EXPECT_NO_THROW(val = TE.O_3[Value{9}]);
 #endif // _DEBUG
 	EXPECT_TRUE(TE.O_1[Value{2}]);
 	EXPECT_TRUE(TE.A_2[Value{2}]);
