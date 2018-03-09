@@ -107,7 +107,7 @@ template<int E>
 template<int E>
 [[nodiscard]] Value get_answer(const Options<E>&) noexcept;
 template<int E>
-[[nodiscard]] std::vector<Value> available(const Options<E>&) noexcept;
+[[nodiscard]] std::vector<Value> available(const Options<E>&) noexcept(true);
 template<int E>
 [[nodiscard]] Value
 	read_next(const Options<E>&, Value start = Value{0}) noexcept;
