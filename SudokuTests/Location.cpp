@@ -1167,9 +1167,9 @@ TEST(Location_Utilities, get_same_section)
 	static_assert(std::is_same_v<
 				  std::vector<Location<3>>,
 				  decltype(get_same_row(Location<3>(0), list1))>);
-	static_assert(not(noexcept(get_same_row(Location<3>(0), list1))));
-	static_assert(not(noexcept(get_same_col(Location<3>(0), list1))));
-	static_assert(not(noexcept(get_same_block(Location<3>(0), list1))));
+	static_assert(noexcept(get_same_row(Location<3>(0), list1)));
+	static_assert(noexcept(get_same_col(Location<3>(0), list1)));
+	static_assert(noexcept(get_same_block(Location<3>(0), list1)));
 	EXPECT_EQ(get_same_row(Location<3>(0), list1), list1);
 	EXPECT_EQ(get_same_row(Location<3>(0), list1).size(), size_t{9})
 		<< "vector length";

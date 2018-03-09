@@ -52,14 +52,14 @@ template<int N, typename ItrT>
 constexpr bool is_same_block(ItrT begin, ItrT end) noexcept;
 
 template<int N>
-std::vector<Location<N>>
-	get_same_row(const Location<N>, const std::vector<Location<N>>&);
+std::vector<Location<N>> get_same_row(
+	const Location<N>, const std::vector<Location<N>>&) noexcept(true);
 template<int N>
-std::vector<Location<N>>
-	get_same_col(const Location<N>, const std::vector<Location<N>>&);
+std::vector<Location<N>> get_same_col(
+	const Location<N>, const std::vector<Location<N>>&) noexcept(true);
 template<int N>
-std::vector<Location<N>>
-	get_same_block(const Location<N>, const std::vector<Location<N>>&);
+std::vector<Location<N>> get_same_block(
+	const Location<N>, const std::vector<Location<N>>&) noexcept(true);
 
 template<typename T, int N>
 constexpr bool
@@ -160,8 +160,9 @@ constexpr bool is_same_row(const ItrT begin, const ItrT end) noexcept
 // return all in same row
 template<int N>
 [[nodiscard]] std::vector<Location<N>> get_same_row(
-	const Location<N> left, const std::vector<Location<N>>& right)
-{
+	const Location<N> left,
+	const std::vector<Location<N>>& right) noexcept(true)
+{ // std::copy_if could throw std::bad_alloc
 	std::vector<Location<N>> output{};
 	const auto predicate = [&left](Location<N> loc) {
 		return is_same_row(left, loc);
@@ -195,8 +196,9 @@ inline constexpr bool is_same_col(const ItrT begin, const ItrT end) noexcept
 // return all in same col
 template<int N>
 [[nodiscard]] std::vector<Location<N>> get_same_col(
-	const Location<N> left, const std::vector<Location<N>>& right)
-{
+	const Location<N> left,
+	const std::vector<Location<N>>& right) noexcept(true)
+{ // std::copy_if could throw std::bad_alloc
 	std::vector<Location<N>> output{};
 	const auto predicate = [&left](Location<N> loc) {
 		return is_same_col(left, loc);
@@ -231,8 +233,9 @@ inline constexpr bool is_same_block(const ItrT begin, const ItrT end) noexcept
 // return all in same block
 template<int N>
 [[nodiscard]] std::vector<Location<N>> get_same_block(
-	const Location<N> left, const std::vector<Location<N>>& right)
-{
+	const Location<N> left,
+	const std::vector<Location<N>>& right) noexcept(true)
+{ // std::copy_if could throw std::bad_alloc
 	std::vector<Location<N>> output{};
 	const auto predicate = [&left](Location<N> loc) {
 		return is_same_block(left, loc);
