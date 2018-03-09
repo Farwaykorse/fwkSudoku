@@ -346,7 +346,13 @@ TEST(Options, test_Value)
 {
 	[[maybe_unused]] bool set {};
 	static_assert(not noexcept(TE.O_1.test(Value{2})));
-	EXPECT_THROW(set = TE.O_1.test(Value{15}), std::out_of_range);
+	EXPECT_NO_THROW(set = TE.O_1.test(Value{0}));
+	EXPECT_NO_THROW(set = TE.O_1.test(Value{4}));
+	EXPECT_THROW(set = TE.O_1.test(Value{5}), std::out_of_range);
+	EXPECT_THROW(set = TE.O_1.test(Value{13}), std::out_of_range);
+	EXPECT_NO_THROW(set = Options<9>().test(Value{5}));
+	EXPECT_NO_THROW(set = Options<9>().test(Value{9}));
+	EXPECT_THROW(set = Options<9>().test(Value{10}), std::out_of_range);
 	EXPECT_TRUE(TE.O_1.test(Value{2}));
 	EXPECT_TRUE(TE.O_3.test(Value{2}));
 	EXPECT_FALSE(TE.O_3.test(Value{1}));
