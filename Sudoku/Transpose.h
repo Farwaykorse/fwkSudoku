@@ -90,9 +90,9 @@ Board<T, N> transpose_row_block(Board<T, N>&& board) noexcept(
 {
 	for (int i{0}; i < elem_size<N>; ++i)
 	{
-		auto start = [](int i) constexpr
+		auto start = [](int x) constexpr
 		{
-			return (i % base_size<N> + 1) * base_size<N>;
+			return (x % base_size<N> + 1) * base_size<N>;
 		};
 		for (int j = start(i); j < elem_size<N>; ++j)
 		{
