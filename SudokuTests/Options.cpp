@@ -881,14 +881,28 @@ TEST(Options, External)
 }
 TEST(Options, operator_min)
 {
-	const Options<9> O_1{std::bitset<10>{"0111011011"}};
-	const Options<9> O_2{std::bitset<10>{"1010101111"}};
+	const Options<9> all{};
+	const Options<9> empty{std::bitset<10>{"0000000000"}};
+	constexpr Options<9> E_1{Value{0}};
+	const Options<9> O_0{std::bitset<10>{"0111011011"}};
+	const Options<9> O_1{std::bitset<10>{"0111011010"}};
+	const Options<9> O_2{std::bitset<10>{"1010101110"}};
+	const Options<9> A_0{std::bitset<10>{"0101010001"}};
 	const Options<9> A_1{std::bitset<10>{"0101010000"}};
 	const Options<9> A_2{std::bitset<10>{"1000100100"}};
 
 	static_assert(noexcept(O_1 - O_2));
+	EXPECT_DEBUG_DEATH(O_1 - all, "Assertion failed: is_answer");
+#ifndef _DEBUG
+	EXPECT_EQ(O_1 - all, empty);
+#endif // !_DEBUG
+	EXPECT_EQ(O_0 - O_1, E_1);
+	EXPECT_EQ(O_0 - O_2, A_0);
 	EXPECT_EQ(O_1 - O_2, A_1);
 	EXPECT_EQ(O_2 - O_1, A_2);
+	EXPECT_EQ(O_1 - O_1, empty);
+	EXPECT_EQ(O_1 - empty, O_1);
+	EXPECT_EQ(empty - O_2, empty);
 }
 
 } // namespace SudokuTests::OptionsTest

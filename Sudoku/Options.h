@@ -494,6 +494,7 @@ template<int E>
 inline Options<E>
 	operator-(const Options<E>& left, const Options<E>& right) noexcept
 {
+	assert(is_answer_fast(right)); // do not remove the answer-bit
 	return left & XOR(left, right);
 }
 

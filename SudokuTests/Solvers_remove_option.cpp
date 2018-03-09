@@ -22,6 +22,7 @@
 #include <Sudoku/Board.h>
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
+#include <Sudoku/exceptions.h>
 // Debug Output
 #include "print_Options.h"
 // library
@@ -36,9 +37,41 @@ using namespace ::Sudoku;
 
 TEST(Solver, remove_option)
 {
+	using L2 = Location<2>;
+
 	// remove_option(location, int value)
 	Board<Options<4>, 2> board{};
 	ASSERT_EQ(board[1][0], Options<4>{}) << "incorrect instantiation";
+
+	static_assert(not noexcept(remove_option(board, L2{2}, Value{1})));
+	// throw from Board::at(loc)
+	EXPECT_NO_THROW(remove_option(board, L2{0}, Value{1}));
+	EXPECT_NO_THROW(remove_option(board, L2{15}, Value{1}));
+	EXPECT_THROW(
+		remove_option(board, L2{-1}, Value{1}), error::invalid_Location);
+	EXPECT_THROW(
+		remove_option(board, L2{16}, Value{1}), error::invalid_Location);
+	// value out of bounds (2-sided)
+	EXPECT_DEBUG_DEATH(
+		remove_option(board, L2(2), Value{0}), "Assertion failed: is_valid");
+#ifdef _DEBUG
+	EXPECT_DEATH(
+		remove_option(board, L2(2), Value{9}), "Assertion failed: is_valid");
+#else
+	EXPECT_THROW(remove_option(board, L2{2}, Value{9}), std::out_of_range);
+#endif // !_DEBUG
+	// last option (not answer)
+	board[0][2] = std::bitset<5>{"01001"}; // 3
+	EXPECT_DEBUG_DEATH(
+		remove_option(board, L2(2), Value{3}),
+		"Assertion failed: count > 0");
+	// TODO throw from single_option?
+
+	// return type
+	static_assert(
+		std::is_same_v<int, decltype(remove_option(board, L2{}, Value{1}))>);
+	//===------------------------------------------------------------------===//
+
 	// value is not an option -> return 0 (only value is missing)
 	board[0][0] = std::bitset<5>{"11011"};
 	board[1][0] = std::bitset<5>{"11011"};
@@ -66,11 +99,46 @@ TEST(Solver, remove_option)
 	EXPECT_GT(remove_option(board, Location<2>(2, 1), Value{2}), 1);
 	EXPECT_EQ(board[2][1].count(), 0U);
 	EXPECT_EQ(board[2][1].count_all(), 1U);
+}
 
-	// SEE deathtest: last option (not answer)
-	// check input
-	// SEE deathtest: loc out of bounds
-	// SEE deathtest: value out of bounds
+TEST(Solver, remove_option_Options)
+{
+	using L2 = Location<2>;
+	using V  = Value;
+	using O2 = Options<4>;
+	Board<O2, 2> board{};
+
+	static_assert(not noexcept(remove_option(board, L2{2}, Options<4>{})));
+	// death answer-bit in mask
+	auto mask = Options<4>{Value{0}};
+	EXPECT_DEBUG_DEATH(
+		remove_option(board, L2{0}, mask),
+		"Assertion failed: is_answer_fast.mask.");
+	// throw from Board::at(loc)
+	mask = Options<4>{Value{1}};
+	EXPECT_NO_THROW(remove_option(board, L2{0}, mask));
+	EXPECT_NO_THROW(remove_option(board, L2{15}, mask));
+	EXPECT_THROW(remove_option(board, L2{-1}, mask), error::invalid_Location);
+	EXPECT_THROW(remove_option(board, L2{16}, mask), error::invalid_Location);
+	// throw when last option removed
+	mask = Options<4>{std::bitset<5>{"11110"}};
+	EXPECT_THROW(remove_option(board, L2{4}, mask), error::invalid_Board);
+	// TODO throw from single_option?
+
+	// return type
+	static_assert(
+		std::is_same_v<int, decltype(remove_option(board, L2{}, mask))>);
+
+	// return 0 when answered
+	board[0][0] = O2{Value{4}};
+	mask = O2{std::bitset<5>{"11000"}};
+	EXPECT_EQ(remove_option(board, L2{0, 0}, mask), 0);
+	board[1][0] = O2{};
+	EXPECT_EQ(remove_option(board, L2{1, 0}, mask), 2);
+
+	// trigger single_option
+	board[1][1] = O2{std::bitset<5>{"11101"}};
+	EXPECT_EQ(remove_option(board, L2{1, 1}, mask), 15);
 }
 
 TEST(Solver, remove_option_section)
@@ -287,31 +355,6 @@ TEST(Solver, deathtests_remove_option)
 	using vV = std::vector<Value>;
 
 	Board<Options<4>, 2> B{};
-	//===------------------------------------------------------------------===//
-	// remove_option(location, int value)
-	// last option (not answer)
-	B[0][2] = std::bitset<5>{"01001"}; // 3
-	EXPECT_DEBUG_DEATH(
-		remove_option(B, Location<2>(2), Value{3}),
-		"Assertion failed: count > 0");
-	// check input
-	// loc out of bounds (2-sided)
-#ifdef _DEBUG
-	EXPECT_DEBUG_DEATH(
-		remove_option(B, Location<2>(-1), Value{3}),
-		"Assertion failed: is_valid");
-	EXPECT_DEBUG_DEATH(
-		remove_option(B, Location<2>(20), Value{3}),
-		"Assertion failed: is_valid");
-	// value out of bounds (2-sided)
-	EXPECT_DEBUG_DEATH(
-		remove_option(B, Location<2>(2), Value{9}),
-		"Assertion failed: is_valid");
-	EXPECT_DEBUG_DEATH(
-		remove_option(B, Location<2>(2), Value{0}),
-		"Assertion failed: is_valid");
-#endif // _DEBUG
-
 	//===------------------------------------------------------------------===//
 	// remove_option_section(SectionT, Location ignore, int value)
 	// deathtest: loc-> !is_answer(value)
