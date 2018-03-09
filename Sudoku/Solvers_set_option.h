@@ -13,6 +13,7 @@
 #include "Solvers_find.h"
 #include "Solvers_remove_option.h"
 #include "Value.h"
+#include "exceptions.h"
 #include <gsl/gsl>
 #include <algorithm>   // find_if
 #include <iterator>    // next
@@ -62,8 +63,7 @@ inline int set_Value(
 	auto& elem = board.at(loc);
 	if (not elem.test(value))
 	{ // value is option nor answer
-		throw std::logic_error{"Invalid Board"};
-		// Invalid_Board{"not an option"}
+		throw error::invalid_Board();
 	}
 	else if (not is_answer(elem))
 	{

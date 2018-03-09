@@ -44,7 +44,40 @@ TEST(Solver, set_Value)
 	// clang-format on
 
 	// Set single value
+	//====----------------------------------------------------------------====//
+	// precondition checks
 	Board<Options<4>, 2> board;
+	static_assert(not noexcept(set_Value(board, L(), Value{2})));
+	EXPECT_NO_THROW(set_Value(board, L{0}, Value{1}));
+	EXPECT_NO_THROW(set_Value(board, L{15}, Value{1}));
+	EXPECT_NO_THROW(set_Value(board, L{1}, Value{4}));
+#ifdef _DEBUG
+	EXPECT_DEBUG_DEATH(
+		set_Value(board, Location<2>{-1}, Value{1}), ".*: is_valid.loc.");
+	EXPECT_DEBUG_DEATH(
+		set_Value(board, Location<2>{16}, Value{1}), ".*: is_valid.loc.");
+	EXPECT_DEBUG_DEATH(
+		set_Value(board, Location<2>{1}, Value{0}), ".*: is_valid<N>.value.");
+	EXPECT_DEBUG_DEATH(
+		set_Value(board, Location<2>{1}, Value{5}), ".*: is_valid<N>.value.");
+#else
+	// thrown by Board::at(Location)
+	EXPECT_THROW(set_Value(board, L{-1}, Value{1}), error::invalid_Location);
+	EXPECT_THROW(set_Value(board, L{16}, Value{1}), error::invalid_Location);
+	// thrown by Options::test(Value)->std::bitset::test()
+	EXPECT_THROW(set_Value(board, L{1}, Value{5}), std::out_of_range);
+#endif // _DEBUG
+
+	// test: value is not an option
+	board[1][1] = std::bitset<5>{"11011"}; // options: 1,3,4
+	EXPECT_THROW(set_Value(board, L(1, 1), Value{2}), error::invalid_Board);
+	EXPECT_THROW(set_Value(board, L(1, 1), Value{2}), std::logic_error);
+	// test: already set to another answer
+	board[1][2] = Options<4>{Value{2}};
+	EXPECT_THROW(set_Value(board, L{1, 2}, Value{1}), error::invalid_Board);
+	EXPECT_THROW(set_Value(board, L{1, 2}, Value{1}), std::logic_error);
+
+	board.clear(); // reset
 	ASSERT_EQ(board[1][0], Options<4>{}) << "incorrect instantiation";
 	EXPECT_EQ(set_Value(board, L(2), Value{3}), 4);
 	EXPECT_EQ(board[0][2], Value{3});
@@ -54,17 +87,17 @@ TEST(Solver, set_Value)
 	EXPECT_EQ(set_Value(board, L(15), Value{4}), 4);
 	ASSERT_EQ(board[3][3], Value{4});
 	EXPECT_EQ(set_Value(board, L(3, 3), Value{4}), 0); // <==
-	// test: value is not an option
-	board[1][1] = std::bitset<5>{"11011"}; // options: 1,3,4
-	EXPECT_THROW(set_Value(board, L(1, 1), Value{2}), std::logic_error);
-	// test: already set to another answer
-	EXPECT_THROW(set_Value(board, L(0), Value{1}), std::logic_error);
+
 	// test: handle incorrectly marked as answer
 	board[1][2] = std::bitset<5>{"11110"};
 	ASSERT_FALSE(board[1][2].test(Value{0}));
 	EXPECT_EQ(set_Value(board, L(1, 2), Value{1}), 4);
 	EXPECT_EQ(board[1][2].count_all(), 1U);
+}
 
+TEST(Solver, set_Value_vector)
+{
+	// TODO precondition checks, exceptions etc.
 	{ // using Value as input
 		using V = Value;
 		// clang-format off
@@ -90,7 +123,7 @@ TEST(Solver, set_Value)
 		EXPECT_EQ(B2[1][1], Value{3});
 		EXPECT_EQ(B2[3][1], Value{4});
 	}
-	{ // using int as input
+	{      // using int as input
 		// clang-format off
 		const std::vector<int> v1
 		{	// start	// after set_Value
@@ -201,11 +234,11 @@ TEST(Solver, set_section_locals)
 	B[2][1] = set{"11001"};
 	worker  = set{"00111"};
 	EXPECT_EQ(set_section_locals(B, B.block(2), 2, worker), 4);
-	EXPECT_TRUE(B[3][0].all());    // self block
-	EXPECT_TRUE(B[3][1].all());    // self block
+	EXPECT_TRUE(B[3][0].all());     // self block
+	EXPECT_TRUE(B[3][1].all());     // self block
 	EXPECT_EQ(B[3][2].count(), 2U); // rest row
 	EXPECT_EQ(B[3][3].count(), 2U); // rest row
-	EXPECT_TRUE(B[0][1].all());    // rest col
+	EXPECT_TRUE(B[0][1].all());     // rest col
 	EXPECT_TRUE(B[0][2].all());
 	EXPECT_TRUE(B[0][3].all());
 	// same block, same col
@@ -214,11 +247,11 @@ TEST(Solver, set_section_locals)
 	B[1][1] = set{"00111"};
 	worker  = set{"11001"};
 	EXPECT_EQ(set_section_locals(B, B.block(0), 2, worker), 4);
-	EXPECT_TRUE(B[0][0].all());    // self block
+	EXPECT_TRUE(B[0][0].all());     // self block
 	EXPECT_EQ(B[0][1].count(), 2U); // self block
-	EXPECT_TRUE(B[0][2].all());    // rest row
-	EXPECT_TRUE(B[0][3].all());    // rest row
-	EXPECT_TRUE(B[1][0].all());    // self block
+	EXPECT_TRUE(B[0][2].all());     // rest row
+	EXPECT_TRUE(B[0][3].all());     // rest row
+	EXPECT_TRUE(B[1][0].all());     // self block
 	EXPECT_EQ(B[1][1].count(), 2U); // self block
 	EXPECT_TRUE(B[1][2].all());
 	EXPECT_TRUE(B[1][3].all());
@@ -348,8 +381,7 @@ TEST(Solver, set_unique)
 		set_unique(board, board.row(1), Value{3}), ".*itr != end");
 	board = cB1; // reset
 	// Section is not a part of board
-	EXPECT_DEBUG_DEATH(
-		set_unique(board, cB1.row(0), Value{1}), ".*board");
+	EXPECT_DEBUG_DEATH(set_unique(board, cB1.row(0), Value{1}), ".*board");
 	// Value is not unique
 	EXPECT_DEBUG_DEATH(
 		set_unique(board, board.row(2), Value{4}), ".*std::find_if");
@@ -441,17 +473,7 @@ TEST(Solver, set_uniques)
 TEST(Solver, deathtest_set_option)
 {
 	Board<Options<4>, 2> B{};
-	{ // precondition checks
-#ifdef _DEBUG
-		EXPECT_DEBUG_DEATH(
-			set_Value(B, Location<2>{18}, Value{1}), ".*is_valid.loc.");
-		EXPECT_DEBUG_DEATH(
-			set_Value(B, Location<2>{1}, Value{6}), ".*is_valid<N>.value.");
-#else
-		EXPECT_ANY_THROW(set_Value(B, Location<2>{18}, Value{1}));
-		EXPECT_ANY_THROW(set_Value(B, Location<2>{1}, Value{6}));
-#endif // _DEBUG
-	}
+
 	{ // SetValue(Itr, Itr)
 		const std::vector<int> v1(10);
 		const std::vector<int> v2(18);
@@ -531,4 +553,3 @@ TEST(Solver, deathtest_set_option)
 }
 
 } // namespace SudokuTests::SolversTest
-
