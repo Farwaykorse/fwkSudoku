@@ -105,7 +105,10 @@ inline constexpr Value to_Value(T val)
 	}
 	else
 	{
-		if (val < 0) throw std::domain_error("Value can not be negative");
+		if (val < 0)
+		{
+			throw std::domain_error("Value can not be negative");
+		}
 		return to_Value<N>(gsl::narrow_cast<size_t>(val));
 	}
 }
