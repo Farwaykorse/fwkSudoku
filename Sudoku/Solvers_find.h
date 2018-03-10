@@ -304,7 +304,7 @@ Options appearance_once(SectionT section) noexcept
 	{
 		using Section = typename Board_Section::Section<Options, N>;
 		static_assert(std::is_base_of_v<Section, SectionT>);
-		using namespace Utility_;
+		using ::Sudoku::Utility_::iterator_to;
 		static_assert(
 			iterator_to<typename SectionT::const_iterator, const Options>);
 	}
