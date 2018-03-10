@@ -96,6 +96,110 @@ TEST(Solver, find_locations)
 	EXPECT_EQ(list.size(), size_t{1});
 	EXPECT_EQ(list[0], loc(2));
 }
+
+TEST(Solver, subset_locations)
+{
+	{
+		using L       = Location<2>;
+		using B       = std::bitset<5>;
+		using Options = Options<4>;
+		Board<Options, 2> board{};
+		board.at(L{0})    = B{"01111"};
+		board.at(L{1})    = B{"11111"}; // should be 10000
+		board.at(L{2})    = B{"00111"};
+		board.at(L{3})    = B{"00101"};
+		board.at(L{1, 0}) = B{"00100"}; // answer 2
+		board.at(L{1, 1}) = B{"11110"}; // incorrect marked as anwer
+		board.at(L{1, 2}) = B{"11111"};
+		board.at(L{1, 3}) = B{"11111"};
+		board.at(L{2, 0}) = B{"11111"};
+		board.at(L{2, 1}) = B{"11111"};
+		board.at(L{2, 2}) = B{"11111"};
+		board.at(L{2, 3}) = B{"11111"};
+		board.at(L{3, 0}) = B{"11111"};
+		board.at(L{3, 1}) = B{"11111"};
+		board.at(L{3, 2}) = B{"11111"};
+		board.at(L{3, 3}) = B{"11111"};
+
+		// return type
+		static_assert(std::is_same_v<
+					  std::vector<L>,
+					  decltype(subset_locations(board, Options()))>);
+		static_assert(
+			std::is_same_v<
+				std::vector<L>,
+				decltype(subset_locations<2>(board.row(L{0}), Options()))>);
+
+		// exceptions
+		// - vector out-of-memory
+		// - push_back: strong exception guarantee
+		//	 Location is nothrow move constructable
+		static_assert(noexcept(subset_locations(board, Options{})));
+		static_assert(
+			noexcept(subset_locations<2>(board.row(L{0}), Options())));
+
+		// inputs
+		// normal sample
+		Options item{B{"00111"}};
+		auto result = subset_locations(board, item);
+		ASSERT_EQ(result.size(), 2u);
+		EXPECT_EQ(result[0], L{2});
+		EXPECT_EQ(result[1], L{3});
+		result = subset_locations(board, board[L{0}]);
+		ASSERT_EQ(result.size(), 3u);
+		EXPECT_EQ(result[0], L{0});
+		EXPECT_EQ(result[2], L{3});
+		result = subset_locations(board, Options{B{"00101"}});
+		EXPECT_EQ(result.size(), 1u);
+		// answer sample
+		result = subset_locations(board, Options{Value{2}});
+		ASSERT_EQ(result.size(), 0u);
+		// full sample
+		result = subset_locations(board, Options());
+		ASSERT_EQ(result.size(), 14u); // 2 marked as answer
+		EXPECT_EQ(result[0], L(0));
+		EXPECT_EQ(result[13], L(15));
+		// empty sample
+		result = subset_locations(board, Options{B{"00000"}});
+		ASSERT_EQ(result.size(), 0u);
+		result = subset_locations(board, Options{B{"00001"}});
+		ASSERT_EQ(result.size(), 0u);
+		// invalid sample (answer-bit set)
+		result = subset_locations(board, Options{B{"11110"}});
+		ASSERT_EQ(result.size(), 0u);
+
+		// only on the row:
+		item         = B{"00111"};
+		auto section = board.row(L{0});
+		result       = subset_locations<2>(section, item);
+		ASSERT_EQ(result.size(), 2u);
+		EXPECT_EQ(result[0], L{2});
+		EXPECT_EQ(result[1], L{3});
+		result = subset_locations<2>(section, board[L{0}]);
+		ASSERT_EQ(result.size(), 3u);
+		EXPECT_EQ(result[0], L{0});
+		EXPECT_EQ(result[2], L{3});
+		result = subset_locations<2>(section, Options{B{"00101"}});
+		EXPECT_EQ(result.size(), 1u);
+		// answer sample
+		result = subset_locations<2>(section, Options{Value{2}});
+		ASSERT_EQ(result.size(), 0u);
+		// full sample
+		result = subset_locations<2>(section, Options());
+		ASSERT_EQ(result.size(), 4u); // 2 marked as answer
+		EXPECT_EQ(result[0], L(0));
+		EXPECT_EQ(result[3], L(3));
+		// empty sample
+		result = subset_locations<2>(section, Options{B{"00000"}});
+		ASSERT_EQ(result.size(), 0u);
+		result = subset_locations<2>(section, Options{B{"00001"}});
+		ASSERT_EQ(result.size(), 0u);
+		// invalid sample (answer-bit set)
+		result = subset_locations<2>(section, Options{B{"11110"}});
+		ASSERT_EQ(result.size(), 0u);
+	}
+}
+
 TEST(Solver, appearance_once)
 {
 	// clang-format off
@@ -167,7 +271,7 @@ TEST(Solver, appearance_once)
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(result = appearance_once<2>(B1.row(0)));
-	EXPECT_EQ(result.count_all(), 0U);    // <==
+	EXPECT_EQ(result.count_all(), 0U);   // <==
 	EXPECT_FALSE(result.test(Value{1})); // <==
 	EXPECT_TRUE(result.is_empty());      // <==
 	//===------------------------------------------------------------------===//

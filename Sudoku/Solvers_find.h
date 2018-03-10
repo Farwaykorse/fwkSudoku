@@ -34,8 +34,14 @@ auto find_locations(SectionT, Value, int rep_count = elem_size<N>);
 template<int N, typename ItrT>
 auto find_locations(ItrT begin, ItrT end, Value, int rep_count = elem_size<N>);
 
-template<int N, typename SectionT>
-auto find_locations(SectionT, Options<elem_size<N>> value);
+template<int N, typename SectionT, typename Options = Options<elem_size<N>>>
+auto find_locations(SectionT, Options);
+
+template<int N, typename Options = Options<elem_size<N>>>
+auto subset_locations(const Board<Options, N>&, const Options) noexcept(true);
+
+template<int N, typename SectionT, typename Options = Options<elem_size<N>>>
+auto subset_locations(const SectionT, const Options) noexcept(true);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 Options appearance_once(SectionT section) noexcept;
@@ -101,12 +107,11 @@ auto find_locations(
 	return locations;
 }
 
-//	List locations in [section] equal to [value]
-template<int N, typename SectionT>
-auto find_locations(const SectionT section, const Options<elem_size<N>> value)
+//	List locations in [section] equal to [sample]
+template<int N, typename SectionT, typename Options>
+auto find_locations(const SectionT section, const Options sample)
 {
 	{
-		using Options       = Options<elem_size<N>>;
 		using Board_Section = Board_Section::Section<Options, N>;
 		static_assert(std::is_base_of_v<Board_Section, SectionT>);
 	}
@@ -114,13 +119,62 @@ auto find_locations(const SectionT section, const Options<elem_size<N>> value)
 
 	const auto end = section.cend();
 
-	for (auto last{std::find(section.cbegin(), end, value)}; last != end;
-		 last = std::find(last, end, value))
+	for (auto last{std::find(section.cbegin(), end, sample)}; last != end;
+		 last = std::find(last, end, sample))
 	{
 		locations.push_back(last.location());
 		++last;
 	}
 	return locations;
+}
+
+// All locations where available options are a subset of the sample.
+template<int N, typename Options>
+auto subset_locations(
+	const Board<Options, N>& board, const Options sample) noexcept(true)
+{ // vector creation and growth could potentially throw, out of memory.
+	using Location = Location<N>;
+	std::vector<Location> list{};
+	list.reserve(sample.count()); // minimum
+
+	for (int i{}; i < full_size<N>; ++i)
+	{
+		const auto& other  = board[Location(i)];
+		if (!is_answer_fast(other) && // exclude processed answers
+			// containing a subset of the values in [item]
+			(other == sample || shared(sample, other) == other))
+		{
+			list.push_back(Location(i));
+		}
+	}
+	return list;
+}
+
+// All locations where available options are a subset of the sample.
+template<int N, typename SectionT, typename Options>
+auto subset_locations(
+	const SectionT section, const Options sample) noexcept(true)
+{ // vector creation and growth could potentially throw, out of memory.
+	{
+		using Board_Section = Board_Section::Section<Options, N>;
+		static_assert(std::is_base_of_v<Board_Section, SectionT>);
+	}
+	using Location = Location<N>;
+	std::vector<Location> list{};
+	list.reserve(sample.count());
+
+	const auto end = section.cend();
+	for (auto itr = section.cbegin(); itr != end; ++itr)
+	{
+		const auto& other = *itr;
+		if (!is_answer_fast(other) && // exclude processed answers
+			// containing a subset of the values in [item]
+			(other == sample || shared(sample, other) == other))
+		{
+			list.push_back(itr.location());
+		}
+	}
+	return list;
 }
 
 //===----------------------------------------------------------------------===//

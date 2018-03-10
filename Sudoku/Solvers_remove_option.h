@@ -74,19 +74,23 @@ int remove_option(
 		const auto count = item.remove_option(value).count();
 		assert(count > 0); // never trigger, removed last option
 
+#if MULTIPLE_ON_REMOVE == false
 		if (count == 1)
 		{
 			changes += single_option(board, loc);
 		}
+#else
+		//if (count < 4)
+		{
+			changes += multi_option(board, loc, count);
+		}
+#endif // multiple
 #if DUAL_ON_REMOVE == true
 		if (count == 2)
 		{
 			changes += dual_option(board, loc);
 		}
 #endif // dual
-#if MULTIPLE_ON_REMOVE == true
-		changes += multi_option(board, loc, count);
-#endif // multiple
 	}
 	return changes;
 }

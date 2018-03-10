@@ -14,7 +14,9 @@ int single_option(Board<Options, N>&, Location<N>, Value);
 template<int N, typename Options = Options<elem_size<N>>>
 int dual_option(Board<Options, N>&, Location<N>);
 template<int N, typename Options = Options<elem_size<N>>>
-int multi_option(Board<Options, N>&, Location<N>, size_t = 0);
+int multi_option(Board<Options, N>&, Location<N>);
+template<int N, typename Options = Options<elem_size<N>>>
+constexpr int multi_option(Board<Options, N>&, Location<N>, size_t count);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int unique_in_section(Board<Options, N>&, SectionT);

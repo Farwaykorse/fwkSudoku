@@ -104,7 +104,6 @@ TEST(Solver, remove_option)
 TEST(Solver, remove_option_Options)
 {
 	using L2 = Location<2>;
-	using V  = Value;
 	using O2 = Options<4>;
 	Board<O2, 2> board{};
 

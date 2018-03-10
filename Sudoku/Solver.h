@@ -34,7 +34,7 @@ inline int single_option(Board<Options, N>& board, const Location<N> loc)
 {
 	assert(is_valid(loc));
 
-	if (const Value answer{get_answer(board[loc])})
+	if (const Value answer{get_answer(board.at(loc))})
 	{
 		return single_option(board, loc, answer);
 	}
@@ -47,11 +47,11 @@ template<int N, typename Options>
 inline int single_option(
 	Board<Options, N>& board, const Location<N> loc, const Value value)
 {
-	assert(is_valid(loc));
-	assert(is_valid<N>(value));
-
-	assert(board.at(loc).test(value));
-
+	{
+		assert(is_valid(loc));
+		assert(is_valid<N>(value));
+		assert(board.at(loc).test(value));
+	}
 	int changes{};
 	changes += set_Value(board, loc, value);
 	changes += remove_option_section(board, board.row(loc), loc, value);
@@ -77,7 +77,7 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 	};
 
 	int changes{};
-	const Options& item{board[loc]};
+	const Options& item{board.at(loc)};
 	for (int i{}; i < full_size<N>; ++i)
 	{
 		// find exact same in board
@@ -100,7 +100,7 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 					sorted_loc(Location(i)),
 					available(item));
 			}
-			// run don't if already answered in one of the previous
+			// run not if already answered
 			if (is_same_block(loc, Location(i)) && !item.is_answer())
 			{
 				// NOTE this is slow
@@ -115,87 +115,64 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 	return changes;
 }
 
-//	finds equal sets in section:
-//	removes form others in section
+// Find subsets in any related sections,
+// and remove the values from rest of these sections.
 template<int N, typename Options>
-inline int
-	multi_option(Board<Options, N>& board, const Location<N> loc, size_t count)
+inline int multi_option(Board<Options, N>& board, const Location<N> loc)
 {
-	using Location = Location<N>;
-	{
-		assert(is_valid(loc));
-		assert(count <= elem_size<N>);
-	}
-	if (count == 0)
-	{
-		count = static_cast<size_t>(board[loc].count());
-	}
-	constexpr auto specialize = 2; // use specialization below and including
-	constexpr auto max_size   = elem_size<N> / 2; //?? Assumption, Proof needed
-	if (specialize < count && count <= max_size)
-	{
-		int changes{};                   // performance counter
-		const Options& item{board[loc]}; // input item, to find matches to
-		std::vector<Location> list{};    // potential matches
+	assert(is_valid(loc));
 
-		// traverse whole board
-		for (int i{}; i < full_size<N>; ++i)
-		{
-			const auto& other = board[Location(i)];
-			// find exact same in board
-			// TODO rework to also pick-up cels containing [2,n) values
-			if (other.count() > 0 && // include not processed answers
-				other.count() <= base_size<N> &&
-				(other == item || (item & other).count() == other.count()))
-			{
-				list.push_back(Location(i));
-			}
-		}
-		//	This algorithm is supprizingly robust
-		//	Example, showing operation if no specializations where applied
-		//			start	end	/	start	end		/	start	end
-		//	item =	1,2,3	3	/	1,2,3	1,2,3	/	1,2,3	1,2,3
-		//	list1	1,2		1	/	1,2,3	1,2,3	/	1,2		1,2
-		//	list2	2		2	/	1,2		1,2		/	1,2		1,2
-		//	extern	1,2,3,4	4	/	1,2,3,4	4		/	1,2,3,4	4
-		//
-		//	item	1,2,3,4		1,2,3,4
-		//	list1	1,2,3		1,2,3
-		//	list2	1,2,3		1,2,3
-		//	list3	1,2,3		1,2,3
-		//	other	1,2,3,4,5	5
-		//	Only the 2nd example could only be processed by this method
-		//
-		if (list.size() >= count)
-		{
-			// find if: count amount of items share an element
-			// Remove values for rest of shared elements
-			if (const auto in_row{get_same_row(loc, list)};
-				in_row.size() == count)
-			{
-				changes += remove_option_section(
-					board, board.row(loc), in_row, available(item));
-			}
-			if (const auto in_col{get_same_col(loc, list)};
-				in_col.size() == count)
-			{
-				changes += remove_option_section(
-					board, board.col(loc), in_col, available(item));
-			}
-			if (const auto in_block{get_same_block(loc, list)};
-				in_block.size() == count)
-			{
-				// NOTE this is slow
-				changes += remove_option_section(
-					board, board.block(loc), in_block, available(item));
-			}
-		}
-		return changes;
-	}
-	return 0;
+	return multi_option(board, loc, board.at(loc).count());
 }
 
-//	Solver: Find and set options appearing only once in a section as answer
+// Find subsets in any related section,
+// and remove the values from rest of these sections.
+template<int N, typename Options>
+constexpr int multi_option(
+	Board<Options, N>& board, const Location<N> loc, const size_t count)
+{	
+	assert(is_valid(loc));
+
+	// set execution domain & specializations
+	switch (count)
+	{
+	case 0: return 0; // already anwered
+	case 1: return single_option(board, loc);
+	case 2: return dual_option(board, loc);
+	case elem_size<N>: return 0; // no result anyway
+	default: assert(count < elem_size<N>); break;
+	}
+
+	int changes{};                      // performance counter
+	const Options& item{board.at(loc)}; // input item, to match with
+	assert(item.count() == count);
+
+	auto list = subset_locations(board, item);
+
+	// Further select per section.
+	// When (subset size == #options) then: all answers in this selection.
+	// Therefor: Remove values for rest of section.
+	if (const auto in_row{get_same_row(loc, list)}; in_row.size() == count)
+	{
+		changes += remove_option_section(
+			board, board.row(loc), in_row, available(item));
+	}
+	if (const auto in_col{get_same_col(loc, list)}; in_col.size() == count)
+	{
+		changes += remove_option_section(
+			board, board.col(loc), in_col, available(item));
+	}
+	if (const auto in_block{get_same_block(loc, list)};
+		in_block.size() == count)
+	{
+		// NOTE this is slow
+		changes += remove_option_section(
+			board, board.block(loc), in_block, available(item));
+	}
+	return changes;
+}
+
+// Solver: Find options appearing only once in a section and set as answer
 template<int N, typename Options, typename SectionT>
 inline int unique_in_section(Board<Options, N>& board, const SectionT section)
 {
