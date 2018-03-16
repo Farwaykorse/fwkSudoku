@@ -99,8 +99,8 @@ public:
 		static_assert(!std::is_abstract<typeT>(), "-- inherits or declares at least one pure virtual function");
 
 		// default constructor: typeT()
-		static_assert(! std::is_default_constructible<typeT>(), "-- default constructor");
-		static_assert(! std::is_nothrow_default_constructible<typeT>(), "-- notrow default constructor");
+		static_assert(std::is_default_constructible<typeT>(), "-- default constructor");
+		static_assert(std::is_nothrow_default_constructible<typeT>(), "-- notrow default constructor");
 		static_assert(! std::is_trivially_default_constructible<typeT>(), "++ default, nothing virtual");
 
 		// copy constructor: typeT(const typeT&)

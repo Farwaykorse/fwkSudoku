@@ -152,6 +152,8 @@ constexpr bool is_same_row(const ItrT begin, const ItrT end) noexcept
 	{
 		static_assert(Utility_::is_forward<ItrT>);
 	}
+	if (begin == end) return false;
+
 	const auto itr = begin + 1;
 	return std::all_of(
 		itr, end, [begin](Location<N> i) { return is_same_row<N>(*begin, i); });
@@ -174,8 +176,8 @@ template<int N>
 
 // check
 template<int N>
-inline constexpr bool is_same_col(
-	const Location<N> left, const Location<N> right) noexcept
+inline constexpr bool
+	is_same_col(const Location<N> left, const Location<N> right) noexcept
 {
 	return (is_valid<N>(left) && is_valid<N>(right)) &&
 		   left.col() == right.col();
@@ -188,6 +190,8 @@ inline constexpr bool is_same_col(const ItrT begin, const ItrT end) noexcept
 	{
 		static_assert(Utility_::is_forward<ItrT>);
 	}
+	if (begin == end) return false;
+
 	const auto itr = begin + 1;
 	return std::all_of(
 		itr, end, [begin](Location<N> i) { return is_same_col<N>(*begin, i); });
@@ -210,8 +214,8 @@ template<int N>
 
 // check
 template<int N>
-inline constexpr bool is_same_block(
-	const Location<N> left, const Location<N> right) noexcept
+inline constexpr bool
+	is_same_block(const Location<N> left, const Location<N> right) noexcept
 {
 	return (is_valid<N>(left) && is_valid<N>(right)) &&
 		   left.block() == right.block();
@@ -224,6 +228,8 @@ inline constexpr bool is_same_block(const ItrT begin, const ItrT end) noexcept
 	{
 		static_assert(Utility_::is_forward<ItrT>);
 	}
+	if (begin == end) return false;
+
 	const auto itr = begin + 1;
 	return std::all_of(itr, end, [begin](Location<N> i) {
 		return is_same_block<N>(*begin, i);

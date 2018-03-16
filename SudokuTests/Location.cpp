@@ -1056,6 +1056,17 @@ TEST(Location_Utilities, is_same_section)
 
 	// is_same_section (taking iterators)
 	using L = Location<3>;
+	// empty can cause issue with begin+1 (SEH exception)
+	const std::vector<L> empty{};
+	const std::vector<L> single{L(4)};
+	static_assert(noexcept(is_same_row<3>(empty.begin(), empty.end())));
+	EXPECT_FALSE(is_same_row<3>(empty.begin(), empty.end()));
+	EXPECT_TRUE(is_same_row<3>(single.begin(), single.end()));
+	EXPECT_FALSE(is_same_col<3>(empty.begin(), empty.end()));
+	EXPECT_TRUE(is_same_col<3>(single.begin(), single.end()));
+	EXPECT_FALSE(is_same_block<3>(empty.begin(), empty.end()));
+	EXPECT_TRUE(is_same_block<3>(single.begin(), single.end()));
+	// normal operation
 	const std::vector<L> row{
 		L(0), L(1), L(2), L(3), L(4), L(5), L(6), L(7), L(8)};
 	const std::vector<L> col{
