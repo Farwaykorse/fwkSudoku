@@ -147,7 +147,7 @@ constexpr int multi_option(
 	const Options& item{board.at(loc)}; // input item, to match with
 	assert(item.count() == count);
 
-	auto list = subset_locations(board, item);
+	auto list = list_where_subset(board, item);
 
 	// Further select per section.
 	// When (subset size == #options) then: all answers in this selection.
