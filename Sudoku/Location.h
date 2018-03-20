@@ -22,12 +22,9 @@ namespace Sudoku
 template<int N>
 class Location
 {
-	static_assert(N > 1, "Location.h: base_size value too small");
+	using Size = Size<N>;
 
-	using Size            = Size<N>;
-	using self_type       = Location;
-	using value_type      = int;
-	using difference_type = int;
+	static_assert(N > 1, "Location.h: base_size value too small");
 
 	// prefere signed integers for calculations
 	static_assert(std::is_signed_v<decltype(Size::base)>);
@@ -35,35 +32,35 @@ class Location
 
 	static constexpr int location(int row, int col) noexcept
 	{
-		return row * Size::elem + col;
+		return row * Size::elem + col; // [0,full)
 	}
 
 public:
 	// constructors
 	constexpr Location() = default;
-	explicit constexpr Location(int elem) noexcept : id_(elem) {}
+	explicit constexpr Location(int element) noexcept : id_(element) {}
 	constexpr Location(int row, int col) noexcept : id_(location(row, col)) {}
 
 	// information
-	constexpr int element() const noexcept { return id_; } // default [0,81)
-	constexpr int row() const noexcept { return id_ / Size::elem; } // [0,9)
-	constexpr int col() const noexcept { return id_ % Size::elem; } // [0,9)
+	constexpr int element() const noexcept { return id_; } // default [0,full)
+	constexpr int row() const noexcept { return id_ / Size::elem; } // [0,elem)
+	constexpr int col() const noexcept { return id_ % Size::elem; } // [0,elem)
 	constexpr int block() const noexcept
 	{
-		return row() / Size::base * Size::base + col() / Size::base;
-	} // default [0,9)
+		return row() / Size::base * Size::base + col() / Size::base; // [0,elem)
+	}
 	constexpr int block_row() const noexcept
 	{
-		return row() % Size::base;
-	} // default [0,3)
+		return row() % Size::base; // [0,base)
+	}
 	constexpr int block_col() const noexcept
 	{
-		return col() % Size::base;
-	} // default [0,3)
+		return col() % Size::base; // [0,base)
+	}
 	constexpr int block_elem() const noexcept
 	{
-		return block_row() * Size::base + block_col();
-	} // default [0,9)
+		return block_row() * Size::base + block_col(); // [0,elem)
+	}
 
 	// comparison
 	friend constexpr bool
@@ -91,12 +88,12 @@ class Location_Block
 
 	static constexpr int block_element(int row, int col) noexcept
 	{
-		return row * Size::base + col;
+		return row * Size::base + col; // [0,elem)
 	}
-	static constexpr Location block_loc(int id, int elem) noexcept
+	static constexpr Location block_loc(int id, int element) noexcept
 	{
-		const int row{(id / Size::base) * Size::base + elem / Size::base};
-		const int col{(id % Size::base) * Size::base + elem % Size::base};
+		const int row{(id / Size::base) * Size::base + element / Size::base};
+		const int col{(id % Size::base) * Size::base + element % Size::base};
 		return Location(row, col);
 	}
 	static constexpr Location block_loc(int id, int row, int col) noexcept
@@ -106,12 +103,11 @@ class Location_Block
 
 public:
 	constexpr Location_Block() = default;
-	explicit constexpr Location_Block(Location loc) noexcept
-		: loc_(loc)
+	explicit constexpr Location_Block(Location loc) noexcept : loc_(loc)
 	{ // empty constructor
 	}
-	constexpr Location_Block(int id, int elem) noexcept
-		: loc_(block_loc(id, elem))
+	constexpr Location_Block(int id, int element) noexcept
+		: loc_(block_loc(id, element))
 	{ // empty constructor
 	}
 	constexpr Location_Block(int id, int row, int col) noexcept
@@ -119,13 +115,13 @@ public:
 	{ // empty constructor
 	}
 
-	constexpr int id() const noexcept { return loc_.block(); }
+	constexpr int id() const noexcept { return loc_.block(); } // [0,elem)
 	constexpr int element() const noexcept
 	{
-		return loc_.block_elem();
+		return loc_.block_elem(); // [0,elem)
 	}
-	constexpr int row() const noexcept { return loc_.block_row(); }
-	constexpr int col() const noexcept { return loc_.block_col(); }
+	constexpr int row() const noexcept { return loc_.block_row(); } // [0,base)
+	constexpr int col() const noexcept { return loc_.block_col(); } // [0,base)
 
 	constexpr operator Location() const noexcept { return loc_; }
 
