@@ -31,6 +31,7 @@ template<typename T, int N = 3>
 class Board
 {
 	static_assert(N > 1, "Board.h base_size value too small");
+	static constexpr size_t Size = full_size<N>;
 
 	using Location    = Location<N>;
 	using Section     = Board_Section::Section<T, N>;
@@ -42,6 +43,19 @@ class Board
 	using const_Block = Board_Section::const_Block<T, N>;
 
 public:
+	using value_type       = T;
+	using size_type        = size_t;
+	using difference_type  = int;
+	using reference        = value_type&;
+	using const_reference  = value_type const&;
+	using pointer          = value_type*;
+	using const_pointer    = value_type const*;
+	using iterator         = typename std::vector<T>::iterator;
+	using const_iterator   = typename std::vector<T>::const_iterator;
+	using reverse_iterator = typename std::vector<T>::reverse_iterator;
+	using const_reverse_iterator =
+		typename std::vector<T>::const_reverse_iterator;
+
 	Board() noexcept;
 	// initialize with non-default value
 	explicit Board(const T&);
@@ -50,10 +64,16 @@ public:
 	void clear();
 
 	// Query properties
-	constexpr size_t size() const noexcept { return full_size<N>; }
-	bool operator==(const Board&) const;
+	[[nodiscard]] static constexpr size_t size() noexcept { return Size; }
+	[[nodiscard]] static constexpr size_t max_size() noexcept { return size(); }
+	[[nodiscard]] static constexpr bool empty() noexcept { return false; }
+	[[nodiscard]] bool operator==(const Board&) const;
 
 	// Element access
+	[[nodiscard]] T& front() noexcept { return board_[0]; }
+	[[nodiscard]] const T& front() const noexcept { return board_[0]; }
+	[[nodiscard]] T& back() noexcept { return board_[size() - 1]; }
+	[[nodiscard]] const T& back() const noexcept { return board_[size() - 1]; }
 	// Checked
 	T& at(Location);
 	const T& at(Location) const;
@@ -73,13 +93,6 @@ public:
 	const const_InBetween operator[](int row) const noexcept;
 
 	// Iterators
-	// inherrit all from internal
-	using iterator         = typename std::vector<T>::iterator;
-	using const_iterator   = typename std::vector<T>::const_iterator;
-	using reverse_iterator = typename std::vector<T>::reverse_iterator;
-	using const_reverse_iterator =
-		typename std::vector<T>::const_reverse_iterator;
-
 	constexpr iterator begin() noexcept;
 	constexpr iterator end() noexcept;
 	constexpr const_iterator cbegin() const noexcept;
@@ -164,7 +177,7 @@ template<typename T, int N>
 inline void Board<T, N>::clear()
 { // all elements to the empty value
 	board_.clear();
-	board_.resize(full_size<N>);
+	board_.resize(size());
 }
 
 //===----------------------------------------------------------------------===//
