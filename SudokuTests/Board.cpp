@@ -142,7 +142,6 @@ namespace compiletime
 	static_assert(std::is_same_v<typeT::size_type, decltype(typeT().size())>);
 	static_assert(std::is_same_v<typeT::difference_type, int>);
 	static_assert(std::is_same_v<typeT::reference, int&>);
-	static_assert(std::is_same_v<typeT::reference const, int&>);
 	static_assert(std::is_same_v<typeT::const_reference, int const&>);
 	static_assert(std::is_same_v<typeT::pointer, int*>);
 	static_assert(std::is_same_v<typeT::const_pointer, int const*>);
