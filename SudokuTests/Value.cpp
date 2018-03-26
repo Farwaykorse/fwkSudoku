@@ -97,7 +97,9 @@ namespace compiletime
 	static_assert(std::is_constructible_v<typeT, bool>); // ... via size_t
 	// explicit construction from Value:
 	static_assert(std::is_constructible_v<size_t, typeT>);
+	static_assert(std::is_nothrow_constructible_v<size_t, typeT>);
 	static_assert(std::is_constructible_v<bool, typeT>);
+	static_assert(std::is_nothrow_constructible_v<bool, typeT>);
 	static_assert(not std::is_constructible_v<int, typeT>);
 	// all others fail, unless same as size_t
 
