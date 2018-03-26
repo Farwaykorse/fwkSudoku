@@ -477,8 +477,9 @@ namespace compiletime_InBetween
 	using typeT = Board<int, 3>::InBetween;
 
 	static_assert(std::is_class_v<typeT>);
-	static_assert(not std::is_trivial_v<typeT>);            // ++
-	static_assert(not std::is_trivially_copyable_v<typeT>); // ++
+	static_assert(not std::is_trivial_v<typeT>); // ++
+	// different in Clang
+	// static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 	static_assert(std::is_standard_layout_v<typeT>);
 	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>);
@@ -521,8 +522,9 @@ namespace compiletime_const_InBetween
 	using typeT = Board<int, 3>::const_InBetween;
 
 	static_assert(std::is_class_v<typeT>);
-	static_assert(not std::is_trivial_v<typeT>);            // ++
-	static_assert(not std::is_trivially_copyable_v<typeT>); // ++
+	static_assert(not std::is_trivial_v<typeT>); // ++
+	// different in Clang
+	// static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 	static_assert(std::is_standard_layout_v<typeT>);
 	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>);
