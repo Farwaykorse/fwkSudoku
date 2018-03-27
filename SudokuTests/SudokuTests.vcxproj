@@ -391,6 +391,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include=".clang-tidy" />
     <None Include="Coverage\coverage.ps1" />
   </ItemGroup>
   <ItemGroup>

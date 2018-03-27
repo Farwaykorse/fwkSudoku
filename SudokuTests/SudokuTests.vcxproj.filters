@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Coverage\coverage.ps1" />
+    <None Include=".clang-tidy" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="precompiled.h">
