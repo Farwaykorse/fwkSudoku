@@ -8,6 +8,6 @@
 GTEST_API_ int main(int argc, char** argv)
 {
 	// std::cout << "Running main() from SudokuTests.cpp\n";
-	testing::InitGoogleTest(&argc, argv); // parse commandline flags
+	testing::InitGoogleTest(&argc, argv); // parse command-line flags
 	return RUN_ALL_TESTS();
 }

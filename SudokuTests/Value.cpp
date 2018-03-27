@@ -20,7 +20,7 @@
 #include <Sudoku/Value.h>
 // Helpers
 
-// aditional
+// additional
 #include <vector>
 #include <type_traits>
 
@@ -70,7 +70,7 @@ namespace compiletime
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
-	// copy assingment
+	// copy assignment
 	static_assert(std::is_copy_assignable_v<typeT>);
 	static_assert(std::is_nothrow_copy_assignable_v<typeT>);
 	static_assert(std::is_trivially_copy_assignable_v<typeT>);

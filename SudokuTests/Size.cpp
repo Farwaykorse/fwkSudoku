@@ -21,7 +21,7 @@
 
 // Helpers
 
-// aditional
+// additional
 
 
 namespace SudokuTests::SizeTest
@@ -32,7 +32,7 @@ namespace compiletime
 { // Type properties
 	using typeT = Size<3>;
 	static_assert(
-		std::is_class<typeT>::value, "a class, hiding datarepresentation");
+		std::is_class<typeT>::value, "a class, hiding data representation");
 	static_assert(std::is_trivial<typeT>::value); // ++
 	// trivial default constructors & trivially copyable
 	static_assert(std::is_trivially_copyable<typeT>::value); // ++
@@ -44,9 +44,9 @@ namespace compiletime
 	// static_assert(std::has_unique_object_representations<typeT>::value);
 	// C++17	trivially_copyable same object representation
 	static_assert(std::is_empty<typeT>::value);
-	// class with datamembers, nothing virtual
+	// class with data members, nothing virtual
 	static_assert(!std::is_polymorphic<typeT>::value); // --
-	// inherits atleast one virtual function
+	// inherits at least one virtual function
 	static_assert(!std::is_final<typeT>::value); // cannot be used as base class
 	static_assert(!std::is_abstract<typeT>::value); // --
 	// inherits or declares at least one pure virtual function
@@ -67,7 +67,7 @@ namespace compiletime
 	static_assert(std::is_nothrow_move_constructible<typeT>::value);   // ++
 	static_assert(std::is_trivially_move_constructible<typeT>::value); // ++
 
-	// copy assingment
+	// copy assignment
 	static_assert(std::is_copy_assignable<typeT>::value);           // ++
 	static_assert(std::is_nothrow_copy_assignable<typeT>::value);   // ++
 	static_assert(std::is_trivially_copy_assignable<typeT>::value); // ++

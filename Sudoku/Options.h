@@ -47,7 +47,7 @@ public:
 
 	[[nodiscard]] constexpr size_t size() const noexcept;
 	[[nodiscard]] size_t count() const noexcept;     // count available options
-	[[nodiscard]] size_t count_all() const noexcept; // count all (incl answer)
+	[[nodiscard]] size_t count_all() const noexcept; // count all (incl. answer)
 	[[nodiscard]] bool all() const noexcept; // test all options available
 	[[nodiscard]] bool test(Value) const;    // if an option, or answer
 	[[nodiscard]] bool is_answer() const noexcept; // is set to answer
@@ -78,7 +78,7 @@ public:
 
 	// combine available options
 	Options& operator+=(const Options&) noexcept;
-	// xor
+	// XOR
 	Options& XOR(const Options&) noexcept;
 
 	// Debug Use Only, don't depend on it's result
@@ -160,14 +160,14 @@ namespace impl
 	static_assert(exp2_(8U) == 0x100U);
 	static_assert(exp2_(9U) == 0x200U);
 
-	// generate a bitmask to use a unique bit per value
+	// generate a bit-mask to use a unique bit per value
 	//   empty for Value outside domain.
 	template<int E>
 	[[nodiscard]] inline constexpr size_t exp2_(Value value) noexcept
 	{
 		return (value > Value{E}) ? 0U : exp2_(static_cast<size_t>(value));
 	}
-	// generate a bitmask to set all bits in std::bitset
+	// generate a bit-mask to set all bits in std::bitset
 	[[nodiscard]] inline constexpr size_t all_set(size_t elements) noexcept
 	{
 		return (exp2_(++elements) - 1U);
@@ -230,7 +230,7 @@ template<int E>
 inline Options<E>& Options<E>::clear() noexcept
 {
 	data_.reset(); // all false
-	//???	Note: anwerbit unset too -> answered?
+	//???	Note: answer-bit unset too -> answered?
 	return *this;
 }
 
@@ -320,8 +320,8 @@ inline size_t Options<E>::count() const noexcept
 	return 0; // NO protection vs incorrect answer bit
 }
 
-//	(!) counts options, including set answers == ingores answer-bit
-//	Returns 1 if {1 option, set as answer} || {1 option, not set as anwer}
+//	(!) counts options, including set answers == ignores answer-bit
+//	Returns 1 if {1 option, set as answer} || {1 option, not set as answer}
 //	Returns 0 if {empty} || {no option, but not set as answer}
 template<int E>
 inline size_t Options<E>::count_all() const noexcept
@@ -392,7 +392,7 @@ inline bool Options<E>::is_empty() const noexcept
 }
 
 // determine the answer value, even if not marked
-//   use with is_answer[_fast]() to determine if flaged as answer
+//   use with is_answer[_fast]() to determine if flagged as answer
 template<int E>
 inline Value get_answer(const Options<E>& options) noexcept
 {
@@ -507,7 +507,7 @@ inline Options<E> XOR(const Options<E>& A, const Options<E>& B) noexcept
 }
 
 //	Shared options (binary AND)
-//	Prefere: shared(left, right)
+//	Prefer: shared(left, right)
 template<int E>
 inline Options<E>
 	operator&(const Options<E>& left, const Options<E>& right) noexcept

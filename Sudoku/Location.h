@@ -7,7 +7,7 @@
 // Everything is `constexpr` and `noexcept`.
 // All values are `const`.
 //
-// A separate Location_Block class offers block properies.
+// A separate Location_Block class offers block properties.
 // There is no implicit conversion between these.
 //
 //===----------------------------------------------------------------------===//
@@ -26,7 +26,7 @@ class Location
 
 	static_assert(N > 1, "Location.h: base_size value too small");
 
-	// prefere signed integers for calculations
+	// prefer signed integers for calculations
 	static_assert(std::is_signed_v<decltype(Size::base)>);
 	static_assert(std::is_signed_v<decltype(Size::elem)>);
 
@@ -83,7 +83,7 @@ class Location_Block
 	using Size     = Size<N>;
 	using Location = Location<N>;
 
-	// prefere signed integers for calculations
+	// prefer signed integers for calculations
 	static_assert(std::is_signed_v<decltype(Size::base)>);
 
 	static constexpr int block_element(int row, int col) noexcept

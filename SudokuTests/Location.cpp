@@ -21,7 +21,7 @@
 #include <Sudoku/Location_Utilities.h>
 // Helpers
 #include <Sudoku/Board.h>
-// aditional
+// additional
 #include <vector>
 #include <type_traits>
 
@@ -61,7 +61,7 @@ namespace compiletime
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
-	// copy assingment
+	// copy assignment
 	static_assert(not std::is_copy_assignable_v<typeT>);
 	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);
 	static_assert(not std::is_trivially_copy_assignable_v<typeT>);
@@ -127,7 +127,7 @@ namespace Location_Block_compiletime
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
-	// copy assingment
+	// copy assignment
 	static_assert(not std::is_copy_assignable_v<typeT>);
 	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);
 	static_assert(not std::is_trivially_copy_assignable_v<typeT>);
@@ -938,7 +938,7 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<3>>{Location<3>(0)})));
 	EXPECT_TRUE(noexcept(list2{}));
 	EXPECT_TRUE(noexcept(is_valid(std::vector<Location<3>>{})));
-	// std::is_sorted can throw std::bad_aloc
+	// std::is_sorted can throw std::bad_alloc
 	// TODO From C++20 std::is_sorted will be constexpr
 	// static_assert(!is_valid<2>(list2{})); // empty()
 	EXPECT_FALSE(is_valid(list2{})) << "can't be empty";

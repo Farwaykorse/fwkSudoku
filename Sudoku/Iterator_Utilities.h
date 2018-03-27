@@ -10,7 +10,7 @@
 
 namespace Sudoku::Utility_
 {
-// test iteratortype
+// test iterator-type
 template<typename Itr>
 using Category_ = typename std::iterator_traits<Itr>::iterator_category;
 

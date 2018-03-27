@@ -143,7 +143,7 @@ int remove_option_section(
 		assert(is_valid(ignore));
 		assert(is_valid<N>(value));
 		assert(is_same_section(section, ignore));
-		assert(is_answer(board.at(ignore), value)); // first set as anwer!
+		assert(is_answer(board.at(ignore), value)); // first set as answer!
 	}
 	int changes{0};
 	const auto end = section.cend();

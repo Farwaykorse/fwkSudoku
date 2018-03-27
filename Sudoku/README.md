@@ -34,7 +34,7 @@ Don't use:
 /Gm	      Prefere /MP (disabling sets /Gm-)
 ```
 
-Usefull:
+Useful:
 ```
 /nologo   Disable to see the command-line input
 /E
@@ -232,7 +232,7 @@ Release:
 Enable warnings:  
 [lefiticus/cppbestpractices](https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#gcc--clang)  
 Some warnings are explicitly mentioned so they stay active when an encompassing
-set is dissabled.
+set is disabled.
 ````
 -Weverything         Enable all warnings (includes -pedantic)
 /W4                  Enable -Wall and -Wextra
@@ -263,7 +263,7 @@ Unknown warnings:
   -Wlogical-op             Logical operations used where probably bitwise is wanted
   -Wuseless-cast           Casting to the same type
 ````
-Disable (temporary) unwanted/uncompatible warnings:
+Disable (temporary) unwanted/incompatible warnings:
 ``````
 -Wno-c++98-compat   (Weverything) Compatibility with C++98 is not needed
 -Wno-c++98-compat-pedantic

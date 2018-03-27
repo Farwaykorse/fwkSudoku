@@ -1,6 +1,6 @@
 ﻿//===--- Sudoku/Board_Sections.h                                        ---===//
 //
-// Section access for Board<T,N>, as if a seperate object
+// Section access for Board<T,N>, as if a separate object
 // using iterators and operator[]
 //===----------------------------------------------------------------------===//
 //
@@ -415,12 +415,12 @@ public:
 	}
 
 	// Bidirectional iterator
-	self_type& operator--() noexcept // predecrement
+	self_type& operator--() noexcept // pre-decrement
 	{
 		--elem_;
 		return *this;
 	}
-	const self_type operator--(int) noexcept // postdecrement
+	const self_type operator--(int) noexcept // post-decrement
 	{
 		const self_type pre{*this};
 		operator--();
@@ -552,12 +552,12 @@ public:
 	}
 
 	// Bidirectional iterator
-	self_type& operator--() noexcept // predecrement
+	self_type& operator--() noexcept // pre-decrement
 	{
 		--elem_;
 		return *this;
 	}
-	const self_type operator--(int) noexcept // postdecrement
+	const self_type operator--(int) noexcept // post-decrement
 	{
 		const self_type pre{*this};
 		operator--();

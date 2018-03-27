@@ -136,7 +136,7 @@ constexpr int multi_option(
 	// set execution domain & specializations
 	switch (count)
 	{
-	case 0: return 0; // already anwered
+	case 0: return 0; // already answered
 	case 1: return single_option(board, loc);
 	case 2: return dual_option(board, loc);
 	case elem_size<N>: return 0; // no result anyway
@@ -151,7 +151,7 @@ constexpr int multi_option(
 
 	// Further select per section.
 	// When (subset size == #options) then: all answers in this selection.
-	// Therefor: Remove values for rest of section.
+	// Therefore: Remove values for rest of section.
 	if (const auto in_row{get_same_row(loc, list)}; in_row.size() == count)
 	{
 		changes += remove_option_section(

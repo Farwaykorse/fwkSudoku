@@ -178,7 +178,7 @@ inline int set_section_locals(
 		static_assert(std::is_base_of_v<Section_, SectionT>);
 		using iterator = typename SectionT::const_iterator;
 		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(rep_count > 1);  // should have been cought by caller
+		assert(rep_count > 1);  // should have been caught by caller
 								// use the set_uniques specialization
 		assert(rep_count <= N); // won't fit in single block-row/col
 		assert(values.count_all() > 0);
@@ -219,7 +219,7 @@ inline int set_section_locals(
 		using BlockT   = Board_Section::Block<Options, N>;
 		using iterator = typename BlockT::const_iterator;
 		static_assert(Utility_::iterator_to<iterator, const Options>);
-		assert(rep_count > 1);  // should have been cought by caller
+		assert(rep_count > 1);  // should have been caught by caller
 								// use the set_uniques specialization
 		assert(rep_count <= N); // won't fit in single block-row/col
 		assert(values.count_all() > 0);

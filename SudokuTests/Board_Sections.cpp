@@ -24,7 +24,7 @@
 #include <initializer_list>
 #include <set>
 #include <numeric> // accumulate
-#include <random>  // randomaccess tests
+#include <random>  // random-access tests
 #include <type_traits>
 
 
@@ -86,7 +86,7 @@ namespace compiletime
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
-	// copy assingment
+	// copy assignment
 	static_assert(not std::is_copy_assignable_v<typeT>);
 	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);
 	static_assert(not std::is_trivially_copy_assignable_v<typeT>);
@@ -154,8 +154,8 @@ TEST(Board_Sections, Row)
 		static_assert(noexcept(c.id()));
 		static_assert(noexcept(b.id()));
 	}
-	ASSERT_NO_THROW(Board<int>().row(0)); //??? intellisense: incomplete type
-	// see deathtests
+	ASSERT_NO_THROW(Board<int>().row(0)); //??? IntelliSense: incomplete type
+	// see death tests
 	ASSERT_NO_THROW(Board<int>().row(Location<3>(12)));
 
 	EXPECT_NO_THROW(Board<int>().row(0)[0]);
@@ -166,7 +166,7 @@ TEST(Board_Sections, Row)
 	EXPECT_EQ(cA.row(0)[3], 3);
 	EXPECT_EQ(A.row(3)[3], 15);
 	EXPECT_NE(A.row(3)[3], 10);
-	// see deathtests
+	// see death tests
 
 	EXPECT_NO_THROW(Board<int>().row(Location<3>(13))[0]);
 	EXPECT_NO_THROW(A.row(Location<2>(13))[0]);

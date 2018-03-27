@@ -653,7 +653,7 @@ TEST(Solver, single_option)
 	EXPECT_NO_THROW(single_option(B1, L(1, 0), Value{4}));
 	EXPECT_EQ(B1[0][0].count(), 2U);
 	EXPECT_EQ(B1[1][2].count(), 3U);
-	// cascase
+	// cascade
 	B1[2][1] = Value{1};
 	ASSERT_TRUE(is_answer(B1[2][1], Value{1}));
 	EXPECT_EQ(B1[0][0].count(), 2U);
@@ -689,7 +689,7 @@ TEST(Solver, single_option)
 	EXPECT_EQ(single_option(B2, L(1, 0)), 6);
 	EXPECT_EQ(B2[0][0].count(), 2U);
 	EXPECT_EQ(B2[1][2].count(), 3U);
-	// cascase
+	// cascade
 	B2[2][1] = Value{1};
 	ASSERT_TRUE(is_answer(B2[2][1], Value{1}));
 	EXPECT_EQ(B2[0][0].count(), 2U);
@@ -946,7 +946,7 @@ TEST(Solver, multi_option)
 		<< "after 310";
 
 	// clang-format off
-	// 9*9 partials forming a set: 3 cels containing (123,12,13)
+	// 9*9 partials forming a set: 3 cells containing (123,12,13)
 	const std::vector<int> b3
 	{ //							 //  _ _ _ _ _ _ _ _ _ _ _ _
 		0, 0, 0,  0, 0, 0,  0, 0, 0, // |       |       |       | row: 1,2; 1,2,3; 1,2,3

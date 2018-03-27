@@ -249,7 +249,7 @@ TEST(Solver, set_section_locals)
 			set_section_locals(B, B.block(0), 1, worker), "count");
 #endif
 	}
-	// option doesn't excist in section
+	// option doesn't exist in section
 	B.clear();
 	B[0][0] = set{"00100"}; // ans 2
 	B[0][1] = set{"11111"};
@@ -469,7 +469,7 @@ TEST(Solver, set_unique)
 
 	board = cB1; // reset
 
-	// Deathtests
+	// Death tests
 #ifdef _DEBUG
 	EXPECT_DEBUG_DEATH(
 		set_unique(board, board.row(2), Value{12}), ".*is_valid<N>.value");
@@ -590,7 +590,7 @@ TEST(Solver, deathtest_set_option)
 	// set_uniques
 	//{
 	//	Board<Options<4>, 2> B1{};
-	//	// deathtest: a unique Value in worker doesn't exist in the section
+	//	// death test: a unique Value in worker doesn't exist in the section
 	//	// 1	24	324	24
 	//	B1[0][0] = std::bitset<5>{"00010"}; // ans 1
 	//	EXPECT_FALSE(is_option(B1[0][0], Value{1}));

@@ -362,7 +362,7 @@ TEST(Options, test_Value)
 
 TEST(Options, is_answer)
 {
-	{ // memberfunction
+	{ // member-function
 		static_assert(noexcept(TE.O_1.is_answer()));
 		EXPECT_TRUE(TE.A_1.is_answer());
 		EXPECT_TRUE(TE.A_2.is_answer());
@@ -391,7 +391,7 @@ TEST(Options, is_answer)
 	{ // test for specific answer
 		static_assert(noexcept(is_answer(TE.O_1, Value{1})));
 		static_assert(noexcept(is_answer(TE.A_1, Value{4})));
-		// assertion see deathtests
+		// assertion see death tests
 		EXPECT_TRUE(is_answer(TE.A_2, Value{2}));
 		EXPECT_FALSE(is_answer(TE.A_2, Value{3}));
 		EXPECT_FALSE(is_answer(TE.A_1, Value{0}));
@@ -515,7 +515,7 @@ TEST(Options, available)
 	std::vector<Value> result{};
 
 	static_assert(noexcept(available(TE.O_1)));
-	// allocation can throw std::bad_aloc
+	// allocation can throw std::bad_alloc
 
 	ASSERT_NO_THROW(result = available(TE.O_2));
 	EXPECT_EQ(result.size(), size_t{2});
@@ -640,7 +640,7 @@ TEST(Options, mf_add)
 	// add_noexcept(int)
 	Options<4> TMP{std::bitset<5>{"00000"}};
 	static_assert(noexcept(TMP.add_nocheck(Value{1})));
-	// assertion deathtests
+	// assertion death tests
 #ifdef _DEBUG
 	EXPECT_DEATH({ TMP.add_nocheck(Value{5}); }, "Assertion failed: .*");
 #else
@@ -676,7 +676,7 @@ TEST(Options, mf_set)
 	EXPECT_NO_THROW(TMP.set_nocheck(Value{1}));
 	EXPECT_EQ(TMP.DebugString(), "00010");
 	EXPECT_TRUE(is_answer(TMP.set_nocheck(Value{2}), Value{2}));
-	// assertion deathtests
+	// assertion death tests
 	EXPECT_TRUE(TMP.clear().is_empty());
 #ifdef _DEBUG
 	EXPECT_DEATH({ TMP.set_nocheck(Value{15}); }, "Assertion failed: .*");

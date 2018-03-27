@@ -28,7 +28,7 @@
 #include <initializer_list>
 #include <set>
 #include <numeric> // accumulate
-#include <random>  // randomaccess tests
+#include <random>  // random-access tests
 #include <type_traits>
 
 
@@ -60,9 +60,9 @@ namespace compiletime
 	// static_assert(std::has_unique_object_representations_v<typeT>,"");//C++17
 	// trivially_copyable same object representation
 	static_assert(not std::is_empty_v<typeT>);
-	// class with no datamembers; nothing virtual
+	// class with no data-members; nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>); // --
-	// inherits atleast one virtual function
+	// inherits at least one virtual function
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>); // ++
 	// inherits or declares at least one pure virtual function");
@@ -82,7 +82,7 @@ namespace compiletime
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(not std::is_trivially_move_constructible_v<typeT>);
 
-	// copy assingment
+	// copy assignment
 	static_assert(std::is_copy_assignable_v<typeT>);               // ++
 	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);   // ++
 	static_assert(not std::is_trivially_copy_assignable_v<typeT>); // ++
@@ -160,7 +160,7 @@ TEST(Board, Construction)
 	EXPECT_NO_THROW((Board<Options<9>, 3>()));
 	EXPECT_NO_THROW((Board<int, 4>()));
 	EXPECT_NO_THROW((Board<Options<16>, 4>()));
-	EXPECT_NO_THROW(Board<int>()) << "fallback on default value for base_size";
+	EXPECT_NO_THROW(Board<int>()) << "fall back on default value for base_size";
 	EXPECT_NO_THROW(Board<Options<9>>());
 	EXPECT_NO_THROW((Board<int, 3>{})) << "initializer list";
 
@@ -292,7 +292,7 @@ TEST(Board, empty)
 TEST(Board, operator_equal)
 {
 	static_assert(not noexcept(Board<int>() == Board<int>(3)));
-	// assuming the used algorithms only throw `std::bad_aloc`
+	// assuming the used algorithms only throw `std::bad_alloc`
 	// check if operator== for type T (here int) can throw
 	EXPECT_EQ(Board<int>(), Board<int>());
 	EXPECT_EQ(Board<int>(), (Board<int, 3>()));
@@ -500,7 +500,7 @@ namespace compiletime_InBetween
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
-	// assingment
+	// assignment
 	static_assert(not std::is_copy_assignable_v<typeT>); // ++
 	static_assert(not std::is_move_assignable_v<typeT>); // ++
 
@@ -545,7 +545,7 @@ namespace compiletime_const_InBetween
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
-	// assingment
+	// assignment
 	static_assert(not std::is_copy_assignable_v<typeT>); // ++
 	static_assert(not std::is_move_assignable_v<typeT>); // ++
 

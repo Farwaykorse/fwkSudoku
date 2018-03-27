@@ -20,7 +20,7 @@
 #include <Sudoku/Transpose.h>
 // Helpers
 
-// aditional
+// additional
 #include <vector>
 #include <type_traits>
 

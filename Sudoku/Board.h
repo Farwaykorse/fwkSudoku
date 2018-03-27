@@ -4,7 +4,7 @@
 //===----------------------------------------------------------------------===//
 //
 // accepts only squared dimensions
-// gives full, row, collumn and block access
+// gives full, row, column and block access
 // no processing functionality
 //
 //===----------------------------------------------------------------------===//
@@ -134,7 +134,7 @@ private:
 }; // class Board
 
 //===----------------------------------------------------------------------===//
-// Board - memberfunctions
+// Board - member-functions
 //===----------------------------------------------------------------------===//
 // Board - Constructors
 template<typename T, int N>
