@@ -403,9 +403,5 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Condition="$(VCLibPackagePath) == ''">
-    <!-- Unsupported! to enable vcpkg libraries in the Clang configurations -->
-    <Import Project="$(LOCALAPPDATA)\vcpkg\vcpkg.user.targets" />
-  </ImportGroup>
   <ImportGroup Label="ExtensionTargets" />
 </Project>

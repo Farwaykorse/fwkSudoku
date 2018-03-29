@@ -392,18 +392,10 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="Board.natvis">
-      <SubType>Designer</SubType>
-    </Natvis>
+    <Natvis Include="Board.natvis" />
     <Natvis Include="Location.natvis" />
-    <Natvis Include="Options.natvis">
-      <SubType>Designer</SubType>
-    </Natvis>
+    <Natvis Include="Options.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Condition="$(VCLibPackagePath) == ''">
-    <!-- Unsupported! to enable vcpkg libraries in the Clang configurations -->
-    <Import Project="$(LOCALAPPDATA)\vcpkg\vcpkg.user.targets" />
-  </ImportGroup>
   <ImportGroup Label="ExtensionTargets" />
 </Project>
