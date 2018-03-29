@@ -390,7 +390,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
-    <None Include="Solver.md" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Board.natvis">

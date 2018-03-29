@@ -85,6 +85,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
-    <None Include="Solver.md" />
   </ItemGroup>
 </Project>
