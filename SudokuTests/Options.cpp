@@ -276,7 +276,6 @@ TEST(Options, Construction)
 		EXPECT_TRUE(Options<4>{Value{5}}.is_empty());
 		EXPECT_TRUE(Options<9>{Value{10}}.is_empty());
 #endif // !_DEBUG
-
 	}
 }
 
@@ -698,7 +697,7 @@ TEST(Options, mf_booleanComparison)
 	EXPECT_FALSE(operator==(TE.A_1, Value{15}));
 	EXPECT_FALSE(operator==(Value{15}, TE.A_1));
 	EXPECT_TRUE(operator==(Value{15}, TE.E_1)); // empty, 0000
-#endif // _DEBUG
+#endif                                          // _DEBUG
 	EXPECT_EQ(TE.A_1, Value{1});
 	EXPECT_EQ(Value{1}, TE.A_1);
 	EXPECT_EQ(TE.A_2, Value{2});
@@ -791,7 +790,7 @@ TEST(Options, mf_constOperators)
 	constexpr Options<9> y9{Value{1}};
 	static_assert(y9[Value{1}]);
 
-	[[maybe_unused]] bool val{};
+	[[maybe_unused]] bool val {};
 #ifdef _DEBUG
 	EXPECT_DEATH({ val = TE.O_3[Value{5}]; }, "Assertion failed: .*");
 #else
@@ -867,10 +866,14 @@ TEST(Options, ConstructorTesting)
 TEST(Options, External)
 {
 	const Options<4> O_3{std::bitset<5>{"00101"}}; // single option 2
-	const Options<4> E_1{Value{0}};                // empty answer "00001"
+	[[maybe_unused]] const Options<4> E_1 {
+		Value { 0 }
+	};                                             // empty answer "00001"
 	const Options<4> E_2{std::bitset<5>{"00000"}}; // empty
 	const Options<4> E_3{std::bitset<5>{"00001"}}; // empty option
-	const Options<4> A_1{Value{1}};                // answer 1
+	[[maybe_unused]] const Options<4> A_1 {
+		Value { 1 }
+	};                                             // answer 1
 	const Options<4> A_2{std::bitset<5>{"00100"}}; // answer 2
 	// XOR(a,b)
 	static_assert(noexcept(XOR(O_3, O_3)));
