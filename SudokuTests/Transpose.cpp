@@ -29,17 +29,21 @@ namespace SudokuTests::Transpose
 {
 using namespace ::Sudoku;
 
-static_assert(
-	std::is_same_v<Board<int, 2>, decltype(transpose_row_col(Board<int, 2>()))>);
+static_assert(std::is_same_v<
+			  Board<int, 2>,
+			  decltype(transpose_row_col(Board<int, 2>()))>);
 static_assert(std::is_same_v<
 			  Board<int, 2>,
 			  decltype(transpose_row_block(Board<int, 2>()))>);
 
-const Board<int, 2> board_test{};
-static_assert(noexcept(transpose_row_col(Board<int, 2>())));
-static_assert(!noexcept(transpose_row_col(board_test)));
-static_assert(noexcept(transpose_row_block(Board<int, 2>())));
-static_assert(!noexcept(transpose_row_block(board_test)));
+TEST(Transpose, Instantiate)
+{ // encapsulate the variable (Clang warning: missing-variable-declarations)
+	const Board<int, 2> board_test{};
+	static_assert(noexcept(transpose_row_col(Board<int, 2>())));
+	static_assert(!noexcept(transpose_row_col(board_test)));
+	static_assert(noexcept(transpose_row_block(Board<int, 2>())));
+	static_assert(!noexcept(transpose_row_block(board_test)));
+}
 
 TEST(Transpose, row_col)
 {
