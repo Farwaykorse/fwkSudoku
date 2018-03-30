@@ -48,8 +48,8 @@ public:
 	[[nodiscard]] constexpr size_t size() const noexcept;
 	[[nodiscard]] size_t count() const noexcept;     // count available options
 	[[nodiscard]] size_t count_all() const noexcept; // count all (incl. answer)
-	[[nodiscard]] bool all() const noexcept; // test all options available
-	[[nodiscard]] bool test(Value) const;    // if an option, or answer
+	[[nodiscard]] bool all() const noexcept;       // test all options available
+	[[nodiscard]] bool test(Value) const;          // if an option, or answer
 	[[nodiscard]] bool is_answer() const noexcept; // is set to answer
 	[[nodiscard]] bool is_empty() const noexcept;
 
@@ -84,8 +84,16 @@ public:
 	// Debug Use Only, don't depend on it's result
 	[[nodiscard]] std::string DebugString() const;
 
-	template<int E>
-	friend Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
+	// Shared options (binary AND)
+	// Prefer: shared(left, right)
+	//template<int E>
+	[[nodiscard]] friend Options
+		operator&(const Options& left, const Options& right) noexcept
+	{
+		Options tmp{left};
+		tmp.data_ &= right.data_;
+		return tmp;
+	}
 
 private:
 	// 0th bit is "need to solve":
@@ -137,9 +145,6 @@ template<int E>
 // return shared options
 template<int E>
 [[nodiscard]] Options<E> shared(Options<E>& A, Options<E>& B) noexcept;
-template<int E>
-[[nodiscard]] Options<E>
-	operator&(const Options<E>&, const Options<E>&)noexcept;
 
 //===----------------------------------------------------------------------===//
 
@@ -504,17 +509,6 @@ inline Options<E> XOR(const Options<E>& A, const Options<E>& B) noexcept
 {
 	Options<E> tmp{A};
 	return tmp.XOR(B);
-}
-
-//	Shared options (binary AND)
-//	Prefer: shared(left, right)
-template<int E>
-inline Options<E>
-	operator&(const Options<E>& left, const Options<E>& right) noexcept
-{
-	Options<E> tmp{left};
-	tmp.data_ &= right.data_;
-	return tmp;
 }
 
 // Shared options
