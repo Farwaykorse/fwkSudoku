@@ -70,32 +70,31 @@ namespace iterator
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
-	static_assert(!std::is_nothrow_default_constructible_v<typeT>);
+	static_assert(std::is_nothrow_default_constructible_v<typeT>);
 	static_assert(not std::is_trivially_default_constructible_v<typeT>);
 
 	// copy constructor: typeT(const typeT&)
 	static_assert(std::is_copy_constructible_v<typeT>);
 	static_assert(std::is_nothrow_copy_constructible_v<typeT>);
-	// static_assert(std::is_trivially_copy_constructible_v<typeT>); // =
-	// default
+	static_assert(std::is_trivially_copy_constructible_v<typeT>); // = default
 
 	// move constructor: typeT(typeT&&)
 	static_assert(std::is_move_constructible_v<typeT>);
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
-	// static_assert(std::is_trivially_move_constructible_v<typeT>);
+	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
 	// copy assignment
 	static_assert(std::is_copy_assignable_v<typeT>);
 	static_assert(std::is_nothrow_copy_assignable_v<typeT>);
-	// static_assert(std::is_trivially_copy_assignable_v<typeT>);
+	static_assert(std::is_trivially_copy_assignable_v<typeT>);
 
 	static_assert(std::is_move_assignable_v<typeT>);
 	static_assert(std::is_nothrow_move_assignable_v<typeT>);
-	// static_assert(std::is_trivially_move_assignable_v<typeT>);
+	static_assert(std::is_trivially_move_assignable_v<typeT>);
 
 	static_assert(std::is_destructible_v<typeT>);
 	static_assert(std::is_nothrow_destructible_v<typeT>);
-	// static_assert(std::is_trivially_destructible_v<typeT>);
+	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
 	static_assert(std::is_swappable_v<typeT>);         // C++17
@@ -117,8 +116,8 @@ namespace iterator
 	static_assert(not std::is_constructible_v<bool, typeT>);
 	static_assert(not std::is_constructible_v<int, typeT>);
 
-	static_assert(!std::is_assignable_v<typeT, Location<3>>);
-	static_assert(!std::is_nothrow_assignable_v<typeT, Location<3>>);
+	static_assert(std::is_assignable_v<typeT, Location<3>>);
+	static_assert(std::is_nothrow_assignable_v<typeT, Location<3>>);
 	static_assert(not std::is_assignable_v<Location<3>, typeT>);
 	static_assert(not std::is_assignable_v<typeT, int>);
 	static_assert(not std::is_assignable_v<int, typeT>);
@@ -151,8 +150,8 @@ namespace const_iterator
 
 	static_assert(std::is_class_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-	// static_assert(std::is_trivially_copyable_v<typeT>);
-	// static_assert(std::is_standard_layout_v<typeT>);
+	static_assert(std::is_trivially_copyable_v<typeT>);
+	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
 	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
@@ -162,32 +161,31 @@ namespace const_iterator
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
-	static_assert(!std::is_nothrow_default_constructible_v<typeT>);
+	static_assert(std::is_nothrow_default_constructible_v<typeT>);
 	static_assert(not std::is_trivially_default_constructible_v<typeT>);
 
 	// copy constructor: typeT(const typeT&)
 	static_assert(std::is_copy_constructible_v<typeT>);
 	static_assert(std::is_nothrow_copy_constructible_v<typeT>);
-	// static_assert(std::is_trivially_copy_constructible_v<typeT>); // =
-	// default
+	static_assert(std::is_trivially_copy_constructible_v<typeT>); // = default
 
 	// move constructor: typeT(typeT&&)
 	static_assert(std::is_move_constructible_v<typeT>);
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
-	// static_assert(std::is_trivially_move_constructible_v<typeT>);
+	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
 	// copy assignment
 	static_assert(std::is_copy_assignable_v<typeT>);
 	static_assert(std::is_nothrow_copy_assignable_v<typeT>);
-	// static_assert(std::is_trivially_copy_assignable_v<typeT>);
+	static_assert(std::is_trivially_copy_assignable_v<typeT>);
 
 	static_assert(std::is_move_assignable_v<typeT>);
 	static_assert(std::is_nothrow_move_assignable_v<typeT>);
-	// static_assert(std::is_trivially_move_assignable_v<typeT>);
+	static_assert(std::is_trivially_move_assignable_v<typeT>);
 
 	static_assert(std::is_destructible_v<typeT>);
 	static_assert(std::is_nothrow_destructible_v<typeT>);
-	// static_assert(std::is_trivially_destructible_v<typeT>);
+	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
 	static_assert(std::is_swappable_v<typeT>);         // C++17
@@ -201,8 +199,8 @@ namespace const_iterator
 	static_assert(not std::is_constructible_v<bool, typeT>);
 	static_assert(not std::is_constructible_v<int, typeT>);
 
-	static_assert(!std::is_assignable_v<typeT, Location<3>>);
-	static_assert(!std::is_nothrow_assignable_v<typeT, Location<3>>);
+	static_assert(std::is_assignable_v<typeT, Location<3>>);
+	static_assert(std::is_nothrow_assignable_v<typeT, Location<3>>);
 	static_assert(not std::is_assignable_v<Location<3>, typeT>);
 	static_assert(not std::is_assignable_v<typeT, int>);
 	static_assert(not std::is_assignable_v<int, typeT>);
@@ -235,8 +233,8 @@ namespace reverse_iterator
 
 	static_assert(std::is_class_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-	// static_assert(std::is_trivially_copyable_v<typeT>);
-	// static_assert(std::is_standard_layout_v<typeT>);
+	static_assert(std::is_trivially_copyable_v<typeT>);
+	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
 	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
@@ -252,26 +250,25 @@ namespace reverse_iterator
 	// copy constructor: typeT(const typeT&)
 	static_assert(std::is_copy_constructible_v<typeT>);
 	static_assert(std::is_nothrow_copy_constructible_v<typeT>);
-	// static_assert(std::is_trivially_copy_constructible_v<typeT>); // =
-	// default
+	static_assert(std::is_trivially_copy_constructible_v<typeT>); // = default
 
 	// move constructor: typeT(typeT&&)
 	static_assert(std::is_move_constructible_v<typeT>);
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
-	// static_assert(std::is_trivially_move_constructible_v<typeT>);
+	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
 	// copy assignment
 	static_assert(std::is_copy_assignable_v<typeT>);
 	static_assert(std::is_nothrow_copy_assignable_v<typeT>);
-	// static_assert(std::is_trivially_copy_assignable_v<typeT>);
+	static_assert(std::is_trivially_copy_assignable_v<typeT>);
 
 	static_assert(std::is_move_assignable_v<typeT>);
 	static_assert(std::is_nothrow_move_assignable_v<typeT>);
-	// static_assert(std::is_trivially_move_assignable_v<typeT>);
+	static_assert(std::is_trivially_move_assignable_v<typeT>);
 
 	static_assert(std::is_destructible_v<typeT>);
 	static_assert(std::is_nothrow_destructible_v<typeT>);
-	// static_assert(std::is_trivially_destructible_v<typeT>);
+	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
 	static_assert(std::is_swappable_v<typeT>);         // C++17
@@ -280,8 +277,8 @@ namespace reverse_iterator
 	// other types
 	static_assert(not std::is_constructible_v<typeT, Location<3>>);
 	// explicit construction from typeT:
-	// static_assert(std::is_constructible_v<Location<3>, typeT>);
-	// static_assert(std::is_nothrow_constructible_v<Location<3>, typeT>);
+	static_assert(!std::is_constructible_v<Location<3>, typeT>);
+	static_assert(!std::is_nothrow_constructible_v<Location<3>, typeT>);
 	static_assert(not std::is_constructible_v<bool, typeT>);
 	static_assert(not std::is_constructible_v<int, typeT>);
 
@@ -319,8 +316,8 @@ namespace const_reverse_iterator
 
 	static_assert(std::is_class_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-	// static_assert(std::is_trivially_copyable_v<typeT>);
-	// static_assert(std::is_standard_layout_v<typeT>);
+	static_assert(std::is_trivially_copyable_v<typeT>);
+	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
 	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
@@ -336,26 +333,25 @@ namespace const_reverse_iterator
 	// copy constructor: typeT(const typeT&)
 	static_assert(std::is_copy_constructible_v<typeT>);
 	static_assert(std::is_nothrow_copy_constructible_v<typeT>);
-	// static_assert(std::is_trivially_copy_constructible_v<typeT>); // =
-	// default
+	static_assert(std::is_trivially_copy_constructible_v<typeT>); // = default
 
 	// move constructor: typeT(typeT&&)
 	static_assert(std::is_move_constructible_v<typeT>);
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
-	// static_assert(std::is_trivially_move_constructible_v<typeT>);
+	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
 	// copy assignment
 	static_assert(std::is_copy_assignable_v<typeT>);
 	static_assert(std::is_nothrow_copy_assignable_v<typeT>);
-	// static_assert(std::is_trivially_copy_assignable_v<typeT>);
+	static_assert(std::is_trivially_copy_assignable_v<typeT>);
 
 	static_assert(std::is_move_assignable_v<typeT>);
 	static_assert(std::is_nothrow_move_assignable_v<typeT>);
-	// static_assert(std::is_trivially_move_assignable_v<typeT>);
+	static_assert(std::is_trivially_move_assignable_v<typeT>);
 
 	static_assert(std::is_destructible_v<typeT>);
 	static_assert(std::is_nothrow_destructible_v<typeT>);
-	// static_assert(std::is_trivially_destructible_v<typeT>);
+	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
 	static_assert(std::is_swappable_v<typeT>);         // C++17
@@ -518,6 +514,24 @@ TEST(Board_Iterator, dereference)
 		static_assert(not noexcept(*cA.begin()));
 		static_assert(not noexcept(*Opt.begin()));
 
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.end(), "");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.cend(), "");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.rend(), "");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.crend(), "");
+		{ // Dereferencing is an error when de container is deleted
+			Board_iterator<int, 3> X;
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *X, "");
+			const Board_iterator<int, 3> Y;
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *Y, "");
+			decltype(A.begin()) I;
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *I, "");
+			decltype(A.cbegin()) cI;
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *cI, "");
+			decltype(A.rbegin()) rI;
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *rI, "");
+			decltype(A.crbegin()) crI;
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *crI, "");
+		}
 		// result type
 		static_assert(std::is_same_v<int&, decltype(*A.begin())>);
 		static_assert(std::is_same_v<int const&, decltype(*A.cbegin())>);
@@ -570,6 +584,22 @@ TEST(Board_Iterator, pre_increment)
 	EXPECT_NO_THROW(++cA.begin());
 	EXPECT_NO_THROW(++cA.rbegin());
 
+	EXPECT_DEBUG_DEATH(++A.end(), "in_forward_range");
+	EXPECT_DEBUG_DEATH(++A.cend(), "in_forward_range");
+	EXPECT_DEBUG_DEATH(++A.rend(), "in_reverse_range");
+	EXPECT_DEBUG_DEATH(++A.crend(), "in_reverse_range");
+	{ // Advancing is an error when de container is deleted
+		Board_iterator<int, 3> X;
+		EXPECT_DEBUG_DEATH(++X, "nullptr");
+		decltype(A.begin()) I;
+		EXPECT_DEBUG_DEATH(++I, "nullptr");
+		decltype(A.cbegin()) cI;
+		EXPECT_DEBUG_DEATH(++cI, "nullptr");
+		decltype(A.rbegin()) rI;
+		EXPECT_DEBUG_DEATH(++rI, "nullptr");
+		decltype(A.crbegin()) crI;
+		EXPECT_DEBUG_DEATH(++crI, "nullptr");
+	}
 	{ // iterators have value semantics
 		auto x = A.begin();
 		auto y = x; // copy
@@ -681,6 +711,22 @@ TEST(Board_Iterator, post_increment)
 		EXPECT_NO_THROW(A.rbegin()++);
 		EXPECT_NO_THROW(A.crbegin()++);
 
+		EXPECT_DEBUG_DEATH(A.end()++, "in_forward_range");
+		EXPECT_DEBUG_DEATH(A.cend()++, "in_forward_range");
+		EXPECT_DEBUG_DEATH(A.rend()++, "in_reverse_range");
+		EXPECT_DEBUG_DEATH(A.crend()++, "in_reverse_range");
+		{ // Advancing is an error when de container is deleted
+			Board_iterator<int, 3> X;
+			EXPECT_DEBUG_DEATH(X++, "nullptr");
+			decltype(A.begin()) I;
+			EXPECT_DEBUG_DEATH(I++, "nullptr");
+			decltype(A.cbegin()) cI;
+			EXPECT_DEBUG_DEATH(++cI, "nullptr");
+			decltype(A.rbegin()) rI;
+			EXPECT_DEBUG_DEATH(rI++, "nullptr");
+			decltype(A.crbegin()) crI;
+			EXPECT_DEBUG_DEATH(crI++, "nullptr");
+		}
 		ASSERT_EQ(A.size(), 16u);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
@@ -722,7 +768,16 @@ TEST(Board_Iterator, equal)
 	EXPECT_NO_THROW(U = (A.cbegin() == A.cend()));
 	EXPECT_NO_THROW(U = (A.rbegin() == A.rend()));
 	EXPECT_NO_THROW(U = (A.crbegin() == A.crend()));
-
+	{
+		Board<int, 2> B = A;
+		Board<int, 2> C{};
+		EXPECT_DEBUG_DEATH(U = A.begin() == B.begin(), "is_same_address");
+		EXPECT_DEBUG_DEATH(U = A.begin() == C.begin(), "is_same_address");
+#ifndef _DEBUG
+		EXPECT_FALSE(A.begin() == B.begin());
+		EXPECT_FALSE(A.begin() == C.begin());
+#endif // !_DEBUG
+	}
 	EXPECT_TRUE(A.begin() == A.begin());
 	EXPECT_TRUE(A.cbegin() == A.cbegin());
 	EXPECT_TRUE(A.rbegin() == A.rbegin());
@@ -765,7 +820,17 @@ TEST(Board_Iterator, not_equal)
 		EXPECT_NO_THROW(U = (A.cbegin() != A.cend()));
 		EXPECT_NO_THROW(U = (A.rbegin() != A.rend()));
 		EXPECT_NO_THROW(U = (A.crbegin() != A.crend()));
-
+	{
+		Board<int, 2> B = A;
+		Board<int, 2> C{};
+		EXPECT_DEBUG_DEATH(U = A.begin() != B.begin(), "is_same_address");
+		EXPECT_DEBUG_DEATH(U = A.begin() != C.begin(), "is_same_address");
+#ifndef _DEBUG
+		EXPECT_TRUE(A.begin() != B.begin());
+		EXPECT_TRUE(A.begin() != B.end());
+		EXPECT_TRUE(A.begin() != C.begin());
+#endif // !_DEBUG
+	}
 		EXPECT_TRUE(A.begin() != A.end());
 		EXPECT_FALSE(A.begin() != A.begin());
 		EXPECT_TRUE(A.begin() != ++A.begin());
@@ -962,6 +1027,10 @@ TEST(Board_Iterator, pre_decrement)
 		static_assert(not noexcept(--cA.end()));
 		static_assert(not noexcept(--cA.rend()));
 
+		EXPECT_DEBUG_DEATH(--A.begin(), "in_reverse_range");
+		EXPECT_DEBUG_DEATH(--A.cbegin(), "in_reverse_range");
+		EXPECT_DEBUG_DEATH(--A.rbegin(), "in_forward_range");
+		EXPECT_DEBUG_DEATH(--A.crbegin(), "in_forward_range");
 		--A.end();
 		--A.cend();
 		--A.rend();
@@ -1038,6 +1107,11 @@ TEST(Board_Iterator, post_decrement)
 		static_assert(not noexcept(cA.begin()--));
 		static_assert(not noexcept(cA.rbegin()--));
 
+		// (void)i-- equivalent to(void)-- i
+		EXPECT_DEBUG_DEATH(A.begin()--, "in_reverse_range");
+		EXPECT_DEBUG_DEATH(--A.cbegin(), "in_reverse_range");
+		EXPECT_DEBUG_DEATH(A.rbegin()--, "in_forward_range");
+		EXPECT_DEBUG_DEATH(--A.crbegin(), "in_forward_range");
 		A.end()--;
 		A.cend()--;
 		A.rend()--;
@@ -1196,19 +1270,25 @@ TEST(Board_Iterator, increment_by_integer)
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
+		EXPECT_DEBUG_DEATH(A.begin() += -1, "in_range");
 		EXPECT_TRUE((A.begin() += -0) == A.begin());
 		EXPECT_EQ(*(A.begin() += -0), 9);
 		EXPECT_TRUE((A.begin() += 0) == A.begin());
 		EXPECT_EQ(*(A.begin() += 0), 9);
 		EXPECT_TRUE((A.begin() += 1) == ++A.begin());
 		EXPECT_TRUE((A.begin() += 16) == A.end());
+		EXPECT_DEBUG_DEATH(A.begin() += 17, "in_range");
+		EXPECT_DEBUG_DEATH(A.begin() += 50, "in_range");
 
+		EXPECT_DEBUG_DEATH(A.end() += 1, "in_range");
 		EXPECT_TRUE((A.end() += 0) == A.end());
 		EXPECT_TRUE((A.end() += -0) == A.end());
 		EXPECT_TRUE((A.end() += -1) == --A.end());
 		EXPECT_EQ(*(A.end() += -1), 15);
 		EXPECT_TRUE((A.end() += -16) == A.begin());
 		EXPECT_EQ(*(A.end() += -16), 9);
+		EXPECT_DEBUG_DEATH(A.end() += -17, "in_range");
+		EXPECT_DEBUG_DEATH(A.end() += -50, "in_range");
 		EXPECT_EQ(*(A.begin() += 15), 15);
 		{ // return reference to iterator
 			auto I = A.begin();
@@ -1218,15 +1298,19 @@ TEST(Board_Iterator, increment_by_integer)
 			EXPECT_TRUE((I += -1) == --A.end());
 		}
 		// const_iterator
+		EXPECT_DEBUG_DEATH(A.cbegin() += -1, "in_range");
 		EXPECT_TRUE((A.cbegin() += -0) == A.cbegin());
 		EXPECT_TRUE((A.cbegin() += 0) == A.cbegin());
 		EXPECT_TRUE((A.cbegin() += 1) == ++A.cbegin());
 		EXPECT_TRUE((A.cbegin() += 16) == A.cend());
+		EXPECT_DEBUG_DEATH(A.cbegin() += 17, "in_range");
 
+		EXPECT_DEBUG_DEATH(A.cend() += 1, "in_range");
 		EXPECT_TRUE((A.cend() += 0) == A.cend());
 		EXPECT_TRUE((A.cend() += -0) == A.cend());
 		EXPECT_TRUE((A.cend() += -1) == --A.cend());
 		EXPECT_TRUE((A.cend() += -16) == A.cbegin());
+		EXPECT_DEBUG_DEATH(A.cend() += -17, "in_range");
 		{ // return reference to iterator
 			auto I = A.cbegin();
 			EXPECT_TRUE((I += 1) == ++A.cbegin());
@@ -1235,15 +1319,19 @@ TEST(Board_Iterator, increment_by_integer)
 			EXPECT_TRUE((I += -1) == --A.cend());
 		}
 		// reverse_iterator
+		EXPECT_DEBUG_DEATH(A.rbegin() += -1, "in_range");
 		EXPECT_TRUE((A.rbegin() += -0) == A.rbegin());
 		EXPECT_TRUE((A.rbegin() += 0) == A.rbegin());
 		EXPECT_TRUE((A.rbegin() += 1) == ++A.rbegin());
 		EXPECT_TRUE((A.rbegin() += 16) == A.rend());
+		EXPECT_DEBUG_DEATH(A.rbegin() += 17, "in_range");
 
+		EXPECT_DEBUG_DEATH(A.rend() += 1, "in_range");
 		EXPECT_TRUE((A.rend() += 0) == A.rend());
 		EXPECT_TRUE((A.rend() += -0) == A.rend());
 		EXPECT_TRUE((A.rend() += -1) == --A.rend());
 		EXPECT_TRUE((A.rend() += -16) == A.rbegin());
+		EXPECT_DEBUG_DEATH(A.rend() += -17, "in_range");
 		{ // return reference to iterator
 			auto I = A.rbegin();
 			EXPECT_TRUE((I += 1) == ++A.rbegin());
@@ -1252,15 +1340,19 @@ TEST(Board_Iterator, increment_by_integer)
 			EXPECT_TRUE((I += -1) == --A.rend());
 		}
 		// const_reverse_iterator
+		EXPECT_DEBUG_DEATH(A.crbegin() += -1, "in_range");
 		EXPECT_TRUE((A.crbegin() += -0) == A.crbegin());
 		EXPECT_TRUE((A.crbegin() += 0) == A.crbegin());
 		EXPECT_TRUE((A.crbegin() += 1) == ++A.crbegin());
 		EXPECT_TRUE((A.crbegin() += 16) == A.crend());
+		EXPECT_DEBUG_DEATH(A.crbegin() += 17, "in_range");
 
+		EXPECT_DEBUG_DEATH(A.crend() += 1, "in_range");
 		EXPECT_TRUE((A.crend() += 0) == A.crend());
 		EXPECT_TRUE((A.crend() += -0) == A.crend());
 		EXPECT_TRUE((A.crend() += -1) == --A.crend());
 		EXPECT_TRUE((A.crend() += -16) == A.crbegin());
+		EXPECT_DEBUG_DEATH(A.crend() += -17, "in_range");
 		{ // return reference to iterator
 			auto I = A.crbegin();
 			EXPECT_TRUE((I += 1) == ++A.crbegin());
@@ -1324,31 +1416,40 @@ TEST(Board_Iterator, increment_by_integer2)
 		}
 		{
 			[[maybe_unused]] auto I = A.begin();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = I + -1, "in_range");
 			EXPECT_TRUE((I + -0) == A.begin());
 			EXPECT_TRUE((I + 0) == A.begin());
 			EXPECT_TRUE((I + 1) == ++A.begin());
 			EXPECT_TRUE((I + 16) == A.end());
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = I + 17, "in_range");
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = I + 50, "in_range");
 		}
 		{ // const_iterator
 			[[maybe_unused]] auto cI = A.cbegin();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = cI + -1, "in_range");
 			EXPECT_TRUE((A.cbegin() + -0) == A.cbegin());
 			EXPECT_TRUE((A.cbegin() + 0) == A.cbegin());
 			EXPECT_TRUE((A.cbegin() + 1) == ++A.cbegin());
 			EXPECT_TRUE((A.cbegin() + 16) == A.cend());
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = cI + 17, "in_range");
 		}
 		{ // reverse_iterator
 			[[maybe_unused]] auto rI = A.rbegin();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = rI + -1, "in_range");
 			EXPECT_TRUE((A.rbegin() + -0) == A.rbegin());
 			EXPECT_TRUE((A.rbegin() + 0) == A.rbegin());
 			EXPECT_TRUE((A.rbegin() + 1) == ++A.rbegin());
 			EXPECT_TRUE((A.rbegin() + 16) == A.rend());
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = rI + 17, "in_range");
 		}
 		{ // const_reverse_iterator
 			[[maybe_unused]] auto crI = A.crbegin();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = crI + -1, "in_range");
 			EXPECT_TRUE((A.crbegin() + -0) == A.crbegin());
 			EXPECT_TRUE((A.crbegin() + 0) == A.crbegin());
 			EXPECT_TRUE((A.crbegin() + 1) == ++A.crbegin());
 			EXPECT_TRUE((A.crbegin() + 16) == A.crend());
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = crI + 17, "in_range");
 		}
 	}
 	else
@@ -1406,31 +1507,40 @@ TEST(Board_Iterator, increment_by_integer3)
 		}
 		{
 			[[maybe_unused]] auto I = A.begin();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = -1 + I, "in_range");
 			EXPECT_TRUE((-0 + I) == A.begin());
 			EXPECT_TRUE((0 + I) == A.begin());
 			EXPECT_TRUE((1 + I) == ++A.begin());
 			EXPECT_TRUE((16 + I) == A.end());
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = 17 + I, "in_range");
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = 50 + I, "in_range");
 		}
 		{ // const_iterator
 			[[maybe_unused]] auto cI = A.cbegin();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = -1 + cI, "in_range");
 			EXPECT_TRUE((-0 + A.cbegin()) == A.cbegin());
 			EXPECT_TRUE((0 + A.cbegin()) == A.cbegin());
 			EXPECT_TRUE((1 + A.cbegin()) == ++A.cbegin());
 			EXPECT_TRUE((16 + A.cbegin()) == A.cend());
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = 17 + cI, "in_range");
 		}
 		{ // reverse_iterator
 			[[maybe_unused]] auto rI = A.rbegin();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = -1 + rI, "in_range");
 			EXPECT_TRUE((-0 + A.rbegin()) == A.rbegin());
 			EXPECT_TRUE((0 + A.rbegin()) == A.rbegin());
 			EXPECT_TRUE((1 + A.rbegin()) == ++A.rbegin());
 			EXPECT_TRUE((16 + A.rbegin()) == A.rend());
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = 17 + rI, "in_range");
 		}
 		{ // const_reverse_iterator
 			[[maybe_unused]] auto crI = A.crbegin();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = -1 + crI, "in_range");
 			EXPECT_TRUE((-0 + A.crbegin()) == A.crbegin());
 			EXPECT_TRUE((0 + A.crbegin()) == A.crbegin());
 			EXPECT_TRUE((1 + A.crbegin()) == ++A.crbegin());
 			EXPECT_TRUE((16 + A.crbegin()) == A.crend());
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = 17 + crI, "in_range");
 		}
 	}
 	else
@@ -1464,17 +1574,21 @@ TEST(Board_Iterator, decrement_by_integer)
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
+		EXPECT_DEBUG_DEATH(A.end() -= -1, "in_range");
 		EXPECT_TRUE((A.end() -= -0) == A.end());
 		EXPECT_TRUE((A.end() -= 0) == A.end());
 		EXPECT_TRUE((A.end() -= 1) == --A.end());
 		EXPECT_TRUE((A.end() -= 16) == A.begin());
+		EXPECT_DEBUG_DEATH(A.end() -= 17, "in_range");
 
+		EXPECT_DEBUG_DEATH(A.begin() -= 1, "in_range");
 		EXPECT_TRUE((A.begin() -= 0) == A.begin());
 		EXPECT_TRUE((A.begin() -= -0) == A.begin());
 		EXPECT_TRUE((A.begin() -= -1) == ++A.begin());
 		EXPECT_EQ(*(A.begin() -= -1), 1);
 		EXPECT_TRUE((A.begin() -= -16) == A.end());
 		EXPECT_EQ(*(A.end() -= 16), 9);
+		EXPECT_DEBUG_DEATH(A.begin() -= -17, "in_range");
 		{ // return reference to iterator
 			auto I = A.end();
 			EXPECT_TRUE((I -= 1) == --A.end());
@@ -1483,15 +1597,19 @@ TEST(Board_Iterator, decrement_by_integer)
 			EXPECT_TRUE((I -= -1) == ++A.begin());
 		}
 		// const_iterator
+		EXPECT_DEBUG_DEATH(A.cbegin() -= 1, "in_range");
 		EXPECT_TRUE((A.cbegin() -= 0) == A.cbegin());
 		EXPECT_TRUE((A.cbegin() -= -0) == A.cbegin());
 		EXPECT_TRUE((A.cbegin() -= -1) == ++A.cbegin());
 		EXPECT_TRUE((A.cbegin() -= -16) == A.cend());
+		EXPECT_DEBUG_DEATH(A.cbegin() -= -17, "in_range");
 
+		EXPECT_DEBUG_DEATH(A.cend() -= -1, "in_range");
 		EXPECT_TRUE((A.cend() -= -0) == A.cend());
 		EXPECT_TRUE((A.cend() -= 0) == A.cend());
 		EXPECT_TRUE((A.cend() -= 1) == --A.cend());
 		EXPECT_TRUE((A.cend() -= 16) == A.cbegin());
+		EXPECT_DEBUG_DEATH(A.cend() -= 17, "in_range");
 		{ // return reference to iterator
 			auto I = A.cend();
 			EXPECT_TRUE((I -= 1) == --A.cend());
@@ -1500,15 +1618,19 @@ TEST(Board_Iterator, decrement_by_integer)
 			EXPECT_TRUE((I -= -1) == ++A.cbegin());
 		}
 		// reverse_iterator
+		EXPECT_DEBUG_DEATH(A.rbegin() -= 1, "in_range");
 		EXPECT_TRUE((A.rbegin() -= 0) == A.rbegin());
 		EXPECT_TRUE((A.rbegin() -= -0) == A.rbegin());
 		EXPECT_TRUE((A.rbegin() -= -1) == ++A.rbegin());
 		EXPECT_TRUE((A.rbegin() -= -16) == A.rend());
+		EXPECT_DEBUG_DEATH(A.rbegin() -= -17, "in_range");
 
+		EXPECT_DEBUG_DEATH(A.rend() -= -1, "in_range");
 		EXPECT_TRUE((A.rend() -= -0) == A.rend());
 		EXPECT_TRUE((A.rend() -= 0) == A.rend());
 		EXPECT_TRUE((A.rend() -= 1) == --A.rend());
 		EXPECT_TRUE((A.rend() -= 16) == A.rbegin());
+		EXPECT_DEBUG_DEATH(A.rend() -= 17, "in_range");
 		{ // return reference to iterator
 			auto I = A.rend();
 			EXPECT_TRUE((I -= 1) == --A.rend());
@@ -1517,15 +1639,19 @@ TEST(Board_Iterator, decrement_by_integer)
 			EXPECT_TRUE((I -= -1) == ++A.rbegin());
 		}
 		// const_reverse_iterator
+		EXPECT_DEBUG_DEATH(A.crbegin() -= 1, "in_range");
 		EXPECT_TRUE((A.crbegin() -= 0) == A.crbegin());
 		EXPECT_TRUE((A.crbegin() -= -0) == A.crbegin());
 		EXPECT_TRUE((A.crbegin() -= -1) == ++A.crbegin());
 		EXPECT_TRUE((A.crbegin() -= -16) == A.crend());
+		EXPECT_DEBUG_DEATH(A.crbegin() -= 17, "in_range");
 
+		EXPECT_DEBUG_DEATH(A.crend() -= -1, "in_range");
 		EXPECT_TRUE((A.crend() -= -0) == A.crend());
 		EXPECT_TRUE((A.crend() -= 0) == A.crend());
 		EXPECT_TRUE((A.crend() -= 1) == --A.crend());
 		EXPECT_TRUE((A.crend() -= 16) == A.crbegin());
+		EXPECT_DEBUG_DEATH(A.crend() -= 17, "in_range");
 		{ // return reference to iterator
 			auto I = A.crend();
 			EXPECT_TRUE((I -= 1) == --A.crend());
@@ -1589,31 +1715,40 @@ TEST(Board_Iterator, decrement_by_integer2)
 		}
 		{
 			[[maybe_unused]] auto I = A.end();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = I - -1, "in_range");
 			EXPECT_TRUE((I - -0) == A.end());
 			EXPECT_TRUE((I - 0) == A.end());
 			EXPECT_TRUE((I - 1) == --A.end());
 			EXPECT_TRUE((I - 16) == A.begin());
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = I - 17, "in_range");
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = I - 50, "in_range");
 		}
 		{ // const_iterator
 			[[maybe_unused]] auto cI = A.cend();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = cI - -1, "in_range");
 			EXPECT_TRUE((A.cend() - -0) == A.cend());
 			EXPECT_TRUE((A.cend() - 0) == A.cend());
 			EXPECT_TRUE((A.cend() - 1) == --A.cend());
 			EXPECT_TRUE((A.cend() - 16) == A.cbegin());
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = cI - 17, "in_range");
 		}
 		{ // reverse_iterator
 			[[maybe_unused]] auto rI = A.rend();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = rI - -1, "in_range");
 			EXPECT_TRUE((A.rend() - -0) == A.rend());
 			EXPECT_TRUE((A.rend() - 0) == A.rend());
 			EXPECT_TRUE((A.rend() - 1) == --A.rend());
 			EXPECT_TRUE((A.rend() - 16) == A.rbegin());
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = rI - 17, "in_range");
 		}
 		{ // const_reverse_iterator
 			[[maybe_unused]] auto crI = A.crend();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = crI - -1, "in_range");
 			EXPECT_TRUE((A.crend() - -0) == A.crend());
 			EXPECT_TRUE((A.crend() - 0) == A.crend());
 			EXPECT_TRUE((A.crend() - 1) == --A.crend());
 			EXPECT_TRUE((A.crend() - 16) == A.crbegin());
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = crI - 17, "in_range");
 		}
 	}
 	else
@@ -1635,6 +1770,20 @@ TEST(Board_Iterator, difference)
 		static_assert(not noexcept(A.cend() - A.cbegin()));
 		static_assert(not noexcept(A.rend() - A.rbegin()));
 		static_assert(not noexcept(A.crend() - A.crbegin()));
+
+		auto B = A;
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.end() - B.begin(), "is_same_address");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.cend() - B.cbegin(), "is_same_address");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.rend() - B.rbegin(), "is_same_address");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.crend() - B.crbegin(),
+			"is_same_address");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.cend() - cA.cbegin(),
+			"is_same_address");
 
 		// Return type:
 		static_assert(
@@ -1728,56 +1877,101 @@ TEST(Board_Iterator, direct_access)
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.begin()[-1], "in_range");
 		EXPECT_EQ(A.begin()[-0], 9);
 		EXPECT_EQ(A.begin()[0], 9);
 		EXPECT_EQ(A.begin()[1], 1);
 		EXPECT_EQ(A.begin()[15], 15);
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.begin()[16],
+			"dereferenceable_location");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.begin()[17], "in_range");
 		{ // return dereferenced iterator
 			auto I = A.begin();
 			EXPECT_TRUE(I[1] == *(++A.begin()));
 			EXPECT_TRUE(I[1] == *(++A.begin()));
 			EXPECT_TRUE(I[14] == *(A.begin() + 14));
 		}
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.end()[1], "in_range");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.end()[0], "dereferenceable_location");
 		EXPECT_EQ(A.end()[-1], 15);
 		EXPECT_EQ(A.end()[-16], 9);
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.end()[17], "in_range");
 
+		// const_iterator
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.cbegin()[-1], "in_range");
 		EXPECT_EQ(A.cbegin()[-0], 9);
 		EXPECT_EQ(A.cbegin()[0], 9);
 		EXPECT_EQ(A.cbegin()[1], 1);
 		EXPECT_EQ(A.cbegin()[15], 15);
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.cbegin()[16],
+			"dereferenceable_location");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.cbegin()[17], "in_range");
 		{ // return dereferenced iterator
 			auto I = A.cbegin();
 			EXPECT_TRUE(I[1] == *(++A.cbegin()));
 			EXPECT_TRUE(I[1] == *(++A.cbegin()));
 			EXPECT_TRUE(I[14] == *(A.cbegin() + 14));
 		}
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.cend()[1], "in_range");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.cend()[0], "dereferenceable_location");
 		EXPECT_EQ(A.cend()[-1], 15);
 		EXPECT_EQ(A.cend()[-16], 9);
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.cend()[17], "in_range");
+
+		// reverse_iterator
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.rbegin()[-1], "in_range");
 		EXPECT_EQ(A.rbegin()[-0], 15);
 		EXPECT_EQ(A.rbegin()[0], 15);
 		EXPECT_EQ(A.rbegin()[1], 14);
 		EXPECT_EQ(A.rbegin()[15], 9);
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.rbegin()[16], "in_reverse_range");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.rbegin()[17], "in_range");
 		{ // return dereferenced iterator
 			auto I = A.rbegin();
 			EXPECT_TRUE(I[1] == *(++A.rbegin()));
 			EXPECT_TRUE(I[1] == *(++A.rbegin()));
 			EXPECT_TRUE(I[14] == *(A.rbegin() + 14));
 		}
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rend()[1], "in_range");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.rend()[0], "in_reverse_range");
 		EXPECT_EQ(A.rend()[-1], 9);
 		EXPECT_EQ(A.rend()[-16], 15);
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rend()[-17], "in_range");
 
+		// const_reverse_iterator
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.crbegin()[-1], "in_range");
 		EXPECT_EQ(A.crbegin()[-0], 15);
 		EXPECT_EQ(A.crbegin()[0], 15);
 		EXPECT_EQ(A.crbegin()[1], 14);
 		EXPECT_EQ(A.crbegin()[15], 9);
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.crbegin()[16], "in_reverse_range");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.crbegin()[17], "in_range");
 		{ // return dereferenced iterator
 			auto I = A.crbegin();
 			EXPECT_TRUE(I[1] == *(++A.crbegin()));
 			EXPECT_TRUE(I[1] == *(++A.crbegin()));
 			EXPECT_TRUE(I[14] == *(A.crbegin() + 14));
 		}
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.crend()[1], "in_range");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.crend()[0], "in_reverse_range");
 		EXPECT_EQ(A.crend()[-1], 9);
 		EXPECT_EQ(A.crend()[-16], 15);
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.crend()[-17], "in_range");
 
 		//====------------------------------------------------------------====//
 		// Output
@@ -1904,7 +2098,29 @@ TEST(Board_Iterator, comparison)
 		// different boards
 		auto B  = A;
 		B[1][2] = 0;
+		A[1][2] = 8;
 		static_assert(not noexcept(A.begin() < B.end()));
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.begin() < B.end(), "is_same_address");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.begin() <= B.end(), "is_same_address");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.begin() >= B.end(), "is_same_address");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.begin() > B.end(), "is_same_address");
+#ifndef _DEBUG
+		// different from default vector/pointer implementations
+		EXPECT_TRUE(A.begin() < B.end());
+		EXPECT_TRUE(B.begin() < A.end());
+		EXPECT_TRUE(A.begin() <= B.begin());
+		EXPECT_TRUE(B.begin() <= A.begin());
+		EXPECT_TRUE(A.begin() >= B.begin());
+		EXPECT_TRUE(B.begin() >= A.begin());
+		EXPECT_FALSE(A.begin() > B.begin());
+		EXPECT_FALSE(A.begin() > B.end());
+		EXPECT_TRUE(A.end() > B.begin());
+		EXPECT_TRUE(B.end() > A.begin());
+#endif // _DEBUG
 	}
 	else
 		ADD_FAILURE();

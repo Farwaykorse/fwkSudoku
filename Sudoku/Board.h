@@ -10,6 +10,7 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
+#include "Board_Iterators.h"
 #include "Board_Sections.h"
 #include "Board_Utilities.h"
 #include "Location.h"
@@ -43,18 +44,17 @@ class Board
 	using const_Block = Board_Section::const_Block<T, N>;
 
 public:
-	using value_type       = T;
-	using size_type        = size_t;
-	using difference_type  = int;
-	using reference        = value_type&;
-	using const_reference  = value_type const&;
-	using pointer          = value_type*;
-	using const_pointer    = value_type const*;
-	using iterator         = typename std::vector<T>::iterator;
-	using const_iterator   = typename std::vector<T>::const_iterator;
-	using reverse_iterator = typename std::vector<T>::reverse_iterator;
-	using const_reverse_iterator =
-		typename std::vector<T>::const_reverse_iterator;
+	using value_type             = T;
+	using size_type              = size_t;
+	using difference_type        = int;
+	using reference              = value_type&;
+	using const_reference        = value_type const&;
+	using pointer                = value_type*;
+	using const_pointer          = value_type const*;
+	using iterator               = Board_iterator<T, N>;
+	using const_iterator         = Board_iterator<T, N, true>;
+	using reverse_iterator       = std::reverse_iterator<iterator>;
+	using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 	Board() noexcept;
 	// initialize with non-default value
@@ -323,46 +323,46 @@ const typename Board<T, N>::const_InBetween Board<T, N>::
 template<typename T, int N>
 constexpr typename Board<T, N>::iterator Board<T, N>::begin() noexcept
 {
-	return board_.begin();
+	return Board_iterator<T, N>(this, Location{0});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::iterator Board<T, N>::end() noexcept
 {
-	return board_.end();
+	return Board_iterator<T, N>(this, Location{full_size<N>});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_iterator Board<T, N>::cbegin() const
 	noexcept
 {
-	return board_.cbegin();
+	return Board_iterator<T, N, true>(this, Location{0});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_iterator Board<T, N>::cend() const
 	noexcept
 {
-	return board_.cend();
+	return Board_iterator<T, N, true>(this, Location{full_size<N>});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::reverse_iterator Board<T, N>::rbegin() noexcept
 {
-	return board_.rbegin();
+	return std::make_reverse_iterator(end());
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::reverse_iterator Board<T, N>::rend() noexcept
 {
-	return board_.rend();
+	return std::make_reverse_iterator(begin());
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_reverse_iterator
 	Board<T, N>::crbegin() const noexcept
 {
-	return board_.crbegin();
+	return std::make_reverse_iterator(cend());
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_reverse_iterator
 	Board<T, N>::crend() const noexcept
 {
-	return board_.crend();
+	return std::make_reverse_iterator(cbegin());
 }
 
 } // namespace Sudoku
