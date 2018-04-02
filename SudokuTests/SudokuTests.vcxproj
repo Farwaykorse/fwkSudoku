@@ -364,6 +364,7 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Board_Iterators.cpp" />
     <ClCompile Include="Board_Sections.cpp" />
+    <ClCompile Include="Board_Section_Iterators.cpp" />
     <ClCompile Include="exceptions.cpp" />
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="Options.cpp" />
