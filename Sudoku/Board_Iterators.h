@@ -158,7 +158,7 @@ public:
 	}
 
 	[[nodiscard]] constexpr difference_type
-		operator-(const Board_iterator& other) const noexcept
+		operator-(const Board_iterator other) const noexcept
 	{ // difference
 		assert(is_same_address(other));
 		if constexpr (is_reverse)
@@ -174,18 +174,18 @@ public:
 	}
 
 	//====----------------------------------------------------------------====//
-	[[nodiscard]] constexpr bool operator==(const Board_iterator& other) const
+	[[nodiscard]] constexpr bool operator==(const Board_iterator other) const
 		noexcept
 	{
 		assert(is_same_address(other));
 		return is_same_address(other) && elem_ == other.elem_;
 	}
-	[[nodiscard]] constexpr bool operator!=(const Board_iterator& other) const
+	[[nodiscard]] constexpr bool operator!=(const Board_iterator other) const
 		noexcept
 	{
 		return (!operator==(other));
 	}
-	[[nodiscard]] constexpr bool operator<(const Board_iterator& other) const
+	[[nodiscard]] constexpr bool operator<(const Board_iterator other) const
 		noexcept
 	{
 		assert(is_same_address(other));
@@ -194,17 +194,17 @@ public:
 		else
 			return elem_ < other.elem_;
 	}
-	[[nodiscard]] constexpr bool operator>(const Board_iterator& other) const
+	[[nodiscard]] constexpr bool operator>(const Board_iterator other) const
 		noexcept
 	{
 		return (other < *this);
 	}
-	[[nodiscard]] constexpr bool operator<=(const Board_iterator& other) const
+	[[nodiscard]] constexpr bool operator<=(const Board_iterator other) const
 		noexcept
 	{
 		return (!(other < *this));
 	}
-	[[nodiscard]] constexpr bool operator>=(const Board_iterator& other) const
+	[[nodiscard]] constexpr bool operator>=(const Board_iterator other) const
 		noexcept
 	{
 		return (!(*this < other));
@@ -214,7 +214,7 @@ private:
 	owner_type* board_{nullptr};
 	difference_type elem_{0};
 
-	constexpr bool is_same_address(const Board_iterator& other) const noexcept
+	constexpr bool is_same_address(const Board_iterator other) const noexcept
 	{ // compare address of:
 		return board_ == other.board_;
 	}
