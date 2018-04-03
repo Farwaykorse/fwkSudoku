@@ -59,8 +59,8 @@ namespace iterator
 
 	static_assert(std::is_class_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-	// static_assert(std::is_trivially_copyable_v<typeT>);
-	// static_assert(std::is_standard_layout_v<typeT>);
+	static_assert(std::is_trivially_copyable_v<typeT>);
+	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
 	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
@@ -495,6 +495,10 @@ TEST(Board_Iterator, construction)
 	static_assert(
 		not std::is_same_v<decltype(A.begin()), decltype(A.rbegin())>);
 
+	// Default constructor
+	Board_iterator<int, 2> D1;
+	EXPECT_TRUE((D1 == Board_iterator<int, 2>()));
+
 	// Construct
 	Board_iterator<int, 2> I1{&A};
 	EXPECT_TRUE(I1 == A.begin());
@@ -535,6 +539,9 @@ TEST(Board_Iterator, Location)
 	Board_iterator<int, 2> x1{&A};
 	Board_iterator<int, 2> x2(&A, L{12});
 
+	static_assert(Board_iterator<int, 2>().location() == Location<2>{0});
+	static_assert(Location<2>{Board_iterator<int, 2>()} == Location<2>());
+
 	// construct Location from iterator
 	EXPECT_EQ(L{x1}, L{0});
 	EXPECT_EQ(L{x2}, L{12});
@@ -572,12 +579,12 @@ TEST(Board_Iterator, dereference)
 		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
 		is_input<decltype(A.rbegin())> && is_input<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(*A.begin()));
-		static_assert(not noexcept(*A.cbegin()));
-		static_assert(not noexcept(*A.rbegin()));
-		static_assert(not noexcept(*A.crbegin()));
-		static_assert(not noexcept(*cA.begin()));
-		static_assert(not noexcept(*Opt.begin()));
+		static_assert(noexcept(*A.begin()));
+		static_assert(noexcept(*A.cbegin()));
+		static_assert(noexcept(*A.rbegin()));
+		static_assert(noexcept(*A.crbegin()));
+		static_assert(noexcept(*cA.begin()));
+		static_assert(noexcept(*Opt.begin()));
 
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.end(), "");
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.cend(), "");
@@ -635,12 +642,12 @@ TEST(Board_Iterator, pre_increment)
 	auto& A        = TE.A;
 	auto const& cA = TE.cA;
 
-	static_assert(not noexcept(++A.begin()));
-	static_assert(not noexcept(++A.cbegin()));
-	static_assert(not noexcept(++A.rbegin()));
-	static_assert(not noexcept(++A.crbegin()));
-	static_assert(not noexcept(++cA.begin()));
-	static_assert(not noexcept(++cA.rbegin()));
+	static_assert(noexcept(++A.begin()));
+	static_assert(noexcept(++A.cbegin()));
+	static_assert(noexcept(++A.rbegin()));
+	static_assert(noexcept(++A.crbegin()));
+	static_assert(noexcept(++cA.begin()));
+	static_assert(noexcept(++cA.rbegin()));
 
 	EXPECT_NO_THROW(++A.begin());
 	EXPECT_NO_THROW(++A.cbegin());
@@ -754,12 +761,12 @@ TEST(Board_Iterator, post_increment)
 		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
 		is_input<decltype(A.rbegin())> && is_input<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(A.begin()++));
-		static_assert(not noexcept(A.cbegin()++));
-		static_assert(not noexcept(A.rbegin()++));
-		static_assert(not noexcept(A.crbegin()++));
-		static_assert(not noexcept(cA.begin()++));
-		static_assert(not noexcept(cA.rbegin()++));
+		static_assert(noexcept(A.begin()++));
+		static_assert(noexcept(A.cbegin()++));
+		static_assert(noexcept(A.rbegin()++));
+		static_assert(noexcept(A.crbegin()++));
+		static_assert(noexcept(cA.begin()++));
+		static_assert(noexcept(cA.rbegin()++));
 
 		static_assert(
 			std::is_same_v<decltype(A.begin()), decltype(A.begin()++)>);
@@ -815,14 +822,14 @@ TEST(Board_Iterator, equal)
 	auto& A        = TE.A;
 	auto const& cA = TE.cA;
 
-	static_assert(not noexcept(A.begin() == A.begin()));
-	static_assert(not noexcept(A.begin() == A.end()));
-	static_assert(not noexcept(A.cbegin() == A.cbegin()));
-	static_assert(not noexcept(A.cbegin() == A.cend()));
-	static_assert(not noexcept(A.rbegin() == A.rbegin()));
-	static_assert(not noexcept(A.crbegin() == A.crbegin()));
-	static_assert(not noexcept(cA.begin() == cA.begin()));
-	static_assert(not noexcept(cA.begin() == cA.cend()));
+	static_assert(noexcept(A.begin() == A.begin()));
+	static_assert(noexcept(A.begin() == A.end()));
+	static_assert(noexcept(A.cbegin() == A.cbegin()));
+	static_assert(noexcept(A.cbegin() == A.cend()));
+	static_assert(noexcept(A.rbegin() == A.rbegin()));
+	static_assert(noexcept(A.crbegin() == A.crbegin()));
+	static_assert(noexcept(cA.begin() == cA.begin()));
+	static_assert(noexcept(cA.begin() == cA.cend()));
 	// return type
 	static_assert(std::is_same_v<bool, decltype(A.begin() == A.begin())>);
 	static_assert(std::is_same_v<bool, decltype(A.cbegin() == A.cbegin())>);
@@ -857,6 +864,19 @@ TEST(Board_Iterator, equal)
 	auto cx = A.cbegin();
 	EXPECT_TRUE(x == A.begin());
 	EXPECT_TRUE(cx == A.cbegin());
+
+	// default constructor
+	if constexpr (
+		is_forward<decltype(A.begin())> && is_forward<decltype(A.cbegin())> &&
+		is_forward<decltype(A.rbegin())> && is_forward<decltype(A.crbegin())>)
+	{
+		Board_iterator<int, 2> Default;
+		EXPECT_TRUE((Default == Board_iterator<int, 2>{}));
+		EXPECT_DEBUG_DEATH(U = Default == A.begin(), "is_same_address");
+		EXPECT_DEBUG_DEATH(U = Default == A.end(), "is_same_address");
+	}
+	else
+		ADD_FAILURE();
 }
 
 TEST(Board_Iterator, not_equal)
@@ -869,12 +889,12 @@ TEST(Board_Iterator, not_equal)
 		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
 		is_input<decltype(A.rbegin())> && is_input<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(A.begin() != A.begin()));
-		static_assert(not noexcept(A.cbegin() != A.cbegin()));
-		static_assert(not noexcept(A.rbegin() != A.rbegin()));
-		static_assert(not noexcept(A.crbegin() != A.crbegin()));
-		static_assert(not noexcept(cA.begin() != cA.begin()));
-		static_assert(not noexcept(cA.begin() != cA.cbegin()));
+		static_assert(noexcept(A.begin() != A.begin()));
+		static_assert(noexcept(A.cbegin() != A.cbegin()));
+		static_assert(noexcept(A.rbegin() != A.rbegin()));
+		static_assert(noexcept(A.crbegin() != A.crbegin()));
+		static_assert(noexcept(cA.begin() != cA.begin()));
+		static_assert(noexcept(cA.begin() != cA.cbegin()));
 
 		// return type
 		static_assert(std::is_same_v<bool, decltype(A.begin() != A.begin())>);
@@ -921,14 +941,15 @@ TEST(Board_Iterator, member_access)
 		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
 		is_input<decltype(A.rbegin())> && is_input<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(Opt.begin().operator->()));
-		static_assert(not noexcept(Opt.cbegin().operator->()));
-		static_assert(not noexcept(Opt.rbegin().operator->()));
-		static_assert(not noexcept(Opt.crbegin().operator->()));
-		static_assert(not noexcept(Opt.begin()->size()));
-		static_assert(not noexcept(Opt.cbegin()->size()));
-		static_assert(not noexcept(Opt.rbegin()->size()));
-		static_assert(not noexcept(Opt.crbegin()->size()));
+		static_assert(noexcept(Opt.begin().operator->()));
+		static_assert(noexcept(Opt.cbegin().operator->()));
+		static_assert(noexcept(Opt.rbegin().operator->()));
+		static_assert(noexcept(Opt.crbegin().operator->()));
+		static_assert(noexcept(Opt.begin()->size()));
+		static_assert(noexcept(Opt.cbegin()->size()));
+		static_assert(noexcept(Opt.rbegin()->size()));
+		static_assert(noexcept(Opt.crbegin()->size()));
+		static_assert(not noexcept(Opt.begin()->remove_option(Value{1})));
 		// return type
 		static_assert(
 			std::is_same_v<Options<4>*, decltype(Opt.begin().operator->())>);
@@ -984,14 +1005,14 @@ TEST(Board_Iterator, OutputIterator)
 	// *r = o (return-value not used)
 	auto itrA = tmp.begin();
 	// pre-condition: iterator is dereferenceable
-	static_assert(not noexcept(*itrA));
+	static_assert(noexcept(*itrA));
 	EXPECT_EQ(*itrA, 0);
 	// operation:
-	static_assert(not noexcept(*tmp.begin() = 1));
+	static_assert(noexcept(*tmp.begin() = 1));
 	*itrA = 2;
 	EXPECT_EQ(tmp[0][0], 2);
 	// post-condition: iterator is incrementable
-	static_assert(not noexcept((*tmp.begin() = 1)++));
+	static_assert(noexcept((*tmp.begin() = 1)++));
 	itrA++;
 	EXPECT_TRUE(itrA == ++tmp.begin());
 	if constexpr (is_forward<decltype(tmp.begin())>)
@@ -1001,15 +1022,15 @@ TEST(Board_Iterator, OutputIterator)
 	}
 
 	EXPECT_NO_THROW(U = *tmp.begin()); // pre-condition
-	static_assert(not noexcept(*tmp.begin() = 5));
+	static_assert(noexcept(*tmp.begin() = 5));
 	EXPECT_NO_THROW(U = *tmp.begin() = 5);
 	EXPECT_EQ(tmp[0][0], 5);
-	static_assert(not noexcept(*(++tmp.begin()) = 3));
+	static_assert(noexcept(*(++tmp.begin()) = 3));
 	EXPECT_NO_THROW(*(++tmp.begin()) = 4);
 	EXPECT_EQ(tmp[0][1], 4);
-	static_assert(not noexcept(*tmp.rbegin()));
+	static_assert(noexcept(*tmp.rbegin()));
 	EXPECT_NO_THROW(U = *tmp.rbegin()); // pre-condition
-	static_assert(not noexcept(*tmp.rbegin() = 2));
+	static_assert(noexcept(*tmp.rbegin() = 2));
 	EXPECT_NO_THROW(U = *tmp.rbegin() = 9);
 	EXPECT_EQ(tmp[3][3], 9);
 	EXPECT_NO_THROW(*(++tmp.rbegin()) = 8);
@@ -1085,12 +1106,12 @@ TEST(Board_Iterator, pre_decrement)
 		is_bidir<decltype(A.begin())> && is_bidir<decltype(A.cbegin())> &&
 		is_bidir<decltype(A.rbegin())> && is_bidir<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(--A.end()));
-		static_assert(not noexcept(--A.cend()));
-		static_assert(not noexcept(--A.rend()));
-		static_assert(not noexcept(--A.cend()));
-		static_assert(not noexcept(--cA.end()));
-		static_assert(not noexcept(--cA.rend()));
+		static_assert(noexcept(--A.end()));
+		static_assert(noexcept(--A.cend()));
+		static_assert(noexcept(--A.rend()));
+		static_assert(noexcept(--A.cend()));
+		static_assert(noexcept(--cA.end()));
+		static_assert(noexcept(--cA.rend()));
 
 		EXPECT_DEBUG_DEATH(--A.begin(), "> 0");
 		EXPECT_DEBUG_DEATH(--A.cbegin(), "> 0");
@@ -1165,12 +1186,12 @@ TEST(Board_Iterator, post_decrement)
 		is_bidir<decltype(A.begin())> && is_bidir<decltype(A.cbegin())> &&
 		is_bidir<decltype(A.rbegin())> && is_bidir<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(A.begin()--));
-		static_assert(not noexcept(A.cbegin()--));
-		static_assert(not noexcept(A.rbegin()--));
-		static_assert(not noexcept(A.crbegin()--));
-		static_assert(not noexcept(cA.begin()--));
-		static_assert(not noexcept(cA.rbegin()--));
+		static_assert(noexcept(A.begin()--));
+		static_assert(noexcept(A.cbegin()--));
+		static_assert(noexcept(A.rbegin()--));
+		static_assert(noexcept(A.crbegin()--));
+		static_assert(noexcept(cA.begin()--));
+		static_assert(noexcept(cA.rbegin()--));
 
 		// (void)i-- equivalent to(void)-- i
 		EXPECT_DEBUG_DEATH(A.begin()--, "> 0");
@@ -1307,18 +1328,18 @@ TEST(Board_Iterator, increment_by_integer)
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
 		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(A.begin() += 3));
-		static_assert(not noexcept(A.cbegin() += 12));
-		static_assert(not noexcept(A.rbegin() += 14));
-		static_assert(not noexcept(A.crbegin() += 1));
-		static_assert(not noexcept(cA.begin() += 14));
-		static_assert(not noexcept(cA.rbegin() += 9));
-		static_assert(not noexcept(A.end() += -3));
-		static_assert(not noexcept(A.cend() += -12));
-		static_assert(not noexcept(A.rend() += -14));
-		static_assert(not noexcept(A.crend() += -1));
-		static_assert(not noexcept(cA.end() += -14));
-		static_assert(not noexcept(cA.rend() += -9));
+		static_assert(noexcept(A.begin() += 3));
+		static_assert(noexcept(A.cbegin() += 12));
+		static_assert(noexcept(A.rbegin() += 14));
+		static_assert(noexcept(A.crbegin() += 1));
+		static_assert(noexcept(cA.begin() += 14));
+		static_assert(noexcept(cA.rbegin() += 9));
+		static_assert(noexcept(A.end() += -3));
+		static_assert(noexcept(A.cend() += -12));
+		static_assert(noexcept(A.rend() += -14));
+		static_assert(noexcept(A.crend() += -1));
+		static_assert(noexcept(cA.end() += -14));
+		static_assert(noexcept(cA.rend() += -9));
 
 		static_assert(
 			std::is_same_v<decltype(A.begin())&, decltype(A.begin() += 12)>);
@@ -1440,18 +1461,18 @@ TEST(Board_Iterator, increment_by_integer2)
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
 		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(A.begin() + 3));
-		static_assert(not noexcept(A.cbegin() + 12));
-		static_assert(not noexcept(A.rbegin() + 14));
-		static_assert(not noexcept(A.crbegin() + 1));
-		static_assert(not noexcept(cA.begin() + 14));
-		static_assert(not noexcept(cA.rbegin() + 9));
-		static_assert(not noexcept(A.end() + -3));
-		static_assert(not noexcept(A.cend() + -12));
-		static_assert(not noexcept(A.rend() + -14));
-		static_assert(not noexcept(A.crend() + -1));
-		static_assert(not noexcept(cA.end() + -14));
-		static_assert(not noexcept(cA.rend() + -9));
+		static_assert(noexcept(A.begin() + 3));
+		static_assert(noexcept(A.cbegin() + 12));
+		static_assert(noexcept(A.rbegin() + 14));
+		static_assert(noexcept(A.crbegin() + 1));
+		static_assert(noexcept(cA.begin() + 14));
+		static_assert(noexcept(cA.rbegin() + 9));
+		static_assert(noexcept(A.end() + -3));
+		static_assert(noexcept(A.cend() + -12));
+		static_assert(noexcept(A.rend() + -14));
+		static_assert(noexcept(A.crend() + -1));
+		static_assert(noexcept(cA.end() + -14));
+		static_assert(noexcept(cA.rend() + -9));
 
 		static_assert(
 			std::is_same_v<decltype(A.begin()), decltype(A.begin() + 12)>);
@@ -1536,18 +1557,18 @@ TEST(Board_Iterator, increment_by_integer3)
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
 		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(3 + A.begin()));
-		static_assert(not noexcept(5 + A.cbegin()));
-		static_assert(not noexcept(18 + A.rbegin()));
-		static_assert(not noexcept(1 + A.crbegin()));
-		static_assert(not noexcept(12 + cA.begin()));
-		static_assert(not noexcept(8 + cA.rbegin()));
-		static_assert(not noexcept(-3 + A.end()));
-		static_assert(not noexcept(-12 + A.cend()));
-		static_assert(not noexcept(-4 + A.rend()));
-		static_assert(not noexcept(-11 + A.crend()));
-		static_assert(not noexcept(-9 + cA.end()));
-		static_assert(not noexcept(-12 + cA.rend()));
+		static_assert(noexcept(3 + A.begin()));
+		static_assert(noexcept(5 + A.cbegin()));
+		static_assert(noexcept(18 + A.rbegin()));
+		static_assert(noexcept(1 + A.crbegin()));
+		static_assert(noexcept(12 + cA.begin()));
+		static_assert(noexcept(8 + cA.rbegin()));
+		static_assert(noexcept(-3 + A.end()));
+		static_assert(noexcept(-12 + A.cend()));
+		static_assert(noexcept(-4 + A.rend()));
+		static_assert(noexcept(-11 + A.crend()));
+		static_assert(noexcept(-9 + cA.end()));
+		static_assert(noexcept(-12 + cA.rend()));
 
 		static_assert(
 			std::is_same_v<decltype(A.begin()), decltype(11 + A.begin())>);
@@ -1631,10 +1652,10 @@ TEST(Board_Iterator, decrement_by_integer)
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
 		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(A.end() -= 3));
-		static_assert(not noexcept(A.cend() -= 12));
-		static_assert(not noexcept(A.rend() -= 14));
-		static_assert(not noexcept(A.crend() -= 1));
+		static_assert(noexcept(A.end() -= 3));
+		static_assert(noexcept(A.cend() -= 12));
+		static_assert(noexcept(A.rend() -= 14));
+		static_assert(noexcept(A.crend() -= 1));
 
 		static_assert(
 			std::is_same_v<decltype(A.end())&, decltype(A.end() -= 12)>);
@@ -1749,18 +1770,18 @@ TEST(Board_Iterator, decrement_by_integer2)
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
 		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(A.begin() - -3));
-		static_assert(not noexcept(A.cbegin() - -12));
-		static_assert(not noexcept(A.rbegin() - -14));
-		static_assert(not noexcept(A.crbegin() - -1));
-		static_assert(not noexcept(cA.begin() - -14));
-		static_assert(not noexcept(cA.rbegin() - -9));
-		static_assert(not noexcept(A.end() - 3));
-		static_assert(not noexcept(A.cend() - 12));
-		static_assert(not noexcept(A.rend() - 14));
-		static_assert(not noexcept(A.crend() - 1));
-		static_assert(not noexcept(cA.end() - 14));
-		static_assert(not noexcept(cA.rend() - 9));
+		static_assert(noexcept(A.begin() - -3));
+		static_assert(noexcept(A.cbegin() - -12));
+		static_assert(noexcept(A.rbegin() - -14));
+		static_assert(noexcept(A.crbegin() - -1));
+		static_assert(noexcept(cA.begin() - -14));
+		static_assert(noexcept(cA.rbegin() - -9));
+		static_assert(noexcept(A.end() - 3));
+		static_assert(noexcept(A.cend() - 12));
+		static_assert(noexcept(A.rend() - 14));
+		static_assert(noexcept(A.crend() - 1));
+		static_assert(noexcept(cA.end() - 14));
+		static_assert(noexcept(cA.rend() - 9));
 
 		static_assert(
 			std::is_same_v<decltype(A.begin()), decltype(A.end() - 12)>);
@@ -1844,11 +1865,11 @@ TEST(Board_Iterator, difference)
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
 		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(A.begin() - A.end()));
-		static_assert(not noexcept(A.end() - A.begin()));
-		static_assert(not noexcept(A.cend() - A.cbegin()));
-		static_assert(not noexcept(A.rend() - A.rbegin()));
-		static_assert(not noexcept(A.crend() - A.crbegin()));
+		static_assert(noexcept(A.begin() - A.end()));
+		static_assert(noexcept(A.end() - A.begin()));
+		static_assert(noexcept(A.cend() - A.cbegin()));
+		static_assert(noexcept(A.rend() - A.rbegin()));
+		static_assert(noexcept(A.crend() - A.crbegin()));
 
 		auto B = A;
 		EXPECT_DEBUG_DEATH(
@@ -1937,14 +1958,14 @@ TEST(Board_Iterator, direct_access)
 		is_random<decltype(A.begin())> && is_random<decltype(A.rbegin())> &&
 		is_random<decltype(A.cbegin())> && is_random<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(A.begin()[0]));
-		static_assert(not noexcept(A.cbegin()[5]));
-		static_assert(not noexcept(A.rbegin()[3]));
-		static_assert(not noexcept(A.crbegin()[6]));
-		static_assert(not noexcept(A.end()[-6]));
-		static_assert(not noexcept(A.cend()[-6]));
-		static_assert(not noexcept(A.rend()[-6]));
-		static_assert(not noexcept(A.crend()[-6]));
+		static_assert(noexcept(A.begin()[0]));
+		static_assert(noexcept(A.cbegin()[5]));
+		static_assert(noexcept(A.rbegin()[3]));
+		static_assert(noexcept(A.crbegin()[6]));
+		static_assert(noexcept(A.end()[-6]));
+		static_assert(noexcept(A.cend()[-6]));
+		static_assert(noexcept(A.rend()[-6]));
+		static_assert(noexcept(A.crend()[-6]));
 
 		// Return type:
 		static_assert(std::is_same_v<int&, decltype(A.begin()[12])>);
@@ -2060,8 +2081,8 @@ TEST(Board_Iterator, direct_access)
 
 		//====------------------------------------------------------------====//
 		// Output
-		static_assert(not noexcept(A.begin()[0] = 1));
-		static_assert(not noexcept(A.rbegin()[0] = 1));
+		static_assert(noexcept(A.begin()[0] = 1));
+		static_assert(noexcept(A.rbegin()[0] = 1));
 		A.begin()[0] = 1;
 		EXPECT_EQ(A[0][0], 1);
 		A.begin()[11] = 9;
@@ -2085,22 +2106,22 @@ TEST(Board_Iterator, comparison)
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
 		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
 	{
-		static_assert(not noexcept(A.begin() < A.end()));
-		static_assert(not noexcept(A.begin() <= A.end()));
-		static_assert(not noexcept(A.begin() > A.end()));
-		static_assert(not noexcept(A.begin() >= A.end()));
-		static_assert(not noexcept(A.cbegin() < A.cend()));
-		static_assert(not noexcept(A.cbegin() <= A.cend()));
-		static_assert(not noexcept(A.cbegin() > A.cend()));
-		static_assert(not noexcept(A.cbegin() >= A.cend()));
-		static_assert(not noexcept(A.rbegin() < A.rend()));
-		static_assert(not noexcept(A.rbegin() <= A.rend()));
-		static_assert(not noexcept(A.rbegin() > A.rend()));
-		static_assert(not noexcept(A.rbegin() >= A.rend()));
-		static_assert(not noexcept(A.crbegin() < A.crend()));
-		static_assert(not noexcept(A.crbegin() <= A.crend()));
-		static_assert(not noexcept(A.crbegin() > A.crend()));
-		static_assert(not noexcept(A.crbegin() >= A.crend()));
+		static_assert(noexcept(A.begin() < A.end()));
+		static_assert(noexcept(A.begin() <= A.end()));
+		static_assert(noexcept(A.begin() > A.end()));
+		static_assert(noexcept(A.begin() >= A.end()));
+		static_assert(noexcept(A.cbegin() < A.cend()));
+		static_assert(noexcept(A.cbegin() <= A.cend()));
+		static_assert(noexcept(A.cbegin() > A.cend()));
+		static_assert(noexcept(A.cbegin() >= A.cend()));
+		static_assert(noexcept(A.rbegin() < A.rend()));
+		static_assert(noexcept(A.rbegin() <= A.rend()));
+		static_assert(noexcept(A.rbegin() > A.rend()));
+		static_assert(noexcept(A.rbegin() >= A.rend()));
+		static_assert(noexcept(A.crbegin() < A.crend()));
+		static_assert(noexcept(A.crbegin() <= A.crend()));
+		static_assert(noexcept(A.crbegin() > A.crend()));
+		static_assert(noexcept(A.crbegin() >= A.crend()));
 
 		// iterator
 		EXPECT_FALSE(A.begin() < A.begin());
@@ -2184,7 +2205,7 @@ TEST(Board_Iterator, comparison)
 		auto B  = A;
 		B[1][2] = 0;
 		A[1][2] = 8;
-		static_assert(not noexcept(A.begin() < B.end()));
+		static_assert(noexcept(A.begin() < B.end()));
 		EXPECT_DEBUG_DEATH(
 			[[maybe_unused]] auto U = A.begin() < B.end(), "is_same_address");
 		EXPECT_DEBUG_DEATH(

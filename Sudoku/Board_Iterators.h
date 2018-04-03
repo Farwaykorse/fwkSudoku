@@ -44,7 +44,7 @@ public:
 		: board_(owner)
 	{
 	}
-	constexpr Board_iterator(
+	explicit constexpr Board_iterator(
 		gsl::not_null<owner_type*> owner, Location loc) noexcept
 		: board_(owner), elem_(loc.element())
 	{
@@ -61,22 +61,22 @@ public:
 	{
 		return Location{gsl::narrow_cast<int>(elem_)};
 	}
-	// Allows for implicit conversion to Location
+	// Allows for conversion to Location
 	explicit constexpr operator Location() const noexcept { return location(); }
 
 	//====----------------------------------------------------------------====//
-	[[nodiscard]] reference operator*() const
+	[[nodiscard]] constexpr reference operator*() const noexcept
 	{
 		assert(board_ != nullptr && dereferenceable_location());
 		return board_->operator[](location());
 	}
-	[[nodiscard]] pointer operator->() const
+	[[nodiscard]] constexpr pointer operator->() const noexcept
 	{ // member access; equivalent to (*p).member
 		return std::pointer_traits<pointer>::pointer_to(**this);
 	}
 
 	//====----------------------------------------------------------------====//
-	self_type& operator++()
+	constexpr self_type& operator++() noexcept
 	{ // pre-increment
 		assert(board_ != nullptr);
 		if constexpr (is_reverse)
@@ -89,16 +89,15 @@ public:
 			assert(elem_ < full_size<N>);
 			++elem_;
 		}
-
 		return (*this);
 	}
-	self_type operator++(int)
+	constexpr self_type operator++(int) noexcept
 	{ // post-increment
 		const self_type pre{*this};
 		operator++();
 		return pre;
 	}
-	self_type& operator--()
+	constexpr self_type& operator--() noexcept
 	{ // pre-decrement
 		assert(board_ != nullptr);
 		if constexpr (is_reverse)
@@ -113,7 +112,7 @@ public:
 		}
 		return (*this);
 	}
-	self_type operator--(int)
+	constexpr self_type operator--(int) noexcept
 	{ // post-decrement
 		const self_type pre{*this};
 		operator--();
@@ -121,7 +120,7 @@ public:
 	}
 
 	//====----------------------------------------------------------------====//
-	self_type& operator+=(const difference_type offset)
+	constexpr self_type& operator+=(const difference_type offset) noexcept
 	{
 		assert(offset == 0 || board_ != nullptr);
 		if constexpr (is_reverse)
@@ -136,25 +135,27 @@ public:
 			assert(elem_ >= 0);
 			assert(elem_ <= full_size<N>);
 		}
-
 		return (*this);
 	}
-	[[nodiscard]] self_type operator+(const difference_type offset) const
+	[[nodiscard]] constexpr self_type
+		operator+(const difference_type offset) const noexcept
 	{
 		self_type tmp{*this};
 		return (tmp += offset);
 	}
-	self_type& operator-=(const difference_type offset)
+	constexpr self_type& operator-=(const difference_type offset) noexcept
 	{
 		return operator+=(-offset);
 	}
-	[[nodiscard]] self_type operator-(const difference_type offset) const
+	[[nodiscard]] constexpr self_type
+		operator-(const difference_type offset) const noexcept
 	{
 		self_type tmp{*this};
 		return (tmp += -offset);
 	}
 
-	[[nodiscard]] difference_type operator-(const self_type& other) const
+	[[nodiscard]] constexpr difference_type
+		operator-(const self_type& other) const noexcept
 	{ // difference
 		assert(is_same_address(other));
 		if constexpr (is_reverse)
@@ -163,22 +164,26 @@ public:
 			return elem_ - other.elem_;
 	}
 
-	[[nodiscard]] reference operator[](const difference_type offset) const
+	[[nodiscard]] constexpr reference
+		operator[](const difference_type offset) const noexcept
 	{
 		return (*(*this + offset));
 	}
 
 	//====----------------------------------------------------------------====//
-	[[nodiscard]] bool operator==(const self_type& other) const
+	[[nodiscard]] constexpr bool operator==(const self_type& other) const
+		noexcept
 	{
 		assert(is_same_address(other));
 		return is_same_address(other) && elem_ == other.elem_;
 	}
-	[[nodiscard]] bool operator!=(const self_type& other) const
+	[[nodiscard]] constexpr bool operator!=(const self_type& other) const
+		noexcept
 	{
 		return (!operator==(other));
 	}
-	[[nodiscard]] bool operator<(const self_type& other) const
+	[[nodiscard]] constexpr bool operator<(const self_type& other) const
+		noexcept
 	{
 		assert(is_same_address(other));
 		if constexpr (is_reverse)
@@ -186,15 +191,18 @@ public:
 		else
 			return elem_ < other.elem_;
 	}
-	[[nodiscard]] bool operator>(const self_type& other) const
+	[[nodiscard]] constexpr bool operator>(const self_type& other) const
+		noexcept
 	{
 		return (other < *this);
 	}
-	[[nodiscard]] bool operator<=(const self_type& other) const
+	[[nodiscard]] constexpr bool operator<=(const self_type& other) const
+		noexcept
 	{
 		return (!(other < *this));
 	}
-	[[nodiscard]] bool operator>=(const self_type& other) const
+	[[nodiscard]] constexpr bool operator>=(const self_type& other) const
+		noexcept
 	{
 		return (!(*this < other));
 	}
@@ -231,9 +239,10 @@ using const_reverse_Board_iterator = Board_iterator<T, N, true, true>;
 
 
 template<typename T, int N, bool is_const = false, bool is_reverse = false>
-[[nodiscard]] inline Board_iterator<T, N, is_const, is_reverse> operator+(
-	typename Board_iterator<T, N, is_const>::difference_type const offset,
-	Board_iterator<T, N, is_const, is_reverse> itr)
+[[nodiscard]] inline constexpr Board_iterator<T, N, is_const, is_reverse>
+	operator+(
+		typename Board_iterator<T, N, is_const>::difference_type const offset,
+		Board_iterator<T, N, is_const, is_reverse> itr) noexcept
 {
 	return (itr += offset);
 }
