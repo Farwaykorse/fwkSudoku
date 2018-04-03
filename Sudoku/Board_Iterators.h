@@ -23,7 +23,6 @@ namespace Sudoku
 template<typename T, int N, bool is_const = false, bool is_reverse = false>
 class Board_iterator
 {
-	using self_type = Board_iterator;
 	using owner_type =
 		std::conditional_t<is_const, Board<T, N> const, Board<T, N>>;
 	using Location = ::Sudoku::Location<N>;
@@ -45,7 +44,7 @@ public:
 	explicit constexpr Board_iterator(gsl::not_null<owner_type*> owner) noexcept
 		: board_(owner)
 	{ // defaults to begin()
-		if constexpr (is_reverse) elem_ = full_size<N> - 1;
+		if constexpr (is_reverse) elem_ = (full_size<N> - 1);
 	}
 	explicit constexpr Board_iterator(
 		gsl::not_null<owner_type*> owner, Location loc) noexcept
@@ -53,7 +52,7 @@ public:
 	{
 	}
 	// Assignment
-	constexpr self_type& operator=(Location loc) noexcept
+	constexpr Board_iterator& operator=(Location loc) noexcept
 	{
 		assert(is_valid(loc));
 		elem_ = loc.element();
@@ -80,7 +79,7 @@ public:
 	}
 
 	//====----------------------------------------------------------------====//
-	constexpr self_type& operator++() noexcept
+	constexpr Board_iterator& operator++() noexcept
 	{ // pre-increment
 		assert(board_ != nullptr);
 		if constexpr (is_reverse)
@@ -95,13 +94,13 @@ public:
 		}
 		return (*this);
 	}
-	constexpr self_type operator++(int) noexcept
+	constexpr Board_iterator operator++(int) noexcept
 	{ // post-increment
-		const self_type pre{*this};
+		const Board_iterator pre{*this};
 		operator++();
 		return pre;
 	}
-	constexpr self_type& operator--() noexcept
+	constexpr Board_iterator& operator--() noexcept
 	{ // pre-decrement
 		assert(board_ != nullptr);
 		if constexpr (is_reverse)
@@ -116,15 +115,15 @@ public:
 		}
 		return (*this);
 	}
-	constexpr self_type operator--(int) noexcept
+	constexpr Board_iterator operator--(int) noexcept
 	{ // post-decrement
-		const self_type pre{*this};
+		const Board_iterator pre{*this};
 		operator--();
 		return pre;
 	}
 
 	//====----------------------------------------------------------------====//
-	constexpr self_type& operator+=(const difference_type offset) noexcept
+	constexpr Board_iterator& operator+=(const difference_type offset) noexcept
 	{
 		assert(offset == 0 || board_ != nullptr);
 		if constexpr (is_reverse)
@@ -141,25 +140,25 @@ public:
 		}
 		return (*this);
 	}
-	[[nodiscard]] constexpr self_type
+	[[nodiscard]] constexpr Board_iterator
 		operator+(const difference_type offset) const noexcept
 	{
-		self_type tmp{*this};
+		Board_iterator tmp{*this};
 		return (tmp += offset);
 	}
-	constexpr self_type& operator-=(const difference_type offset) noexcept
+	constexpr Board_iterator& operator-=(const difference_type offset) noexcept
 	{
 		return operator+=(-offset);
 	}
-	[[nodiscard]] constexpr self_type
+	[[nodiscard]] constexpr Board_iterator
 		operator-(const difference_type offset) const noexcept
 	{
-		self_type tmp{*this};
+		Board_iterator tmp{*this};
 		return (tmp += -offset);
 	}
 
 	[[nodiscard]] constexpr difference_type
-		operator-(const self_type& other) const noexcept
+		operator-(const Board_iterator& other) const noexcept
 	{ // difference
 		assert(is_same_address(other));
 		if constexpr (is_reverse)
@@ -175,18 +174,18 @@ public:
 	}
 
 	//====----------------------------------------------------------------====//
-	[[nodiscard]] constexpr bool operator==(const self_type& other) const
+	[[nodiscard]] constexpr bool operator==(const Board_iterator& other) const
 		noexcept
 	{
 		assert(is_same_address(other));
 		return is_same_address(other) && elem_ == other.elem_;
 	}
-	[[nodiscard]] constexpr bool operator!=(const self_type& other) const
+	[[nodiscard]] constexpr bool operator!=(const Board_iterator& other) const
 		noexcept
 	{
 		return (!operator==(other));
 	}
-	[[nodiscard]] constexpr bool operator<(const self_type& other) const
+	[[nodiscard]] constexpr bool operator<(const Board_iterator& other) const
 		noexcept
 	{
 		assert(is_same_address(other));
@@ -195,17 +194,17 @@ public:
 		else
 			return elem_ < other.elem_;
 	}
-	[[nodiscard]] constexpr bool operator>(const self_type& other) const
+	[[nodiscard]] constexpr bool operator>(const Board_iterator& other) const
 		noexcept
 	{
 		return (other < *this);
 	}
-	[[nodiscard]] constexpr bool operator<=(const self_type& other) const
+	[[nodiscard]] constexpr bool operator<=(const Board_iterator& other) const
 		noexcept
 	{
 		return (!(other < *this));
 	}
-	[[nodiscard]] constexpr bool operator>=(const self_type& other) const
+	[[nodiscard]] constexpr bool operator>=(const Board_iterator& other) const
 		noexcept
 	{
 		return (!(*this < other));
@@ -215,7 +214,7 @@ private:
 	owner_type* board_{nullptr};
 	difference_type elem_{0};
 
-	constexpr bool is_same_address(const self_type& other) const noexcept
+	constexpr bool is_same_address(const Board_iterator& other) const noexcept
 	{ // compare address of:
 		return board_ == other.board_;
 	}
