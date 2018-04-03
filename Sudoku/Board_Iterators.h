@@ -35,14 +35,17 @@ public:
 	using pointer           = std::conditional_t<is_const, T const*, T*>;
 	using reference         = std::conditional_t<is_const, T const&, T&>;
 	using iterator_category = std::random_access_iterator_tag;
-
-	using _Unchecked_type = pointer; // MSVC STL implementation specific
+	using _Unchecked_type   = pointer; // MSVC STL implementation specific
 
 	// Constructors
-	constexpr Board_iterator() noexcept = default;
+	constexpr Board_iterator() noexcept
+	{ // defaults to begin()
+		if constexpr (is_reverse) elem_ = full_size<N> - 1;
+	}
 	explicit constexpr Board_iterator(gsl::not_null<owner_type*> owner) noexcept
 		: board_(owner)
-	{
+	{ // defaults to begin()
+		if constexpr (is_reverse) elem_ = full_size<N> - 1;
 	}
 	explicit constexpr Board_iterator(
 		gsl::not_null<owner_type*> owner, Location loc) noexcept

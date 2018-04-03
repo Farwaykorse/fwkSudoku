@@ -323,7 +323,7 @@ const typename Board<T, N>::const_InBetween Board<T, N>::
 template<typename T, int N>
 constexpr typename Board<T, N>::iterator Board<T, N>::begin() noexcept
 {
-	return Board_iterator<T, N>(this, Location{0});
+	return Board_iterator<T, N>(this);
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::iterator Board<T, N>::end() noexcept
@@ -334,7 +334,7 @@ template<typename T, int N>
 constexpr typename Board<T, N>::const_iterator Board<T, N>::cbegin() const
 	noexcept
 {
-	return const_Board_iterator<T, N>(this, Location{0});
+	return const_Board_iterator<T, N>(this);
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_iterator Board<T, N>::cend() const
@@ -345,7 +345,7 @@ constexpr typename Board<T, N>::const_iterator Board<T, N>::cend() const
 template<typename T, int N>
 constexpr typename Board<T, N>::reverse_iterator Board<T, N>::rbegin() noexcept
 {
-	return reverse_Board_iterator<T, N>(this, Location{full_size<N>-1});
+	return reverse_Board_iterator<T, N>(this);
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::reverse_iterator Board<T, N>::rend() noexcept
@@ -356,7 +356,7 @@ template<typename T, int N>
 constexpr typename Board<T, N>::const_reverse_iterator
 	Board<T, N>::crbegin() const noexcept
 {
-	return const_reverse_Board_iterator<T, N>(this, Location{full_size<N>-1});
+	return const_reverse_Board_iterator<T, N>(this);
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_reverse_iterator

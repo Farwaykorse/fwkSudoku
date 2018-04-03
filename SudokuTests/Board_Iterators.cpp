@@ -502,13 +502,28 @@ TEST(Board_Iterator, construction)
 	// Construct
 	Board_iterator<int, 2> I1{&A};
 	EXPECT_TRUE(I1 == A.begin());
-
-	// Construct from location
-	Board_iterator<int, 2> const I2(&A, Location<2>{0});
-	EXPECT_TRUE(I2 == A.begin());
-	Board_iterator<int, 2> I3(&A, Location<2>{16});
-	EXPECT_TRUE(I3 == A.end());
-
+	const_Board_iterator<int, 2> cI1{&A};
+	EXPECT_TRUE(cI1 == A.cbegin());
+	reverse_Board_iterator<int, 2> rI1{&A};
+	EXPECT_TRUE(rI1 == A.rbegin());
+	const_reverse_Board_iterator<int, 2> crI1{&A};
+	EXPECT_TRUE(crI1 == A.crbegin());
+	{ // Copy-construct
+		Board_iterator<int, 2> LI{I1};
+		EXPECT_TRUE(LI == A.begin());
+		const_Board_iterator<int, 2> cLI{cI1};
+		EXPECT_TRUE(cLI == A.cbegin());
+		reverse_Board_iterator<int, 2> rLI{rI1};
+		EXPECT_TRUE(rLI == A.rbegin());
+		const_reverse_Board_iterator<int, 2> crLI{crI1};
+		EXPECT_TRUE(crLI == A.crbegin());
+	}
+	{ // Construct from location
+		Board_iterator<int, 2> const I2(&A, Location<2>{0});
+		EXPECT_TRUE(I2 == A.begin());
+		Board_iterator<int, 2> I3(&A, Location<2>{16});
+		EXPECT_TRUE(I3 == A.end());
+	}
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.rbegin())> &&
 		is_random<decltype(A.cbegin())> && is_random<decltype(A.crbegin())>)
@@ -584,8 +599,9 @@ TEST(Board_Iterator, Location)
 
 	// Return Location
 	static_assert(Board_iterator<int, 2>().location() == Location<2>{0});
+	static_assert(reverse_Board_iterator<int, 2>().location() == L{15});
 	// Conversion to Location
-	static_assert(Location<2>{Board_iterator<int, 2>()} == Location<2>());
+	static_assert(Location<2>{Board_iterator<int, 2>()} == Location<2>{0});
 	// Assign Location
 	static_assert((Board_iterator<int, 2>() = L{13}).location() == L{13});
 
