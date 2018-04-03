@@ -52,9 +52,9 @@ public:
 	using pointer                = value_type*;
 	using const_pointer          = value_type const*;
 	using iterator               = Board_iterator<T, N>;
-	using const_iterator         = Board_iterator<T, N, true>;
-	using reverse_iterator       = std::reverse_iterator<iterator>;
-	using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+	using const_iterator         = const_Board_iterator<T, N>;
+	using reverse_iterator       = reverse_Board_iterator<T, N>;
+	using const_reverse_iterator = const_reverse_Board_iterator<T, N>;
 
 	Board() noexcept;
 	// initialize with non-default value
@@ -334,35 +334,35 @@ template<typename T, int N>
 constexpr typename Board<T, N>::const_iterator Board<T, N>::cbegin() const
 	noexcept
 {
-	return Board_iterator<T, N, true>(this, Location{0});
+	return const_Board_iterator<T, N>(this, Location{0});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_iterator Board<T, N>::cend() const
 	noexcept
 {
-	return Board_iterator<T, N, true>(this, Location{full_size<N>});
+	return const_Board_iterator<T, N>(this, Location{full_size<N>});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::reverse_iterator Board<T, N>::rbegin() noexcept
 {
-	return std::make_reverse_iterator(end());
+	return reverse_Board_iterator<T, N>(this, Location{full_size<N>-1});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::reverse_iterator Board<T, N>::rend() noexcept
 {
-	return std::make_reverse_iterator(begin());
+	return reverse_Board_iterator<T, N>(this, Location{-1});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_reverse_iterator
 	Board<T, N>::crbegin() const noexcept
 {
-	return std::make_reverse_iterator(cend());
+	return const_reverse_Board_iterator<T, N>(this, Location{full_size<N>-1});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_reverse_iterator
 	Board<T, N>::crend() const noexcept
 {
-	return std::make_reverse_iterator(cbegin());
+	return const_reverse_Board_iterator<T, N>(this, Location{-1});
 }
 
 } // namespace Sudoku

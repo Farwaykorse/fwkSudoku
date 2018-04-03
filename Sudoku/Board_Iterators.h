@@ -20,7 +20,7 @@
 
 namespace Sudoku
 {
-template<typename T, int N, bool is_const = false>
+template<typename T, int N, bool is_const = false, bool is_reverse = false>
 class Board_iterator
 {
 	using self_type = Board_iterator;
@@ -30,10 +30,10 @@ class Board_iterator
 
 public:
 	// member types
-	using difference_type = std::ptrdiff_t;
-	using value_type = T;
-	using pointer = std::conditional_t<is_const, T const*, T*>;
-	using reference = std::conditional_t<is_const, T const&, T&>;
+	using difference_type   = std::ptrdiff_t;
+	using value_type        = T;
+	using pointer           = std::conditional_t<is_const, T const*, T*>;
+	using reference         = std::conditional_t<is_const, T const&, T&>;
 	using iterator_category = std::random_access_iterator_tag;
 
 	using _Unchecked_type = pointer; // MSVC STL implementation specific
@@ -57,6 +57,14 @@ public:
 	}
 
 	//====----------------------------------------------------------------====//
+	[[nodiscard]] constexpr Location location() const noexcept
+	{
+		return Location{gsl::narrow_cast<int>(elem_)};
+	}
+	// Allows for implicit conversion to Location
+	explicit constexpr operator Location() const noexcept { return location(); }
+
+	//====----------------------------------------------------------------====//
 	[[nodiscard]] reference operator*() const
 	{
 		assert(board_ != nullptr && dereferenceable_location());
@@ -70,8 +78,18 @@ public:
 	//====----------------------------------------------------------------====//
 	self_type& operator++()
 	{ // pre-increment
-		assert(board_ != nullptr && in_forward_range());
-		++elem_;
+		assert(board_ != nullptr);
+		if constexpr (is_reverse)
+		{
+			assert(elem_ >= 0);
+			--elem_;
+		}
+		else
+		{
+			assert(elem_ < full_size<N>);
+			++elem_;
+		}
+
 		return (*this);
 	}
 	self_type operator++(int)
@@ -82,8 +100,17 @@ public:
 	}
 	self_type& operator--()
 	{ // pre-decrement
-		assert(board_ != nullptr && in_reverse_range());
-		--elem_;
+		assert(board_ != nullptr);
+		if constexpr (is_reverse)
+		{
+			assert(elem_ < full_size<N> - 1);
+			++elem_;
+		}
+		else
+		{
+			assert(elem_ > 0);
+			--elem_;
+		}
 		return (*this);
 	}
 	self_type operator--(int)
@@ -96,9 +123,20 @@ public:
 	//====----------------------------------------------------------------====//
 	self_type& operator+=(const difference_type offset)
 	{
-		assert(
-			(offset == 0) || board_ != nullptr && (in_range(elem_ + offset)));
-		elem_ += offset;
+		assert(offset == 0 || board_ != nullptr);
+		if constexpr (is_reverse)
+		{
+			elem_ -= offset;
+			assert(elem_ >= -1);
+			assert(elem_ < full_size<N>);
+		}
+		else
+		{
+			elem_ += offset;
+			assert(elem_ >= 0);
+			assert(elem_ <= full_size<N>);
+		}
+
 		return (*this);
 	}
 	[[nodiscard]] self_type operator+(const difference_type offset) const
@@ -119,7 +157,10 @@ public:
 	[[nodiscard]] difference_type operator-(const self_type& other) const
 	{ // difference
 		assert(is_same_address(other));
-		return elem_ - other.elem_;
+		if constexpr (is_reverse)
+			return other.elem_ - elem_;
+		else
+			return elem_ - other.elem_;
 	}
 
 	[[nodiscard]] reference operator[](const difference_type offset) const
@@ -140,7 +181,10 @@ public:
 	[[nodiscard]] bool operator<(const self_type& other) const
 	{
 		assert(is_same_address(other));
-		return elem_ < other.elem_;
+		if constexpr (is_reverse)
+			return elem_ > other.elem_;
+		else
+			return elem_ < other.elem_;
 	}
 	[[nodiscard]] bool operator>(const self_type& other) const
 	{
@@ -156,13 +200,8 @@ public:
 	}
 
 private:
-	owner_type * board_{nullptr};
+	owner_type* board_{nullptr};
 	difference_type elem_{0};
-
-	[[nodiscard]] constexpr Location location() const noexcept
-	{
-		return Location{gsl::narrow_cast<int>(elem_)};
-	}
 
 	constexpr bool is_same_address(const self_type& other) const noexcept
 	{ // compare address of:
@@ -175,41 +214,26 @@ private:
 	{
 		return !(x < 0 || x >= full_size<N>);
 	}
-	// Valid iterator, not required to be dereferenceable
-	static constexpr bool in_range(const difference_type x) noexcept
-	{ // All dereferenceable locations AND end()
-		return !(x < 0 || x > full_size<N>);
-	}
-	static constexpr bool in_forward_range(const difference_type x) noexcept
-	{
-		return !(x < 0 || x >= full_size<N>);
-	}
-	static constexpr bool in_reverse_range(const difference_type x) noexcept
-	{
-		return !(x <= 0 || x > full_size<N>);
-	}
 	constexpr bool dereferenceable_location() const noexcept
 	{
 		return dereferenceable_location(elem_);
 	}
-	constexpr bool in_range() const noexcept
-	{
-		return in_range(elem_);
-	}
-	constexpr bool in_forward_range() const noexcept
-	{
-		return in_forward_range(elem_);
-	}
-	constexpr bool in_reverse_range() const noexcept
-	{
-		return in_reverse_range(elem_);
-	}
 };
 
-template<typename T, int N, bool is_const = false>
-[[nodiscard]] inline Board_iterator<T, N, is_const> operator+(
+template<typename T, int N>
+using const_Board_iterator = Board_iterator<T, N, true, false>;
+
+template<typename T, int N>
+using reverse_Board_iterator = Board_iterator<T, N, false, true>;
+
+template<typename T, int N>
+using const_reverse_Board_iterator = Board_iterator<T, N, true, true>;
+
+
+template<typename T, int N, bool is_const = false, bool is_reverse = false>
+[[nodiscard]] inline Board_iterator<T, N, is_const, is_reverse> operator+(
 	typename Board_iterator<T, N, is_const>::difference_type const offset,
-	Board_iterator<T, N, is_const> itr)
+	Board_iterator<T, N, is_const, is_reverse> itr)
 {
 	return (itr += offset);
 }
