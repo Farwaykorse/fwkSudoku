@@ -518,6 +518,49 @@ TEST(Board_Iterator, construction)
 	}
 }
 
+TEST(Board_Iterator, assign_Location)
+{
+	using L = Location<2>;
+
+	test_elements TE{};
+	auto& A        = TE.A;
+	auto const& cA = TE.cA;
+
+	static_assert(noexcept(A.begin() = L{2}));
+	static_assert(noexcept(A.cbegin() = L{2}));
+	static_assert(noexcept(A.rbegin() = L{2}));
+	static_assert(noexcept(A.cbegin() = L{2}));
+	static_assert(noexcept(A.crbegin() = L{2}));
+	static_assert(noexcept(cA.begin() = L{2}));
+	static_assert(noexcept(cA.cbegin() = L{2}));
+	{
+		Board_iterator<int, 2> x1{&A};
+		EXPECT_TRUE(x1 == A.begin());
+		x1 = L{1};
+		EXPECT_TRUE(x1 != A.begin());
+		EXPECT_TRUE(x1 == ++A.begin());
+		EXPECT_TRUE((x1 = L{15}) != A.end());
+		EXPECT_TRUE(x1 == --A.end());
+	}
+	{
+		const_Board_iterator<int, 2> x1{&A};
+		EXPECT_TRUE(x1 == A.cbegin());
+		x1 = L{1};
+		EXPECT_TRUE(x1 != A.cbegin());
+		EXPECT_TRUE(x1 == ++A.cbegin());
+		EXPECT_TRUE((x1 = L{15}) != A.cend());
+		EXPECT_TRUE(x1 == --A.cend());
+	}
+	{
+		reverse_Board_iterator<int, 2> r1{&A};
+		r1 = L{15};
+		EXPECT_TRUE(r1 == A.rbegin());
+		r1 = L{0};
+		EXPECT_TRUE(r1 != A.rend());
+		EXPECT_TRUE(r1 == --A.rend());
+	}
+}
+
 TEST(Board_Iterator, Location)
 {
 	using L = Location<2>;
@@ -535,12 +578,16 @@ TEST(Board_Iterator, Location)
 	static_assert(noexcept(Location<2>{A.rbegin()}));
 	static_assert(noexcept(Location<2>{A.crbegin()}));
 
-	// construct from location
+	// Construct from Location
 	Board_iterator<int, 2> x1{&A};
 	Board_iterator<int, 2> x2(&A, L{12});
 
+	// Return Location
 	static_assert(Board_iterator<int, 2>().location() == Location<2>{0});
+	// Conversion to Location
 	static_assert(Location<2>{Board_iterator<int, 2>()} == Location<2>());
+	// Assign Location
+	static_assert((Board_iterator<int, 2>() = L{13}).location() == L{13});
 
 	// construct Location from iterator
 	EXPECT_EQ(L{x1}, L{0});
@@ -833,7 +880,12 @@ TEST(Board_Iterator, equal)
 	// return type
 	static_assert(std::is_same_v<bool, decltype(A.begin() == A.begin())>);
 	static_assert(std::is_same_v<bool, decltype(A.cbegin() == A.cbegin())>);
-
+	{ // constexpr
+		using itr = Board_iterator<int, 3>;
+		using L   = Location<3>;
+		static_assert(((itr() = L{0}) == (itr() = L{0})));
+		static_assert(not((itr() = L{3}) == itr()));
+	}
 	[[maybe_unused]] bool U {};
 	EXPECT_NO_THROW(U = (A.begin() == A.end()));
 	EXPECT_NO_THROW(U = (A.end() == A.end()));
@@ -895,11 +947,15 @@ TEST(Board_Iterator, not_equal)
 		static_assert(noexcept(A.crbegin() != A.crbegin()));
 		static_assert(noexcept(cA.begin() != cA.begin()));
 		static_assert(noexcept(cA.begin() != cA.cbegin()));
-
 		// return type
 		static_assert(std::is_same_v<bool, decltype(A.begin() != A.begin())>);
 		static_assert(std::is_same_v<bool, decltype(A.cbegin() != A.cbegin())>);
-
+		{ // constexpr
+			using itr = Board_iterator<int, 3>;
+			using L   = Location<3>;
+			static_assert(not((itr() = L{0}) != (itr() = L{0})));
+			static_assert((itr() = L{3}) != itr());
+		}
 		[[maybe_unused]] bool U {};
 		EXPECT_NO_THROW(U = (A.begin() != A.end()));
 		EXPECT_NO_THROW(U = (A.cbegin() != A.cend()));
@@ -2003,8 +2059,7 @@ TEST(Board_Iterator, direct_access)
 			[[maybe_unused]] auto U = A.end()[17], "<= full_size");
 
 		// const_iterator
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.cbegin()[-1], ">= 0");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.cbegin()[-1], ">= 0");
 		EXPECT_EQ(A.cbegin()[-0], 9);
 		EXPECT_EQ(A.cbegin()[0], 9);
 		EXPECT_EQ(A.cbegin()[1], 1);
@@ -2037,9 +2092,9 @@ TEST(Board_Iterator, direct_access)
 		EXPECT_EQ(A.rbegin()[1], 14);
 		EXPECT_EQ(A.rbegin()[15], 9);
 		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.rbegin()[16], "dereferenceable_location");
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.rbegin()[17], ">= -1");
+			[[maybe_unused]] auto U = A.rbegin()[16],
+			"dereferenceable_location");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rbegin()[17], ">= -1");
 		{ // return dereferenced iterator
 			auto I = A.rbegin();
 			EXPECT_TRUE(I[1] == *(++A.rbegin()));
@@ -2062,9 +2117,9 @@ TEST(Board_Iterator, direct_access)
 		EXPECT_EQ(A.crbegin()[1], 14);
 		EXPECT_EQ(A.crbegin()[15], 9);
 		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.crbegin()[16], "dereferenceable_location");
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.crbegin()[17], ">= -1");
+			[[maybe_unused]] auto U = A.crbegin()[16],
+			"dereferenceable_location");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.crbegin()[17], ">= -1");
 		{ // return dereferenced iterator
 			auto I = A.crbegin();
 			EXPECT_TRUE(I[1] == *(++A.crbegin()));

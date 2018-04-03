@@ -50,10 +50,11 @@ public:
 	{
 	}
 	// Assignment
-	constexpr Board_iterator& operator=(Location loc) noexcept
+	constexpr self_type& operator=(Location loc) noexcept
 	{
 		assert(is_valid(loc));
 		elem_ = loc.element();
+		return (*this);
 	}
 
 	//====----------------------------------------------------------------====//
