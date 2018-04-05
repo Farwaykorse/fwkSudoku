@@ -52,7 +52,7 @@ public:
 	{
 	}
 	// Assignment
-	constexpr Board_iterator& operator=(Location loc) noexcept
+	constexpr Board_iterator& operator=(Location const loc) noexcept
 	{
 		assert(is_valid(loc));
 		elem_ = loc.element();
@@ -140,31 +140,18 @@ public:
 		}
 		return (*this);
 	}
-	[[nodiscard]] constexpr Board_iterator
-		operator+(const difference_type offset) const noexcept
-	{
-		Board_iterator tmp{*this};
-		return (tmp += offset);
-	}
 	constexpr Board_iterator& operator-=(const difference_type offset) noexcept
 	{
 		return operator+=(-offset);
 	}
-	[[nodiscard]] constexpr Board_iterator
-		operator-(const difference_type offset) const noexcept
-	{
-		Board_iterator tmp{*this};
-		return (tmp += -offset);
-	}
-
-	[[nodiscard]] constexpr difference_type
-		operator-(const Board_iterator other) const noexcept
+	[[nodiscard]] friend constexpr difference_type operator-(
+		Board_iterator const left, Board_iterator const right) noexcept
 	{ // difference
-		assert(is_same_address(other));
+		assert(left.is_same_address(right));
 		if constexpr (is_reverse)
-			return other.elem_ - elem_;
+			return right.elem_ - left.elem_;
 		else
-			return elem_ - other.elem_;
+			return left.elem_ - right.elem_;
 	}
 
 	[[nodiscard]] constexpr reference
@@ -174,40 +161,20 @@ public:
 	}
 
 	//====----------------------------------------------------------------====//
-	[[nodiscard]] constexpr bool operator==(const Board_iterator other) const
-		noexcept
+	[[nodiscard]] friend constexpr bool operator==(
+		Board_iterator const left, Board_iterator const right) noexcept
 	{
-		assert(is_same_address(other));
-		return is_same_address(other) && elem_ == other.elem_;
+		assert(left.is_same_address(right));
+		return left.is_same_address(right) && left.elem_ == right.elem_;
 	}
-	[[nodiscard]] constexpr bool operator!=(const Board_iterator other) const
-		noexcept
+	[[nodiscard]] friend constexpr bool operator<(
+		Board_iterator const left, Board_iterator const right) noexcept
 	{
-		return (!operator==(other));
-	}
-	[[nodiscard]] constexpr bool operator<(const Board_iterator other) const
-		noexcept
-	{
-		assert(is_same_address(other));
+		assert(left.is_same_address(right));
 		if constexpr (is_reverse)
-			return elem_ > other.elem_;
+			return left.elem_ > right.elem_;
 		else
-			return elem_ < other.elem_;
-	}
-	[[nodiscard]] constexpr bool operator>(const Board_iterator other) const
-		noexcept
-	{
-		return (other < *this);
-	}
-	[[nodiscard]] constexpr bool operator<=(const Board_iterator other) const
-		noexcept
-	{
-		return (!(other < *this));
-	}
-	[[nodiscard]] constexpr bool operator>=(const Board_iterator other) const
-		noexcept
-	{
-		return (!(*this < other));
+			return left.elem_ < right.elem_;
 	}
 
 private:
@@ -240,12 +207,63 @@ using reverse_Board_iterator = Board_iterator<T, N, false, true>;
 template<typename T, int N>
 using const_reverse_Board_iterator = Board_iterator<T, N, true, true>;
 
+//====--------------------------------------------------------------------====//
 
 template<typename T, int N, bool is_const = false, bool is_reverse = false>
-[[nodiscard]] inline constexpr Board_iterator<T, N, is_const, is_reverse>
-	operator+(
-		typename Board_iterator<T, N, is_const>::difference_type const offset,
-		Board_iterator<T, N, is_const, is_reverse> itr) noexcept
+[[nodiscard]] constexpr auto operator+(
+	Board_iterator<T, N, is_const, is_reverse> left,
+	typename Board_iterator<T, N, is_const, is_reverse>::difference_type const
+		offset) noexcept
+{
+	return (left += offset);
+}
+template<typename T, int N, bool is_const = false, bool is_reverse = false>
+[[nodiscard]] constexpr auto operator-(
+	Board_iterator<T, N, is_const, is_reverse> left,
+	typename Board_iterator<T, N, is_const, is_reverse>::difference_type const
+		offset) noexcept
+{
+	return (left += -offset);
+}
+
+//====--------------------------------------------------------------------====//
+
+template<typename T, int N, bool is_const = false, bool is_reverse = false>
+[[nodiscard]] inline constexpr bool operator!=(
+	Board_iterator<T, N, is_const, is_reverse> const left,
+	Board_iterator<T, N, is_const, is_reverse> const right) noexcept
+{
+	return !(left == right);
+}
+template<typename T, int N, bool is_const = false, bool is_reverse = false>
+[[nodiscard]] inline constexpr bool operator>(
+	Board_iterator<T, N, is_const, is_reverse> const left,
+	Board_iterator<T, N, is_const, is_reverse> const right) noexcept
+{
+	return (right < left);
+}
+template<typename T, int N, bool is_const = false, bool is_reverse = false>
+[[nodiscard]] inline constexpr bool operator<=(
+	Board_iterator<T, N, is_const, is_reverse> const left,
+	Board_iterator<T, N, is_const, is_reverse> const right) noexcept
+{
+	return !(right < left);
+}
+template<typename T, int N, bool is_const = false, bool is_reverse = false>
+[[nodiscard]] inline constexpr bool operator>=(
+	Board_iterator<T, N, is_const, is_reverse> const left,
+	Board_iterator<T, N, is_const, is_reverse> const right) noexcept
+{
+	return !(left < right);
+}
+
+//====--------------------------------------------------------------------====//
+
+template<typename T, int N, bool is_const = false, bool is_reverse = false>
+[[nodiscard]] inline constexpr auto operator+(
+	typename Board_iterator<T, N, is_const, is_reverse>::difference_type const
+		offset,
+	Board_iterator<T, N, is_const, is_reverse> itr) noexcept
 {
 	return (itr += offset);
 }
