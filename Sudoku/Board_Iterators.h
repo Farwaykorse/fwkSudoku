@@ -21,6 +21,19 @@
 namespace Sudoku
 {
 template<typename T, int N, bool is_const = false, bool is_reverse = false>
+class Board_iterator;
+
+template<typename T, int N>
+using const_Board_iterator = Board_iterator<T, N, true, false>;
+
+template<typename T, int N>
+using reverse_Board_iterator = Board_iterator<T, N, false, true>;
+
+template<typename T, int N>
+using const_reverse_Board_iterator = Board_iterator<T, N, true, true>;
+
+//====--------------------------------------------------------------------====//
+template<typename T, int N, bool is_const, bool is_reverse>
 class Board_iterator
 {
 	using owner_type =
@@ -198,18 +211,8 @@ private:
 	}
 };
 
-template<typename T, int N>
-using const_Board_iterator = Board_iterator<T, N, true, false>;
-
-template<typename T, int N>
-using reverse_Board_iterator = Board_iterator<T, N, false, true>;
-
-template<typename T, int N>
-using const_reverse_Board_iterator = Board_iterator<T, N, true, true>;
-
 //====--------------------------------------------------------------------====//
-
-template<typename T, int N, bool is_const = false, bool is_reverse = false>
+template<typename T, int N, bool is_const, bool is_reverse>
 [[nodiscard]] constexpr auto operator+(
 	Board_iterator<T, N, is_const, is_reverse> left,
 	typename Board_iterator<T, N, is_const, is_reverse>::difference_type const
@@ -217,7 +220,7 @@ template<typename T, int N, bool is_const = false, bool is_reverse = false>
 {
 	return (left += offset);
 }
-template<typename T, int N, bool is_const = false, bool is_reverse = false>
+template<typename T, int N, bool is_const, bool is_reverse>
 [[nodiscard]] constexpr auto operator-(
 	Board_iterator<T, N, is_const, is_reverse> left,
 	typename Board_iterator<T, N, is_const, is_reverse>::difference_type const
@@ -227,29 +230,28 @@ template<typename T, int N, bool is_const = false, bool is_reverse = false>
 }
 
 //====--------------------------------------------------------------------====//
-
-template<typename T, int N, bool is_const = false, bool is_reverse = false>
+template<typename T, int N, bool is_const, bool is_reverse>
 [[nodiscard]] inline constexpr bool operator!=(
 	Board_iterator<T, N, is_const, is_reverse> const left,
 	Board_iterator<T, N, is_const, is_reverse> const right) noexcept
 {
 	return !(left == right);
 }
-template<typename T, int N, bool is_const = false, bool is_reverse = false>
+template<typename T, int N, bool is_const, bool is_reverse>
 [[nodiscard]] inline constexpr bool operator>(
 	Board_iterator<T, N, is_const, is_reverse> const left,
 	Board_iterator<T, N, is_const, is_reverse> const right) noexcept
 {
 	return (right < left);
 }
-template<typename T, int N, bool is_const = false, bool is_reverse = false>
+template<typename T, int N, bool is_const, bool is_reverse>
 [[nodiscard]] inline constexpr bool operator<=(
 	Board_iterator<T, N, is_const, is_reverse> const left,
 	Board_iterator<T, N, is_const, is_reverse> const right) noexcept
 {
 	return !(right < left);
 }
-template<typename T, int N, bool is_const = false, bool is_reverse = false>
+template<typename T, int N, bool is_const, bool is_reverse>
 [[nodiscard]] inline constexpr bool operator>=(
 	Board_iterator<T, N, is_const, is_reverse> const left,
 	Board_iterator<T, N, is_const, is_reverse> const right) noexcept
@@ -258,8 +260,7 @@ template<typename T, int N, bool is_const = false, bool is_reverse = false>
 }
 
 //====--------------------------------------------------------------------====//
-
-template<typename T, int N, bool is_const = false, bool is_reverse = false>
+template<typename T, int N, bool is_const, bool is_reverse>
 [[nodiscard]] inline constexpr auto operator+(
 	typename Board_iterator<T, N, is_const, is_reverse>::difference_type const
 		offset,
