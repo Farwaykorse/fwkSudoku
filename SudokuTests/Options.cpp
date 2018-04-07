@@ -226,7 +226,7 @@ TEST(Options, Construction)
 	{
 		SCOPED_TRACE("Options& operator=(const bitset&)");
 		Options<4> B_0{};
-		std::bitset<5> bit{"11011"};
+		const std::bitset<5> bit{"11011"};
 		B_0 = bit;
 		EXPECT_EQ(B_0.DebugString(), "11011");
 	}
@@ -240,7 +240,7 @@ TEST(Options, Construction)
 	{ // Value
 		SCOPED_TRACE("Options(Value)");
 		const Options<4> A_1{Value{2}}; // set() // clear() // add()
-		Options<4> A_2 = Value{2};
+		const Options<4> A_2 = Value{2};
 		EXPECT_EQ(A_1.DebugString(), "00100");
 		EXPECT_EQ(A_2.DebugString(), "00100");
 		EXPECT_EQ(Options<4>{Value{0}}.DebugString(), "00001"); // [count-0]
@@ -790,9 +790,10 @@ TEST(Options, mf_constOperators)
 	constexpr Options<9> y9{Value{1}};
 	static_assert(y9[Value{1}]);
 
-	[[maybe_unused]] bool val {};
 #ifdef _DEBUG
-	EXPECT_DEATH({ val = TE.O_3[Value{5}]; }, "Assertion failed: .*");
+	EXPECT_DEATH(
+		{ [[maybe_unused]] bool val = TE.O_3[Value{5}]; },
+		"Assertion failed: .*");
 #else
 	//! supposed to be noexcept, and no bounds-checks in release-mode
 	//  might still trigger SEH error?

@@ -138,12 +138,12 @@ TEST(Board_Sections, Row)
 	const Board<int, 2> cA{
 		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	{
-		[[maybe_unused]] auto r  = A.row(0);
-		[[maybe_unused]] auto c  = A.col(0);
-		[[maybe_unused]] auto b  = A.block(0);
-		[[maybe_unused]] auto cr = cA.row(0);
-		[[maybe_unused]] auto cc = cA.col(0);
-		[[maybe_unused]] auto cb = cA.block(0);
+		[[maybe_unused]] const auto r  = A.row(0);
+		[[maybe_unused]] const auto c  = A.col(0);
+		[[maybe_unused]] const auto b  = A.block(0);
+		[[maybe_unused]] const auto cr = cA.row(0);
+		[[maybe_unused]] const auto cc = cA.col(0);
+		[[maybe_unused]] const auto cb = cA.block(0);
 		static_assert(noexcept(r.location(1)));
 		static_assert(noexcept(c.location(1)));
 		static_assert(noexcept(b.location(1)));

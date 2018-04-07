@@ -332,7 +332,7 @@ TEST(Location, Construction_result_Block)
 	constexpr Location_Block<3> c1{3, 7};
 	static_assert(noexcept(c1.element()));
 	static_assert(c1.element() == 7);
-	Location_Block<3> B1(7, 8);
+	const Location_Block<3> B1(7, 8);
 	EXPECT_EQ(B1.element(), 8);
 
 	static_assert(Location_Block<3>{1, 2, 0}.element() == 6);
@@ -346,7 +346,7 @@ TEST(Location, Construction_result_Block)
 	EXPECT_EQ(B6.element(), 2);
 
 	static_assert(Location_Block<3>(Location_Block<3>(0, 2)).element() == 2);
-	Location_Block<3> B4(Location_Block<3>(0, 2));
+	const Location_Block<3> B4(Location_Block<3>(0, 2));
 	EXPECT_EQ(B4.element(), 2) << "Move constructor";
 	EXPECT_EQ(Location_Block<3>(Location_Block<3>(0, 2)).element(), 2);
 	EXPECT_EQ(Location_Block<3>(Location_Block<3>{0, 2}).element(), 2);
@@ -361,9 +361,9 @@ TEST(Location, Construction_result_Block)
 	EXPECT_EQ(B2.element(), 8) << "Copy constructor";
 	EXPECT_EQ(Location_Block<3>(B1).element(), 8) << "Copy constructor";
 	EXPECT_EQ(Location_Block<3>{B1}.element(), 8) << "Copy constructor";
-	Location_Block<3> B3 = B1;
+	const Location_Block<3> B3 = B1;
 	EXPECT_EQ(B3.element(), 8) << "Copy";
-	Location_Block<3> B5 = Location_Block<3>(8, 8);
+	const Location_Block<3> B5 = Location_Block<3>(8, 8);
 	EXPECT_EQ(B5.element(), 8) << "Move";
 
 	// back and forth

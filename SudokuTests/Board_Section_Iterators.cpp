@@ -537,7 +537,7 @@ TEST(Section_Iterator, RowRandomAccessIterator)
 
 	EXPECT_TRUE(A.row(0).begin() < ++A.row(0).begin()); // const_iterator should
 														// move with iterator
-	auto itr = A.row(1).begin();
+	const auto itr = A.row(1).begin();
 	*itr     = 9;
 	EXPECT_TRUE(itr < ++A.row(1).begin());
 }
