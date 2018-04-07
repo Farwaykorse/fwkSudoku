@@ -1,6 +1,6 @@
 ﻿//====---- Sudoku/Board_Iterators.h                                   ----====//
 //
-//	Location aware iterator implementation for Board
+// Location aware iterator implementation for Board
 //====--------------------------------------------------------------------====//
 //
 // The iterator can return a Location object.
@@ -12,6 +12,7 @@
 #include "Location.h"
 #include <gsl/gsl>
 #include <iterator>
+#include <limits>
 #include <type_traits>
 
 // Forward declarations
@@ -42,7 +43,9 @@ class Board_iterator
 
 public:
 	// member types
-	using difference_type   = std::ptrdiff_t;
+	using difference_type = int;
+	static_assert(full_size<N> < std::numeric_limits<difference_type>::max(),
+		"Use std::ptrdiff_t for Board_iterator::difference_type.");
 	using value_type        = T;
 	using pointer           = std::conditional_t<is_const, T const*, T*>;
 	using reference         = std::conditional_t<is_const, T const&, T&>;
@@ -70,6 +73,13 @@ public:
 		assert(is_valid(loc));
 		elem_ = loc.element();
 		return (*this);
+	}
+
+	// Implicit Type Conversion to const_(reverse_)iterator
+	constexpr operator Board_iterator<T, N, true, is_reverse>() const noexcept
+	{
+		static_assert(!is_const);
+		return Board_iterator<T, N, true, is_reverse>(board_, Location{elem_});
 	}
 
 	//====----------------------------------------------------------------====//

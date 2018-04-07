@@ -45,8 +45,9 @@ using ::Sudoku::Utility_::is_random;
 namespace iterator
 {
 	// using dataT = int;
-	using dataT = Options<9>;
-	using typeT = ::Sudoku::Board<dataT, 3>::iterator;
+	using dataT  = Options<9>;
+	using BoardT = Board<dataT, 3>;
+	using typeT  = BoardT::iterator;
 
 	static_assert(std::is_object_v<typeT>);
 	static_assert(not std::is_const_v<typeT>);
@@ -101,13 +102,11 @@ namespace iterator
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
 
 	// explicit conversion from other iterators
+	static_assert(std::is_constructible_v<typeT, BoardT::iterator>);
+	static_assert(not std::is_constructible_v<typeT, BoardT::const_iterator>);
+	static_assert(not std::is_constructible_v<typeT, BoardT::reverse_iterator>);
 	static_assert(
-		not std::is_constructible_v<typeT, Board<dataT, 3>::const_iterator>);
-	static_assert(
-		not std::is_constructible_v<typeT, Board<dataT, 3>::reverse_iterator>);
-	static_assert(not std::is_constructible_v<
-				  typeT,
-				  Board<dataT, 3>::const_reverse_iterator>);
+		not std::is_constructible_v<typeT, BoardT::const_reverse_iterator>);
 	// other types
 	static_assert(not std::is_constructible_v<typeT, Location<3>>);
 	// explicit construction from typeT:
@@ -136,8 +135,9 @@ namespace iterator
 namespace const_iterator
 {
 	// using dataT = int;
-	using dataT = Options<9>;
-	using typeT = Board<dataT, 3>::const_iterator;
+	using dataT  = Options<9>;
+	using BoardT = Board<dataT, 3>;
+	using typeT  = BoardT::const_iterator;
 
 	static_assert(std::is_object_v<typeT>);
 	static_assert(not std::is_const_v<typeT>);
@@ -191,6 +191,12 @@ namespace const_iterator
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
 
+	// explicit conversion from other iterators
+	static_assert(std::is_constructible_v<typeT, BoardT::iterator>);
+	static_assert(std::is_constructible_v<typeT, BoardT::const_iterator>);
+	static_assert(not std::is_constructible_v<typeT, BoardT::reverse_iterator>);
+	static_assert(
+		not std::is_constructible_v<typeT, BoardT::const_reverse_iterator>);
 	// other types
 	static_assert(not std::is_constructible_v<typeT, Location<3>>);
 	// explicit construction from typeT:
@@ -219,8 +225,9 @@ namespace const_iterator
 namespace reverse_iterator
 {
 	// using dataT = int;
-	using dataT = Options<9>;
-	using typeT = Board<dataT, 3>::reverse_iterator;
+	using dataT  = Options<9>;
+	using BoardT = Board<dataT, 3>;
+	using typeT  = BoardT::reverse_iterator;
 
 	static_assert(std::is_object_v<typeT>);
 	static_assert(not std::is_const_v<typeT>);
@@ -274,6 +281,12 @@ namespace reverse_iterator
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
 
+	// explicit conversion from other iterators
+	static_assert(not std::is_constructible_v<typeT, BoardT::iterator>);
+	static_assert(not std::is_constructible_v<typeT, BoardT::const_iterator>);
+	static_assert(std::is_constructible_v<typeT, BoardT::reverse_iterator>);
+	static_assert(
+		not std::is_constructible_v<typeT, BoardT::const_reverse_iterator>);
 	// other types
 	static_assert(not std::is_constructible_v<typeT, Location<3>>);
 	// explicit construction from typeT:
@@ -302,8 +315,9 @@ namespace reverse_iterator
 namespace const_reverse_iterator
 {
 	// using dataT = int;
-	using dataT = Options<9>;
-	using typeT = Board<dataT, 3>::const_reverse_iterator;
+	using dataT  = Options<9>;
+	using BoardT = Board<dataT, 3>;
+	using typeT  = BoardT::const_reverse_iterator;
 
 	static_assert(std::is_object_v<typeT>);
 	static_assert(not std::is_const_v<typeT>);
@@ -357,6 +371,12 @@ namespace const_reverse_iterator
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
 
+	// explicit conversion from other iterators
+	static_assert(not std::is_constructible_v<typeT, BoardT::iterator>);
+	static_assert(not std::is_constructible_v<typeT, BoardT::const_iterator>);
+	static_assert(std::is_constructible_v<typeT, BoardT::reverse_iterator>);
+	static_assert(
+		std::is_constructible_v<typeT, BoardT::const_reverse_iterator>);
 	// other types
 	static_assert(not std::is_constructible_v<typeT, Location<3>>);
 	// explicit construction from typeT:
@@ -435,7 +455,7 @@ namespace iterator_traits
 	static_assert(std::is_same_v<Rtraits::value_type, dataT>);
 	static_assert(std::is_same_v<CRtraits::value_type, dataT>);
 
-	using difference_type = std::ptrdiff_t;
+	using difference_type = int;
 	static_assert(std::is_same_v<traits::difference_type, difference_type>);
 	static_assert(std::is_same_v<Ctraits::difference_type, difference_type>);
 	static_assert(std::is_same_v<Rtraits::difference_type, difference_type>);
@@ -502,21 +522,50 @@ TEST(Board_Iterator, construction)
 	// Construct
 	Board_iterator<int, 2> I1{&A};
 	EXPECT_TRUE(I1 == A.begin());
-	const_Board_iterator<int, 2> cI1{&A};
-	EXPECT_TRUE(cI1 == A.cbegin());
 	reverse_Board_iterator<int, 2> rI1{&A};
 	EXPECT_TRUE(rI1 == A.rbegin());
-	const_reverse_Board_iterator<int, 2> crI1{&A};
-	EXPECT_TRUE(crI1 == A.crbegin());
-	{ // Copy-construct
+	{
+		const_Board_iterator<int, 2> cI1{&A};
+		EXPECT_TRUE(cI1 == A.cbegin());
+		const_reverse_Board_iterator<int, 2> crI1{&A};
+		EXPECT_TRUE(rI1 == A.rbegin());
+	}
+	const_Board_iterator<int, 2> cI1{&cA};
+	EXPECT_TRUE(cI1 == cA.cbegin());
+	const_reverse_Board_iterator<int, 2> crI1{&cA};
+	EXPECT_TRUE(crI1 == cA.crbegin());
+#ifdef NDEBUG
+	EXPECT_TRUE(cI1 != A.cbegin());
+	EXPECT_TRUE(crI1 != A.crbegin());
+#endif // NDEBUG
+	{  // Copy-construct
 		Board_iterator<int, 2> LI{I1};
 		EXPECT_TRUE(LI == A.begin());
 		const_Board_iterator<int, 2> cLI{cI1};
-		EXPECT_TRUE(cLI == A.cbegin());
+		EXPECT_TRUE(cLI == cA.cbegin());
 		reverse_Board_iterator<int, 2> rLI{rI1};
 		EXPECT_TRUE(rLI == A.rbegin());
 		const_reverse_Board_iterator<int, 2> crLI{crI1};
+		EXPECT_TRUE(crLI == cA.crbegin());
+	}
+	{ // conversion to const
+		const_Board_iterator<int, 2> cLI{I1};
+		EXPECT_TRUE(cLI == A.cbegin());
+		const_reverse_Board_iterator<int, 2> crLI{rI1};
 		EXPECT_TRUE(crLI == A.crbegin());
+	}
+	{
+		// assignment
+		Board_iterator<int, 2> LI{};
+		LI = I1;
+		const_Board_iterator<int, 2> cLI{};
+		cLI = cI1;
+		cLI = I1;
+		reverse_Board_iterator<int, 2> rLI{};
+		rLI = rI1;
+		const_reverse_Board_iterator<int, 2> crLI{};
+		crLI = rI1;
+		crLI = crI1;
 	}
 	{ // Construct from location
 		Board_iterator<int, 2> const I2(&A, Location<2>{0});
@@ -1958,12 +2007,9 @@ TEST(Board_Iterator, difference)
 			"is_same_address");
 
 		// Return type:
-		static_assert(
-			std::is_same_v<std::ptrdiff_t, decltype(A.begin() - A.end())>);
-		static_assert(
-			std::is_same_v<std::ptrdiff_t, decltype(A.cbegin() - A.cend())>);
-		static_assert(
-			std::is_same_v<std::ptrdiff_t, decltype(A.rbegin() - A.rend())>);
+		static_assert(std::is_same_v<int, decltype(A.begin() - A.end())>);
+		static_assert(std::is_same_v<int, decltype(A.cbegin() - A.cend())>);
+		static_assert(std::is_same_v<int, decltype(A.rbegin() - A.rend())>);
 
 		ASSERT_EQ(A.size(), 16u);
 		EXPECT_EQ(A.begin() - A.begin(), 0);
