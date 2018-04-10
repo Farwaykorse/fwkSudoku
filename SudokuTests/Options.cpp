@@ -292,7 +292,7 @@ struct TestElements
 	const Options<4> E_1{std::bitset<5>{"00000"}}; // empty
 	const Options<4> E_2{std::bitset<5>{"00001"}}; // empty, no answer
 	const Options<4> E_3{Value{0}};                // empty answer "00001"
-	const Options<4> X_0{std::bitset<5>{"11110"}}; // answered, alle options
+	const Options<4> X_0{std::bitset<5>{"11110"}}; // answered, all options
 	const Options<4> X_1{std::bitset<5>{"10100"}}; // answered, 2 options
 };
 static TestElements TE;
@@ -361,6 +361,7 @@ TEST(Options, test_Value)
 
 TEST(Options, is_answer)
 {
+	[[maybe_unused]] bool U{};
 	{ // member-function
 		static_assert(noexcept(TE.O_1.is_answer()));
 		EXPECT_TRUE(TE.A_1.is_answer());
@@ -384,7 +385,7 @@ TEST(Options, is_answer)
 		EXPECT_FALSE(is_answer(TE.X_1));
 		static_assert(noexcept(is_answer(TE.O_1, Value{1})));
 		EXPECT_DEBUG_DEATH(
-			{ is_answer(TE.A_1, Value{15}); },
+			{ U = is_answer(TE.A_1, Value{15}); },
 			"Assertion failed: value <= Value.E."); // constructor
 	}
 	{ // test for specific answer
@@ -420,7 +421,7 @@ TEST(Options, is_answer)
 		static_assert(is_answer_fast(Options<9>{Value{9}}));
 #ifdef _DEBUG
 		EXPECT_DEATH(
-			{ is_answer_fast(Options<9>{Value{10}}); },
+			{ U = is_answer_fast(Options<9>{Value{10}}); },
 			"Assertion failed: value <= Value.E."); // constructor
 #endif                                              // _DEBUG
 
@@ -438,15 +439,17 @@ TEST(Options, is_answer)
 
 TEST(Options, is_option)
 {
+	[[maybe_unused]] bool U{};
+
 	static_assert(not noexcept(is_option(TE.O_1, Value{2})));
 	EXPECT_DEBUG_DEATH(
-		{ is_option(TE.O_1, Value{0}); }, "Assertion failed: .*");
+		{ U = is_option(TE.O_1, Value{0}); }, "Assertion failed: .*");
 #ifdef _DEBUG
 	EXPECT_DEBUG_DEATH(
-		{ is_option(TE.O_1, Value{15}); }, "Assertion failed: .*");
+		{ U = is_option(TE.O_1, Value{15}); }, "Assertion failed: .*");
 #else
 	// std::bitset::test
-	EXPECT_THROW(is_option(TE.O_1, Value{15}), std::out_of_range);
+	EXPECT_THROW(U = is_option(TE.O_1, Value{15}), std::out_of_range);
 	EXPECT_TRUE(is_option(TE.O_1, Value{0}));
 	EXPECT_FALSE(is_option(TE.A_1, Value{0}));
 #endif // _DEBUG
@@ -557,7 +560,7 @@ TEST(Options, get_answer)
 
 TEST(Options, mf_changeAll)
 {
-	// Setup
+	// Set-up
 	Options<4> TMP{};
 	ASSERT_EQ(TMP.size(), size_t{5}) << "Invalid object";
 	ASSERT_TRUE(TMP.all()) << "All options should be available";
@@ -566,8 +569,8 @@ TEST(Options, mf_changeAll)
 	ASSERT_EQ(TMP, TE.D_1) << "Default set D_1 is not complete";
 
 	static_assert(noexcept(TMP.clear()));
-	TMP = TE.D_1; // reset testdata
-	ASSERT_EQ(TMP, TE.D_1) << "Reset testdata failed";
+	TMP = TE.D_1; // reset test data
+	ASSERT_EQ(TMP, TE.D_1) << "Reset test data failed";
 	TMP.clear();
 	EXPECT_TRUE(TMP.is_empty());
 	EXPECT_EQ(TMP.count(), 0u);
@@ -577,7 +580,7 @@ TEST(Options, mf_changeAll)
 	static_assert(noexcept(TMP.reset()));
 	ASSERT_TRUE(TE.E_1.is_empty()) << "E_1 should be empty";
 	TMP = TE.E_1;
-	ASSERT_EQ(TMP, TE.E_1) << "Reset testdata failed";
+	ASSERT_EQ(TMP, TE.E_1) << "Reset test data failed";
 	TMP.reset();
 	EXPECT_FALSE(TMP.is_empty());
 	EXPECT_EQ(TMP.count(), 4u);
@@ -588,7 +591,7 @@ TEST(Options, mf_changeAll)
 	EXPECT_TRUE(TMP.reset().all());
 	static_assert(noexcept(TMP.flip()));
 	TMP = TE.D_1;
-	ASSERT_TRUE(TMP.all()) << "Reset testdata failed";
+	ASSERT_TRUE(TMP.all()) << "Reset test data failed";
 	TMP.flip();
 	EXPECT_TRUE(TMP.is_empty());
 	EXPECT_EQ(TMP.count_all(), 0u);
@@ -611,7 +614,7 @@ TEST(Options, mf_remove_option)
 	EXPECT_DEBUG_DEATH(
 		TMP.remove_option(Value{3}), "Assertion failed: not Sudoku::is_answer");
 
-	ASSERT_TRUE(TMP.reset().all()) << "Reset testdata failed";
+	ASSERT_TRUE(TMP.reset().all()) << "Reset test data failed";
 	ASSERT_EQ(TMP.size(), size_t{5}) << "Test requires Options<4> object";
 	EXPECT_TRUE(TMP.test(Value{3}));
 	EXPECT_NO_THROW(TMP.remove_option(Value{3}));
@@ -685,14 +688,16 @@ TEST(Options, mf_set)
 
 TEST(Options, mf_booleanComparison)
 {
+	[[maybe_unused]] bool U{};
+
 	// operator==(Value) const
 	static_assert(noexcept(TE.A_1 == Value{1}));
 	static_assert(noexcept(Value{1} == TE.A_1));
 	EXPECT_DEBUG_DEATH(
-		{ operator==(TE.A_1, Value{15}); },
+		{ U = operator==(TE.A_1, Value{15}); },
 		"Assertion failed: .*"); // constructor
 	EXPECT_DEBUG_DEATH(
-		{ operator==(Value{15}, TE.A_1); }, "Assertion failed: .*");
+		{ U = operator==(Value{15}, TE.A_1); }, "Assertion failed: .*");
 #ifndef _DEBUG
 	EXPECT_FALSE(operator==(TE.A_1, Value{15}));
 	EXPECT_FALSE(operator==(Value{15}, TE.A_1));
@@ -706,9 +711,9 @@ TEST(Options, mf_booleanComparison)
 	static_assert(noexcept(TE.A_1 != Value{1}));
 	static_assert(noexcept(Value{1} != TE.A_1));
 	EXPECT_DEBUG_DEATH(
-		{ operator!=(TE.A_1, Value{15}); }, "Assertion failed: .*");
+		{ U = operator!=(TE.A_1, Value{15}); }, "Assertion failed: .*");
 	EXPECT_DEBUG_DEATH(
-		{ operator!=(Value{15}, TE.A_1); }, "Assertion failed: .*");
+		{ U = operator!=(Value{15}, TE.A_1); }, "Assertion failed: .*");
 #ifndef _DEBUG
 	EXPECT_TRUE(operator!=(TE.A_1, Value{15}));
 	EXPECT_TRUE(operator!=(Value{15}, TE.A_1));
@@ -797,6 +802,7 @@ TEST(Options, mf_constOperators)
 #else
 	//! supposed to be noexcept, and no bounds-checks in release-mode
 	//  might still trigger SEH error?
+	[[maybe_unused]] bool val{};
 	EXPECT_NO_THROW(val = TE.O_3[Value{9}]);
 #endif // _DEBUG
 	EXPECT_TRUE(TE.O_1[Value{2}]);
@@ -866,16 +872,12 @@ TEST(Options, ConstructorTesting)
 
 TEST(Options, External)
 {
-	const Options<4> O_3{std::bitset<5>{"00101"}}; // single option 2
-	[[maybe_unused]] const Options<4> E_1 {
-		Value { 0 }
-	};                                             // empty answer "00001"
-	const Options<4> E_2{std::bitset<5>{"00000"}}; // empty
-	const Options<4> E_3{std::bitset<5>{"00001"}}; // empty option
-	[[maybe_unused]] const Options<4> A_1 {
-		Value { 1 }
-	};                                             // answer 1
-	const Options<4> A_2{std::bitset<5>{"00100"}}; // answer 2
+	const Options<4> O_3{std::bitset<5>{"00101"}};  // single option 2
+	[[maybe_unused]] const Options<4> E_1{Value{0}}; // empty answer "00001"
+	const Options<4> E_2{std::bitset<5>{"00000"}};  // empty
+	const Options<4> E_3{std::bitset<5>{"00001"}};  // empty option
+	[[maybe_unused]] const Options<4> A_1{Value{1}}; // answer 1
+	const Options<4> A_2{std::bitset<5>{"00100"}};  // answer 2
 	// XOR(a,b)
 	static_assert(noexcept(XOR(O_3, O_3)));
 	EXPECT_EQ(XOR(E_3, A_2), O_3);
@@ -888,6 +890,7 @@ TEST(Options, External)
 	EXPECT_EQ(shared(O_3, A_2), A_2);
 	EXPECT_EQ(shared(E_3, A_2), E_2);
 }
+
 TEST(Options, operator_min)
 {
 	const Options<9> all{};
@@ -901,7 +904,7 @@ TEST(Options, operator_min)
 	const Options<9> A_2{std::bitset<10>{"1000100100"}};
 
 	static_assert(noexcept(O_1 - O_2));
-	EXPECT_DEBUG_DEATH(O_1 - all, "Assertion failed: is_answer");
+	EXPECT_DEBUG_DEATH([[maybe_unused]] auto X = O_1 - all, "is_answer");
 #ifndef _DEBUG
 	EXPECT_EQ(O_1 - all, empty);
 #endif // !_DEBUG

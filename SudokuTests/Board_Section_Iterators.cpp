@@ -147,9 +147,11 @@ TEST(Section_Iterator, RowIterator)
 	EXPECT_NO_THROW(cA.row(1).end());
 	EXPECT_NO_THROW(cA.row(1).rbegin());
 	EXPECT_NO_THROW(cA.row(1).rend());
-	EXPECT_NO_THROW(typeT::iterator(A.row(2).begin()));
-	EXPECT_NO_THROW(typeT::const_iterator(A.row(2).cbegin()));
-	EXPECT_NO_THROW(typeT::const_iterator(cA.row(2).cbegin()));
+	EXPECT_NO_THROW([[maybe_unused]] typeT::iterator X(A.row(2).begin()));
+	EXPECT_NO_THROW(
+		[[maybe_unused]] typeT::const_iterator X(A.row(2).cbegin()));
+	EXPECT_NO_THROW(
+		[[maybe_unused]] typeT::const_iterator X(cA.row(2).cbegin()));
 	// *r is dereferenceable
 	[[maybe_unused]] int U {};
 	EXPECT_NO_THROW(*A.row(1).begin());
@@ -230,8 +232,9 @@ TEST(Section_Iterator, RowInputIterator)
 	static_assert(not(noexcept(Opt.row(0).rbegin()->size())));
 	static_assert(not(noexcept(Opt.row(0).crbegin()->size())));
 	EXPECT_NO_THROW(
-		(Opt.row(0).begin()->size() ==
-		 (*Opt.row(0).begin()).size())); // equivalent
+		U =
+			(Opt.row(0).begin()->size() ==
+			 (*Opt.row(0).begin()).size())); // equivalent
 	EXPECT_EQ(
 		(Opt.row(0).begin()->size()),
 		(*Opt.row(0).begin()).size()); // equivalent
@@ -538,7 +541,7 @@ TEST(Section_Iterator, RowRandomAccessIterator)
 	EXPECT_TRUE(A.row(0).begin() < ++A.row(0).begin()); // const_iterator should
 														// move with iterator
 	const auto itr = A.row(1).begin();
-	*itr     = 9;
+	*itr           = 9;
 	EXPECT_TRUE(itr < ++A.row(1).begin());
 }
 
@@ -628,9 +631,11 @@ TEST(Section_Iterator, ColIterator)
 	EXPECT_NO_THROW(cA.col(1).end());
 	EXPECT_NO_THROW(cA.col(1).rbegin());
 	EXPECT_NO_THROW(cA.col(1).rend());
-	EXPECT_NO_THROW(typeT::iterator(A.col(2).begin()));
-	EXPECT_NO_THROW(typeT::const_iterator(A.col(2).cbegin()));
-	EXPECT_NO_THROW(typeT::const_iterator(cA.col(2).cbegin()));
+	EXPECT_NO_THROW([[maybe_unused]] typeT::iterator X(A.col(2).begin()));
+	EXPECT_NO_THROW(
+		[[maybe_unused]] typeT::const_iterator X(A.col(2).cbegin()));
+	EXPECT_NO_THROW(
+		[[maybe_unused]] typeT::const_iterator X(cA.col(2).cbegin()));
 	// *r is dereferenceable
 	EXPECT_NO_THROW(*A.col(1).begin());
 	EXPECT_NO_THROW(*A.col(1).cbegin());
@@ -715,8 +720,9 @@ TEST(Section_Iterator, ColInputIterator)
 	static_assert(not(noexcept(Opt.col(0).rbegin()->size())));
 	static_assert(not(noexcept(Opt.col(0).crbegin()->size())));
 	EXPECT_NO_THROW(
-		(Opt.col(0).begin()->size() ==
-		 (*Opt.col(0).begin()).size())); // equivalent
+		U =
+			(Opt.col(0).begin()->size() ==
+			 (*Opt.col(0).begin()).size())); // equivalent
 	EXPECT_EQ(
 		(Opt.col(0).begin()->size()),
 		(*Opt.col(0).begin()).size()); // equivalent
@@ -1068,8 +1074,9 @@ TEST(Section_Iterator, BlockIterator)
 	EXPECT_NO_THROW(cA.block(1).end());
 	EXPECT_NO_THROW(cA.block(1).rbegin());
 	EXPECT_NO_THROW(cA.block(1).rend());
-	EXPECT_NO_THROW(typeT::iterator(A.block(2).begin()));
-	EXPECT_NO_THROW(typeT::const_iterator(A.block(2).cbegin()));
+	EXPECT_NO_THROW([[maybe_unused]] typeT::iterator X(A.block(2).begin()));
+	EXPECT_NO_THROW(
+		[[maybe_unused]] typeT::const_iterator X(A.block(2).cbegin()));
 	// EXPECT_NO_THROW((Board<int,
 	// 2>::Block::const_iterator(cA.block(2).cbegin()))); *r is dereferenceable
 	[[maybe_unused]] int U {};
@@ -1156,7 +1163,7 @@ TEST(Section_Iterator, BlockInputIterator)
 	static_assert(not(noexcept(Opt.block(0).rbegin()->size())));
 	static_assert(not(noexcept(Opt.block(0).crbegin()->size())));
 	EXPECT_NO_THROW(
-		(Opt.block(0).begin()->size() ==
+		U = (Opt.block(0).begin()->size() ==
 		 (*Opt.block(0).begin()).size())); // equivalent
 	EXPECT_EQ(
 		(Opt.block(0).begin()->size()),

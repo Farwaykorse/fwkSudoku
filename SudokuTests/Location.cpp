@@ -182,7 +182,7 @@ TEST(Location, Construction)
 	static_assert(noexcept(Location<2>()));
 	EXPECT_NO_THROW(Location<3>());
 	EXPECT_NO_THROW(Location<3>{});
-	EXPECT_NO_THROW([[maybe_unused]] Location<3> LL2{});
+	EXPECT_NO_THROW([[maybe_unused]] Location<3> LL2);
 	EXPECT_NO_THROW([[maybe_unused]] Location<2> LL3);
 
 	static_assert(noexcept(Location<3>(-171)));
@@ -214,13 +214,12 @@ TEST(Location, Construction)
 	EXPECT_NO_THROW([[maybe_unused]] Location<3> L2(1, 8));
 
 	// move construct
-	EXPECT_NO_THROW(Location<3>(Location<3>(6)));
 	EXPECT_NO_THROW([[maybe_unused]] Location<3> L3(Location<3>(6)));
 	static_assert(noexcept(Location<3>(Location<3>(6))));
 	// copy construct
 	constexpr Location<3> c1(12);
 	static_assert(noexcept(Location<3>(c1)));
-	EXPECT_NO_THROW([[maybe_unused]] Location<3> c3{c1});
+	EXPECT_NO_THROW([[maybe_unused]] Location<3> c3(c1));
 }
 
 TEST(Location, Construction_result)
@@ -268,7 +267,7 @@ TEST(Location, Construction_Block)
 { // depends on Location
 	static_assert(noexcept(Location_Block<3>()));
 	static_assert(noexcept(Location_Block<3>{}));
-	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> L1{});
+	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> L1);
 	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> LL1);
 	static_assert(noexcept(Location_Block<3>(Location<3>())));
 	static_assert(noexcept(Location_Block<2>(Location<2>())));
@@ -313,11 +312,11 @@ TEST(Location, Construction_Block)
 	// copy construct
 	constexpr Location_Block<3> c1{1, 3};
 	static_assert(noexcept(Location_Block<3>(c1)));
-	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> c2{c1});
+	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> c2(c1));
 
 	static_assert(noexcept(Location_Block<3>{Location<3>{12}}));
 	static_assert(noexcept(Location<3>{Location_Block<3>{4, 2}}));
-	ASSERT_NO_THROW(Location<3>(Location_Block<3>(1, 3)));
+	ASSERT_NO_THROW([[maybe_unused]] Location<3> X(Location_Block<3>(1, 3)));
 }
 
 TEST(Location, Construction_result_Block)

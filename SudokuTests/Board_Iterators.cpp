@@ -1077,7 +1077,8 @@ TEST(Board_Iterator, member_access)
 		static_assert(std::is_same_v<int*, decltype(A.begin().operator->())>);
 
 		EXPECT_NO_THROW(
-			(Opt.begin()->size() == (*Opt.begin()).size()));     // equivalent
+			[[maybe_unused]] bool U =
+				(Opt.begin()->size() == (*Opt.begin()).size())); // equivalent
 		EXPECT_EQ((Opt.begin()->size()), (*Opt.begin()).size()); // equivalent
 		EXPECT_EQ(*(A.begin().operator->()), A[0][0]);
 	}

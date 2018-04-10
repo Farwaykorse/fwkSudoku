@@ -61,25 +61,26 @@ TEST(Solver, list_where_option__Section)
 
 	// invalid value
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(0), Value{0}, 1), ".*is_valid");
+		list = list_where_option<2>(B.row(0), Value{0}, 1), ".*is_valid");
 #ifdef _DEBUG
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(0), Value{5}, 1), ".*is_valid");
+		list = list_where_option<2>(B.row(0), Value{5}, 1), ".*is_valid");
 #else
-	EXPECT_ANY_THROW(list_where_option<2>(B.row(0), Value{5}, 1));
+	EXPECT_ANY_THROW(list = list_where_option<2>(B.row(0), Value{5}, 1));
 #endif // _DEBUG
 	// invalid row id // board_sections.h
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(-1), Value{1}, 1),
+		list = list_where_option<2>(B.row(-1), Value{1}, 1),
 		".*is_valid_size.N..row.");
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(4), Value{1}, 1), ".*is_valid_size.N..row.");
+		list = list_where_option<2>(B.row(4), Value{1}, 1),
+		".*is_valid_size.N..row.");
 	// invalid rep_count
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(0), Value{1}, 0), ".*rep_count");
+		list = list_where_option<2>(B.row(0), Value{1}, 0), ".*rep_count");
 	list = list_where_option<2>(B.row(1), Value{3}, 4);
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(1), Value{3}, 5), ".*rep_count");
+		list = list_where_option<2>(B.row(1), Value{3}, 5), ".*rep_count");
 	// no result
 	// - no result: explicit
 	B[2][0] = set{"11011"};
@@ -158,34 +159,40 @@ TEST(Solver, list_where_option__itr)
 					  B.row(0).cbegin(), B.row(0).cend(), Value{1}, 3))>);
 	// invalid Value
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{0}, 1),
+		list = list_where_option<2>(
+			B.row(0).cbegin(), B.row(0).cend(), Value{0}, 1),
 		".*is_valid");
 #ifdef _DEBUG
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1),
+		list = list_where_option<2>(
+			B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1),
 		".*is_valid");
 #else
 	EXPECT_ANY_THROW(
-		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1));
+		list = list_where_option<2>(
+			B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1));
 #endif // _DEBUG
 	   // invalid rep_count
 #ifdef _DEBUG
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1),
+		list = list_where_option<2>(
+			B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1),
 		".*rep_count");
 #else
 	EXPECT_ANY_THROW(
-		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1));
+		list = list_where_option<2>(
+			B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1));
 #endif // _DEBUG
 	list =
 		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, 0);
 	list =
 		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, 4);
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, 5),
+		list = list_where_option<2>(
+			B.row(1).cbegin(), B.row(1).cend(), Value{3}, 5),
 		".*rep_count");
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(
+		list = list_where_option<2>(
 			B.row(1).cbegin(), B.row(1).cbegin() + 2, Value{3}, 3),
 		".*rep_count");
 	// no result
