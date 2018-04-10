@@ -54,7 +54,7 @@ namespace compiletime
 #else
 	static_assert(std::is_standard_layout_v<typeT>, "standard layout");
 	// can be converted with reinterpret_cast
-#endif
+#endif // _DEBUG
 	static_assert(not std::is_pod_v<typeT>);
 	// ++ Plain Old Data, both trivial and standard-layout, C compatible
 	// static_assert(std::has_unique_object_representations_v<typeT>,"");//C++17
@@ -226,12 +226,12 @@ TEST(Board, Construction)
 			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
 		EXPECT_DEBUG_DEATH({ (Board<int, 2>{short_list}); }, "");
 		EXPECT_DEBUG_DEATH({ (Board<int, 2>{long_list}); }, "");
-#ifndef _DEBUG
+#ifdef NDEBUG
 		// exceptions not implemented yet
 		// TODO implement exceptions
 		EXPECT_NO_THROW((Board<int, 2>{short_list}));
 		EXPECT_NO_THROW((Board<int, 2>{long_list}));
-#endif // _DEBUG
+#endif // NDEBUG
 	}
 }
 

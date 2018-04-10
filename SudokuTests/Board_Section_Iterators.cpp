@@ -1453,10 +1453,10 @@ TEST(Section_Iterator, deathtest)
 	EXPECT_DEBUG_DEATH(cA.row(0).begin() == cB.row(0).begin(), ".*: is_same");
 	EXPECT_DEBUG_DEATH(A.row(0).begin() != B.row(0).begin(), ".*: is_same");
 	EXPECT_DEBUG_DEATH(cA.row(0).begin() == A.row(0).cbegin(), ".*: is_same");
-#ifndef _DEBUG
+#ifdef NDEBUG
 	EXPECT_NE(A.row(0).begin(), B.row(0).begin());
 	EXPECT_NE(A.row(0).begin(), A.row(2).begin());
-#endif // !_DEBUG
+#endif // NDEBUG
 	// assert(owner_->owner_ == other.owner_->owner_);
 	EXPECT_NO_FATAL_FAILURE(A.row(0).begin() < A.row(0).begin());
 	EXPECT_DEBUG_DEATH(A.row(0).begin() < B.row(0).begin(), ".*: is_same");
@@ -1481,19 +1481,19 @@ TEST(Section_Iterator, deathtest)
 	size_t tmp2{};
 	EXPECT_NO_FATAL_FAILURE(tmp_ = *((cA.row(0).cbegin())--));
 	EXPECT_NO_FATAL_FAILURE(tmp_ = *(--(cA.row(0).cend()))++);
-#ifdef _DEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(tmp_ = *(--(A.row(0).begin())), ".*: is_valid_size");
 	EXPECT_DEBUG_DEATH(tmp_ = *(A.row(0).end()), ".*: is_valid_size");
 	EXPECT_DEBUG_DEATH(tmp_ = *(cA.row(0).end()), ".*: is_valid_size");
 	EXPECT_DEBUG_DEATH(tmp_ = *(--(cA.row(0).cbegin())), ".*: is_valid_size");
 	EXPECT_DEBUG_DEATH(tmp_ = *((A.row(0).begin()) += 8), ".*: is_valid_size");
-#endif // _DEBUG
+#endif // NDEBUG
 	Board<Options<4>, 2> Opt{};
 	EXPECT_NO_FATAL_FAILURE(tmp2 = (Opt.row(0).begin())->count());
-#ifdef _DEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		tmp2 = (--(Opt.row(0).begin()))->count(), ".*: is_valid_size");
-#endif // _DEBUG
+#endif // NDEBUG
 }
 
 } // namespace SudokuTests::BoardTest

@@ -962,7 +962,7 @@ TEST(Board_Iterator, equal)
 		Board<int, 2> C{};
 		EXPECT_DEBUG_DEATH(U = A.begin() == B.begin(), "is_same_address");
 		EXPECT_DEBUG_DEATH(U = A.begin() == C.begin(), "is_same_address");
-#ifndef _DEBUG
+#ifdef NDEBUG
 		EXPECT_FALSE(A.begin() == B.begin());
 		EXPECT_FALSE(A.begin() == C.begin());
 #endif // !_DEBUG
@@ -1031,11 +1031,11 @@ TEST(Board_Iterator, not_equal)
 			Board<int, 2> C{};
 			EXPECT_DEBUG_DEATH(U = A.begin() != B.begin(), "is_same_address");
 			EXPECT_DEBUG_DEATH(U = A.begin() != C.begin(), "is_same_address");
-#ifndef _DEBUG
+#ifdef NDEBUG
 			EXPECT_TRUE(A.begin() != B.begin());
 			EXPECT_TRUE(A.begin() != B.end());
 			EXPECT_TRUE(A.begin() != C.begin());
-#endif // !_DEBUG
+#endif // NDEBUG
 		}
 		EXPECT_TRUE(A.begin() != A.end());
 		EXPECT_FALSE(A.begin() != A.begin());
@@ -2332,7 +2332,7 @@ TEST(Board_Iterator, comparison)
 			[[maybe_unused]] auto U = A.begin() >= B.end(), "is_same_address");
 		EXPECT_DEBUG_DEATH(
 			[[maybe_unused]] auto U = A.begin() > B.end(), "is_same_address");
-#ifndef _DEBUG
+#ifdef NDEBUG
 		// different from default vector/pointer implementations
 		EXPECT_TRUE(A.begin() < B.end());
 		EXPECT_TRUE(B.begin() < A.end());
@@ -2344,7 +2344,7 @@ TEST(Board_Iterator, comparison)
 		EXPECT_FALSE(A.begin() > B.end());
 		EXPECT_TRUE(A.end() > B.begin());
 		EXPECT_TRUE(B.end() > A.begin());
-#endif // _DEBUG
+#endif // NDEBUG
 	}
 	else
 		ADD_FAILURE();

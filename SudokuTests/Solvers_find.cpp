@@ -62,12 +62,12 @@ TEST(Solver, list_where_option__Section)
 	// invalid value
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(B.row(0), Value{0}, 1), ".*is_valid");
-#ifdef _DEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(B.row(0), Value{5}, 1), ".*is_valid");
 #else
 	EXPECT_ANY_THROW(list = list_where_option<2>(B.row(0), Value{5}, 1));
-#endif // _DEBUG
+#endif // NDEBUG
 	// invalid row id // board_sections.h
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(B.row(-1), Value{1}, 1),
@@ -162,7 +162,7 @@ TEST(Solver, list_where_option__itr)
 		list = list_where_option<2>(
 			B.row(0).cbegin(), B.row(0).cend(), Value{0}, 1),
 		".*is_valid");
-#ifdef _DEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(
 			B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1),
@@ -171,9 +171,9 @@ TEST(Solver, list_where_option__itr)
 	EXPECT_ANY_THROW(
 		list = list_where_option<2>(
 			B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1));
-#endif // _DEBUG
+#endif // NDEBUG
 	   // invalid rep_count
-#ifdef _DEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(
 			B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1),
@@ -182,7 +182,7 @@ TEST(Solver, list_where_option__itr)
 	EXPECT_ANY_THROW(
 		list = list_where_option<2>(
 			B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1));
-#endif // _DEBUG
+#endif // NDEBUG
 	list =
 		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, 0);
 	list =
@@ -345,14 +345,14 @@ TEST(Solver, list_where_option__Value)
 		list = list_where_option<2>(B.row(0), Value{0}), ".*is_valid");
 	list = list_where_option<2>(B.row(0), Value{1});
 	list = list_where_option<2>(B.row(0), Value{4});
-#ifdef _DEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(B.row(0), Value{5}), ".*is_valid");
 #else
 	// - Options::is_option() - std::bitset::test() std::out_of_range
 	EXPECT_THROW(
 		list = list_where_option<2>(B.row(0), Value{5}), std::out_of_range);
-#endif // _DEBUG
+#endif // NDEBUG
 	// Do not return answered
 	list = list_where_option<2>(B.row(0), Value{2});
 	EXPECT_EQ(list.size(), size_t{0});
