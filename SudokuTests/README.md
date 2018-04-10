@@ -24,7 +24,7 @@ Console project called: SudokuTest(s)
   `$(VcpkgRoot)lib\manual-link\gtest.lib`        // Release-mode
   ** disabled: **
   `$(VcpkgRoot)debug\lib\manual-link\gtest_maind.lib` // If no custom main()
-  `$(VcpkgRoot)lib\manual-link\gtest_main.lib`       // If no custom main()
+  `$(VcpkgRoot)lib\manual-link\gtest_main.lib`        // If no custom main()
   *Note*: if gmock is used, `gmock.lib` contains all of `gtest.lib`,
   therefore only one of these can be included at any time.
 
@@ -33,14 +33,18 @@ Console project called: SudokuTest(s)
 **Clang:**
 Disabled warnings:
 ``````
+-Wno-c++98-compat
+-Wno-c++98-compat-pedantic
 -Wno-unused-comparison       Every comparrison check ...
--Wno-unused-value
 -Wno-zero-as-null-pointer-constant
 -Wno-global-constructors     gTest macro
--Wno-used-but-marked-unused  ScopedTrace macro on: Location.cpp
--Wno-sign-conversion         on: Board.cpp
+-Wno-used-but-marked-unused  gTest macros
 -Wno-covered-switch-default  gTest macro debug-death on: Board.cpp
 ``````
+Promote to errors:
+````````
+-Werror=return-type
+````````
 #### Custom settings for precompiled.cpp
 **VC++:**  
 ```
@@ -56,6 +60,13 @@ Disabled warnings:
 -Wno-language-extension-token
 -Wno-missing-noreturn
 -Wno-shift-sign-overflow
+````
+#### Custom settings per file
+**Clang:**
+Disabled warnings:  
+Board.cpp & Board_Iterators.cpp
+````
+-Wno-unevaluated-expression  Assignment in constexpr
 ````
 
 <!-----------------------------------------------------------><a id="cover"></a>

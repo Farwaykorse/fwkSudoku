@@ -47,8 +47,7 @@ All:
 /diagnostics:caret DiagnosticsFormat: caret
 /std:c++17
 /MP					Multiprocessor compilation
-/W4					Warning level 4 (=highest) (/Wall triggers to-many libraray
-					warnings)
+/W4                 Warning level 4 (=highest) (/Wall triggers library warnings)
 /GS					Buffer Security Check.
 /sdl				Enable SDL checks, additional warnings focused on security
 /permissive-       dissable non-conforming constructs in Visual C++: [1]
@@ -92,7 +91,7 @@ Release:
 
 ##### Additional command-line options: #####
 Documentation:
-[VC++ Compiler Marnings](https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings)
+[VC++ Compiler Warnings](https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings)
 
 Warning level settings format:
 ```
@@ -210,17 +209,20 @@ levels. "Nonstandard extension" warnings are promoted to errors.
 
 #### Clang-cl ####
 Inactive settings are indented.  
+[The latest user manual](https://clang.llvm.org/docs/UsersManual.html)
+Lists all options supported by Clang-cl.  
 Use `-###` to output the commands that actually reach the compiler, per file.  
     `-v`   Verbose mode (as above?)  
 Use `-Xclang ` before a command to actually force it to the compiler.
 `````
--Xclang -std=c++17    Set language version to C++17
-                      (v5.0.1 still defaults to C++14)
+/std:c++latest        -std=c++2a
+  /std:c++17          -std=c++17
+  -Xclang -std=c++17  Set language version to C++17
 -fno-strict-aliasing
--Xclang -fms-compatibility-version=19.12
-                      Upgrade to actual VS version, override
-                      -fmsc-version=1912 as set in the toolset
-                      for actual version see macro _MSC_FULL_VER
+  -Xclang -fms-compatibility-version=19.12
+  // Since v6.0.0: the full version number is inherrited from VC.
+  // Upgrade to actual VS version, override `-fmsc-version=1912` as set in the
+  // toolset for actual version see macro `_MSC_FULL_VER`
   -fms-compatibility Excepting enough invalid C++ to parse most MS headers
   -fno-ms-compatibility
 
@@ -231,43 +233,31 @@ Release:
 `````
 Enable warnings:  
 [lefiticus/cppbestpractices](https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#gcc--clang)  
-Some warnings are explicitly mentioned so they stay active when an encompassing
-set is disabled.
+Inactive settings are indented.  
+Some warnings are explicitly set so they stay active when an encompassing
+setting is disabled.  
+[Clang diagnostics reference](https://clang.llvm.org/docs/DiagnosticsReference.html)
 ````
--Weverything         Enable all warnings (includes -pedantic)
-/W4                  Enable -Wall and -Wextra
--Wall                standard
--Wextra              standard
--Xclang -pedantic    using non-standard language extensions
-
--Weffc++             
--Wshadow             A variable declaration overshadows one from the parent
-                     context. (Same name.)
--Wunused             Anything declared but unused.
--Wold-style-cast     Warn for c-style casts
--Wconversion         Type conversions that may lose data
--Wsign-conversion    Sign conversion
--Wnull-dereference   Null dereference detected
--Wdouble-promotion   `float` implicit promoted to `double`
--Wformat=2           Security issues in output formating (ie printf)
--Woverloaded-virtual Overloading (not overriding) a virtual function
--Wnon-virtual-dtor   Class with virtual member functions has a non-virtual
-                     destructor. Can result in memory errors.
--Wreorder            
--Wcast-align         
-
-Unknown warnings:
-  -Wmisleading-indentation Indentation implies blocks that don't exist
-  -Wduplicated-cond        if/else chain has duplicated conditions
-  -Wduplicated-branches    if/else branches have duplicated code
-  -Wlogical-op             Logical operations used where probably bitwise is wanted
-  -Wuseless-cast           Casting to the same type
+/Wall                Enables -Weverything
+-Weverything         All warnings enabled
+  -Wall              
+  -Wextra            
+  -Wpedantic         ISO C/C++ conformance (warn on extensions)
+  -Wconversion       Enable warnings for unexpected conversions losing data on
+                     fundamental types, enums and strings.
+  -Wshadow-all       Uncaptured locals; Variable declaration overshadows one
+                     from the parent context. (Same name.)
+  -Wold-style-cast   Warn for c-style casts
+  -Wdouble-promotion `float` implicit promoted to `double`
 ````
-Disable (temporary) unwanted/incompatible warnings:
+Promote to errors:
+````````
+-Werror=return-type
+````````
+Disable (temporary)  unwanted/incompatible warnings:
 ``````
--Wno-c++98-compat   (Weverything) Compatibility with C++98 is not needed
+-Wno-c++98-compat    (Weverything) Compatibility with C++98 is not needed
 -Wno-c++98-compat-pedantic
--Wno-keyword-macro  GSL: keyword hidden by macro definition
 ``````
 
 <!--------------------------------------------------------><a id="elements"></a>
@@ -296,7 +286,6 @@ Generate custom views for objects in the Visual Studio debugger.
 - Board
 - Location
 - Options (TODO)
-
 
 
 <!------------------------------------------------------------><a id="link"></a>
