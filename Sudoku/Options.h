@@ -264,7 +264,7 @@ inline Options<E>& Options<E>::remove_option(const Value value)
 	assert(is_valid_option<E>(value));
 	assert(not Sudoku::is_answer(*this, value));
 
-	data_.set(size_t{value}, false);
+	data_.set(static_cast<size_t>(value), false);
 	return *this;
 }
 
@@ -272,7 +272,7 @@ inline Options<E>& Options<E>::remove_option(const Value value)
 template<int E>
 inline Options<E>& Options<E>::add(const Value value)
 {
-	data_.set(size_t{value}, true);
+	data_.set(static_cast<size_t>(value), true);
 	return *this;
 }
 
@@ -281,7 +281,7 @@ template<int E>
 inline Options<E>& Options<E>::add_nocheck(const Value value) noexcept
 {
 	assert(value <= Value{E});
-	data_[size_t{value}] = true;
+	data_[static_cast<size_t>(value)] = true;
 	return *this;
 }
 
@@ -349,7 +349,7 @@ inline bool Options<E>::all() const noexcept
 template<int E>
 inline bool Options<E>::test(const Value value) const
 {
-	return data_.test(size_t{value});
+	return data_.test(static_cast<size_t>(value));
 }
 
 //	check if set to answer
@@ -431,7 +431,7 @@ template<int E>
 inline constexpr bool Options<E>::operator[](const Value value) const noexcept
 {
 	assert(value <= Value{E});
-	return data_[size_t{value}];
+	return data_[static_cast<size_t>(value)];
 }
 
 //	no-check access
@@ -439,7 +439,7 @@ template<int E>
 inline auto Options<E>::operator[](const Value value) noexcept
 {
 	assert(value <= Value{E});
-	return data_[size_t{value}];
+	return data_[static_cast<size_t>(value)];
 }
 
 template<int E>
