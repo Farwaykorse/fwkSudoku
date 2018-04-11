@@ -2101,9 +2101,7 @@ TEST(Board_Iterator, direct_access)
 		EXPECT_EQ(A.begin()[0], 9);
 		EXPECT_EQ(A.begin()[1], 1);
 		EXPECT_EQ(A.begin()[15], 15);
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.begin()[16],
-			"dereferenceable_location");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.begin()[16], "is_valid");
 		EXPECT_DEBUG_DEATH(
 			[[maybe_unused]] auto U = A.begin()[17], "<= full_size");
 		{ // return dereferenced iterator
@@ -2114,8 +2112,7 @@ TEST(Board_Iterator, direct_access)
 		}
 		EXPECT_DEBUG_DEATH(
 			[[maybe_unused]] auto U = A.end()[1], "<= full_size");
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.end()[0], "dereferenceable_location");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.end()[0], "is_valid");
 		EXPECT_EQ(A.end()[-1], 15);
 		EXPECT_EQ(A.end()[-16], 9);
 		EXPECT_DEBUG_DEATH(
@@ -2128,8 +2125,7 @@ TEST(Board_Iterator, direct_access)
 		EXPECT_EQ(A.cbegin()[1], 1);
 		EXPECT_EQ(A.cbegin()[15], 15);
 		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.cbegin()[16],
-			"dereferenceable_location");
+			[[maybe_unused]] auto U = A.cbegin()[16], "is_valid");
 		EXPECT_DEBUG_DEATH(
 			[[maybe_unused]] auto U = A.cbegin()[17], "<= full_size");
 		{ // return dereferenced iterator
@@ -2140,8 +2136,7 @@ TEST(Board_Iterator, direct_access)
 		}
 		EXPECT_DEBUG_DEATH(
 			[[maybe_unused]] auto U = A.cend()[1], "<= full_size");
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.cend()[0], "dereferenceable_location");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.cend()[0], "is_valid");
 		EXPECT_EQ(A.cend()[-1], 15);
 		EXPECT_EQ(A.cend()[-16], 9);
 		EXPECT_DEBUG_DEATH(
@@ -2155,8 +2150,7 @@ TEST(Board_Iterator, direct_access)
 		EXPECT_EQ(A.rbegin()[1], 14);
 		EXPECT_EQ(A.rbegin()[15], 9);
 		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.rbegin()[16],
-			"dereferenceable_location");
+			[[maybe_unused]] auto U = A.rbegin()[16], "is_valid");
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rbegin()[17], ">= -1");
 		{ // return dereferenced iterator
 			const auto I = A.rbegin();
@@ -2165,8 +2159,7 @@ TEST(Board_Iterator, direct_access)
 			EXPECT_TRUE(I[14] == *(A.rbegin() + 14));
 		}
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rend()[1], ">= -1");
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.rend()[0], "dereferenceable_location");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rend()[0], "is_valid");
 		EXPECT_EQ(A.rend()[-1], 9);
 		EXPECT_EQ(A.rend()[-16], 15);
 		EXPECT_DEBUG_DEATH(
@@ -2180,8 +2173,7 @@ TEST(Board_Iterator, direct_access)
 		EXPECT_EQ(A.crbegin()[1], 14);
 		EXPECT_EQ(A.crbegin()[15], 9);
 		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.crbegin()[16],
-			"dereferenceable_location");
+			[[maybe_unused]] auto U = A.crbegin()[16], "is_valid");
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.crbegin()[17], ">= -1");
 		{ // return dereferenced iterator
 			const auto I = A.crbegin();
@@ -2190,8 +2182,7 @@ TEST(Board_Iterator, direct_access)
 			EXPECT_TRUE(I[14] == *(A.crbegin() + 14));
 		}
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.crend()[1], ">= -1");
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.crend()[0], "dereferenceable_location");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.crend()[0], "is_valid");
 		EXPECT_EQ(A.crend()[-1], 9);
 		EXPECT_EQ(A.crend()[-16], 15);
 		EXPECT_DEBUG_DEATH(

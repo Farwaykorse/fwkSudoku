@@ -54,12 +54,12 @@ public:
 
 	// Constructors
 	constexpr Board_iterator() noexcept
-	{ // defaults to begin()
+	{ // defaults to [r]begin()
 		if constexpr (is_reverse) elem_ = full_size<N> - 1;
 	}
 	explicit constexpr Board_iterator(gsl::not_null<owner_type*> owner) noexcept
 		: board_(owner)
-	{ // defaults to begin()
+	{ // defaults to [r]begin()
 		if constexpr (is_reverse) elem_ = (full_size<N> - 1);
 	}
 	explicit constexpr Board_iterator(
@@ -93,7 +93,9 @@ public:
 	//====----------------------------------------------------------------====//
 	[[nodiscard]] constexpr reference operator*() const noexcept
 	{
-		assert(board_ != nullptr && dereferenceable_location());
+		// Only valid in a dereferenceable location:
+		assert(board_ != nullptr && is_valid(Location{elem_}));
+
 		return board_->operator[](location());
 	}
 	[[nodiscard]] constexpr pointer operator->() const noexcept
@@ -207,17 +209,6 @@ private:
 	constexpr bool is_same_address(const Board_iterator other) const noexcept
 	{ // compare address of:
 		return board_ == other.board_;
-	}
-
-	// Dereferenceable locations
-	static constexpr bool
-		dereferenceable_location(const difference_type x) noexcept
-	{
-		return !(x < 0 || x >= full_size<N>);
-	}
-	constexpr bool dereferenceable_location() const noexcept
-	{
-		return dereferenceable_location(elem_);
 	}
 };
 
