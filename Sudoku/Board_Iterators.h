@@ -172,7 +172,7 @@ public:
 	[[nodiscard]] friend constexpr difference_type operator-(
 		Board_iterator const left, Board_iterator const right) noexcept
 	{ // difference
-		assert(left.is_same_address(right));
+		assert(is_same_Board(left, right));
 		if constexpr (is_reverse)
 			return right.elem_ - left.elem_;
 		else
@@ -189,13 +189,13 @@ public:
 	[[nodiscard]] friend constexpr bool operator==(
 		Board_iterator const left, Board_iterator const right) noexcept
 	{
-		assert(left.is_same_address(right));
-		return left.is_same_address(right) && left.elem_ == right.elem_;
+		assert(is_same_Board(left, right));
+		return is_same_Board(left, right) && left.elem_ == right.elem_;
 	}
 	[[nodiscard]] friend constexpr bool operator<(
 		Board_iterator const left, Board_iterator const right) noexcept
 	{
-		assert(left.is_same_address(right));
+		assert(is_same_Board(left, right));
 		if constexpr (is_reverse)
 			return left.elem_ > right.elem_;
 		else
@@ -206,9 +206,10 @@ private:
 	owner_type* board_{nullptr};
 	difference_type elem_{0};
 
-	constexpr bool is_same_address(const Board_iterator other) const noexcept
+	friend constexpr bool
+		is_same_Board(Board_iterator const A, Board_iterator const B) noexcept
 	{ // compare address of:
-		return board_ == other.board_;
+		return A.board_ == B.board_;
 	}
 };
 
