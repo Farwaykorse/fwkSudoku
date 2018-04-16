@@ -7,6 +7,7 @@
 #include "Board.h"
 #include "Iterator_Utilities.h"
 #include "Location.h"
+#include "Location_Utilities.h"
 #include "Options.h"
 #include "Size.h"
 #include "Value.h"

@@ -14,6 +14,7 @@
 #include "Board_Sections.h"
 #include "Board_Utilities.h"
 #include "Location.h"
+#include "Location_Utilities.h"
 #include "Size.h"
 #include "exceptions.h"
 
