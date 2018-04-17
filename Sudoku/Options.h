@@ -64,7 +64,7 @@ public:
 	}
 	[[nodiscard]] friend bool
 		operator<(const Options<E>& left, const Options<E>& right) noexcept(
-			sizeof(Options<E>) <= sizeof(unsigned long long))
+			sizeof(Options<E>) <= sizeof(uint64_t))
 	{
 		if constexpr (sizeof(Options<E>) <= sizeof(unsigned long))
 		{
