@@ -365,6 +365,7 @@
     <ClInclude Include="Board.h" />
     <ClInclude Include="Board_Iterators.h" />
     <ClInclude Include="Board_Sections.h" />
+    <ClInclude Include="Board_Section_traits.h" />
     <ClInclude Include="Board_Utilities.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="Location.h" />
