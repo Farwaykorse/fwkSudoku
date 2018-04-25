@@ -10,25 +10,25 @@
 namespace SudokuTests
 {
 using namespace ::Sudoku;
-using namespace ::Sudoku::Board_Sections;
+using namespace ::Sudoku::Board_Section;
 
 using dataT        = int;
 constexpr int size = 3;
 
-using Row         = typename Board_Sections::Row<dataT, size>;
-using Col         = typename Board_Sections::Col<dataT, size>;
-using Block       = typename Board_Sections::Block<dataT, size>;
-using const_Row   = typename Board_Sections::const_Row<dataT, size>;
-using const_Col   = typename Board_Sections::const_Col<dataT, size>;
-using const_Block = typename Board_Sections::const_Block<dataT, size>;
+using Row         = typename Board_Section::Row<dataT, size>;
+using Col         = typename Board_Section::Col<dataT, size>;
+using Block       = typename Board_Section::Block<dataT, size>;
+using const_Row   = typename Board_Section::const_Row<dataT, size>;
+using const_Col   = typename Board_Section::const_Col<dataT, size>;
+using const_Block = typename Board_Section::const_Block<dataT, size>;
 
 namespace Section_traits
 {
 	// inline namespace traits
 	static_assert(std::is_same_v<
-				  Board_Sections::is_Section<int>,
-				  Board_Sections::traits::is_Section<int>>);
-	using namespace ::Sudoku::Board_Sections::traits;
+				  Board_Section::is_Section<int>,
+				  Board_Section::traits::is_Section<int>>);
+	using namespace ::Sudoku::Board_Section::traits;
 
 	static_assert(not is_Section_v<int>);
 	static_assert(is_Section_v<Row>);
@@ -79,7 +79,7 @@ namespace Section_traits
 
 	// For references to Section:
 	static_assert(not is_Section_v<Row&>); //? Should this work?
-} // namespace traits
+} // namespace Section_traits
 
 
 } // namespace SudokuTests

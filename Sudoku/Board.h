@@ -11,7 +11,7 @@
 #pragma once
 
 #include "Board_Iterators.h"
-#include "Board_Sections.h"
+#include "Board_Section.h"
 #include "Board_Utilities.h"
 #include "Location.h"
 #include "Location_Utilities.h"
@@ -36,7 +36,6 @@ class Board
 	static constexpr size_t Size = full_size<N>;
 
 	using Location    = Location<N>;
-	using Section     = Board_Section::Section<T, N>;
 	using Row         = Board_Section::Row<T, N>;
 	using const_Row   = Board_Section::const_Row<T, N>;
 	using Col         = Board_Section::Col<T, N>;

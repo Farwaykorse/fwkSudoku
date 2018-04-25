@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
+#include "Board_Section_traits.h"
 #include "Iterator_Utilities.h"
 #include "Location.h"
 #include "Options.h"
@@ -77,9 +78,7 @@ inline auto list_where_option(
 	const SectionT section, Value value, const int rep_count /*= elem_size<N>*/)
 {
 	{
-		using Options       = Options<elem_size<N>>;
-		using Board_Section = Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Board_Section, SectionT>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 		assert(rep_count > 0 && rep_count <= elem_size<N>);
 	}
 	const auto begin = section.cbegin();
@@ -91,10 +90,7 @@ inline auto list_where_option(
 // List locations where [value] is an option
 template<int N, typename ItrT>
 auto list_where_option(
-	const ItrT begin,
-	const ItrT end,
-	const Value value,
-	int rep_count /*= 0*/)
+	const ItrT begin, const ItrT end, const Value value, int rep_count /*= 0*/)
 {
 	using Options = Options<elem_size<N>>;
 	{
@@ -152,8 +148,7 @@ auto list_where_option(const SectionT section, const Options sample) noexcept(
 	true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
-		using Board_Section = Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Board_Section, SectionT>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 	}
 	std::vector<Location<N>> locations{};
 	locations.reserve(elem_size<N>);
@@ -182,8 +177,8 @@ auto list_where_equal(const SectionT section, const Options sample) noexcept(
 	true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
-		using Board_Section = Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Board_Section, SectionT>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
 	std::vector<Location<N>> locations{};
 	locations.reserve(elem_size<N>);
@@ -226,8 +221,7 @@ auto list_where_subset(const SectionT section, const Options sample) noexcept(
 	true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
-		using Board_Section = Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Board_Section, SectionT>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 	}
 	using Location = Location<N>;
 	std::vector<Location> list{};
@@ -252,8 +246,7 @@ auto list_where_any_option(
 	const SectionT section, const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
-		using Board_Section = Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Board_Section, SectionT>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 	}
 	using Location = Location<N>;
 	std::vector<Location> locations{};
@@ -315,7 +308,9 @@ Step 3) XOR [n-1]
 
 	using Options = Options<elem_size<N>>;
 	{
-		static_assert(Utility_::iterator_to<InItr_, const Options>);
+		static_assert(
+			Utility_::iterator_to<InItr_, Options> ||
+			Utility_::iterator_to<InItr_, const Options>);
 	}
 	// To limit processing time, counting up to N
 	constexpr size_t max = N; // default: (9x9 board) up-to 3 times
@@ -375,7 +370,9 @@ Options appearance_once(const InItr_ begin, const InItr_ end) noexcept
 {
 	{
 		static_assert(Utility_::is_input<InItr_>);
-		static_assert(Utility_::iterator_to<InItr_, const Options>);
+		static_assert(
+			Utility_::iterator_to<InItr_, Options> ||
+			Utility_::iterator_to<InItr_, const Options>);
 	}
 	Options sum(Value{0});    // helper all used
 	Options worker(Value{0}); // multiple uses OR answer
@@ -399,11 +396,8 @@ template<int N, typename Options, typename SectionT>
 Options appearance_once(SectionT section) noexcept
 {
 	{
-		using Section = typename Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Section, SectionT>);
-		using ::Sudoku::Utility_::iterator_to;
-		static_assert(
-			iterator_to<typename SectionT::const_iterator, const Options>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
 	Options sum(Value{0});    // helper all used
 	Options worker(Value{0}); // multiple uses OR answer

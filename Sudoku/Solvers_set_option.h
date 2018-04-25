@@ -122,8 +122,8 @@ inline int set_uniques(
 	Board<Options, N>& board, const SectionT section, const Options worker)
 {
 	{
-		using Section_ = typename Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Section_, SectionT>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
 	int changes{0};
 
@@ -146,11 +146,9 @@ inline int set_unique(
 	Board<Options, N>& board, const SectionT section, const Value value)
 {
 	{
-		using Section_ = typename Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Section_, SectionT>);
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::is_input<iterator>);
-		static_assert(Utility_::iterator_to<iterator, const Options>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
+		static_assert(Utility_::is_input<typename SectionT::iterator>);
 		assert(is_valid<N>(value));
 	}
 	const auto end       = section.cend();
@@ -174,10 +172,8 @@ inline int set_section_locals(
 	const Options values)
 {
 	{
-		using Section_ = typename Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Section_, SectionT>);
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::iterator_to<iterator, const Options>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 		assert(rep_count > 1);  // should have been caught by caller
 								// use the set_uniques specialization
 		assert(rep_count <= N); // won't fit in single block-row/col
@@ -216,9 +212,6 @@ inline int set_section_locals(
 	const Options values)
 {
 	{
-		using BlockT   = Board_Section::Block<Options, N>;
-		using iterator = typename BlockT::const_iterator;
-		static_assert(Utility_::iterator_to<iterator, const Options>);
 		assert(rep_count > 1);  // should have been caught by caller
 								// use the set_uniques specialization
 		assert(rep_count <= N); // won't fit in single block-row/col

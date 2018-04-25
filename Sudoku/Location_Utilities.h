@@ -4,6 +4,7 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
+#include "Board_Section_traits.h"
 #include "Iterator_Utilities.h"
 #include "Location.h"
 #include "Size.h"
@@ -57,23 +58,19 @@ template<int N>
 std::vector<Location<N>> get_same_block(
 	const Location<N>, const std::vector<Location<N>>&) noexcept(true);
 
-template<typename T, int N>
-constexpr bool
-	is_same_section(Board_Section::const_Row<T, N>, Location<N>) noexcept;
-template<typename T, int N>
-constexpr bool
-	is_same_section(Board_Section::const_Col<T, N>, Location<N>) noexcept;
-template<typename T, int N>
-constexpr bool
-	is_same_section(Board_Section::const_Block<T, N>, Location<N>) noexcept;
+template<int N, typename S>
+constexpr bool is_same_section(S section, Location<N>) noexcept;
 
 template<typename SectionT, int N>
 bool is_same_section(SectionT, std::vector<Location<N>>) noexcept;
 
-template<typename T, int N>
-bool intersect_block(Board_Section::const_Row<T, N>, Location<N>) noexcept;
-template<typename T, int N>
-bool intersect_block(Board_Section::const_Col<T, N>, Location<N>) noexcept;
+template<
+	int N,
+	typename S,
+	typename = std::enable_if_t<
+		Board_Section::traits::is_Row_v<S> ||
+		Board_Section::traits::is_Col_v<S>>>
+bool intersect_block(S section, Location<N> block_loc) noexcept;
 
 //===----------------------------------------------------------------------===//
 
@@ -248,53 +245,24 @@ template<int N>
 }
 
 // check: [loc] is in [section]
-template<typename T, int N>
-inline constexpr bool is_same_section(
-	const Board_Section::const_Row<T, N> section,
-	const Location<N> loc) noexcept
+template<int N, typename S>
+inline constexpr bool
+	is_same_section(const S section, const Location<N> loc) noexcept
 {
-	return is_same_row(loc, section.cbegin().location());
-}
+	static_assert(Board_Section::traits::is_Section_v<S>);
 
-// check: [loc] is in [section]
-template<typename T, int N>
-inline constexpr bool is_same_section(
-	const Board_Section::const_Col<T, N> section,
-	const Location<N> loc) noexcept
-{
-	return is_same_col(loc, section.cbegin().location());
-}
-
-// check: [loc] is in [section]
-template<typename T, int N>
-inline constexpr bool is_same_section(
-	const Board_Section::const_Block<T, N> section,
-	const Location<N> loc) noexcept
-{
-	return is_same_block(loc, section.cbegin().location());
+	if constexpr (Board_Section::traits::is_Row_v<S>)
+		return is_same_row(loc, section.cbegin().location());
+	else if constexpr (Board_Section::traits::is_Col_v<S>)
+		return is_same_col(loc, section.cbegin().location());
+	else if constexpr (Board_Section::traits::is_Block_v<S>)
+		return is_same_block(loc, section.cbegin().location());
 }
 
 // check: [section] intersects block containing [loc]
-template<typename T, int N>
-inline bool intersect_block(
-	const Board_Section::const_Row<T, N> section,
-	const Location<N> block_loc) noexcept
-{
-	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
-	{
-		if (is_same_block(block_loc, itr.location()))
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-// check: [section] intersects block containing [loc]
-template<typename T, int N>
-inline bool intersect_block(
-	const Board_Section::const_Col<T, N> section,
-	const Location<N> block_loc) noexcept
+template<int N, typename S, typename>
+inline bool
+	intersect_block(const S section, const Location<N> block_loc) noexcept
 {
 	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
 	{

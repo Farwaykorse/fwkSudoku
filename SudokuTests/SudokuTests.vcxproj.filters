@@ -36,9 +36,6 @@
     <ClCompile Include="Solver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Board_Sections.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Value.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -60,10 +57,13 @@
     <ClCompile Include="exceptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Board_Section_Iterators.cpp">
+    <ClCompile Include="Board_Section_traits.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Board_Section_traits.cpp">
+    <ClCompile Include="Board_Section.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Board_Section_iterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -136,11 +136,9 @@ int remove_option_section(
 	const Value value)
 {
 	{
-		using Board_Section = typename Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Board_Section, SectionT>);
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::is_input<iterator>);
-		static_assert(Utility_::iterator_to<iterator, const Options>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
+		static_assert(Utility_::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
 		assert(is_valid<N>(value));
 		assert(is_same_section(section, ignore));
@@ -168,11 +166,9 @@ inline int remove_option_section(
 	const Value value)
 {
 	{
-		using Board_Section = typename Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Board_Section, SectionT>);
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::is_input<iterator>);
-		static_assert(Utility_::iterator_to<iterator, const Options>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
+		static_assert(Utility_::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
 		assert(is_valid<N>(value));
 		assert(is_same_section(section, ignore));
@@ -208,11 +204,9 @@ int remove_option_section(
 	const std::vector<Value>& values)
 {
 	{
-		using Board_Section = typename Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Board_Section, SectionT>);
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::is_input<iterator>);
-		static_assert(Utility_::iterator_to<iterator, const Options>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
+		static_assert(Utility_::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
 		assert(is_valid<N>(values));
 		assert(is_same_section(section, ignore));
@@ -246,15 +240,11 @@ int remove_option_outside_block(
 	const Value value)
 {
 	{
-		using Section_ = typename Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Section_, SectionT>);
-		using Block_ = typename Board_Section::const_Block<Options, N>;
-		static_assert(
-			not std::is_base_of_v<Block_, SectionT>,
-			"remove_option_outside_block is useless on bock");
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::is_input<iterator>);
-		static_assert(Utility_::iterator_to<iterator, const Options>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(!Board_Section::traits::is_Block_v<SectionT>,
+			"remove_option_outside_block is useless on a Block");
+		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
+		static_assert(Utility_::is_input<typename SectionT::iterator>);
 		assert(is_valid(block_loc));
 		assert(is_valid<N>(value));
 		assert(intersect_block(section, block_loc));

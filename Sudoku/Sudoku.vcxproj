@@ -364,7 +364,8 @@
     <ClInclude Include="Board.fwd.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="Board_Iterators.h" />
-    <ClInclude Include="Board_Sections.h" />
+    <ClInclude Include="Board_Section.h" />
+    <ClInclude Include="Board_Section_iterator.h" />
     <ClInclude Include="Board_Section_traits.h" />
     <ClInclude Include="Board_Utilities.h" />
     <ClInclude Include="exceptions.h" />
@@ -380,6 +381,7 @@
     <ClInclude Include="Solvers_remove_option.h" />
     <ClInclude Include="Solvers_set_option.h" />
     <ClInclude Include="Transpose.h" />
+    <ClInclude Include="traits.h" />
     <ClInclude Include="Value.h" />
   </ItemGroup>
   <ItemGroup>

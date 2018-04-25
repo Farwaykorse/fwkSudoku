@@ -15,6 +15,7 @@
 #include "Solvers_remove_option.h"
 #include "Solvers_set_option.h"
 #include "Value.h"
+
 #include <gsl/gsl>
 #include <vector>
 #include <algorithm>   // minmax
@@ -130,7 +131,7 @@ inline int multi_option(Board<Options, N>& board, const Location<N> loc)
 template<int N, typename Options>
 constexpr int multi_option(
 	Board<Options, N>& board, const Location<N> loc, const size_t count)
-{	
+{
 	assert(is_valid(loc));
 
 	// set execution domain & specializations
@@ -177,8 +178,7 @@ template<int N, typename Options, typename SectionT>
 inline int unique_in_section(Board<Options, N>& board, const SectionT section)
 {
 	{
-		using Board_Section = Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Board_Section, SectionT>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 	}
 	const auto worker = appearance_once<N>(section);
 	return set_uniques(board, section, worker);
@@ -191,10 +191,8 @@ template<int N, typename Options, typename SectionT>
 inline int section_exclusive(Board<Options, N>& board, const SectionT section)
 {
 	{
-		using Board_Section = Board_Section::Section<Options, N>;
-		static_assert(std::is_base_of_v<Board_Section, SectionT>);
-		using iterator = typename SectionT::const_iterator;
-		static_assert(Utility_::iterator_to<iterator, const Options>);
+		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
 	int changes{}; // performance counter
 
