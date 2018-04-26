@@ -70,11 +70,9 @@ TEST(Solver, list_where_option__Section)
 #endif // NDEBUG
 	// invalid row id // board_sections.h
 	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(-1), Value{1}, 1),
-		".*is_valid_size.N..row.");
+		list = list_where_option<2>(B.row(-1), Value{1}, 1), ".*is_valid_size");
 	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(4), Value{1}, 1),
-		".*is_valid_size.N..row.");
+		list = list_where_option<2>(B.row(4), Value{1}, 1), ".*is_valid_size");
 	// invalid rep_count
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(B.row(0), Value{1}, 0), ".*rep_count");
