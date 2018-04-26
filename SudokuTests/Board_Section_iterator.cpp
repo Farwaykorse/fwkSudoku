@@ -174,6 +174,10 @@ namespace constructors
 	static_assert(std::is_constructible_v<Row_Itr, Board*, size_t, size_t>);
 
 	// Implicit conversion to const_*
+	static_assert(std::is_convertible_v<Row_Itr, const_Row_Itr>);
+	static_assert(std::is_convertible_v<Col_Itr, const_Col_Itr>);
+	static_assert(std::is_convertible_v<Block_Itr, const_Block_Itr>);
+	// Construct from non-const
 	static_assert(std::is_constructible_v<const_Row_Itr, Row_Itr>);
 	static_assert(std::is_constructible_v<const_Col_Itr, Col_Itr>);
 	static_assert(std::is_constructible_v<const_Block_Itr, Block_Itr>);
@@ -191,6 +195,9 @@ namespace constructors
 	static_assert(not std::is_constructible_v<typeT, L>);
 
 	// Explicit conversion from typeT to Location:
+	static_assert(not std::is_convertible_v<Row_Itr, L>);
+	static_assert(not std::is_convertible_v<Col_Itr, L>);
+	static_assert(not std::is_convertible_v<Block_Itr, L>);
 	static_assert(std::is_constructible_v<L, typeT>);
 	static_assert(std::is_nothrow_constructible_v<L, typeT>);
 	TEST(Section_Itr, Location)

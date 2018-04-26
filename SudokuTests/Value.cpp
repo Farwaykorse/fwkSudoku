@@ -87,9 +87,11 @@ namespace compiletime
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
 
-	// other types
+	// Explicit construction:
 	static_assert(std::is_constructible_v<typeT, size_t>);
-	// all by implicit conversion to size_t
+	static_assert(not std::is_convertible_v<size_t, typeT>);
+
+	// By implicit conversion to size_t first:
 	static_assert(std::is_constructible_v<typeT, int>);
 	static_assert(std::is_constructible_v<typeT, unsigned int>);
 	static_assert(std::is_constructible_v<typeT, unsigned long int>);
@@ -102,6 +104,9 @@ namespace compiletime
 	static_assert(std::is_nothrow_constructible_v<bool, typeT>);
 	static_assert(not std::is_constructible_v<int, typeT>);
 	// all others fail, unless same as size_t
+	// No implicit conversion:
+	static_assert(not std::is_convertible_v<typeT, size_t>);
+	static_assert(not std::is_convertible_v<typeT, bool>);
 
 	static_assert(not std::is_assignable_v<typeT, int>);
 	static_assert(not std::is_assignable_v<int, typeT>);

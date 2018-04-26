@@ -187,6 +187,10 @@ namespace constructors
 	static_assert(std::is_nothrow_constructible_v<const_Row, Row>);
 	static_assert(std::is_nothrow_constructible_v<const_Col, Col>);
 	static_assert(std::is_nothrow_constructible_v<const_Block, Block>);
+	// Implicit convertible to const
+	static_assert(std::is_convertible_v<Row, const_Row>);
+	static_assert(std::is_convertible_v<Col, const_Col>);
+	static_assert(std::is_convertible_v<Block, const_Block>);
 	TEST(Board_Section, conversion_to_const)
 	{
 		Board board{};
@@ -303,12 +307,12 @@ namespace constructors
 	}
 	// To other type (gaining const)
 	static_assert(std::is_constructible_v<const_Row, Col, int>);
-	static_assert(std::is_nothrow_constructible_v<const_Row, Col, int>);
 	static_assert(std::is_constructible_v<const_Row, Block, int>);
-	static_assert(std::is_nothrow_constructible_v<const_Row, Block, int>);
 	static_assert(std::is_constructible_v<const_Col, Row, int>);
-	static_assert(std::is_nothrow_constructible_v<const_Col, Row, int>);
 	static_assert(std::is_constructible_v<const_Col, Block, int>);
+	static_assert(std::is_nothrow_constructible_v<const_Row, Col, int>);
+	static_assert(std::is_nothrow_constructible_v<const_Row, Block, int>);
+	static_assert(std::is_nothrow_constructible_v<const_Col, Row, int>);
 	static_assert(std::is_nothrow_constructible_v<const_Col, Block, int>);
 	TEST(Board_Section, conversion_and_const)
 	{

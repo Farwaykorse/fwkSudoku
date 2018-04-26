@@ -3,16 +3,6 @@
 // Unit tests for the template class Sudoku::Location
 //===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
-//
-// Notes:
-// gTest is limited for use with multiple template parameters.
-// These expressions need to be implemented between extra parentheses
-// - test elements implementing this are flagged with [gTest]
-// - not implemented tests are flagged as NEEDTEST [gTest]
-// gTest tries to print iterators if they use inheritance,
-//   if used in *_EQ/NE etc.
-//   use an explicit test like EXPECT_TRUE(.. == ..).
-//
 //===----------------------------------------------------------------------===//
 #include <gtest/gtest.h>
 
@@ -61,6 +51,35 @@ namespace compiletime
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
+	// other types
+	static_assert(std::is_constructible_v<typeT, bool>); // TODO unwanted
+	static_assert(std::is_constructible_v<typeT, char>);
+	static_assert(std::is_constructible_v<typeT, int>);
+	static_assert(std::is_constructible_v<typeT, unsigned int>);
+	static_assert(std::is_constructible_v<typeT, size_t>);
+	static_assert(std::is_nothrow_constructible_v<typeT, int>);
+	static_assert(std::is_nothrow_constructible_v<typeT, unsigned int>);
+	static_assert(std::is_nothrow_constructible_v<typeT, size_t>);
+	static_assert(not std::is_constructible_v<int, typeT>);
+	static_assert(not std::is_constructible_v<bool, typeT>);
+	static_assert(not std::is_constructible_v<size_t, typeT>);
+
+	static_assert(std::is_constructible_v<typeT, Location_Block<3>>);
+	static_assert(not std::is_constructible_v<typeT, Location_Block<2>>);
+
+	// Implicit conversion to Location:
+	static_assert(std::is_convertible_v<Location_Block<3>, typeT>);
+	static_assert(not std::is_convertible_v<bool, typeT>);
+	static_assert(not std::is_convertible_v<char, typeT>);
+	static_assert(not std::is_convertible_v<int, typeT>);
+	static_assert(not std::is_convertible_v<size_t, typeT>);
+	// Implicit conversion from Location:
+	static_assert(not std::is_convertible_v<typeT, Location_Block<3>>);
+	static_assert(not std::is_convertible_v<typeT, bool>);
+	static_assert(not std::is_convertible_v<typeT, char>);
+	static_assert(not std::is_convertible_v<typeT, int>);
+	static_assert(not std::is_convertible_v<typeT, size_t>);
+
 	// copy assignment
 	static_assert(not std::is_copy_assignable_v<typeT>);
 	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);
@@ -70,30 +89,20 @@ namespace compiletime
 	static_assert(not std::is_nothrow_move_assignable_v<typeT>);
 	static_assert(not std::is_trivially_move_assignable_v<typeT>);
 
-	static_assert(std::is_destructible_v<typeT>);
-	static_assert(std::is_nothrow_destructible_v<typeT>);
-	static_assert(std::is_trivially_destructible_v<typeT>);
-	static_assert(not std::has_virtual_destructor_v<typeT>);
+	static_assert(not std::is_assignable_v<typeT, int>);
+	static_assert(not std::is_assignable_v<typeT, Location_Block<3>>);
 
 	static_assert(not std::is_swappable_v<typeT>);         // C++17
 	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
-	// other types
-	static_assert(std::is_constructible_v<typeT, int>);
-	static_assert(not std::is_constructible_v<int, typeT>);
-	static_assert(std::is_constructible_v<typeT, unsigned int>);
-	static_assert(std::is_constructible_v<typeT, char>);
-	static_assert(std::is_constructible_v<typeT, bool>);
-	static_assert(not std::is_constructible_v<bool, typeT>);
-	static_assert(std::is_constructible_v<typeT, size_t>);
-	static_assert(not std::is_constructible_v<size_t, typeT>);
-	static_assert(std::is_constructible_v<typeT, Location_Block<3>>);
-	static_assert(not std::is_constructible_v<typeT, Location_Block<2>>);
-	static_assert(not std::is_assignable_v<typeT, Location_Block<3>>);
-	static_assert(not std::is_assignable_v<typeT, int>);
 
 	static_assert(not std::is_swappable_with_v<typeT, Location_Block<3>>);
 	static_assert(
 		not std::is_nothrow_swappable_with_v<typeT, Location_Block<3>>);
+
+	static_assert(std::is_destructible_v<typeT>);
+	static_assert(std::is_nothrow_destructible_v<typeT>);
+	static_assert(std::is_trivially_destructible_v<typeT>);
+	static_assert(not std::has_virtual_destructor_v<typeT>);
 } // namespace compiletime
 
 namespace Location_Block_compiletime
@@ -107,7 +116,7 @@ namespace Location_Block_compiletime
 	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
 	static_assert(not std::is_pod_v<typeT>);
-	static_assert(not std::is_empty_v<typeT>); // nothing virtual
+	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
