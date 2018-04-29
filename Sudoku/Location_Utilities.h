@@ -15,7 +15,7 @@
 #include <vector>
 #include <algorithm> // minmax_element, is_sorted, all_of
 #include <limits>    // numeric_limits
-#include <xutility>  // back_inserter
+#include <iterator>  // back_inserter
 
 // Forward declarations
 #include "Board.fwd.h"
