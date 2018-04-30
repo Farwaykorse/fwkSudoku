@@ -35,7 +35,7 @@ class Board
 	static_assert(N > 1, "Board.h base_size value too small");
 	static constexpr size_t Size = full_size<N>;
 
-	using Location    = Location<N>;
+	using Location    = ::Sudoku::Location<N>;
 	using Row         = Board_Section::Row<T, N>;
 	using const_Row   = Board_Section::const_Row<T, N>;
 	using Col         = Board_Section::Col<T, N>;

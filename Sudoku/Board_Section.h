@@ -24,8 +24,8 @@ namespace Sudoku::Board_Section
 template<typename T, int N, Section S, bool is_const>
 class [[nodiscard]] Board_Section_
 {
-	using Location       = Location<N>;
-	using Location_Block = Location_Block<N>;
+	using Location       = ::Sudoku::Location<N>;
+	using Location_Block = ::Sudoku::Location_Block<N>;
 	using OwnerT =
 		std::conditional_t<is_const, Board<T, N> const&, Board<T, N>&>;
 

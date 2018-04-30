@@ -22,7 +22,7 @@ namespace Sudoku
 template<int N>
 class Location
 {
-	using Size = Size<N>;
+	using Size = ::Sudoku::Size<N>;
 
 	static_assert(N > 1, "Location.h: base_size value too small");
 
@@ -80,8 +80,8 @@ class Location_Block
 {
 	static_assert(N > 1, "Location_Block: base_size value too small");
 
-	using Size     = Size<N>;
-	using Location = Location<N>;
+	using Size     = ::Sudoku::Size<N>;
+	using Location = ::Sudoku::Location<N>;
 
 	// prefer signed integers for calculations
 	static_assert(std::is_signed_v<decltype(Size::base)>);
