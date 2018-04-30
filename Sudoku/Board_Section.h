@@ -29,8 +29,7 @@ class [[nodiscard]] Board_Section_
 	using OwnerT =
 		std::conditional_t<is_const, Board<T, N> const&, Board<T, N>&>;
 
-	friend class Board_Section_;
-	// Clang: (for constructors to different types)
+	// explicit friends for conversion
 	friend class Board_Section_<T, N, Section::row, true>;
 	friend class Board_Section_<T, N, Section::row, false>;
 	friend class Board_Section_<T, N, Section::col, true>;
