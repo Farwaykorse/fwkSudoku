@@ -18,6 +18,7 @@
 #include <Sudoku/Value.h>
 // library
 #include <type_traits>
+#include <utility>
 
 
 namespace SudokuTests::Type
@@ -629,26 +630,23 @@ TEST(Board_Section, checked_access)
 
 namespace SudokuTests::Iterators
 {
-using namespace ::Sudoku;
-using namespace ::Sudoku::Board_Section;
+using Board       = ::Sudoku::Board<int, 3>;
+using Row         = ::Sudoku::Board_Section::Row<int, 3>;
+using Col         = ::Sudoku::Board_Section::Col<int, 3>;
+using Block       = ::Sudoku::Board_Section::Block<int, 3>;
+using const_Row   = ::Sudoku::Board_Section::const_Row<int, 3>;
+using const_Col   = ::Sudoku::Board_Section::const_Col<int, 3>;
+using const_Block = ::Sudoku::Board_Section::const_Block<int, 3>;
 
-Board<int, 3> board{};
-using Row = Board_Section::Row<int, 3>;
-using Col = Board_Section::Col<int, 3>;
-using Block = Board_Section::Block<int, 3>;
-using const_Row = Board_Section::const_Row<int, 3>;
-using const_Col = Board_Section::const_Col<int, 3>;
-using const_Block = Board_Section::const_Block<int, 3>;
-
-static_assert(noexcept(Row(board, 0).begin()));
-static_assert(noexcept(Row(board, 0).cbegin()));
-static_assert(noexcept(Row(board, 0).rbegin()));
-static_assert(noexcept(Row(board, 0).crbegin()));
-static_assert(noexcept(Col(board, 0).begin()));
-static_assert(noexcept(Block(board, 0).begin()));
-static_assert(noexcept(const_Row(board, 0).begin()));
-static_assert(noexcept(const_Row(board, 0).cbegin()));
-static_assert(noexcept(const_Row(board, 0).rbegin()));
-static_assert(noexcept(const_Row(board, 0).crbegin()));
-static_assert(noexcept(Row(board, 0).end()));
-}
+static_assert(noexcept(Row(std::declval<Board&>(), 0).begin()));
+static_assert(noexcept(Row(std::declval<Board&>(), 0).cbegin()));
+static_assert(noexcept(Row(std::declval<Board&>(), 0).rbegin()));
+static_assert(noexcept(Row(std::declval<Board&>(), 0).crbegin()));
+static_assert(noexcept(Col(std::declval<Board&>(), 0).begin()));
+static_assert(noexcept(Block(std::declval<Board&>(), 0).begin()));
+static_assert(noexcept(const_Row(std::declval<Board&>(), 0).begin()));
+static_assert(noexcept(const_Row(std::declval<Board&>(), 0).cbegin()));
+static_assert(noexcept(const_Row(std::declval<Board&>(), 0).rbegin()));
+static_assert(noexcept(const_Row(std::declval<Board&>(), 0).crbegin()));
+static_assert(noexcept(Row(std::declval<Board&>(), 0).end()));
+} // namespace SudokuTests::Iterators
