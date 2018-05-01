@@ -9,8 +9,7 @@
 #include <chrono>
 #include <iostream>
 
-
-void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
+static void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 {
 	using Value = Sudoku::Value;
 
