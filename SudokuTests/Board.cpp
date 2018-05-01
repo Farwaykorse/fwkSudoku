@@ -48,9 +48,9 @@ namespace compiletime
 	// trivial default constructors & trivially copyable
 	static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 	// compatible with std::memcpy & binary copy from / to files"
-//??? WHY different behaviour between debug/release mode?
 #ifdef _DEBUG
-	static_assert(not std::is_standard_layout_v<typeT>, "standard layout");
+	//? WHY different behaviour between debug/release mode? (MSVC & Clang, !GCC)
+	// static_assert(not std::is_standard_layout_v<typeT>, "standard layout");
 #else
 	static_assert(std::is_standard_layout_v<typeT>, "standard layout");
 	// can be converted with reinterpret_cast
