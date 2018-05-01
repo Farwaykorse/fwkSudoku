@@ -37,7 +37,6 @@ using Board             = ::Sudoku::Board<dataT, size>;
 using L                 = ::Sudoku::Location<size>;
 using Location_Block    = ::Sudoku::Location_Block<size>;
 constexpr auto section  = Section::row;
-constexpr int id        = 0;
 constexpr bool is_const = false;
 constexpr bool is_rev   = false;
 
@@ -461,7 +460,7 @@ TEST(Section_Itr, dereference)
 		static_assert(std::is_same_v<int const&, decltype(*A.crbegin())>);
 
 		ASSERT_EQ(A.id(), 3);
-		ASSERT_EQ(A.size(), 4u);
+		ASSERT_EQ(A.size(), 4);
 		ASSERT_EQ(A.front(), 12);
 		ASSERT_EQ(A.back(), 15);
 
@@ -648,7 +647,7 @@ TEST(Section_Itr, post_increment)
 			decltype(A.crbegin()) crI;
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto x = crI++, "nullptr");
 		}
-		ASSERT_EQ(A.size(), 4u);
+		ASSERT_EQ(A.size(), 4);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 3);
 		// *i++
@@ -992,7 +991,7 @@ TEST(Section_Itr, pre_decrement)
 		static_assert(std::is_same_v<int const&, decltype(*(--A.cend()))>);
 
 		// Sanity-check
-		ASSERT_EQ(A.size(), 4u);
+		ASSERT_EQ(A.size(), 4);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A[1], 1);
 		ASSERT_EQ(A.back(), 3);
@@ -1073,7 +1072,7 @@ TEST(Section_Itr, post_decrement)
 		static_assert(std::is_same_v<int const&, decltype(*A.crbegin()--)>);
 
 		// Sanity-check
-		ASSERT_EQ(A.size(), 4u);
+		ASSERT_EQ(A.size(), 4);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A[1], 1);
 		ASSERT_EQ(A.back(), 3);
@@ -1216,7 +1215,7 @@ TEST(Section_Itr, increment_by_integer)
 		static_assert(
 			std::is_same_v<int const&, decltype(*(A.crbegin() += 2))>);
 
-		ASSERT_EQ(A.size(), 4u);
+		ASSERT_EQ(A.size(), 4);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 3);
 
@@ -1341,7 +1340,7 @@ TEST(Section_Itr, increment_by_integer2)
 			std::is_same_v<decltype(A.begin()), decltype(A.begin() + 2)>);
 		static_assert(std::is_same_v<int&, decltype(*(A.begin() + 2))>);
 
-		ASSERT_EQ(A.size(), 4u);
+		ASSERT_EQ(A.size(), 4);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 3);
 
@@ -1436,7 +1435,7 @@ TEST(Section_Itr, increment_by_integer3)
 			std::is_same_v<decltype(A.begin()), decltype(2 + A.begin())>);
 		static_assert(std::is_same_v<int&, decltype(*(3 + A.begin()))>);
 
-		ASSERT_EQ(A.size(), 4u);
+		ASSERT_EQ(A.size(), 4);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 3);
 
@@ -1527,7 +1526,7 @@ TEST(Section_Itr, decrement_by_integer)
 		static_assert(std::is_same_v<int&, decltype(*(A.rend() -= 2))>);
 		static_assert(std::is_same_v<int const&, decltype(*(A.crend() -= 2))>);
 
-		ASSERT_EQ(A.size(), 4u);
+		ASSERT_EQ(A.size(), 4);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 3);
 
@@ -1648,7 +1647,7 @@ TEST(Section_Itr, decrement_by_integer2)
 			std::is_same_v<decltype(A.begin()), decltype(A.end() - 2)>);
 		static_assert(std::is_same_v<int&, decltype(*(A.end() - 2))>);
 
-		ASSERT_EQ(A.size(), 4u);
+		ASSERT_EQ(A.size(), 4);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 3);
 
@@ -1751,7 +1750,7 @@ TEST(Section_Itr, difference)
 		static_assert(std::is_same_v<int, decltype(A.cbegin() - A.cend())>);
 		static_assert(std::is_same_v<int, decltype(A.rbegin() - A.rend())>);
 
-		ASSERT_EQ(A.size(), 4u);
+		ASSERT_EQ(A.size(), 4);
 		EXPECT_EQ(A.begin() - A.begin(), 0);
 		EXPECT_EQ(A.end() - A.end(), 0);
 		EXPECT_EQ(A.end() - A.begin(), 4);
@@ -1831,7 +1830,7 @@ TEST(Section_Itr, direct_access)
 		static_assert(std::is_same_v<int&, decltype(A.rbegin()[2])>);
 		static_assert(std::is_same_v<int const&, decltype(A.crbegin()[2])>);
 
-		ASSERT_EQ(A.size(), 4u);
+		ASSERT_EQ(A.size(), 4);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 3);
 
