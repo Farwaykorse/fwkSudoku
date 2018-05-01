@@ -617,8 +617,14 @@ TEST(Solver, list_where_any_option)
 	EXPECT_EQ(list[0], loc{1});
 	list = list_where_any_option<2>(B.row(0), Options{set{"01000"}});
 	EXPECT_EQ(list.size(), size_t{2});
-	if (list.size() > size_t{0}) EXPECT_EQ(list[0], loc{1});
-	if (list.size() > size_t{1}) EXPECT_EQ(list[1], loc{3});
+	if (list.size() > size_t{0})
+	{
+		EXPECT_EQ(list[0], loc{1});
+	}
+	if (list.size() > size_t{1})
+	{
+		EXPECT_EQ(list[1], loc{3});
+	}
 	// answered
 	list = list_where_any_option<2>(B.row(0), Options{set{"00100"}});
 	EXPECT_EQ(list.size(), size_t{0});
@@ -640,11 +646,20 @@ TEST(Solver, list_where_any_option)
 	B[3][2] = set{"11011"};
 	list    = list_where_any_option<2>(B.col(2), Options{set{"00101"}});
 	EXPECT_EQ(list.size(), size_t{2});
-	if (list.size() > size_t{0}) EXPECT_EQ(list[0], loc(0, 2));
-	if (list.size() > size_t{1}) EXPECT_EQ(list[1], loc(1, 2));
+	if (list.size() > size_t{0})
+	{
+		EXPECT_EQ(list[0], loc(0, 2));
+	}
+	if (list.size() > size_t{1})
+	{
+		EXPECT_EQ(list[1], loc(1, 2));
+	}
 	list = list_where_any_option<2>(B.col(2), Options{set{"01100"}});
 	EXPECT_EQ(list.size(), size_t{3});
-	if (list.size() > size_t{2}) EXPECT_EQ(list[2], loc(3, 2));
+	if (list.size() > size_t{2})
+	{
+		EXPECT_EQ(list[2], loc(3, 2));
+	}
 }
 
 TEST(Solver, appearance_once)
