@@ -701,9 +701,6 @@ TEST(Board_Iterator, Location)
 
 TEST(Board_Iterator, dereference)
 {
-	using ::Sudoku::Board_iterator;
-	using ::Sudoku::const_Board_iterator;
-
 	test_elements TE{};
 	auto& A        = TE.A;
 	auto const& cA = TE.cA;
@@ -725,18 +722,22 @@ TEST(Board_Iterator, dereference)
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.rend(), "");
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.crend(), "");
 		{ // Dereferencing is an error when de container is deleted
-			const Board_iterator<int, 3> X;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *X, "");
-			const const_Board_iterator<int, 3> Y;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *Y, "");
-			const decltype(A.begin()) I;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *I, "");
-			const decltype(A.cbegin()) cI;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *cI, "");
-			const decltype(A.rbegin()) rI;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *rI, "");
-			const decltype(A.crbegin()) crI;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *crI, "");
+			EXPECT_DEBUG_DEATH(
+				[[maybe_unused]] auto U = *(::Sudoku::Board_iterator<int, 3>()),
+				"nullptr");
+			EXPECT_DEBUG_DEATH(
+				[[maybe_unused]] auto U =
+					*(::Sudoku::const_Board_iterator<int, 3>()),
+				"nullptr");
+			EXPECT_DEBUG_DEATH(
+				[[maybe_unused]] auto U = *(decltype(A.begin())()), "nullptr");
+			EXPECT_DEBUG_DEATH(
+				[[maybe_unused]] auto U = *(decltype(A.cbegin())()), "nullptr");
+			EXPECT_DEBUG_DEATH(
+				[[maybe_unused]] auto U = *(decltype(A.rbegin())()), "nullptr");
+			EXPECT_DEBUG_DEATH(
+				[[maybe_unused]] auto U = *(decltype(A.crbegin())()),
+				"nullptr");
 		}
 		// result type
 		static_assert(std::is_same_v<int&, decltype(*A.begin())>);
