@@ -14,8 +14,6 @@ namespace Sudoku::Board_Section
 {
 inline namespace traits
 {
-	using namespace ::Sudoku::Board_Section;
-
 	template<typename T>
 	struct is_Section : std::false_type {};
 	template<typename T, int N, Section S, bool C>
