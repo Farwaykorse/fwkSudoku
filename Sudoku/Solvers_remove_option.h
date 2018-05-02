@@ -13,6 +13,7 @@
 #include "Value.h"
 #include "exceptions.h"
 
+#include <gsl/gsl>
 #include <vector>
 #include <algorithm>   // none_of
 #include <type_traits> // is_base_of
@@ -108,17 +109,17 @@ int remove_option(
 	{
 		return 0;
 	}
-	int changes{static_cast<int>(item.count())};
+	auto changes = gsl::narrow_cast<int, size_t>(item.count());
 
 	// remove options
 	item = item - mask;
 
-	const auto count = static_cast<int>(item.count_all());
+	const auto count = gsl::narrow_cast<int, size_t>(item.count_all());
 	if (count == 0)
 	{ // removed last option
 		throw error::invalid_Board();
 	}
-	changes -= count;
+	changes -= count; // after
 
 	if (changes && count == 1)
 	{
