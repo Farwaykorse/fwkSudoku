@@ -312,6 +312,19 @@ TEST(Section_Itr, begin_end)
 		not std::is_same_v<decltype(row.begin()), decltype(row.cbegin())>);
 	static_assert(
 		not std::is_same_v<decltype(row.begin()), decltype(row.rbegin())>);
+	{ // but declaring makes const
+		const Row<int, 2> x(board, 0);
+		const const_Row<int, 2> cx(cboard, 0);
+		static_assert(
+			not std::is_same_v<decltype(x.begin()), decltype(row.end())>);
+		static_assert(
+			std::is_same_v<decltype(cx.begin()), decltype(crow.end())>);
+		static_assert(
+			std::is_same_v<decltype(x.begin()), decltype(crow.end())>);
+		static_assert(std::is_same_v<decltype(x.begin()), decltype(cx.end())>);
+		static_assert(std::is_same_v<decltype(x.begin()), decltype(cx.end())>);
+	}
+
 	// TODO not mixing sections:
 	Col<int, 2> col(board, 0);
 	const_Col<int, 2> ccol(cboard, 0);
@@ -423,7 +436,7 @@ TEST(Section_Itr, dereference)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 3);
-	const_Row<int, 2> cA(TE.cA, 3);
+	const const_Row<int, 2> cA(TE.cA, 3);
 
 	if constexpr (
 		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
@@ -509,16 +522,11 @@ TEST(Section_Itr, pre_increment)
 	EXPECT_DEBUG_DEATH(++A.rend(), ">= 0");
 	EXPECT_DEBUG_DEATH(++A.crend(), ">= 0");
 	{ // Advancing is an error when de container is deleted
-		Board_iterator<int, 3> X;
-		EXPECT_DEBUG_DEATH(++X, "nullptr");
-		decltype(A.begin()) I;
-		EXPECT_DEBUG_DEATH(++I, "nullptr");
-		decltype(A.cbegin()) cI;
-		EXPECT_DEBUG_DEATH(++cI, "nullptr");
-		decltype(A.rbegin()) rI;
-		EXPECT_DEBUG_DEATH(++rI, "nullptr");
-		decltype(A.crbegin()) crI;
-		EXPECT_DEBUG_DEATH(++crI, "nullptr");
+		EXPECT_DEBUG_DEATH(++(Board_iterator<int, 3>()), "nullptr");
+		EXPECT_DEBUG_DEATH(++(decltype(A.begin())()), "nullptr");
+		EXPECT_DEBUG_DEATH(++(decltype(A.cbegin())()), "nullptr");
+		EXPECT_DEBUG_DEATH(++(decltype(A.rbegin())()), "nullptr");
+		EXPECT_DEBUG_DEATH(++(decltype(A.crbegin())()), "nullptr");
 	}
 	{ // iterators have value semantics
 		const auto x = A.begin();
@@ -529,6 +537,8 @@ TEST(Section_Itr, pre_increment)
 		auto cy       = cx;
 		EXPECT_TRUE(cx == cy);
 		EXPECT_FALSE(cx == ++cy);
+		y  = x; // suppress warning: assigned only once
+		cy = cx;
 	}
 
 	//====----------------------------------------------------------------====//
@@ -636,16 +646,20 @@ TEST(Section_Itr, post_increment)
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto x = A.rend()++, ">= 0");
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto x = A.crend()++, ">= 0");
 		{ // Advancing is an error when de container is deleted
-			Board_iterator<int, 3> X;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto x = X++, "nullptr");
-			decltype(A.begin()) I;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto x = I++, "nullptr");
-			decltype(A.cbegin()) cI;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto x = ++cI, "nullptr");
-			decltype(A.rbegin()) rI;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto x = rI++, "nullptr");
-			decltype(A.crbegin()) crI;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto x = crI++, "nullptr");
+			EXPECT_DEBUG_DEATH(
+				[[maybe_unused]] auto x = (Board_iterator<int, 3>())++,
+				"nullptr");
+			EXPECT_DEBUG_DEATH(
+				[[maybe_unused]] auto x = (decltype(A.begin())())++, "nullptr");
+			EXPECT_DEBUG_DEATH(
+				[[maybe_unused]] auto x = (decltype(A.cbegin())())++,
+				"nullptr");
+			EXPECT_DEBUG_DEATH(
+				[[maybe_unused]] auto x = (decltype(A.rbegin())())++,
+				"nullptr");
+			EXPECT_DEBUG_DEATH(
+				[[maybe_unused]] auto x = (decltype(A.crbegin())())++,
+				"nullptr");
 		}
 		ASSERT_EQ(A.size(), 4);
 		ASSERT_EQ(A.front(), 9);
@@ -696,6 +710,7 @@ TEST(Section_Itr, equal)
 		EXPECT_FALSE(A.begin() == B.begin());
 #endif // !_DEBUG
 	}
+	U = false; // suppress warning: assigned only once
 	EXPECT_TRUE(A.begin() == A.begin());
 	EXPECT_TRUE(A.cbegin() == A.cbegin());
 	EXPECT_TRUE(A.rbegin() == A.rbegin());
@@ -768,6 +783,7 @@ TEST(Section_Itr, not_equal)
 			EXPECT_TRUE(A.begin() != C.begin());
 #endif // NDEBUG
 		}
+		U = false; // suppress warning: assigned only once
 		EXPECT_TRUE(A.begin() != A.end());
 		EXPECT_FALSE(A.begin() != A.begin());
 		EXPECT_TRUE(A.begin() != ++A.begin());
@@ -909,6 +925,9 @@ TEST(Section_Itr, OutputIterator)
 
 	auto r = tmp.begin();
 	EXPECT_TRUE(&r == &++r); // post-condition ++r
+
+	U = 12; // suppress warning: assigned only once
+	r = tmp.end();
 }
 
 TEST(Section_Itr, ForwardIterator)
@@ -957,6 +976,8 @@ TEST(Section_Itr, ForwardIterator)
 			EXPECT_EQ(C[2][1], 3);
 			EXPECT_EQ(C[2][0], 4);
 		}
+		r = A.end(); // suppress warning: assigned only once
+		i = A.end();
 	}
 	else
 		ADD_FAILURE();
@@ -1250,6 +1271,7 @@ TEST(Section_Itr, increment_by_integer)
 			EXPECT_TRUE((I += 1) == (A.begin() += 2));
 			EXPECT_TRUE((I += 2) == A.end());
 			EXPECT_TRUE((I += -1) == --A.end());
+			I = A.end(); // suppress warning: assigned only once
 		}
 		// const_iterator
 		EXPECT_DEBUG_DEATH(A.cbegin() += -1, ">= 0");
@@ -1271,6 +1293,7 @@ TEST(Section_Itr, increment_by_integer)
 			EXPECT_TRUE((I += 1) == (A.cbegin() += 2));
 			EXPECT_TRUE((I += 2) == A.cend());
 			EXPECT_TRUE((I += -1) == --A.cend());
+			I = A.cend(); // suppress warning: assigned only once
 		}
 		// reverse_iterator
 		EXPECT_DEBUG_DEATH(A.rbegin() += -1, "< elem_size");
@@ -1292,6 +1315,7 @@ TEST(Section_Itr, increment_by_integer)
 			EXPECT_TRUE((I += 1) == (A.rbegin() += 2));
 			EXPECT_TRUE((I += 2) == A.rend());
 			EXPECT_TRUE((I += -1) == --A.rend());
+			I = A.rend(); // suppress warning: assigned only once
 		}
 		// const_reverse_iterator
 		EXPECT_DEBUG_DEATH(A.crbegin() += -1, "< elem_size");
@@ -1313,6 +1337,7 @@ TEST(Section_Itr, increment_by_integer)
 			EXPECT_TRUE((I += 1) == (A.crbegin() += 2));
 			EXPECT_TRUE((I += 2) == A.crend());
 			EXPECT_TRUE((I += -1) == --A.crend());
+			I = A.crend(); // suppress warning: assigned only once
 		}
 	}
 	else
@@ -1557,6 +1582,7 @@ TEST(Section_Itr, decrement_by_integer)
 			EXPECT_TRUE((I -= 1) == (A.end() -= 2));
 			EXPECT_TRUE((I -= 2) == A.begin());
 			EXPECT_TRUE((I -= -1) == ++A.begin());
+			I = A.begin(); // suppress warning: assigned only once
 		}
 		// const_iterator
 		EXPECT_DEBUG_DEATH(A.cbegin() -= 1, ">= 0");
@@ -1578,6 +1604,7 @@ TEST(Section_Itr, decrement_by_integer)
 			EXPECT_TRUE((I -= 1) == (A.cend() -= 2));
 			EXPECT_TRUE((I -= 2) == A.cbegin());
 			EXPECT_TRUE((I -= -1) == ++A.cbegin());
+			I = A.cbegin(); // suppress warning: assigned only once
 		}
 		// reverse_iterator
 		EXPECT_DEBUG_DEATH(A.rbegin() -= 1, "< elem_size");
@@ -1599,6 +1626,7 @@ TEST(Section_Itr, decrement_by_integer)
 			EXPECT_TRUE((I -= 1) == (A.rend() -= 2));
 			EXPECT_TRUE((I -= 2) == A.rbegin());
 			EXPECT_TRUE((I -= -1) == ++A.rbegin());
+			I = A.rbegin(); // suppress warning: assigned only once
 		}
 		// const_reverse_iterator
 		EXPECT_DEBUG_DEATH(A.crbegin() -= 1, "< elem_size");
@@ -1620,6 +1648,7 @@ TEST(Section_Itr, decrement_by_integer)
 			EXPECT_TRUE((I -= 1) == (A.crend() -= 2));
 			EXPECT_TRUE((I -= 2) == A.crbegin());
 			EXPECT_TRUE((I -= -1) == ++A.crbegin());
+			I = A.crbegin(); // suppress warning: assigned only once
 		}
 	}
 	else

@@ -268,6 +268,7 @@ TEST(Options, Construction)
 		EXPECT_DEBUG_DEATH(Options<4>{Value{5}}, "Assertion failed:");
 
 		Options<4> TMP{};
+		EXPECT_TRUE(TMP.all());
 		EXPECT_DEBUG_DEATH(TMP = Value{6}, "Assertion failed:");
 		EXPECT_DEBUG_DEATH(TMP = Value{10}, "Assertion failed:");
 #ifdef NDEBUG
@@ -275,6 +276,8 @@ TEST(Options, Construction)
 		EXPECT_TRUE(Options<4>{Value{5}}.is_empty());
 		EXPECT_TRUE(Options<9>{Value{10}}.is_empty());
 #endif // NDEBUG
+		TMP = Value{4}; // suppress warning: assigned only once
+		EXPECT_EQ(TMP.DebugString(), "10000");
 	}
 }
 
@@ -342,7 +345,7 @@ TEST(Options, mf_counting)
 
 TEST(Options, test_Value)
 {
-	[[maybe_unused]] bool set {};
+	[[maybe_unused]] bool set{};
 	static_assert(not noexcept(TE.O_1.test(Value{2})));
 	EXPECT_NO_THROW(set = TE.O_1.test(Value{0}));
 	EXPECT_NO_THROW(set = TE.O_1.test(Value{4}));
@@ -356,6 +359,7 @@ TEST(Options, test_Value)
 	EXPECT_FALSE(TE.O_3.test(Value{1}));
 	EXPECT_FALSE(TE.E_1.test(Value{1}));
 	EXPECT_TRUE(TE.X_0.test(Value{1}));
+	set = false; // suppress warning: assigned only once
 }
 
 TEST(Options, is_answer)
@@ -434,13 +438,13 @@ TEST(Options, is_answer)
 		EXPECT_TRUE(is_answer_fast(TE.X_0));  // 11110 false for is_answer
 		EXPECT_TRUE(is_answer_fast(TE.X_1));  // 10100 false for is_answer
 	}
+	U = false; // suppress warning: assigned only once
 }
 
 TEST(Options, is_option)
 {
-	[[maybe_unused]] bool U{};
-
 	static_assert(not noexcept(is_option(TE.O_1, Value{2})));
+	[[maybe_unused]] bool U{};
 	EXPECT_DEBUG_DEATH(
 		{ U = is_option(TE.O_1, Value{0}); }, "Assertion failed: .*");
 #ifndef NDEBUG
@@ -452,6 +456,8 @@ TEST(Options, is_option)
 	EXPECT_TRUE(is_option(TE.O_1, Value{0}));
 	EXPECT_FALSE(is_option(TE.A_1, Value{0}));
 #endif // NDEBUG
+
+	U = false; // suppress warning: assigned only once
 
 	EXPECT_TRUE(is_option(TE.D_1, Value{4}));
 	EXPECT_TRUE(is_option(TE.O_1, Value{2}));
@@ -639,20 +645,20 @@ TEST(Options, mf_add)
 	EXPECT_THROW(Opt.add(Value{12}), std::out_of_range);
 
 	// add_noexcept(int)
-	Options<4> TMP{std::bitset<5>{"00000"}};
-	static_assert(noexcept(TMP.add_nocheck(Value{1})));
+	Opt = std::bitset<5>{"00000"};
+	static_assert(noexcept(Opt.add_nocheck(Value{1})));
 	// assertion death tests
 #ifndef NDEBUG
-	EXPECT_DEATH({ TMP.add_nocheck(Value{5}); }, "Assertion failed: .*");
+	EXPECT_DEATH({ Opt.add_nocheck(Value{5}); }, "Assertion failed: .*");
 #else
-	// EXPECT_NO_THROW(TMP.add_nocheck(Value{6}));
-	// EXPECT_NO_THROW(TMP.add_nocheck(-1));
+	// EXPECT_NO_THROW(Opt.add_nocheck(Value{6}));
+	// EXPECT_NO_THROW(Opt.add_nocheck(-1));
 #endif // NDEBUG
-	EXPECT_NO_THROW(TMP.add_nocheck(Value{3}));
-	EXPECT_EQ(TMP.DebugString(), "01000");
-	EXPECT_FALSE(TMP.count_all() == 0u);
-	EXPECT_TRUE(TMP.test(Value{3}));
-	EXPECT_TRUE(TMP.add_nocheck(Value{4}).test(Value{4}));
+	EXPECT_NO_THROW(Opt.add_nocheck(Value{3}));
+	EXPECT_EQ(Opt.DebugString(), "01000");
+	EXPECT_FALSE(Opt.count_all() == 0u);
+	EXPECT_TRUE(Opt.test(Value{3}));
+	EXPECT_TRUE(Opt.add_nocheck(Value{4}).test(Value{4}));
 }
 TEST(Options, mf_set)
 {
@@ -683,6 +689,7 @@ TEST(Options, mf_set)
 	EXPECT_DEATH({ TMP.set_nocheck(Value{15}); }, "Assertion failed: .*");
 #endif // NDEBUG
 	EXPECT_NO_THROW(TMP.set_nocheck(Value{0}));
+	TMP = Value{1}; // suppress warning: assigned only once
 }
 
 TEST(Options, mf_booleanComparison)
@@ -713,6 +720,7 @@ TEST(Options, mf_booleanComparison)
 		{ U = operator!=(TE.A_1, Value{15}); }, "Assertion failed: .*");
 	EXPECT_DEBUG_DEATH(
 		{ U = operator!=(Value{15}, TE.A_1); }, "Assertion failed: .*");
+	U = false; // suppress warning: assigned only once
 #ifdef NDEBUG
 	EXPECT_TRUE(operator!=(TE.A_1, Value{15}));
 	EXPECT_TRUE(operator!=(Value{15}, TE.A_1));
@@ -871,12 +879,12 @@ TEST(Options, ConstructorTesting)
 
 TEST(Options, External)
 {
-	const Options<4> O_3{std::bitset<5>{"00101"}};  // single option 2
+	const Options<4> O_3{std::bitset<5>{"00101"}};   // single option 2
 	[[maybe_unused]] const Options<4> E_1{Value{0}}; // empty answer "00001"
-	const Options<4> E_2{std::bitset<5>{"00000"}};  // empty
-	const Options<4> E_3{std::bitset<5>{"00001"}};  // empty option
+	const Options<4> E_2{std::bitset<5>{"00000"}};   // empty
+	const Options<4> E_3{std::bitset<5>{"00001"}};   // empty option
 	[[maybe_unused]] const Options<4> A_1{Value{1}}; // answer 1
-	const Options<4> A_2{std::bitset<5>{"00100"}};  // answer 2
+	const Options<4> A_2{std::bitset<5>{"00100"}};   // answer 2
 	// XOR(a,b)
 	static_assert(noexcept(XOR(O_3, O_3)));
 	EXPECT_EQ(XOR(E_3, A_2), O_3);
@@ -917,4 +925,3 @@ TEST(Options, operator_min)
 }
 
 } // namespace SudokuTests::OptionsTest
-
