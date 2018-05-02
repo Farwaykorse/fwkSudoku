@@ -18,7 +18,8 @@
 
 namespace SudokuTests::LocationTest
 {
-using namespace ::Sudoku;
+using ::Sudoku::Location;
+using ::Sudoku::Location_Block;
 
 namespace compiletime
 {
@@ -891,6 +892,10 @@ TEST(Location, Comparisson_Location_and_Block)
 //===----------------------------------------------------------------------===//
 TEST(Location_Utilities, Size_definitions)
 {
+	using ::Sudoku::base_size;
+	using ::Sudoku::elem_size;
+	using ::Sudoku::full_size;
+
 	static_assert(base_size<2> == 2);
 	static_assert(elem_size<2> == 4);
 	static_assert(full_size<2> == 16);
@@ -910,13 +915,15 @@ TEST(Location_Utilities, Size_definitions)
 	EXPECT_EQ(elem_size<4>, 16);
 	EXPECT_EQ(full_size<4>, 256);
 
-	valid_dimensions<2>();
-	valid_dimensions<3>();
-	valid_dimensions<4>();
+	::Sudoku::valid_dimensions<2>();
+	::Sudoku::valid_dimensions<3>();
+	::Sudoku::valid_dimensions<4>();
 }
 
 TEST(Location_Utilities, is_valid)
 {
+	using ::Sudoku::is_valid;
+
 	static_assert(noexcept(is_valid(Location<2>(-1))));
 	static_assert(noexcept(is_valid(Location<2>(0))));
 	static_assert(noexcept(is_valid(Location<2>(15))));
@@ -964,6 +971,8 @@ TEST(Location_Utilities, is_valid)
 
 TEST(Location_Utilities, is_valid_size)
 {
+	using ::Sudoku::is_valid_size;
+
 	static_assert(noexcept(is_valid_size<2>(-1)));
 	static_assert(noexcept(is_valid_size<2>(0)));
 	static_assert(noexcept(is_valid_size<2>(3)));
@@ -1001,6 +1010,12 @@ TEST(Location_Utilities, is_valid_size)
 
 TEST(Location_Utilities, is_same_section)
 {
+	using ::Sudoku::is_same_row;
+	using ::Sudoku::is_same_col;
+	using ::Sudoku::is_same_block;
+	using ::Sudoku::is_same_section;
+	using ::Sudoku::intersect_block;
+
 	static_assert(std::is_same_v<
 				  bool,
 				  decltype(is_same_row(Location<3>(), Location<3>()))>);
@@ -1021,6 +1036,7 @@ TEST(Location_Utilities, is_same_section)
 	static_assert(not(is_same_row(Location<3>(82), Location<3>(81))));
 	EXPECT_TRUE(is_same_row(Location<3>(0), Location<3>(8)));
 	EXPECT_FALSE(is_same_row(Location<3>(9), Location<3>(8)));
+
 	static_assert(std::is_same_v<
 				  bool,
 				  decltype(is_same_col(Location<3>(), Location<3>()))>);
@@ -1042,6 +1058,7 @@ TEST(Location_Utilities, is_same_section)
 	static_assert(not(is_same_col(Location<3>(90), Location<3>(81))));
 	EXPECT_TRUE(is_same_col(Location<3>(0), Location<3>(18)));
 	EXPECT_FALSE(is_same_col(Location<3>(9), Location<3>(8)));
+
 	static_assert(std::is_same_v<
 				  bool,
 				  decltype(is_same_block(Location<3>(), Location<3>()))>);
@@ -1113,7 +1130,7 @@ TEST(Location_Utilities, is_same_section)
 	EXPECT_FALSE(is_same_block<3>(row.cbegin(), row.cend()));
 
 	// is_same_section (taking a section)
-	const Board<int, 3> B1;
+	const ::Sudoku::Board<int, 3> B1;
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.row(0), L()))>);
 	static_assert(noexcept(is_same_section(B1.row(0), L(12))));

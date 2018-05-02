@@ -26,7 +26,7 @@
 
 namespace SudokuTests::SizeTest
 {
-using namespace ::Sudoku;
+using ::Sudoku::Size;
 
 namespace compiletime
 { // Type properties
@@ -91,9 +91,9 @@ namespace compiletime
 	static_assert(Size<3>::base == 3);
 	static_assert(Size<3>::elem == 9);
 	static_assert(Size<3>::full == 81);
-	static_assert(Size<3>::base == base_size<3>);
-	static_assert(Size<3>::elem == elem_size<3>);
-	static_assert(Size<3>::full == full_size<3>);
+	static_assert(Size<3>::base == ::Sudoku::base_size<3>);
+	static_assert(Size<3>::elem == ::Sudoku::elem_size<3>);
+	static_assert(Size<3>::full == ::Sudoku::full_size<3>);
 
 	static_assert(std::is_scalar_v<decltype(Size<3>::base)>);
 	static_assert(std::is_scalar_v<decltype(Size<3>::elem)>);

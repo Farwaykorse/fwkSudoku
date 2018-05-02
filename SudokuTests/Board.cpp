@@ -34,7 +34,11 @@
 
 namespace SudokuTests::BoardTest
 {
-using namespace ::Sudoku;
+using ::Sudoku::Board;
+using ::Sudoku::Location;
+using ::Sudoku::Location_Block;
+using ::Sudoku::Options;
+using ::Sudoku::Value;
 
 namespace compiletime
 {
@@ -361,13 +365,15 @@ TEST(Board, access_front_back)
 
 TEST(Board, access_checked)
 {
+	using ::Sudoku::error::invalid_Location;
+
 	// at(Location)
 	Board<int, 2> B1{};
 	static_assert(not noexcept(B1.at(Location<2>(0)) = 2));
 	static_assert(not noexcept(B1.at(Location<2>(0)) == 2));
 	static_assert(std::is_same_v<int&, decltype(B1.at(Location<2>(2)))>);
-	EXPECT_THROW({ B1.at(Location<2>{17}) = 3; }, error::invalid_Location);
-	EXPECT_THROW({ B1.at(Location<2>{4, 0}) = 2; }, error::invalid_Location);
+	EXPECT_THROW({ B1.at(Location<2>{17}) = 3; }, invalid_Location);
+	EXPECT_THROW({ B1.at(Location<2>{4, 0}) = 2; }, invalid_Location);
 	// EXPECT_THROW({ B1.at(Location<2>{0, 5}) = 2; }, error::invalid_Location);
 	EXPECT_THROW(B1.at(Location<2>(16)), std::out_of_range);
 	EXPECT_THROW(B1.at(Location<2>(-1)), std::out_of_range);
@@ -381,9 +387,9 @@ TEST(Board, access_checked)
 	EXPECT_NO_THROW(B1.at(Location_Block<2>(0, 1, 1)) = 5);
 	EXPECT_EQ(B1.at(Location<2>(5)), 5);
 	EXPECT_THROW(B1.at(Location<2>(16)), std::out_of_range);
-	EXPECT_THROW(B1.at(Location<2>(16)), error::invalid_Location);
+	EXPECT_THROW(B1.at(Location<2>(16)), invalid_Location);
 	EXPECT_THROW(B1.at(Location<2>(-1)), std::out_of_range);
-	EXPECT_THROW(B1.at(Location<2>(-1)), error::invalid_Location);
+	EXPECT_THROW(B1.at(Location<2>(-1)), invalid_Location);
 
 	// at(Location) const
 	const Board<int, 2> cB{
@@ -391,38 +397,38 @@ TEST(Board, access_checked)
 	static_assert(not noexcept(cB.at(Location<2>(0)) == 1));
 	static_assert(std::is_same_v<int const&, decltype(cB.at(Location<2>(2)))>);
 	EXPECT_EQ(cB.at(Location<2>(2)), 2) << "at(Location) const";
-	EXPECT_THROW(cB.at(Location<2>(16)), error::invalid_Location);
-	EXPECT_THROW(cB.at(Location<2>(-1)), error::invalid_Location);
+	EXPECT_THROW(cB.at(Location<2>(16)), invalid_Location);
+	EXPECT_THROW(cB.at(Location<2>(-1)), invalid_Location);
 	EXPECT_THROW(cB.at(Location<2>(16)), std::out_of_range);
 	EXPECT_THROW(cB.at(Location<2>(-1)), std::out_of_range);
-	EXPECT_THROW(cB.at(Location<2>{4, 0}), error::invalid_Location);
+	EXPECT_THROW(cB.at(Location<2>{4, 0}), invalid_Location);
 
 	// at(row, col)
 	// at(row, col)
 	static_assert(not noexcept(B1.at(0, 1) == 1));
-	EXPECT_THROW(B1.at(1, 4), error::invalid_Location);
+	EXPECT_THROW(B1.at(1, 4), invalid_Location);
 	EXPECT_THROW(B1.at(1, 4), std::out_of_range);
-	EXPECT_THROW(B1.at(4, 0), error::invalid_Location);
+	EXPECT_THROW(B1.at(4, 0), invalid_Location);
 	EXPECT_THROW(B1.at(4, 0), std::out_of_range);
-	EXPECT_THROW(B1.at(-1, 0), error::invalid_Location);
-	EXPECT_THROW(B1.at(1, -2), error::invalid_Location);
+	EXPECT_THROW(B1.at(-1, 0), invalid_Location);
+	EXPECT_THROW(B1.at(1, -2), invalid_Location);
 	static_assert(std::is_same_v<int&, decltype(B1.at(2, 2))>);
 	EXPECT_NO_THROW(B1.at(1, 1) = 5);
 	EXPECT_NO_THROW(B1.at(0, 0) = 1);
 	EXPECT_NO_THROW(B1.at(1, 1) = 1);
 	EXPECT_NO_THROW(B1.at(3, 3) = 5);
 
-	EXPECT_THROW(B1.at(1, 4), error::invalid_Location);
-	EXPECT_THROW(B1.at(4, 0), error::invalid_Location);
-	EXPECT_THROW(B1.at(-1, 0), error::invalid_Location);
-	EXPECT_THROW(B1.at(1, -2), error::invalid_Location);
+	EXPECT_THROW(B1.at(1, 4), invalid_Location);
+	EXPECT_THROW(B1.at(4, 0), invalid_Location);
+	EXPECT_THROW(B1.at(-1, 0), invalid_Location);
+	EXPECT_THROW(B1.at(1, -2), invalid_Location);
 	// at(Location) const
 	EXPECT_NO_THROW(cB.at(2, 1));
 	static_assert(not noexcept(cB.at(0, 1) == 1));
-	EXPECT_THROW(cB.at(1, 4), error::invalid_Location);
-	EXPECT_THROW(cB.at(4, 0), error::invalid_Location);
-	EXPECT_THROW(cB.at(-1, 0), error::invalid_Location);
-	EXPECT_THROW(cB.at(1, -2), error::invalid_Location);
+	EXPECT_THROW(cB.at(1, 4), invalid_Location);
+	EXPECT_THROW(cB.at(4, 0), invalid_Location);
+	EXPECT_THROW(cB.at(-1, 0), invalid_Location);
+	EXPECT_THROW(cB.at(1, -2), invalid_Location);
 	static_assert(std::is_same_v<int const&, decltype(cB.at(2, 2))>);
 	EXPECT_EQ(cB.at(0, 0), 0);
 	EXPECT_EQ(cB.at(3, 1), 13);

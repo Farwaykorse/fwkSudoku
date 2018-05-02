@@ -28,7 +28,7 @@ namespace SudokuTests::errorTests
 {
 TEST(Error, invalid_Board)
 {
-	using namespace Sudoku::error;
+	using ::Sudoku::error::invalid_Board;
 	{ // Type properties
 		using typeT = invalid_Board;
 
@@ -89,7 +89,7 @@ TEST(Error, invalid_Board)
 
 TEST(Error, invalid_Location)
 {
-	using namespace Sudoku::error;
+	using ::Sudoku::error::invalid_Location;
 	{ // Type properties
 		using typeT = invalid_Location;
 
@@ -151,7 +151,5 @@ TEST(Error, invalid_Location)
 		ASSERT_EQ(e.where(), std::nullptr_t{});
 		// length = std::strlen(e.where()); // first is the \0 character.
 	}
-
-	// TODO how to add "__FILE__: __LINE__"? in a single line.
 }
 } // namespace SudokuTests::errorTests

@@ -25,18 +25,31 @@
 // library
 #include <type_traits>
 
+namespace SudokuTests
+{
+using ::Sudoku::Board_Section::Section_iterator;
+using ::Sudoku::Board_Section::Row_iterator;
+using ::Sudoku::Board_Section::Col_iterator;
+using ::Sudoku::Board_Section::Block_iterator;
+using ::Sudoku::Board_Section::const_Row_iterator;
+using ::Sudoku::Board_Section::const_Col_iterator;
+using ::Sudoku::Board_Section::const_Block_iterator;
+using ::Sudoku::Board_Section::reverse_Row_iterator;
+using ::Sudoku::Board_Section::reverse_Col_iterator;
+using ::Sudoku::Board_Section::reverse_Block_iterator;
+using ::Sudoku::Board_Section::const_reverse_Row_iterator;
+using ::Sudoku::Board_Section::const_reverse_Col_iterator;
+using ::Sudoku::Board_Section::const_reverse_Block_iterator;
+} // namespace SudokuTests
 
 namespace SudokuTests::Type
 {
-using namespace ::Sudoku;
-using namespace ::Sudoku::Board_Section;
-
 using dataT             = int;
 constexpr int size      = 3;
 using Board             = ::Sudoku::Board<dataT, size>;
 using L                 = ::Sudoku::Location<size>;
 using Location_Block    = ::Sudoku::Location_Block<size>;
-constexpr auto section  = Section::row;
+constexpr auto section  = ::Sudoku::Board_Section::Section::row;
 constexpr bool is_const = false;
 constexpr bool is_rev   = false;
 
@@ -259,7 +272,11 @@ namespace assignment
 namespace SudokuTests::Members
 {
 using namespace ::Sudoku;
-using namespace ::Sudoku::Board_Section;
+// using namespace ::Sudoku::Board_Section;
+using ::Sudoku::Board_Section::Row;
+using ::Sudoku::Board_Section::Col;
+using ::Sudoku::Board_Section::Block;
+using ::Sudoku::Board_Section::const_Row;
 
 using ::Sudoku::Utility_::is_input;
 using ::Sudoku::Utility_::is_forward;
@@ -327,7 +344,7 @@ TEST(Section_Itr, begin_end)
 
 	// TODO not mixing sections:
 	Col<int, 2> col(board, 0);
-	const_Col<int, 2> ccol(cboard, 0);
+	::Sudoku::Board_Section::const_Col<int, 2> ccol(cboard, 0);
 
 	// TODO not mixing section ids:
 
@@ -2179,13 +2196,15 @@ TEST(Section_Itr, IteratorLoop)
 	total = 0;
 	for (int i{}; i < 4; ++i)
 	{
-		total += range_for_sum(const_Col<int, 2>(cA, i));
+		total +=
+			range_for_sum(::Sudoku::Board_Section::const_Col<int, 2>(cA, i));
 	}
 	EXPECT_EQ(total, 129);
 	total = 0;
 	for (int i{}; i < 4; ++i)
 	{
-		total += range_for_sum(const_Block<int, 2>(cA, i));
+		total +=
+			range_for_sum(::Sudoku::Board_Section::const_Block<int, 2>(cA, i));
 	}
 	EXPECT_EQ(total, 129);
 }

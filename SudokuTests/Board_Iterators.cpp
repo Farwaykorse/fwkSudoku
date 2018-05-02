@@ -37,7 +37,10 @@
 
 namespace SudokuTests::BoardTest
 {
-using namespace ::Sudoku;
+using ::Sudoku::Board;
+using ::Sudoku::Location;
+using ::Sudoku::Options;
+
 using ::Sudoku::Utility_::is_input;
 using ::Sudoku::Utility_::is_forward;
 using ::Sudoku::Utility_::is_bidir;
@@ -484,6 +487,11 @@ struct test_elements
 //====--------------------------------------------------------------------====//
 TEST(Board_Iterator, construction)
 { // All iterator categories
+	using ::Sudoku::Board_iterator;
+	using ::Sudoku::const_Board_iterator;
+	using ::Sudoku::reverse_Board_iterator;
+	using ::Sudoku::const_reverse_Board_iterator;
+
 	test_elements TE{};
 	auto& A        = TE.A;
 	auto const& cA = TE.cA;
@@ -634,6 +642,8 @@ TEST(Board_Iterator, assign_Location)
 
 TEST(Board_Iterator, Location)
 {
+	using ::Sudoku::Board_iterator;
+	using ::Sudoku::reverse_Board_iterator;
 	using L = Location<2>;
 
 	test_elements TE{};
@@ -691,6 +701,9 @@ TEST(Board_Iterator, Location)
 
 TEST(Board_Iterator, dereference)
 {
+	using ::Sudoku::Board_iterator;
+	using ::Sudoku::const_Board_iterator;
+
 	test_elements TE{};
 	auto& A        = TE.A;
 	auto const& cA = TE.cA;
@@ -782,7 +795,7 @@ TEST(Board_Iterator, pre_increment)
 	EXPECT_DEBUG_DEATH(++A.rend(), ">= 0");
 	EXPECT_DEBUG_DEATH(++A.crend(), ">= 0");
 	{ // Advancing is an error when de container is deleted
-		EXPECT_DEBUG_DEATH(++(Board_iterator<int, 3>()), "nullptr");
+		EXPECT_DEBUG_DEATH(++(::Sudoku::Board_iterator<int, 3>()), "nullptr");
 		EXPECT_DEBUG_DEATH(++(decltype(A.begin())()), "nullptr");
 		EXPECT_DEBUG_DEATH(++(decltype(A.cbegin())()), "nullptr");
 		EXPECT_DEBUG_DEATH(++(decltype(A.rbegin())()), "nullptr");
@@ -906,7 +919,7 @@ TEST(Board_Iterator, post_increment)
 		EXPECT_DEBUG_DEATH(A.rend()++, ">= 0");
 		EXPECT_DEBUG_DEATH(A.crend()++, ">= 0");
 		{ // Advancing is an error when de container is deleted
-			EXPECT_DEBUG_DEATH((Board_iterator<int, 3>())++, "nullptr");
+			EXPECT_DEBUG_DEATH((Sudoku::Board_iterator<int, 3>())++, "nullptr");
 			EXPECT_DEBUG_DEATH((decltype(A.begin())())++, "nullptr");
 			EXPECT_DEBUG_DEATH((decltype(A.cbegin())())++, "nullptr");
 			EXPECT_DEBUG_DEATH((decltype(A.rbegin())())++, "nullptr");
@@ -947,7 +960,7 @@ TEST(Board_Iterator, equal)
 	static_assert(std::is_same_v<bool, decltype(A.begin() == A.begin())>);
 	static_assert(std::is_same_v<bool, decltype(A.cbegin() == A.cbegin())>);
 	{ // constexpr
-		using itr = Board_iterator<int, 3>;
+		using itr = ::Sudoku::Board_iterator<int, 3>;
 		using L   = Location<3>;
 		static_assert(((itr() = L{0}) == (itr() = L{0})));
 		static_assert(not((itr() = L{3}) == itr()));
@@ -989,8 +1002,8 @@ TEST(Board_Iterator, equal)
 		is_forward<decltype(A.begin())> && is_forward<decltype(A.cbegin())> &&
 		is_forward<decltype(A.rbegin())> && is_forward<decltype(A.crbegin())>)
 	{
-		const Board_iterator<int, 2> Default;
-		EXPECT_TRUE((Default == Board_iterator<int, 2>{}));
+		const ::Sudoku::Board_iterator<int, 2> Default;
+		EXPECT_TRUE((Default == ::Sudoku::Board_iterator<int, 2>{}));
 		EXPECT_DEBUG_DEATH(U = Default == A.begin(), "is_same_Board");
 		EXPECT_DEBUG_DEATH(U = Default == A.end(), "is_same_Board");
 	}
@@ -1018,7 +1031,7 @@ TEST(Board_Iterator, not_equal)
 		static_assert(std::is_same_v<bool, decltype(A.begin() != A.begin())>);
 		static_assert(std::is_same_v<bool, decltype(A.cbegin() != A.cbegin())>);
 		{ // constexpr
-			using itr = Board_iterator<int, 3>;
+			using itr = ::Sudoku::Board_iterator<int, 3>;
 			using L   = Location<3>;
 			static_assert(not((itr() = L{0}) != (itr() = L{0})));
 			static_assert((itr() = L{3}) != itr());
@@ -1073,7 +1086,8 @@ TEST(Board_Iterator, member_access)
 		static_assert(noexcept(Opt.cbegin()->size()));
 		static_assert(noexcept(Opt.rbegin()->size()));
 		static_assert(noexcept(Opt.crbegin()->size()));
-		static_assert(not noexcept(Opt.begin()->remove_option(Value{1})));
+		static_assert(
+			not noexcept(Opt.begin()->remove_option(::Sudoku::Value{1})));
 		// return type
 		static_assert(
 			std::is_same_v<Options<4>*, decltype(Opt.begin().operator->())>);

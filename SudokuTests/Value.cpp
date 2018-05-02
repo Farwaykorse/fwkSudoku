@@ -27,7 +27,7 @@
 
 namespace SudokuTests::ValueTest
 {
-using namespace ::Sudoku;
+using ::Sudoku::Value;
 
 namespace compiletime
 {
@@ -168,6 +168,9 @@ TEST(Value, comparisons)
 
 TEST(Value, is_valid)
 {
+	using ::Sudoku::is_valid;
+	using ::Sudoku::is_valid_option;
+
 	EXPECT_FALSE(is_valid<2>(Value{0}));
 	EXPECT_TRUE(is_valid<2>(Value{1}));
 	EXPECT_TRUE(is_valid<2>(Value(4)));
@@ -220,6 +223,7 @@ TEST(Value, operator_bool)
 
 TEST(Value, is_valid_vector)
 {
+	using ::Sudoku::is_valid;
 	// vector input
 	using list = std::vector<Value>;
 	const std::vector<Value> cList{
@@ -244,6 +248,7 @@ TEST(Value, is_valid_vector)
 
 TEST(Value, to_Value)
 {
+	using ::Sudoku::to_Value;
 	// Input: Value
 	static_assert(to_Value<3>(Value{0}) == Value{0});
 	static_assert(to_Value<3>(Value{1}) == Value{1});

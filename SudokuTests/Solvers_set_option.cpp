@@ -31,10 +31,14 @@
 
 namespace SudokuTests::SolversTest
 {
-using namespace ::Sudoku;
+using ::Sudoku::Board;
+using ::Sudoku::Location;
+using ::Sudoku::Options;
+using ::Sudoku::Value;
 
 TEST(Solver, set_Value)
 {
+	using ::Sudoku::set_Value;
 	using L = Location<2>;
 	// clang-format off
 	//	4		1234	3		1234
@@ -62,19 +66,23 @@ TEST(Solver, set_Value)
 		set_Value(board, Location<2>{1}, Value{5}), ".*: is_valid<N>.value.");
 #else
 	// thrown by Board::at(Location)
-	EXPECT_THROW(set_Value(board, L{-1}, Value{1}), error::invalid_Location);
-	EXPECT_THROW(set_Value(board, L{16}, Value{1}), error::invalid_Location);
+	EXPECT_THROW(
+		set_Value(board, L{-1}, Value{1}), Sudoku::error::invalid_Location);
+	EXPECT_THROW(
+		set_Value(board, L{16}, Value{1}), Sudoku::error::invalid_Location);
 	// thrown by Options::test(Value)->std::bitset::test()
 	EXPECT_THROW(set_Value(board, L{1}, Value{5}), std::out_of_range);
 #endif // NDEBUG
 
 	// test: value is not an option
 	board[1][1] = std::bitset<5>{"11011"}; // options: 1,3,4
-	EXPECT_THROW(set_Value(board, L(1, 1), Value{2}), error::invalid_Board);
+	EXPECT_THROW(
+		set_Value(board, L(1, 1), Value{2}), Sudoku::error::invalid_Board);
 	EXPECT_THROW(set_Value(board, L(1, 1), Value{2}), std::logic_error);
 	// test: already set to another answer
 	board[1][2] = Options<4>{Value{2}};
-	EXPECT_THROW(set_Value(board, L{1, 2}, Value{1}), error::invalid_Board);
+	EXPECT_THROW(
+		set_Value(board, L{1, 2}, Value{1}), Sudoku::error::invalid_Board);
 	EXPECT_THROW(set_Value(board, L{1, 2}, Value{1}), std::logic_error);
 
 	board.clear(); // reset
@@ -97,6 +105,7 @@ TEST(Solver, set_Value)
 
 TEST(Solver, set_Value_vector)
 {
+	using ::Sudoku::set_Value;
 	// TODO precondition checks, exceptions etc.
 	{ // using Value as input
 		using V = Value;
@@ -152,6 +161,7 @@ TEST(Solver, set_Value_vector)
 
 TEST(Solver, set_section_locals)
 {
+	using ::Sudoku::set_section_locals;
 	// called by: section_exclusive
 	//	find and process values appearing 2 or 3x in row/col
 
@@ -453,6 +463,7 @@ TEST(Solver, set_section_locals)
 
 TEST(Solver, set_unique)
 {
+	using ::Sudoku::set_unique;
 	using L = Location<2>;
 	Board<Options<4>, 2> board{};
 	const std::vector<int> v1{0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
@@ -493,6 +504,8 @@ TEST(Solver, set_unique)
 
 TEST(Solver, set_uniques)
 {
+	using ::Sudoku::appearance_once;
+	using ::Sudoku::set_uniques;
 	// Solver<N>::set_uniques(const SectionT section, const Options& worker)
 	//===------------------------------------------------------------------===//
 	// processing only one value per section.

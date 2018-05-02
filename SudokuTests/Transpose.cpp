@@ -27,7 +27,12 @@
 
 namespace SudokuTests::Transpose
 {
-using namespace ::Sudoku;
+using ::Sudoku::Board;
+using ::Sudoku::Location;
+using ::Sudoku::Location_Block;
+
+using ::Sudoku::transpose_row_col;
+using ::Sudoku::transpose_row_block;
 
 static_assert(std::is_same_v<
 			  Board<int, 2>,
@@ -262,7 +267,7 @@ TEST(Transpose, swap_row_block)
 	}
 }
 
-namespace ohmy_a_test
+namespace test_class
 {
 	class nomove
 	{
@@ -291,16 +296,15 @@ namespace ohmy_a_test
 
 TEST(Transpose, throwing_move)
 {
-	using namespace ohmy_a_test;
 	using L = Location<3>;
 
 
-	Board<nomove, 3> board{};
-	EXPECT_EQ(board[L{8}], nomove());
-	Board<nomove, 3> col = transpose_row_col(board);
-	EXPECT_EQ(col[L{1}], nomove());
-	Board<nomove, 3> block = transpose_row_block(board);
-	EXPECT_EQ(block[L{3}], nomove());
+	Board<test_class::nomove, 3> board{};
+	EXPECT_EQ(board[L{8}], test_class::nomove());
+	Board<test_class::nomove, 3> col = transpose_row_col(board);
+	EXPECT_EQ(col[L{1}], test_class::nomove());
+	Board<test_class::nomove, 3> block = transpose_row_block(board);
+	EXPECT_EQ(block[L{3}], test_class::nomove());
 }
 
 } // namespace SudokuTests::Transpose

@@ -35,7 +35,10 @@
 
 namespace SudokuTests::SolversTest
 {
-using namespace ::Sudoku;
+using ::Sudoku::Board;
+using ::Sudoku::Location;
+using ::Sudoku::Options;
+using ::Sudoku::Value;
 
 TEST(Solver, unique_in_section)
 {
@@ -80,7 +83,7 @@ TEST(Solver, unique_in_section)
 	EXPECT_NO_THROW(unique_in_section(B2, B2.row(3)));
 	EXPECT_NE(B2, cB2) << "row 3 should have changed";
 	// full board
-	for (int i = 0; i < elem_size<2>; ++i)
+	for (int i = 0; i < ::Sudoku::elem_size<2>; ++i)
 	{
 		EXPECT_NO_THROW(unique_in_section(B2, B2.row(i)));
 	}
@@ -538,7 +541,7 @@ TEST(Solver, section_exclusive)
 	EXPECT_EQ(B1[3][3], Value{1})
 		<< "section_exclusive(Block) unique value failed";
 	int found1{0};
-	for (int i{0}; i < elem_size<2>; ++i)
+	for (int i{0}; i < ::Sudoku::elem_size<2>; ++i)
 	{
 		found1 += section_exclusive(B1, B1.block(i));
 	}
@@ -588,7 +591,7 @@ TEST(Solver, section_exclusive)
 		<< "section_exclusive(block) should find at least 1 value";
 	EXPECT_EQ(B2[2][8], Value{3})
 		<< "section_exclusive(block) unique value failed N=3";
-	for (int i = 0; i < elem_size<3>; ++i)
+	for (int i = 0; i < ::Sudoku::elem_size<3>; ++i)
 	{
 		EXPECT_NO_THROW(section_exclusive(B2, B2.block(i)));
 	}
@@ -607,8 +610,10 @@ TEST(Solver, single_option)
 	EXPECT_DEATH(single_option(B1, L{-1}, Value{1}), ".*: is_valid.loc.");
 	EXPECT_DEATH(single_option(B1, L{16}, Value{1}), ".*: is_valid.loc.");
 #else
-	EXPECT_THROW(single_option(B1, L{-1}, Value{1}), error::invalid_Location);
-	EXPECT_THROW(single_option(B1, L{16}, Value{1}), error::invalid_Location);
+	EXPECT_THROW(
+		single_option(B1, L{-1}, Value{1}), Sudoku::error::invalid_Location);
+	EXPECT_THROW(
+		single_option(B1, L{16}, Value{1}), Sudoku::error::invalid_Location);
 #endif // NDEBUG
 	// invalid Value:
 	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{0}), ".* is_valid.*value");
@@ -625,7 +630,8 @@ TEST(Solver, single_option)
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{1}), ".*: .*test.value.");
 #else
-	EXPECT_THROW(single_option(B1, L{0}, Value{1}), error::invalid_Board);
+	EXPECT_THROW(
+		single_option(B1, L{0}, Value{1}), Sudoku::error::invalid_Board);
 #endif // NDEBUG
 	EXPECT_NO_THROW(single_option(B1, L(0), Value{2}));
 
@@ -730,8 +736,10 @@ TEST(Solver, dual_option)
 	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{-1}), ".*is_valid.loc.");
 	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{16}), ".*is_valid.loc.");
 #else
-	EXPECT_THROW(dual_option(board, Location<2>{-1}), error::invalid_Location);
-	EXPECT_THROW(dual_option(board, Location<2>{16}), error::invalid_Location);
+	EXPECT_THROW(
+		dual_option(board, Location<2>{-1}), Sudoku::error::invalid_Location);
+	EXPECT_THROW(
+		dual_option(board, Location<2>{16}), Sudoku::error::invalid_Location);
 #endif // NDEBUG
 	board[0][0] = Options<4>{std::bitset<5>{"11001"}};
 	board[3][3] = Options<4>{std::bitset<5>{"10101"}};
@@ -1027,10 +1035,11 @@ TEST(Solver, multi_option_2)
 	EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 3), ".*: is_valid.loc.");
 	EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 3), ".*: is_valid.loc.");
 #else
-	EXPECT_THROW(multi_option(board, L{-1}), error::invalid_Location);
-	EXPECT_THROW(multi_option(board, L{16}), error::invalid_Location);
-	EXPECT_THROW(multi_option(board, L{-1}, 3), error::invalid_Location);
-	EXPECT_THROW(multi_option(board, L{16}, 3), error::invalid_Location);
+	using ::Sudoku::error::invalid_Location;
+	EXPECT_THROW(multi_option(board, L{-1}), invalid_Location);
+	EXPECT_THROW(multi_option(board, L{16}), invalid_Location);
+	EXPECT_THROW(multi_option(board, L{-1}, 3), invalid_Location);
+	EXPECT_THROW(multi_option(board, L{16}, 3), invalid_Location);
 #endif // NDEBUG
 	// count > elem_size
 	EXPECT_DEBUG_DEATH(multi_option(board, L{}, 5), ".*: count < elem_size<N>");
@@ -1046,8 +1055,8 @@ TEST(Solver, multi_option_2)
 		EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 1), ".*: is_valid.loc.");
 #else
 		// thrown by Board::at(Location)
-		EXPECT_THROW(multi_option(board, L{-1}, 1), error::invalid_Location);
-		EXPECT_THROW(multi_option(board, L{16}, 1), error::invalid_Location);
+		EXPECT_THROW(multi_option(board, L{-1}, 1), invalid_Location);
+		EXPECT_THROW(multi_option(board, L{16}, 1), invalid_Location);
 #endif // NDEBUG
 		EXPECT_NO_THROW(multi_option(board_3, Location<3>{16}));
 	}
@@ -1062,8 +1071,8 @@ TEST(Solver, multi_option_2)
 		EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 2), ".*: is_valid.loc.");
 		EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 2), ".*: is_valid.loc.");
 #else
-		EXPECT_THROW(multi_option(board, L{-1}, 2), error::invalid_Location);
-		EXPECT_THROW(multi_option(board, L{16}, 2), error::invalid_Location);
+		EXPECT_THROW(multi_option(board, L{-1}, 2), invalid_Location);
+		EXPECT_THROW(multi_option(board, L{16}, 2), invalid_Location);
 #endif // NDEBUG
 	}
 	// count too small
@@ -1187,7 +1196,7 @@ TEST(Solver, multi_option_2)
 	}
 	//====----------------------------------------------------------------====//
 	{ // influence on an isolated block
-		using LB = Location_Block<2>;
+		using LB = ::Sudoku::Location_Block<2>;
 
 		const auto reset_block = [&board] {
 			board.at(LB{2, 0}) = B{"01111"};
@@ -1290,7 +1299,7 @@ TEST(Solver, solve_board)
 	std::copy(b1a.cbegin(), b1a.cend(), answer.begin());
 	Board<Options<9>, 3> options{};
 	set_Value(options, b1.cbegin(), b1.cend());
-	for (int i = 0; i < elem_size<3>; ++i)
+	for (int i = 0; i < ::Sudoku::elem_size<3>; ++i)
 	{
 		unique_in_section(options, options.row(i));
 	}

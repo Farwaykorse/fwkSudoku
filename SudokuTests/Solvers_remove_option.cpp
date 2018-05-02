@@ -33,7 +33,12 @@
 
 namespace SudokuTests::SolversTest
 {
-using namespace ::Sudoku;
+using ::Sudoku::Board;
+using ::Sudoku::Location;
+using ::Sudoku::Options;
+using ::Sudoku::Value;
+using ::Sudoku::error::invalid_Location;
+using ::Sudoku::error::invalid_Board;
 
 TEST(Solver, remove_option)
 {
@@ -47,10 +52,8 @@ TEST(Solver, remove_option)
 	// throw from Board::at(loc)
 	EXPECT_NO_THROW(remove_option(board, L2{0}, Value{1}));
 	EXPECT_NO_THROW(remove_option(board, L2{15}, Value{1}));
-	EXPECT_THROW(
-		remove_option(board, L2{-1}, Value{1}), error::invalid_Location);
-	EXPECT_THROW(
-		remove_option(board, L2{16}, Value{1}), error::invalid_Location);
+	EXPECT_THROW(remove_option(board, L2{-1}, Value{1}), invalid_Location);
+	EXPECT_THROW(remove_option(board, L2{16}, Value{1}), invalid_Location);
 	// value out of bounds (2-sided)
 	EXPECT_DEBUG_DEATH(
 		remove_option(board, L2(2), Value{0}), "Assertion failed: is_valid");
@@ -63,8 +66,7 @@ TEST(Solver, remove_option)
 	// last option (not answer)
 	board[0][2] = std::bitset<5>{"01001"}; // 3
 	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2(2), Value{3}),
-		"Assertion failed: count > 0");
+		remove_option(board, L2(2), Value{3}), "Assertion failed: count > 0");
 	// TODO throw from single_option?
 
 	// return type
@@ -117,11 +119,11 @@ TEST(Solver, remove_option_Options)
 	mask = Options<4>{Value{1}};
 	EXPECT_NO_THROW(remove_option(board, L2{0}, mask));
 	EXPECT_NO_THROW(remove_option(board, L2{15}, mask));
-	EXPECT_THROW(remove_option(board, L2{-1}, mask), error::invalid_Location);
-	EXPECT_THROW(remove_option(board, L2{16}, mask), error::invalid_Location);
+	EXPECT_THROW(remove_option(board, L2{-1}, mask), invalid_Location);
+	EXPECT_THROW(remove_option(board, L2{16}, mask), invalid_Location);
 	// throw when last option removed
 	mask = Options<4>{std::bitset<5>{"11110"}};
-	EXPECT_THROW(remove_option(board, L2{4}, mask), error::invalid_Board);
+	EXPECT_THROW(remove_option(board, L2{4}, mask), invalid_Board);
 	// TODO throw from single_option?
 
 	// return type
@@ -130,7 +132,7 @@ TEST(Solver, remove_option_Options)
 
 	// return 0 when answered
 	board[0][0] = O2{Value{4}};
-	mask = O2{std::bitset<5>{"11000"}};
+	mask        = O2{std::bitset<5>{"11000"}};
 	EXPECT_EQ(remove_option(board, L2{0, 0}, mask), 0);
 	board[1][0] = O2{};
 	EXPECT_EQ(remove_option(board, L2{1, 0}, mask), 2);

@@ -33,10 +33,14 @@
 
 namespace SudokuTests::SolversTest
 {
-using namespace ::Sudoku;
+using ::Sudoku::Board;
+using ::Sudoku::Location;
+using ::Sudoku::Options;
+using ::Sudoku::Value;
 
 TEST(Solver, list_where_option__Section)
 {
+	using ::Sudoku::list_where_option;
 	using set = std::bitset<5>;
 	using loc = Location<2>;
 	Board<Options<4>, 2> B{};
@@ -132,6 +136,7 @@ TEST(Solver, list_where_option__Section)
 
 TEST(Solver, list_where_option__itr)
 {
+	using ::Sudoku::list_where_option;
 	using set = std::bitset<5>;
 	using loc = Location<2>;
 	Board<Options<4>, 2> B{};
@@ -248,6 +253,7 @@ TEST(Solver, list_where_option__itr)
 
 TEST(Solver, list_where_option__no_rep_count)
 {
+	using ::Sudoku::list_where_option;
 	using set = std::bitset<5>;
 	using loc = Location<2>;
 	Board<Options<4>, 2> B{};
@@ -299,7 +305,7 @@ TEST(Solver, list_where_option__partial)
 	std::vector<loc> list{};
 
 	// partial section
-	list = list_where_option<2>(
+	list = ::Sudoku::list_where_option<2>(
 		B.row(0).cbegin() + 2, B.row(0).cend(), Value{1}, 2);
 	EXPECT_EQ(list.size(), size_t{2});
 	EXPECT_EQ(list[0], loc(2));
@@ -308,6 +314,7 @@ TEST(Solver, list_where_option__partial)
 
 TEST(Solver, list_where_option__Value)
 { // list_where_option(SectionT, Value)
+	using ::Sudoku::list_where_option;
 	using set     = std::bitset<5>;
 	using loc     = Location<2>;
 	using Options = Options<4>;
@@ -384,6 +391,7 @@ TEST(Solver, list_where_option__Value)
 
 TEST(Solver, list_where_option_pOptions)
 { // list_where_option(Section, Options)
+	using ::Sudoku::list_where_option;
 	using set     = std::bitset<5>;
 	using loc     = Location<2>;
 	using Options = Options<4>;
@@ -439,6 +447,7 @@ TEST(Solver, list_where_option_pOptions)
 
 TEST(Solver, list_where_equal)
 {
+	using ::Sudoku::list_where_equal;
 	using set = std::bitset<5>;
 	using loc = Location<2>;
 	Board<Options<4>, 2> B{};
@@ -479,6 +488,7 @@ TEST(Solver, list_where_equal)
 
 TEST(Solver, list_where_subset)
 {
+	using ::Sudoku::list_where_subset;
 	using L       = Location<2>;
 	using B       = std::bitset<5>;
 	using Options = Options<4>;
@@ -578,6 +588,7 @@ TEST(Solver, list_where_subset)
 
 TEST(Solver, list_where_any_option)
 {
+	using ::Sudoku::list_where_any_option;
 	using set     = std::bitset<5>;
 	using loc     = Location<2>;
 	using Options = Options<4>;
@@ -664,6 +675,7 @@ TEST(Solver, list_where_any_option)
 
 TEST(Solver, appearance_once)
 {
+	using ::Sudoku::appearance_once;
 	// clang-format off
 	const std::vector<int> v1
 	{
@@ -810,6 +822,7 @@ TEST(Solver, appearance_once)
 
 TEST(Solver, appearance_sets)
 {
+	using ::Sudoku::appearance_sets;
 	// Example as shown in implementation
 	Board<Options<9>, 3> board{};
 	board[0][0] = std::bitset<10>{"1000000011"};
@@ -944,7 +957,7 @@ TEST(Solver, appearance_sets)
 	}
 	//===------------------------------------------------------------------===//
 	// Block
-	using B = Location_Block<3>;
+	using B = ::Sudoku::Location_Block<3>;
 	Board<Options<9>, 3> B3{};
 	B3[B{2, 0}] = std::bitset<10>{"1000000011"};
 	B3[B(2, 1)] = std::bitset<10>{"1101000101"};

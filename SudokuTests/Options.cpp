@@ -32,12 +32,13 @@
 
 namespace SudokuTests::OptionsTest
 {
-using namespace ::Sudoku;
+using ::Sudoku::Options;
+using ::Sudoku::Value;
 
 namespace compiletime
 {
 	// Class properties
-	using typeT = Sudoku::Options<9>;
+	using typeT = ::Sudoku::Options<9>;
 	static_assert(std::is_class_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
@@ -118,7 +119,8 @@ namespace compiletime
 
 	namespace impl
 	{
-		using namespace ::Sudoku::impl;
+		using ::Sudoku::impl::exp2_;
+		using ::Sudoku::impl::all_set;
 
 		static_assert(exp2_(0U) == 0x1U);
 		static_assert(exp2_(1U) == 0x2U);

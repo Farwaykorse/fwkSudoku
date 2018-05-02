@@ -23,12 +23,9 @@
 
 namespace SudokuTests::Type
 {
-using namespace ::Sudoku;
-using namespace ::Sudoku::Board_Section;
-
 namespace properties_Section
 {
-	using typeT = Board_Section::Section;
+	using typeT = ::Sudoku::Board_Section::Section;
 
 	// Composite Type Categories
 	static_assert(std::is_compound_v<typeT>);
@@ -52,20 +49,22 @@ namespace properties_Section
 // Board_Section
 using dataT            = int;
 constexpr int size     = 3;
-constexpr auto section = Section::row;
+constexpr auto section = ::Sudoku::Board_Section::Section::row;
 using Board            = ::Sudoku::Board<dataT, size>;
 using Loc              = ::Sudoku::Location<size>;
 using L_B              = ::Sudoku::Location_Block<size>;
 
-using typeT  = Board_Section_<dataT, size, section, false>;
-using constT = Board_Section_<dataT, size, section, true>;
+using typeT =
+	::Sudoku::Board_Section::Board_Section_<dataT, size, section, false>;
+using constT =
+	::Sudoku::Board_Section::Board_Section_<dataT, size, section, true>;
 
-using Row         = typename Board_Section::Row<dataT, size>;
-using Col         = typename Board_Section::Col<dataT, size>;
-using Block       = typename Board_Section::Block<dataT, size>;
-using const_Row   = typename Board_Section::const_Row<dataT, size>;
-using const_Col   = typename Board_Section::const_Col<dataT, size>;
-using const_Block = typename Board_Section::const_Block<dataT, size>;
+using Row         = typename ::Sudoku::Board_Section::Row<dataT, size>;
+using Col         = typename ::Sudoku::Board_Section::Col<dataT, size>;
+using Block       = typename ::Sudoku::Board_Section::Block<dataT, size>;
+using const_Row   = typename ::Sudoku::Board_Section::const_Row<dataT, size>;
+using const_Col   = typename ::Sudoku::Board_Section::const_Col<dataT, size>;
+using const_Block = typename ::Sudoku::Board_Section::const_Block<dataT, size>;
 
 namespace type_properties
 { // http://howardhinnant.github.io/TypeHiearchy.pdf
@@ -196,7 +195,7 @@ namespace constructors
 	{
 		Board board{};
 		Row row(board, 3);
-		constexpr int last = elem_size<size> - 1;
+		constexpr int last = ::Sudoku::elem_size<size> - 1;
 
 		EXPECT_EQ(const_Row(row).id(), 3);
 		EXPECT_EQ(const_Row(Row(board, 3)).id(), 3);
@@ -259,6 +258,8 @@ namespace constructors
 	static_assert(std::is_constructible_v<Block, Block, int>);
 	TEST(Board_Section, conversion)
 	{
+		using ::Sudoku::elem_size;
+
 		Board board{};
 		constexpr int last = elem_size<size> - 1;
 		Row row(board, 2);
@@ -318,7 +319,7 @@ namespace constructors
 	TEST(Board_Section, conversion_and_const)
 	{
 		Board board{};
-		constexpr int last = elem_size<size> - 1;
+		constexpr int last = ::Sudoku::elem_size<size> - 1;
 
 		EXPECT_DEBUG_DEATH(const_Col(Row(board, 1), -1), "is_valid_size");
 		EXPECT_EQ(const_Col(Row(board, 1), 0).id(), 0);
@@ -436,8 +437,15 @@ namespace assignment
 
 namespace SudokuTests::Members
 {
-using namespace ::Sudoku;
-using namespace ::Sudoku::Board_Section;
+using ::Sudoku::Board;
+using ::Sudoku::Board_Section::Row;
+using ::Sudoku::Board_Section::Col;
+using ::Sudoku::Board_Section::Block;
+using ::Sudoku::Board_Section::const_Row;
+using ::Sudoku::Board_Section::const_Col;
+using ::Sudoku::Board_Section::const_Block;
+using ::Sudoku::Location;
+using ::Sudoku::Location_Block;
 
 TEST(Board_Section, size)
 {
