@@ -40,9 +40,9 @@ TEST(Transpose, Instantiate)
 { // encapsulate the variable (Clang warning: missing-variable-declarations)
 	const Board<int, 2> board_test{};
 	static_assert(noexcept(transpose_row_col(Board<int, 2>())));
-	static_assert(!noexcept(transpose_row_col(board_test)));
+	static_assert(noexcept(transpose_row_col(board_test)));
 	static_assert(noexcept(transpose_row_block(Board<int, 2>())));
-	static_assert(!noexcept(transpose_row_block(board_test)));
+	static_assert(noexcept(transpose_row_block(board_test)));
 }
 
 TEST(Transpose, row_col)
@@ -51,7 +51,7 @@ TEST(Transpose, row_col)
 
 	const Board<int, 2> row{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-	static_assert(!noexcept(transpose_row_col(row)));
+	static_assert(noexcept(transpose_row_col(row)));
 	Board<int, 2> col = transpose_row_col(row);
 	EXPECT_EQ(row[L{0}], col[L{0}]);
 	EXPECT_EQ(row[L{1}], (col[L{1, 0}]));

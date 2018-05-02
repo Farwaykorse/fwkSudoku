@@ -17,7 +17,9 @@ namespace Sudoku
 {
 // Reorder Board elements so columns are rows.
 template<typename T, int N>
-Board<T, N> transpose_row_col(const Board<T, N>& input)
+Board<T, N> transpose_row_col(const Board<T, N>& input) noexcept(
+	std::is_nothrow_move_constructible_v<Board<T, N>>&&
+		std::is_nothrow_swappable_v<T>)
 {
 	if constexpr (
 		std::is_nothrow_move_constructible_v<Board<T, N>> &&
@@ -42,7 +44,9 @@ Board<T, N> transpose_row_col(const Board<T, N>& input)
 
 // Reorder Board elements so blocks are rows.
 template<typename T, int N>
-Board<T, N> transpose_row_block(const Board<T, N>& input)
+Board<T, N> transpose_row_block(const Board<T, N>& input) noexcept(
+	std::is_nothrow_move_constructible_v<Board<T, N>>&&
+		std::is_nothrow_swappable_v<T>)
 {
 	if constexpr (
 		std::is_nothrow_move_constructible_v<Board<T, N>> &&
