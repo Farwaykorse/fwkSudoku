@@ -1079,7 +1079,7 @@ TEST(Solver, multi_option_2)
 	// Operational testing
 
 	// empty board to limit influence and cascades
-	auto empty_base = [&board]() {
+	const auto empty_base = [&board]() {
 		for (auto& v : board)
 		{ // start with all set to "00000"
 			v.clear();
@@ -1090,7 +1090,7 @@ TEST(Solver, multi_option_2)
 
 	//====----------------------------------------------------------------====//
 	{ // influence on an isolated row
-		auto reset_row = [&board] {
+		const auto reset_row = [&board] {
 			board.at(L{0}) = B{"01111"};
 			board.at(L{1}) = B{"11111"};
 			board.at(L{2}) = B{"00111"};
@@ -1152,7 +1152,7 @@ TEST(Solver, multi_option_2)
 	}
 	//====----------------------------------------------------------------====//
 	{ // influence on an isolated col
-		auto reset_col = [&board] {
+		const auto reset_col = [&board] {
 			board.at(L{2, 0}) = B{"01111"};
 			board.at(L{2, 1}) = B{"11111"};
 			board.at(L{2, 2}) = B{"00111"};
@@ -1189,7 +1189,7 @@ TEST(Solver, multi_option_2)
 	{ // influence on an isolated block
 		using LB = Location_Block<2>;
 
-		auto reset_block = [&board] {
+		const auto reset_block = [&board] {
 			board.at(LB{2, 0}) = B{"01111"};
 			board.at(LB{2, 1}) = B{"11111"};
 			board.at(LB{2, 2}) = B{"00111"};

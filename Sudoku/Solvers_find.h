@@ -153,7 +153,7 @@ auto list_where_option(const SectionT section, const Options sample) noexcept(
 	std::vector<Location<N>> locations{};
 	locations.reserve(elem_size<N>);
 
-	auto check_option = [sample](Options O) noexcept {
+	const auto check_option = [sample](Options O) noexcept {
 		return sample == shared(O, sample);
 	};
 	const auto end = section.cend();
@@ -252,7 +252,7 @@ auto list_where_any_option(
 	std::vector<Location> locations{};
 	locations.reserve(sample.count_all());
 
-	auto check_option = [sample](Options O) noexcept {
+	const auto check_option = [sample](Options O) noexcept {
 		return is_answer_fast(O) ? false : !shared(O, sample).is_empty();
 	};
 	const auto end = section.cend();
