@@ -449,17 +449,12 @@ using ::Sudoku::Location_Block;
 
 TEST(Board_Section, size)
 {
-	Board<int, 2> board2{};
-	Board<int, 3> board{};
-
-	static_assert(noexcept(Row<int, 3>(board, 0).size()));
+	static_assert(noexcept(Row<int, 3>::size()));
 	// return type
-	static_assert(std::is_same_v<int, decltype(Row<int, 3>(board, 0).size())>);
+	static_assert(std::is_same_v<int, decltype(Row<int, 3>::size())>);
 
-	static_assert(Row<int, 2>(board2, 0).size() == 4);
-	static_assert(Row<int, 3>(board, 0).size() == 9);
-	EXPECT_EQ((Row<int, 2>(board2, 0).size()), 4);
-	EXPECT_EQ((Row<int, 3>(board, 0).size()), 9);
+	static_assert(Row<int, 2>::size() == 4);
+	static_assert(Row<int, 3>::size() == 9);
 }
 
 TEST(Board_Section, id)

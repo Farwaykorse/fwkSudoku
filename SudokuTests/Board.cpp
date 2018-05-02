@@ -143,7 +143,7 @@ namespace compiletime
 	static_assert(std::is_same_v<typeT::value_type, int>);
 	static_assert(std::is_same_v<Board<Options<4>, 2>::value_type, Options<4>>);
 	static_assert(std::is_same_v<typeT::value_type const, const int>);
-	static_assert(std::is_same_v<typeT::size_type, decltype(typeT().size())>);
+	static_assert(std::is_same_v<typeT::size_type, decltype(typeT::size())>);
 	static_assert(std::is_same_v<typeT::difference_type, int>);
 	static_assert(std::is_same_v<typeT::reference, int&>);
 	static_assert(std::is_same_v<typeT::const_reference, int const&>);
@@ -254,43 +254,35 @@ TEST(Board, default_values)
 
 TEST(Board, size)
 {
-	const Board<int> board{};
-	const Board<int, 2> board2{};
-	const Board<int, 3> board3{};
-	const Board<int, 4> board4{};
-	static_assert(noexcept(board.size()));
-	static_assert(noexcept(board2.size()));
-	static_assert(noexcept(board3.size()));
-	static_assert(board.size() == 81);
-	static_assert(board2.size() == 16);
-	static_assert(board3.size() == 81);
-	static_assert(board4.size() == 256);
+	static_assert(noexcept(Board<int>::size()));
+	static_assert(noexcept(Board<int, 2>::size()));
+	static_assert(noexcept(Board<int, 3>::size()));
+	static_assert(Board<int>::size() == 81);
+	static_assert(Board<int, 2>::size() == 16);
+	static_assert(Board<int, 3>::size() == 81);
+	static_assert(Board<int, 4>::size() == 256);
 
-	EXPECT_EQ(Board<int>().size(), size_t{81});
-	EXPECT_EQ((Board<int, 2>().size()), size_t{16});
-	EXPECT_EQ(board.size(), size_t{81});
+	EXPECT_EQ(Board<int>::size(), size_t{81});
+	EXPECT_EQ((Board<int, 2>::size()), size_t{16});
 
 	// max_size
-	static_assert(noexcept(board.max_size()));
-	static_assert(noexcept(board2.max_size()));
-	static_assert(noexcept(board3.max_size()));
-	static_assert(board.max_size() == 81);
-	static_assert(board2.max_size() == 16);
-	static_assert(board3.max_size() == 81);
-	static_assert(board4.max_size() == 256);
+	static_assert(noexcept(Board<int>::max_size()));
+	static_assert(noexcept(Board<int, 2>::max_size()));
+	static_assert(noexcept(Board<int, 3>::max_size()));
+	static_assert(Board<int>::max_size() == 81);
+	static_assert(Board<int, 2>::max_size() == 16);
+	static_assert(Board<int, 3>::max_size() == 81);
+	static_assert(Board<int, 4>::max_size() == 256);
 
-	EXPECT_EQ(Board<int>().max_size(), size_t{81});
-	EXPECT_EQ((Board<int, 2>().max_size()), size_t{16});
-	EXPECT_EQ(board.max_size(), size_t{81});
+	EXPECT_EQ(Board<int>::max_size(), size_t{81});
+	EXPECT_EQ((Board<int, 2>::max_size()), size_t{16});
 }
 
 TEST(Board, empty)
 {
-	const Board<int, 2> B;
-	static_assert(noexcept(Board<int, 2>().empty()));
-	static_assert(noexcept(B.empty()));
-	static_assert(std::is_same_v<bool, decltype(B.empty())>);
-	static_assert(!(B.empty()));
+	static_assert(noexcept(Board<int, 2>::empty()));
+	static_assert(std::is_same_v<bool, decltype(Board<int, 2>::empty())>);
+	static_assert(!(Board<int, 2>::empty()));
 }
 
 TEST(Board, operator_equal)
