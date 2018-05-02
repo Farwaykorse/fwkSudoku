@@ -98,7 +98,7 @@ public:
 	[[nodiscard]] constexpr Location location() const noexcept
 	{
 		assert(is_valid_size<N>(elem_));
-		using Section = ::Sudoku::Board_Section::Section;
+		using ::Sudoku::Board_Section::Section;
 		switch (S)
 		{
 		case Section::row: return Location(id_, elem_); break;
