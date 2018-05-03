@@ -298,7 +298,7 @@ TEST(Section_Itr, begin_end)
 	auto& board        = TE.A;
 	auto const& cboard = TE.cA;
 	Row<int, 2> row(board, 0);
-	const_Row<int, 2> crow(cboard, 0);
+	const const_Row<int, 2> crow(cboard, 0);
 
 	static_assert(noexcept(row.begin()));
 	static_assert(noexcept(row.end()));
@@ -344,7 +344,7 @@ TEST(Section_Itr, begin_end)
 
 	// TODO not mixing sections:
 	Col<int, 2> col(board, 0);
-	::Sudoku::Board_Section::const_Col<int, 2> ccol(cboard, 0);
+	::Sudoku::Board_Section::const_Col<int, 2> const ccol(cboard, 0);
 
 	// TODO not mixing section ids:
 
@@ -518,7 +518,7 @@ TEST(Section_Itr, pre_increment)
 { // All iterator categories
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	static_assert(noexcept(++A.begin()));
 	static_assert(noexcept(++A.cbegin()));
@@ -630,7 +630,7 @@ TEST(Section_Itr, post_increment)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	if constexpr (
 		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
@@ -699,7 +699,7 @@ TEST(Section_Itr, equal)
 { // All iterator categories
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	static_assert(noexcept(A.begin() == A.begin()));
 	static_assert(noexcept(A.begin() == A.end()));
@@ -761,7 +761,7 @@ TEST(Section_Itr, not_equal)
 { // InputIterator
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	if constexpr (
 		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
@@ -855,7 +855,7 @@ TEST(Section_Itr, InputIterator)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	int total{};
 	if constexpr (
@@ -1004,7 +1004,7 @@ TEST(Section_Itr, pre_decrement)
 { // operator--()
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	if constexpr (
 		is_bidir<decltype(A.begin())> && is_bidir<decltype(A.cbegin())> &&
@@ -1084,7 +1084,7 @@ TEST(Section_Itr, post_decrement)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	if constexpr (
 		is_bidir<decltype(A.begin())> && is_bidir<decltype(A.cbegin())> &&
@@ -1230,7 +1230,7 @@ TEST(Section_Itr, increment_by_integer)
 { // operator+=(int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
@@ -1365,7 +1365,7 @@ TEST(Section_Itr, increment_by_integer2)
 { // operator+(int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
@@ -1460,7 +1460,7 @@ TEST(Section_Itr, increment_by_integer3)
 { // operator+(int, iterator)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
@@ -1676,7 +1676,7 @@ TEST(Section_Itr, decrement_by_integer2)
 { // operator-(int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
@@ -1770,7 +1770,7 @@ TEST(Section_Itr, difference)
 { // operator-(iterator)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
@@ -2001,7 +2001,7 @@ TEST(Section_Itr, comparison)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
-	const_Row<int, 2> cA(TE.cA, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
