@@ -44,50 +44,49 @@ Useful:
 
 All:
 ```
-/diagnostics:caret DiagnosticsFormat: caret
-/std:c++17
-/MP					Multiprocessor compilation
-/W4                 Warning level 4 (=highest) (/Wall triggers library warnings)
-/GS					Buffer Security Check.
-/sdl				Enable SDL checks, additional warnings focused on security
-/permissive-       dissable non-conforming constructs in Visual C++: [1]
+/std:c++17         ISO C++ 17 standard
+/W4                Warning level 4 (=highest) (/Wall triggers library warnings)
+/sdl               Enable SDL checks, additional warnings focused on security
+/MP                Multiprocessor compilation
+/permissive-       Dissable non-conforming constructs in Visual C++: [1]
                    Enables: /Zc:rvaluecast /Zc:strictStrings and more!
-				   (updated compiler conformance)
-/Zc:rvaluecast     Enforce type-conversion rules (C++11) Needed for conformance
-/GR-               Dissable rtti (run-time type information) smaller image
-                   Turn on (default) to use dynameic_cast or typeid
-/GY                Enable function-level linking. Little more build-time, lets
-                   linker remove unreferenced code.
+                   (Updated compiler conformance.)
+/GR-               Dissable rtti (run-time type information) smaller image.
+                   Turn on to use dynamic_cast or typeid.
 /Yu"precompiled.h" Use precompiled headers
 /FI"precompiled.h" Force include, add precompiled to all files
-```
 
-Linker: (in projects using this library)
-```
-/incremental    enable incremental linking
-/debug:fastlink Debug information format, allowing for faster linking
-                Enable generation of full-program database is needed for
-                OpenCppCoverage
+---- implicitly set flags:
+/GS                Buffer Security Check. (default)
+/FC                Full-path of source code file in diagnostics (default)
 ```
 
 Debug:
 `````
-/MTd	Run-time library for linking: Multi-threaded debug (use .lib)
-/ZI		Program database for edit-and-continue (sets /Gy and /FC)
-/Gy		Function-level linking
-/FC		Full-path of source code file in diagnostics
+
+---- implicitly set flags:
+/ZI              Program database for edit-and-continue (sets /Gy and /FC)
+                 (default for Debug)
+/Gy              Function-level linking. (set by /ZI)
+/INCREMENTAL     Enable incremental linking (default for Debug in linker)
+/DEBUG:FASTLINK  Debug information format, allowing for faster linking.
+                 Enable generation of full-program database is needed for
+                 OpenCppCoverage. (default for Debug in linker)
 `````
 
 Release:
 ```
-/O2        Maximize Speed
-/GL        Whole program optimization
-/MT        Runtime library for linking: Multi-threaded
-           (use static libraries .lib)
-/guard:cf  Control Flow Guard, compiler analizes control flow for indirect calls at compile time and records the results in the compiled binary. During runtime Windows checks before every indirect call and raises an exception if any check fails at runtime. 
-           can't be used with /ZI (edit and continue)
-```
+/MT        Runtime library for linking: Multi-threaded (static library, *.lib)
+/guard:cf  Control Flow Guard, compiler analizes control flow for indirect calls
+           at compile time and records the results in the compiled binary.
+           During runtime Windows checks before every indirect call and raises
+           an exception if any check fails at runtime.
+           Can't be used with /ZI (edit and continue).
 
+---- implicitly set flags:
+/O2        Maximize Speed (default Release)
+/GL        Whole program optimization (default Release)
+```
 
 ##### Additional command-line options: #####
 Documentation:
