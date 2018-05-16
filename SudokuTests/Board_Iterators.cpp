@@ -67,7 +67,6 @@ namespace iterator
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
-	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
@@ -157,7 +156,6 @@ namespace const_iterator
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
-	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
@@ -247,7 +245,6 @@ namespace reverse_iterator
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
-	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
@@ -337,7 +334,6 @@ namespace const_reverse_iterator
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
-	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);

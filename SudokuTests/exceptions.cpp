@@ -40,7 +40,6 @@ TEST(Error, invalid_Board)
 		static_assert(not std::is_trivial_v<typeT>);            // ++
 		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 		static_assert(not std::is_standard_layout_v<typeT>);
-		static_assert(not std::is_pod_v<typeT>);
 		static_assert(not std::is_empty_v<typeT>);
 		static_assert(std::is_polymorphic_v<typeT>); // --
 		static_assert(not std::is_final_v<typeT>);
@@ -102,7 +101,6 @@ TEST(Error, invalid_Location)
 		static_assert(not std::is_trivial_v<typeT>);            // ++
 		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 		static_assert(not std::is_standard_layout_v<typeT>);
-		static_assert(not std::is_pod_v<typeT>);
 		static_assert(not std::is_empty_v<typeT>);
 		static_assert(std::is_polymorphic_v<typeT>); // --
 		static_assert(not std::is_final_v<typeT>);

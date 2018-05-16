@@ -82,7 +82,6 @@ namespace type_properties
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
 	// Can be converted with reinterpret_cast
-	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
@@ -713,7 +712,7 @@ TEST(Section_Itr, equal)
 	static_assert(std::is_same_v<bool, decltype(A.begin() == A.begin())>);
 	static_assert(std::is_same_v<bool, decltype(A.cbegin() == A.cbegin())>);
 
-	[[maybe_unused]] bool U{};
+	[[maybe_unused]] bool U {};
 	EXPECT_NO_THROW(U = (A.begin() == A.end()));
 	EXPECT_NO_THROW(U = (A.end() == A.end()));
 	EXPECT_NO_THROW(U = (A.cbegin() == A.cend()));
@@ -782,7 +781,7 @@ TEST(Section_Itr, not_equal)
 			static_assert(not((itr() = L{0}) != (itr() = L{0})));
 			static_assert((itr() = L{3}) != itr());
 		}
-		[[maybe_unused]] bool U{};
+		[[maybe_unused]] bool U {};
 		EXPECT_NO_THROW(U = (A.begin() != A.end()));
 		EXPECT_NO_THROW(U = (A.cbegin() != A.cend()));
 		EXPECT_NO_THROW(U = (A.rbegin() != A.rend()));
@@ -909,7 +908,7 @@ TEST(Section_Itr, OutputIterator)
 		EXPECT_EQ(tmp[1], 5);
 	}
 
-	[[maybe_unused]] int U{};
+	[[maybe_unused]] int U {};
 	EXPECT_NO_THROW(U = *tmp.begin()); // pre-condition
 	EXPECT_NO_THROW(U = *tmp.begin() = 5);
 	EXPECT_EQ(tmp[0], 5);

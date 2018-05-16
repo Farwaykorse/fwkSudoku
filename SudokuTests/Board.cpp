@@ -59,8 +59,6 @@ namespace compiletime
 	static_assert(std::is_standard_layout_v<typeT>, "standard layout");
 	// can be converted with reinterpret_cast
 #endif // _DEBUG
-	static_assert(not std::is_pod_v<typeT>);
-	// ++ Plain Old Data, both trivial and standard-layout, C compatible
 	// static_assert(std::has_unique_object_representations_v<typeT>,"");//C++17
 	// trivially_copyable same object representation
 	static_assert(not std::is_empty_v<typeT>);
@@ -479,7 +477,6 @@ namespace compiletime_InBetween
 	// different in Clang
 	// static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 	static_assert(std::is_standard_layout_v<typeT>);
-	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>); // --
 	static_assert(not std::is_final_v<typeT>);
@@ -524,7 +521,6 @@ namespace compiletime_const_InBetween
 	// different in Clang
 	// static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 	static_assert(std::is_standard_layout_v<typeT>);
-	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>); // --
 	static_assert(not std::is_final_v<typeT>);
