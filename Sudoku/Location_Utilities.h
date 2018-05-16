@@ -11,8 +11,8 @@
 
 #include <vector>
 #include <algorithm> // minmax_element, is_sorted, all_of
-#include <limits>    // numeric_limits
 #include <iterator>  // back_inserter
+#include <limits>    // numeric_limits
 
 // Forward declarations
 #include "Board.fwd.h"
@@ -62,7 +62,7 @@ template<int N, typename S>
 constexpr bool is_same_section(S section, Location<N>) noexcept;
 
 template<typename SectionT, int N>
-bool is_same_section(SectionT, std::vector<Location<N>>) noexcept;
+bool is_same_section(SectionT, std::vector<Location<N>>&) noexcept;
 
 template<
 	int N,
@@ -277,7 +277,7 @@ inline bool
 // check: at least one [location] inside [section]
 template<typename SectionT, int N>
 inline bool is_same_section(
-	const SectionT section, const std::vector<Location<N>> locs) noexcept
+	SectionT const section, std::vector<Location<N>> const& locs) noexcept
 {
 	return std::any_of(locs.cbegin(), locs.cend(), [section](Location<N> L) {
 		return is_same_section(section, L);
