@@ -44,7 +44,8 @@ class Board_iterator
 public:
 	// member types
 	using difference_type = int;
-	static_assert(full_size<N> < std::numeric_limits<difference_type>::max(),
+	static_assert(
+		full_size<N> < std::numeric_limits<difference_type>::max(),
 		"Use std::ptrdiff_t for Board_iterator::difference_type.");
 	using value_type        = T;
 	using pointer           = std::conditional_t<is_const, T const*, T*>;
@@ -79,7 +80,8 @@ public:
 	constexpr operator Board_iterator<T, N, true, is_reverse>() const noexcept
 	{
 		static_assert(!is_const);
-		return Board_iterator<T, N, true, is_reverse>(board_, Location{elem_});
+		return Board_iterator<T, N, true, is_reverse>(
+			gsl::not_null<owner_type*>{board_}, Location{elem_});
 	}
 
 	//====----------------------------------------------------------------====//
