@@ -104,7 +104,6 @@ public:
 		case Section::row: return Location(id_, elem_); break;
 		case Section::col: return Location(elem_, id_); break;
 		case Section::block: return Location_Block(id_, elem_); break;
-		default: assert(false); return Location{};
 		}
 	}
 	// Allows for conversion to Location
@@ -192,7 +191,7 @@ public:
 		return operator+=(-offset);
 	}
 	[[nodiscard]] friend constexpr difference_type operator-(
-		Section_iterator const left, Section_iterator const right) noexcept
+		Section_iterator const& left, Section_iterator const& right) noexcept
 	{ // difference
 		assert(is_same_Section(left, right));
 		if constexpr (is_reverse)
@@ -209,13 +208,13 @@ public:
 
 	//====----------------------------------------------------------------====//
 	[[nodiscard]] friend constexpr bool operator==(
-		Section_iterator const left, Section_iterator const right) noexcept
+		Section_iterator const& left, Section_iterator const& right) noexcept
 	{
 		assert(is_same_Section(left, right));
 		return is_same_Section(left, right) && left.elem_ == right.elem_;
 	}
 	[[nodiscard]] friend constexpr bool operator<(
-		Section_iterator const left, Section_iterator const right) noexcept
+		Section_iterator const& left, Section_iterator const& right) noexcept
 	{
 		assert(is_same_Section(left, right));
 		if constexpr (is_reverse)
@@ -230,7 +229,7 @@ private:
 	difference_type elem_{0};
 
 	friend constexpr bool is_same_Section(
-		Section_iterator const A, Section_iterator const B) noexcept
+		Section_iterator const& A, Section_iterator const& B) noexcept
 	{ // compare address of:
 		return A.board_ == B.board_ && A.id_ == B.id_;
 	}
@@ -257,29 +256,29 @@ template<typename T, int N, Section S, bool is_const, bool is_reverse>
 //====--------------------------------------------------------------------====//
 template<typename T, int N, Section S, bool is_const, bool is_reverse>
 [[nodiscard]] inline constexpr bool operator!=(
-	Section_iterator<T, N, S, is_const, is_reverse> const left,
-	Section_iterator<T, N, S, is_const, is_reverse> const right) noexcept
+	Section_iterator<T, N, S, is_const, is_reverse> const& left,
+	Section_iterator<T, N, S, is_const, is_reverse> const& right) noexcept
 {
 	return !(left == right);
 }
 template<typename T, int N, Section S, bool is_const, bool is_reverse>
 [[nodiscard]] inline constexpr bool operator>(
-	Section_iterator<T, N, S, is_const, is_reverse> const left,
-	Section_iterator<T, N, S, is_const, is_reverse> const right) noexcept
+	Section_iterator<T, N, S, is_const, is_reverse> const& left,
+	Section_iterator<T, N, S, is_const, is_reverse> const& right) noexcept
 {
 	return (right < left);
 }
 template<typename T, int N, Section S, bool is_const, bool is_reverse>
 [[nodiscard]] inline constexpr bool operator<=(
-	Section_iterator<T, N, S, is_const, is_reverse> const left,
-	Section_iterator<T, N, S, is_const, is_reverse> const right) noexcept
+	Section_iterator<T, N, S, is_const, is_reverse> const& left,
+	Section_iterator<T, N, S, is_const, is_reverse> const& right) noexcept
 {
 	return !(right < left);
 }
 template<typename T, int N, Section S, bool is_const, bool is_reverse>
 [[nodiscard]] inline constexpr bool operator>=(
-	Section_iterator<T, N, S, is_const, is_reverse> const left,
-	Section_iterator<T, N, S, is_const, is_reverse> const right) noexcept
+	Section_iterator<T, N, S, is_const, is_reverse> const& left,
+	Section_iterator<T, N, S, is_const, is_reverse> const& right) noexcept
 {
 	return !(left < right);
 }
