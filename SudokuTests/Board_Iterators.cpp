@@ -26,6 +26,7 @@
 // Debug Output
 #include "print_Options.h"
 // library
+#include <gsl/gsl>
 #include <bitset>
 #include <initializer_list>
 #include <set>
@@ -487,6 +488,9 @@ TEST(Board_Iterator, construction)
 	auto& A        = TE.A;
 	auto const& cA = TE.cA;
 
+	using not_null       = ::gsl::not_null<decltype(&A)>;
+	using const_not_null = ::gsl::not_null<decltype(&cA)>;
+
 	static_assert(noexcept(A.begin()));
 	static_assert(noexcept(A.end()));
 	static_assert(noexcept(A.cbegin()));
@@ -520,19 +524,19 @@ TEST(Board_Iterator, construction)
 	EXPECT_TRUE((D1 == Board_iterator<int, 2>()));
 
 	// Construct
-	const Board_iterator<int, 2> I1{&A};
+	const Board_iterator<int, 2> I1{not_null{&A}};
 	EXPECT_TRUE(I1 == A.begin());
-	const reverse_Board_iterator<int, 2> rI1{&A};
+	const reverse_Board_iterator<int, 2> rI1{not_null{&A}};
 	EXPECT_TRUE(rI1 == A.rbegin());
 	{
-		const const_Board_iterator<int, 2> cI1{&A};
+		const const_Board_iterator<int, 2> cI1{not_null{&A}};
 		EXPECT_TRUE(cI1 == A.cbegin());
-		const const_reverse_Board_iterator<int, 2> crI1{&A};
+		const const_reverse_Board_iterator<int, 2> crI1{not_null{&A}};
 		EXPECT_TRUE(rI1 == A.rbegin());
 	}
-	const const_Board_iterator<int, 2> cI1{&cA};
+	const const_Board_iterator<int, 2> cI1{const_not_null{&cA}};
 	EXPECT_TRUE(cI1 == cA.cbegin());
-	const const_reverse_Board_iterator<int, 2> crI1{&cA};
+	const const_reverse_Board_iterator<int, 2> crI1{const_not_null{&cA}};
 	EXPECT_TRUE(crI1 == cA.crbegin());
 #ifdef NDEBUG
 	EXPECT_TRUE(cI1 != A.cbegin());
@@ -568,9 +572,9 @@ TEST(Board_Iterator, construction)
 		crLI = crI1;
 	}
 	{ // Construct from location
-		const Board_iterator<int, 2> I2(&A, Location<2>{0});
+		const Board_iterator<int, 2> I2(not_null{&A}, Location<2>{0});
 		EXPECT_TRUE(I2 == A.begin());
-		const Board_iterator<int, 2> I3(&A, Location<2>{16});
+		const Board_iterator<int, 2> I3(not_null{&A}, Location<2>{16});
 		EXPECT_TRUE(I3 == A.end());
 	}
 	if constexpr (
@@ -578,7 +582,8 @@ TEST(Board_Iterator, construction)
 		is_random<decltype(A.cbegin())> && is_random<decltype(A.crbegin())>)
 	{
 		EXPECT_TRUE(
-			(Board_iterator<int, 2>(&A, Location<2>{8})) == (A.begin() + 8));
+			(Board_iterator<int, 2>(not_null{&A}, Location<2>{8})) ==
+			(A.begin() + 8));
 	}
 }
 
@@ -590,6 +595,8 @@ TEST(Board_Iterator, assign_Location)
 	auto& A        = TE.A;
 	auto const& cA = TE.cA;
 
+	using not_null = ::gsl::not_null<decltype(&A)>;
+
 	static_assert(noexcept(A.begin() = L{2}));
 	static_assert(noexcept(A.cbegin() = L{2}));
 	static_assert(noexcept(A.rbegin() = L{2}));
@@ -598,7 +605,7 @@ TEST(Board_Iterator, assign_Location)
 	static_assert(noexcept(cA.begin() = L{2}));
 	static_assert(noexcept(cA.cbegin() = L{2}));
 	{
-		Board_iterator<int, 2> x1{&A};
+		Sudoku::Board_iterator<int, 2> x1{not_null{&A}};
 		EXPECT_TRUE(x1 == A.begin());
 		x1 = L{1};
 		EXPECT_TRUE(x1 != A.begin());
@@ -607,7 +614,7 @@ TEST(Board_Iterator, assign_Location)
 		EXPECT_TRUE(x1 == --A.end());
 	}
 	{
-		const_Board_iterator<int, 2> x1{&A};
+		Sudoku::const_Board_iterator<int, 2> x1{not_null{&A}};
 		EXPECT_TRUE(x1 == A.cbegin());
 		x1 = L{1};
 		EXPECT_TRUE(x1 != A.cbegin());
@@ -616,7 +623,7 @@ TEST(Board_Iterator, assign_Location)
 		EXPECT_TRUE(x1 == --A.cend());
 	}
 	{
-		reverse_Board_iterator<int, 2> r1{&A};
+		Sudoku::reverse_Board_iterator<int, 2> r1{not_null{&A}};
 		r1 = L{15};
 		EXPECT_TRUE(r1 == A.rbegin());
 		r1 = L{0};
@@ -633,6 +640,8 @@ TEST(Board_Iterator, Location)
 	auto& A        = TE.A;
 	auto const& cA = TE.cA;
 
+	using not_null = ::gsl::not_null<decltype(&A)>;
+
 	static_assert(noexcept(A.begin().location()));
 	static_assert(noexcept(A.cbegin().location()));
 	static_assert(noexcept(A.rbegin().location()));
@@ -643,8 +652,8 @@ TEST(Board_Iterator, Location)
 	static_assert(noexcept(Location<2>{A.crbegin()}));
 
 	// Construct from Location
-	const Board_iterator<int, 2> x1{&A};
-	const Board_iterator<int, 2> x2(&A, L{12});
+	const Board_iterator<int, 2> x1{not_null{&A}};
+	const Board_iterator<int, 2> x2(not_null{&A}, L{12});
 
 	// Return Location
 	static_assert(Board_iterator<int, 2>().location() == Location<2>{0});

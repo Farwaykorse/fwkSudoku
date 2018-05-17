@@ -305,7 +305,7 @@ template<typename T, int N>
 typename Board<T, N>::InBetween Board<T, N>::operator[](const int row) noexcept
 {
 	// Element Selection Operator (using a proxy object)
-	return InBetween(this, row);
+	return InBetween(gsl::not_null<Board*>{this}, row);
 }
 
 // Element Selection Operator (using a proxy object)
@@ -314,7 +314,7 @@ template<typename T, int N>
 const typename Board<T, N>::const_InBetween Board<T, N>::
 	operator[](const int row) const noexcept
 {
-	return const_InBetween(this, row);
+	return const_InBetween(gsl::not_null<Board const*>{this}, row);
 }
 // InBetween
 
@@ -323,46 +323,51 @@ const typename Board<T, N>::const_InBetween Board<T, N>::
 template<typename T, int N>
 constexpr typename Board<T, N>::iterator Board<T, N>::begin() noexcept
 {
-	return Board_iterator<T, N>(this);
+	return Board_iterator<T, N>(gsl::not_null<Board*>{this});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::iterator Board<T, N>::end() noexcept
 {
-	return Board_iterator<T, N>(this, Location{full_size<N>});
+	return Board_iterator<T, N>(
+		gsl::not_null<Board*>{this}, Location{full_size<N>});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_iterator Board<T, N>::cbegin() const
 	noexcept
 {
-	return const_Board_iterator<T, N>(this);
+	return const_Board_iterator<T, N>(gsl::not_null<Board const*>{this});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_iterator Board<T, N>::cend() const
 	noexcept
 {
-	return const_Board_iterator<T, N>(this, Location{full_size<N>});
+	return const_Board_iterator<T, N>(
+		gsl::not_null<Board const*>{this}, Location{full_size<N>});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::reverse_iterator Board<T, N>::rbegin() noexcept
 {
-	return reverse_Board_iterator<T, N>(this);
+	return reverse_Board_iterator<T, N>(gsl::not_null<Board*>{this});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::reverse_iterator Board<T, N>::rend() noexcept
 {
-	return reverse_Board_iterator<T, N>(this, Location{-1});
+	return reverse_Board_iterator<T, N>(
+		gsl::not_null<Board*>{this}, Location{-1});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_reverse_iterator
 	Board<T, N>::crbegin() const noexcept
 {
-	return const_reverse_Board_iterator<T, N>(this);
+	return const_reverse_Board_iterator<T, N>(
+		gsl::not_null<Board const*>{this});
 }
 template<typename T, int N>
 constexpr typename Board<T, N>::const_reverse_iterator
 	Board<T, N>::crend() const noexcept
 {
-	return const_reverse_Board_iterator<T, N>(this, Location{-1});
+	return const_reverse_Board_iterator<T, N>(
+		gsl::not_null<Board const*>{this}, Location{-1});
 }
 
 } // namespace Sudoku

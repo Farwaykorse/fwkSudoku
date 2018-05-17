@@ -10,6 +10,7 @@
 #include <iomanip> // setw(), setfill()
 #include <sstream>
 #include <utility>
+#include <cmath> // pow
 
 
 namespace Sudoku
@@ -145,7 +146,7 @@ inline int Console::charsize(int value) const
 inline
 int Console::charsize(int value, int length) const
 {
-	if (value < pow(10, length))
+	if (value < std::pow(10, length))
 	{
 		return length;
 	}

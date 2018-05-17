@@ -44,6 +44,7 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 		static duration tLoad_total{0};
 		static duration tSolver_total{0};
 		static duration tTotal_total{0};
+		static duration tdiff{0};
 		static bool last{};
 
 		for (auto j{0}; j < reruns; ++j)
@@ -58,9 +59,11 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 				t2 = std::chrono::steady_clock::now();
 
 				// save fastest solving time
-				tLoad = std::min(tLoad, t1 - t0);
-				last = tTotal > (t2 - t0);
-				tTotal = std::min(tTotal, t2 - t0);
+				tdiff = t1 - t0;
+				tLoad = std::min(tLoad, tdiff);
+				tdiff = t2 - t0;
+				last = tTotal > tdiff;
+				tTotal = std::min(tTotal, tdiff);
 				tSolver = std::min(tSolver, tTotal - tLoad);
 
 				options = local;
@@ -107,6 +110,7 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 		static duration tLoad_total{0};
 		static duration tSolver_total{0};
 		static duration tTotal_total{0};
+		static duration tdiff{0};
 		static bool last{};
 
 		for (auto j{0}; j < reruns; ++j)
@@ -121,9 +125,11 @@ void test(const std::vector<int>& B_in, const std::vector<int>& A_in)
 				t2 = std::chrono::steady_clock::now();
 
 				// save fastest solving time
-				tLoad = std::min(tLoad, t1 - t0);
-				last = tTotal > (t2 - t0);
-				tTotal = std::min(tTotal, t2 - t0);
+				tdiff = t1 - t0;
+				tLoad = std::min(tLoad, tdiff);
+				tdiff = t2 - t0;
+				last = tTotal > tdiff;
+				tTotal = std::min(tTotal, tdiff);
 				tSolver = std::min(tSolver, tTotal - tLoad);
 
 				options = local;
