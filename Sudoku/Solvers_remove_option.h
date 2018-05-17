@@ -10,6 +10,7 @@
 #include "Options.h"
 #include "Size.h"
 #include "Value.h"
+#include "exceptions.h"
 
 #include <vector>
 #include <algorithm>   // none_of
@@ -31,6 +32,8 @@ namespace Sudoku
 //===----------------------------------------------------------------------===//
 template<int N, typename Options = Options<elem_size<N>>>
 int remove_option(Board<Options, N>&, Location<N>, Value);
+template<int N, typename Options = Options<elem_size<N>>>
+int remove_option(Board<Options, N>&, Location<N>, Options mask);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_section(
@@ -60,7 +63,6 @@ template<int N, typename Options>
 int remove_option(
 	Board<Options, N>& board, const Location<N> loc, const Value value)
 {
-	assert(is_valid(loc));
 	assert(is_valid<N>(value));
 
 	int changes{};
@@ -69,22 +71,57 @@ int remove_option(
 	if (is_option(item, value))
 	{
 		++changes;
-		const int count = item.remove_option(value).count();
+		const auto count = item.remove_option(value).count();
 		assert(count > 0); // never trigger, removed last option
 
+#if MULTIPLE_ON_REMOVE == false
 		if (count == 1)
 		{
 			changes += single_option(board, loc);
 		}
+#else
+		//if (count < 4)
+		{
+			changes += multi_option(board, loc, count);
+		}
+#endif // multiple
 #if DUAL_ON_REMOVE == true
 		if (count == 2)
 		{
 			changes += dual_option(board, loc);
 		}
 #endif // dual
-#if MULTIPLE_ON_REMOVE == true
-		changes += multi_option(board, loc, count);
-#endif // multiple
+	}
+	return changes;
+}
+
+// remove all options given by the mask
+template<int N, typename Options>
+int remove_option(
+	Board<Options, N>& board, const Location<N> loc, const Options mask)
+{
+	assert(is_answer_fast(mask)); // don't remove answer-bit
+
+	auto& item{board.at(loc)};
+	if (is_answer_fast(item))
+	{
+		return 0;
+	}
+	int changes{static_cast<int>(item.count())};
+
+	// remove options
+	item = item - mask;
+
+	const auto count = static_cast<int>(item.count_all());
+	if (count == 0)
+	{ // removed last option
+		throw error::invalid_Board();
+	}
+	changes -= count;
+
+	if (changes && count == 1)
+	{
+		changes += single_option(board, loc);
 	}
 	return changes;
 }

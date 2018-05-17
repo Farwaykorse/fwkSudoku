@@ -13,6 +13,7 @@
 #include "Solvers_find.h"
 #include "Solvers_remove_option.h"
 #include "Value.h"
+#include "exceptions.h"
 #include <gsl/gsl>
 #include <algorithm>   // find_if
 #include <iterator>    // next
@@ -39,13 +40,13 @@ int set_uniques(Board<Options, N>&, SectionT, Options worker);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int set_section_locals(
-	Board<Options, N>&, SectionT, int rep_count, Options worker);
+	Board<Options, N>&, SectionT, int rep_count, Options values);
 template<int N, typename Options = Options<elem_size<N>>>
 int set_section_locals(
 	Board<Options, N>&,
 	Board_Section::Block<Options, N>,
 	int rep_count,
-	Options worker);
+	Options values);
 
 //===----------------------------------------------------------------------===//
 
@@ -62,12 +63,11 @@ inline int set_Value(
 	auto& elem = board.at(loc);
 	if (not elem.test(value))
 	{ // value is option nor answer
-		throw std::logic_error{"Invalid Board"};
-		// Invalid_Board{"not an option"}
+		throw error::invalid_Board();
 	}
 	else if (not is_answer(elem))
 	{
-		changes = elem.count_all();
+		changes = gsl::narrow_cast<int>(elem.count_all());
 		elem.set_nocheck(value);
 	}
 	return changes;
@@ -95,7 +95,7 @@ int set_Value(Board<Options, N>& board, const ItrT begin, const ItrT end)
 		}
 		else
 		{
-			value = to_Value(*itr);
+			value = to_Value<3>(*itr);
 		}
 
 		if (value != Value{0})
@@ -165,13 +165,13 @@ inline int set_unique(
 	return single_option(board, itr.location(), value);
 }
 
-//	for [row/col]: if all in same block, remove [values] from rest block
+// for [row/col] per value: if all in same block, remove from rest block
 template<int N, typename Options, typename SectionT>
 inline int set_section_locals(
 	Board<Options, N>& board,
 	const SectionT section,
 	const int rep_count,
-	const Options worker)
+	const Options values)
 {
 	{
 		using Section_ = typename Board_Section::Section<Options, N>;
@@ -181,21 +181,21 @@ inline int set_section_locals(
 		assert(rep_count > 1);  // should have been cought by caller
 								// use the set_uniques specialization
 		assert(rep_count <= N); // won't fit in single block-row/col
-		assert(worker.count_all() > 0);
+		assert(values.count_all() > 0);
 	}
 	int changes{0};
+	std::vector<Location<N>> locations{};
 
 	// start at 1, to skip the answer-bit
-	for (size_t val{1}; val < worker.size(); ++val)
+	for (size_t val{1}; val < values.size(); ++val)
 	{
 		const auto value = gsl::narrow_cast<Value>(val);
-		if (worker[value])
+		if (values[value])
 		{
-			std::vector<Location<N>> locations{};
-			locations = find_locations<N>(section, value, rep_count);
+			locations = list_where_option<N>(section, value, rep_count);
 			if (locations.size() != gsl::narrow_cast<size_t>(rep_count))
 			{
-				assert(changes > 0); // changed by earlier value in worker
+				assert(changes > 0); // changed by earlier value in values
 			}
 			else if (is_same_block<N>(locations.cbegin(), locations.cend()))
 			{ // remove from rest of block
@@ -207,13 +207,13 @@ inline int set_section_locals(
 	return changes;
 }
 
-//	remove found set in block from rest of its row/col
+// per value in [block]: if all in same row/col, remove from rest row/col
 template<int N, typename Options>
 inline int set_section_locals(
 	Board<Options, N>& board,
 	const Board_Section::Block<Options, N> block,
 	const int rep_count,
-	const Options worker)
+	const Options values)
 {
 	{
 		using BlockT   = Board_Section::Block<Options, N>;
@@ -222,21 +222,21 @@ inline int set_section_locals(
 		assert(rep_count > 1);  // should have been cought by caller
 								// use the set_uniques specialization
 		assert(rep_count <= N); // won't fit in single block-row/col
-		assert(worker.count_all() > 0);
+		assert(values.count_all() > 0);
 	}
 	int changes{0};
+	std::vector<Location<N>> locations{};
 
 	// start at 1, to skip the answer-bit
-	for (size_t val{1}; val < worker.size(); ++val)
+	for (size_t val{1}; val < values.size(); ++val)
 	{
 		const auto value = Value{val};
-		if (worker[value])
+		if (values[value])
 		{
-			std::vector<Location<N>> locations{};
-			locations = find_locations<N>(block, value, rep_count);
+			locations = list_where_option<N>(block, value, rep_count);
 			if (locations.size() != gsl::narrow_cast<size_t>(rep_count))
 			{
-				assert(changes > 0); // changed by earlier value in worker
+				assert(changes > 0); // changed by earlier value in values
 			}
 			else if (is_same_row<N>(locations.cbegin(), locations.cend()))
 			{ // remove from rest of row

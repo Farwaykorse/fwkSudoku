@@ -63,6 +63,12 @@
     <ClInclude Include="Solvers_set_option.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Transpose.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sudoku.cpp">

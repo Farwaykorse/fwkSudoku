@@ -31,10 +31,11 @@
 #include <random>  // randomaccess tests
 #include <type_traits>
 
-using namespace Sudoku;
 
 namespace SudokuTests::BoardTest
 {
+using namespace ::Sudoku;
+
 namespace iterator
 {
 	using typeT = Board<int>;
@@ -142,25 +143,32 @@ TEST(Board_Iterator, iterator)
 	const Board<int, 2> cA{
 		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
-	EXPECT_NO_THROW(A.begin());
-	EXPECT_NO_THROW(A.end());
-	EXPECT_NO_THROW(A.cbegin());
-	EXPECT_NO_THROW(A.cend());
-	EXPECT_NO_THROW(A.rbegin());
-	EXPECT_NO_THROW(A.rend());
-	EXPECT_NO_THROW(A.crbegin());
-	EXPECT_NO_THROW(A.crend());
-	EXPECT_NO_THROW(cA.begin());
-	EXPECT_NO_THROW(cA.end());
-	EXPECT_NO_THROW(cA.rbegin());
-	EXPECT_NO_THROW(cA.rend());
+	static_assert(noexcept(A.begin()));
+	static_assert(noexcept(A.end()));
+	static_assert(noexcept(A.cbegin()));
+	static_assert(noexcept(A.cend()));
+	static_assert(noexcept(A.rbegin()));
+	static_assert(noexcept(A.rend()));
+	static_assert(noexcept(A.crbegin()));
+	static_assert(noexcept(A.crend()));
+	static_assert(noexcept(cA.begin()));
+	static_assert(noexcept(cA.end()));
+	static_assert(noexcept(cA.rbegin()));
+	static_assert(noexcept(cA.rend()));
 	// *r is dereferenceable
-	EXPECT_NO_THROW(*A.begin());
-	EXPECT_NO_THROW(*A.cbegin());
-	EXPECT_NO_THROW(*A.rbegin());
-	EXPECT_NO_THROW(*A.crbegin());
-	EXPECT_NO_THROW(*cA.begin());
-	EXPECT_NO_THROW(*cA.rbegin());
+	[[maybe_unused]] int U {};
+	static_assert(not noexcept(*A.begin())); // vector implementation
+	static_assert(not noexcept(*A.cbegin()));
+	static_assert(not noexcept(*A.rbegin()));
+	static_assert(not noexcept(*A.crbegin()));
+	static_assert(not noexcept(*cA.begin()));
+	static_assert(not noexcept(*cA.rbegin()));
+	EXPECT_NO_THROW(U = *A.begin());
+	EXPECT_NO_THROW(U = *A.cbegin());
+	EXPECT_NO_THROW(U = *A.rbegin());
+	EXPECT_NO_THROW(U = *A.crbegin());
+	EXPECT_NO_THROW(U = *cA.begin());
+	EXPECT_NO_THROW(U = *cA.rbegin());
 	// ++r is incrementable
 	EXPECT_NO_THROW(++A.begin());
 	EXPECT_NO_THROW(++A.cbegin());
@@ -175,10 +183,15 @@ TEST(Board_Iterator, InputIterator)
 	Board<Options<4>, 2> Opt{};
 
 	// == !=
-	EXPECT_NO_THROW(A.begin() == A.end());
-	EXPECT_NO_THROW(A.cbegin() == A.cend());
-	EXPECT_NO_THROW(A.rbegin() == A.rend());
-	EXPECT_NO_THROW(A.crbegin() == A.crend());
+	static_assert(not noexcept(A.begin() == A.end()));
+	static_assert(not noexcept(A.cbegin() == A.cend()));
+	static_assert(not noexcept(A.rbegin() == A.rend()));
+	static_assert(not noexcept(A.crbegin() == A.crend()));
+	[[maybe_unused]] bool U {};
+	EXPECT_NO_THROW(U = (A.begin() == A.end()));
+	EXPECT_NO_THROW(U = (A.cbegin() == A.cend()));
+	EXPECT_NO_THROW(U = (A.rbegin() == A.rend()));
+	EXPECT_NO_THROW(U = (A.crbegin() == A.crend()));
 	EXPECT_EQ(A.begin(), A.begin());
 	EXPECT_FALSE(A.begin() == A.end());
 	EXPECT_EQ(A.cbegin(), A.cbegin());
@@ -187,10 +200,14 @@ TEST(Board_Iterator, InputIterator)
 	EXPECT_FALSE(A.rbegin() == A.rend());
 	EXPECT_EQ(A.crbegin(), A.crbegin());
 	EXPECT_FALSE(A.crbegin() == A.crend());
-	EXPECT_NO_THROW(A.begin() != A.end());
-	EXPECT_NO_THROW(A.cbegin() != A.cend());
-	EXPECT_NO_THROW(A.rbegin() != A.rend());
-	EXPECT_NO_THROW(A.crbegin() != A.crend());
+	static_assert(not noexcept(A.begin() != A.end()));
+	static_assert(not noexcept(A.cbegin() != A.cend()));
+	static_assert(not noexcept(A.rbegin() != A.rend()));
+	static_assert(not noexcept(A.crbegin() != A.crend()));
+	EXPECT_NO_THROW(U = (A.begin() != A.end()));
+	EXPECT_NO_THROW(U = (A.cbegin() != A.cend()));
+	EXPECT_NO_THROW(U = (A.rbegin() != A.rend()));
+	EXPECT_NO_THROW(U = (A.crbegin() != A.crend()));
 	EXPECT_NE(A.begin(), A.end());
 	EXPECT_FALSE(A.begin() != A.begin());
 	EXPECT_NE(A.cbegin(), ++A.cbegin());
@@ -214,10 +231,10 @@ TEST(Board_Iterator, InputIterator)
 	EXPECT_EQ(*cA.rbegin(), 15);
 	EXPECT_FALSE(*cA.rbegin() == 5);
 	// i->member
-	EXPECT_NO_THROW(Opt.begin()->size());
-	EXPECT_NO_THROW(Opt.cbegin()->size());
-	EXPECT_NO_THROW(Opt.rbegin()->size());
-	EXPECT_NO_THROW(Opt.crbegin()->size());
+	static_assert(not(noexcept(Opt.begin()->size())));
+	static_assert(not(noexcept(Opt.cbegin()->size())));
+	static_assert(not(noexcept(Opt.rbegin()->size())));
+	static_assert(not(noexcept(Opt.crbegin()->size())));
 	EXPECT_NO_THROW(
 		(Opt.begin()->size() == (*Opt.begin()).size()));     // equivalent
 	EXPECT_EQ((Opt.begin()->size()), (*Opt.begin()).size()); // equivalent
@@ -255,13 +272,19 @@ TEST(Board_Iterator, OutputIterator)
 	Board<int, 2> tmp{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	EXPECT_EQ(tmp[0][0], 0) << "requires InBetween";
 	// *r = o (returnvalue not used)
-	EXPECT_NO_THROW(*tmp.begin()); // pre-condition
-	EXPECT_NO_THROW(*tmp.begin() = 5);
+	static_assert(not noexcept(*tmp.begin()));
+	[[maybe_unused]] int U {};
+	EXPECT_NO_THROW(U = *tmp.begin()); // pre-condition
+	static_assert(not noexcept(*tmp.begin() = 5));
+	EXPECT_NO_THROW(U = *tmp.begin() = 5);
 	EXPECT_EQ(tmp[0][0], 5);
+	static_assert(not noexcept(*(++tmp.begin()) = 3));
 	EXPECT_NO_THROW(*(++tmp.begin()) = 4);
 	EXPECT_EQ(tmp[0][1], 4);
-	EXPECT_NO_THROW(*tmp.rbegin()); // pre-condition
-	EXPECT_NO_THROW(*tmp.rbegin() = 9);
+	static_assert(not noexcept(*tmp.rbegin()));
+	EXPECT_NO_THROW(U = *tmp.rbegin()); // pre-condition
+	static_assert(not noexcept(*tmp.rbegin() = 2));
+	EXPECT_NO_THROW(U = *tmp.rbegin() = 9);
 	EXPECT_EQ(tmp[3][3], 9);
 	EXPECT_NO_THROW(*(++tmp.rbegin()) = 8);
 	EXPECT_EQ(tmp[3][2], 8);
@@ -348,6 +371,10 @@ TEST(Board_Iterator, RandomAccessIterator)
 	Board<int, 2> A{9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	const Board<int, 2> cA{
 		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	[[maybe_unused]] auto U = A.begin();
+	[[maybe_unused]] auto V = A.cbegin();
+	[[maybe_unused]] auto W = A.rbegin();
+	[[maybe_unused]] auto X = A.crbegin();
 	EXPECT_NO_THROW(A.begin() += 2);
 	EXPECT_NO_THROW(A.cbegin() += 2);
 	EXPECT_NO_THROW(A.rbegin() += 2);
@@ -363,16 +390,16 @@ TEST(Board_Iterator, RandomAccessIterator)
 	EXPECT_FALSE(*(A.cbegin() += 8) == 5);
 	EXPECT_FALSE(*(A.cbegin() += 0) == 5);
 
-	EXPECT_NO_THROW(A.begin() + 2); // returns a new iterator object
-	EXPECT_NO_THROW(A.cbegin() + 2);
-	EXPECT_NO_THROW(A.rbegin() + 1);
-	EXPECT_NO_THROW(A.crbegin() + 2);
-	EXPECT_NO_THROW(A.cend() + (-3));
-	EXPECT_NO_THROW(12 + A.begin());
-	EXPECT_NO_THROW(12 + A.cbegin());
-	EXPECT_NO_THROW(12 + A.rbegin());
-	EXPECT_NO_THROW(12 + A.crbegin());
-	EXPECT_NO_THROW((-12) + A.rend());
+	EXPECT_NO_THROW(U = A.begin() + 2); // returns a new iterator object
+	EXPECT_NO_THROW(V = A.cbegin() + 2);
+	EXPECT_NO_THROW(W = A.rbegin() + 1);
+	EXPECT_NO_THROW(X = A.crbegin() + 2);
+	EXPECT_NO_THROW(V = A.cend() + (-3));
+	EXPECT_NO_THROW(U = 12 + A.begin());
+	EXPECT_NO_THROW(V = 12 + A.cbegin());
+	EXPECT_NO_THROW(W = 12 + A.rbegin());
+	EXPECT_NO_THROW(X = 12 + A.crbegin());
+	EXPECT_NO_THROW(W = (-12) + A.rend());
 	EXPECT_TRUE((A.begin() + 1) == ++A.begin());
 	EXPECT_TRUE((A.cbegin() + 1) == ++A.cbegin());
 	EXPECT_TRUE((A.rbegin() + 1) == ++A.rbegin());
@@ -396,37 +423,40 @@ TEST(Board_Iterator, RandomAccessIterator)
 	EXPECT_TRUE((A.crend() -= 1) == (A.crbegin() += 15));
 	EXPECT_TRUE((A.begin() -= (-10)) == (A.begin() += 10));
 
-	EXPECT_NO_THROW(A.end() - 2);
-	EXPECT_NO_THROW(A.cend() - 2);
-	EXPECT_NO_THROW(A.rend() - 1);
-	EXPECT_NO_THROW(A.crend() - 2);
-	EXPECT_NO_THROW(A.begin() - (-12));
+	EXPECT_NO_THROW(U = A.end() - 2);
+	EXPECT_NO_THROW(V = A.cend() - 2);
+	EXPECT_NO_THROW(W = A.rend() - 1);
+	EXPECT_NO_THROW(X = A.crend() - 2);
+	EXPECT_NO_THROW(U = A.begin() - (-12));
 
-	EXPECT_NO_THROW(A.end() - A.begin());
+	static_assert(not noexcept(A.end() - A.begin()));
+	[[maybe_unused]] bool Y {};
+	EXPECT_NO_THROW(Y = A.end() - A.begin());
 	EXPECT_TRUE((A.end() - A.begin()) == static_cast<int>(A.size()));
 	EXPECT_TRUE((A.begin() - A.end()) == -static_cast<int>(A.size()));
 	EXPECT_TRUE((A.begin() - A.end()) == -static_cast<int>(A.size()));
 
-	EXPECT_NO_THROW(A.begin()[2]); // return value_type reference
-	EXPECT_NO_THROW(A.cbegin()[2]);
-	EXPECT_NO_THROW(A.rbegin()[2]);
-	EXPECT_NO_THROW(A.crbegin()[2]);
+	[[maybe_unused]] int Z {};
+	EXPECT_NO_THROW(Z = A.begin()[2]); // return value_type reference
+	EXPECT_NO_THROW(Z = A.cbegin()[2]);
+	EXPECT_NO_THROW(Z = A.rbegin()[2]);
+	EXPECT_NO_THROW(Z = A.crbegin()[2]);
 	EXPECT_EQ(A.begin()[2], 2);
 	EXPECT_EQ(A.cbegin()[12], 12);
 	EXPECT_EQ(A.rend()[-13], *(A.rend() - 13));
 	EXPECT_EQ(A.crbegin()[13], 2);
 
-	EXPECT_NO_THROW(A.begin() < A.begin());
-	EXPECT_NO_THROW(A.begin() > A.begin());
-	EXPECT_NO_THROW(A.begin() >= A.begin());
-	EXPECT_NO_THROW(A.begin() <= A.begin());
+	EXPECT_NO_THROW(Y = A.begin() < A.begin());
+	EXPECT_NO_THROW(Y = A.begin() > A.begin());
+	EXPECT_NO_THROW(Y = A.begin() >= A.begin());
+	EXPECT_NO_THROW(Y = A.begin() <= A.begin());
 	EXPECT_TRUE(A.begin() < A.end());
 	EXPECT_FALSE(A.begin() < A.begin());
 	EXPECT_FALSE(A.end() < A.begin());
-	EXPECT_NO_THROW(cA.begin() < cA.begin());
-	EXPECT_NO_THROW(cA.begin() > cA.begin());
-	EXPECT_NO_THROW(cA.begin() >= cA.begin());
-	EXPECT_NO_THROW(cA.begin() <= cA.begin());
+	EXPECT_NO_THROW(Y = cA.begin() < cA.begin());
+	EXPECT_NO_THROW(Y = cA.begin() > cA.begin());
+	EXPECT_NO_THROW(Y = cA.begin() >= cA.begin());
+	EXPECT_NO_THROW(Y = cA.begin() <= cA.begin());
 	EXPECT_TRUE(cA.begin() < cA.end());
 	EXPECT_FALSE(cA.begin() < cA.begin());
 	EXPECT_FALSE(cA.end() < cA.begin());
@@ -552,13 +582,14 @@ TEST(Board_Iterator, RowIterator)
 	EXPECT_NO_THROW(typeT::const_iterator(A.row(2).cbegin()));
 	EXPECT_NO_THROW(typeT::const_iterator(cA.row(2).cbegin()));
 	// *r is dereferenceable
+	[[maybe_unused]] int U {};
 	EXPECT_NO_THROW(*A.row(1).begin());
 	EXPECT_NO_THROW(*A.row(1).cbegin());
-	EXPECT_NO_THROW(*A.row(1).rbegin());
-	EXPECT_NO_THROW(*A.row(1).crbegin());
+	EXPECT_NO_THROW(U = *A.row(1).rbegin());
+	EXPECT_NO_THROW(U = *A.row(1).crbegin());
 	EXPECT_NO_THROW(*(cA.row(1).begin()));
 	EXPECT_NO_THROW(*cA.row(1).cbegin());
-	EXPECT_NO_THROW(*cA.row(1).rbegin());
+	EXPECT_NO_THROW(U = *cA.row(1).rbegin());
 	// ++r is incrementable
 	EXPECT_NO_THROW(++A.row(1).begin());
 	EXPECT_NO_THROW(++A.row(1).cbegin());
@@ -576,10 +607,11 @@ TEST(Board_Iterator, RowInputIterator)
 	const Board<Options<4>, 2> cOpt{};
 
 	// == !=
+	[[maybe_unused]] bool U {};
 	EXPECT_NO_THROW(A.row(0).begin() == A.row(0).end());
 	EXPECT_NO_THROW(A.row(0).cbegin() == A.row(0).cend());
-	EXPECT_NO_THROW(A.row(0).rbegin() == A.row(0).rend());
-	EXPECT_NO_THROW(A.row(0).crbegin() == A.row(0).crend());
+	EXPECT_NO_THROW(U = A.row(0).rbegin() == A.row(0).rend());
+	EXPECT_NO_THROW(U = A.row(0).crbegin() == A.row(0).crend());
 	EXPECT_NO_THROW(cA.row(0).cbegin() == cA.row(0).cend());
 	EXPECT_NO_THROW(cA.row(0).begin() == cA.row(0).end());
 	EXPECT_TRUE(A.row(0).begin() == A.row(0).begin());
@@ -595,8 +627,8 @@ TEST(Board_Iterator, RowInputIterator)
 	EXPECT_NO_THROW(A.row(0).cbegin() != A.row(0).cend());
 	EXPECT_NO_THROW(cA.row(0).cbegin() != cA.row(0).cend());
 	EXPECT_NO_THROW(cA.row(0).begin() != cA.row(0).end());
-	EXPECT_NO_THROW(A.row(0).rbegin() != A.row(0).rend());
-	EXPECT_NO_THROW(A.row(0).crbegin() != A.row(0).crend());
+	EXPECT_NO_THROW(U = A.row(0).rbegin() != A.row(0).rend());
+	EXPECT_NO_THROW(U = A.row(0).crbegin() != A.row(0).crend());
 	EXPECT_TRUE(A.row(0).begin() != A.row(0).end());
 	EXPECT_FALSE(A.row(0).begin() != A.row(0).begin());
 	EXPECT_TRUE(A.row(0).cbegin() != ++A.row(0).cbegin());
@@ -623,11 +655,11 @@ TEST(Board_Iterator, RowInputIterator)
 	EXPECT_EQ(*cA.row(0).rbegin(), 3);
 	EXPECT_FALSE(*cA.row(0).rbegin() == 5);
 	// i->member
-	EXPECT_NO_THROW(Opt.row(0).begin()->size());
-	EXPECT_NO_THROW(Opt.row(0).cbegin()->size());
-	EXPECT_NO_THROW(cOpt.row(0).cbegin()->size());
-	EXPECT_NO_THROW(Opt.row(0).rbegin()->size());
-	EXPECT_NO_THROW(Opt.row(0).crbegin()->size());
+	static_assert(noexcept(Opt.row(0).begin()->size()));
+	static_assert(noexcept(Opt.row(0).cbegin()->size()));
+	static_assert(noexcept(cOpt.row(0).cbegin()->size()));
+	static_assert(not(noexcept(Opt.row(0).rbegin()->size())));
+	static_assert(not(noexcept(Opt.row(0).crbegin()->size())));
 	EXPECT_NO_THROW(
 		(Opt.row(0).begin()->size() ==
 		 (*Opt.row(0).begin()).size())); // equivalent
@@ -732,12 +764,13 @@ TEST(Board_Iterator, RowOutputIterator)
 	Board<int, 2> tmp{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	EXPECT_EQ(tmp[0][0], 0) << "requires InBetween";
 	// *r = o (returnvalue not used)
+	[[maybe_unused]] int U {};
 	EXPECT_NO_THROW(*tmp.row(0).begin()); // pre-condition
 	EXPECT_NO_THROW(*tmp.row(0).begin() = 5);
 	EXPECT_EQ(tmp[0][0], 5);
 	EXPECT_NO_THROW(*(++tmp.row(0).begin()) = 4);
 	EXPECT_EQ(tmp[0][1], 4);
-	EXPECT_NO_THROW(*tmp.row(0).rbegin()); // pre-condition
+	EXPECT_NO_THROW(U = *tmp.row(0).rbegin()); // pre-condition
 	EXPECT_NO_THROW(*tmp.row(0).rbegin() = 9);
 	EXPECT_EQ(tmp[0][3], 9);
 	EXPECT_NO_THROW(*(++tmp.row(0).rbegin()) = 8);
@@ -832,6 +865,9 @@ TEST(Board_Iterator, RowRandomAccessIterator)
 	Board<int, 2> A{9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	const Board<int, 2> cA{
 		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	[[maybe_unused]] auto U = A.row(0).rbegin();
+	[[maybe_unused]] auto V = A.row(0).crbegin();
+	[[maybe_unused]] int W{};
 	EXPECT_NO_THROW(A.row(0).begin() += 2);
 	EXPECT_NO_THROW(A.row(0).cbegin() += 2);
 	EXPECT_NO_THROW(A.row(0).rbegin() += 2);
@@ -849,16 +885,16 @@ TEST(Board_Iterator, RowRandomAccessIterator)
 
 	EXPECT_NO_THROW(A.row(0).begin() + 2); // returns a new iterator object
 	EXPECT_NO_THROW(A.row(0).cbegin() + 2);
-	EXPECT_NO_THROW(A.row(0).rbegin() + 1);
-	EXPECT_NO_THROW(A.row(0).crbegin() + 2);
+	EXPECT_NO_THROW(U = A.row(0).rbegin() + 1);
+	EXPECT_NO_THROW(V = A.row(0).crbegin() + 2);
 	EXPECT_NO_THROW(A.row(0).cend() + (-3));
 
 	EXPECT_NO_THROW(2 + (Board<int, 2>().row(0).begin()));
 	EXPECT_NO_THROW(2 + A.row(0).cbegin());
 	EXPECT_NO_THROW(2 + A.row(0).begin());
-	EXPECT_NO_THROW(2 + A.row(0).rbegin());
-	EXPECT_NO_THROW(2 + A.row(0).crbegin());
-	EXPECT_NO_THROW((-2) + A.row(0).rend());
+	EXPECT_NO_THROW(U = 2 + A.row(0).rbegin());
+	EXPECT_NO_THROW(V = 2 + A.row(0).crbegin());
+	EXPECT_NO_THROW(U = (-2) + A.row(0).rend());
 
 	EXPECT_TRUE((A.row(0).begin() + 1) == (++A.row(0).begin()));
 	EXPECT_TRUE((A.row(0).cbegin() + 1) == (++A.row(0).cbegin()));
@@ -886,14 +922,14 @@ TEST(Board_Iterator, RowRandomAccessIterator)
 
 	EXPECT_NO_THROW(A.row(0).end() - 2);
 	EXPECT_NO_THROW(A.row(0).cend() - 2);
-	EXPECT_NO_THROW(A.row(0).rend() - 1);
-	EXPECT_NO_THROW(A.row(0).crend() - 2);
+	EXPECT_NO_THROW(U = A.row(0).rend() - 1);
+	EXPECT_NO_THROW(V = A.row(0).crend() - 2);
 	EXPECT_NO_THROW(A.row(0).begin() - (-2));
 
 	EXPECT_NO_THROW(A.row(0).end() - A.row(0).begin());
 	EXPECT_NO_THROW(A.row(0).cend() - A.row(0).cbegin());
-	EXPECT_NO_THROW(A.row(0).rend() - A.row(0).rbegin());
-	EXPECT_NO_THROW(A.row(0).crend() - A.row(0).crbegin());
+	EXPECT_NO_THROW(W = A.row(0).rend() - A.row(0).rbegin());
+	EXPECT_NO_THROW(W = A.row(0).crend() - A.row(0).crbegin());
 	EXPECT_TRUE((A.row(0).end() - A.row(0).begin()) == A.row(0).size());
 	EXPECT_TRUE((A.row(0).begin() - A.row(0).end()) == -A.row(0).size());
 	EXPECT_TRUE((A.row(0).begin() - A.row(0).end()) == -A.row(0).size());
@@ -901,8 +937,8 @@ TEST(Board_Iterator, RowRandomAccessIterator)
 
 	EXPECT_NO_THROW(A.row(0).begin()[2]); // return value_type reference
 	EXPECT_NO_THROW(A.row(0).cbegin()[2]);
-	EXPECT_NO_THROW(A.row(0).rbegin()[2]);
-	EXPECT_NO_THROW(A.row(0).crbegin()[2]);
+	EXPECT_NO_THROW(W = A.row(0).rbegin()[2]);
+	EXPECT_NO_THROW(W = A.row(0).crbegin()[2]);
 	EXPECT_EQ(A.row(0).begin()[2], 2);
 	EXPECT_EQ(A.row(0).cbegin()[3], 3);
 	EXPECT_EQ(A.row(0).rend()[-3], *(A.row(0).rend() - 3));
@@ -1004,6 +1040,7 @@ TEST(Board_Iterator, ColIterator)
 	const Board<int, 2> cA{
 		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
+	[[maybe_unused]] int U{};
 	EXPECT_NO_THROW(A.col(1).begin());
 	EXPECT_NO_THROW(A.col(1).end());
 	EXPECT_NO_THROW(Board<int>().col(0).cbegin());
@@ -1024,11 +1061,11 @@ TEST(Board_Iterator, ColIterator)
 	// *r is dereferenceable
 	EXPECT_NO_THROW(*A.col(1).begin());
 	EXPECT_NO_THROW(*A.col(1).cbegin());
-	EXPECT_NO_THROW(*A.col(1).rbegin());
-	EXPECT_NO_THROW(*A.col(1).crbegin());
+	EXPECT_NO_THROW(U = *A.col(1).rbegin());
+	EXPECT_NO_THROW(U = *A.col(1).crbegin());
 	EXPECT_NO_THROW(*(cA.col(1).begin()));
 	EXPECT_NO_THROW(*cA.col(1).cbegin());
-	EXPECT_NO_THROW(*cA.col(1).rbegin());
+	EXPECT_NO_THROW(U = *cA.col(1).rbegin());
 	// ++r is incrementable
 	EXPECT_NO_THROW(++A.col(1).begin());
 	EXPECT_NO_THROW(++A.col(1).cbegin());
@@ -1046,10 +1083,11 @@ TEST(Board_Iterator, ColInputIterator)
 	const Board<Options<4>, 2> cOpt{};
 
 	// == !=
+	[[maybe_unused]] bool U{};
 	EXPECT_NO_THROW(A.col(0).begin() == A.col(0).end());
 	EXPECT_NO_THROW(A.col(0).cbegin() == A.col(0).cend());
-	EXPECT_NO_THROW(A.col(0).rbegin() == A.col(0).rend());
-	EXPECT_NO_THROW(A.col(0).crbegin() == A.col(0).crend());
+	EXPECT_NO_THROW(U = A.col(0).rbegin() == A.col(0).rend());
+	EXPECT_NO_THROW(U = A.col(0).crbegin() == A.col(0).crend());
 	EXPECT_NO_THROW(cA.col(0).cbegin() == cA.col(0).cend());
 	EXPECT_NO_THROW(cA.col(0).begin() == cA.col(0).end());
 	EXPECT_TRUE(A.col(0).begin() == A.col(0).begin());
@@ -1065,8 +1103,8 @@ TEST(Board_Iterator, ColInputIterator)
 	EXPECT_NO_THROW(A.col(0).cbegin() != A.col(0).cend());
 	EXPECT_NO_THROW(cA.col(0).cbegin() != cA.col(0).cend());
 	EXPECT_NO_THROW(cA.col(0).begin() != cA.col(0).end());
-	EXPECT_NO_THROW(A.col(0).rbegin() != A.col(0).rend());
-	EXPECT_NO_THROW(A.col(0).crbegin() != A.col(0).crend());
+	EXPECT_NO_THROW(U = A.col(0).rbegin() != A.col(0).rend());
+	EXPECT_NO_THROW(U = A.col(0).crbegin() != A.col(0).crend());
 	EXPECT_TRUE(A.col(0).begin() != A.col(0).end());
 	EXPECT_FALSE(A.col(0).begin() != A.col(0).begin());
 	EXPECT_TRUE(A.col(0).cbegin() != ++A.col(0).cbegin());
@@ -1097,11 +1135,11 @@ TEST(Board_Iterator, ColInputIterator)
 	EXPECT_EQ(*cA.col(0).rbegin(), 12);
 	EXPECT_FALSE(*cA.col(0).rbegin() == 5);
 	// i->member
-	EXPECT_NO_THROW(Opt.col(0).begin()->size());
-	EXPECT_NO_THROW(Opt.col(0).cbegin()->size());
-	EXPECT_NO_THROW(cOpt.col(0).cbegin()->size());
-	EXPECT_NO_THROW(Opt.col(0).rbegin()->size());
-	EXPECT_NO_THROW(Opt.col(0).crbegin()->size());
+	static_assert(noexcept(Opt.col(0).begin()->size()));
+	static_assert(noexcept(Opt.col(0).cbegin()->size()));
+	static_assert(noexcept(cOpt.col(0).cbegin()->size()));
+	static_assert(not(noexcept(Opt.col(0).rbegin()->size())));
+	static_assert(not(noexcept(Opt.col(0).crbegin()->size())));
 	EXPECT_NO_THROW(
 		(Opt.col(0).begin()->size() ==
 		 (*Opt.col(0).begin()).size())); // equivalent
@@ -1171,12 +1209,13 @@ TEST(Board_Iterator, ColOutputIterator)
 	Board<int, 2> tmp{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	EXPECT_EQ(tmp[0][0], 0) << "requires InBetween";
 	// *r = o (returnvalue not used)
+	[[maybe_unused]] int U{};
 	EXPECT_NO_THROW(*tmp.col(0).begin()); // pre-condition
 	EXPECT_NO_THROW(*tmp.col(0).begin() = 5);
 	EXPECT_EQ(tmp[0][0], 5);
 	EXPECT_NO_THROW(*(++tmp.col(0).begin()) = 4);
 	EXPECT_EQ(tmp[1][0], 4);
-	EXPECT_NO_THROW(*tmp.col(0).rbegin()); // pre-condition
+	EXPECT_NO_THROW(U = *tmp.col(0).rbegin()); // pre-condition
 	EXPECT_NO_THROW(*tmp.col(0).rbegin() = 9);
 	EXPECT_EQ(tmp[3][0], 9);
 	EXPECT_NO_THROW(*(++tmp.col(0).rbegin()) = 8);
@@ -1268,6 +1307,9 @@ TEST(Board_Iterator, ColRandomAccessIterator)
 	Board<int, 2> A{9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	const Board<int, 2> cA{
 		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	[[maybe_unused]] auto U = A.col(0).rbegin();
+	[[maybe_unused]] auto V = A.col(0).crbegin();
+	[[maybe_unused]] int W{};
 	EXPECT_NO_THROW(A.col(0).begin() += 2);
 	EXPECT_NO_THROW(A.col(0).cbegin() += 2);
 	EXPECT_NO_THROW(A.col(0).rbegin() += 2);
@@ -1285,15 +1327,15 @@ TEST(Board_Iterator, ColRandomAccessIterator)
 
 	EXPECT_NO_THROW(A.col(0).begin() + 2); // returns a new iterator object
 	EXPECT_NO_THROW(A.col(0).cbegin() + 2);
-	EXPECT_NO_THROW(A.col(0).rbegin() + 1);
-	EXPECT_NO_THROW(A.col(0).crbegin() + 2);
+	EXPECT_NO_THROW(U = A.col(0).rbegin() + 1);
+	EXPECT_NO_THROW(V = A.col(0).crbegin() + 2);
 	EXPECT_NO_THROW(A.col(0).cend() + (-3));
 
 	EXPECT_NO_THROW(2 + (Board<int, 2>().col(0).begin()));
 	EXPECT_NO_THROW(2 + A.col(0).cbegin());
-	EXPECT_NO_THROW(2 + A.col(0).rbegin());
-	EXPECT_NO_THROW(2 + A.col(0).crbegin());
-	EXPECT_NO_THROW((-2) + A.col(0).rend());
+	EXPECT_NO_THROW(U = 2 + A.col(0).rbegin());
+	EXPECT_NO_THROW(V = 2 + A.col(0).crbegin());
+	EXPECT_NO_THROW(U = (-2) + A.col(0).rend());
 
 	EXPECT_TRUE((A.col(0).begin() + 1) == (++A.col(0).begin()));
 	EXPECT_TRUE((A.col(0).cbegin() + 1) == (++A.col(0).cbegin()));
@@ -1321,14 +1363,14 @@ TEST(Board_Iterator, ColRandomAccessIterator)
 
 	EXPECT_NO_THROW(A.col(0).end() - 2);
 	EXPECT_NO_THROW(A.col(0).cend() - 2);
-	EXPECT_NO_THROW(A.col(0).rend() - 1);
-	EXPECT_NO_THROW(A.col(0).crend() - 2);
+	EXPECT_NO_THROW(U = A.col(0).rend() - 1);
+	EXPECT_NO_THROW(V = A.col(0).crend() - 2);
 	EXPECT_NO_THROW(A.col(0).begin() - (-2));
 
 	EXPECT_NO_THROW(A.col(0).end() - A.col(0).begin());
 	EXPECT_NO_THROW(A.col(0).cend() - A.col(0).cbegin());
-	EXPECT_NO_THROW(A.col(0).rend() - A.col(0).rbegin());
-	EXPECT_NO_THROW(A.col(0).crend() - A.col(0).crbegin());
+	EXPECT_NO_THROW(W = A.col(0).rend() - A.col(0).rbegin());
+	EXPECT_NO_THROW(W = A.col(0).crend() - A.col(0).crbegin());
 	EXPECT_TRUE((A.col(0).end() - A.col(0).begin()) == A.col(0).size());
 	EXPECT_TRUE((A.col(0).begin() - A.col(0).end()) == -A.col(0).size());
 	EXPECT_TRUE((A.col(0).begin() - A.col(0).end()) == -A.col(0).size());
@@ -1336,8 +1378,8 @@ TEST(Board_Iterator, ColRandomAccessIterator)
 
 	EXPECT_NO_THROW(A.col(0).begin()[2]); // return value_type reference
 	EXPECT_NO_THROW(A.col(0).cbegin()[2]);
-	EXPECT_NO_THROW(A.col(0).rbegin()[2]);
-	EXPECT_NO_THROW(A.col(0).crbegin()[2]);
+	EXPECT_NO_THROW(W = A.col(0).rbegin()[2]);
+	EXPECT_NO_THROW(W = A.col(0).crbegin()[2]);
 	EXPECT_EQ(A.col(0).begin()[2], 8);
 	EXPECT_EQ(A.col(0).cbegin()[3], 12);
 	EXPECT_EQ(A.col(0).rend()[-3], *(A.col(0).rend() - 3));
@@ -1452,13 +1494,14 @@ TEST(Board_Iterator, BlockIterator)
 	EXPECT_NO_THROW(typeT::const_iterator(A.block(2).cbegin()));
 	// EXPECT_NO_THROW((Board<intj
 	// 2>::Block::const_iterator(cA.block(2).cbegin()))); *r is dereferenceable
+	[[maybe_unused]] int U{};
 	EXPECT_NO_THROW(*A.block(1).begin());
 	EXPECT_NO_THROW(*A.block(1).cbegin());
-	EXPECT_NO_THROW(*A.block(1).rbegin());
-	EXPECT_NO_THROW(*A.block(1).crbegin());
+	EXPECT_NO_THROW(U = *A.block(1).rbegin());
+	EXPECT_NO_THROW(U = *A.block(1).crbegin());
 	EXPECT_NO_THROW(*(cA.block(1).begin()));
 	EXPECT_NO_THROW(*cA.block(1).cbegin());
-	EXPECT_NO_THROW(*cA.block(1).rbegin());
+	EXPECT_NO_THROW(U = *cA.block(1).rbegin());
 	// ++r is incrementable
 	EXPECT_NO_THROW(++A.block(1).begin());
 	EXPECT_NO_THROW(++A.block(1).cbegin());
@@ -1476,10 +1519,11 @@ TEST(Board_Iterator, BlockInputIterator)
 	const Board<Options<4>, 2> cOpt{};
 
 	// == !=
+	[[maybe_unused]] bool U{};
 	EXPECT_NO_THROW(A.block(0).begin() == A.block(0).end());
 	EXPECT_NO_THROW(A.block(0).cbegin() == A.block(0).cend());
-	EXPECT_NO_THROW(A.block(0).rbegin() == A.block(0).rend());
-	EXPECT_NO_THROW(A.block(0).crbegin() == A.block(0).crend());
+	EXPECT_NO_THROW(U = A.block(0).rbegin() == A.block(0).rend());
+	EXPECT_NO_THROW(U = A.block(0).crbegin() == A.block(0).crend());
 	EXPECT_NO_THROW(cA.block(0).cbegin() == cA.block(0).cend());
 	EXPECT_NO_THROW(cA.block(0).begin() == cA.block(0).end());
 	EXPECT_TRUE(A.block(0).begin() == A.block(0).begin());
@@ -1495,8 +1539,8 @@ TEST(Board_Iterator, BlockInputIterator)
 	EXPECT_NO_THROW(A.block(0).cbegin() != A.block(0).cend());
 	EXPECT_NO_THROW(cA.block(0).cbegin() != cA.block(0).cend());
 	EXPECT_NO_THROW(cA.block(0).begin() != cA.block(0).end());
-	EXPECT_NO_THROW(A.block(0).rbegin() != A.block(0).rend());
-	EXPECT_NO_THROW(A.block(0).crbegin() != A.block(0).crend());
+	EXPECT_NO_THROW(U = A.block(0).rbegin() != A.block(0).rend());
+	EXPECT_NO_THROW(U = A.block(0).crbegin() != A.block(0).crend());
 	EXPECT_TRUE(A.block(0).begin() != A.block(0).end());
 	EXPECT_FALSE(A.block(0).begin() != A.block(0).begin());
 	EXPECT_TRUE(A.block(0).cbegin() != ++A.block(0).cbegin());
@@ -1527,11 +1571,11 @@ TEST(Board_Iterator, BlockInputIterator)
 	EXPECT_EQ(*cA.block(0).rbegin(), 5);
 	EXPECT_FALSE(*cA.block(0).rbegin() == 3);
 	// i->member
-	EXPECT_NO_THROW(Opt.block(0).begin()->size());
-	EXPECT_NO_THROW(Opt.block(0).cbegin()->size());
-	EXPECT_NO_THROW(cOpt.block(0).cbegin()->size());
-	EXPECT_NO_THROW(Opt.block(0).rbegin()->size());
-	EXPECT_NO_THROW(Opt.block(0).crbegin()->size());
+	static_assert(noexcept(Opt.block(0).begin()->size()));
+	static_assert(noexcept(Opt.block(0).cbegin()->size()));
+	static_assert(noexcept(cOpt.block(0).cbegin()->size()));
+	static_assert(not(noexcept(Opt.block(0).rbegin()->size())));
+	static_assert(not(noexcept(Opt.block(0).crbegin()->size())));
 	EXPECT_NO_THROW(
 		(Opt.block(0).begin()->size() ==
 		 (*Opt.block(0).begin()).size())); // equivalent
@@ -1601,12 +1645,13 @@ TEST(Board_Iterator, BlockOutputIterator)
 	Board<int, 2> tmp{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	EXPECT_EQ(tmp[0][0], 0) << "requires InBetween";
 	// *r = o (returnvalue not used)
+	[[maybe_unused]] int U{};
 	EXPECT_NO_THROW(*tmp.block(0).begin()); // pre-condition
 	EXPECT_NO_THROW(*tmp.block(0).begin() = 5);
 	EXPECT_EQ(tmp[0][0], 5);
 	EXPECT_NO_THROW(*(++tmp.block(0).begin()) = 4);
 	EXPECT_EQ(tmp[0][1], 4);
-	EXPECT_NO_THROW(*tmp.block(0).rbegin()); // pre-condition
+	EXPECT_NO_THROW(U = *tmp.block(0).rbegin()); // pre-condition
 	EXPECT_NO_THROW(*tmp.block(0).rbegin() = 9);
 	EXPECT_EQ(tmp[1][1], 9);
 	EXPECT_NO_THROW(*(++tmp.block(0).rbegin()) = 8);
@@ -1699,6 +1744,9 @@ TEST(Board_Iterator, BlockRandomAccessIterator)
 	Board<int, 2> A{9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	const Board<int, 2> cA{
 		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	[[maybe_unused]] auto U = A.block(0).rbegin();
+	[[maybe_unused]] auto V = A.block(0).crbegin();
+	[[maybe_unused]] int W{};
 	EXPECT_NO_THROW(A.block(0).begin() += 2);
 	EXPECT_NO_THROW(A.block(0).cbegin() += 2);
 	EXPECT_NO_THROW(A.block(0).rbegin() += 2);
@@ -1715,15 +1763,15 @@ TEST(Board_Iterator, BlockRandomAccessIterator)
 
 	EXPECT_NO_THROW(A.block(0).begin() + 2); // returns a new iterator object
 	EXPECT_NO_THROW(A.block(0).cbegin() + 2);
-	EXPECT_NO_THROW(A.block(0).rbegin() + 1);
-	EXPECT_NO_THROW(A.block(0).crbegin() + 2);
+	EXPECT_NO_THROW(U = A.block(0).rbegin() + 1);
+	EXPECT_NO_THROW(V = A.block(0).crbegin() + 2);
 	EXPECT_NO_THROW(A.block(0).cend() + (-3));
 
 	EXPECT_NO_THROW(2 + (Board<int, 2>().block(0).begin()));
 	EXPECT_NO_THROW(2 + A.block(0).cbegin());
-	EXPECT_NO_THROW(2 + A.block(0).rbegin());
-	EXPECT_NO_THROW(2 + A.block(0).crbegin());
-	EXPECT_NO_THROW((-2) + A.block(0).rend());
+	EXPECT_NO_THROW(U = 2 + A.block(0).rbegin());
+	EXPECT_NO_THROW(V = 2 + A.block(0).crbegin());
+	EXPECT_NO_THROW(U = (-2) + A.block(0).rend());
 
 	EXPECT_TRUE((A.block(0).begin() + 1) == (++A.block(0).begin()));
 	EXPECT_TRUE((A.block(0).cbegin() + 1) == (++A.block(0).cbegin()));
@@ -1751,14 +1799,14 @@ TEST(Board_Iterator, BlockRandomAccessIterator)
 
 	EXPECT_NO_THROW(A.block(0).end() - 2);
 	EXPECT_NO_THROW(A.block(0).cend() - 2);
-	EXPECT_NO_THROW(A.block(0).rend() - 1);
-	EXPECT_NO_THROW(A.block(0).crend() - 2);
+	EXPECT_NO_THROW(U = A.block(0).rend() - 1);
+	EXPECT_NO_THROW(V = A.block(0).crend() - 2);
 	EXPECT_NO_THROW(A.block(0).begin() - (-2));
 
 	EXPECT_NO_THROW(A.block(0).end() - A.block(0).begin());
 	EXPECT_NO_THROW(A.block(0).cend() - A.block(0).cbegin());
-	EXPECT_NO_THROW(A.block(0).rend() - A.block(0).rbegin());
-	EXPECT_NO_THROW(A.block(0).crend() - A.block(0).crbegin());
+	EXPECT_NO_THROW(W = A.block(0).rend() - A.block(0).rbegin());
+	EXPECT_NO_THROW(W = A.block(0).crend() - A.block(0).crbegin());
 	EXPECT_TRUE((A.block(0).end() - A.block(0).begin()) == A.block(0).size());
 	EXPECT_TRUE((A.block(0).begin() - A.block(0).end()) == -A.block(0).size());
 	EXPECT_TRUE((A.block(0).begin() - A.block(0).end()) == -A.block(0).size());
@@ -1766,8 +1814,8 @@ TEST(Board_Iterator, BlockRandomAccessIterator)
 
 	EXPECT_NO_THROW(A.block(0).begin()[2]); // return value_type reference
 	EXPECT_NO_THROW(A.block(0).cbegin()[2]);
-	EXPECT_NO_THROW(A.block(0).rbegin()[2]);
-	EXPECT_NO_THROW(A.block(0).crbegin()[2]);
+	EXPECT_NO_THROW(W = A.block(0).rbegin()[2]);
+	EXPECT_NO_THROW(W = A.block(0).crbegin()[2]);
 	EXPECT_EQ(A.block(0).begin()[2], 4);
 	EXPECT_EQ(A.block(0).cbegin()[3], 5);
 	EXPECT_EQ(A.block(0).rend()[-3], *(A.block(0).rend() - 3));
@@ -1840,6 +1888,7 @@ TEST(Board_Iterator, deathtest)
 
 	// invalid location on dereferencing out-of-bounds iterator
 	int tmp_{};
+	size_t tmp2{};
 	EXPECT_NO_FATAL_FAILURE(tmp_ = *((cA.row(0).cbegin())--));
 	EXPECT_NO_FATAL_FAILURE(tmp_ = *(--(cA.row(0).cend()))++);
 #ifdef _DEBUG
@@ -1850,10 +1899,10 @@ TEST(Board_Iterator, deathtest)
 	EXPECT_DEBUG_DEATH(tmp_ = *((A.row(0).begin()) += 8), ".*: is_valid_size");
 #endif // _DEBUG
 	Board<Options<4>, 2> Opt{};
-	EXPECT_NO_FATAL_FAILURE(tmp_ = (Opt.row(0).begin())->count());
+	EXPECT_NO_FATAL_FAILURE(tmp2 = (Opt.row(0).begin())->count());
 #ifdef _DEBUG
 	EXPECT_DEBUG_DEATH(
-		tmp_ = (--(Opt.row(0).begin()))->count(), ".*: is_valid_size");
+		tmp2 = (--(Opt.row(0).begin()))->count(), ".*: is_valid_size");
 #endif // _DEBUG
 }
 

@@ -268,7 +268,7 @@ std::stringstream
 		{
 			for (auto i{ X }; i < X + base_size<N>; ++i)
 			{
-				if (input[row_id][col].test(to_Value(i)))
+				if (input[row_id][col].test(to_Value<N>(i)))
 				{
 					stream << i;
 				}

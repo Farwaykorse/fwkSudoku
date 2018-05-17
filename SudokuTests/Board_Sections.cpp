@@ -4,14 +4,12 @@
 //===----------------------------------------------------------------------===//
 //	Implemented with GoogleTest
 //
-//	Notes:
-//	gTest is limited for use with multiple template parameters.
-//	These expressions need to be implemented between extra parentheses
-//	- test elements implementing this are flagged with [gTest]
-//	- not implemented tests are flagged as NEEDTEST [gTest]
-//	gTest tries to print iterators if they use inheritance,
-//		if used in *_EQ/NE etc.
-//		use an explicit test like EXPECT_TRUE(.. == ..).
+// Notes:
+// - The gTest macros have issues with commas,
+//   add extra parentheses around expressions containing a comma.
+// - not implemented tests are flagged as NEEDTEST [gTest]
+// - gTest tries to print iterators if they use inheritance,
+//   if used in *_EQ/NE etc. use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //===----------------------------------------------------------------------===//
 #include <gtest/gtest.h>
@@ -29,10 +27,11 @@
 #include <random>  // randomaccess tests
 #include <type_traits>
 
-using namespace Sudoku;
 
 namespace SudokuTests::Board_SectionsTest
 {
+using namespace ::Sudoku;
+
 namespace compiletime
 {
 	// Type properties
@@ -55,33 +54,26 @@ namespace compiletime
 	static_assert(std::is_base_of_v<Section, Block>);
 
 	static_assert(std::is_class_v<typeT>, "-- a class");
-	static_assert(!std::is_trivial_v<typeT>, "trivial default constructors");
-	//! different between VC++ / Clang
-	// static_assert(!std::is_trivially_copyable_v<typeT>,
-	//	"-- compatible with std::memcpy & binary copy from/to files");
-	// can't be standard, reference member
-	static_assert(!std::is_standard_layout_v<typeT>, "standard layout");
-	static_assert(!std::is_pod_v<typeT>);
-	// Plain Old Data, both trivial and standard-layout, C compatible
+	static_assert(not std::is_trivial_v<typeT>, "trivial default constructors");
+	static_assert(not std::is_trivially_copyable_v<typeT>);
+	static_assert(not std::is_standard_layout_v<typeT>, "standard layout");
+	static_assert(not std::is_pod_v<typeT>);
 	// static_assert(std::has_unique_object_representations_v<typeT>); //C++17
-	// trivially_copyable same object representation
-	static_assert(!std::is_empty_v<typeT>, "-- class with no datamembers");
-	static_assert(!std::is_polymorphic_v<typeT>);
-	// inherits atleast one virtual function
-	static_assert(!std::is_abstract_v<typeT>);
-	// inherits or declares at least one pure virtual function");
-	static_assert(!std::is_final_v<typeT>, "-- cannot be used as base class");
+	static_assert(not std::is_empty_v<typeT>);
+	static_assert(not std::is_polymorphic_v<typeT>);
+	static_assert(not std::is_abstract_v<typeT>);
+	static_assert(not std::is_final_v<typeT>);
 
 	static_assert(std::is_trivial_v<Section>);
 	static_assert(std::is_trivially_copyable_v<Section>);
 	static_assert(std::is_empty_v<Section>);
 	static_assert(std::is_pod_v<Section>);
-	static_assert(!std::is_standard_layout_v<Row>);
+	static_assert(not std::is_standard_layout_v<Row>);
 
 	// default constructor: typeT()
-	static_assert(!std::is_default_constructible_v<typeT>);
-	static_assert(!std::is_nothrow_default_constructible_v<typeT>);
-	static_assert(!std::is_trivially_default_constructible_v<typeT>);
+	static_assert(not std::is_default_constructible_v<typeT>);
+	static_assert(not std::is_nothrow_default_constructible_v<typeT>);
+	static_assert(not std::is_trivially_default_constructible_v<typeT>);
 
 	// copy constructor: typeT(const typeT&)
 	static_assert(std::is_copy_constructible_v<typeT>);
@@ -94,21 +86,21 @@ namespace compiletime
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
 	// copy assingment
-	static_assert(!std::is_copy_assignable_v<typeT>);
-	static_assert(!std::is_nothrow_copy_assignable_v<typeT>);
-	static_assert(!std::is_trivially_copy_assignable_v<typeT>);
+	static_assert(not std::is_copy_assignable_v<typeT>);
+	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);
+	static_assert(not std::is_trivially_copy_assignable_v<typeT>);
 
-	static_assert(!std::is_move_assignable_v<typeT>);
-	static_assert(!std::is_nothrow_move_assignable_v<typeT>);
-	static_assert(!std::is_trivially_move_assignable_v<typeT>);
+	static_assert(not std::is_move_assignable_v<typeT>);
+	static_assert(not std::is_nothrow_move_assignable_v<typeT>);
+	static_assert(not std::is_trivially_move_assignable_v<typeT>);
 
 	static_assert(std::is_destructible_v<typeT>);
 	static_assert(std::is_nothrow_destructible_v<typeT>);
 	static_assert(std::is_trivially_destructible_v<typeT>);
-	static_assert(!std::has_virtual_destructor_v<typeT>);
+	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-	static_assert(!std::is_swappable_v<typeT>, "-- swappable"); // C++17
-	static_assert(!std::is_nothrow_swappable_v<typeT>, "-- nothrow swappable");
+	static_assert(not std::is_swappable_v<typeT>); // C++17
+	static_assert(not std::is_nothrow_swappable_v<typeT>);
 
 	// variations
 	static_assert(std::is_default_constructible_v<Section>, "not Section()");
@@ -122,22 +114,22 @@ namespace compiletime
 	static_assert(std::is_constructible_v<Row, Row>);
 	static_assert(std::is_constructible_v<const_Col, Col>);
 	static_assert(std::is_constructible_v<const_Block, Block>);
-	static_assert(!std::is_constructible_v<const_Row, const_Col>);
-	static_assert(!std::is_constructible_v<const_Row, Col>);
-	static_assert(!std::is_constructible_v<const_Row, const_Block>);
-	static_assert(!std::is_constructible_v<const_Row, Block>);
-	static_assert(!std::is_constructible_v<const_Row, Section>);
-	static_assert(!std::is_constructible_v<Row, const_Row>);
-	static_assert(!std::is_constructible_v<Row, const_Col>);
-	static_assert(!std::is_constructible_v<Row, const_Block>);
-	static_assert(!std::is_constructible_v<Row, Section>);
-	static_assert(!std::is_constructible_v<Col, const_Col>);
-	static_assert(!std::is_constructible_v<const_Col, const_Row>);
-	static_assert(!std::is_constructible_v<const_Col, Row>);
-	static_assert(!std::is_constructible_v<const_Col, const_Block>);
-	static_assert(!std::is_constructible_v<const_Col, Block>);
-	static_assert(!std::is_constructible_v<const_Col, Section>);
-	static_assert(!std::is_constructible_v<Block, const_Block>);
+	static_assert(not std::is_constructible_v<const_Row, const_Col>);
+	static_assert(not std::is_constructible_v<const_Row, Col>);
+	static_assert(not std::is_constructible_v<const_Row, const_Block>);
+	static_assert(not std::is_constructible_v<const_Row, Block>);
+	static_assert(not std::is_constructible_v<const_Row, Section>);
+	static_assert(not std::is_constructible_v<Row, const_Row>);
+	static_assert(not std::is_constructible_v<Row, const_Col>);
+	static_assert(not std::is_constructible_v<Row, const_Block>);
+	static_assert(not std::is_constructible_v<Row, Section>);
+	static_assert(not std::is_constructible_v<Col, const_Col>);
+	static_assert(not std::is_constructible_v<const_Col, const_Row>);
+	static_assert(not std::is_constructible_v<const_Col, Row>);
+	static_assert(not std::is_constructible_v<const_Col, const_Block>);
+	static_assert(not std::is_constructible_v<const_Col, Block>);
+	static_assert(not std::is_constructible_v<const_Col, Section>);
+	static_assert(not std::is_constructible_v<Block, const_Block>);
 } // namespace compiletime
 TEST(Board_Sections, Row)
 {

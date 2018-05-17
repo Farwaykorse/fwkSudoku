@@ -14,11 +14,11 @@
 #include "Board_Utilities.h"
 #include "Location.h"
 #include "Size.h"
+#include "exceptions.h"
 
 #include <gsl/gsl>
 #include <initializer_list>
 #include <vector>
-#include <stdexcept> // out_of_range
 #include <cassert>
 
 // Forward declarations
@@ -144,6 +144,7 @@ template<typename T, int N>
 Board<T, N>::Board(std::initializer_list<T> list) : board_(list)
 {
 	assert(list.size() == full_size<N>);
+	// TODO exception on invalid length
 	valid_dimensions<N>();
 	assert(board_.size() == size());
 	assert(board_.capacity() == size());
@@ -173,9 +174,9 @@ T& Board<T, N>::at(const Location loc)
 {
 	if (!is_valid<N>(loc))
 	{
-		throw std::out_of_range{"Board::at(Location)"};
+		throw error::invalid_Location{"Board::at(Location)"};
 	}
-	return board_.at(gsl::narrow_cast<size_t>(loc.element()));
+	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
 
 template<typename T, int N>
@@ -183,9 +184,9 @@ const T& Board<T, N>::at(const Location loc) const
 {
 	if (!is_valid<N>(loc))
 	{
-		throw std::out_of_range{"Board::at(Location) const"};
+		throw error::invalid_Location{"Board::at(Location) const"};
 	}
-	return board_.at(gsl::narrow_cast<size_t>(loc.element()));
+	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
 
 template<typename T, int N>
@@ -193,9 +194,9 @@ T& Board<T, N>::at(const int row, const int col)
 {
 	if (!is_valid_size<N>(row, col))
 	{
-		throw std::out_of_range{"Board::at(int row, col)"}; // <stdexcept>
+		throw error::invalid_Location{"Board::at(int row, col)"}; // <stdexcept>
 	}
-	return board_.at(gsl::narrow_cast<size_t>(Location(row, col).element()));
+	return board_[gsl::narrow_cast<size_t>(Location(row, col).element())];
 }
 
 template<typename T, int N>
@@ -203,9 +204,9 @@ const T& Board<T, N>::at(const int row, const int col) const
 {
 	if (!is_valid_size<N>(row, col))
 	{
-		throw std::out_of_range{"Board::at(row, col) const"};
+		throw error::invalid_Location{"Board::at(row, col) const"};
 	}
-	return board_.at(gsl::narrow_cast<size_t>(Location(row, col).element()));
+	return board_[gsl::narrow_cast<size_t>(Location(row, col).element())];
 }
 
 // deprecated
@@ -214,7 +215,7 @@ T& Board<T, N>::at(const int elem)
 {
 	if (!is_valid_size<N>(elem))
 	{
-		throw std::out_of_range{"Board::at(int)"};
+		throw error::invalid_Location{"Board::at(int)"};
 	}
 	return board_.at(gsl::narrow_cast<size_t>(elem));
 }
@@ -225,7 +226,7 @@ const T& Board<T, N>::at(const int elem) const
 {
 	if (!is_valid_size<N>(elem))
 	{
-		throw std::out_of_range{"Board::at(int) const"};
+		throw error::invalid_Location{"Board::at(int) const"};
 	}
 	return board_.at(gsl::narrow_cast<size_t>(elem));
 }
@@ -248,7 +249,7 @@ template<typename T, int N>
 class Board<T, N>::InBetween
 {
 	friend class Board<T, N>; // access to private constructor
-	InBetween(gsl::not_null<Board<T, N>*> owner, int row)
+	InBetween(gsl::not_null<Board<T, N>*> owner, int row) noexcept
 		: owner_(owner), row_(row)
 	{ // private constructor prevents creation out of class
 	}

@@ -54,6 +54,12 @@
     <ClCompile Include="Solvers_set_option.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Transpose.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="exceptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Coverage\coverage.ps1" />

@@ -24,10 +24,10 @@
 // aditional
 
 
-using namespace Sudoku;
-
 namespace SudokuTests::SizeTest
 {
+using namespace ::Sudoku;
+
 namespace compiletime
 { // Type properties
 	using typeT = Size<3>;

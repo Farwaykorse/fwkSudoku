@@ -361,6 +361,7 @@
     <ClInclude Include="Board.h" />
     <ClInclude Include="Board_Sections.h" />
     <ClInclude Include="Board_Utilities.h" />
+    <ClInclude Include="exceptions.h" />
     <ClInclude Include="Location.h" />
     <ClInclude Include="Location_Utilities.h" />
     <ClInclude Include="Options.h" />
@@ -372,6 +373,7 @@
     <ClInclude Include="Solvers_find.h" />
     <ClInclude Include="Solvers_remove_option.h" />
     <ClInclude Include="Solvers_set_option.h" />
+    <ClInclude Include="Transpose.h" />
     <ClInclude Include="Value.h" />
   </ItemGroup>
   <ItemGroup>

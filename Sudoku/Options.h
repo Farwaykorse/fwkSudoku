@@ -17,6 +17,7 @@
 #include <utility>
 #include <cassert>
 
+
 namespace Sudoku
 {
 template<int E>
@@ -38,25 +39,42 @@ public:
 	Options& reset() noexcept; // set all options
 	Options& flip() noexcept;
 	Options& remove_option(Value); // remove single option
-	// TODO Options& remove_option(int value, ...);	// remove mentioned
+	// TODO Options& remove_option(Value, ...);	// remove mentioned
 	Options& add(Value);                  // add single option
 	Options& set(Value);                  // set to answer
 	Options& add_nocheck(Value) noexcept; // add single option
 	Options& set_nocheck(Value) noexcept; // set to answer
 
-	constexpr size_t size() const noexcept;
-	int count() const noexcept;      // count available options
-	int count_all() const noexcept;  // count all options (incl answer)
-	bool all() const noexcept;       // if all options available = all bits set
-	bool test(Value) const;          // if an option, or answer
-	bool is_answer() const noexcept; // is set to answer
-	bool is_empty() const noexcept;
+	[[nodiscard]] constexpr size_t size() const noexcept;
+	[[nodiscard]] size_t count() const noexcept;     // count available options
+	[[nodiscard]] size_t count_all() const noexcept; // count all (incl answer)
+	[[nodiscard]] bool all() const noexcept; // test all options available
+	[[nodiscard]] bool test(Value) const;    // if an option, or answer
+	[[nodiscard]] bool is_answer() const noexcept; // is set to answer
+	[[nodiscard]] bool is_empty() const noexcept;
 
-	bool operator[](Value) const noexcept;
+	[[nodiscard]] constexpr bool operator[](Value) const noexcept;
 	auto operator[](Value) noexcept;
 
-	bool operator==(const Options<E>&) const noexcept;
-	bool operator<(const Options<E>&) const noexcept;
+	[[nodiscard]] friend bool
+		operator==(const Options<E>& left, const Options<E>& right) noexcept
+	{
+		//? operator== what about the 0th 'is answer' bit?
+		return left.data_ == right.data_;
+	}
+	[[nodiscard]] friend bool
+		operator<(const Options<E>& left, const Options<E>& right) noexcept(
+			sizeof(Options<E>) <= sizeof(unsigned long long))
+	{
+		if constexpr (sizeof(Options<E>) <= sizeof(unsigned long))
+		{
+			return left.data_.to_ulong() < right.data_.to_ulong();
+		}
+		else
+		{
+			return left.data_.to_ullong() < right.data_.to_ullong();
+		}
+	}
 
 	// combine available options
 	Options& operator+=(const Options&) noexcept;
@@ -64,89 +82,105 @@ public:
 	Options& XOR(const Options&) noexcept;
 
 	// Debug Use Only, don't depend on it's result
-	std::string DebugString() const;
+	[[nodiscard]] std::string DebugString() const;
+
+	template<int E>
+	friend Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
 
 private:
 	// 0th bit is "need to solve":
 	// false if answer has been set = inverse of answer
 	bitset data_{};
 
-	Options& operator&=(const Options&) noexcept; // NOTE might be risky
-	template<int E>
-	friend Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
-
 }; // class Options
 
 //===--- free-functions ---------------------------------------------------===//
 
 template<int E>
-bool is_answer(const Options<E>&) noexcept;
+[[nodiscard]] bool is_answer(const Options<E>&) noexcept;
 template<int E>
-bool is_answer(const Options<E>&, const Value);
+[[nodiscard]] constexpr bool is_answer_fast(const Options<E>&) noexcept;
 template<int E>
-bool is_option(const Options<E>&, const Value);
+[[nodiscard]] bool is_answer(const Options<E>&, const Value) noexcept;
 template<int E>
-inline Value get_answer(const Options<E>&) noexcept;
+[[nodiscard]] bool is_option(const Options<E>&, const Value);
 template<int E>
-inline std::vector<Value> available(const Options<E>&) noexcept;
+[[nodiscard]] Value get_answer(const Options<E>&) noexcept;
 template<int E>
-inline Value read_next(const Options<E>&, Value start = Value{0}) noexcept;
+[[nodiscard]] std::vector<Value> available(const Options<E>&) noexcept(true);
+template<int E>
+[[nodiscard]] Value
+	read_next(const Options<E>&, Value start = Value{0}) noexcept;
 
 template<int E>
-bool operator!=(const Options<E>&, const Options<E>&) noexcept;
+[[nodiscard]] bool operator!=(const Options<E>&, const Options<E>&) noexcept;
 
 template<int E>
-bool operator==(const Options<E>&, Value) noexcept;
+[[nodiscard]] bool operator==(const Options<E>&, Value) noexcept;
 template<int E>
-bool operator==(Value, const Options<E>&) noexcept;
+[[nodiscard]] bool operator==(Value, const Options<E>&) noexcept;
 template<int E>
-bool operator!=(const Options<E>&, Value) noexcept;
+[[nodiscard]] bool operator!=(const Options<E>&, Value) noexcept;
 template<int E>
-bool operator!=(Value, const Options<E>&) noexcept;
+[[nodiscard]] bool operator!=(Value, const Options<E>&) noexcept;
 
 template<int E>
-inline Options<E> XOR(Options<E>& A, Options<E>& B) noexcept;
+[[nodiscard]] Options<E> XOR(Options<E>& A, Options<E>& B) noexcept;
 
 template<int E>
-Options<E> operator+(const Options<E>&, const Options<E>&) noexcept;
-
+[[nodiscard]] Options<E>
+	operator+(const Options<E>&, const Options<E>&) noexcept;
 template<int E>
-Options<E> operator-(const Options<E>&, const Options<E>&) noexcept;
+[[nodiscard]] Options<E>
+	operator-(const Options<E>&, const Options<E>&) noexcept;
 
 // return shared options
 template<int E>
-inline Options<E> shared(Options<E>& A, Options<E>& B) noexcept;
+[[nodiscard]] Options<E> shared(Options<E>& A, Options<E>& B) noexcept;
 template<int E>
-Options<E> operator&(const Options<E>&, const Options<E>&)noexcept;
+[[nodiscard]] Options<E>
+	operator&(const Options<E>&, const Options<E>&)noexcept;
 
 //===----------------------------------------------------------------------===//
 
-namespace
+namespace impl
 {
-	// convert to a number for use in std::bitset to use a unique bit per value
-	inline constexpr size_t exp2_(size_t value) noexcept
+	[[nodiscard]] inline constexpr size_t exp2_(size_t value) noexcept
 	{
-		return (value < 1) ? 1 : (2 * exp2_(--value));
+		return (value < 1U) ? 1U : (2U * exp2_(--value));
 	}
-	static_assert(exp2_(0) == 0x1U);
-	static_assert(exp2_(1) == 0x2U);
-	static_assert(exp2_(2) == 0x4U);
-	static_assert(exp2_(3) == 0x8U);
-	static_assert(exp2_(4) == 0x10U);
-	static_assert(exp2_(5) == 0x20U);
-	static_assert(exp2_(6) == 0x40U);
-	static_assert(exp2_(7) == 0x80U);
-	static_assert(exp2_(8) == 0x100U);
-	static_assert(exp2_(9) == 0x200U);
-} // namespace
+	static_assert(exp2_(0U) == 0x1U);
+	static_assert(exp2_(1U) == 0x2U);
+	static_assert(exp2_(2U) == 0x4U);
+	static_assert(exp2_(3U) == 0x8U);
+	static_assert(exp2_(4U) == 0x10U);
+	static_assert(exp2_(5U) == 0x20U);
+	static_assert(exp2_(6U) == 0x40U);
+	static_assert(exp2_(7U) == 0x80U);
+	static_assert(exp2_(8U) == 0x100U);
+	static_assert(exp2_(9U) == 0x200U);
+
+	// generate a bitmask to use a unique bit per value
+	//   empty for Value outside domain.
+	template<int E>
+	[[nodiscard]] inline constexpr size_t exp2_(Value value) noexcept
+	{
+		return (value > Value{E}) ? 0U : exp2_(static_cast<size_t>(value));
+	}
+	// generate a bitmask to set all bits in std::bitset
+	[[nodiscard]] inline constexpr size_t all_set(size_t elements) noexcept
+	{
+		return (exp2_(++elements) - 1U);
+	}
+} // namespace impl
 
 //===----------------------------------------------------------------------===//
 
-//	construct with all options
+//	construct with all options set
 template<int E>
-Options<E>::Options() noexcept
+inline Options<E>::Options() noexcept
 {
-	data_.set(); // all true
+	data_.flip();
 }
 
 template<int E>
@@ -161,8 +195,8 @@ inline Options<E>::Options(bitset&& other) noexcept : data_{other}
 
 //	construct with single option set to answer
 template<int E>
-constexpr Options<E>::Options(Value value) noexcept
-	: data_{exp2_(size_t{value})}
+inline constexpr Options<E>::Options(Value value) noexcept
+	: data_{impl::exp2_<E>(value)}
 {
 	assert(value <= Value{E});
 }
@@ -171,7 +205,9 @@ constexpr Options<E>::Options(Value value) noexcept
 template<int E>
 inline Options<E>& Options<E>::operator=(Value value) noexcept
 {
-	data_ = exp2_(size_t{value});
+	assert(value <= Value{E});
+
+	data_ = impl::exp2_<E>(value);
 	return *this;
 }
 
@@ -220,7 +256,7 @@ inline Options<E>& Options<E>::flip() noexcept
 template<int E>
 inline Options<E>& Options<E>::remove_option(const Value value)
 {
-	assert(value <= Value{E});
+	assert(is_valid_option<E>(value));
 	assert(not Sudoku::is_answer(*this, value));
 
 	data_.set(size_t{value}, false);
@@ -267,19 +303,19 @@ inline constexpr size_t Options<E>::size() const noexcept
 
 	//??? size() -1 better?
 	// The current implementation works with size() being 1 past the last
-	// element But the usage allows for size()-1 options to be stored Where the
-	// direct value to location implementation is just convenient The 0th
-	// element in this immplementation is just a flag (more could be added)
+	// element. But this allows for size()-1 options to be stored. The
+	// direct value to location implementation is convenient. The 0th
+	// element in this implementation is just a flag (more could be added).
 }
 
 //	available options
 //	if 1, a not processed answer
 template<int E>
-inline int Options<E>::count() const noexcept
+inline size_t Options<E>::count() const noexcept
 {
 	if (data_[0])
 	{
-		return gsl::narrow_cast<int>(data_.count()) - 1;
+		return data_.count() - 1U;
 	}
 	return 0; // NO protection vs incorrect answer bit
 }
@@ -288,16 +324,16 @@ inline int Options<E>::count() const noexcept
 //	Returns 1 if {1 option, set as answer} || {1 option, not set as anwer}
 //	Returns 0 if {empty} || {no option, but not set as answer}
 template<int E>
-inline int Options<E>::count_all() const noexcept
+inline size_t Options<E>::count_all() const noexcept
 {
 	if (data_[0])
 	{
-		return gsl::narrow_cast<int>(data_.count()) - 1;
+		return data_.count() - 1U;
 	}
-	return gsl::narrow_cast<int>(data_.count());
+	return data_.count();
 }
 
-//_Test if all bits are set
+// Test if all bits are set
 template<int E>
 inline bool Options<E>::all() const noexcept
 {
@@ -325,23 +361,26 @@ inline bool is_answer(const Options<E>& options) noexcept
 	return options.is_answer();
 }
 
+// check if set to answer without validation
+template<int E>
+inline constexpr bool is_answer_fast(const Options<E>& options) noexcept
+{
+	return !options[Value{0}];
+}
+
 // check if set to answer value
 template<int E>
-inline bool is_answer(const Options<E>& options, const Value value)
+inline bool is_answer(const Options<E>& options, const Value value) noexcept
 {
-	assert(value <= Value{E});
-
-	return (is_answer(options) && options.test(value));
-	// return (is_answer(options) && options[value]);
+	return options == Options<E>{value};
 }
 
 // check if option available
 template<int E>
 inline bool is_option(const Options<E>& options, const Value value)
 {
-	assert(value != Value{0} && value <= Value{E});
-
-	return (options.test(value) && not is_answer(options));
+	assert(is_valid_option<E>(value));
+	return (options.test(value) && not is_answer_fast(options));
 }
 
 // Test if no options or answers available
@@ -353,7 +392,7 @@ inline bool Options<E>::is_empty() const noexcept
 }
 
 // determine the answer value, even if not marked
-//   use with is_answer() to determine if flaged as anwer
+//   use with is_answer[_fast]() to determine if flaged as answer
 template<int E>
 inline Value get_answer(const Options<E>& options) noexcept
 {
@@ -369,11 +408,11 @@ template<int E>
 inline std::vector<Value> available(const Options<E>& options) noexcept(true)
 { // noexcept: only allocation can throw. Terminate, all is lost anyway.
 	std::vector<Value> values{};
-	values.reserve(static_cast<size_t>(options.count()));
+	values.reserve(options.count());
 	if (not is_answer(options) && not options.is_empty())
 	{
 		Value item{0};
-		for (auto i{0}; i < options.count(); ++i)
+		for (size_t i{0}; i < options.count(); ++i)
 		{
 			item = read_next(options, item);
 			values.emplace_back(item);
@@ -384,7 +423,7 @@ inline std::vector<Value> available(const Options<E>& options) noexcept(true)
 
 //	no-check access read only
 template<int E>
-inline bool Options<E>::operator[](const Value value) const noexcept
+inline constexpr bool Options<E>::operator[](const Value value) const noexcept
 {
 	assert(value <= Value{E});
 	return data_[size_t{value}];
@@ -396,13 +435,6 @@ inline auto Options<E>::operator[](const Value value) noexcept
 {
 	assert(value <= Value{E});
 	return data_[size_t{value}];
-}
-
-template<int E>
-inline bool Options<E>::operator==(const Options& other) const noexcept
-{
-	//?? operator== what about the 0th 'is answer' bit?
-	return data_ == other.data_;
 }
 
 template<int E>
@@ -431,13 +463,6 @@ template<int E>
 inline bool operator!=(const Value value, const Options<E>& right) noexcept
 {
 	return not(is_answer(right, value));
-}
-
-//	Basis for sorting
-template<int E>
-bool Options<E>::operator<(const Options<E>& other) const noexcept
-{
-	return data_.to_ulong() < other.data_.to_ulong();
 }
 
 //	Combine available options (binary OR)
@@ -469,6 +494,7 @@ template<int E>
 inline Options<E>
 	operator-(const Options<E>& left, const Options<E>& right) noexcept
 {
+	assert(is_answer_fast(right)); // do not remove the answer-bit
 	return left & XOR(left, right);
 }
 
@@ -480,13 +506,6 @@ inline Options<E> XOR(const Options<E>& A, const Options<E>& B) noexcept
 	return tmp.XOR(B);
 }
 
-//	Retain only shared options (binary AND)
-template<int E>
-inline Options<E>& Options<E>::operator&=(const Options& other) noexcept
-{
-	data_ &= other.data_;
-	return *this;
-}
 //	Shared options (binary AND)
 //	Prefere: shared(left, right)
 template<int E>
@@ -494,7 +513,8 @@ inline Options<E>
 	operator&(const Options<E>& left, const Options<E>& right) noexcept
 {
 	Options<E> tmp{left};
-	return tmp &= right;
+	tmp.data_ &= right.data_;
+	return tmp;
 }
 
 // Shared options

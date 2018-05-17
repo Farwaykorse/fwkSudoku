@@ -27,14 +27,15 @@
 // library
 #include <bitset>
 #include <vector>
+#include <iterator>
 #include <type_traits>
 
 
-using namespace Sudoku;
-
 namespace SudokuTests::SolversTest
 {
-TEST(Solver, find_locations)
+using namespace ::Sudoku;
+
+TEST(Solver, list_where_option__Section)
 {
 	using set = std::bitset<5>;
 	using loc = Location<2>;
@@ -48,54 +49,596 @@ TEST(Solver, find_locations)
 	B[2][0] = set{"11011"};
 	B[3][0] = set{"10011"};
 	std::vector<loc> list{};
-	// row/col/block
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), Value{1}, 3));
+
+	// return type
+	static_assert(std::is_same_v<
+				  std::vector<loc>,
+				  decltype(list_where_option<2>(B.row(0), Value{1}, 3))>);
+	// 1 section, Value, rep_count
+	static_assert(not noexcept(list_where_option<2>(B.row(0), Value{1}, 3)));
+	static_assert(not noexcept(list_where_option<2>(B.col(0), Value{1}, 3)));
+	static_assert(not noexcept(list_where_option<2>(B.block(0), Value{1}, 3)));
+
+	// invalid value
+	EXPECT_DEBUG_DEATH(
+		list_where_option<2>(B.row(0), Value{0}, 1), ".*is_valid");
+#ifdef _DEBUG
+	EXPECT_DEBUG_DEATH(
+		list_where_option<2>(B.row(0), Value{5}, 1), ".*is_valid");
+#else
+	EXPECT_ANY_THROW(list_where_option<2>(B.row(0), Value{5}, 1));
+#endif // _DEBUG
+	// invalid row id // board_sections.h
+	EXPECT_DEBUG_DEATH(
+		list_where_option<2>(B.row(-1), Value{1}, 1),
+		".*is_valid_size.N..row.");
+	EXPECT_DEBUG_DEATH(
+		list_where_option<2>(B.row(4), Value{1}, 1), ".*is_valid_size.N..row.");
+	// invalid rep_count
+	EXPECT_DEBUG_DEATH(
+		list_where_option<2>(B.row(0), Value{1}, 0), ".*rep_count");
+	list_where_option<2>(B.row(1), Value{3}, 4);
+	EXPECT_DEBUG_DEATH(
+		list_where_option<2>(B.row(1), Value{3}, 5), ".*rep_count");
+	// no result
+	// - no result: explicit
+	B[2][0] = set{"11011"};
+	B[2][1] = set{"11011"};
+	B[2][2] = set{"11011"};
+	B[2][3] = set{"11011"};
+	list    = list_where_option<2>(B.row(2), Value{2}, 4);
+	EXPECT_EQ(list.size(), size_t{0});
+	// - no result: because value is answer
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	list    = list_where_option<2>(B.row(0), Value{2}, 4);
+	EXPECT_EQ(list.size(), size_t{0});
+	// incorrect rep_count: too low
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(0), Value{1}, 2), ".*");
+	// incorrect rep_count: too high
+	// no assert: allow for use without setting a rep_count
+	list = list_where_option<2>(B.block(0), Value{1}, 3);
+	// normal operation
+	B.clear();
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[3][0] = set{"10011"};
+	list = list_where_option<2>(B.row(0), Value{1}, 3);
 	EXPECT_EQ(list.size(), size_t{3});
 	EXPECT_EQ(list[0], loc(1));
 	EXPECT_EQ(list[1], loc(2));
 	EXPECT_EQ(list[2], loc(3));
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.col(0), Value{1}, 3));
+	list = list_where_option<2>(B.col(0), Value{1}, 3);
 	EXPECT_EQ(list.size(), size_t{3});
 	EXPECT_EQ(list[0], loc(1, 0));
 	EXPECT_EQ(list[1], loc(2, 0));
 	EXPECT_EQ(list[2], loc(3, 0));
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), Value{1}, 2));
+	list = list_where_option<2>(B.block(0), Value{1}, 2);
 	EXPECT_EQ(list.size(), size_t{2});
 	EXPECT_EQ(list[0], loc(0, 1));
 	EXPECT_EQ(list[1], loc(1, 0));
+}
+
+TEST(Solver, list_where_option__itr)
+{
+	using set = std::bitset<5>;
+	using loc = Location<2>;
+	Board<Options<4>, 2> B{};
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[3][0] = set{"10011"};
+	std::vector<loc> list{};
+
+	// 2 begin, end, Value, rep_count
+	static_assert(not noexcept(
+		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1}, 3)));
+	static_assert(not noexcept(
+		list_where_option<2>(B.row(0).begin(), B.row(0).end(), Value{1}, 3)));
+	// return type
+	static_assert(std::is_same_v<
+				  std::vector<loc>,
+				  decltype(list_where_option<2>(
+					  B.row(0).cbegin(), B.row(0).cend(), Value{1}, 3))>);
+	// invalid Value
+	EXPECT_DEBUG_DEATH(
+		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{0}, 1),
+		".*is_valid");
+#ifdef _DEBUG
+	EXPECT_DEBUG_DEATH(
+		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1),
+		".*is_valid");
+#else
+	EXPECT_ANY_THROW(
+		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1));
+#endif // _DEBUG
+	// invalid rep_count
+#ifdef _DEBUG
+	EXPECT_DEBUG_DEATH(
+		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1),
+		".*rep_count");
+#else
+	EXPECT_ANY_THROW(
+		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1));
+#endif // _DEBUG
+	list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, 0);
+	list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, 4);
+	EXPECT_DEBUG_DEATH(
+		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, 5),
+		".*rep_count");
+	EXPECT_DEBUG_DEATH(
+		list_where_option<2>(
+			B.row(1).cbegin(), B.row(1).cbegin() + 2, Value{3}, 3),
+		".*rep_count");
+	// no result
+	// - no result: explicit
+	B[2][0] = set{"11011"};
+	B[2][1] = set{"11011"};
+	B[2][2] = set{"11011"};
+	B[2][3] = set{"11011"};
+	list =
+		list_where_option<2>(B.row(2).cbegin(), B.row(2).cend(), Value{2}, 4);
+	EXPECT_EQ(list.size(), size_t{0});
+	// - no result: because value is answer
+	list = list_where_option<2>(B.row(0), Value{2}, 4);
+	EXPECT_EQ(list.size(), size_t{0});
 	// incorrect rep_count: too low
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), Value{1}, 2));
-	EXPECT_EQ(list.size(), size_t{2});
-	EXPECT_EQ(list[1], loc(2));
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(
+			B.row(0).cbegin(), B.row(0).cend(), Value{1}, 2),
+		".*");
 	// incorrect rep_count: too high
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), Value{1}, 3));
-	EXPECT_EQ(list.size(), size_t{2});
-	EXPECT_EQ(list[1], loc(1, 0));
-	EXPECT_NO_FATAL_FAILURE(
-		find_locations<2>(B.row(0).cbegin(), B.row(0).cend(), Value{3}, 5));
-	// no rep_count
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), Value{1}));
+	// no assert: allow for use without setting a rep_count
+	list = list_where_option<2>(B.block(0), Value{1}, 3);
+	// normal operation
+	B.clear();
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[3][0] = set{"10011"};
+	list =
+		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1}, 3);
 	EXPECT_EQ(list.size(), size_t{3});
 	EXPECT_EQ(list[0], loc(1));
 	EXPECT_EQ(list[1], loc(2));
 	EXPECT_EQ(list[2], loc(3));
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.block(0), Value{1}));
+	list =
+		list_where_option<2>(B.col(0).cbegin(), B.col(0).cend(), Value{1}, 3);
+	EXPECT_EQ(list.size(), size_t{3});
+	EXPECT_EQ(list[0], loc(1, 0));
+	EXPECT_EQ(list[1], loc(2, 0));
+	EXPECT_EQ(list[2], loc(3, 0));
+	list = list_where_option<2>(
+		B.block(0).cbegin(), B.block(0).cend(), Value{1}, 2);
 	EXPECT_EQ(list.size(), size_t{2});
+	EXPECT_EQ(list[0], loc(0, 1));
 	EXPECT_EQ(list[1], loc(1, 0));
+}
+
+TEST(Solver, list_where_option__no_rep_count)
+{
+	using set = std::bitset<5>;
+	using loc = Location<2>;
+	Board<Options<4>, 2> B{};
+	std::vector<loc> list{};
+
+	static_assert(not noexcept(list_where_option<2>(B.row(0), Value{1})));
+	//static_assert(not noexcept(
+	//	list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1})));
+
+	// row/col/block
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[3][0] = set{"10011"};
+	list = list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1});
+	EXPECT_EQ(list.size(), size_t{3});
+	EXPECT_EQ(list[0], loc(1));
+	EXPECT_EQ(list[1], loc(2));
+	EXPECT_EQ(list[2], loc(3));
+	list = list_where_option<2>(B.col(0).cbegin(), B.col(0).cend(), Value{1});
+	EXPECT_EQ(list.size(), size_t{3});
+	EXPECT_EQ(list[0], loc(1, 0));
+	EXPECT_EQ(list[1], loc(2, 0));
+	EXPECT_EQ(list[2], loc(3, 0));
+	list = list_where_option<2>(B.block(0).cbegin(), B.block(0).cend(), Value{1});
+	EXPECT_EQ(list.size(), size_t{2});
+	EXPECT_EQ(list[0], loc(0, 1));
+	EXPECT_EQ(list[1], loc(1, 0));
+}
+
+TEST(Solver, list_where_option__partial)
+{
+	using set = std::bitset<5>;
+	using loc = Location<2>;
+	Board<Options<4>, 2> B{};
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[3][0] = set{"10011"};
+	std::vector<loc> list{};
+
 	// partial section
-	EXPECT_NO_FATAL_FAILURE(
-		list = find_locations<2>(
-			B.row(0).cbegin() + 2, B.row(0).cend(), Value{1}, 2));
+	list = list_where_option<2>(
+		B.row(0).cbegin() + 2, B.row(0).cend(), Value{1}, 2);
 	EXPECT_EQ(list.size(), size_t{2});
 	EXPECT_EQ(list[0], loc(2));
 	EXPECT_EQ(list[1], loc(3));
+}
 
-	// find Options
+TEST(Solver, list_where_option__Value)
+{ // list_where_option(SectionT, Value)
+	using set     = std::bitset<5>;
+	using loc     = Location<2>;
+	using Options = Options<4>;
+	Board<Options, 2> B{};
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[2][1] = set{"11110"}; // incorrect marked as answer
+	B[3][0] = set{"10011"};
+	std::vector<loc> list{};
+
+	// exceptions
+	// - vector out-of-memory
+	// - push_back: strong exception guarantee
+	//	 Location is nothrow move constructable
+
+	// row/col/block
+	static_assert(not noexcept(list_where_option<2>(B.row(0), Value{1})));
+	static_assert(not noexcept(list_where_option<2>(B.col(0), Value{1})));
+	static_assert(not noexcept(list_where_option<2>(B.block(0), Value{1})));
+	// return type
+	static_assert(std::is_same_v<
+				  std::vector<loc>,
+				  decltype(list_where_option<2>(B.row(0), Value{1}))>);
+	// valid_value
+	static_assert(not noexcept(list_where_option<2>(B.row(1), Value{1})));
+	static_assert(not noexcept(list_where_option<2>(B.row(0), Value{2})));
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(0), Value{0}), ".*is_valid");
+	list = list_where_option<2>(B.row(0), Value{1});
+	list = list_where_option<2>(B.row(0), Value{4});
+#ifdef _DEBUG
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(0), Value{5}), ".*is_valid");
+#else
+	// - Options::is_option() - std::bitset::test() std::out_of_range
+	EXPECT_THROW(
+		list = list_where_option<2>(B.row(0), Value{5}), std::out_of_range);
+#endif // _DEBUG
+	// Do not return answered
+	list = list_where_option<2>(B.row(0), Value{2});
+	EXPECT_EQ(list.size(), size_t{0});
+	list = list_where_option<2>(B.row(2), Value{2});
+	EXPECT_EQ(list.size(), size_t{2}); // even when marked wrong
+
+	// row/col/block
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[3][0] = set{"10011"};
+	list    = list_where_option<2>(B.row(0), Value{1});
+	EXPECT_EQ(list.size(), size_t{3});
+	EXPECT_EQ(list[0], loc(1));
+	EXPECT_EQ(list[1], loc(2));
+	EXPECT_EQ(list[2], loc(3));
+	list = list_where_option<2>(B.col(0), Value{1});
+	EXPECT_EQ(list.size(), size_t{3});
+	EXPECT_EQ(list[0], loc(1, 0));
+	EXPECT_EQ(list[1], loc(2, 0));
+	EXPECT_EQ(list[2], loc(3, 0));
+	list = list_where_option<2>(B.block(0), Value{1});
+	EXPECT_EQ(list.size(), size_t{2});
+	EXPECT_EQ(list[0], loc(0, 1));
+	EXPECT_EQ(list[1], loc(1, 0));
+}
+
+TEST(Solver, list_where_option_pOptions)
+{ // list_where_option(Section, Options)
+	using set     = std::bitset<5>;
+	using loc     = Location<2>;
+	using Options = Options<4>;
+	Board<Options, 2> B{};
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[2][1] = set{"11110"}; // incorrect marked as answer
+	B[3][0] = set{"10011"};
+	std::vector<loc> list{};
+
+	// exceptions
+	// - vector out-of-memory
+	// - push_back: strong exception guarantee
+	//	 Location is nothrow move constructable
+	static_assert(noexcept(list_where_option<2>(B.row(0), Options{Value{1}})));
+	static_assert(noexcept(list_where_option<2>(B.row(0), B[0][2])));
+	list = list_where_option<2>(B.row(0), Options{Value{0}});
+	list = list_where_option<2>(B.row(0), Options{Value{4}});
+	// cought in Options constructor
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(0), Options{Value{5}}), ".*<= Value");
+	// return type
+	static_assert(std::is_same_v<
+				  std::vector<loc>,
+				  decltype(list_where_option<2>(B.row(0), Options{Value{1}}))>);
+	list = list_where_option<2>(B.row(0), Options{Value{0}});
+	EXPECT_EQ(list.size(), size_t{3});
+	EXPECT_EQ(list[0], loc{1});
+	EXPECT_EQ(list[1], loc{2});
+	EXPECT_EQ(list[2], loc{3});
+	list = list_where_option<2>(B.row(0), Options{Value{2}});
+	EXPECT_EQ(list.size(), size_t{0});
+	// ignore answer-bit in sample
+	list = list_where_option<2>(B.row(0), Options{set{"11010"}});
+	EXPECT_EQ(list.size(), size_t{2});
+	EXPECT_EQ(list[0], loc{1});
+	EXPECT_EQ(list[1], loc{3});
+	list = list_where_option<2>(B.row(0), Options{set{"11011"}});
+	EXPECT_EQ(list.size(), size_t{2});
+	EXPECT_EQ(list[0], loc{1});
+	EXPECT_EQ(list[1], loc{3});
+	// Do not return answered locations
+	list = list_where_option<2>(B.row(0), Options{set{"00100"}});
+	EXPECT_EQ(list.size(), size_t{0});
+	list = list_where_option<2>(B.row(2), Options{set{"00100"}});
+	EXPECT_EQ(list.size(), size_t{2}); // even when marked wrong
+}
+
+TEST(Solver, list_where_equal)
+{
+	using set = std::bitset<5>;
+	using loc = Location<2>;
+	Board<Options<4>, 2> B{};
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[3][0] = set{"10011"};
+	std::vector<loc> list{};
+
+	static_assert(
+		noexcept(list_where_equal<2>(B.row(0), Options<4>{Value{1}})));
+	static_assert(noexcept(list_where_equal<2>(B.row(0), B[0][1])));
+
+	static_assert(std::is_same_v<
+				  std::vector<loc>,
+				  decltype(list_where_equal<2>(B.row(0), Options<4>{}))>);
 	const Options<4> value{set{"10011"}};
-	EXPECT_NO_FATAL_FAILURE(list = find_locations<2>(B.row(0), value));
+	EXPECT_NO_FATAL_FAILURE(list = list_where_equal<2>(B.row(0), value));
 	EXPECT_EQ(list.size(), size_t{1});
 	EXPECT_EQ(list[0], loc(2));
+
+	EXPECT_NO_FATAL_FAILURE(
+		list = list_where_equal<2>(B.row(0), Options<4>{Value{1}}));
+	EXPECT_EQ(list.size(), size_t{0});
+	EXPECT_NO_FATAL_FAILURE(
+		list = list_where_equal<2>(B.row(0), Options<4>{Value{2}}));
+	EXPECT_EQ(list.size(), size_t{1});
+	EXPECT_EQ(list[0], Location<2>{0});
+	EXPECT_NO_FATAL_FAILURE(list = list_where_equal<2>(B.row(0), B[0][1]));
+	EXPECT_EQ(list.size(), size_t{2});
+	EXPECT_EQ(list[0], Location<2>(0, 1));
+	EXPECT_EQ(list[1], Location<2>(0, 3));
 }
+
+TEST(Solver, list_where_subset)
+{
+	using L       = Location<2>;
+	using B       = std::bitset<5>;
+	using Options = Options<4>;
+	Board<Options, 2> board{};
+	board.at(L{0})    = B{"01111"};
+	board.at(L{1})    = B{"11111"}; // should be 10000
+	board.at(L{2})    = B{"00111"};
+	board.at(L{3})    = B{"00101"};
+	board.at(L{1, 0}) = B{"00100"}; // answer 2
+	board.at(L{1, 1}) = B{"11110"}; // incorrect marked as anwer
+	board.at(L{1, 2}) = B{"11111"};
+	board.at(L{1, 3}) = B{"11111"};
+	board.at(L{2, 0}) = B{"11111"};
+	board.at(L{2, 1}) = B{"11111"};
+	board.at(L{2, 2}) = B{"11111"};
+	board.at(L{2, 3}) = B{"11111"};
+	board.at(L{3, 0}) = B{"11111"};
+	board.at(L{3, 1}) = B{"11111"};
+	board.at(L{3, 2}) = B{"11111"};
+	board.at(L{3, 3}) = B{"11111"};
+
+	// return type
+	static_assert(std::is_same_v<
+				  std::vector<L>,
+				  decltype(list_where_subset(board, Options()))>);
+	static_assert(std::is_same_v<
+				  std::vector<L>,
+				  decltype(list_where_subset<2>(board.row(L{0}), Options()))>);
+
+	// exceptions
+	// - vector out-of-memory
+	// - push_back: strong exception guarantee
+	//	 Location is nothrow move constructable
+	static_assert(noexcept(list_where_subset(board, Options{})));
+	static_assert(noexcept(list_where_subset<2>(board.row(L{0}), Options())));
+
+	// inputs
+	// normal sample
+	Options item{B{"00111"}};
+	auto result = list_where_subset(board, item);
+	ASSERT_EQ(result.size(), 2u);
+	EXPECT_EQ(result[0], L{2});
+	EXPECT_EQ(result[1], L{3});
+	result = list_where_subset(board, board[L{0}]);
+	ASSERT_EQ(result.size(), 3u);
+	EXPECT_EQ(result[0], L{0});
+	EXPECT_EQ(result[2], L{3});
+	result = list_where_subset(board, Options{B{"00101"}});
+	EXPECT_EQ(result.size(), 1u);
+	// answer sample
+	result = list_where_subset(board, Options{Value{2}});
+	ASSERT_EQ(result.size(), 0u);
+	// full sample
+	result = list_where_subset(board, Options());
+	ASSERT_EQ(result.size(), 14u); // 2 marked as answer
+	EXPECT_EQ(result[0], L(0));
+	EXPECT_EQ(result[13], L(15));
+	// empty sample
+	result = list_where_subset(board, Options{B{"00000"}});
+	ASSERT_EQ(result.size(), 0u);
+	result = list_where_subset(board, Options{B{"00001"}});
+	ASSERT_EQ(result.size(), 0u);
+	// invalid sample (answer-bit set)
+	result = list_where_subset(board, Options{B{"11110"}});
+	ASSERT_EQ(result.size(), 0u);
+
+	// only on the row:
+	item         = B{"00111"};
+	auto section = board.row(L{0});
+	result       = list_where_subset<2>(section, item);
+	ASSERT_EQ(result.size(), 2u);
+	EXPECT_EQ(result[0], L{2});
+	EXPECT_EQ(result[1], L{3});
+	result = list_where_subset<2>(section, board[L{0}]);
+	ASSERT_EQ(result.size(), 3u);
+	EXPECT_EQ(result[0], L{0});
+	EXPECT_EQ(result[2], L{3});
+	result = list_where_subset<2>(section, Options{B{"00101"}});
+	EXPECT_EQ(result.size(), 1u);
+	// answer sample
+	result = list_where_subset<2>(section, Options{Value{2}});
+	ASSERT_EQ(result.size(), 0u);
+	// full sample
+	result = list_where_subset<2>(section, Options());
+	ASSERT_EQ(result.size(), 4u); // 2 marked as answer
+	EXPECT_EQ(result[0], L(0));
+	EXPECT_EQ(result[3], L(3));
+	// empty sample
+	result = list_where_subset<2>(section, Options{B{"00000"}});
+	ASSERT_EQ(result.size(), 0u);
+	result = list_where_subset<2>(section, Options{B{"00001"}});
+	ASSERT_EQ(result.size(), 0u);
+	// invalid sample (answer-bit set)
+	result = list_where_subset<2>(section, Options{B{"11110"}});
+	ASSERT_EQ(result.size(), 0u);
+}
+
+TEST(Solver, list_where_any_option)
+{
+	using set     = std::bitset<5>;
+	using loc     = Location<2>;
+	using Options = Options<4>;
+	Board<Options, 2> B{};
+	std::vector<loc> list{};
+	// B[1][0] = set{"01011"};
+	// B[1][1] = set{"11001"};
+	// B[2][0] = set{"11011"};
+	// B[2][1] = set{"11110"}; // incorrect marked as answer
+	// B[3][0] = set{"10011"};
+
+	// exceptions
+	// - vector out-of-memory
+	// - push_back: strong exception guarantee
+	//	 Location is nothrow move constructable
+	static_assert(
+		noexcept(list_where_any_option<2>(B.row(0), Options{Value{1}})));
+	static_assert(noexcept(list_where_any_option<2>(B.row(0), B[0][2])));
+	list = list_where_any_option<2>(B.row(0), Options{Value{0}});
+	list = list_where_any_option<2>(B.row(0), Options{Value{4}});
+	// cought in Options constructor
+	EXPECT_DEBUG_DEATH(
+		list = list_where_any_option<2>(B.row(0), Options{Value{5}}),
+		".*<= Value");
+
+	// return type
+	static_assert(
+		std::is_same_v<
+			std::vector<loc>,
+			decltype(list_where_any_option<2>(B.row(0), Options{Value{1}}))>);
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	list    = list_where_any_option<2>(B.row(0), Options{set{"11000"}});
+	EXPECT_EQ(list.size(), size_t{3});
+	EXPECT_EQ(list[0], loc{1});
+	list = list_where_any_option<2>(B.row(0), Options{set{"01000"}});
+	EXPECT_EQ(list.size(), size_t{2});
+	if (list.size() > size_t{0}) EXPECT_EQ(list[0], loc{1});
+	if (list.size() > size_t{1}) EXPECT_EQ(list[1], loc{3});
+	// answered
+	list = list_where_any_option<2>(B.row(0), Options{set{"00100"}});
+	EXPECT_EQ(list.size(), size_t{0});
+	// answer-bit
+	EXPECT_EQ(
+		list_where_any_option<2>(B.row(0), Options{set{"01000"}}),
+		list_where_any_option<2>(B.row(0), Options{set{"01001"}}));
+	// all
+	list = list_where_any_option<2>(B.row(0), Options{set{"11111"}});
+	EXPECT_EQ(list.size(), size_t{3});
+	// incorrect marked as answer
+	B[0][0] = set{"11100"};
+	list    = list_where_any_option<2>(B.row(0), Options{set{"00101"}});
+	EXPECT_EQ(list.size(), size_t{0});
+	// col
+	B[0][2] = set{"11101"};
+	B[1][2] = set{"11111"};
+	B[2][2] = set{"10011"};
+	B[3][2] = set{"11011"};
+	list    = list_where_any_option<2>(B.col(2), Options{set{"00101"}});
+	EXPECT_EQ(list.size(), size_t{2});
+	if (list.size() > size_t{0}) EXPECT_EQ(list[0], loc(0, 2));
+	if (list.size() > size_t{1}) EXPECT_EQ(list[1], loc(1, 2));
+	list = list_where_any_option<2>(B.col(2), Options{set{"01100"}});
+	EXPECT_EQ(list.size(), size_t{3});
+	if (list.size() > size_t{2}) EXPECT_EQ(list[2], loc(3, 2));
+}
+
 TEST(Solver, appearance_once)
 {
 	// clang-format off
@@ -112,33 +655,33 @@ TEST(Solver, appearance_once)
 
 	// Using iterators
 	EXPECT_NO_THROW(set_Value(B1, v1.cbegin(), v1.cend()));
-	EXPECT_EQ(B1[3][3].count(), 4);
+	EXPECT_EQ(B1[3][3].count(), 4U);
 	EXPECT_TRUE(is_option(B1[3][3], Value{1}));
 	// on row
 	EXPECT_NO_THROW(
 		result = appearance_once<2>(B1.row(3).cbegin(), B1.row(3).cend()));
-	EXPECT_EQ(result.count_all(), 1);
+	EXPECT_EQ(result.count_all(), 1U);
 	EXPECT_TRUE(result.test(Value{1}));
 	// on col
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(
 		result = appearance_once<2>(B1.col(3).cbegin(), B1.col(3).cend()));
-	EXPECT_EQ(result.count_all(), 1);
+	EXPECT_EQ(result.count_all(), 1U);
 	EXPECT_TRUE(result.test(Value{1}));
 	// on block
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(
 		result = appearance_once<2>(B1.block(3).cbegin(), B1.block(3).cend()));
-	EXPECT_EQ(result.count_all(), 1);
+	EXPECT_EQ(result.count_all(), 1U);
 	EXPECT_TRUE(result.test(Value{1}));
 	// nothing
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(
 		result = appearance_once<2>(B1.row(0).cbegin(), B1.row(0).cend()));
-	EXPECT_EQ(result.count_all(), 0);
+	EXPECT_EQ(result.count_all(), 0U);
 	EXPECT_FALSE(result.test(Value{1}));
 
 	// Using Sections
@@ -146,28 +689,28 @@ TEST(Solver, appearance_once)
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(result = appearance_once<2>(B1.row(3)));
-	EXPECT_EQ(result.count_all(), 1);
+	EXPECT_EQ(result.count_all(), 1U);
 	EXPECT_TRUE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_empty());
 	// Col
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(result = appearance_once<2>(B1.col(3)));
-	EXPECT_EQ(result.count_all(), 1);
+	EXPECT_EQ(result.count_all(), 1U);
 	EXPECT_TRUE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_empty());
 	// Block
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(result = appearance_once<2>(B1.block(3)));
-	EXPECT_EQ(result.count_all(), 1);
+	EXPECT_EQ(result.count_all(), 1U);
 	EXPECT_TRUE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_empty());
 	// nothing, Row
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(result = appearance_once<2>(B1.row(0)));
-	EXPECT_EQ(result.count_all(), 0);    // <==
+	EXPECT_EQ(result.count_all(), 0U);   // <==
 	EXPECT_FALSE(result.test(Value{1})); // <==
 	EXPECT_TRUE(result.is_empty());      // <==
 	//===------------------------------------------------------------------===//
@@ -182,38 +725,38 @@ TEST(Solver, appearance_once)
 		const std::vector<int> v4{
 			0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 		set_Value(B4, v4.cbegin(), v4.cend());
-		EXPECT_EQ(B4[0][0].count(), 3);
-		EXPECT_EQ(B4[0][1].count(), 3);
-		EXPECT_EQ(B4[0][2].count(), 3);
-		EXPECT_EQ(B4[0][3].count(), 4);
-		EXPECT_EQ(B4[2][1].count(), 4);
+		EXPECT_EQ(B4[0][0].count(), 3U);
+		EXPECT_EQ(B4[0][1].count(), 3U);
+		EXPECT_EQ(B4[0][2].count(), 3U);
+		EXPECT_EQ(B4[0][3].count(), 4U);
+		EXPECT_EQ(B4[2][1].count(), 4U);
 		auto result4 = appearance_once<2>(B4.row(0));
 		EXPECT_TRUE(result4[Value{0}]); // answer bit
-		EXPECT_EQ(result4.count(), 1);
-		EXPECT_EQ(result4.count_all(), 1);
+		EXPECT_EQ(result4.count(), 1U);
+		EXPECT_EQ(result4.count_all(), 1U);
 		EXPECT_TRUE(result4[Value{1}]);
 		EXPECT_FALSE(result4.is_empty());
 		result4 = appearance_once<2>(B4.row(1));
 		EXPECT_TRUE(result4[Value{0}]); // answer bit
-		EXPECT_EQ(result4.count(), 0);
-		EXPECT_EQ(result4.count_all(), 0);
+		EXPECT_EQ(result4.count(), 0U);
+		EXPECT_EQ(result4.count_all(), 0U);
 		EXPECT_TRUE(result4.is_empty());
 		result4 = appearance_once<2>(B4.row(2));
 		EXPECT_TRUE(result4[Value{0}]); // answer bit
-		EXPECT_EQ(result4.count(), 1);
-		EXPECT_EQ(result4.count_all(), 1);
+		EXPECT_EQ(result4.count(), 1U);
+		EXPECT_EQ(result4.count_all(), 1U);
 		EXPECT_TRUE(result4[Value{1}]);
 		EXPECT_FALSE(result4.is_empty());
 		result4 = appearance_once<2>(B4.col(3));
 		EXPECT_TRUE(result4[Value{0}]); // answer bit
-		EXPECT_EQ(result4.count(), 1);
-		EXPECT_EQ(result4.count_all(), 1);
+		EXPECT_EQ(result4.count(), 1U);
+		EXPECT_EQ(result4.count_all(), 1U);
 		EXPECT_TRUE(result4[Value{1}]);
 		EXPECT_FALSE(result4.is_empty());
 		result4 = appearance_once<2>(B4.block(1));
 		EXPECT_TRUE(result4[Value{0}]); // answer bit
-		EXPECT_EQ(result4.count(), 1);
-		EXPECT_EQ(result4.count_all(), 1);
+		EXPECT_EQ(result4.count(), 1U);
+		EXPECT_EQ(result4.count_all(), 1U);
 		EXPECT_TRUE(result4[Value{1}]);
 		EXPECT_FALSE(result4.is_empty());
 	}
@@ -228,20 +771,20 @@ TEST(Solver, appearance_once)
 		EXPECT_TRUE(is_answer(B5[0][3], Value{4}));
 		auto result1 = appearance_once<2>(B5.row(0));
 		EXPECT_TRUE(result1[Value{0}]); // answer bit
-		EXPECT_EQ(result1.count(), 0);
-		EXPECT_EQ(result1.count_all(), 0);
+		EXPECT_EQ(result1.count(), 0U);
+		EXPECT_EQ(result1.count_all(), 0U);
 		EXPECT_TRUE(result1.is_empty());
 		auto result2 = appearance_once<2>(B5.row(0).cbegin(), B5.row(0).cend());
 		EXPECT_TRUE(result2[Value{0}]); // answer bit
 		EXPECT_TRUE(result2.is_empty());
 		auto result3 = appearance_once<2>(B5.row(3));
 		EXPECT_TRUE(result3[Value{0}]); // answer bit
-		EXPECT_EQ(result3.count(), 0);
+		EXPECT_EQ(result3.count(), 0U);
 		EXPECT_TRUE(result3.is_empty());
 	}
 }
 
-TEST(Solvers_, appearance_sets)
+TEST(Solver, appearance_sets)
 {
 	// Example as shown in implementation
 	Board<Options<9>, 3> board{};
@@ -415,70 +958,35 @@ TEST(Solvers_, appearance_sets)
 		const std::vector<int> v4{
 			0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 		set_Value(B4, v4.cbegin(), v4.cend());
-		EXPECT_EQ(B4[0][0].count(), 3);
-		EXPECT_EQ(B4[0][1].count(), 3);
-		EXPECT_EQ(B4[0][2].count(), 3);
-		EXPECT_EQ(B4[0][3].count(), 4);
-		EXPECT_EQ(B4[2][1].count(), 4);
+		EXPECT_EQ(B4[0][0].count(), 3U);
+		EXPECT_EQ(B4[0][1].count(), 3U);
+		EXPECT_EQ(B4[0][2].count(), 3U);
+		EXPECT_EQ(B4[0][3].count(), 4U);
+		EXPECT_EQ(B4[2][1].count(), 4U);
 		auto result = appearance_sets<2>(B4.row(0));
 		EXPECT_EQ(result.size(), size_t{3}); // max = N
 		EXPECT_TRUE(result[0].is_empty());
 		EXPECT_TRUE(result[1][Value{0}]); // answer bit
-		EXPECT_EQ(result[1].count(), 1);
+		EXPECT_EQ(result[1].count(), 1U);
 		EXPECT_TRUE(result[1][Value{1}]);
-		EXPECT_EQ(result[2].count(), 0);
+		EXPECT_EQ(result[2].count(), 0U);
 		result = appearance_sets<2>(B4.row(1));
 		EXPECT_TRUE(result[0].is_empty());
-		EXPECT_EQ(result[1].count(), 0);
+		EXPECT_EQ(result[1].count(), 0U);
 		EXPECT_TRUE(result[1].is_empty());
 		EXPECT_TRUE(result[2].is_empty());
 		result = appearance_sets<2>(B4.row(2));
 		EXPECT_TRUE(result[0].is_empty());
-		EXPECT_EQ(result[1].count(), 1);
+		EXPECT_EQ(result[1].count(), 1U);
 		EXPECT_TRUE(result[1][Value{1}]);
 		result = appearance_sets<2>(B4.col(3));
 		EXPECT_TRUE(result[0].is_empty());
-		EXPECT_EQ(result[1].count(), 1);
+		EXPECT_EQ(result[1].count(), 1U);
 		EXPECT_TRUE(result[1][Value{1}]);
 		result = appearance_sets<2>(B4.block(1));
 		EXPECT_TRUE(result[0].is_empty());
-		EXPECT_EQ(result[1].count(), 1);
+		EXPECT_EQ(result[1].count(), 1U);
 		EXPECT_TRUE(result[1][Value{1}]);
-	}
-}
-
-TEST(Solver, deathtest_find)
-{
-	// find_locations()
-	{
-		using set = std::bitset<5>;
-		using loc = Location<2>;
-		Board<Options<4>, 2> B5{};
-		B5[0][0] = set{"00100"}; // ans 2
-		B5[0][1] = set{"11011"};
-		B5[0][2] = set{"10011"};
-		B5[0][3] = set{"11011"};
-		B5[1][0] = set{"01011"};
-		B5[1][1] = set{"11001"};
-		B5[2][0] = set{"11011"};
-		B5[3][0] = set{"10011"};
-		std::vector<loc> list{};
-		// rep_count = 0
-		EXPECT_DEBUG_DEATH(
-			find_locations<2>(B5.row(0), Value{3}, 0),
-			"Assertion failed: rep_count > 0");
-		// section -> rep_count > elem_size
-		EXPECT_DEBUG_DEATH(
-			find_locations<2>(B5.row(0), Value{3}, 5),
-			"Assertion failed: .* <= elem_size");
-		// itr -> rep_count > full_size
-		EXPECT_DEBUG_DEATH(
-			find_locations<2>(
-				B5.row(0).cbegin(), B5.row(0).cend(), Value{3}, 17),
-			"Assertion failed: .* <= full_size");
-		EXPECT_DEBUG_DEATH(
-			find_locations<2>(B5.row(0).cbegin(), B5.row(0).cend(), Value{2}),
-			"Assertion failed: not.*empty..");
 	}
 }
 
