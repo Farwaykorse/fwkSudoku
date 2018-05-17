@@ -291,7 +291,7 @@ template<typename T, int N>
 typename Board<T, N>::InBetween Board<T, N>::operator[](const int row) noexcept
 {
 	// Element Selection Operator (using a proxy object)
-	return InBetween(this, row);
+	return InBetween(gsl::not_null<Board*>{this}, row);
 }
 
 // Element Selection Operator (using a proxy object)
@@ -300,7 +300,7 @@ template<typename T, int N>
 const typename Board<T, N>::const_InBetween Board<T, N>::
 	operator[](const int row) const noexcept
 {
-	return const_InBetween(this, row);
+	return const_InBetween(gsl::not_null<Board const*>{this}, row);
 }
 // InBetween
 

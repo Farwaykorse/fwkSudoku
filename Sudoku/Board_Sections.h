@@ -69,17 +69,27 @@ public:
 		assert(is_valid_size<N>(col));
 		return no_check(Location(id(), col));
 	}
-	// clang-format off
 	using const_iterator = const_iterator<T, N, self_type>;
-	const_iterator cbegin() const noexcept {return const_iterator(this);}
-	const_iterator cend() const noexcept  {return const_iterator(this, size());}
-	const_iterator begin() const noexcept {return cbegin();}
-	const_iterator end() const noexcept   {return cend();}
-	constexpr auto crbegin() const {return std::make_reverse_iterator(cend());}
-	constexpr auto crend() const {return std::make_reverse_iterator(cbegin());}
-	auto rbegin() const noexcept {return crbegin();}
-	auto rend() const noexcept   {return crend();}
-	// clang-format on
+	const_iterator cbegin() const noexcept
+	{
+		return const_iterator(gsl::not_null<decltype(this)>{this});
+	}
+	const_iterator cend() const noexcept
+	{
+		return const_iterator(gsl::not_null<decltype(this)>{this}, size());
+	}
+	const_iterator begin() const noexcept { return cbegin(); }
+	const_iterator end() const noexcept { return cend(); }
+	constexpr auto crbegin() const
+	{
+		return std::make_reverse_iterator(cend());
+	}
+	constexpr auto crend() const
+	{
+		return std::make_reverse_iterator(cbegin());
+	}
+	auto rbegin() const noexcept { return crbegin(); }
+	auto rend() const noexcept { return crend(); }
 	constexpr Location location(const int element) const noexcept
 	{
 		assert(is_valid_size<N>(element));
@@ -131,17 +141,27 @@ public:
 		assert(is_valid_size<N>(row));
 		return no_check(Location(row, id()));
 	}
-	// clang-format off
 	using const_iterator = const_iterator<T, N, self_type>;
-	const_iterator cbegin() const noexcept {return const_iterator(this);}
-	const_iterator cend() const noexcept  {return const_iterator(this, size());}
-	const_iterator begin() const noexcept {return cbegin();}
-	const_iterator end() const noexcept   {return cend();}
-	constexpr auto crbegin() const {return std::make_reverse_iterator(cend());}
-	constexpr auto crend() const   {return std::make_reverse_iterator(cbegin());}
-	auto rbegin() const noexcept   {return crbegin();}
-	auto rend() const noexcept     {return crend();}
-	// clang-format on
+	const_iterator cbegin() const noexcept
+	{
+		return const_iterator(gsl::not_null<decltype(this)>{this});
+	}
+	const_iterator cend() const noexcept
+	{
+		return const_iterator(gsl::not_null<decltype(this)>{this}, size());
+	}
+	const_iterator begin() const noexcept { return cbegin(); }
+	const_iterator end() const noexcept { return cend(); }
+	constexpr auto crbegin() const
+	{
+		return std::make_reverse_iterator(cend());
+	}
+	constexpr auto crend() const
+	{
+		return std::make_reverse_iterator(cbegin());
+	}
+	auto rbegin() const noexcept { return crbegin(); }
+	auto rend() const noexcept { return crend(); }
 	constexpr Location location(const int element) const noexcept
 	{
 		assert(is_valid_size<N>(element));
@@ -181,17 +201,27 @@ public:
 		assert(is_valid_size<N>(elem));
 		return no_check(location(elem));
 	}
-	// clang-format off
 	using const_iterator = const_iterator<T, N, self_type>;
-	const_iterator cbegin() const noexcept {return const_iterator(this);}
-	const_iterator cend() const noexcept  {return const_iterator(this, size());}
-	const_iterator begin() const noexcept {return cbegin();}
-	const_iterator end() const noexcept   {return cend();}
-	constexpr auto crbegin() const {return std::make_reverse_iterator(cend());}
-	constexpr auto crend() const  {return std::make_reverse_iterator(cbegin());}
-	auto rbegin() const noexcept  {return crbegin();}
-	auto rend() const noexcept    {return crend();}
-	// clang-format on
+	const_iterator cbegin() const noexcept
+	{
+		return const_iterator(gsl::not_null<decltype(this)>{this});
+	}
+	const_iterator cend() const noexcept
+	{
+		return const_iterator(gsl::not_null<decltype(this)>{this}, size());
+	}
+	const_iterator begin() const noexcept { return cbegin(); }
+	const_iterator end() const noexcept { return cend(); }
+	constexpr auto crbegin() const
+	{
+		return std::make_reverse_iterator(cend());
+	}
+	constexpr auto crend() const
+	{
+		return std::make_reverse_iterator(cbegin());
+	}
+	auto rbegin() const noexcept { return crbegin(); }
+	auto rend() const noexcept { return crend(); }
 	constexpr Location location(const int element) const noexcept
 	{
 		assert(is_valid_size<N>(element));
@@ -230,13 +260,17 @@ public:
 		assert(is_valid_size<N>(col));
 		return no_check(Location(id(), col));
 	}
-	// clang-format off
 	using iterator = iterator<T, N, self_type>;
-	iterator begin() noexcept { return iterator(this); }
-	iterator end() noexcept   { return iterator(this, size()); }
-	constexpr auto rbegin()   { return std::make_reverse_iterator(end()); }
-	constexpr auto rend()     { return std::make_reverse_iterator(begin()); }
-	// clang-format on
+	iterator begin() noexcept
+	{
+		return iterator(gsl::not_null<decltype(this)>{this});
+	}
+	iterator end() noexcept
+	{
+		return iterator(gsl::not_null<decltype(this)>{this}, size());
+	}
+	constexpr auto rbegin() { return std::make_reverse_iterator(end()); }
+	constexpr auto rend() { return std::make_reverse_iterator(begin()); }
 
 private:
 	Board<T, N>& owner_; // const-pointer
@@ -281,13 +315,17 @@ public:
 		assert(is_valid_size<N>(row));
 		return no_check(Location(row, id()));
 	}
-	// clang-format off
 	using iterator = iterator<T, N, self_type>;
-	iterator begin() noexcept { return iterator(this); }
-	iterator end() noexcept   { return iterator(this, size()); }
-	constexpr auto rbegin()   { return std::make_reverse_iterator(end()); }
-	constexpr auto rend()     { return std::make_reverse_iterator(begin()); }
-	// clang-format on
+	iterator begin() noexcept
+	{
+		return iterator(gsl::not_null<decltype(this)>{this});
+	}
+	iterator end() noexcept
+	{
+		return iterator(gsl::not_null<decltype(this)>{this}, size());
+	}
+	constexpr auto rbegin() { return std::make_reverse_iterator(end()); }
+	constexpr auto rend() { return std::make_reverse_iterator(begin()); }
 
 private:
 	Board<T, N>& owner_; // const-pointer
@@ -330,13 +368,18 @@ public:
 		assert(is_valid_size<N>(elem));
 		return no_check(Location_Block<N>(id(), elem));
 	}
-	// clang-format off
 	using iterator = iterator<T, N, self_type>;
-	iterator begin() noexcept { return iterator(this); }
-	iterator end() noexcept   { return iterator(this, size()); }
-	constexpr auto rbegin()   { return std::make_reverse_iterator(end()); }
-	constexpr auto rend()     { return std::make_reverse_iterator(begin()); }
-	// clang-format on
+	iterator begin() noexcept
+	{
+		return iterator(gsl::not_null<decltype(this)>{this});
+	}
+	iterator end() noexcept
+	{
+		return iterator(gsl::not_null<decltype(this)>{this}, size());
+	}
+	constexpr auto rbegin() { return std::make_reverse_iterator(end()); }
+	constexpr auto rend() { return std::make_reverse_iterator(begin()); }
+
 private:
 	Board<T, N>& owner_; // const-pointer
 
