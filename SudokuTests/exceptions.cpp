@@ -57,7 +57,7 @@ TEST(Error, invalid_Board)
 		static_assert(std::is_move_constructible_v<typeT>);
 		static_assert(std::is_nothrow_move_constructible_v<typeT>);
 		static_assert(not std::is_trivially_move_constructible_v<typeT>);
-		// copy assingment
+		// copy assignment
 		static_assert(std::is_copy_assignable_v<typeT>);               // ++
 		static_assert(std::is_nothrow_copy_assignable_v<typeT>);       // ++
 		static_assert(not std::is_trivially_copy_assignable_v<typeT>); // ++
@@ -119,7 +119,7 @@ TEST(Error, invalid_Location)
 		static_assert(std::is_move_constructible_v<typeT>);
 		static_assert(std::is_nothrow_move_constructible_v<typeT>);
 		static_assert(not std::is_trivially_move_constructible_v<typeT>);
-		// copy assingment
+		// copy assignment
 		static_assert(std::is_copy_assignable_v<typeT>);               // ++
 		static_assert(std::is_nothrow_copy_assignable_v<typeT>);       // ++
 		static_assert(not std::is_trivially_copy_assignable_v<typeT>); // ++
@@ -135,7 +135,7 @@ TEST(Error, invalid_Location)
 	}
 
 	const std::string name{"invalid_Location"};
-	const std::string name_wrong{"invalaa_aaaaaaaa"};
+	const std::string name_wrong{"invalid_chairs"};
 	try
 	{
 		throw invalid_Location();

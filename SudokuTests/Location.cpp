@@ -21,7 +21,7 @@
 #include <Sudoku/Location_Utilities.h>
 // Helpers
 #include <Sudoku/Board.h>
-// aditional
+// additional
 #include <vector>
 #include <type_traits>
 
@@ -61,7 +61,7 @@ namespace compiletime
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
-	// copy assingment
+	// copy assignment
 	static_assert(not std::is_copy_assignable_v<typeT>);
 	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);
 	static_assert(not std::is_trivially_copy_assignable_v<typeT>);
@@ -127,7 +127,7 @@ namespace Location_Block_compiletime
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
-	// copy assingment
+	// copy assignment
 	static_assert(not std::is_copy_assignable_v<typeT>);
 	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);
 	static_assert(not std::is_trivially_copy_assignable_v<typeT>);
@@ -182,8 +182,8 @@ TEST(Location, Construction)
 	static_assert(noexcept(Location<2>()));
 	EXPECT_NO_THROW(Location<3>());
 	EXPECT_NO_THROW(Location<3>{});
-	EXPECT_NO_THROW(Location<3> LL2{});
-	EXPECT_NO_THROW(Location<2> LL3);
+	EXPECT_NO_THROW([[maybe_unused]] Location<3> LL2{});
+	EXPECT_NO_THROW([[maybe_unused]] Location<2> LL3);
 
 	static_assert(noexcept(Location<3>(-171)));
 	static_assert(noexcept(Location<3>(-1))); // expected when past the begin
@@ -195,7 +195,7 @@ TEST(Location, Construction)
 	static_assert(noexcept(Location<3>(92))); // two rows past the end
 	static_assert(noexcept(Location<3>(1091)));
 	EXPECT_NO_THROW(Location<3>(12));
-	EXPECT_NO_THROW(Location<3> L1(12));
+	EXPECT_NO_THROW([[maybe_unused]] Location<3> L1(12));
 
 	static_assert(noexcept(Location<3>(-51, 7)));
 	static_assert(noexcept(Location<3>(1, -83)));
@@ -211,7 +211,7 @@ TEST(Location, Construction)
 	static_assert(noexcept(Location<3>(90, 1)));
 	static_assert(noexcept(Location<3>(1, 71)));
 	EXPECT_NO_THROW(Location<3>(1, 8));
-	EXPECT_NO_THROW(Location<3> L2(1, 8));
+	EXPECT_NO_THROW([[maybe_unused]] Location<3> L2(1, 8));
 
 	// move construct
 	EXPECT_NO_THROW(Location<3>(Location<3>(6)));
@@ -220,7 +220,7 @@ TEST(Location, Construction)
 	// copy construct
 	constexpr Location<3> c1(12);
 	static_assert(noexcept(Location<3>(c1)));
-	EXPECT_NO_THROW(Location<3>(L3));
+	EXPECT_NO_THROW([[maybe_unused]] Location<3> c3{c1});
 }
 
 TEST(Location, Construction_result)
@@ -245,10 +245,10 @@ TEST(Location, Construction_result)
 	static_assert(Location<3>{Location<3>{6}}.element() == 6);
 	EXPECT_EQ(Location<3>{Location<3>{6}}.element(), 6);
 
-	const Location<3> L1(12);
-	constexpr Location<3> c1(12);
-	const Location<3> L2(1, 8);
-	constexpr Location<3> c2(1, 8);
+	[[maybe_unused]] const Location<3> L1(12);
+	[[maybe_unused]] constexpr Location<3> c1(12);
+	[[maybe_unused]] const Location<3> L2(1, 8);
+	[[maybe_unused]] constexpr Location<3> c2(1, 8);
 	EXPECT_EQ(L1.element(), 12);
 	static_assert(c1.element() == 12);
 	const Location<3> L3(Location<3>(6));
@@ -268,8 +268,8 @@ TEST(Location, Construction_Block)
 { // depends on Location
 	static_assert(noexcept(Location_Block<3>()));
 	static_assert(noexcept(Location_Block<3>{}));
-	EXPECT_NO_THROW(Location_Block<3> L1{});
-	EXPECT_NO_THROW(Location_Block<3> LL1);
+	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> L1{});
+	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> LL1);
 	static_assert(noexcept(Location_Block<3>(Location<3>())));
 	static_assert(noexcept(Location_Block<2>(Location<2>())));
 	static_assert(noexcept(Location_Block<3>(Location<3>(-31))));
@@ -279,7 +279,7 @@ TEST(Location, Construction_Block)
 	static_assert(noexcept(Location_Block<3>(Location<3>(80))));
 	static_assert(noexcept(Location_Block<3>(Location<3>(81))));
 	static_assert(noexcept(Location_Block<3>(Location<3>(981))));
-	EXPECT_NO_THROW(Location_Block<3> L2(Location<3>{}));
+	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> L2(Location<3>{}));
 	static_assert(noexcept(Location_Block<3>(-1, 0)));
 	static_assert(noexcept(Location_Block<3>(0, -1)));
 	static_assert(noexcept(Location_Block<3>(0, 0)));
@@ -290,7 +290,7 @@ TEST(Location, Construction_Block)
 	static_assert(noexcept(Location_Block<3>(9, 9)));
 	static_assert(noexcept(Location_Block<3>(0, 9)));
 	static_assert(noexcept(Location_Block<3>(992, 9)));
-	EXPECT_NO_THROW(Location_Block<3> L3(0, 0));
+	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> L3(0, 0));
 	static_assert(noexcept(Location_Block<3>(-1, 0, 0)));
 	static_assert(noexcept(Location_Block<3>(0, 0, 0)));
 	static_assert(noexcept(Location_Block<3>(0, 2, 0)));
@@ -304,7 +304,7 @@ TEST(Location, Construction_Block)
 	static_assert(noexcept(Location_Block<3>(5, 0, 3)));
 	static_assert(noexcept(Location_Block<3>(5, 3, 3)));
 	static_assert(noexcept(Location_Block<3>(5, 3, 0)));
-	EXPECT_NO_THROW(Location_Block<3> L4(0, 0, 0));
+	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> L4(0, 0, 0));
 
 	// move construct
 	static_assert(noexcept(Location_Block<3>(Location_Block<3>())));
@@ -313,7 +313,7 @@ TEST(Location, Construction_Block)
 	// copy construct
 	constexpr Location_Block<3> c1{1, 3};
 	static_assert(noexcept(Location_Block<3>(c1)));
-	EXPECT_NO_THROW(Location_Block<3>(L3));
+	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> c2{c1});
 
 	static_assert(noexcept(Location_Block<3>{Location<3>{12}}));
 	static_assert(noexcept(Location<3>{Location_Block<3>{4, 2}}));
@@ -938,7 +938,7 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_FALSE(noexcept(is_valid(std::vector<Location<3>>{Location<3>(0)})));
 	EXPECT_TRUE(noexcept(list2{}));
 	EXPECT_TRUE(noexcept(is_valid(std::vector<Location<3>>{})));
-	// std::is_sorted can throw std::bad_aloc
+	// std::is_sorted can throw std::bad_alloc
 	// TODO From C++20 std::is_sorted will be constexpr
 	// static_assert(!is_valid<2>(list2{})); // empty()
 	EXPECT_FALSE(is_valid(list2{})) << "can't be empty";

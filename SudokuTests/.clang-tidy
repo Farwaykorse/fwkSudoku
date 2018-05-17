@@ -1,0 +1,78 @@
+﻿##====---- SudokuTests/.clang-tidy                                    ----====##
+##
+## Specialization for use in a Google-Test project
+##====--------------------------------------------------------------------====##
+#
+
+HeaderFilterRegex: 'Sudoku[\\\/].*'
+Checks:
+ '*,
+  bugprone-*,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-special-member-functions,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  modernize-*,
+  -modernize-use-equals-delete,
+  performance-*,
+  portability-*,
+  readability-*,
+  -readability-braces-around-statements,
+  -readability-avoid-const-params-in-decls,
+  -readability-named-parameter,
+  -readability-else-after-return,
+  hicpp-*,
+  -hicpp-braces-around-statements,
+  -hicpp-special-member-functions,
+  -hicpp-use-equals-delete,
+  -hicpp-vararg,
+  clang-analyzer-*,
+  -clang-analyzer-optin\.mpi*,
+  -clang-analyzer-optin\.osx*,
+  -clang-analyzer-osx*,
+  -clang-analyzer-unix*,
+  llvm-*,
+  -llvm-header-guard,
+  -llvm-include-order,
+  -llvm-namespace-comment,
+  google-*,
+  -google-readability-braces-around-statements,
+  -google-readability-namespace-comments,
+  -google-readability-todo,
+  -google-objc-*,
+  abseil-*,
+  boost-*,
+  misc-*,
+  cert-*,
+  -cert-err58-cpp,
+  -android-*,
+  -fuchsia-*,
+  -mpi-*,
+  -objc-*,
+  -ziron-*'
+
+# Disabled tests:
+# -cppcoreguidelines-pro-type-vararg
+#  EXPECT_EQ() and ASSERT_EQ(): do not call c-style vararg functions 
+# -hicpp-vararg
+#  == cppcoreguidelines-pro-type-vararg
+# -cppcoreguidelines-owning-memory
+#  Every TEST: initializing non-owner argument of type
+#  'internal::TestFactoryBase *' with a newly created 'gsl::owner<>' 
+# -cppcoreguidelines-special-member-functions
+#  Every TEST: defines a copy constructor and a copy assignment operator but
+#  does not define a destructor, a move constructor or a move assignment
+#  operator 
+# -hicpp-special-member-functions
+#  == cppcoreguidelines-special-member-functions
+# -cppcoreguidelines-pro-bounds-array-to-pointer-decay
+#  EXPECT_DEBUG_DEATH(): do not implicitly decay an array into a pointer;
+#  consider using gsl::array_view or an explicit cast instead
+# -modernize-use-equals-delete
+#  TEST: use '= delete' to prohibit calling of a special member function 
+# -hicpp-use-equals-delete
+#  == modernize-use-equals-delete
+# -cert-err58-cpp
+#  TEST: initialization of 'test_info_' with static storage duration may throw
+#  an exception that cannot be caught 

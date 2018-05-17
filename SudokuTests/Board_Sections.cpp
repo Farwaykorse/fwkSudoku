@@ -24,7 +24,7 @@
 #include <initializer_list>
 #include <set>
 #include <numeric> // accumulate
-#include <random>  // randomaccess tests
+#include <random>  // random-access tests
 #include <type_traits>
 
 
@@ -55,7 +55,8 @@ namespace compiletime
 
 	static_assert(std::is_class_v<typeT>, "-- a class");
 	static_assert(not std::is_trivial_v<typeT>, "trivial default constructors");
-	static_assert(not std::is_trivially_copyable_v<typeT>);
+	// different with Clang
+	// static_assert(not std::is_trivially_copyable_v<typeT>);
 	static_assert(not std::is_standard_layout_v<typeT>, "standard layout");
 	static_assert(not std::is_pod_v<typeT>);
 	// static_assert(std::has_unique_object_representations_v<typeT>); //C++17
@@ -85,7 +86,7 @@ namespace compiletime
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
-	// copy assingment
+	// copy assignment
 	static_assert(not std::is_copy_assignable_v<typeT>);
 	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);
 	static_assert(not std::is_trivially_copy_assignable_v<typeT>);
@@ -137,12 +138,12 @@ TEST(Board_Sections, Row)
 	const Board<int, 2> cA{
 		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	{
-		auto r  = A.row(0);
-		auto c  = A.col(0);
-		auto b  = A.block(0);
-		auto cr = cA.row(0);
-		auto cc = cA.col(0);
-		auto cb = cA.block(0);
+		[[maybe_unused]] auto r  = A.row(0);
+		[[maybe_unused]] auto c  = A.col(0);
+		[[maybe_unused]] auto b  = A.block(0);
+		[[maybe_unused]] auto cr = cA.row(0);
+		[[maybe_unused]] auto cc = cA.col(0);
+		[[maybe_unused]] auto cb = cA.block(0);
 		static_assert(noexcept(r.location(1)));
 		static_assert(noexcept(c.location(1)));
 		static_assert(noexcept(b.location(1)));
@@ -153,8 +154,8 @@ TEST(Board_Sections, Row)
 		static_assert(noexcept(c.id()));
 		static_assert(noexcept(b.id()));
 	}
-	ASSERT_NO_THROW(Board<int>().row(0)); //??? intellisense: incomplete type
-	// see deathtests
+	ASSERT_NO_THROW(Board<int>().row(0)); //??? IntelliSense: incomplete type
+	// see death tests
 	ASSERT_NO_THROW(Board<int>().row(Location<3>(12)));
 
 	EXPECT_NO_THROW(Board<int>().row(0)[0]);
@@ -165,7 +166,7 @@ TEST(Board_Sections, Row)
 	EXPECT_EQ(cA.row(0)[3], 3);
 	EXPECT_EQ(A.row(3)[3], 15);
 	EXPECT_NE(A.row(3)[3], 10);
-	// see deathtests
+	// see death tests
 
 	EXPECT_NO_THROW(Board<int>().row(Location<3>(13))[0]);
 	EXPECT_NO_THROW(A.row(Location<2>(13))[0]);

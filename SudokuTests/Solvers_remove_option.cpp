@@ -144,7 +144,7 @@ TEST(Solver, remove_option_section)
 {
 	using L = Location<2>;
 	// remove_option_section(SectionT, Location ignore, int value)
-	// SEE deathtest: loc-> !is_answer(value)
+	// SEE death test: loc-> !is_answer(value)
 	const Board<Options<4>, 2> cB1;
 	Board<Options<4>, 2> B1;
 	B1[0][0] = Value{1};
@@ -222,7 +222,7 @@ TEST(Solver, remove_option_section_1)
 
 	// remove_option_section(SectionT, const std::vector<Location>& ignore, int
 	Board<Options<4>, 2> B1;
-	// SEE deathtest: when ignore is empty
+	// SEE death test: when ignore is empty
 	// row
 	ASSERT_NO_THROW(
 		remove_option_section(B1, B1.row(0), vL{L(0), L(1)}, Value{1}));
@@ -266,7 +266,7 @@ TEST(Solver, remove_option_section_2)
 	using v  = Value;
 	using vV = std::vector<Value>;
 
-	// remove_option_section(SectionT, vector<Location>, vecor<int>
+	// remove_option_section(SectionT, vector<Location>, vector<int>
 	const Board<Options<4>, 2> cB;
 	Board<Options<4>, 2> B;
 	// row
@@ -356,7 +356,7 @@ TEST(Solver, deathtests_remove_option)
 	Board<Options<4>, 2> B{};
 	//===------------------------------------------------------------------===//
 	// remove_option_section(SectionT, Location ignore, int value)
-	// deathtest: loc-> !is_answer(value)
+	// death test: loc-> !is_answer(value)
 	ASSERT_FALSE(B[0][0].is_answer());
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), L(0), Value{2}),
@@ -403,7 +403,7 @@ TEST(Solver, deathtests_remove_option)
 		remove_option_section(B, B.row(0), vL{L(1), L(3)}, Value{0}),
 		"Assertion failed: is_valid<N>.value.");
 #endif // _DEBUG
-	// assert atleast one ignore-location inside section
+	// assert at least one ignore-location inside section
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(
 			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, Value{1}),
@@ -430,7 +430,7 @@ TEST(Solver, deathtests_remove_option)
 			B, B.row(0), vL{L(0), L(1), L(11)}, vV{v{1}, v{2}, v{5}}),
 		"Assertion failed: is_valid");
 #endif // _DEBUG
-	// assert atleast one ignore-location inside section
+	// assert at least one ignore-location inside section
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(
 			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, vV{v{1}, v{2}}),

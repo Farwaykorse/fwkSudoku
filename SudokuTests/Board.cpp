@@ -28,7 +28,7 @@
 #include <initializer_list>
 #include <set>
 #include <numeric> // accumulate
-#include <random>  // randomaccess tests
+#include <random>  // random-access tests
 #include <type_traits>
 
 
@@ -60,16 +60,16 @@ namespace compiletime
 	// static_assert(std::has_unique_object_representations_v<typeT>,"");//C++17
 	// trivially_copyable same object representation
 	static_assert(not std::is_empty_v<typeT>);
-	// class with no datamembers; nothing virtual
+	// class with no data-members; nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>); // --
-	// inherits atleast one virtual function
+	// inherits at least one virtual function
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>); // ++
 	// inherits or declares at least one pure virtual function");
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);               // ++
-	static_assert(std::is_nothrow_default_constructible_v<typeT>);   // --
+	static_assert(std::is_nothrow_default_constructible_v<typeT>);       // --
 	static_assert(not std::is_trivially_default_constructible_v<typeT>); // ++
 
 	// copy constructor: typeT(const typeT&)
@@ -82,7 +82,7 @@ namespace compiletime
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(not std::is_trivially_move_constructible_v<typeT>);
 
-	// copy assingment
+	// copy assignment
 	static_assert(std::is_copy_assignable_v<typeT>);               // ++
 	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);   // ++
 	static_assert(not std::is_trivially_copy_assignable_v<typeT>); // ++
@@ -133,6 +133,21 @@ namespace compiletime
 	static_assert(not std::is_swappable_with_v<typeT, Options<9>>); // C++17
 	static_assert(
 		not std::is_nothrow_swappable_with_v<typeT, Options<9>>); // C++17
+
+	//====----------------------------------------------------------------====//
+	// Member types
+	static_assert(std::is_same_v<typeT::value_type, int>);
+	static_assert(std::is_same_v<Board<Options<4>, 2>::value_type, Options<4>>);
+	static_assert(std::is_same_v<typeT::value_type const, const int>);
+	static_assert(std::is_same_v<typeT::size_type, decltype(typeT().size())>);
+	static_assert(std::is_same_v<typeT::difference_type, int>);
+	static_assert(std::is_same_v<typeT::reference, int&>);
+	static_assert(std::is_same_v<typeT::const_reference, int const&>);
+	static_assert(std::is_same_v<typeT::pointer, int*>);
+	static_assert(std::is_same_v<typeT::const_pointer, int const*>);
+	static_assert(std::is_same_v<typeT::pointer const, int* const>);
+	static_assert(std::is_same_v<typeT::const_pointer const, int const* const>);
+
 } // namespace compiletime
 //===----------------------------------------------------------------------===//
 
@@ -145,7 +160,7 @@ TEST(Board, Construction)
 	EXPECT_NO_THROW((Board<Options<9>, 3>()));
 	EXPECT_NO_THROW((Board<int, 4>()));
 	EXPECT_NO_THROW((Board<Options<16>, 4>()));
-	EXPECT_NO_THROW(Board<int>()) << "fallback on default value for base_size";
+	EXPECT_NO_THROW(Board<int>()) << "fall back on default value for base_size";
 	EXPECT_NO_THROW(Board<Options<9>>());
 	EXPECT_NO_THROW((Board<int, 3>{})) << "initializer list";
 
@@ -249,14 +264,35 @@ TEST(Board, size)
 
 	EXPECT_EQ(Board<int>().size(), size_t{81});
 	EXPECT_EQ((Board<int, 2>().size()), size_t{16});
-	const Board<int> D_0;
-	EXPECT_EQ(D_0.size(), size_t{81});
+	EXPECT_EQ(board.size(), size_t{81});
+
+	// max_size
+	static_assert(noexcept(board.max_size()));
+	static_assert(noexcept(board2.max_size()));
+	static_assert(noexcept(board3.max_size()));
+	static_assert(board.max_size() == 81);
+	static_assert(board2.max_size() == 16);
+	static_assert(board3.max_size() == 81);
+	static_assert(board4.max_size() == 256);
+
+	EXPECT_EQ(Board<int>().max_size(), size_t{81});
+	EXPECT_EQ((Board<int, 2>().max_size()), size_t{16});
+	EXPECT_EQ(board.max_size(), size_t{81});
+}
+
+TEST(Board, empty)
+{
+	const Board<int, 2> B;
+	static_assert(noexcept(Board<int, 2>().empty()));
+	static_assert(noexcept(B.empty()));
+	static_assert(std::is_same_v<bool, decltype(B.empty())>);
+	static_assert(!(B.empty()));
 }
 
 TEST(Board, operator_equal)
 {
 	static_assert(not noexcept(Board<int>() == Board<int>(3)));
-	// assuming the used algorithms only throw `std::bad_aloc`
+	// assuming the used algorithms only throw `std::bad_alloc`
 	// check if operator== for type T (here int) can throw
 	EXPECT_EQ(Board<int>(), Board<int>());
 	EXPECT_EQ(Board<int>(), (Board<int, 3>()));
@@ -297,12 +333,39 @@ TEST(Board_Utilities, operator_not_equal)
 	EXPECT_FALSE((Board<Options<4>, 2>()) != (Board<Options<4>, 2>()));
 }
 
-TEST(Board, elementaccess)
+TEST(Board, access_front_back)
+{
+	Board<int, 2> B{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	const Board<int, 2> cB{5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 7};
+	// Read
+	static_assert(noexcept(B.front() == 9));
+	static_assert(noexcept(B.back() == 9));
+	static_assert(noexcept(cB.front() == 9));
+	static_assert(noexcept(cB.back() == 9));
+
+	static_assert(std::is_same_v<int&, decltype(B.front())>);
+	static_assert(std::is_same_v<int const&, decltype(cB.front())>);
+	EXPECT_EQ(B.front(), 0);
+	EXPECT_EQ(B.back(), 15);
+	EXPECT_EQ(cB.front(), 5);
+	EXPECT_EQ(cB.back(), 7);
+
+	// Write
+	static_assert(noexcept(B.front() = 9));
+	static_assert(noexcept(B.back() = 9));
+	B.front() = 12;
+	EXPECT_EQ(B.front(), 12);
+	B.back() = 89;
+	EXPECT_EQ(B.back(), 89);
+}
+
+TEST(Board, access_checked)
 {
 	// at(Location)
 	Board<int, 2> B1{};
 	static_assert(not noexcept(B1.at(Location<2>(0)) = 2));
 	static_assert(not noexcept(B1.at(Location<2>(0)) == 2));
+	static_assert(std::is_same_v<int&, decltype(B1.at(Location<2>(2)))>);
 	EXPECT_THROW({ B1.at(Location<2>{17}) = 3; }, error::invalid_Location);
 	EXPECT_THROW({ B1.at(Location<2>{4, 0}) = 2; }, error::invalid_Location);
 	// EXPECT_THROW({ B1.at(Location<2>{0, 5}) = 2; }, error::invalid_Location);
@@ -326,6 +389,7 @@ TEST(Board, elementaccess)
 	const Board<int, 2> cB{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	static_assert(not noexcept(cB.at(Location<2>(0)) == 1));
+	static_assert(std::is_same_v<int const&, decltype(cB.at(Location<2>(2)))>);
 	EXPECT_EQ(cB.at(Location<2>(2)), 2) << "at(Location) const";
 	EXPECT_THROW(cB.at(Location<2>(16)), error::invalid_Location);
 	EXPECT_THROW(cB.at(Location<2>(-1)), error::invalid_Location);
@@ -342,6 +406,7 @@ TEST(Board, elementaccess)
 	EXPECT_THROW(B1.at(4, 0), std::out_of_range);
 	EXPECT_THROW(B1.at(-1, 0), error::invalid_Location);
 	EXPECT_THROW(B1.at(1, -2), error::invalid_Location);
+	static_assert(std::is_same_v<int&, decltype(B1.at(2, 2))>);
 	EXPECT_NO_THROW(B1.at(1, 1) = 5);
 	EXPECT_NO_THROW(B1.at(0, 0) = 1);
 	EXPECT_NO_THROW(B1.at(1, 1) = 1);
@@ -353,30 +418,37 @@ TEST(Board, elementaccess)
 	EXPECT_THROW(B1.at(1, -2), error::invalid_Location);
 	// at(Location) const
 	EXPECT_NO_THROW(cB.at(2, 1));
-
 	static_assert(not noexcept(cB.at(0, 1) == 1));
 	EXPECT_THROW(cB.at(1, 4), error::invalid_Location);
 	EXPECT_THROW(cB.at(4, 0), error::invalid_Location);
 	EXPECT_THROW(cB.at(-1, 0), error::invalid_Location);
 	EXPECT_THROW(cB.at(1, -2), error::invalid_Location);
-
+	static_assert(std::is_same_v<int const&, decltype(cB.at(2, 2))>);
 	EXPECT_EQ(cB.at(0, 0), 0);
 	EXPECT_EQ(cB.at(3, 1), 13);
+}
 
+TEST(Board, access_unchecked)
+{
+	Board<int, 2> B{};
+	const Board<int, 2> cB{
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	// operator[](Location)
-	static_assert(noexcept(B1[Location<2>(0)]));
-	static_assert(noexcept(B1[Location<2>(16)]));
-	static_assert(noexcept(B1[Location<2>(-1)]));
-	static_assert(noexcept(B1[Location<2>(0)] = 0));
+	static_assert(noexcept(B[Location<2>(0)]));
+	static_assert(noexcept(B[Location<2>(16)]));
+	static_assert(noexcept(B[Location<2>(-1)]));
+	static_assert(noexcept(B[Location<2>(0)] = 0));
 	static_assert(noexcept(cB[Location<2>(0)]));
 	static_assert(noexcept(cB[Location<2>(0)]));
 	static_assert(noexcept(cB[Location<2>(0)] == 1));
-	static_assert(noexcept(B1[Location<2>(0)] == 1));
+	static_assert(noexcept(B[Location<2>(0)] == 1));
 
-	B1[Location<2>(0)] = 0;
-	B1[Location<2>(1)] = 1;
-	EXPECT_EQ(B1[Location<2>(0)], 0);
-	EXPECT_EQ(B1[Location<2>(1)], 1);
+	static_assert(std::is_same_v<int&, decltype(B[Location<2>(12)])>);
+	static_assert(std::is_same_v<int const&, decltype(cB[Location<2>(12)])>);
+	B[Location<2>(0)] = 0;
+	B[Location<2>(1)] = 1;
+	EXPECT_EQ(B[Location<2>(0)], 0);
+	EXPECT_EQ(B[Location<2>(1)], 1);
 	static_assert(noexcept(cB[Location<2>(0)] == 1));
 	EXPECT_EQ(cB[Location<2>(5)], 5);
 }
@@ -405,8 +477,9 @@ namespace compiletime_InBetween
 	using typeT = Board<int, 3>::InBetween;
 
 	static_assert(std::is_class_v<typeT>);
-	static_assert(not std::is_trivial_v<typeT>);            // ++
-	static_assert(not std::is_trivially_copyable_v<typeT>); // ++
+	static_assert(not std::is_trivial_v<typeT>); // ++
+	// different in Clang
+	// static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 	static_assert(std::is_standard_layout_v<typeT>);
 	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>);
@@ -427,7 +500,7 @@ namespace compiletime_InBetween
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
-	// assingment
+	// assignment
 	static_assert(not std::is_copy_assignable_v<typeT>); // ++
 	static_assert(not std::is_move_assignable_v<typeT>); // ++
 
@@ -449,8 +522,9 @@ namespace compiletime_const_InBetween
 	using typeT = Board<int, 3>::const_InBetween;
 
 	static_assert(std::is_class_v<typeT>);
-	static_assert(not std::is_trivial_v<typeT>);            // ++
-	static_assert(not std::is_trivially_copyable_v<typeT>); // ++
+	static_assert(not std::is_trivial_v<typeT>); // ++
+	// different in Clang
+	// static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 	static_assert(std::is_standard_layout_v<typeT>);
 	static_assert(not std::is_pod_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>);
@@ -471,7 +545,7 @@ namespace compiletime_const_InBetween
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
-	// assingment
+	// assignment
 	static_assert(not std::is_copy_assignable_v<typeT>); // ++
 	static_assert(not std::is_move_assignable_v<typeT>); // ++
 

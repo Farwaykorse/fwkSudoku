@@ -8,9 +8,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5FE296CB-7F95-44A2-A544-4009EF24F251}"
 	ProjectSection(SolutionItems) = preProject
 		.clang-format = .clang-format
-		Includes.md = Includes.md
+		.clang-tidy = .clang-tidy
 		README.md = README.md
-		TODO.md = TODO.md
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Console", "Console\Console.vcxproj", "{98C80F78-1DEC-4651-A336-996A027E11FE}"
@@ -42,9 +41,9 @@ Global
 		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangRelease|x64.Build.0 = ClangRelease|x64
 		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangRelease|x86.ActiveCfg = ClangRelease|Win32
 		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangRelease|x86.Build.0 = ClangRelease|Win32
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangTidy|x64.ActiveCfg = ClangTidy|Win32
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangTidy|x86.ActiveCfg = ClangTidy|Win32
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangTidy|x86.Deploy.0 = ClangTidy|Win32
+		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangTidy|x64.ActiveCfg = ClangTidy|x64
+		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangTidy|x64.Build.0 = ClangTidy|x64
+		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangTidy|x86.ActiveCfg = ClangTidy|x64
 		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.Debug|x64.ActiveCfg = Debug|x64
 		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.Debug|x64.Build.0 = Debug|x64
 		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.Debug|x86.ActiveCfg = Debug|Win32
@@ -61,8 +60,9 @@ Global
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangRelease|x64.Build.0 = ClangRelease|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangRelease|x86.ActiveCfg = ClangRelease|Win32
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangRelease|x86.Build.0 = ClangRelease|Win32
-		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangTidy|x64.ActiveCfg = ClangTidy|Win32
-		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangTidy|x86.ActiveCfg = ClangTidy|Win32
+		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangTidy|x64.ActiveCfg = ClangTidy|x64
+		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangTidy|x64.Build.0 = ClangTidy|x64
+		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangTidy|x86.ActiveCfg = ClangTidy|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Debug|x64.ActiveCfg = Debug|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Debug|x64.Build.0 = Debug|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Debug|x86.ActiveCfg = Debug|Win32
@@ -72,13 +72,16 @@ Global
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Release|x86.ActiveCfg = Release|Win32
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Release|x86.Build.0 = Release|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangDebug|x64.ActiveCfg = ClangDebug|x64
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangDebug|x64.Build.0 = ClangDebug|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangDebug|x86.ActiveCfg = ClangDebug|Win32
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangDebug|x86.Build.0 = ClangDebug|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x64.ActiveCfg = ClangRelease|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x64.Build.0 = ClangRelease|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x86.ActiveCfg = ClangRelease|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x86.Build.0 = ClangRelease|Win32
-		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangTidy|x64.ActiveCfg = ClangTidy|Win32
-		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangTidy|x86.ActiveCfg = ClangTidy|Win32
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangTidy|x64.ActiveCfg = ClangTidy|x64
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangTidy|x64.Build.0 = ClangTidy|x64
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangTidy|x86.ActiveCfg = ClangTidy|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x64.ActiveCfg = Debug|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x64.Build.0 = Debug|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x86.ActiveCfg = Debug|Win32

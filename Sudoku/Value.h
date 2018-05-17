@@ -3,7 +3,7 @@
 //	Value type
 //===----------------------------------------------------------------------===//
 // Strongly typed
-// Unsigned to allow use as a bitmask
+// Unsigned to allow use as a bit-mask
 //
 //===----------------------------------------------------------------------===//
 #pragma once

@@ -21,7 +21,7 @@
 #include <Sudoku/Board.h>
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
-#include <Sudoku/Solver.h> // setvalue
+#include <Sudoku/Solver.h> // setValue
 // Debug Output
 #include "print_Options.h"
 // library
@@ -318,7 +318,7 @@ TEST(Solver, list_where_option__Value)
 	// exceptions
 	// - vector out-of-memory
 	// - push_back: strong exception guarantee
-	//	 Location is nothrow move constructable
+	//	 Location is nothrow move constructible
 
 	// row/col/block
 	static_assert(not noexcept(list_where_option<2>(B.row(0), Value{1})));
@@ -394,12 +394,12 @@ TEST(Solver, list_where_option_pOptions)
 	// exceptions
 	// - vector out-of-memory
 	// - push_back: strong exception guarantee
-	//	 Location is nothrow move constructable
+	//	 Location is nothrow move constructible
 	static_assert(noexcept(list_where_option<2>(B.row(0), Options{Value{1}})));
 	static_assert(noexcept(list_where_option<2>(B.row(0), B[0][2])));
 	list = list_where_option<2>(B.row(0), Options{Value{0}});
 	list = list_where_option<2>(B.row(0), Options{Value{4}});
-	// cought in Options constructor
+	// caught in Options constructor
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(B.row(0), Options{Value{5}}), ".*<= Value");
 	// return type
@@ -480,7 +480,7 @@ TEST(Solver, list_where_subset)
 	board.at(L{2})    = B{"00111"};
 	board.at(L{3})    = B{"00101"};
 	board.at(L{1, 0}) = B{"00100"}; // answer 2
-	board.at(L{1, 1}) = B{"11110"}; // incorrect marked as anwer
+	board.at(L{1, 1}) = B{"11110"}; // incorrect marked as answer
 	board.at(L{1, 2}) = B{"11111"};
 	board.at(L{1, 3}) = B{"11111"};
 	board.at(L{2, 0}) = B{"11111"};
@@ -503,7 +503,7 @@ TEST(Solver, list_where_subset)
 	// exceptions
 	// - vector out-of-memory
 	// - push_back: strong exception guarantee
-	//	 Location is nothrow move constructable
+	//	 Location is nothrow move constructible
 	static_assert(noexcept(list_where_subset(board, Options{})));
 	static_assert(noexcept(list_where_subset<2>(board.row(L{0}), Options())));
 
@@ -584,13 +584,13 @@ TEST(Solver, list_where_any_option)
 	// exceptions
 	// - vector out-of-memory
 	// - push_back: strong exception guarantee
-	//	 Location is nothrow move constructable
+	//	 Location is nothrow move constructible
 	static_assert(
 		noexcept(list_where_any_option<2>(B.row(0), Options{Value{1}})));
 	static_assert(noexcept(list_where_any_option<2>(B.row(0), B[0][2])));
 	list = list_where_any_option<2>(B.row(0), Options{Value{0}});
 	list = list_where_any_option<2>(B.row(0), Options{Value{4}});
-	// cought in Options constructor
+	// caught in Options constructor
 	EXPECT_DEBUG_DEATH(
 		list = list_where_any_option<2>(B.row(0), Options{Value{5}}),
 		".*<= Value");

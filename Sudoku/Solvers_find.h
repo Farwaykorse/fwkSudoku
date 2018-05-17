@@ -3,7 +3,7 @@
 // Helper functions, to find available options
 //===----------------------------------------------------------------------===//
 // list_where_*
-// Apperance_*: collecting options by appearance count in a given set.
+// appearance_*: collecting options by appearance count in a given set.
 //===----------------------------------------------------------------------===//
 #pragma once
 
@@ -300,12 +300,12 @@ Step 2) flip
 				|	000	000	000	|	000	010	000	|	001	010	000	|	011	010	100
 532	419	365		|	==0x		|	==1x		|	<=2x		|	<=3x
 				worker[n] contains options appearing n times or less
-Step 3) xor [n-1]
+Step 3) XOR [n-1]
 				|	== empty!	|	000	010	000	|	001	000	000	|	010	000	100
 				|	==0x		|	==1x		|	==2x		|	==3x
 				worker[n] contains options appearing exactly n times
 // Q: What about the answer bit?
-// A: Always true (==not anwered)
+// A: Always true (==not answered)
 //? Working with more or less than [elem_size] input elements?
 // Less than 9: possible worker[0] is not empty
 // Less than 3: no use for worker[3]
@@ -322,7 +322,7 @@ Step 3) xor [n-1]
 	std::array<Options, max + 1> worker{};
 	worker.fill(Options(Value{0}));
 
-	// Collect options by appearence count
+	// Collect options by appearance count
 	// worker[n] contains options appearing more than n times (or answer)
 	for (auto elem_itr = begin; elem_itr != end; ++elem_itr)
 	{
@@ -352,7 +352,7 @@ Step 3) xor [n-1]
 	// fails if not all options exist
 	assert(worker[0].count_all() == 0);
 
-	// xor -> worker[n] options appearing n times
+	// XOR -> worker[n] options appearing n times
 	for (size_t i{max}; i > 1; --i)
 	{
 		worker.at(i).XOR(worker.at(i - 1));
@@ -364,7 +364,7 @@ Step 3) xor [n-1]
 //	returning options collected by appearance count in section
 template<int N, typename SectionT>
 inline auto appearance_sets(const SectionT section)
-{ // referal function, creates iterators
+{ // referral function, creates iterators
 	return appearance_sets<N>(section.cbegin(), section.cend());
 }
 

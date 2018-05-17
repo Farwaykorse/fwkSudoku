@@ -40,7 +40,7 @@ Board<T, N> transpose_row_col(const Board<T, N>& input)
 	}
 }
 
-// Reorder Baord elements so blocks are rows.
+// Reorder Board elements so blocks are rows.
 template<typename T, int N>
 Board<T, N> transpose_row_block(const Board<T, N>& input)
 {
@@ -83,7 +83,7 @@ Board<T, N> transpose_row_col(Board<T, N>&& board) noexcept(
 	return board;
 }
 
-// Reorder Baord elements so blocks are rows.
+// Reorder Board elements so blocks are rows.
 template<typename T, int N>
 Board<T, N> transpose_row_block(Board<T, N>&& board) noexcept(
 	std::is_nothrow_swappable_v<T>)

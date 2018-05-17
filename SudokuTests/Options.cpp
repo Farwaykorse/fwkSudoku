@@ -276,7 +276,6 @@ TEST(Options, Construction)
 		EXPECT_TRUE(Options<4>{Value{5}}.is_empty());
 		EXPECT_TRUE(Options<9>{Value{10}}.is_empty());
 #endif // !_DEBUG
-
 	}
 }
 
@@ -362,7 +361,7 @@ TEST(Options, test_Value)
 
 TEST(Options, is_answer)
 {
-	{ // memberfunction
+	{ // member-function
 		static_assert(noexcept(TE.O_1.is_answer()));
 		EXPECT_TRUE(TE.A_1.is_answer());
 		EXPECT_TRUE(TE.A_2.is_answer());
@@ -391,7 +390,7 @@ TEST(Options, is_answer)
 	{ // test for specific answer
 		static_assert(noexcept(is_answer(TE.O_1, Value{1})));
 		static_assert(noexcept(is_answer(TE.A_1, Value{4})));
-		// assertion see deathtests
+		// assertion see death tests
 		EXPECT_TRUE(is_answer(TE.A_2, Value{2}));
 		EXPECT_FALSE(is_answer(TE.A_2, Value{3}));
 		EXPECT_FALSE(is_answer(TE.A_1, Value{0}));
@@ -515,7 +514,7 @@ TEST(Options, available)
 	std::vector<Value> result{};
 
 	static_assert(noexcept(available(TE.O_1)));
-	// allocation can throw std::bad_aloc
+	// allocation can throw std::bad_alloc
 
 	ASSERT_NO_THROW(result = available(TE.O_2));
 	EXPECT_EQ(result.size(), size_t{2});
@@ -640,7 +639,7 @@ TEST(Options, mf_add)
 	// add_noexcept(int)
 	Options<4> TMP{std::bitset<5>{"00000"}};
 	static_assert(noexcept(TMP.add_nocheck(Value{1})));
-	// assertion deathtests
+	// assertion death tests
 #ifdef _DEBUG
 	EXPECT_DEATH({ TMP.add_nocheck(Value{5}); }, "Assertion failed: .*");
 #else
@@ -676,7 +675,7 @@ TEST(Options, mf_set)
 	EXPECT_NO_THROW(TMP.set_nocheck(Value{1}));
 	EXPECT_EQ(TMP.DebugString(), "00010");
 	EXPECT_TRUE(is_answer(TMP.set_nocheck(Value{2}), Value{2}));
-	// assertion deathtests
+	// assertion death tests
 	EXPECT_TRUE(TMP.clear().is_empty());
 #ifdef _DEBUG
 	EXPECT_DEATH({ TMP.set_nocheck(Value{15}); }, "Assertion failed: .*");
@@ -698,7 +697,7 @@ TEST(Options, mf_booleanComparison)
 	EXPECT_FALSE(operator==(TE.A_1, Value{15}));
 	EXPECT_FALSE(operator==(Value{15}, TE.A_1));
 	EXPECT_TRUE(operator==(Value{15}, TE.E_1)); // empty, 0000
-#endif // _DEBUG
+#endif                                          // _DEBUG
 	EXPECT_EQ(TE.A_1, Value{1});
 	EXPECT_EQ(Value{1}, TE.A_1);
 	EXPECT_EQ(TE.A_2, Value{2});
@@ -791,7 +790,7 @@ TEST(Options, mf_constOperators)
 	constexpr Options<9> y9{Value{1}};
 	static_assert(y9[Value{1}]);
 
-	[[maybe_unused]] bool val{};
+	[[maybe_unused]] bool val {};
 #ifdef _DEBUG
 	EXPECT_DEATH({ val = TE.O_3[Value{5}]; }, "Assertion failed: .*");
 #else
@@ -867,10 +866,14 @@ TEST(Options, ConstructorTesting)
 TEST(Options, External)
 {
 	const Options<4> O_3{std::bitset<5>{"00101"}}; // single option 2
-	const Options<4> E_1{Value{0}};                // empty answer "00001"
+	[[maybe_unused]] const Options<4> E_1 {
+		Value { 0 }
+	};                                             // empty answer "00001"
 	const Options<4> E_2{std::bitset<5>{"00000"}}; // empty
 	const Options<4> E_3{std::bitset<5>{"00001"}}; // empty option
-	const Options<4> A_1{Value{1}};                // answer 1
+	[[maybe_unused]] const Options<4> A_1 {
+		Value { 1 }
+	};                                             // answer 1
 	const Options<4> A_2{std::bitset<5>{"00100"}}; // answer 2
 	// XOR(a,b)
 	static_assert(noexcept(XOR(O_3, O_3)));

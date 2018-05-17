@@ -112,7 +112,7 @@ inline constexpr bool is_valid(const Location<N> loc) noexcept
 template<int N>
 inline constexpr bool
 	is_valid(const std::vector<Location<N>>& locs) noexcept(true)
-{ // std::is_sorted can throw std::bad_aloc
+{ // std::is_sorted can throw std::bad_alloc
 	return (
 		!locs.empty() && (std::is_sorted(locs.cbegin(), locs.cend()) &&
 						  locs.cbegin()->element() >= 0 &&
