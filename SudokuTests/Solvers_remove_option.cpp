@@ -54,12 +54,12 @@ TEST(Solver, remove_option)
 	// value out of bounds (2-sided)
 	EXPECT_DEBUG_DEATH(
 		remove_option(board, L2(2), Value{0}), "Assertion failed: is_valid");
-#ifdef _DEBUG
-	EXPECT_DEATH(
+#ifndef NDEBUG
+	EXPECT_DEBUG_DEATH(
 		remove_option(board, L2(2), Value{9}), "Assertion failed: is_valid");
 #else
 	EXPECT_THROW(remove_option(board, L2{2}, Value{9}), std::out_of_range);
-#endif // !_DEBUG
+#endif // NDEBUG
 	// last option (not answer)
 	board[0][2] = std::bitset<5>{"01001"}; // 3
 	EXPECT_DEBUG_DEATH(
@@ -385,24 +385,24 @@ TEST(Solver, deathtests_remove_option)
 		remove_option_section(B, B.row(0), vL{}, Value{3}),
 		"Assertion failed: is_valid.ignore.");
 	// ignore-location out of bounds (1-sided, assume check tested earlier)
-#ifdef _DEBUG
+#ifndef NDEBUG
 	B[0][0] = Value{3};
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{L(0), L(1), L(16)}, Value{3}),
 		"Assertion failed: is_valid.ignore.");
-#endif // _DEBUG
+#endif // NDEBUG
 	// ignore-locations not sorted
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{L(0), L(7), L(6)}, Value{3}),
 		"Assertion failed: is_valid.ignore.");
 	// invalid value
-#ifdef _DEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{L(1), L(3)}, Value{0}),
 		"Assertion failed: is_valid<N>.value.");
-#endif // _DEBUG
+#endif // NDEBUG
 	// assert at least one ignore-location inside section
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(
@@ -420,7 +420,7 @@ TEST(Solver, deathtests_remove_option)
 		remove_option_section(B, B.row(0), vL{L(0), L(1), L(11)}, vV{}),
 		"Assertion failed: is_valid");
 	// an value out-of-bounds
-#ifdef _DEBUG
+#ifdef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(
 			B, B.row(0), vL{L(0), L(1), L(11)}, vV{v{1}, v{2}, v{0}}),
@@ -429,7 +429,7 @@ TEST(Solver, deathtests_remove_option)
 		remove_option_section(
 			B, B.row(0), vL{L(0), L(1), L(11)}, vV{v{1}, v{2}, v{5}}),
 		"Assertion failed: is_valid");
-#endif // _DEBUG
+#endif // NDEBUG
 	// assert at least one ignore-location inside section
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(
@@ -445,13 +445,13 @@ TEST(Solver, deathtests_remove_option)
 		remove_option_outside_block(B, B.row(0), L(21), Value{3}),
 		"Assertion failed: is_valid.block_loc.");
 	// invalid value
-#ifdef _DEBUG
+#ifndef NDEBUG
 	B[0][0] = Value{3};
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_outside_block(B, B.row(0), L(0), Value{23}),
 		"Assertion failed: is_valid<N>.value.");
-#endif // _DEBUG
+#endif // NDEBUG
 	// Locations block and section don't intersect
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
 	EXPECT_DEBUG_DEATH(

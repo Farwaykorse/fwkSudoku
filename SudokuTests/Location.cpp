@@ -182,7 +182,7 @@ TEST(Location, Construction)
 	static_assert(noexcept(Location<2>()));
 	EXPECT_NO_THROW(Location<3>());
 	EXPECT_NO_THROW(Location<3>{});
-	EXPECT_NO_THROW([[maybe_unused]] Location<3> LL2{});
+	EXPECT_NO_THROW([[maybe_unused]] Location<3> LL2);
 	EXPECT_NO_THROW([[maybe_unused]] Location<2> LL3);
 
 	static_assert(noexcept(Location<3>(-171)));
@@ -214,13 +214,12 @@ TEST(Location, Construction)
 	EXPECT_NO_THROW([[maybe_unused]] Location<3> L2(1, 8));
 
 	// move construct
-	EXPECT_NO_THROW(Location<3>(Location<3>(6)));
 	EXPECT_NO_THROW([[maybe_unused]] Location<3> L3(Location<3>(6)));
 	static_assert(noexcept(Location<3>(Location<3>(6))));
 	// copy construct
 	constexpr Location<3> c1(12);
 	static_assert(noexcept(Location<3>(c1)));
-	EXPECT_NO_THROW([[maybe_unused]] Location<3> c3{c1});
+	EXPECT_NO_THROW([[maybe_unused]] Location<3> c3(c1));
 }
 
 TEST(Location, Construction_result)
@@ -268,7 +267,7 @@ TEST(Location, Construction_Block)
 { // depends on Location
 	static_assert(noexcept(Location_Block<3>()));
 	static_assert(noexcept(Location_Block<3>{}));
-	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> L1{});
+	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> L1);
 	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> LL1);
 	static_assert(noexcept(Location_Block<3>(Location<3>())));
 	static_assert(noexcept(Location_Block<2>(Location<2>())));
@@ -313,11 +312,11 @@ TEST(Location, Construction_Block)
 	// copy construct
 	constexpr Location_Block<3> c1{1, 3};
 	static_assert(noexcept(Location_Block<3>(c1)));
-	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> c2{c1});
+	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> c2(c1));
 
 	static_assert(noexcept(Location_Block<3>{Location<3>{12}}));
 	static_assert(noexcept(Location<3>{Location_Block<3>{4, 2}}));
-	ASSERT_NO_THROW(Location<3>(Location_Block<3>(1, 3)));
+	ASSERT_NO_THROW([[maybe_unused]] Location<3> X(Location_Block<3>(1, 3)));
 }
 
 TEST(Location, Construction_result_Block)
@@ -332,7 +331,7 @@ TEST(Location, Construction_result_Block)
 	constexpr Location_Block<3> c1{3, 7};
 	static_assert(noexcept(c1.element()));
 	static_assert(c1.element() == 7);
-	Location_Block<3> B1(7, 8);
+	const Location_Block<3> B1(7, 8);
 	EXPECT_EQ(B1.element(), 8);
 
 	static_assert(Location_Block<3>{1, 2, 0}.element() == 6);
@@ -346,7 +345,7 @@ TEST(Location, Construction_result_Block)
 	EXPECT_EQ(B6.element(), 2);
 
 	static_assert(Location_Block<3>(Location_Block<3>(0, 2)).element() == 2);
-	Location_Block<3> B4(Location_Block<3>(0, 2));
+	const Location_Block<3> B4(Location_Block<3>(0, 2));
 	EXPECT_EQ(B4.element(), 2) << "Move constructor";
 	EXPECT_EQ(Location_Block<3>(Location_Block<3>(0, 2)).element(), 2);
 	EXPECT_EQ(Location_Block<3>(Location_Block<3>{0, 2}).element(), 2);
@@ -361,9 +360,9 @@ TEST(Location, Construction_result_Block)
 	EXPECT_EQ(B2.element(), 8) << "Copy constructor";
 	EXPECT_EQ(Location_Block<3>(B1).element(), 8) << "Copy constructor";
 	EXPECT_EQ(Location_Block<3>{B1}.element(), 8) << "Copy constructor";
-	Location_Block<3> B3 = B1;
+	const Location_Block<3> B3 = B1;
 	EXPECT_EQ(B3.element(), 8) << "Copy";
-	Location_Block<3> B5 = Location_Block<3>(8, 8);
+	const Location_Block<3> B5 = Location_Block<3>(8, 8);
 	EXPECT_EQ(B5.element(), 8) << "Move";
 
 	// back and forth

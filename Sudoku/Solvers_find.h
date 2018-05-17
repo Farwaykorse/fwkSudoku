@@ -344,7 +344,7 @@ Step 3) XOR [n-1]
 		}
 	}
 	// flip -> worker[n] contains options appearing n times or less
-	for (auto&& option_set : worker)
+	for (auto& option_set : worker)
 	{
 		option_set.flip();
 	}

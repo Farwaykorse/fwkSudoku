@@ -61,25 +61,24 @@ TEST(Solver, list_where_option__Section)
 
 	// invalid value
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(0), Value{0}, 1), ".*is_valid");
-#ifdef _DEBUG
+		list = list_where_option<2>(B.row(0), Value{0}, 1), ".*is_valid");
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(0), Value{5}, 1), ".*is_valid");
+		list = list_where_option<2>(B.row(0), Value{5}, 1), ".*is_valid");
 #else
-	EXPECT_ANY_THROW(list_where_option<2>(B.row(0), Value{5}, 1));
-#endif // _DEBUG
+	EXPECT_ANY_THROW(list = list_where_option<2>(B.row(0), Value{5}, 1));
+#endif // NDEBUG
 	// invalid row id // board_sections.h
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(-1), Value{1}, 1),
-		".*is_valid_size.N..row.");
+		list = list_where_option<2>(B.row(-1), Value{1}, 1), ".*is_valid_size");
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(4), Value{1}, 1), ".*is_valid_size.N..row.");
+		list = list_where_option<2>(B.row(4), Value{1}, 1), ".*is_valid_size");
 	// invalid rep_count
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(0), Value{1}, 0), ".*rep_count");
-	list_where_option<2>(B.row(1), Value{3}, 4);
+		list = list_where_option<2>(B.row(0), Value{1}, 0), ".*rep_count");
+	list = list_where_option<2>(B.row(1), Value{3}, 4);
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(1), Value{3}, 5), ".*rep_count");
+		list = list_where_option<2>(B.row(1), Value{3}, 5), ".*rep_count");
 	// no result
 	// - no result: explicit
 	B[2][0] = set{"11011"};
@@ -115,7 +114,7 @@ TEST(Solver, list_where_option__Section)
 	B[1][1] = set{"11001"};
 	B[2][0] = set{"11011"};
 	B[3][0] = set{"10011"};
-	list = list_where_option<2>(B.row(0), Value{1}, 3);
+	list    = list_where_option<2>(B.row(0), Value{1}, 3);
 	EXPECT_EQ(list.size(), size_t{3});
 	EXPECT_EQ(list[0], loc(1));
 	EXPECT_EQ(list[1], loc(2));
@@ -158,32 +157,40 @@ TEST(Solver, list_where_option__itr)
 					  B.row(0).cbegin(), B.row(0).cend(), Value{1}, 3))>);
 	// invalid Value
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{0}, 1),
+		list = list_where_option<2>(
+			B.row(0).cbegin(), B.row(0).cend(), Value{0}, 1),
 		".*is_valid");
-#ifdef _DEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1),
+		list = list_where_option<2>(
+			B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1),
 		".*is_valid");
 #else
 	EXPECT_ANY_THROW(
-		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1));
-#endif // _DEBUG
-	// invalid rep_count
-#ifdef _DEBUG
+		list = list_where_option<2>(
+			B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1));
+#endif // NDEBUG
+	   // invalid rep_count
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1),
+		list = list_where_option<2>(
+			B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1),
 		".*rep_count");
 #else
 	EXPECT_ANY_THROW(
-		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1));
-#endif // _DEBUG
-	list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, 0);
-	list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, 4);
+		list = list_where_option<2>(
+			B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1));
+#endif // NDEBUG
+	list =
+		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, 0);
+	list =
+		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, 4);
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(B.row(1).cbegin(), B.row(1).cend(), Value{3}, 5),
+		list = list_where_option<2>(
+			B.row(1).cbegin(), B.row(1).cend(), Value{3}, 5),
 		".*rep_count");
 	EXPECT_DEBUG_DEATH(
-		list_where_option<2>(
+		list = list_where_option<2>(
 			B.row(1).cbegin(), B.row(1).cbegin() + 2, Value{3}, 3),
 		".*rep_count");
 	// no result
@@ -247,7 +254,7 @@ TEST(Solver, list_where_option__no_rep_count)
 	std::vector<loc> list{};
 
 	static_assert(not noexcept(list_where_option<2>(B.row(0), Value{1})));
-	//static_assert(not noexcept(
+	// static_assert(not noexcept(
 	//	list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1})));
 
 	// row/col/block
@@ -269,7 +276,8 @@ TEST(Solver, list_where_option__no_rep_count)
 	EXPECT_EQ(list[0], loc(1, 0));
 	EXPECT_EQ(list[1], loc(2, 0));
 	EXPECT_EQ(list[2], loc(3, 0));
-	list = list_where_option<2>(B.block(0).cbegin(), B.block(0).cend(), Value{1});
+	list =
+		list_where_option<2>(B.block(0).cbegin(), B.block(0).cend(), Value{1});
 	EXPECT_EQ(list.size(), size_t{2});
 	EXPECT_EQ(list[0], loc(0, 1));
 	EXPECT_EQ(list[1], loc(1, 0));
@@ -335,14 +343,14 @@ TEST(Solver, list_where_option__Value)
 		list = list_where_option<2>(B.row(0), Value{0}), ".*is_valid");
 	list = list_where_option<2>(B.row(0), Value{1});
 	list = list_where_option<2>(B.row(0), Value{4});
-#ifdef _DEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(B.row(0), Value{5}), ".*is_valid");
 #else
 	// - Options::is_option() - std::bitset::test() std::out_of_range
 	EXPECT_THROW(
 		list = list_where_option<2>(B.row(0), Value{5}), std::out_of_range);
-#endif // _DEBUG
+#endif // NDEBUG
 	// Do not return answered
 	list = list_where_option<2>(B.row(0), Value{2});
 	EXPECT_EQ(list.size(), size_t{0});
@@ -538,9 +546,9 @@ TEST(Solver, list_where_subset)
 	ASSERT_EQ(result.size(), 0u);
 
 	// only on the row:
-	item         = B{"00111"};
-	auto section = board.row(L{0});
-	result       = list_where_subset<2>(section, item);
+	item               = B{"00111"};
+	const auto section = board.row(L{0});
+	result             = list_where_subset<2>(section, item);
 	ASSERT_EQ(result.size(), 2u);
 	EXPECT_EQ(result[0], L{2});
 	EXPECT_EQ(result[1], L{3});
@@ -769,15 +777,16 @@ TEST(Solver, appearance_once)
 		EXPECT_TRUE(is_answer(B5[0][1], Value{2}));
 		EXPECT_TRUE(is_answer(B5[0][2], Value{3}));
 		EXPECT_TRUE(is_answer(B5[0][3], Value{4}));
-		auto result1 = appearance_once<2>(B5.row(0));
+		const auto result1 = appearance_once<2>(B5.row(0));
 		EXPECT_TRUE(result1[Value{0}]); // answer bit
 		EXPECT_EQ(result1.count(), 0U);
 		EXPECT_EQ(result1.count_all(), 0U);
 		EXPECT_TRUE(result1.is_empty());
-		auto result2 = appearance_once<2>(B5.row(0).cbegin(), B5.row(0).cend());
+		const auto result2 =
+			appearance_once<2>(B5.row(0).cbegin(), B5.row(0).cend());
 		EXPECT_TRUE(result2[Value{0}]); // answer bit
 		EXPECT_TRUE(result2.is_empty());
-		auto result3 = appearance_once<2>(B5.row(3));
+		const auto result3 = appearance_once<2>(B5.row(3));
 		EXPECT_TRUE(result3[Value{0}]); // answer bit
 		EXPECT_EQ(result3.count(), 0U);
 		EXPECT_TRUE(result3.is_empty());

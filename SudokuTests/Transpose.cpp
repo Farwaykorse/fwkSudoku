@@ -272,12 +272,12 @@ namespace ohmy_a_test
 		nomove()              = default;
 		nomove(const nomove&) = default;
 		nomove(nomove&& x) noexcept(false) { a = std::move(x.a); }
-		nomove& operator=(const nomove& x)
+		nomove& operator=(const nomove& x) noexcept
 		{
 			a = x.a;
 			return *this;
 		}
-		bool operator==(const nomove& x) const { return a == x.a; }
+		bool operator==(const nomove& x) const noexcept { return a == x.a; }
 	};
 	static_assert(std::is_copy_constructible_v<nomove>);
 	static_assert(std::is_nothrow_copy_constructible_v<nomove>);

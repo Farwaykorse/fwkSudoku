@@ -2,10 +2,6 @@
 //
 // Utilities for class Sudoku::Location
 //===----------------------------------------------------------------------===//
-//
-// Included in Location.h
-//
-//===----------------------------------------------------------------------===//
 #pragma once
 
 #include "Iterator_Utilities.h"

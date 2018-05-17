@@ -286,14 +286,15 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-comparison -Wno-unused-value -Wno-injected-class-name -Wno-sign-compare -Wno-zero-as-null-pointer-constant -Wno-global-constructors -Wno-used-but-marked-unused -Wno-sign-conversion -Wno-covered-switch-default -Wno-undef -Wno-deprecated-declarations %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Weverything -Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-comparison -Wno-zero-as-null-pointer-constant -Wno-global-constructors -Wno-used-but-marked-unused -Wno-covered-switch-default %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <MinimalRebuild />
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat />
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -310,14 +311,16 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-comparison -Wno-unused-value -Wno-injected-class-name -Wno-sign-compare -Wno-zero-as-null-pointer-constant -Wno-global-constructors -Wno-used-but-marked-unused -Wno-sign-conversion -Wno-covered-switch-default -Wno-undef -Wno-deprecated-declarations %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Weverything -Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-comparison -Wno-zero-as-null-pointer-constant -Wno-global-constructors -Wno-used-but-marked-unused -Wno-covered-switch-default %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <MinimalRebuild />
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat />
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -334,7 +337,7 @@
     </Link>
     <ClCompile />
     <ClCompile>
-      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-comparison -Wno-unused-value -Wno-injected-class-name -Wno-sign-compare -Wno-zero-as-null-pointer-constant -Wno-global-constructors -Wno-used-but-marked-unused -Wno-sign-conversion -Wno-covered-switch-default %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Weverything -Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-comparison -Wno-zero-as-null-pointer-constant -Wno-global-constructors -Wno-used-but-marked-unused -Wno-covered-switch-default %(AdditionalOptions)</AdditionalOptions>
       <MinimalRebuild />
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -342,6 +345,8 @@
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -351,7 +356,7 @@
     </Link>
     <ClCompile />
     <ClCompile>
-      <AdditionalOptions>-Xclang -std=c++17 -Xclang -fms-compatibility-version=19.10 -Wall -Wextra -Xclang -pedantic -Weverything -Weffc++ -Wshadow -Wold-style-cast -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Woverloaded-virtual -Wnon-virtual-dtor -Wreorder -Wcast-align -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-comparison -Wno-unused-value -Wno-injected-class-name -Wno-sign-compare -Wno-zero-as-null-pointer-constant -Wno-global-constructors -Wno-used-but-marked-unused -Wno-sign-conversion -Wno-covered-switch-default %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Weverything -Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-comparison -Wno-zero-as-null-pointer-constant -Wno-global-constructors -Wno-used-but-marked-unused -Wno-covered-switch-default %(AdditionalOptions)</AdditionalOptions>
       <MinimalRebuild />
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -359,13 +364,26 @@
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Board.cpp" />
-    <ClCompile Include="Board_Iterators.cpp" />
+    <ClCompile Include="Board.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="Board_Iterators.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="Board_Sections.cpp" />
+    <ClCompile Include="Board_Section_Iterators.cpp" />
     <ClCompile Include="exceptions.cpp" />
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="Options.cpp" />

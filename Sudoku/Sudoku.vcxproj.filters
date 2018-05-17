@@ -69,6 +69,9 @@
     <ClInclude Include="exceptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Board_Iterators.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sudoku.cpp">

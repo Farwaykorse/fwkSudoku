@@ -51,7 +51,7 @@ TEST(Solver, set_Value)
 	EXPECT_NO_THROW(set_Value(board, L{0}, Value{1}));
 	EXPECT_NO_THROW(set_Value(board, L{15}, Value{1}));
 	EXPECT_NO_THROW(set_Value(board, L{1}, Value{4}));
-#ifdef _DEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		set_Value(board, Location<2>{-1}, Value{1}), ".*: is_valid.loc.");
 	EXPECT_DEBUG_DEATH(
@@ -66,7 +66,7 @@ TEST(Solver, set_Value)
 	EXPECT_THROW(set_Value(board, L{16}, Value{1}), error::invalid_Location);
 	// thrown by Options::test(Value)->std::bitset::test()
 	EXPECT_THROW(set_Value(board, L{1}, Value{5}), std::out_of_range);
-#endif // _DEBUG
+#endif // NDEBUG
 
 	// test: value is not an option
 	board[1][1] = std::bitset<5>{"11011"}; // options: 1,3,4
@@ -181,13 +181,13 @@ TEST(Solver, set_section_locals)
 		set_section_locals(B, B.row(2), 4, worker), "rep_count <= N");
 	EXPECT_DEBUG_DEATH(
 		set_section_locals(B, B.row(2), 3, worker), ".*rep_count <= N");
-#ifndef _DEBUG
+#ifdef NDEBUG
 	EXPECT_EQ(set_section_locals(B, B.row(2), 0, worker), 0);
 	EXPECT_EQ(set_section_locals(B, B.row(2), 1, worker), 1);
 	EXPECT_EQ(set_section_locals(B, B.row(2), 2, worker), 0);
 	EXPECT_EQ(set_section_locals(B, B.row(2), 3, worker), 0);
 	EXPECT_EQ(set_section_locals(B, B.row(2), 4, worker), 0);
-#endif // _DEBUG
+#endif // NDEBUG
 	// option doesn't exist in section
 	B.clear();
 	B[0][0] = set{"00100"}; // ans 2
@@ -207,7 +207,7 @@ TEST(Solver, set_section_locals)
 	// worker empty
 	worker = set{"00000"};
 	ASSERT_TRUE(worker.is_empty());
-#ifdef _DEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		set_section_locals(B, B.row(0), 2, worker), "count_all.. > 0");
 	EXPECT_DEBUG_DEATH(
@@ -218,7 +218,7 @@ TEST(Solver, set_section_locals)
 	EXPECT_EQ(set_section_locals(B, B.row(0), 2, worker), 0);
 	EXPECT_EQ(set_section_locals(B, B.col(0), 2, worker), 0);
 	EXPECT_EQ(set_section_locals(B, B.block(0), 2, worker), 0);
-#endif // _DEBUG
+#endif // NDEBUG
 	// worker empty (with answer-bit)
 	worker = set{"00001"};
 	EXPECT_DEBUG_DEATH(
@@ -470,12 +470,12 @@ TEST(Solver, set_unique)
 	board = cB1; // reset
 
 	// Death tests
-#ifdef _DEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		set_unique(board, board.row(2), Value{12}), ".*is_valid<N>.value");
 #else
 	EXPECT_THROW(set_unique(board, board.row(2), Value{12}), std::out_of_range);
-#endif // _DEBUG
+#endif // NDEBUG
 	// Value is not an option
 	remove_option(board, L{5}, Value{3});
 	remove_option(board, L{6}, Value{3});

@@ -19,10 +19,10 @@
 // Class under test
 #include <Sudoku/exceptions.h>
 // library
-#include <stdexcept>
-#include <type_traits>
 #include <string>
 #include <cstring>
+#include <stdexcept>
+#include <type_traits>
 
 namespace SudokuTests::errorTests
 {
@@ -46,7 +46,7 @@ TEST(Error, invalid_Board)
 		static_assert(not std::is_final_v<typeT>);
 		static_assert(not std::is_abstract_v<typeT>); // ++
 		// default constructor: typeT()
-		static_assert(std::is_default_constructible_v<typeT>);             // ++
+		static_assert(std::is_default_constructible_v<typeT>);         // ++
 		static_assert(std::is_nothrow_default_constructible_v<typeT>); // ++
 		static_assert(not std::is_trivially_default_constructible_v<typeT>);
 		// copy constructor: typeT(const typeT&)
@@ -81,7 +81,7 @@ TEST(Error, invalid_Board)
 	catch (const invalid_Board& e)
 	{
 		ASSERT_NE(e.what(), std::nullptr_t{});
-		size_t length{std::strlen(e.what())};
+		const size_t length{std::strlen(e.what())};
 		EXPECT_EQ(length, size_t{13});
 		EXPECT_EQ(std::strcmp(e.what(), name.c_str()), 0);
 	}
@@ -108,7 +108,7 @@ TEST(Error, invalid_Location)
 		static_assert(not std::is_final_v<typeT>);
 		static_assert(not std::is_abstract_v<typeT>); // ++
 		// default constructor: typeT()
-		static_assert(std::is_default_constructible_v<typeT>);             // ++
+		static_assert(std::is_default_constructible_v<typeT>);         // ++
 		static_assert(std::is_nothrow_default_constructible_v<typeT>); // ++
 		static_assert(not std::is_trivially_default_constructible_v<typeT>);
 		// copy constructor: typeT(const typeT&)
@@ -143,16 +143,15 @@ TEST(Error, invalid_Location)
 	catch (const invalid_Location& e)
 	{
 		ASSERT_NE(e.what(), std::nullptr_t{});
-		size_t length{std::strlen(e.what())};
+		const size_t length{std::strlen(e.what())};
 		EXPECT_EQ(length, size_t{16});
 		EXPECT_EQ(std::strcmp(e.what(), name.c_str()), 0);
-		//EXPECT_NE(*(e.what()), *(name_wrong.c_str()));
+		// EXPECT_NE(*(e.what()), *(name_wrong.c_str()));
 
 		ASSERT_EQ(e.where(), std::nullptr_t{});
-		//length = std::strlen(e.where()); // first is the \0 character.
+		// length = std::strlen(e.where()); // first is the \0 character.
 	}
 
 	// TODO how to add "__FILE__: __LINE__"? in a single line.
-
 }
 } // namespace SudokuTests::errorTests
