@@ -30,7 +30,7 @@ public:
 	Options(int) = delete;                    // by bitset
 	explicit Options(const bitset&) noexcept; // 0th bit is last in input
 	explicit Options(bitset&&) noexcept;
-	constexpr Options(Value) noexcept;
+	explicit constexpr Options(Value) noexcept;
 	Options& operator=(Value) noexcept;
 	Options& operator=(const bitset&) noexcept;
 	Options& operator=(bitset&&) noexcept;
@@ -49,7 +49,7 @@ public:
 	[[nodiscard]] size_t count() const noexcept;     // count available options
 	[[nodiscard]] size_t count_all() const noexcept; // count all (incl. answer)
 	[[nodiscard]] bool all() const noexcept;       // test all options available
-	[[nodiscard]] bool test(Value const&) const;          // if an option, or answer
+	[[nodiscard]] bool test(Value const&) const;   // if an option, or answer
 	[[nodiscard]] bool is_answer() const noexcept; // is set to answer
 	[[nodiscard]] bool is_empty() const noexcept;
 
@@ -86,7 +86,6 @@ public:
 
 	// Shared options (binary AND)
 	// Prefer: shared(left, right)
-	//template<int E>
 	[[nodiscard]] friend Options
 		operator&(const Options& left, const Options& right) noexcept
 	{

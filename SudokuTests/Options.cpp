@@ -241,7 +241,7 @@ TEST(Options, Construction)
 	{ // Value
 		SCOPED_TRACE("Options(Value)");
 		const Options<4> A_1{Value{2}}; // set() // clear() // add()
-		const Options<4> A_2 = Value{2};
+		const auto A_2 = Options<4>{Value{2}};
 		EXPECT_EQ(A_1.DebugString(), "00100");
 		EXPECT_EQ(A_2.DebugString(), "00100");
 		EXPECT_EQ(Options<4>{Value{0}}.DebugString(), "00001"); // [count-0]
@@ -869,7 +869,7 @@ TEST(Options, ConstructorTesting)
 	TMP = TE.A_2;
 	EXPECT_TRUE(is_answer(TMP, Value{2}));
 	EXPECT_TRUE(TMP == TE.A_2);
-	const Options<4> TMP2 = Value{3};
+	const auto TMP2 = Options<4>{Value{3}};
 	EXPECT_TRUE(is_answer(TMP2, Value{3}));
 
 	// move-assign
