@@ -133,7 +133,7 @@ TEST(Error, invalid_Location)
 	}
 
 	const std::string name{"invalid_Location"};
-	const std::string name_wrong{"invalid_chairs"};
+	//const std::string name_wrong{"invalid_chairs"};
 	try
 	{
 		throw invalid_Location();
