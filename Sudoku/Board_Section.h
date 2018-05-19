@@ -157,8 +157,6 @@ template<typename T, int N, Section S, bool is_const>
 	case Section::row: return Location(id_, elem);
 	case Section::col: return Location(elem, id_);
 	case Section::block: return Location_Block(id_, elem);
-	// TODO bug report on MSVC warning C4715
-	default: assert(false); return Location{};
 	}
 }
 
@@ -172,7 +170,6 @@ inline constexpr int
 	case Section::row: return loc.row();
 	case Section::col: return loc.col();
 	case Section::block: return loc.block();
-	default: assert(false); return 0; // TODO shouldn't need this ...
 	}
 }
 
