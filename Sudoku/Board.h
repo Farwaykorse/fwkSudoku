@@ -33,7 +33,7 @@ template<typename T, int N = 3>
 class Board
 {
 	static_assert(N > 1, "Board.h base_size value too small");
-	static constexpr size_t Size = full_size<N>;
+	static constexpr auto Size = size_t{full_size<N>};
 
 	using Location    = ::Sudoku::Location<N>;
 	using Row         = Board_Section::Row<T, N>;
@@ -156,7 +156,7 @@ Board<T, N>::Board(const T& def_value) : board_(full_size<N>, def_value)
 template<typename T, int N>
 Board<T, N>::Board(std::initializer_list<T> list) : board_(list)
 {
-	assert(list.size() == full_size<N>);
+	assert(list.size() == size_t{full_size<N>});
 	// TODO exception on invalid length
 	valid_dimensions<N>();
 	assert(board_.size() == size());

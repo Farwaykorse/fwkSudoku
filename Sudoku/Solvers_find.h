@@ -151,7 +151,7 @@ auto list_where_option(const SectionT section, const Options sample) noexcept(
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 	}
 	std::vector<Location<N>> locations{};
-	locations.reserve(elem_size<N>);
+	locations.reserve(size_t{elem_size<N>});
 
 	const auto check_option = [sample](Options O) noexcept {
 		return sample == shared(O, sample);
@@ -181,7 +181,7 @@ auto list_where_equal(const SectionT section, const Options sample) noexcept(
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
 	std::vector<Location<N>> locations{};
-	locations.reserve(elem_size<N>);
+	locations.reserve(size_t{elem_size<N>});
 
 	const auto end = section.cend();
 
@@ -313,7 +313,7 @@ Step 3) XOR [n-1]
 			Utility_::iterator_to<InItr_, const Options>);
 	}
 	// To limit processing time, counting up to N
-	constexpr size_t max = N; // default: (9x9 board) up-to 3 times
+	constexpr auto max = size_t{N}; // default: (9x9 board) up-to 3 times
 	std::array<Options, max + 1> worker{};
 	worker.fill(Options(Value{0}));
 
