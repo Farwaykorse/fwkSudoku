@@ -138,7 +138,7 @@
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
+      <AdditionalOptions>/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w44365 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w44623 /w44625 /w34640 /w44654 /w44668 /w34686 /w34738 /w44774 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /w45026 /we5029 /w45031 /w45032</AdditionalOptions>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -195,7 +195,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
+      <AdditionalOptions>/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w44365 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w44623 /w44625 /w34640 /w44654 /w44668 /w34686 /w34738 /w44774 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /w45026 /we5029 /w45031 /w45032</AdditionalOptions>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ConformanceMode>true</ConformanceMode>
@@ -218,7 +218,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
+      <AdditionalOptions>/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w44365 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w44623 /w44625 /w34640 /w44654 /w44668 /w34686 /w34738 /w44774 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /w45026 /we5029 /w45031 /w45032</AdditionalOptions>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ConformanceMode>true</ConformanceMode>
@@ -243,7 +243,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
+      <AdditionalOptions>/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w44365 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w44623 /w44625 /w34640 /w44654 /w44668 /w34686 /w34738 /w44774 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /w45026 /we5029 /w45031 /w45032</AdditionalOptions>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ConformanceMode>true</ConformanceMode>
@@ -381,6 +381,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">Create</PrecompiledHeader>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">-Wno-deprecated-declarations -Wno-undef -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">-Wno-deprecated-declarations -Wno-undef -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="Size.cpp" />
     <ClCompile Include="Solver.cpp" />
