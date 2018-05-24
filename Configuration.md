@@ -118,15 +118,20 @@ MS Build configurations:
 
 #### Enable Warnings: ####
 <!----------------------------------------------------------------------------->
-These warning settings are used for all configurations.
+These warning settings are used for all configurations.  
+Documentation:
+[VC++ Compiler Warnings](https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings)
+
+*All configurations*:
 ````
 /W4        Warning level 4 (=highest) (/Wall triggers library warnings)
 ````
-Additional command-line options are used almost exclusively to enable
-[compiler warnings that are off by default](https://docs.microsoft.com/en-gb/cpp/preprocessor/compiler-warnings-that-are-off-by-default).  
 
-Documentation:
-[VC++ Compiler Warnings](https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings)
+*DisableSpecificWarnings*:
+- C4715  bugged, warns when all switch over all cases in an enum.
+
+*Additional command-line options* are used almost exclusively to enable
+[compiler warnings that are off by default](https://docs.microsoft.com/en-gb/cpp/preprocessor/compiler-warnings-that-are-off-by-default).  
 
 *Warning level configuration flag format*:
 ```
