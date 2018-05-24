@@ -164,19 +164,8 @@ namespace Location_Block_compiletime
 } // namespace Location_Block_compiletime
 
 // Shared data used for all tests
-// Initiate tests with: TEST_F(LocationTest, test_name)
-class LocationTest : public ::testing::Test
+struct LocationTest
 {
-protected:
-	// Per-test-case, used for all tests
-	// Use for objects that are expensive to generate
-	// but are not changed by the tests
-	// static void SetUpTestCase() {}
-	// static void TearDownTestCase() {}
-
-	// Per-test
-	// virtual void SetUp() {}
-	// virtual void TearDown() {}
 	const Location<3> locE{};
 	const Location<3> loc0{0};
 	const Location<3> loc1{1};
