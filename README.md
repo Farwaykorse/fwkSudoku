@@ -30,6 +30,8 @@ The code is mainly written and compiled using the Visual Studio platform.
 External libraries are imported using the
 [vcpkg project](https://github.com/Microsoft/vcpkg)
 
+The shared project configuration description:
+[Configuration](./Configuration.md)
 
 <!--------------------------------------------------------><a id="elements"></a>
 ## Elements ##
