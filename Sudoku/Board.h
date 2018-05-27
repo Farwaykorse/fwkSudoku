@@ -85,11 +85,10 @@ public:
 	const T& operator[](Location) const noexcept;
 
 	// Element Selection Operator (using a proxy object)
-	//   usable as [row][col] where col is processed by the (const_)InBetween
-	class InBetween;
-	InBetween operator[](int row) noexcept;
-	class const_InBetween;
-	const const_InBetween operator[](int row) const noexcept;
+	//   usable as [row][col] where col is processed by the (const_)Row
+	Row operator[](int row_id) noexcept { return row(row_id); }
+	const_Row operator[](int row_id) const noexcept { return row(row_id); }
+
 
 	// Iterators
 	constexpr iterator begin() noexcept;
@@ -262,68 +261,6 @@ const T& Board<T, N>::operator[](Location loc) const noexcept
 {
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
-
-//===----------------------------------------------------------------------===//
-// Proxy object for Element Selection Operator
-template<typename T, int N>
-class Board<T, N>::InBetween
-{
-	friend class Board<T, N>; // access to private constructor
-	InBetween(gsl::not_null<Board<T, N>*> owner, int row) noexcept
-		: owner_(owner), row_(row)
-	{ // private constructor prevents creation out of class
-	}
-
-public:
-	T& operator[](const int col) noexcept
-	{
-		return owner_->operator[](Location(row_, col));
-	}
-
-private:
-	Board<T, N>* const owner_; // const-pointer
-	const int row_;
-};
-
-// Proxy object for Element Selection Operator
-template<typename T, int N>
-class Board<T, N>::const_InBetween
-{
-	friend class Board<T, N>; // access to private constructor
-	const_InBetween(gsl::not_null<const Board<T, N>*> owner, int row) noexcept
-		: owner_(owner), row_(row)
-	{ // private constructor prevents creation out of class
-	}
-
-public:
-	const T& operator[](const int col) const noexcept
-	{
-		return owner_->operator[](Location(row_, col));
-	}
-
-private:
-	const Board<T, N>* const owner_; // const pointer-to-const
-	const int row_;
-};
-
-// Element Selection Operator (using a proxy object)
-//   usable as [row][col] where col is processed by the (const_)InBetween
-template<typename T, int N>
-typename Board<T, N>::InBetween Board<T, N>::operator[](const int row) noexcept
-{
-	// Element Selection Operator (using a proxy object)
-	return InBetween(gsl::not_null<Board*>{this}, row);
-}
-
-// Element Selection Operator (using a proxy object)
-//   usable as [row][col] where col is processed by the (const_)InBetween
-template<typename T, int N>
-const typename Board<T, N>::const_InBetween Board<T, N>::
-	operator[](const int row) const noexcept
-{
-	return const_InBetween(gsl::not_null<Board const*>{this}, row);
-}
-// InBetween
 
 //===----------------------------------------------------------------------===//
 // Board - Iterators

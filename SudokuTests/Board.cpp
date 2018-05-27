@@ -470,96 +470,6 @@ TEST(Board, clear)
 	EXPECT_EQ(Opt[Location<2>(2)], Options<4>());
 }
 
-
-namespace compiletime_InBetween
-{ // Type properties
-	using typeT = Board<int, 3>::InBetween;
-
-	static_assert(std::is_class_v<typeT>);
-	static_assert(not std::is_trivial_v<typeT>); // ++
-	// different in Clang
-	// static_assert(not std::is_trivially_copyable_v<typeT>); // ++
-	static_assert(std::is_standard_layout_v<typeT>);
-	static_assert(not std::is_empty_v<typeT>);
-	static_assert(not std::is_polymorphic_v<typeT>); // --
-	static_assert(not std::is_final_v<typeT>);
-	static_assert(not std::is_abstract_v<typeT>); // ++
-
-	// default constructor: typeT()
-	static_assert(not std::is_default_constructible_v<typeT>); // ++
-
-	// copy constructor: typeT(const typeT&)
-	static_assert(std::is_copy_constructible_v<typeT>);
-	static_assert(std::is_nothrow_copy_constructible_v<typeT>);
-	static_assert(std::is_trivially_copy_constructible_v<typeT>);
-
-	// move constructor: typeT(typeT&&)
-	static_assert(std::is_move_constructible_v<typeT>);
-	static_assert(std::is_nothrow_move_constructible_v<typeT>);
-	static_assert(std::is_trivially_move_constructible_v<typeT>);
-
-	// assignment
-	static_assert(not std::is_copy_assignable_v<typeT>); // ++
-	static_assert(not std::is_move_assignable_v<typeT>); // ++
-
-	static_assert(std::is_destructible_v<typeT>);            // ++
-	static_assert(std::is_nothrow_destructible_v<typeT>);    // ++
-	static_assert(std::is_trivially_destructible_v<typeT>);  // ++
-	static_assert(not std::has_virtual_destructor_v<typeT>); // --
-
-	static_assert(not std::is_swappable_v<typeT>); // C++17
-
-	// is_constructible from different types
-	// set to non-default value at initialization
-	static_assert(not std::is_constructible_v<typeT, int>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, int>);
-} // namespace compiletime_InBetween
-
-namespace compiletime_const_InBetween
-{ // Type properties
-	using typeT = Board<int, 3>::const_InBetween;
-
-	static_assert(std::is_class_v<typeT>);
-	static_assert(not std::is_trivial_v<typeT>); // ++
-	// different in Clang
-	// static_assert(not std::is_trivially_copyable_v<typeT>); // ++
-	static_assert(std::is_standard_layout_v<typeT>);
-	static_assert(not std::is_empty_v<typeT>);
-	static_assert(not std::is_polymorphic_v<typeT>); // --
-	static_assert(not std::is_final_v<typeT>);
-	static_assert(not std::is_abstract_v<typeT>); // ++
-
-	// default constructor: typeT()
-	static_assert(not std::is_default_constructible_v<typeT>); // ++
-
-	// copy constructor: typeT(const typeT&)
-	static_assert(std::is_copy_constructible_v<typeT>);
-	static_assert(std::is_nothrow_copy_constructible_v<typeT>);
-	static_assert(std::is_trivially_copy_constructible_v<typeT>);
-
-	// move constructor: typeT(typeT&&)
-	static_assert(std::is_move_constructible_v<typeT>);
-	static_assert(std::is_nothrow_move_constructible_v<typeT>);
-	static_assert(std::is_trivially_move_constructible_v<typeT>);
-
-	// assignment
-	static_assert(not std::is_copy_assignable_v<typeT>); // ++
-	static_assert(not std::is_move_assignable_v<typeT>); // ++
-
-	static_assert(std::is_destructible_v<typeT>);            // ++
-	static_assert(std::is_nothrow_destructible_v<typeT>);    // ++
-	static_assert(std::is_trivially_destructible_v<typeT>);  // ++
-	static_assert(not std::has_virtual_destructor_v<typeT>); // --
-
-	static_assert(not std::is_swappable_v<typeT>); // C++17
-
-	// is_constructible from different types
-	// set to non-default value at initialization
-	static_assert(not std::is_constructible_v<typeT, int>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, int>);
-} // namespace compiletime_const_InBetween
-
-
 TEST(Board, InBetween)
 {
 	Board<int, 2> board{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
@@ -585,7 +495,6 @@ TEST(Board, InBetween)
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	static_assert(noexcept(cboard[0][0]));
 	static_assert(noexcept(cboard[4][5]));
-	EXPECT_NO_THROW(cboard[1][0]);
 	EXPECT_EQ(cboard[0][0], 0);
 	EXPECT_EQ(cboard[2][0], 8);
 	EXPECT_EQ(cboard[3][3], 15);
