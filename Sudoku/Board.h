@@ -56,8 +56,7 @@ public:
 	using const_reverse_iterator = const_reverse_Board_iterator<T, N>;
 
 	Board() noexcept;
-	// initialize with non-default value
-	explicit Board(const T&);
+	explicit Board(const T& default_value);
 	Board(std::initializer_list<T>); // construct from initializer_list
 
 	void clear();
@@ -152,7 +151,7 @@ Board<T, N>::Board() noexcept : board_(full_size<N>)
 }
 
 template<typename T, int N>
-Board<T, N>::Board(const T& def_value) : board_(full_size<N>, def_value)
+Board<T, N>::Board(const T& default_value) : board_(full_size<N>, default_value)
 {
 	valid_dimensions<N>();
 	assert(board_.size() == size());
