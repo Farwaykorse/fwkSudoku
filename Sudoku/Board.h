@@ -12,7 +12,6 @@
 
 #include "Board_Iterators.h"
 #include "Board_Section.h"
-#include "Board_Utilities.h"
 #include "Location.h"
 #include "Location_Utilities.h"
 #include "Size.h"
@@ -132,6 +131,14 @@ private:
 	std::vector<T> board_{};
 
 }; // class Board
+
+//===--- free-functions ---------------------------------------------------===//
+
+template<typename T, int N>
+constexpr bool operator!=(Board<T, N> const& left, Board<T, N> const& right)
+{
+	return !(left == right);
+}
 
 //===----------------------------------------------------------------------===//
 // Board - member-functions

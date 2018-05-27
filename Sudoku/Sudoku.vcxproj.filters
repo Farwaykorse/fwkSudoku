@@ -30,9 +30,6 @@
     <ClInclude Include="Board.fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Board_Utilities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="board.h">
       <Filter>Header Files</Filter>
     </ClInclude>
