@@ -14,6 +14,7 @@
 #include <iterator>
 #include <limits>
 #include <type_traits>
+#include <cassert>
 
 // Forward declarations
 #include "Board.fwd.h"

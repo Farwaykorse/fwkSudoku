@@ -11,6 +11,7 @@
 #include "traits.h"
 
 #include <type_traits>
+#include <cassert>
 
 // Convenience include
 #include "Board_Section_traits.h"
