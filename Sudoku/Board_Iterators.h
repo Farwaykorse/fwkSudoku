@@ -25,12 +25,11 @@ namespace Sudoku
 template<typename T, int N, bool is_const = false, bool is_reverse = false>
 class Board_iterator;
 
+//====--- Aliases --------------------------------------------------------====//
 template<typename T, int N>
 using const_Board_iterator = Board_iterator<T, N, true, false>;
-
 template<typename T, int N>
 using reverse_Board_iterator = Board_iterator<T, N, false, true>;
-
 template<typename T, int N>
 using const_reverse_Board_iterator = Board_iterator<T, N, true, true>;
 
@@ -77,7 +76,7 @@ public:
 		return (*this);
 	}
 
-	// Implicit Type Conversion to const_(reverse_)iterator
+	// [[implicit]] Type Conversion to const_(reverse_)iterator
 	constexpr operator Board_iterator<T, N, true, is_reverse>() const noexcept
 	{
 		static_assert(!is_const);
@@ -95,10 +94,8 @@ public:
 
 	//====----------------------------------------------------------------====//
 	[[nodiscard]] constexpr reference operator*() const noexcept
-	{
-		// Only valid in a dereferenceable location:
+	{ // Only valid in a dereferenceable location:
 		assert(board_ != nullptr && is_valid(Location{elem_}));
-
 		return board_->operator[](location());
 	}
 	[[nodiscard]] constexpr pointer operator->() const noexcept
@@ -107,71 +104,13 @@ public:
 	}
 
 	//====----------------------------------------------------------------====//
-	constexpr Board_iterator& operator++() noexcept
-	{ // pre-increment
-		assert(board_ != nullptr);
-		if constexpr (is_reverse)
-		{
-			assert(elem_ >= 0);
-			--elem_;
-		}
-		else
-		{
-			assert(elem_ < full_size<N>);
-			++elem_;
-		}
-		return (*this);
-	}
-	constexpr Board_iterator operator++(int) noexcept
-	{ // post-increment
-		const Board_iterator pre{*this};
-		operator++();
-		return pre;
-	}
-	constexpr Board_iterator& operator--() noexcept
-	{ // pre-decrement
-		assert(board_ != nullptr);
-		if constexpr (is_reverse)
-		{
-			assert(elem_ < full_size<N> - 1);
-			++elem_;
-		}
-		else
-		{
-			assert(elem_ > 0);
-			--elem_;
-		}
-		return (*this);
-	}
-	constexpr Board_iterator operator--(int) noexcept
-	{ // post-decrement
-		const Board_iterator pre{*this};
-		operator--();
-		return pre;
-	}
+	constexpr Board_iterator& operator++() noexcept;
+	constexpr Board_iterator operator++(int) noexcept;
+	constexpr Board_iterator& operator--() noexcept;
+	constexpr Board_iterator operator--(int) noexcept;
+	constexpr Board_iterator& operator+=(const difference_type offset) noexcept;
+	constexpr Board_iterator& operator-=(const difference_type offset) noexcept;
 
-	//====----------------------------------------------------------------====//
-	constexpr Board_iterator& operator+=(const difference_type offset) noexcept
-	{
-		assert(offset == 0 || board_ != nullptr);
-		if constexpr (is_reverse)
-		{
-			elem_ -= offset;
-			assert(elem_ >= -1);
-			assert(elem_ < full_size<N>);
-		}
-		else
-		{
-			elem_ += offset;
-			assert(elem_ >= 0);
-			assert(elem_ <= full_size<N>);
-		}
-		return (*this);
-	}
-	constexpr Board_iterator& operator-=(const difference_type offset) noexcept
-	{
-		return operator+=(-offset);
-	}
 	[[nodiscard]] friend constexpr difference_type operator-(
 		Board_iterator const left, Board_iterator const right) noexcept
 	{ // difference
@@ -216,25 +155,114 @@ private:
 	}
 };
 
+
+//====--------------------------------------------------------------------====//
+template<typename T, int N, bool C, bool is_reverse>
+constexpr Board_iterator<T, N, C, is_reverse>&
+	Board_iterator<T, N, C, is_reverse>::operator++() noexcept
+{ // pre-increment
+	assert(board_ != nullptr);
+	if constexpr (is_reverse)
+	{
+		assert(elem_ >= 0);
+		--elem_;
+	}
+	else
+	{
+		assert(elem_ < full_size<N>);
+		++elem_;
+	}
+	return (*this);
+}
+template<typename T, int N, bool C, bool R>
+constexpr Board_iterator<T, N, C, R> Board_iterator<T, N, C, R>::
+	operator++(int) noexcept
+{ // post-increment
+	const Board_iterator pre{*this};
+	operator++();
+	return pre;
+}
+template<typename T, int N, bool C, bool is_reverse>
+constexpr Board_iterator<T, N, C, is_reverse>&
+	Board_iterator<T, N, C, is_reverse>::operator--() noexcept
+{ // pre-decrement
+	assert(board_ != nullptr);
+	if constexpr (is_reverse)
+	{
+		assert(elem_ < full_size<N> - 1);
+		++elem_;
+	}
+	else
+	{
+		assert(elem_ > 0);
+		--elem_;
+	}
+	return (*this);
+}
+template<typename T, int N, bool C, bool R>
+constexpr Board_iterator<T, N, C, R> Board_iterator<T, N, C, R>::
+	operator--(int) noexcept
+{ // post-decrement
+	const Board_iterator pre{*this};
+	operator--();
+	return pre;
+}
+template<typename T, int N, bool C, bool is_reverse>
+constexpr Board_iterator<T, N, C, is_reverse>&
+	Board_iterator<T, N, C, is_reverse>::
+		operator+=(const difference_type offset) noexcept
+{
+	assert(offset == 0 || board_ != nullptr);
+	if constexpr (is_reverse)
+	{
+		elem_ -= offset;
+		assert(elem_ >= -1);
+		assert(elem_ < full_size<N>);
+	}
+	else
+	{
+		elem_ += offset;
+		assert(elem_ >= 0);
+		assert(elem_ <= full_size<N>);
+	}
+	return (*this);
+}
+template<typename T, int N, bool C, bool is_reverse>
+constexpr Board_iterator<T, N, C, is_reverse>&
+	Board_iterator<T, N, C, is_reverse>::
+		operator-=(const difference_type offset) noexcept
+{
+	return operator+=(-offset);
+}
+
+//====--------------------------------------------------------------------====//
+// Free functions (non-friend)
 //====--------------------------------------------------------------------====//
 template<typename T, int N, bool is_const, bool is_reverse>
 [[nodiscard]] constexpr auto operator+(
 	Board_iterator<T, N, is_const, is_reverse> left,
 	typename Board_iterator<T, N, is_const, is_reverse>::difference_type const
 		offset) noexcept
-{
+{ // itr + offset
 	return (left += offset);
+}
+template<typename T, int N, bool is_const, bool is_reverse>
+[[nodiscard]] inline constexpr auto operator+(
+	typename Board_iterator<T, N, is_const, is_reverse>::difference_type const
+		offset,
+	Board_iterator<T, N, is_const, is_reverse> itr) noexcept
+{ // offset + itr
+	return (itr += offset);
 }
 template<typename T, int N, bool is_const, bool is_reverse>
 [[nodiscard]] constexpr auto operator-(
 	Board_iterator<T, N, is_const, is_reverse> left,
 	typename Board_iterator<T, N, is_const, is_reverse>::difference_type const
 		offset) noexcept
-{
+{ // itr - offset
 	return (left += -offset);
 }
 
-//====--------------------------------------------------------------------====//
 template<typename T, int N, bool is_const, bool is_reverse>
 [[nodiscard]] inline constexpr bool operator!=(
 	Board_iterator<T, N, is_const, is_reverse> const left,
@@ -262,16 +290,6 @@ template<typename T, int N, bool is_const, bool is_reverse>
 	Board_iterator<T, N, is_const, is_reverse> const right) noexcept
 {
 	return !(left < right);
-}
-
-//====--------------------------------------------------------------------====//
-template<typename T, int N, bool is_const, bool is_reverse>
-[[nodiscard]] inline constexpr auto operator+(
-	typename Board_iterator<T, N, is_const, is_reverse>::difference_type const
-		offset,
-	Board_iterator<T, N, is_const, is_reverse> itr) noexcept
-{
-	return (itr += offset);
 }
 
 } // namespace Sudoku
