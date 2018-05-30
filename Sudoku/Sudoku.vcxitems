@@ -20,6 +20,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Board_Section.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Board_Section_iterator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Board_Section_traits.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Decision.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)exceptions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Location.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Location_Utilities.h" />

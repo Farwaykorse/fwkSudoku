@@ -397,6 +397,7 @@
     <ClCompile Include="Board_Section.cpp" />
     <ClCompile Include="Board_Section_iterator.cpp" />
     <ClCompile Include="Board_Section_traits.cpp" />
+    <ClCompile Include="Decision.cpp" />
     <ClCompile Include="exceptions.cpp" />
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="Options.cpp" />
