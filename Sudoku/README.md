@@ -12,7 +12,6 @@ providing data-structures and solvers.
 - [Unit-Testing](#test)
 - [Other](#other)
   - Natvis
-- [Links](#link)
 
 <!---------------------------------------------------------><a id="general"></a>
 ## General Information ##
