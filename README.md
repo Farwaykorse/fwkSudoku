@@ -94,9 +94,4 @@ These have been replaced by Google Test and are no longer part of the
 implementation.
 
 
-<!-- Contributing -->
-<!-- Credits -->
-<!-- License -->
-	<!-- none yet. this means default copyright applies -->
-
 [top](#top)
