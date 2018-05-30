@@ -1,19 +1,15 @@
 <!-------------------------------------------------------------><a id="top"></a>
-# Unit Testing for Sudoku.lib #
+# Unit Testing for Sudoku #
 <!----------------------------------------------------------------------------->
-Using the GoogleTest Unit-testing framework
-
-[gTest repository](https://github.com/google/googletest/)
-
-
-Testing Sudoku.lib
-Console project called: SudokuTest(s)
+Unit-tests for the [Sudoku](../Sudoku) library.
+Using the [Google Test](https://github.com/google/googletest/) Unit-testing
+framework.
 
 <!-- TOC -->
-[Visual Studio Setting](#vs_settings)
-	Compiler settings
-[Code Coverage](#cover)
-[Notes](#notes)
+- [Visual Studio Setting](#vs_settings)
+  - [Compiler settings](#compiler)
+- [Code Coverage](#cover)
+- [Notes](#notes)
 
 <!-----------------------------------------------------><a id="vs_settings"></a>
 ## Visual Studio Settings ##

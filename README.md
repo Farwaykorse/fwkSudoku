@@ -1,72 +1,73 @@
 <!-------------------------------------------------------------><a id="top"></a>
-# Sudoku
+# fwkSudoku
 <!----------------------------------------------------------------------------->
 <!-- Description -->
-A project undertaken while learning C++.
-The projects offers a personal platform to use while exploring the language,
-different techniques and tools.
-It is not about creating the solvers (that could be found on the web anyway) or
-delivering the perfect application.
-Some known algorithms might be implemented in time, but the purpose is learning
-through play.
-The code might be frequently rewritten and different techniques and libraries
-are being tried.
+This project is mostly focused on the implementation of the data-structures.  
+Originally this started as a one of many small experiments while starting to
+learn C++. With a mild intrest in properties of sudokus.
+It served mostly as a place to figure out the implementation and use of STL
+iterators.
+When it became a bit more complex, it became a familiar project to come back to.
+Suitable for experimentation while exploring the language and trying different
+techniques and tools.  
+Not many solvers have been implemented (they could be found on the web anyway).
+And no real user interface has been added.
+These might be implemented in time, but the main purpose of this project
+is experimentation and learning through play.
 
 <!-- TOC -->
-[General Information](#general)
-[Elements](#elements)  
-	[Sudoku.lib](#sudoku.lib)
-	[Console.exe](#console.exe)
-	<!-- win_app -->
-[Unit-Testing](#unit-testing)
+- [General Information](#general)
+- [Elements](#elements)  
+  - [Sudoku - Library](#sudoku)
+  - [Console - executable](#console)
+- [Unit-Testing](#unit-testing)
 
 <!---------------------------------------------------------><a id="general"></a>
 ## General Information ##
 <!----------------------------------------------------------------------------->
 <!-- installation -->
 <!-- usage -->
-The code is mainly written and compiled using the Visual Studio platform.
+Several C++17 compiler and STL features are used in this project.
+The code is mainly written using the Visual Studio platform, and compiled with
+the latest stable versions of MSVC and Clang on Windows.
+The library and Console projects compile and run with GCC on Linux (in the WSL).
 
-External libraries are imported using the
-[vcpkg project](https://github.com/Microsoft/vcpkg)
+Several static analysers and extensive warning settings are used with each
+compiler.  
+More on the project and compiler configurations in: 
+[Configuration.md](./Configuration.md).
 
-The shared project configuration description:
-[Configuration](./Configuration.md)
+#### Dependencies:
+Non-of the external dependencies have been included in the repository.
+The project configurations expect these to be available in the include path.
+For this project the latest versions of external libraries have been imported
+using the [vcpkg project](https://github.com/Microsoft/vcpkg).
+- It makes use of elements from the GSL (Guideline Support Library), available
+  at: [Microsoft/GSL](https://github.com/Microsoft/GSL).
+- The unit-tests for the Sudoku library are implemented with
+  [Google Test](https://github.com/google/googletest).
+
 
 <!--------------------------------------------------------><a id="elements"></a>
 ## Elements ##
 <!----------------------------------------------------------------------------->
-
-<!------------------------------------------------------><a id="sudoku.lib"></a>
-### Sudoku.lib ###
+<!----------------------------------------------------------><a id="sudoku"></a>
+### Sudoku - Library ###
 <!----------------------------------------------------------------------------->
-The internal processing, data structure and solvers
+The main element is the Sudoku library.
+A header-only library, containing the data-structures and solver
+implementations.
 
-Internal structures:
-Data
-- Board
-	Data container object template for a sudoku.
-	Organizes access to the elements, rows, columns and blocks.
-	Elements can contain values or if used in solvers: Options
-- Options
-	The data-type used in the elements of Board for the solvers.
-	bitset, bit 0 = answer label. bit [1,N*N] possible element values
-	- operation available on these
+See: [Sudoku/README](./Sudoku/README.md)
 
 
-
-Section.h
-	Used by Board, to access element within rows, columns and blocks.
-Location.h
-	Used by Board, to calculate location based relations
-Solver.h
-	Container for solver functions and their helpers.
-
-
-<!-----------------------------------------------------><a id="console.exe"></a>
-### Console.exe ###
+<!---------------------------------------------------------><a id="console"></a>
+### Console - executable ###
 <!----------------------------------------------------------------------------->
-Console application, interface
+Console implements a basic console application.
+No interface has been implemented.
+The current implementation executes a few (partial) solvers on several boards,
+to supply timings and detect performance regressions.
 
 
 <!----------------------------------------------------><a id="unit-testing"></a>
@@ -74,20 +75,23 @@ Console application, interface
 <!----------------------------------------------------------------------------->
 <!-- description -->
 
-### MStest ###
-The first implemented unit-tests apply to the Sudoku solver and data library
-file. Gradually replaced by gTest.
+### SudokuTest ###
+The SudokuTest project contains the unit-tests for the Sudoku library.
+This uses the [Google Test](https://github.com/google/googletest).
+ unit-testing framework.
 
+Note that the tests are in general extremely verbose.
+Especially the compile-time evaluations.
+This serves to generate an understanding of the implementation nuances.
+And additionally, it alerts on differences and changes in external factors.
+Such as library and compiler implementations.
 
-### gTest ###
-The Google Test unit-testing framework is used on the Sudoku solver and data
-library.
+See: [SudokuTest/README](./SudokuTest/README.md)
 
-[gTest](https://github.com/google/googletest/)
-[Sudoku.lib](../Sudoku/README.md)
-
-### Catch ###
-TODO: try this framework on the Console project.
+### UnitTest ###
+Earlier tests for the Sudoku library were implemented with MStest.
+These have been replaced by Google Test and are no longer part of the
+implementation.
 
 
 <!-- Contributing -->
