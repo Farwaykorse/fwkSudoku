@@ -70,8 +70,10 @@ int remove_option(
 	int changes{};
 	auto& item{board.at(loc)};
 
-	if (is_option(item, value))
-	{
+	if (item.test(value))
+	{ // repeated answer in section (faster here)
+		if (!is_option(item, value)) throw error::invalid_Board();
+
 		++changes;
 		const auto count = item.remove_option(value).count();
 		assert(count > 0); // never trigger, removed last option
@@ -151,9 +153,7 @@ int remove_option_section(
 	for (auto itr = section.cbegin(); itr != end; ++itr)
 	{
 		if (itr.location() != ignore)
-		{ // repeated answer in section
-			if (is_answer(*itr, value)) throw error::invalid_Board();
-
+		{
 			changes += remove_option(board, itr.location(), value);
 		}
 	}

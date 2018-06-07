@@ -86,7 +86,9 @@ TEST(Solver, remove_option)
 	EXPECT_NO_THROW(remove_option(board, Location<2>(1), Value{2}));
 	EXPECT_EQ(remove_option(board, Location<2>(1, 1), Value{2}), 0);
 	// location = answer (value)
-	EXPECT_NO_THROW(remove_option(board, Location<2>(1), Value{4}));
+	EXPECT_THROW(
+		remove_option(board, Location<2>(1), Value{4}),
+		::Sudoku::error::invalid_Board);
 	EXPECT_EQ(remove_option(board, Location<2>(1), Value{2}), 0);
 
 	// normal remove from 4
@@ -290,14 +292,20 @@ TEST(Solver, remove_option_section_2)
 	ASSERT_NO_THROW(
 		remove_option_section(B, B.col(0), vL{L(0), L(1, 0)}, vV{v{1}, v{3}}));
 	EXPECT_EQ(B[3][0].count(), 2u);
+	B = cB; // reset
 	EXPECT_EQ(
 		remove_option_section(
+			B, B.col(3), vL{L(0, 3), L(1, 3)}, vV{v{2}, v{3}}),
+		4);
+	EXPECT_EQ(B[0][3].count(), 4u);
+	EXPECT_EQ(B[1][3].count(), 4u);
+	EXPECT_EQ(B[2][3].count(), 2u);
+	EXPECT_EQ(B[3][3].count(), 2u);
+	B = cB; // reset
+	EXPECT_THROW(
+		remove_option_section(
 			B, B.col(3), vL{L(0, 3), L(1, 3)}, vV{v{2}, v{3}, v{4}}),
-		44);
-	EXPECT_EQ(B[0][0].count(), 2u);
-	EXPECT_EQ(B[1][0].count(), 2u);
-	EXPECT_EQ(B[2][0].count(), 0u);
-	EXPECT_EQ(B[3][0].count(), 0u);
+		::Sudoku::error::invalid_Board);
 	// block
 	B = cB; // reset
 	ASSERT_NO_THROW(
@@ -398,7 +406,7 @@ TEST(Solver, deathtests_remove_option)
 		remove_option_section(B, B.row(0), vL{L(0), L(1), L(16)}, Value{3}),
 		"Assertion failed: is_valid.ignore.");
 #endif // NDEBUG
-	B = cB; // reset
+	B       = cB;
 	B[0][0] = Value{3};
 	// ignore-locations not sorted
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
@@ -411,7 +419,7 @@ TEST(Solver, deathtests_remove_option)
 		remove_option_section(B, B.row(0), vL{L(1), L(3)}, Value{0}),
 		"Assertion failed: is_valid<N>.value.");
 #endif // NDEBUG
-	B = cB; // reset
+	B = cB;
 	// assert at least one ignore-location inside section
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(
@@ -422,14 +430,21 @@ TEST(Solver, deathtests_remove_option)
 	//===------------------------------------------------------------------===//
 	// remove_option_section(SectionT, std::vector<Location>, std::vector<int>)
 	// ignore is empty
+#ifdef NDEBUG
+	EXPECT_THROW(
+		remove_option_section(B, B.row(0), vL{}, vV{v{3}, v{1}, v{4}}),
+		Sudoku::error::invalid_Board);
+#else
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{}, vV{v{3}, v{1}, v{4}}),
 		"Assertion failed: is_valid.ignore.");
-	B = cB; // reset
+#endif // NDEBUG
+
 	// values is empty
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{L(0), L(1), L(11)}, vV{}),
 		"Assertion failed: is_valid");
+
 	// an value out-of-bounds
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
@@ -453,9 +468,17 @@ TEST(Solver, deathtests_remove_option)
 	// invalid location
 	B[0][0] = Value{3};
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
+
+#ifdef NDEBUG
+	EXPECT_THROW(
+		remove_option_outside_block(B, B.row(0), L(21), Value{3}),
+		Sudoku::error::invalid_Board);
+#else
 	EXPECT_DEBUG_DEATH(
 		remove_option_outside_block(B, B.row(0), L(21), Value{3}),
 		"Assertion failed: is_valid.block_loc.");
+#endif
+
 	// invalid value
 #ifndef NDEBUG
 	B[0][0] = Value{3};

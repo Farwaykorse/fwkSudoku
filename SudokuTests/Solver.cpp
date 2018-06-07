@@ -600,7 +600,10 @@ TEST(Solver, section_exclusive)
 
 TEST(Solver, single_option)
 {
+	using Sudoku::error::invalid_Location;
+	using Sudoku::error::invalid_Board;
 	using L = Location<2>;
+
 	Board<Options<4>, 2> B1;
 	ASSERT_EQ(B1[1][0], Options<4>{}) << "incorrect instantiation";
 
@@ -611,30 +614,30 @@ TEST(Solver, single_option)
 	EXPECT_DEATH(single_option(B1, L{-1}, Value{1}), ".*: is_valid.loc.");
 	EXPECT_DEATH(single_option(B1, L{16}, Value{1}), ".*: is_valid.loc.");
 #else
-	EXPECT_THROW(
-		single_option(B1, L{-1}, Value{1}), Sudoku::error::invalid_Location);
-	EXPECT_THROW(
-		single_option(B1, L{16}, Value{1}), Sudoku::error::invalid_Location);
+	EXPECT_THROW(single_option(B1, L{-1}, Value{1}), invalid_Location);
+	EXPECT_THROW(single_option(B1, L{16}, Value{1}), invalid_Location);
 #endif // NDEBUG
 	// invalid Value:
 	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{0}), ".* is_valid.*value");
-	EXPECT_NO_THROW(single_option(B1, L(1), Value{1}));
-	EXPECT_NO_THROW(single_option(B1, L(2), Value{4}));
-#ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{5}), ".* is_valid.*value");
-#else
+#ifdef NDEBUG
+	EXPECT_THROW(single_option(B1, L(1), Value{1}), invalid_Board);
+	EXPECT_THROW(single_option(B1, L(2), Value{4}), invalid_Board);
 	// thrown by std::bitset
 	EXPECT_THROW(single_option(B1, L{3}, Value{5}), std::out_of_range);
+#else
+	EXPECT_NO_THROW(single_option(B1, L(1), Value{1}));
+	EXPECT_NO_THROW(single_option(B1, L(2), Value{4}));
+	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{5}), ".* is_valid.*value");
 #endif // NDEBUG
 	// not an option:
 	B1[0][0] = Options<4>{Value{2}};
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{1}), ".*: .*test.value.");
-#else
-	EXPECT_THROW(
-		single_option(B1, L{0}, Value{1}), Sudoku::error::invalid_Board);
-#endif // NDEBUG
 	EXPECT_NO_THROW(single_option(B1, L(0), Value{2}));
+#else
+	EXPECT_THROW(single_option(B1, L{0}, Value{1}), invalid_Board);
+	EXPECT_THROW(single_option(B1, L(0), Value{2}), invalid_Board);
+#endif // NDEBUG
 
 	//====----------------------------------------------------------------====//
 	// is single option (loc, value)
@@ -729,6 +732,9 @@ TEST(Solver, single_option)
 
 TEST(Solver, dual_option)
 {
+	using ::Sudoku::error::invalid_Board;
+	using ::Sudoku::error::invalid_Location;
+
 	Board<Options<4>, 2> board{};
 	static_assert(not noexcept(dual_option(board, Location<2>())));
 
@@ -737,10 +743,8 @@ TEST(Solver, dual_option)
 	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{-1}), ".*is_valid.loc.");
 	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{16}), ".*is_valid.loc.");
 #else
-	EXPECT_THROW(
-		dual_option(board, Location<2>{-1}), Sudoku::error::invalid_Location);
-	EXPECT_THROW(
-		dual_option(board, Location<2>{16}), Sudoku::error::invalid_Location);
+	EXPECT_THROW(dual_option(board, Location<2>{-1}), invalid_Location);
+	EXPECT_THROW(dual_option(board, Location<2>{16}), invalid_Location);
 #endif // NDEBUG
 	board[0][0] = Options<4>{std::bitset<5>{"11001"}};
 	board[3][3] = Options<4>{std::bitset<5>{"10101"}};
@@ -748,14 +752,17 @@ TEST(Solver, dual_option)
 	EXPECT_NO_THROW(dual_option(board, Location<2>{15}));
 	// count != 2
 	board[0][1] = Options<4>{};
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{1}), ".*count.. == 2");
+#else
+	EXPECT_THROW(dual_option(board, Location<2>{1}), invalid_Board);
+#endif
 	// invalid board
 	board.clear();
 	board[0][0] = Options<4>{std::bitset<5>{"10101"}};
 	board[0][2] = Options<4>{std::bitset<5>{"10101"}};
 	board[0][3] = Options<4>{std::bitset<5>{"10101"}};
-	EXPECT_THROW(
-		dual_option(board, Location<2>{0}), Sudoku::error::invalid_Board);
+	EXPECT_THROW(dual_option(board, Location<2>{0}), invalid_Board);
 
 	// return type
 	static_assert(
