@@ -493,8 +493,9 @@ TEST(Solver, set_unique)
 	remove_option(board, L{6}, Value{3});
 	remove_option(board, L{7}, Value{3});
 	EXPECT_FALSE(is_option(board[1][2], Value{3}));
-	EXPECT_DEBUG_DEATH(
-		set_unique(board, board.row(1), Value{3}), ".*itr != end");
+	EXPECT_THROW(
+		set_unique(board, board.row(1), Value{3}),
+		::Sudoku::error::invalid_Board);
 	board = cB1; // reset
 	// Section is not a part of board
 	EXPECT_DEBUG_DEATH(set_unique(board, cB1.row(0), Value{1}), ".*board");

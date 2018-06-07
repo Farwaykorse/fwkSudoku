@@ -156,7 +156,10 @@ inline int set_unique(
 
 	const auto itr = std::find_if(section.cbegin(), end, condition);
 
-	assert(itr != end);                        // value is not an option
+	if (itr == end)
+	{ // option not available in section
+		throw error::invalid_Board();
+	}
 	assert(&(*itr) == &board[itr.location()]); // section must be part of board
 	assert(std::find_if(std::next(itr), end, condition) == end); // unique
 

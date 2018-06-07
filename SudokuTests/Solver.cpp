@@ -754,10 +754,8 @@ TEST(Solver, dual_option)
 	board[0][0] = Options<4>{std::bitset<5>{"10101"}};
 	board[0][2] = Options<4>{std::bitset<5>{"10101"}};
 	board[0][3] = Options<4>{std::bitset<5>{"10101"}};
-	// TODO should break ...
-	EXPECT_NO_THROW(dual_option(board, Location<2>{0}));
-	EXPECT_EQ(get_answer(board[0][3]), Value{4});
-	// EXPECT_THROW(dual_option(board, Location<2>{0}), error::invalid_Board);
+	EXPECT_THROW(
+		dual_option(board, Location<2>{0}), Sudoku::error::invalid_Board);
 
 	// return type
 	static_assert(

@@ -209,11 +209,12 @@ TEST(Solver, remove_option_section)
 	EXPECT_TRUE(is_answer(B1[1][0], Value{3}));
 	EXPECT_TRUE(B1[3][3].all());
 
-	// conflict handling? (none, use set_Value)
+	// conflict Value has already been set as an answer in this section
 	B1       = cB1;
-	B1[0][0] = Value{2};
-	B1[0][1] = Value{2};
-	EXPECT_NO_THROW(remove_option_section(B1, B1.row(0), L(0), Value{2}));
+	B1[0][0] = Value{2}; // set answer, to be removed from rest row
+	B1[0][1] = Value{2}; // set as answer in same row
+	EXPECT_THROW(
+		remove_option_section(B1, B1.row(0), L(0), Value{2}), invalid_Board);
 	EXPECT_TRUE(is_answer(B1[0][0], Value{2}));
 	EXPECT_TRUE(is_answer(B1[0][1], Value{2}));
 }
@@ -311,9 +312,10 @@ TEST(Solver, remove_option_section_2)
 	EXPECT_EQ(B[1][0].count(), 2u);
 	EXPECT_EQ(B[1][1].count(), 2u);
 	// single ignore value
+	B = cB; // reset
 	ASSERT_EQ(B[3][1].count(), 4u);
 	ASSERT_NO_THROW(remove_option_section(B, B.row(3), vL{L(3, 0)}, vV{v{3}}));
-	EXPECT_EQ(B[3][1].count(), 2u);
+	EXPECT_EQ(B[3][1].count(), 3u);
 }
 TEST(Solver, remove_option_outside_block)
 {
@@ -356,6 +358,7 @@ TEST(Solver, deathtests_remove_option)
 	using vV = std::vector<Value>;
 
 	Board<Options<4>, 2> B{};
+	const auto cB{B};
 	//===------------------------------------------------------------------===//
 	// remove_option_section(SectionT, Location ignore, int value)
 	// death test: loc-> !is_answer(value)
@@ -380,6 +383,7 @@ TEST(Solver, deathtests_remove_option)
 
 	//===------------------------------------------------------------------===//
 	// remove_option_section(SectionT, const std::vector<Location>& ignore, int)
+	B = cB; // reset
 	// what if ignore is empty?
 	B[0][0] = Value{3};
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
@@ -394,6 +398,8 @@ TEST(Solver, deathtests_remove_option)
 		remove_option_section(B, B.row(0), vL{L(0), L(1), L(16)}, Value{3}),
 		"Assertion failed: is_valid.ignore.");
 #endif // NDEBUG
+	B = cB; // reset
+	B[0][0] = Value{3};
 	// ignore-locations not sorted
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
 	EXPECT_DEBUG_DEATH(
@@ -405,11 +411,13 @@ TEST(Solver, deathtests_remove_option)
 		remove_option_section(B, B.row(0), vL{L(1), L(3)}, Value{0}),
 		"Assertion failed: is_valid<N>.value.");
 #endif // NDEBUG
+	B = cB; // reset
 	// assert at least one ignore-location inside section
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(
 			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, Value{1}),
 		"Assertion failed: is_same_section.*");
+	B = cB; // reset
 
 	//===------------------------------------------------------------------===//
 	// remove_option_section(SectionT, std::vector<Location>, std::vector<int>)
@@ -417,12 +425,13 @@ TEST(Solver, deathtests_remove_option)
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{}, vV{v{3}, v{1}, v{4}}),
 		"Assertion failed: is_valid.ignore.");
+	B = cB; // reset
 	// values is empty
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{L(0), L(1), L(11)}, vV{}),
 		"Assertion failed: is_valid");
 	// an value out-of-bounds
-#ifdef NDEBUG
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(
 			B, B.row(0), vL{L(0), L(1), L(11)}, vV{v{1}, v{2}, v{0}}),
@@ -437,6 +446,7 @@ TEST(Solver, deathtests_remove_option)
 		remove_option_section(
 			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, vV{v{1}, v{2}}),
 		"Assertion failed: is_same_section.*");
+	B = cB; // reset
 
 	//===------------------------------------------------------------------===//
 	// remove_option_outside_block(Board, SectionT, Location, int)

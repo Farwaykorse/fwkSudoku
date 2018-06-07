@@ -151,7 +151,9 @@ int remove_option_section(
 	for (auto itr = section.cbegin(); itr != end; ++itr)
 	{
 		if (itr.location() != ignore)
-		{
+		{ // repeated answer in section
+			if (is_answer(*itr, value)) throw error::invalid_Board();
+
 			changes += remove_option(board, itr.location(), value);
 		}
 	}
@@ -242,7 +244,8 @@ int remove_option_outside_block(
 {
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
-		static_assert(!Board_Section::traits::is_Block_v<SectionT>,
+		static_assert(
+			!Board_Section::traits::is_Block_v<SectionT>,
 			"remove_option_outside_block is useless on a Block");
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
 		static_assert(Utility_::is_input<typename SectionT::iterator>);
