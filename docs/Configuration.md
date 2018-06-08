@@ -291,7 +291,9 @@ Use `-Xclang ` before a command to actually force it to the compiler.
 `````
 /Zi        alias for /Z7 CodeView debug information in object files (no pdb)
 `````
-*Release configurations*:
+*Release configurations*:  
+Compiler:  Debug information format: none; drastically reduce binary size.  
+Linker:    Generate debug info:      no
 ```
 /MT        Use static run-time
 ```

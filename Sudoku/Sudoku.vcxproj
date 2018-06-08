@@ -327,6 +327,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PreprocessorDefinitions>NDEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">
@@ -342,6 +343,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PreprocessorDefinitions>WIN32;NDEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

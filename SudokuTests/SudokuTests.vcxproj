@@ -315,6 +315,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">
     <Link>
       <AdditionalDependencies>$(VcpkgRoot)lib\manual-link\gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <ClCompile />
     <ClCompile>
@@ -329,11 +330,13 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangRelease|x64'">
     <Link>
       <AdditionalDependencies>$(VcpkgRoot)lib\manual-link\gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <ClCompile />
     <ClCompile>
@@ -348,6 +351,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
