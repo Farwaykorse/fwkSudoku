@@ -6,14 +6,25 @@ Using the [Google Test](https://github.com/google/googletest/) Unit-testing
 framework.
 
 <!-- TOC -->
-- [Visual Studio Setting](#vs_settings)
+- [Configuration](#configuration)
+  - [Visual Studio Setting](#vs_settings)
   - [Compiler settings](#compiler)
 - [Code Coverage](#cover)
 - [Notes](#notes)
 
-<!-----------------------------------------------------><a id="vs_settings"></a>
-## Visual Studio Settings ##
+<!---------------------------------------------------><a id="configuration"></a>
+## Configuration ##
 <!----------------------------------------------------------------------------->
+This section documents project specific properties used in addition to those
+documented in [docs/Configuration.md](../docs/Configuration.md).
+
+Most of these are related to the use of Google Test.
+
+<!-----------------------------------------------------><a id="vs_settings"></a>
+### Visual Studio Settings ##
+<!----------------------------------------------------------------------------->
+Instructions to set-up a unit-testing project, in conjunction with
+[vcpkg](https://github.com/Microsoft/vcpkg):
 - Add reference to the project under test (context menu)
 - Add: Configuration Properties > Linker > Input > Additional Dependencies:
   `$(VcpkgRoot)debug\lib\manual-link\gtestd.lib` // Debug-mode (note the 'd')

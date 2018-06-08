@@ -25,8 +25,8 @@ This project requires an C++17 conforming STL implementation and the GSL
 (Guideline Support Library), available at:
 [Microsoft/GSL](https://github.com/Microsoft/GSL).
 
-More on the project and compiler configurations in: 
-[Configuration.md](../Configuration.md).
+More on the project and compiler configurations in:
+[Configuration.md](../docs/Configuration.md).
 
 <!--------------------------------------------------------><a id="elements"></a>
 ## Classes ##
@@ -38,7 +38,7 @@ More on the project and compiler configurations in:
 	Used for per element data in solvers.
 	Implemented on std::bitset, where bit 0 serves as the answer label and the 
 	bits [1, N^2] represent possible element values.
-- Location
+- Location  
 	Implements a `constexpr` helper type to provide the locality relations
 	between elements.
 - ...
@@ -53,11 +53,12 @@ Unit tests are written for Google Test and collected in the
 <!-----------------------------------------------------------><a id="other"></a>
 ## Other ##
 <!----------------------------------------------------------------------------->
-### .natvis ###
+### .natvis debug views ###
 <!----------------------------------------------------------------------------->
-Several natvis files are provided in the project.
+Several natvis files are provided in the project.  
 These are used by the Visual Studio Debugger to generate custom views for
-objects.
+objects. Documentation on
+[docs.microsoft.com](https://docs.microsoft.com/visualstudio/debugger/create-custom-views-of-native-objects).
 - Board
 - Location
 - Options
