@@ -80,6 +80,8 @@ public:
 	Options& operator+=(const Options&) noexcept;
 	// XOR
 	Options& XOR(const Options&) noexcept;
+	// remove options
+	Options& operator-=(const Options&) noexcept;
 
 	// Debug Use Only, don't depend on it's result
 	[[nodiscard]] std::string DebugString() const;
@@ -493,15 +495,6 @@ inline Options<E>& Options<E>::XOR(const Options& other) noexcept
 	return *this;
 }
 
-// Only in left
-template<int E>
-inline Options<E>
-	operator-(const Options<E>& left, const Options<E>& right) noexcept
-{
-	assert(is_answer_fast(right)); // do not remove the answer-bit
-	return left & XOR(left, right);
-}
-
 // Exclusive OR
 template<int E>
 inline Options<E> XOR(const Options<E>& A, const Options<E>& B) noexcept
@@ -515,6 +508,25 @@ template<int E>
 inline Options<E> shared(const Options<E>& A, const Options<E>& B) noexcept
 {
 	return A & B;
+}
+
+// Remove options existing also in other
+template<int E>
+inline Options<E>& Options<E>::operator-=(const Options& other) noexcept
+{
+	assert(is_answer_fast(other)); // do not remove the answer-bit
+	Options tmp = ::Sudoku::XOR(*this, other);
+	data_ &= tmp.data_;
+	return *this;
+}
+
+// Only in left
+template<int E>
+inline Options<E>
+	operator-(const Options<E>& left, const Options<E>& right) noexcept
+{
+	Options tmp{left};
+	return tmp -= right;
 }
 
 template<int E>

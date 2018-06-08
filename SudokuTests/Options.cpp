@@ -911,17 +911,45 @@ TEST(Options, operator_min)
 	const Options<9> A_1{std::bitset<10>{"0101010000"}};
 	const Options<9> A_2{std::bitset<10>{"1000100100"}};
 
+	auto B_1 = O_1;
+	static_assert(noexcept(B_1 -= O_2));
 	static_assert(noexcept(O_1 - O_2));
+	// return type
+	static_assert(std::is_same_v<Options<9>, decltype(B_1 - O_2)>);
+	static_assert(std::is_same_v<Options<9>, decltype(O_0 - O_1)>);
+
+	EXPECT_DEBUG_DEATH(B_1 -= all, "is_answer");
 	EXPECT_DEBUG_DEATH([[maybe_unused]] auto X = O_1 - all, "is_answer");
 #ifdef NDEBUG
+	EXPECT_EQ(B_1, empty);
 	EXPECT_EQ(O_1 - all, empty);
 #endif // NDEBUG
+	auto B_0 = O_0;
+	EXPECT_EQ(B_0 -= O_1, E_1);
 	EXPECT_EQ(O_0 - O_1, E_1);
+	B_0 = O_0;
+	B_0 -= O_2;
+	EXPECT_EQ(B_0, A_0);
 	EXPECT_EQ(O_0 - O_2, A_0);
+	B_1 = O_1;
+	B_1 -= O_2;
+	EXPECT_EQ(B_1, A_1);
 	EXPECT_EQ(O_1 - O_2, A_1);
+	auto B_2 = O_2;
+	B_2 -= O_1;
+	EXPECT_EQ(B_2, A_2);
 	EXPECT_EQ(O_2 - O_1, A_2);
+	B_1 = O_1;
+	B_1 -= O_1;
+	EXPECT_EQ(B_1, empty);
 	EXPECT_EQ(O_1 - O_1, empty);
+	B_1 = O_1;
+	B_1 -= empty;
+	EXPECT_EQ(B_1, O_1);
 	EXPECT_EQ(O_1 - empty, O_1);
+	auto B_3 = empty;
+	B_3 -= O_2;
+	EXPECT_EQ(B_3, empty);
 	EXPECT_EQ(empty - O_2, empty);
 }
 
