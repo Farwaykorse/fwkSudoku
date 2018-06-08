@@ -275,9 +275,10 @@ Use `-Xclang ` before a command to actually force it to the compiler.
 
 *All configurations*:
 `````
-/std:c++latest        -std=c++2a
-  /std:c++17          -std=c++17
+/std:c++latest        sets: -std=c++2a
+  /std:c++17          sets: -std=c++17
   -Xclang -std=c++17  Set language version to C++17
+/GR-                  sets: -fno-rtti
 -fno-strict-aliasing
   -Xclang -fms-compatibility-version=19.12
   // Since v6.0.0: the full version number is inherited from VC.
@@ -286,6 +287,14 @@ Use `-Xclang ` before a command to actually force it to the compiler.
   -fms-compatibility Excepting enough invalid C++ to parse most MS headers
   -fno-ms-compatibility
 `````
+*Debug configurations*:
+`````
+/Zi        alias for /Z7 CodeView debug information in object files (no pdb)
+`````
+*Release configurations*:
+```
+/MT        Use static run-time
+```
 
 #### Enable Warnings: ####
 [lefiticus/cppbestpractices](https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#gcc--clang)  
