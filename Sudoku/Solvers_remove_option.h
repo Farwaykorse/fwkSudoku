@@ -112,7 +112,7 @@ int remove_option(
 	auto changes = gsl::narrow_cast<int, size_t>(item.count());
 
 	// remove options
-	item = item - mask;
+	item -= mask;
 
 	const auto count = gsl::narrow_cast<int, size_t>(item.count_all());
 	if (count == 0)
