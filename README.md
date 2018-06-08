@@ -94,4 +94,14 @@ These have been replaced by Google Test and are no longer part of the
 implementation.
 
 
+<!----------------------------------------------------><a id="contributing"></a>
+
+<!----------------------------------------------------------------------------->
+
+
+<!---------------------------------------------------------><a id="license"></a>
+## License
+<!----------------------------------------------------------------------------->
+Code licensed under the [MIT License](./LICENSE).
+
 [top](#top)
