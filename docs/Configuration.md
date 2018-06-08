@@ -37,7 +37,7 @@ Targets:
 ## Formatting ##
 <!----------------------------------------------------------------------------->
 All .h and .cpp files are formatted with the latest stable Clang-Format release.
-Using the supplied [.clang-format](./.clang-format) configuration file.
+Using the supplied [.clang-format](../.clang-format) configuration file.
 <!-- discussion -->
 
 

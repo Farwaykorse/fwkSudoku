@@ -25,8 +25,8 @@ This project requires an C++17 conforming STL implementation and the GSL
 (Guideline Support Library), available at:
 [Microsoft/GSL](https://github.com/Microsoft/GSL).
 
-More on the project and compiler configurations in: 
-[Configuration.md](../Configuration.md).
+More on the project and compiler configurations in:
+[Configuration.md](../docs/Configuration.md).
 
 <!--------------------------------------------------------><a id="elements"></a>
 ## Classes ##
@@ -38,7 +38,7 @@ More on the project and compiler configurations in:
 	Used for per element data in solvers.
 	Implemented on std::bitset, where bit 0 serves as the answer label and the 
 	bits [1, N^2] represent possible element values.
-- Location
+- Location  
 	Implements a `constexpr` helper type to provide the locality relations
 	between elements.
 - ...
