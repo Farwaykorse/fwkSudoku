@@ -53,11 +53,12 @@ Unit tests are written for Google Test and collected in the
 <!-----------------------------------------------------------><a id="other"></a>
 ## Other ##
 <!----------------------------------------------------------------------------->
-### .natvis ###
+### .natvis debug views ###
 <!----------------------------------------------------------------------------->
-Several natvis files are provided in the project.
+Several natvis files are provided in the project.  
 These are used by the Visual Studio Debugger to generate custom views for
-objects.
+objects. Documentation on
+[docs.microsoft.com](https://docs.microsoft.com/visualstudio/debugger/create-custom-views-of-native-objects).
 - Board
 - Location
 - Options
