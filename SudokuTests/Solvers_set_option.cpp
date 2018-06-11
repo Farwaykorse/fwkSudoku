@@ -110,7 +110,7 @@ TEST(Solver, set_Value_vector)
 	{ // using Value as input
 		using V = Value;
 		// clang-format off
-		const std::vector<Value> v1
+		constexpr std::array<Value, 16> v1
 		{
 			V{0},V{2}, V{0},V{0},
 			V{4},V{0}, V{0},V{0},
@@ -134,14 +134,14 @@ TEST(Solver, set_Value_vector)
 	}
 	{      // using int as input
 		// clang-format off
-		const std::vector<int> v1
+		constexpr std::array<int, 16> v1
 		{	// start	// after set_Value
 			0,2, 0,0,	// 1	2	3	4
 			4,0, 0,0,	// 4	3	1,2	1,2
 			0,1, 4,0,	// 2,3	1	4	2,3
 			0,0, 0,0	// 2,3	4	1,2	1,2,3
 		}; // clang-format on
-		// Copy data from vector
+		// Copy data from the array
 		Board<Options<4>, 2> B2;
 		EXPECT_EQ(set_Value(B2, v1.cbegin(), v1.cend()), 49);
 		EXPECT_EQ(B2[0][1], Value{2});
@@ -151,7 +151,7 @@ TEST(Solver, set_Value_vector)
 		// check if processed single option cells:
 		EXPECT_EQ(B2[0][3], Value{4});
 		EXPECT_EQ(B2[3][1], Value{4});
-		// from vector didn't cascade over single option cells
+		// from array didn't cascade over single option cells
 		EXPECT_EQ(B2[0][0], Value{1});
 		EXPECT_EQ(B2[0][2], Value{3});
 		EXPECT_EQ(B2[1][1], Value{3});
@@ -466,7 +466,8 @@ TEST(Solver, set_unique)
 	using ::Sudoku::set_unique;
 	using L = Location<2>;
 	Board<Options<4>, 2> board{};
-	const std::vector<int> v1{0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
+	constexpr std::array<int, 16> v1{
+		0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 	set_Value(board, v1.cbegin(), v1.cend());
 	const Board<Options<4>, 2> cB1{board}; // to reset board
 
@@ -517,7 +518,8 @@ TEST(Solver, set_uniques)
 	//	0	0	1	0	234	234	1	234
 	//
 	Board<Options<4>, 2> B1{};
-	const std::vector<int> v1{0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
+	constexpr std::array<int, 16> v1{
+		0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 	set_Value(B1, v1.cbegin(), v1.cend());
 	const Board<Options<4>, 2> cB1{B1}; // to reset B1
 	// verify setup
@@ -592,8 +594,8 @@ TEST(Solver, deathtest_set_option)
 	Board<Options<4>, 2> B{};
 
 	{ // SetValue(Itr, Itr)
-		const std::vector<int> v1(10);
-		const std::vector<int> v2(18);
+		constexpr std::array<int, 10> v1{};
+		constexpr std::array<int, 18> v2{};
 		// input too short / too long
 		EXPECT_DEBUG_DEATH(
 			set_Value(B, v1.cbegin(), v1.cend()), "Assertion failed:");

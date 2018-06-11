@@ -21,7 +21,6 @@
 // Helpers
 
 // additional
-#include <vector>
 #include <type_traits>
 
 
