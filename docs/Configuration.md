@@ -213,13 +213,14 @@ Flags not set for all translation units are marked with a `*`.
 */w44623 'derived class': default constructor was implicitly defined as deleted.
          because a base class default constructor is inaccessible or deleted.
          (SudokuTests/precompiled.cpp | gtest, in <xtree> from gtest-internal.h)
-*/w44625 'derived class': copy constructor could not be generated because a base
+--/w44625 'derived class': copy constructor could not be generated because a base
          base class copy constructor is inaccessible
-         (*/precompiled.cpp | hits on stl)
+         (*/precompiled.cpp | warns on stl)
+		 (warns on class containing a std::unique_ptr)
 --/w44626 'derived class': assignment operator could not be generated because a
           base assignment operator is inaccessible
-          (*/precompiled.cpp | hits on gsl/multi_span and stl)
-          (hits on all classes with a `const` data-member)
+          (*/precompiled.cpp | warns on gsl/multi_span and stl)
+          (warns on all classes with a `const` data-member)
 /w34640 'instance': construction of local static object is not thread-safe
 /w44654 Code placed before include of precompiled header line will be ignored.
 */w44668 'symbol' is not defined as a pre-processor macro, replacing with '0'
