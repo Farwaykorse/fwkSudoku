@@ -106,7 +106,44 @@ TEST(Solver, set_Value)
 TEST(Solver, set_Value_vector)
 {
 	using ::Sudoku::set_Value;
-	// TODO precondition checks, exceptions etc.
+	{
+		Board<Options<4>, 2> B1;
+		// precondition checks
+		constexpr std::array<Value, 15> too_short{};
+		constexpr std::array<Value, 17> too_long{};
+		EXPECT_DEBUG_DEATH(
+			set_Value(B1, too_short.cbegin(), too_short.cend()), "full_size");
+		EXPECT_DEBUG_DEATH(
+			set_Value(B1, too_long.cbegin(), too_long.cend()), "full_size");
+
+		// exceptions
+		static_assert(
+			!noexcept(set_Value(B1, too_long.cbegin(), too_long.cend())));
+		const std::array<Options<4>, 16> optie{};
+		static_assert(!noexcept(set_Value(B1, optie.cbegin(), optie.cend())));
+		constexpr std::array<int, 16> ints{};
+		static_assert(!noexcept(set_Value(B1, ints.cbegin(), ints.cend())));
+
+		constexpr std::array<int, 16> zero{
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		Board<Options<4>, 2> B2;
+		EXPECT_EQ(set_Value(B2, zero.cbegin(), zero.cend()), 0);
+		constexpr std::array<int, 16> negative{
+			0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		EXPECT_THROW(
+			set_Value(B2, negative.cbegin(), negative.cend()),
+			std::domain_error);
+		constexpr std::array<int, 16> wrong{
+			0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		EXPECT_THROW(
+			set_Value(B2, wrong.cbegin(), wrong.cend()), std::domain_error);
+
+		// return type
+		static_assert(
+			std::is_same_v<
+				int,
+				decltype(set_Value(B1, too_long.cbegin(), too_long.cend()))>);
+	}
 	{ // using Value as input
 		using V = Value;
 		// clang-format off
@@ -156,6 +193,10 @@ TEST(Solver, set_Value_vector)
 		EXPECT_EQ(B2[0][2], Value{3});
 		EXPECT_EQ(B2[1][1], Value{3});
 		EXPECT_EQ(B2[3][1], Value{4});
+
+		// using Options as input:
+		Board<Options<4>, 2> B3;
+		EXPECT_EQ(set_Value(B3, B2.cbegin(), B2.cend()), 49);
 	}
 }
 

@@ -9,7 +9,9 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
+#include "Size.h"
 #include "Value.h"
+
 #include <gsl/gsl>
 #include <bitset>
 #include <vector>
@@ -115,6 +117,8 @@ template<int E>
 [[nodiscard]] bool is_option(Options<E> const&, Value const);
 template<int E>
 [[nodiscard]] Value get_answer(Options<E> const&) noexcept;
+template<int N>
+[[nodiscard]] Value to_Value(Options<elem_size<N>> const&) noexcept;
 template<int E>
 [[nodiscard]] std::vector<Value> available(const Options<E>&) noexcept(true);
 template<int E>
@@ -407,6 +411,12 @@ inline Value get_answer(const Options<E>& options) noexcept
 		return read_next(options);
 	}
 	return Value{0};
+}
+
+template<int N>
+inline Value to_Value(Options<elem_size<N>> const& options) noexcept
+{ // specialization of to_Value
+	return get_answer(options);
 }
 
 // all available options

@@ -103,7 +103,7 @@ inline constexpr Value to_Value(T val)
 	{
 		return to_Value<N>(static_cast<Value>(val));
 	}
-	else
+	else if constexpr (std::is_integral_v<T>)
 	{
 		if (val < 0)
 		{

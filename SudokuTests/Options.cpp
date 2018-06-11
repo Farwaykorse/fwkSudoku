@@ -564,6 +564,31 @@ TEST(Options, get_answer)
 	EXPECT_EQ(get_answer(TE.X_1), Value{0});
 }
 
+TEST(Options, to_Value)
+{
+	// specialization for to_Value(..)
+	using ::Sudoku::to_Value;
+
+	const Options<9> all{};
+	const Options<9> empty{std::bitset<10>{"0000000000"}};
+	const Options<9> A_5{std::bitset<10>{"0000100000"}};
+
+	static_assert(noexcept(to_Value<3>(all)));
+	// return type
+	static_assert(std::is_same_v<Value, decltype(to_Value<3>(all))>);
+
+	EXPECT_EQ(to_Value<3>(all), Value{0});
+	EXPECT_EQ(to_Value<3>(empty), Value{0});
+	EXPECT_EQ(to_Value<3>(A_5), Value{5});
+	EXPECT_EQ(to_Value<2>(TE.A_1), Value{1});
+	EXPECT_EQ(to_Value<2>(TE.O_1), Value{2});
+	EXPECT_EQ(to_Value<2>(TE.O_2), Value{0});
+	EXPECT_EQ(to_Value<2>(TE.E_1), Value{0});
+	EXPECT_EQ(to_Value<2>(TE.E_2), Value{0});
+	EXPECT_EQ(to_Value<2>(TE.X_0), Value{0});
+	EXPECT_EQ(to_Value<2>(TE.X_1), Value{0});
+}
+
 TEST(Options, mf_changeAll)
 {
 	// Set-up
