@@ -79,11 +79,12 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 
 	int changes{};
 	const Options& item{board.at(loc)};
-	auto create_mask = [](Options item) noexcept
+	const auto mask = [](Options x) noexcept
 	{
-		item[Value{0}] = false;
-		return item;
-	};
+		x[Value{0}] = false;
+		return x;
+	}
+	(item);
 
 	for (int i{}; i < full_size<N>; ++i)
 	{
@@ -94,28 +95,18 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 			if (is_same_row(loc, Location(i)))
 			{
 				changes += remove_option_section(
-					board,
-					board.row(loc),
-					sorted_loc(Location(i)),
-					create_mask(item));
+					board, board.row(loc), sorted_loc(Location(i)), mask);
 			}
 			else if (is_same_col(loc, Location(i)))
 			{
 				changes += remove_option_section(
-					board,
-					board.col(loc),
-					sorted_loc(Location(i)),
-					create_mask(item));
+					board, board.col(loc), sorted_loc(Location(i)), mask);
 			}
 			// run not if already answered
 			if (is_same_block(loc, Location(i)) && !item.is_answer())
-			{
-				// NOTE this is slow
+			{ // NOTE this is slow
 				changes += remove_option_section(
-					board,
-					board.block(loc),
-					sorted_loc(Location(i)),
-					create_mask(item));
+					board, board.block(loc), sorted_loc(Location(i)), mask);
 			}
 		}
 	}
@@ -153,42 +144,32 @@ constexpr int multi_option(
 	int changes{};                      // performance counter
 	const Options& item{board.at(loc)}; // input item, to match with
 	assert(item.count() == count);
-	auto create_mask = [](Options item) noexcept
+	const auto mask = [](Options x) noexcept
 	{
-		item[Value{0}] = false;
-		return item;
-	};
+		x[Value{0}] = false;
+		return x;
+	}
+	(item);
 
-	auto list = list_where_subset(board, item);
+	const auto list = list_where_subset(board, item);
 
 	// Further select per section.
 	// When (subset size == #options) then: all answers in this selection.
 	// Therefore: Remove values for rest of section.
 	if (const auto in_row{get_same_row(loc, list)}; in_row.size() == count)
 	{
-		changes += remove_option_section(
-			board,
-			board.row(loc),
-			in_row,
-			create_mask(item));
+		changes += remove_option_section(board, board.row(loc), in_row, mask);
 	}
 	if (const auto in_col{get_same_col(loc, list)}; in_col.size() == count)
 	{
-		changes += remove_option_section(
-			board,
-			board.col(loc),
-			in_col,
-			create_mask(item));
+		changes += remove_option_section(board, board.col(loc), in_col, mask);
 	}
 	if (const auto in_block{get_same_block(loc, list)};
 		in_block.size() == count)
 	{
 		// NOTE this is slow
-		changes += remove_option_section(
-			board,
-			board.block(loc),
-			in_block,
-			create_mask(item));
+		changes +=
+			remove_option_section(board, board.block(loc), in_block, mask);
 	}
 	return changes;
 }
