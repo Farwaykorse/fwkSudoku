@@ -728,6 +728,7 @@ TEST(Solver, appearance_once)
 	EXPECT_EQ(result.count_all(), 1U);
 	EXPECT_TRUE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_empty());
+	EXPECT_EQ(result.DebugString(), "00011");
 	// Col
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
@@ -735,6 +736,7 @@ TEST(Solver, appearance_once)
 	EXPECT_EQ(result.count_all(), 1U);
 	EXPECT_TRUE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_empty());
+	EXPECT_EQ(result.DebugString(), "00011");
 	// Block
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
@@ -742,13 +744,15 @@ TEST(Solver, appearance_once)
 	EXPECT_EQ(result.count_all(), 1U);
 	EXPECT_TRUE(result.test(Value{1}));
 	EXPECT_FALSE(result.is_empty());
+	EXPECT_EQ(result.DebugString(), "00011");
 	// nothing, Row
 	result.clear(); // reset
 	ASSERT_TRUE(result.is_empty());
 	EXPECT_NO_THROW(result = appearance_once<2>(B1.row(0)));
 	EXPECT_EQ(result.count_all(), 0U);   // <==
 	EXPECT_FALSE(result.test(Value{1})); // <==
-	EXPECT_TRUE(result.is_empty());      // <==
+	EXPECT_FALSE(result.is_empty());
+	EXPECT_EQ(result.DebugString(), "00001");
 	//===------------------------------------------------------------------===//
 	// also in the test: appearance_sets
 	//
@@ -772,29 +776,34 @@ TEST(Solver, appearance_once)
 		EXPECT_EQ(result4.count_all(), 1U);
 		EXPECT_TRUE(result4[Value{1}]);
 		EXPECT_FALSE(result4.is_empty());
+		EXPECT_EQ(result4.DebugString(), "00011");
 		result4 = appearance_once<2>(B4.row(1));
 		EXPECT_TRUE(result4[Value{0}]); // answer bit
 		EXPECT_EQ(result4.count(), 0U);
 		EXPECT_EQ(result4.count_all(), 0U);
-		EXPECT_TRUE(result4.is_empty());
+		EXPECT_FALSE(result4.is_empty());
+		EXPECT_EQ(result4.DebugString(), "00001");
 		result4 = appearance_once<2>(B4.row(2));
 		EXPECT_TRUE(result4[Value{0}]); // answer bit
 		EXPECT_EQ(result4.count(), 1U);
 		EXPECT_EQ(result4.count_all(), 1U);
 		EXPECT_TRUE(result4[Value{1}]);
 		EXPECT_FALSE(result4.is_empty());
+		EXPECT_EQ(result4.DebugString(), "00011");
 		result4 = appearance_once<2>(B4.col(3));
 		EXPECT_TRUE(result4[Value{0}]); // answer bit
 		EXPECT_EQ(result4.count(), 1U);
 		EXPECT_EQ(result4.count_all(), 1U);
 		EXPECT_TRUE(result4[Value{1}]);
 		EXPECT_FALSE(result4.is_empty());
+		EXPECT_EQ(result4.DebugString(), "00011");
 		result4 = appearance_once<2>(B4.block(1));
 		EXPECT_TRUE(result4[Value{0}]); // answer bit
 		EXPECT_EQ(result4.count(), 1U);
 		EXPECT_EQ(result4.count_all(), 1U);
 		EXPECT_TRUE(result4[Value{1}]);
 		EXPECT_FALSE(result4.is_empty());
+		EXPECT_EQ(result4.DebugString(), "00011");
 	}
 	{ // all set in a section
 		Board<Options<4>, 2> B5{};
@@ -809,15 +818,18 @@ TEST(Solver, appearance_once)
 		EXPECT_TRUE(result1[Value{0}]); // answer bit
 		EXPECT_EQ(result1.count(), 0U);
 		EXPECT_EQ(result1.count_all(), 0U);
-		EXPECT_TRUE(result1.is_empty());
+		EXPECT_FALSE(result1.is_empty());
+		EXPECT_EQ(result1.DebugString(), "00001");
 		const auto result2 =
 			appearance_once<2>(B5.row(0).cbegin(), B5.row(0).cend());
 		EXPECT_TRUE(result2[Value{0}]); // answer bit
-		EXPECT_TRUE(result2.is_empty());
+		EXPECT_FALSE(result2.is_empty());
+		EXPECT_EQ(result2.DebugString(), "00001");
 		const auto result3 = appearance_once<2>(B5.row(3));
 		EXPECT_TRUE(result3[Value{0}]); // answer bit
 		EXPECT_EQ(result3.count(), 0U);
-		EXPECT_TRUE(result3.is_empty());
+		EXPECT_FALSE(result3.is_empty());
+		EXPECT_EQ(result3.DebugString(), "00001");
 	}
 }
 
@@ -1003,26 +1015,27 @@ TEST(Solver, appearance_sets)
 		EXPECT_EQ(B4[2][1].count(), 4U);
 		auto result = appearance_sets<2>(B4.row(0));
 		EXPECT_EQ(result.size(), size_t{3}); // max = N
-		EXPECT_TRUE(result[0].is_empty());
+		EXPECT_FALSE(result[0].is_empty());
+		EXPECT_EQ(result[0].DebugString(), "00001");
 		EXPECT_TRUE(result[1][Value{0}]); // answer bit
 		EXPECT_EQ(result[1].count(), 1U);
 		EXPECT_TRUE(result[1][Value{1}]);
 		EXPECT_EQ(result[2].count(), 0U);
 		result = appearance_sets<2>(B4.row(1));
-		EXPECT_TRUE(result[0].is_empty());
+		EXPECT_FALSE(result[0].is_empty());
 		EXPECT_EQ(result[1].count(), 0U);
-		EXPECT_TRUE(result[1].is_empty());
-		EXPECT_TRUE(result[2].is_empty());
+		EXPECT_FALSE(result[1].is_empty());
+		EXPECT_FALSE(result[2].is_empty());
 		result = appearance_sets<2>(B4.row(2));
-		EXPECT_TRUE(result[0].is_empty());
+		EXPECT_FALSE(result[0].is_empty());
 		EXPECT_EQ(result[1].count(), 1U);
 		EXPECT_TRUE(result[1][Value{1}]);
 		result = appearance_sets<2>(B4.col(3));
-		EXPECT_TRUE(result[0].is_empty());
+		EXPECT_FALSE(result[0].is_empty());
 		EXPECT_EQ(result[1].count(), 1U);
 		EXPECT_TRUE(result[1][Value{1}]);
 		result = appearance_sets<2>(B4.block(1));
-		EXPECT_TRUE(result[0].is_empty());
+		EXPECT_FALSE(result[0].is_empty());
 		EXPECT_EQ(result[1].count(), 1U);
 		EXPECT_TRUE(result[1][Value{1}]);
 	}

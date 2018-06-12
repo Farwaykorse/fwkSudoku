@@ -338,7 +338,7 @@ TEST(Options, mf_counting)
 	EXPECT_FALSE(TE.X_0.all());
 	static_assert(noexcept(TE.O_1.is_empty()));
 	EXPECT_TRUE(TE.E_1.is_empty());
-	EXPECT_TRUE(TE.E_2.is_empty());
+	EXPECT_FALSE(TE.E_2.is_empty());
 	EXPECT_FALSE(TE.D_1.is_empty());
 	EXPECT_FALSE(TE.O_1.is_empty());
 	EXPECT_FALSE(TE.X_1.is_empty());
@@ -402,6 +402,7 @@ TEST(Options, is_answer)
 		EXPECT_FALSE(is_answer(TE.O_1, Value{2}));
 		EXPECT_FALSE(is_answer(TE.O_1, Value{2}));
 		EXPECT_FALSE(is_answer(TE.E_1, Value{0}));
+		EXPECT_TRUE(is_answer(TE.E_2, Value{0}));
 	}
 	{ // test if answer flag set
 		constexpr Options<9> ans{Value{2}};
@@ -624,7 +625,7 @@ TEST(Options, mf_changeAll)
 	TMP = TE.D_1;
 	ASSERT_TRUE(TMP.all()) << "Reset test data failed";
 	TMP.flip();
-	EXPECT_TRUE(TMP.is_empty());
+	EXPECT_FALSE(TMP.is_empty());
 	EXPECT_EQ(TMP.count_all(), 0u);
 	TMP.flip();
 	EXPECT_TRUE(TMP.all());
@@ -699,7 +700,8 @@ TEST(Options, mf_set)
 	EXPECT_EQ(TMP.count(), 0u);
 	EXPECT_TRUE(is_answer(TMP.set(Value{1}), Value{1}));
 	EXPECT_FALSE(is_answer(TMP, Value{4}));
-	EXPECT_TRUE(TMP.set(Value{0}).is_empty());
+	EXPECT_FALSE(TMP.set(Value{0}).is_empty());
+	EXPECT_EQ(TMP.count(), 0u);
 	EXPECT_EQ(TMP.count_all(), 0u);
 	EXPECT_EQ(TMP.DebugString(), "00001");
 

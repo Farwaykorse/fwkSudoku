@@ -397,8 +397,7 @@ inline bool is_option(const Options<E>& options, const Value value)
 template<int E>
 inline bool Options<E>::is_empty() const noexcept
 {
-	// return (data_.none() || (data_.count() == 1 && data_[0] == true));
-	return (data_.none() || data_ == std::bitset<E + 1>{1});
+	return data_.none();
 }
 
 // determine the answer value, even if not marked
