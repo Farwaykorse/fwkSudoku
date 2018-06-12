@@ -51,7 +51,7 @@ int remove_option_section(
 	Board<Options, N>&,
 	SectionT,
 	const std::vector<Location<N>>& ignore,
-	const std::vector<Value>&);
+	const Options& mask);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_outside_block(
@@ -105,9 +105,14 @@ int remove_option(
 	Board<Options, N>& board, const Location<N> loc, const Options mask)
 {
 	assert(is_answer_fast(mask)); // don't remove answer-bit
+	assert(!mask.is_empty());     // useless
 
 	auto& item{board.at(loc)};
 	auto changes = gsl::narrow_cast<int, size_t>(item.count_all());
+	if (!changes)
+	{ // ignore empty elements
+		return 0;
+	}
 
 	// remove options
 	item -= mask;
@@ -200,14 +205,15 @@ int remove_option_section(
 	Board<Options, N>& board,
 	const SectionT section,
 	const std::vector<Location<N>>& ignore,
-	const std::vector<Value>& values)
+	const Options& values)
 {
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
 		static_assert(Utility_::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
-		assert(is_valid<N>(values));
+		assert(!values.all());
+		assert(!values.is_empty());
 		assert(is_same_section(section, ignore));
 	}
 	int changes{0};
@@ -221,10 +227,7 @@ int remove_option_section(
 				return L1 == L2;
 			})) // <algorithm>
 		{
-			for (auto v : values)
-			{ //! Cascade (!)
-				changes += remove_option(board, itr.location(), v);
-			}
+			changes += remove_option(board, itr.location(), values);
 		}
 	}
 	return changes;

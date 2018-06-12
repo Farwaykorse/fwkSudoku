@@ -112,11 +112,21 @@ TEST(Solver, remove_option_mask)
 	Board<O2, 2> board{};
 
 	static_assert(not noexcept(remove_option(board, L2{2}, Options<4>{})));
-	// death answer-bit in mask
+	// answer-bit in mask
 	auto mask = Options<4>{Value{0}};
 	EXPECT_DEBUG_DEATH(
 		remove_option(board, L2{0}, mask),
 		"Assertion failed: is_answer_fast.mask.");
+	mask = Options<4>{};
+#ifdef NDEBUG
+	EXPECT_THROW(remove_option(board, L2{0}, mask), invalid_Board);
+#else
+	EXPECT_DEBUG_DEATH(
+		remove_option(board, L2{0}, mask), "Assertion failed: is_answer_fast");
+#endif
+	mask.clear();
+	EXPECT_DEBUG_DEATH(
+		remove_option(board, L2{0}, mask), "Assertion failed: .*is_empty");
 	// throw from Board::at(loc)
 	mask = Options<4>{Value{1}};
 	EXPECT_NO_THROW(remove_option(board, L2{0}, mask));
@@ -269,18 +279,19 @@ TEST(Solver, remove_option_section_2)
 	using L  = Location<2>;
 	using vL = std::vector<L>;
 	using v  = Value;
-	using vV = std::vector<Value>;
+	using vV = Options<4>;
+	using b  = std::bitset<5>;
 
 	// remove_option_section(SectionT, vector<Location>, vector<int>
 	const Board<Options<4>, 2> cB;
 	Board<Options<4>, 2> B;
 	// row
 	ASSERT_NO_THROW(
-		remove_option_section(B, B.row(0), vL{L(0), L(1)}, vV{v{1}, v{2}}));
+		remove_option_section(B, B.row(0), vL{L(0), L(1)}, vV{b{"00110"}}));
 	EXPECT_EQ(B[0][3].count(), 2u);
 	EXPECT_EQ(
 		remove_option_section(
-			B, B.row(1), vL{L(1, 0), L(1, 1)}, vV{v{3}, v{4}}),
+			B, B.row(1), vL{L(1, 0), L(1, 1)}, vV{b{"11000"}}),
 		4);
 	EXPECT_EQ(B[0][0].count(), 4u);
 	EXPECT_EQ(B[0][1].count(), 4u);
@@ -290,12 +301,12 @@ TEST(Solver, remove_option_section_2)
 	// col
 	B = cB; // reset
 	ASSERT_NO_THROW(
-		remove_option_section(B, B.col(0), vL{L(0), L(1, 0)}, vV{v{1}, v{3}}));
+		remove_option_section(B, B.col(0), vL{L(0), L(1, 0)}, vV{b{"01010"}}));
 	EXPECT_EQ(B[3][0].count(), 2u);
 	B = cB; // reset
 	EXPECT_EQ(
 		remove_option_section(
-			B, B.col(3), vL{L(0, 3), L(1, 3)}, vV{v{2}, v{3}}),
+			B, B.col(3), vL{L(0, 3), L(1, 3)}, vV{b{"01100"}}),
 		4);
 	EXPECT_EQ(B[0][3].count(), 4u);
 	EXPECT_EQ(B[1][3].count(), 4u);
@@ -304,16 +315,16 @@ TEST(Solver, remove_option_section_2)
 	B = cB; // reset
 	EXPECT_THROW(
 		remove_option_section(
-			B, B.col(3), vL{L(0, 3), L(1, 3)}, vV{v{2}, v{3}, v{4}}),
+			B, B.col(3), vL{L(0, 3), L(1, 3)}, vV{b{"11100"}}),
 		::Sudoku::error::invalid_Board);
 	// block
 	B = cB; // reset
 	ASSERT_NO_THROW(
-		remove_option_section(B, B.block(0), vL{L(0), L(1)}, vV{v{1}, v{3}}));
+		remove_option_section(B, B.block(0), vL{L(0), L(1)}, vV{b{"01010"}}));
 	EXPECT_EQ(B[1][0].count(), 2u);
 	EXPECT_EQ(
 		remove_option_section(
-			B, B.block(3), vL{L(2, 2), L(3, 1)}, vV{v{2}, v{4}}),
+			B, B.block(3), vL{L(2, 2), L(3, 1)}, vV{b{"10100"}}),
 		6);
 	EXPECT_EQ(B[0][0].count(), 4u);
 	EXPECT_EQ(B[0][1].count(), 4u);
@@ -363,7 +374,8 @@ TEST(Solver, deathtests_remove_option)
 	using L  = Location<2>;
 	using vL = std::vector<L>;
 	using v  = Value;
-	using vV = std::vector<Value>;
+	using vV = Options<4>;
+	using b  = std::bitset<5>;
 
 	Board<Options<4>, 2> B{};
 	const auto cB{B};
@@ -432,34 +444,33 @@ TEST(Solver, deathtests_remove_option)
 	// ignore is empty
 #ifdef NDEBUG
 	EXPECT_THROW(
-		remove_option_section(B, B.row(0), vL{}, vV{v{3}, v{1}, v{4}}),
+		remove_option_section(B, B.row(0), vL{}, vV{b{"11010"}}),
 		Sudoku::error::invalid_Board);
 #else
 	EXPECT_DEBUG_DEATH(
-		remove_option_section(B, B.row(0), vL{}, vV{v{3}, v{1}, v{4}}),
+		remove_option_section(B, B.row(0), vL{}, vV{b{"11010"}}),
 		"Assertion failed: is_valid.ignore.");
+#endif // NDEBUG
+	   // values is all
+#ifdef NDEBUG
+	EXPECT_THROW(
+		remove_option_section(B, B.row(0), vL{L(0), L(1), L(11)}, vV{}),
+		Sudoku::error::invalid_Board);
+#else
+	EXPECT_DEBUG_DEATH(
+		remove_option_section(B, B.row(0), vL{L(0), L(1), L(11)}, vV{}),
+		"Assertion failed: .*all");
 #endif // NDEBUG
 
 	// values is empty
 	EXPECT_DEBUG_DEATH(
-		remove_option_section(B, B.row(0), vL{L(0), L(1), L(11)}, vV{}),
-		"Assertion failed: is_valid");
+		remove_option_section(B, B.row(0), vL{L(0), L(1), L(11)}, vV{}.clear()),
+		"Assertion failed: .*is_empty");
 
-	// an value out-of-bounds
-#ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(
-		remove_option_section(
-			B, B.row(0), vL{L(0), L(1), L(11)}, vV{v{1}, v{2}, v{0}}),
-		"Assertion failed: is_valid");
-	EXPECT_DEBUG_DEATH(
-		remove_option_section(
-			B, B.row(0), vL{L(0), L(1), L(11)}, vV{v{1}, v{2}, v{5}}),
-		"Assertion failed: is_valid");
-#endif // NDEBUG
 	// assert at least one ignore-location inside section
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(
-			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, vV{v{1}, v{2}}),
+			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, vV{b{"00110"}}),
 		"Assertion failed: is_same_section.*");
 	B = cB; // reset
 

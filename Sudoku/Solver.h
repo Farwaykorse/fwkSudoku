@@ -79,6 +79,12 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 
 	int changes{};
 	const Options& item{board.at(loc)};
+	auto create_mask = [](Options item) noexcept
+	{
+		item[Value{0}] = false;
+		return item;
+	};
+
 	for (int i{}; i < full_size<N>; ++i)
 	{
 		// find exact same in board
@@ -91,7 +97,7 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 					board,
 					board.row(loc),
 					sorted_loc(Location(i)),
-					available(item));
+					create_mask(item));
 			}
 			else if (is_same_col(loc, Location(i)))
 			{
@@ -99,7 +105,7 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 					board,
 					board.col(loc),
 					sorted_loc(Location(i)),
-					available(item));
+					create_mask(item));
 			}
 			// run not if already answered
 			if (is_same_block(loc, Location(i)) && !item.is_answer())
@@ -109,7 +115,7 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 					board,
 					board.block(loc),
 					sorted_loc(Location(i)),
-					available(item));
+					create_mask(item));
 			}
 		}
 	}
@@ -147,6 +153,11 @@ constexpr int multi_option(
 	int changes{};                      // performance counter
 	const Options& item{board.at(loc)}; // input item, to match with
 	assert(item.count() == count);
+	auto create_mask = [](Options item) noexcept
+	{
+		item[Value{0}] = false;
+		return item;
+	};
 
 	auto list = list_where_subset(board, item);
 
@@ -156,19 +167,28 @@ constexpr int multi_option(
 	if (const auto in_row{get_same_row(loc, list)}; in_row.size() == count)
 	{
 		changes += remove_option_section(
-			board, board.row(loc), in_row, available(item));
+			board,
+			board.row(loc),
+			in_row,
+			create_mask(item));
 	}
 	if (const auto in_col{get_same_col(loc, list)}; in_col.size() == count)
 	{
 		changes += remove_option_section(
-			board, board.col(loc), in_col, available(item));
+			board,
+			board.col(loc),
+			in_col,
+			create_mask(item));
 	}
 	if (const auto in_block{get_same_block(loc, list)};
 		in_block.size() == count)
 	{
 		// NOTE this is slow
 		changes += remove_option_section(
-			board, board.block(loc), in_block, available(item));
+			board,
+			board.block(loc),
+			in_block,
+			create_mask(item));
 	}
 	return changes;
 }
