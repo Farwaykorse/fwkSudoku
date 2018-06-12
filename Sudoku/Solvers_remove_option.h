@@ -84,7 +84,7 @@ int remove_option(
 			changes += single_option(board, loc);
 		}
 #else
-		//if (count < 4)
+		// if (count < 4)
 		{
 			changes += multi_option(board, loc, count);
 		}
@@ -107,11 +107,7 @@ int remove_option(
 	assert(is_answer_fast(mask)); // don't remove answer-bit
 
 	auto& item{board.at(loc)};
-	if (is_answer_fast(item))
-	{
-		return 0;
-	}
-	auto changes = gsl::narrow_cast<int, size_t>(item.count());
+	auto changes = gsl::narrow_cast<int, size_t>(item.count_all());
 
 	// remove options
 	item -= mask;
@@ -121,7 +117,7 @@ int remove_option(
 	{ // removed last option
 		throw error::invalid_Board();
 	}
-	changes -= count; // after
+	changes -= count;
 
 	if (changes && count == 1)
 	{

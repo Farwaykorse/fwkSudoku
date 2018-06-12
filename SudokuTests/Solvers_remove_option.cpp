@@ -105,7 +105,7 @@ TEST(Solver, remove_option)
 	EXPECT_EQ(board[2][1].count_all(), 1U);
 }
 
-TEST(Solver, remove_option_Options)
+TEST(Solver, remove_option_mask)
 {
 	using L2 = Location<2>;
 	using O2 = Options<4>;
@@ -135,7 +135,7 @@ TEST(Solver, remove_option_Options)
 	// return 0 when answered
 	board[0][0] = O2{Value{4}};
 	mask        = O2{std::bitset<5>{"11000"}};
-	EXPECT_EQ(remove_option(board, L2{0, 0}, mask), 0);
+	EXPECT_THROW(remove_option(board, L2{0, 0}, mask), invalid_Board);
 	board[1][0] = O2{};
 	EXPECT_EQ(remove_option(board, L2{1, 0}, mask), 2);
 
