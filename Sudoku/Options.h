@@ -539,6 +539,9 @@ inline Options<E>
 }
 
 template<int E>
+#ifndef fwkUnitTest
+[[deprecated("Debug use only")]]
+#endif
 inline std::string Options<E>::DebugString() const
 {
 	return data_.to_string();

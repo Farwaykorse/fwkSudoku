@@ -37,6 +37,9 @@ Instructions to set-up a unit-testing project, in conjunction with
 
 <!--------------------------------------------------------><a id="compiler"></a>
 ### Compiler settings
+The preprocessor macro `fwkUnitTest` needs to be defined to disable the
+`[[deprecated]]` attribute on code meant only for testing purposes.
+
 **Clang:**
 Disabled warnings:
 ``````
