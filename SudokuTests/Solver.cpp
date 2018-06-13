@@ -905,8 +905,7 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B1[0][0].count(), 3U) << "after 1"; // unchanged
 	EXPECT_EQ(B1[0][8].count(), 6U) << "after 2";
 	EXPECT_EQ(B1[4][4].count(), 9U) << "after 3"; // unchanged
-	EXPECT_EQ(available(B1[0][8]), (list{V{4}, V{5}, V{6}, V{7}, V{8}, V{9}}))
-		<< "after 4";
+	EXPECT_EQ(B1[0][8].DebugString(), "1111110001");
 	// run for col
 	EXPECT_NO_THROW(multi_option(B1, Location<3>{6, 8}))
 		<< "multi_option failed 2";
@@ -914,8 +913,7 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B1[8][8].count(), 3U) << "after 22"; // unchanged
 	EXPECT_EQ(B1[0][8].count(), 4U) << "after 23";
 	EXPECT_EQ(B1[4][4].count(), 9U) << "after 24"; // unchanged
-	EXPECT_EQ(available(B1[0][8]), (list{V{4}, V{5}, V{7}, V{8}}))
-		<< "after 25";
+	EXPECT_EQ(B1[0][8].DebugString(), "0110110001");
 
 	// run for block
 	// clang-format off
@@ -939,13 +937,11 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B2[2][2].count(), 3U) << "before 33";
 	EXPECT_EQ(B2[0][1].count(), 4U) << "before 34";
 	EXPECT_EQ(B2[2][0].count(), 4U) << "before 35";
-	EXPECT_EQ(available(B2[0][0]), (list{V{1}, V{5}, V{9}})) << "before 36";
-	EXPECT_EQ(available(B2[2][0]), (list{V{1}, V{5}, V{7}, V{9}}))
-		<< "before 37";
+	EXPECT_EQ(B2[0][0].DebugString(), "1000100011") << "before 36";
+	EXPECT_EQ(B2[2][0].DebugString(), "1010100011") << "before 37";
 	EXPECT_EQ(B2[8][8].count(), 9U) << "before 38";
 	EXPECT_EQ(B2[2][5].count(), 6U) << "before 39";
-	EXPECT_EQ(available(B2[2][5]), (list{V{1}, V{3}, V{4}, V{5}, V{6}, V{9}}))
-		<< "before 310";
+	EXPECT_EQ(B2[2][5].DebugString(), "1001111011") << "before 310";
 	EXPECT_NO_THROW(multi_option(B2, Location<3>(0)))
 		<< "multi_option failed 3";
 	EXPECT_EQ(B2[0][0].count(), 3U) << "after 31";
@@ -953,11 +949,10 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B2[2][2].count(), 3U) << "after 33";
 	EXPECT_TRUE(is_answer(B2[0][1], Value{2})) << "after 34";
 	EXPECT_TRUE(is_answer(B2[2][0], Value{7})) << "after 35";
-	EXPECT_EQ(available(B2[0][0]), (list{V{1}, V{5}, V{9}})) << "after 36";
+	EXPECT_EQ(B2[0][0].DebugString(), "1000100011") << "after 36";
 	EXPECT_EQ(B2[8][8].count(), 9U) << "after 38";
 	EXPECT_EQ(B2[2][5].count(), 6U) << "after 39";
-	EXPECT_EQ(available(B2[2][5]), (list{V{1}, V{3}, V{4}, V{5}, V{6}, V{9}}))
-		<< "after 310";
+	EXPECT_EQ(B2[2][5].DebugString(), "1001111011") << "after 310";
 
 	// clang-format off
 	// 9*9 partials forming a set: 3 cells containing (123,12,13)
@@ -981,11 +976,11 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B3[0][2].count(), 3U) << "before 43";
 	EXPECT_EQ(B3[0][3].count(), 7U) << "before 44";
 	// EXPECT_EQ(B3[5][1].count(), 6) << "before 45";
-	EXPECT_EQ(available(B3[0][1]), (list{V{1}, V{2}, V{3}})) << "before 46";
+	EXPECT_EQ(B3[0][1].DebugString(), "0000001111") << "before 46";
 	EXPECT_EQ(B3[6][8].count(), 2U) << "before 47";
 	EXPECT_EQ(B3[7][8].count(), 2U) << "before 48";
 	EXPECT_EQ(B3[8][8].count(), 3U) << "before 49";
-	EXPECT_EQ(available(B3[8][8]), (list{V{3}, V{6}, V{9}})) << "before 410";
+	EXPECT_EQ(B3[8][8].DebugString(), "1001001001") << "before 410";
 	EXPECT_NO_THROW(multi_option(B3, Location<3>(1)))
 		<< "multi_option failed 4";
 	// row:
@@ -994,10 +989,9 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B3[0][2].count(), 3U) << "after 43"; // unchanged
 	EXPECT_EQ(B3[0][3].count(), 4U) << "after 44";
 	// EXPECT_EQ(B3[5][1].count(), 6) << "after 45"; // unchanged
-	EXPECT_EQ(available(B3[0][0]), (list{V{1}, V{2}})) << "after 46";
-	EXPECT_EQ(available(B3[0][1]), (list{V{1}, V{2}, V{3}})) << "after 47";
-	EXPECT_EQ(available(B3[0][3]), (list{V{5}, V{6}, V{8}, V{9}}))
-		<< "after 48";
+	EXPECT_EQ(B3[0][0].DebugString(), "0000000111") << "after 46";
+	EXPECT_EQ(B3[0][1].DebugString(), "0000001111") << "after 47";
+	EXPECT_EQ(B3[0][3].DebugString(), "1101100001") << "after 48";
 }
 
 TEST(Solver, multi_option_2)
