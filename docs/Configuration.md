@@ -9,7 +9,8 @@ While supplying motivation and discussion.
 No historic data is kept, since it is part of the git log.
 Unless a setting is considered a temporary fix.
 
-Deviations from this document should be considered configuration errors.
+Project specific settings are documented in their individual README files.
+Any other deviations should be considered configuration errors.
 
 <!-- TOC -->
 - [General Information](#general)
@@ -31,6 +32,7 @@ Targets:
 - Standard conforming (currently: C++17)
 - Compiling with any conforming compiler (currently: MSVC, Clang, GCC, ...)
 - Being warning free, while enabling as many warnings as possible
+- Increase execution performance (with a preference for x64 with MSVC)
 
 
 <!----------------------------------------------------------><a id="format"></a>
@@ -48,7 +50,8 @@ Using the supplied [.clang-format](../.clang-format) configuration file.
 Everything is configured for compilation with [MSVC](#msvc) and [Clang](#clang)
 on Windows. Using MS Build as a build system.
 
-No portable configuration for GCC on a remote Linux host has been added yet.
+The configuration for GCC (on a remote Linux host) has not been included in this
+project.
 
 <!------------------------------------------------------------><a id="msvc"></a>
 ### MSVC ###
