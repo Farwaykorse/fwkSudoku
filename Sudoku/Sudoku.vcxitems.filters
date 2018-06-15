@@ -15,84 +15,76 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Location.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board.fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Options.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Solver.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board_Iterators.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="precompiled.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board_Section.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Board.fwd.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board_Section_iterator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="board.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board_Section_traits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Location_Utilities.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)exceptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Solver.fwd.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Location.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Iterator_Utilities.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Location_Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Value.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Options.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Size.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)precompiled_basic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Solvers_find.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Size.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Solvers_remove_option.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Solver.fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Solvers_set_option.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Solver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Transpose.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Iterator_Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="exceptions.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_find.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Board_Iterators.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_remove_option.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Board_Section_traits.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_set_option.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Board_Section_iterator.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transpose.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Board_Section.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)traits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="traits.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Value.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sudoku.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="precompiled.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <Natvis Include="$(MSBuildThisFileDirectory)Board.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)Location.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)Options.natvis" />
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="Options.natvis" />
-    <Natvis Include="Board.natvis" />
-    <Natvis Include="Location.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="README.md" />
+    <None Include="$(MSBuildThisFileDirectory)README.md" />
   </ItemGroup>
 </Project>

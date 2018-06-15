@@ -103,6 +103,7 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
+    <Import Project="..\Sudoku\Sudoku.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -127,7 +128,6 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)Sudoku;$(IncludePath)</IncludePath>
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <EnableExperimentalCppCoreCheck>true</EnableExperimentalCppCoreCheck>
     <CodeAnalysisRuleSet>..\msvc\CppCoreCheckAllRules.ruleset</CodeAnalysisRuleSet>
@@ -143,7 +143,6 @@
     <EnableExperimentalCppCoreCheck>true</EnableExperimentalCppCoreCheck>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Sudoku;$(IncludePath)</IncludePath>
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <EnableExperimentalCppCoreCheck>true</EnableExperimentalCppCoreCheck>
     <CodeAnalysisRuleSet>..\msvc\CppCoreCheckAllRules.ruleset</CodeAnalysisRuleSet>
@@ -153,13 +152,11 @@
     <EnableExperimentalCppCoreCheck>true</EnableExperimentalCppCoreCheck>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)Sudoku;$(IncludePath)</IncludePath>
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <EnableExperimentalCppCoreCheck>true</EnableExperimentalCppCoreCheck>
     <CodeAnalysisRuleSet>..\msvc\CppCoreCheckAllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)Sudoku;$(IncludePath)</IncludePath>
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <EnableExperimentalCppCoreCheck>true</EnableExperimentalCppCoreCheck>
     <CodeAnalysisRuleSet>..\msvc\CppCoreCheckAllRules.ruleset</CodeAnalysisRuleSet>
@@ -393,11 +390,6 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w44623 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="Console.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Sudoku\Sudoku.vcxproj">
-      <Project>{14b76e47-7b5d-43c1-b056-a82fca671cc5}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

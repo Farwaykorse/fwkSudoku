@@ -30,5 +30,5 @@
 #include <sstream>
 #include <chrono>
 
-// precompiled dependencies used in Sudoku.lib
-#include <Sudoku/precompiled.h>
+// dependencies used in Sudoku
+#include <Sudoku/precompiled_basic.h>

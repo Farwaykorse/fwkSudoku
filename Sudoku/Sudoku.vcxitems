@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{14B76E47-7B5D-43C1-B056-A82FCA671CC5}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board.fwd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board_Iterators.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board_Section.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board_Section_iterator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board_Section_traits.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)exceptions.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Location.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Location_Utilities.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Options.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)precompiled_basic.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Size.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Solver.fwd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Solver.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Iterator_Utilities.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_find.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_remove_option.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_set_option.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transpose.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)traits.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Value.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)README.md">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)Board.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)Location.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)Options.natvis" />
+  </ItemGroup>
+</Project>

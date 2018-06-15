@@ -97,7 +97,9 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
-  <ImportGroup Label="Shared" />
+  <ImportGroup Label="Shared">
+    <Import Project="..\Sudoku\Sudoku.vcxitems" Label="Shared" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -403,11 +405,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Sudoku\Sudoku.vcxproj">
-      <Project>{14b76e47-7b5d-43c1-b056-a82fca671cc5}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-tidy" />

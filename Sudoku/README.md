@@ -17,9 +17,19 @@ providing data-structures and solvers.
 ## General Information ##
 <!----------------------------------------------------------------------------->
 <!-- Usage -->
-The supplied project configurations generate a static library.
 
 <!-- Compilation -->
+#### Precompiled headers
+For an active project using the Sudoku headers it is sufficient to add one of
+the main headers like `Solver.h`, which includes all its requirements.
+
+For projects for which the Sudoku project is frequently changing,
+i.e. the related unit-test project.
+`precompiled_basic.h` includes the frequently included external headers for the
+Sudoku library.
+This can be included in precompiled header for any project depending on Sudoku.
+
+#### Depenencies
 <!-- libraries -->
 This project requires an C++17 conforming STL implementation and the GSL
 (Guideline Support Library), available at:

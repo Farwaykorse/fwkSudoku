@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sudoku", "Sudoku\Sudoku.vcxproj", "{14B76E47-7B5D-43C1-B056-A82FCA671CC5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sudoku", "Sudoku\Sudoku.vcxitems", "{14B76E47-7B5D-43C1-B056-A82FCA671CC5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5FE296CB-7F95-44A2-A544-4009EF24F251}"
 	ProjectSection(SolutionItems) = preProject
@@ -26,6 +26,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{D4D3C241-1
 	EndProjectSection
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Sudoku\Sudoku.vcxitems*{14b76e47-7b5d-43c1-b056-a82fca671cc5}*SharedItemsImports = 9
+		Sudoku\Sudoku.vcxitems*{70b08f04-68d5-4bc6-8d09-4f4c8e768a81}*SharedItemsImports = 4
+		Sudoku\Sudoku.vcxitems*{98c80f78-1dec-4651-a336-996a027e11fe}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		ClangDebug|x64 = ClangDebug|x64
 		ClangDebug|x86 = ClangDebug|x86
@@ -39,25 +44,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangDebug|x64.ActiveCfg = ClangDebug|x64
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangDebug|x64.Build.0 = ClangDebug|x64
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangDebug|x86.ActiveCfg = ClangDebug|Win32
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangDebug|x86.Build.0 = ClangDebug|Win32
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangRelease|x64.ActiveCfg = ClangRelease|x64
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangRelease|x64.Build.0 = ClangRelease|x64
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangRelease|x86.ActiveCfg = ClangRelease|Win32
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangRelease|x86.Build.0 = ClangRelease|Win32
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangTidy|x64.ActiveCfg = ClangTidy|x64
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangTidy|x64.Build.0 = ClangTidy|x64
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.ClangTidy|x86.ActiveCfg = ClangTidy|x64
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.Debug|x64.ActiveCfg = Debug|x64
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.Debug|x64.Build.0 = Debug|x64
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.Debug|x86.ActiveCfg = Debug|Win32
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.Debug|x86.Build.0 = Debug|Win32
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.Release|x64.ActiveCfg = Release|x64
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.Release|x64.Build.0 = Release|x64
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.Release|x86.ActiveCfg = Release|Win32
-		{14B76E47-7B5D-43C1-B056-A82FCA671CC5}.Release|x86.Build.0 = Release|Win32
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangDebug|x64.ActiveCfg = ClangDebug|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangDebug|x64.Build.0 = ClangDebug|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangDebug|x86.ActiveCfg = ClangDebug|Win32
