@@ -862,8 +862,6 @@ TEST(Solver, dual_option)
 
 TEST(Solver, multi_option)
 {
-	using V    = Value;
-	using list = std::vector<V>;
 	/*	start board
 	 *	 _ _ _ _ _ _ _ _ _ _ _ _
 	 *	|       |      	|       | test for row

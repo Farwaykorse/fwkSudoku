@@ -373,7 +373,6 @@ TEST(Solver, deathtests_remove_option)
 {
 	using L  = Location<2>;
 	using vL = std::vector<L>;
-	using v  = Value;
 	using vV = Options<4>;
 	using b  = std::bitset<5>;
 
