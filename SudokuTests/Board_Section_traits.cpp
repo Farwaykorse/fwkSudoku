@@ -1,6 +1,6 @@
-﻿//====---- SudokuTests/Board_Section.cpp                              ----====//
+﻿//====---- SudokuTests/Board_Section_traits.cpp                       ----====//
 //
-// Unit tests for the template class Sudoku::Board_Section
+// Unit tests for the traits defined for the Board_Section class.
 //====--------------------------------------------------------------------====//
 
 // Class under test

@@ -1,19 +1,7 @@
-﻿//===--- SudokuTests/Value.cpp                                          ---===//
+﻿//====---- SudokuTests/Transpose.cpp                                  ----====//
 //
-//	Unit tests for the template class Sudoku::Value
-//===----------------------------------------------------------------------===//
-//	Implemented with GoogleTest
-//
-//	Notes:
-//	gTest is limited for use with multiple template parameters.
-//	These expressions need to be implemented between extra parentheses
-//	- test elements implementing this are flagged with [gTest]
-//	- not implemented tests are flagged as NEEDTEST [gTest]
-//	gTest tries to print iterators if they use inheritance,
-//		if used in *_EQ/NE etc.
-//		use an explicit test like EXPECT_TRUE(.. == ..).
-//
-//===----------------------------------------------------------------------===//
+// Unit tests for the transpose functions.
+//====--------------------------------------------------------------------====//
 #include <gtest/gtest.h>
 
 // Class under test
