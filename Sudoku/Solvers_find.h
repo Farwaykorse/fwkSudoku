@@ -8,11 +8,11 @@
 #pragma once
 
 #include "Board_Section_traits.h"
-#include "Iterator_Utilities.h"
 #include "Location.h"
 #include "Options.h"
 #include "Size.h"
 #include "Value.h"
+#include "traits.h"
 
 #include <gsl/gsl>
 #include <array>
@@ -94,10 +94,10 @@ auto list_where_option(
 {
 	using Options = Options<elem_size<N>>;
 	{
-		static_assert(Utility_::is_input<ItrT>);
+		static_assert(traits::is_input<ItrT>);
 		static_assert(
-			Utility_::iterator_to<ItrT, const Options> ||
-			Utility_::iterator_to<ItrT, Options>);
+			traits::iterator_to<ItrT, const Options> ||
+			traits::iterator_to<ItrT, Options>);
 		assert(is_valid<N>(value));
 
 		if (rep_count == 0)
@@ -312,8 +312,8 @@ Step 3) XOR [n-1]
 	using Options = Options<elem_size<N>>;
 	{
 		static_assert(
-			Utility_::iterator_to<InItr_, Options> ||
-			Utility_::iterator_to<InItr_, const Options>);
+			traits::iterator_to<InItr_, Options> ||
+			traits::iterator_to<InItr_, const Options>);
 	}
 	// To limit processing time, counting up to N
 	constexpr auto max = size_t{N}; // default: (9x9 board) up-to 3 times
@@ -372,10 +372,10 @@ template<int N, typename Options, typename InItr_>
 Options appearance_once(const InItr_ begin, const InItr_ end) noexcept
 {
 	{
-		static_assert(Utility_::is_input<InItr_>);
+		static_assert(traits::is_input<InItr_>);
 		static_assert(
-			Utility_::iterator_to<InItr_, Options> ||
-			Utility_::iterator_to<InItr_, const Options>);
+			traits::iterator_to<InItr_, Options> ||
+			traits::iterator_to<InItr_, const Options>);
 	}
 	Options sum(Value{0});    // helper all used
 	Options worker(Value{0}); // multiple uses OR answer

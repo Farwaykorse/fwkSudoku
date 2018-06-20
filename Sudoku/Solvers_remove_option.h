@@ -5,13 +5,13 @@
 #pragma once
 
 #include "Board.h"
-#include "Iterator_Utilities.h"
 #include "Location.h"
 #include "Location_Utilities.h"
 #include "Options.h"
 #include "Size.h"
 #include "Value.h"
 #include "exceptions.h"
+#include "traits.h"
 
 #include <gsl/gsl>
 #include <vector>
@@ -142,7 +142,7 @@ int remove_option_section(
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
-		static_assert(Utility_::is_input<typename SectionT::iterator>);
+		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
 		assert(is_valid<N>(value));
 		assert(is_same_section(section, ignore));
@@ -172,7 +172,7 @@ inline int remove_option_section(
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
-		static_assert(Utility_::is_input<typename SectionT::iterator>);
+		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
 		assert(is_valid<N>(value));
 		assert(is_same_section(section, ignore));
@@ -210,7 +210,7 @@ int remove_option_section(
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
-		static_assert(Utility_::is_input<typename SectionT::iterator>);
+		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
 		assert(!values.all());
 		assert(!values.is_empty());
@@ -247,7 +247,7 @@ int remove_option_outside_block(
 			!Board_Section::traits::is_Block_v<SectionT>,
 			"remove_option_outside_block is useless on a Block");
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
-		static_assert(Utility_::is_input<typename SectionT::iterator>);
+		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid(block_loc));
 		assert(is_valid<N>(value));
 		assert(intersect_block(section, block_loc));

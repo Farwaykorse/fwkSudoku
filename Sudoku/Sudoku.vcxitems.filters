@@ -57,9 +57,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Solver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Iterator_Utilities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_find.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -28,7 +28,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Size.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Solver.fwd.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Solver.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Iterator_Utilities.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_find.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_remove_option.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_set_option.h" />

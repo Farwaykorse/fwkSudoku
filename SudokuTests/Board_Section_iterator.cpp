@@ -19,9 +19,9 @@
 #include <Sudoku/Board_Section_iterator.h>
 // helpers
 #include <Sudoku/Board.h>
-#include <Sudoku/Iterator_Utilities.h>
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
+#include <Sudoku/traits.h>
 // library
 #include <type_traits>
 
@@ -277,10 +277,10 @@ using ::Sudoku::Board_Section::Col;
 using ::Sudoku::Board_Section::Block;
 using ::Sudoku::Board_Section::const_Row;
 
-using ::Sudoku::Utility_::is_input;
-using ::Sudoku::Utility_::is_forward;
-using ::Sudoku::Utility_::is_bidir;
-using ::Sudoku::Utility_::is_random;
+using ::Sudoku::traits::is_input;
+using ::Sudoku::traits::is_forward;
+using ::Sudoku::traits::is_bidir;
+using ::Sudoku::traits::is_random;
 
 //====--------------------------------------------------------------------====//
 struct test_elements

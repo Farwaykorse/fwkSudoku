@@ -5,9 +5,9 @@
 #pragma once
 
 #include "Board_Section_traits.h"
-#include "Iterator_Utilities.h"
 #include "Location.h"
 #include "Size.h"
+#include "traits.h"
 
 #include <vector>
 #include <algorithm> // minmax_element, is_sorted, all_of
@@ -143,7 +143,7 @@ template<int N, typename ItrT>
 constexpr bool is_same_row(const ItrT begin, const ItrT end) noexcept
 {
 	{
-		static_assert(Utility_::is_forward<ItrT>);
+		static_assert(traits::is_forward<ItrT>);
 	}
 	if (begin == end) return false;
 
@@ -181,7 +181,7 @@ template<int N, typename ItrT>
 inline constexpr bool is_same_col(const ItrT begin, const ItrT end) noexcept
 {
 	{
-		static_assert(Utility_::is_forward<ItrT>);
+		static_assert(traits::is_forward<ItrT>);
 	}
 	if (begin == end) return false;
 
@@ -219,7 +219,7 @@ template<int N, typename ItrT>
 inline constexpr bool is_same_block(const ItrT begin, const ItrT end) noexcept
 {
 	{
-		static_assert(Utility_::is_forward<ItrT>);
+		static_assert(traits::is_forward<ItrT>);
 	}
 	if (begin == end) return false;
 

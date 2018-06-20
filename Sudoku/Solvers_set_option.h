@@ -5,7 +5,6 @@
 #pragma once
 
 #include "Board.h"
-#include "Iterator_Utilities.h"
 #include "Location.h"
 #include "Location_Utilities.h" // is_same_*
 #include "Options.h"
@@ -14,6 +13,8 @@
 #include "Solvers_remove_option.h"
 #include "Value.h"
 #include "exceptions.h"
+#include "traits.h"
+
 #include <gsl/gsl>
 #include <algorithm>   // find_if
 #include <iterator>    // next
@@ -78,7 +79,7 @@ template<int N, typename Options, typename ItrT>
 int set_Value(Board<Options, N>& board, const ItrT begin, const ItrT end)
 {
 	{
-		static_assert(Utility_::is_forward<ItrT>);
+		static_assert(traits::is_forward<ItrT>);
 		assert(end - begin == full_size<N>);
 	}
 	int changes{0};
@@ -89,7 +90,7 @@ int set_Value(Board<Options, N>& board, const ItrT begin, const ItrT end)
 
 		// handle different input types
 		Value value{};
-		if constexpr (Utility_::iterator_to<ItrT, Value>)
+		if constexpr (traits::iterator_to<ItrT, Value>)
 		{
 			value = *itr;
 		}
@@ -148,7 +149,7 @@ inline int set_unique(
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
-		static_assert(Utility_::is_input<typename SectionT::iterator>);
+		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid<N>(value));
 	}
 	const auto end       = section.cend();

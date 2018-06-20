@@ -20,9 +20,9 @@
 #include <Sudoku/Board.h>
 #include <Sudoku/Board_Iterators.h>
 // helpers
-#include <Sudoku/Iterator_Utilities.h>
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
+#include <Sudoku/traits.h>
 // Debug Output
 #include "print_Options.h"
 // library
@@ -41,10 +41,10 @@ using ::Sudoku::Board;
 using ::Sudoku::Location;
 using ::Sudoku::Options;
 
-using ::Sudoku::Utility_::is_input;
-using ::Sudoku::Utility_::is_forward;
-using ::Sudoku::Utility_::is_bidir;
-using ::Sudoku::Utility_::is_random;
+using ::Sudoku::traits::is_input;
+using ::Sudoku::traits::is_forward;
+using ::Sudoku::traits::is_bidir;
+using ::Sudoku::traits::is_random;
 
 namespace iterator
 {
@@ -962,7 +962,7 @@ TEST(Board_Iterator, equal)
 		static_assert(((itr() = L{0}) == (itr() = L{0})));
 		static_assert(not((itr() = L{3}) == itr()));
 	}
-	[[maybe_unused]] bool U{};
+	[[maybe_unused]] bool U {};
 	EXPECT_NO_THROW(U = (A.begin() == A.end()));
 	EXPECT_NO_THROW(U = (A.end() == A.end()));
 	EXPECT_NO_THROW(U = (A.cbegin() == A.cend()));
@@ -1033,7 +1033,7 @@ TEST(Board_Iterator, not_equal)
 			static_assert(not((itr() = L{0}) != (itr() = L{0})));
 			static_assert((itr() = L{3}) != itr());
 		}
-		[[maybe_unused]] bool U{};
+		[[maybe_unused]] bool U {};
 		EXPECT_NO_THROW(U = (A.begin() != A.end()));
 		EXPECT_NO_THROW(U = (A.cbegin() != A.cend()));
 		EXPECT_NO_THROW(U = (A.rbegin() != A.rend()));
@@ -1156,7 +1156,7 @@ TEST(Board_Iterator, OutputIterator)
 		EXPECT_EQ(tmp[0][1], 5);
 	}
 
-	[[maybe_unused]] int U{};
+	[[maybe_unused]] int U {};
 	EXPECT_NO_THROW(U = *tmp.begin()); // pre-condition
 	static_assert(noexcept(*tmp.begin() = 5));
 	EXPECT_NO_THROW(U = *tmp.begin() = 5);
