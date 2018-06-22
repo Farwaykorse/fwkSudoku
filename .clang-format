@@ -89,7 +89,7 @@ IncludeCategories:
     Priority: 3
   - Regex:    '^<(array|vector|deque|stack|queue|string(_view)?|(.+_)?list|(unordered_)?(set|map)|bitset|tuple|optional|variant|any)>'
     Priority: 5
-  - Regex:    '^<c(assert|errno|std(lib|int)|limits|float|fenv|inttypes|signal)>'
+  - Regex:    '^<c(assert|errno|std(lib|int|def)|limits|float|fenv|inttypes|signal)>'
     Priority: 8
   - Regex:    '^<[a-z/\\_]+>'
     Priority: 6
