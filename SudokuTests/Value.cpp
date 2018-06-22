@@ -1,19 +1,7 @@
-﻿//===--- SudokuTests/Value.cpp                                          ---===//
+﻿//====---- SudokuTests/Value.cpp                                      ----====//
 //
 //	Unit tests for the template class Sudoku::Value
-//===----------------------------------------------------------------------===//
-//	Implemented with GoogleTest
-//
-//	Notes:
-//	gTest is limited for use with multiple template parameters.
-//	These expressions need to be implemented between extra parentheses
-//	- test elements implementing this are flagged with [gTest]
-//	- not implemented tests are flagged as NEEDTEST [gTest]
-//	gTest tries to print iterators if they use inheritance,
-//		if used in *_EQ/NE etc.
-//		use an explicit test like EXPECT_TRUE(.. == ..).
-//
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
 #include <gtest/gtest.h>
 
 // Class under test
@@ -218,6 +206,23 @@ TEST(Value, operator_bool)
 
 	EXPECT_EQ(bool{Value{0}}, false); // requires explicit conversion
 	EXPECT_EQ(bool{Value{1}}, true);
+}
+
+TEST(Value, operator_increment)
+{ // pre- and post-incrementing
+	static_assert(noexcept(++Value{0}));
+	static_assert(noexcept((Value{0})++));
+	// return-type
+	static_assert(std::is_same_v<Value&, decltype(++Value{0})>);
+	static_assert(std::is_same_v<Value, decltype((Value{0})++)>);
+
+	static_assert(++Value{0} == Value{1});
+	static_assert(++Value{99} == Value{100});
+	static_assert((Value{0})++ == Value{0});
+	static_assert((Value{99})++ == Value{99});
+	Value val{2};
+	val++;
+	EXPECT_EQ(val, Value{3});
 }
 
 TEST(Value, is_valid_vector)

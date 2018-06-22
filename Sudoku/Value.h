@@ -1,21 +1,18 @@
-﻿//===--- Sudoku/Value.h                                                 ---===//
+﻿//====---- Sudoku/Value.h                                             ----====//
 //
-//	Value type
-//===----------------------------------------------------------------------===//
-// Strongly typed
-// Unsigned to allow use as a bit-mask
-//
-//===----------------------------------------------------------------------===//
+// Strongly typed Value type.
+// Unsigned for use as a bit-mask.
+//====--------------------------------------------------------------------====//
 #pragma once
 
 #include "Size.h"
 
 #include <gsl/gsl>
 #include <vector>
-#include <algorithm>
-#include <cstddef> // size_t
+#include <algorithm> // all_of
 #include <stdexcept>
-#include <type_traits>
+#include <type_traits> // is_same
+#include <cstddef>     // size_t
 
 
 namespace Sudoku
@@ -39,11 +36,15 @@ public:
 		return a.value_ < b.value_;
 	}
 
+	constexpr Value& operator++() noexcept;
+	constexpr Value operator++(int) noexcept;
+
 private:
 	size_t value_{0};
 };
 
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
+// Free-function declarations
 constexpr bool operator!=(const Value&, const Value&) noexcept;
 constexpr bool operator>(const Value&, const Value&) noexcept;
 constexpr bool operator<=(const Value&, const Value&) noexcept;
@@ -51,7 +52,7 @@ constexpr bool operator>=(const Value&, const Value&) noexcept;
 
 template<typename T, int N>
 constexpr Value to_Value(T val);
-//===----------------------------------------------------------------------===//
+
 template<int N>
 constexpr bool is_valid(const Value&) noexcept;
 template<int E>
@@ -59,7 +60,7 @@ inline constexpr bool is_valid_option(const Value&) noexcept;
 template<int N>
 bool is_valid(const std::vector<Value>&) noexcept;
 
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
 
 // Test input value
 template<int N>
@@ -86,7 +87,7 @@ bool is_valid(const std::vector<Value>& values) noexcept
 		}));
 }
 
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
 // Checked conversion to Value
 template<int N, typename T>
 inline constexpr Value to_Value(T val)
@@ -113,7 +114,19 @@ inline constexpr Value to_Value(T val)
 	}
 }
 
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
+constexpr Value& Value::operator++() noexcept
+{ // pre-increment
+	++value_;
+	return *this;
+}
+constexpr Value Value::operator++(int) noexcept
+{ // post-increment
+	const Value pre{*this};
+	operator++();
+	return pre;
+}
+
 inline constexpr bool operator!=(const Value& left, const Value& right) noexcept
 {
 	return !(left == right);
@@ -133,7 +146,7 @@ inline constexpr bool operator>=(const Value& left, const Value& right) noexcept
 static_assert(Value{7} == Value{7});
 static_assert(Value{1} != Value{0});
 static_assert(Value{8} > Value{2});
-static_assert(Value{4} >= Value{1});
+static_assert(Value{10} >= Value{4});
 static_assert(Value{3} <= Value{9});
 static_assert(Value{5} < Value{6});
 
