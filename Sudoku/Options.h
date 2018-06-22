@@ -420,14 +420,16 @@ inline Value to_Value(Options<elem_size<N>> const& options) noexcept
 
 // all available options
 template<int E>
-inline std::vector<Value> available(const Options<E>& options) noexcept(true)
+inline std::vector<Value> available(Options<E> const& options) noexcept(true)
 { // noexcept: only allocation can throw. Terminate, all is lost anyway.
+	const size_t count = options.count();
 	std::vector<Value> values{};
-	values.reserve(options.count());
+	values.reserve(count);
+
 	if (not is_answer(options) && not options.is_empty())
 	{
 		Value item{0};
-		for (size_t i{0}; i < options.count(); ++i)
+		for (size_t i{0}; i < count; ++i)
 		{
 			item = read_next(options, item);
 			values.emplace_back(item);
