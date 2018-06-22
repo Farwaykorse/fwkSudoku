@@ -130,11 +130,11 @@ inline int set_uniques(
 
 	if (worker.count_all() > 0)
 	{
-		for (size_t val{1}; val < worker.size(); ++val)
+		for (Value val{1}; val < Value{worker.size()}; ++val)
 		{
-			if (worker[Value{val}])
+			if (worker[val])
 			{
-				changes += set_unique(board, section, Value{val});
+				changes += set_unique(board, section, val);
 			}
 		}
 	}
@@ -187,9 +187,8 @@ inline int set_section_locals(
 	std::vector<Location<N>> locations{};
 
 	// start at 1, to skip the answer-bit
-	for (size_t val{1}; val < values.size(); ++val)
+	for (Value value{1}; value < Value{values.size()}; ++value)
 	{
-		const auto value = gsl::narrow_cast<Value>(val);
 		if (values[value])
 		{
 			locations = list_where_option<N>(section, value, rep_count);
@@ -225,9 +224,8 @@ inline int set_section_locals(
 	std::vector<Location<N>> locations{};
 
 	// start at 1, to skip the answer-bit
-	for (size_t val{1}; val < values.size(); ++val)
+	for (Value value{1}; value < Value{values.size()}; ++value)
 	{
-		const auto value = Value{val};
 		if (values[value])
 		{
 			locations = list_where_option<N>(block, value, rep_count);

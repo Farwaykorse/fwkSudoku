@@ -550,15 +550,14 @@ template<int E>
 
 // return next option in data
 template<int E>
-inline Value read_next(const Options<E>& options, Value start) noexcept
+inline Value read_next(const Options<E>& options, Value value) noexcept
 { // default value start = 0
-	size_t i{start};
-	++i;
-	for (; i <= gsl::narrow_cast<size_t>(E); ++i)
+	++value;
+	for (; value <= Value{E}; ++value)
 	{
-		if (options[Value{i}])
+		if (options[value])
 		{
-			return Value{i};
+			return value;
 		}
 	}
 	return Value{0};
