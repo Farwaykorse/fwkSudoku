@@ -10,8 +10,8 @@
 #include <chrono>
 #include <iostream>
 
-static void test(
-	const std::array<int, 81>& B_in, const std::array<int, 81>& A_in)
+static void
+	test(const std::array<int, 81>& B_in, const std::array<int, 81>& A_in)
 {
 	using Value = Sudoku::Value;
 
@@ -60,11 +60,11 @@ static void test(
 				t2 = std::chrono::steady_clock::now();
 
 				// save fastest solving time
-				tdiff = t1 - t0;
-				tLoad = std::min(tLoad, tdiff);
-				tdiff = t2 - t0;
-				last = tTotal > tdiff;
-				tTotal = std::min(tTotal, tdiff);
+				tdiff   = t1 - t0;
+				tLoad   = std::min(tLoad, tdiff);
+				tdiff   = t2 - t0;
+				last    = tTotal > tdiff;
+				tTotal  = std::min(tTotal, tdiff);
 				tSolver = std::min(tSolver, tTotal - tLoad);
 
 				options = local;
@@ -78,20 +78,23 @@ static void test(
 			tSolver_total += tSolver;
 			tTotal_total += tTotal;
 		}
-		auto time_in_microsec = [](duration t_in)
-		{
-			return std::chrono::duration_cast<std::chrono::microseconds>(t_in).count();
+		auto time_in_microsec = [](duration t_in) {
+			return std::chrono::duration_cast<std::chrono::microseconds>(t_in)
+				.count();
 		};
 		std::cout << "ID: " << id << "\n"
-			<< "Load:\t" << time_in_microsec(tLoad) << " us"
-			<< " (" << time_in_microsec(tLoad_total) << " us)\n";
+				  << "Load:\t" << time_in_microsec(tLoad) << " us"
+				  << " (" << time_in_microsec(tLoad_total) << " us)\n";
 		std::cout << "Solve:\t" << time_in_microsec(tSolver) << " us"
-			<< " (" << time_in_microsec(tSolver_total) << " us)\n";
+				  << " (" << time_in_microsec(tSolver_total) << " us)\n";
 		std::cout << "Total:\t" << time_in_microsec(tTotal) << " us"
-			<< " (" << time_in_microsec(tTotal_total) << " us)\n";
+				  << " (" << time_in_microsec(tTotal_total) << " us)\n";
 
 		auto result = Sudoku::getResult(options);
-		if (result == answer) { std::cout << " : ) Found the answer!\n"; }
+		if (result == answer)
+		{
+			std::cout << " : ) Found the answer!\n";
+		}
 		else
 		{
 			std::cout << "Different from expected \n";
@@ -126,11 +129,11 @@ static void test(
 				t2 = std::chrono::steady_clock::now();
 
 				// save fastest solving time
-				tdiff = t1 - t0;
-				tLoad = std::min(tLoad, tdiff);
-				tdiff = t2 - t0;
-				last = tTotal > tdiff;
-				tTotal = std::min(tTotal, tdiff);
+				tdiff   = t1 - t0;
+				tLoad   = std::min(tLoad, tdiff);
+				tdiff   = t2 - t0;
+				last    = tTotal > tdiff;
+				tTotal  = std::min(tTotal, tdiff);
 				tSolver = std::min(tSolver, tTotal - tLoad);
 
 				options = local;
@@ -144,20 +147,23 @@ static void test(
 			tSolver_total += tSolver;
 			tTotal_total += tTotal;
 		}
-		auto time_in_microsec = [](duration t_in)
-		{
-			return std::chrono::duration_cast<std::chrono::microseconds>(t_in).count();
+		auto time_in_microsec = [](duration t_in) {
+			return std::chrono::duration_cast<std::chrono::microseconds>(t_in)
+				.count();
 		};
 		std::cout << "ID: " << id << "\n"
-			<< "Load:\t" << time_in_microsec(tLoad) << " us"
-			<< " (" << time_in_microsec(tLoad_total) << " us)\n";
+				  << "Load:\t" << time_in_microsec(tLoad) << " us"
+				  << " (" << time_in_microsec(tLoad_total) << " us)\n";
 		std::cout << "Solve:\t" << time_in_microsec(tSolver) << " us"
-			<< " (" << time_in_microsec(tSolver_total) << " us)\n";
+				  << " (" << time_in_microsec(tSolver_total) << " us)\n";
 		std::cout << "Total:\t" << time_in_microsec(tTotal) << " us"
-			<< " (" << time_in_microsec(tTotal_total) << " us)\n";
+				  << " (" << time_in_microsec(tTotal_total) << " us)\n";
 
 		auto result = Sudoku::getResult(options);
-		if (result == answer) { std::cout << " : ) Found the answer!\n"; }
+		if (result == answer)
+		{
+			std::cout << " : ) Found the answer!\n";
+		}
 		else
 		{
 			std::cout << "Different from expected \n";
@@ -170,6 +176,7 @@ static void test(
 
 int main()
 {
+	// clang-format off
 	constexpr std::array<int, 81> b1
 	{
 		0, 0, 0,	0, 0, 0,	0, 1, 2,
@@ -528,4 +535,5 @@ int main()
 		0, 0, 0,	0, 0, 0,	0, 0, 0
 	};
 #endif // unused boards
+// clang-format off
 }

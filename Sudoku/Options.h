@@ -15,9 +15,9 @@
 #include <gsl/gsl>
 #include <bitset>
 #include <vector>
-#include <cstddef> // size_t
 #include <utility>
 #include <cassert>
+#include <cstddef> // size_t
 
 
 namespace Sudoku
@@ -542,7 +542,8 @@ template<int E>
 #ifndef fwkUnitTest
 [[deprecated("Debug use only")]]
 #endif
-inline std::string Options<E>::DebugString() const
+	inline std::string
+	Options<E>::DebugString() const
 {
 	return data_.to_string();
 }

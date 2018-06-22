@@ -1,4 +1,4 @@
-﻿//===--- SudokuTests/traits.cpp                                         ---===//
+﻿//====---- SudokuTests/traits.cpp                                     ----====//
 //
 // Unit tests for type traits defined in Sudoku/traits.h.
 //====--------------------------------------------------------------------====//
@@ -12,8 +12,8 @@
 
 // additional
 #include <bitset>
-#include <cstddef>
 #include <cwchar>
+#include <cstddef>
 #include <cstdint>
 
 

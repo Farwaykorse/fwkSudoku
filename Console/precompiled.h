@@ -26,9 +26,9 @@
 #include <iostream>
 
 #include <algorithm>
+#include <chrono>
 #include <iomanip>
 #include <sstream>
-#include <chrono>
 
 // dependencies used in Sudoku
 #include <Sudoku/precompiled_basic.h>

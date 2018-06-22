@@ -3,8 +3,8 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
-#include <stdexcept>
 #include <string>
+#include <stdexcept>
 
 
 namespace Sudoku::error
@@ -29,10 +29,7 @@ struct invalid_Location : public std::out_of_range
 	{
 	}
 
-	virtual const char* where() const noexcept
-	{
-		return where_;
-	}
+	virtual const char* where() const noexcept { return where_; }
 
 private:
 	const char* where_{std::nullptr_t{}};

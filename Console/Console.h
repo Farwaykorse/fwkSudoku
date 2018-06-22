@@ -8,10 +8,10 @@
 
 #include <gsl/gsl>
 #include <string>
+#include <cmath>   // pow
 #include <iomanip> // setw(), setfill()
 #include <sstream>
 #include <utility>
-#include <cmath> // pow
 
 
 namespace Sudoku
@@ -19,7 +19,7 @@ namespace Sudoku
 template<int N>
 void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
 {
-	int found{ 1 };
+	int found{1};
 	while (found > 0)
 	{
 		found = 0;
@@ -41,7 +41,7 @@ void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
 template<int N>
 void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
 {
-	int found{ 1 };
+	int found{1};
 	while (found > 0)
 	{
 		found = 0;
@@ -61,7 +61,8 @@ void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
 }
 
 template<int N>
-Board<Value, N> getResult(const Board<Options<elem_size<N>>, N>& options) noexcept
+Board<Value, N>
+	getResult(const Board<Options<elem_size<N>>, N>& options) noexcept
 {
 	Board<Value, N> result{};
 	for (int i = 0; i < full_size<N>; ++i)
@@ -87,20 +88,11 @@ public:
 		std::string newl;
 		std::string block_cross;
 	};
-	const delimiter space
-	{
-		' ',	' ',	"",		"",		"",		""
-	};
-	const delimiter space2
-	{
-		' ',	' ',	"",		"",		"\n",	""
-	};
-	const delimiter display
-	{
-		' ',	' ',	"-",	"|",	"\n",	"o"
-	};
-	//static const Format::delimiter csv;
-	//static const Format::delimiter xml;
+	const delimiter space{' ', ' ', "", "", "", ""};
+	const delimiter space2{' ', ' ', "", "", "\n", ""};
+	const delimiter display{' ', ' ', "-", "|", "\n", "o"};
+	// static const Format::delimiter csv;
+	// static const Format::delimiter xml;
 
 	Console() noexcept;
 	explicit Console(delimiter);
@@ -116,13 +108,15 @@ public:
 	std::stringstream print_board(const Board<Options<E>, N>&) const;
 
 	delimiter d;
+
 private:
 	int charsize(int value) const;
-	int charsize(int, int length) const;	// recursion
-//	bool Format::find_option(const Board<std::set<int>>&, Location, int value);
+	int charsize(int, int length) const; // recursion
+	//	bool Format::find_option(const Board<std::set<int>>&, Location, int
+	//value);
 	// format elem
 	// format col-block section
-	// format row-block = seperator line
+	// format row-block = separator line
 };
 
 inline Console::Console() noexcept : d(display)
@@ -130,9 +124,7 @@ inline Console::Console() noexcept : d(display)
 	// empty constructor
 }
 
-inline
-Console::Console(delimiter del) :
-	d(std::move(del))
+inline Console::Console(delimiter del) : d(std::move(del))
 {
 	// empty constructor
 }
@@ -140,12 +132,14 @@ Console::Console(delimiter del) :
 inline int Console::charsize(int value) const
 {
 	assert(value >= 0);
-	if (value < 10) { return 1; }
+	if (value < 10)
+	{
+		return 1;
+	}
 	return charsize(value, 2);
 }
 
-inline
-int Console::charsize(int value, int length) const
+inline int Console::charsize(int value, int length) const
 {
 	if (value < std::pow(10, length))
 	{
@@ -156,7 +150,8 @@ int Console::charsize(int value, int length) const
 }
 
 template<int N>
-std::stringstream Console::print_row(const Board<int,N>& input, int row_id) const
+std::stringstream
+	Console::print_row(const Board<int, N>& input, int row_id) const
 {
 	std::stringstream stream;
 	const int chars = charsize(elem_size<N>) + 1;
@@ -164,7 +159,7 @@ std::stringstream Console::print_row(const Board<int,N>& input, int row_id) cons
 	stream << d.col_block << std::setfill(d.space);
 	for (int i = 0; i < elem_size<N>; ++i)
 	{
-		if (input[row_id][i] == 0)	// no value
+		if (input[row_id][i] == 0) // no value
 		{
 			stream << std::setw(chars) << d.space;
 		}
@@ -181,7 +176,7 @@ std::stringstream Console::print_row(const Board<int,N>& input, int row_id) cons
 }
 
 template<int N>
-std::stringstream Console::print_board(const Board<int,N>& input) const
+std::stringstream Console::print_board(const Board<int, N>& input) const
 {
 	std::stringstream stream;
 	std::stringstream temp;
@@ -191,7 +186,8 @@ std::stringstream Console::print_board(const Board<int,N>& input) const
 	temp << d.block_cross;
 	for (int j = 0; j < base_size<N>; ++j)
 	{
-		temp << std::setfill(d.row_block[0]) << std::setw(chars * base_size<N> + 2) << d.block_cross;
+		temp << std::setfill(d.row_block[0])
+			 << std::setw(chars * base_size<N> + 2) << d.block_cross;
 	}
 	std::string bar;
 	temp >> bar;
@@ -210,10 +206,10 @@ std::stringstream Console::print_board(const Board<int,N>& input) const
 }
 
 template<int N, int E>
-std::stringstream Console::print_board(const Board<Options<E>,N>& input) const
+std::stringstream Console::print_board(const Board<Options<E>, N>& input) const
 {
-	static_assert(E == N*N);
-	static_assert(elem_size<N> == 9);	// no support for different sizes yet
+	static_assert(E == N * N);
+	static_assert(elem_size<N> == 9); // no support for different sizes yet
 	const int block_size = elem_size<N> + base_size<N> + 2;
 	const int row_length = base_size<N> * block_size;
 	/*
@@ -229,29 +225,29 @@ std::stringstream Console::print_board(const Board<Options<E>,N>& input) const
 	|
 	*/
 	std::stringstream stream;
-	std::stringstream n0;		// horizontal block seperator
-	std::stringstream n4;		// vertical element seperator
-	n0 << std::setfill(d.row_block[0]) << d.block_cross << std::setw(row_length) << d.block_cross << d.newl;
+	std::stringstream n0; // horizontal block separator
+	std::stringstream n4; // vertical element separator
+	n0 << std::setfill(d.row_block[0]) << d.block_cross << std::setw(row_length)
+	   << d.block_cross << d.newl;
 	n4 << std::setfill(' ') << std::setw(block_size) << d.col_block;
-	//stream << std::endl;
-	//for (size_t col = 0; col < elem_size<N>; ++col)
-	//{
-	//	stream << std::setfill(' ') << std::setw(4) << col_prop.count_unknown(col);
-	//}
 
 	stream << std::setfill(d.empty) << std::setw(base_size<N>);
 	const std::string empty = stream.str();
 
 	stream << '\n' << n0.str();
 
-
-	for (int row{ 0 }; row < elem_size<N>; ++row)
+	for (int row{0}; row < elem_size<N>; ++row)
 	{
-
 		stream << print_row(input, row).str();
 
-		if ((row + 1) % 3 == 0) { stream << n0.str(); }
-		else { stream << '|' << n4.str() << n4.str() << n4.str() << std::endl; }
+		if ((row + 1) % 3 == 0)
+		{
+			stream << n0.str();
+		}
+		else
+		{
+			stream << '|' << n4.str() << n4.str() << n4.str() << std::endl;
+		}
 	}
 	return stream;
 }
@@ -268,17 +264,21 @@ std::stringstream
 		stream << d.col_block << d.space;
 		for (auto col{0}; col < elem_size<N>; ++col)
 		{
-			for (auto i{ X }; i < X + base_size<N>; ++i)
+			for (auto i{X}; i < X + base_size<N>; ++i)
 			{
 				if (input[row_id][col].test(to_Value<N>(i)))
 				{
 					stream << i;
 				}
-				else { stream << d.empty; }
+				else
+				{
+					stream << d.empty;
+				}
 			}
 			if ((col + 1) % base_size<N> == 0)
 			{
-				stream << std::setfill(d.space) << std::setw(2) << d.col_block << d.space;
+				stream << std::setfill(d.space) << std::setw(2) << d.col_block
+					   << d.space;
 			}
 			else
 			{
@@ -290,4 +290,4 @@ std::stringstream
 	}
 	return stream;
 }
-}	// namespace Sudoku
+} // namespace Sudoku
