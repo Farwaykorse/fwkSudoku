@@ -31,6 +31,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_find.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_remove_option.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_set_option.h" />
+    <ClInclude Include="..\..\..\git\cpp\Sudoku\Sudoku\Normalize.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Transpose.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)traits.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Value.h" />

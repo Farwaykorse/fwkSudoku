@@ -426,6 +426,7 @@
     <ClCompile Include="Solvers_set_option.cpp" />
     <ClCompile Include="SudokuTests.cpp" />
     <ClCompile Include="traits.cpp" />
+    <ClCompile Include="Normalize.cpp" />
     <ClCompile Include="Transpose.cpp" />
     <ClCompile Include="Value.cpp" />
   </ItemGroup>

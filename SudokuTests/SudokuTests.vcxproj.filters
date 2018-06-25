@@ -69,6 +69,9 @@
     <ClCompile Include="traits.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Normalize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Coverage\coverage.ps1" />
@@ -109,6 +112,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Location_Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Normalize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Options.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -122,9 +128,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Solver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Iterator_Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_find.h">
@@ -155,3 +158,4 @@
     <Natvis Include="$(MSBuildThisFileDirectory)Options.natvis" />
   </ItemGroup>
 </Project>
+
