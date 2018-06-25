@@ -46,6 +46,7 @@ public:
 	Options& set(Value const&);                  // set to answer
 	Options& add_nocheck(Value const&) noexcept; // add single option
 	Options& set_nocheck(Value const&) noexcept; // set to answer
+	Options& switch_options(Value const&, Value const&);
 
 	[[nodiscard]] constexpr size_t size() const noexcept;
 	[[nodiscard]] size_t count() const noexcept;     // count available options
@@ -304,6 +305,21 @@ inline Options<E>& Options<E>::set_nocheck(Value const& value) noexcept
 {
 	clear();
 	return add_nocheck(value);
+}
+
+template<int E>
+inline Options<E>& Options<E>::switch_options(Value const& a, Value const& b)
+{
+	assert(is_valid_option<E>(a));
+	assert(is_valid_option<E>(b));
+
+	if (data_.test(static_cast<size_t>(a)) !=
+		data_.test(static_cast<size_t>(b)))
+	{
+		data_.flip(static_cast<size_t>(a));
+		data_.flip(static_cast<size_t>(b));
+	}
+	return *this;
 }
 
 template<int E>

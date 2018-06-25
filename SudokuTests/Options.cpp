@@ -1016,4 +1016,40 @@ TEST(Options, operator_min)
 	EXPECT_EQ(empty - O_2, empty);
 }
 
+TEST(Options, switch_Options)
+{
+	Options<4> opt{};
+	static_assert(not noexcept(opt.switch_options(Value{1}, Value{2})));
+
+	// return-type
+	static_assert(std::is_same_v<
+				  Options<4>&,
+				  decltype(opt.switch_options(Value{1}, Value{3}))>);
+	// invalid Value
+#ifdef NDEBUG
+	EXPECT_NO_THROW(opt.switch_options(Value{0}, Value{2}));
+	EXPECT_NO_THROW(opt.switch_options(Value{2}, Value{0}));
+	EXPECT_THROW(opt.switch_options(Value{5}, Value{2}), std::out_of_range);
+	EXPECT_THROW(opt.switch_options(Value{2}, Value{5}), std::out_of_range);
+#else
+	EXPECT_DEBUG_DEATH(
+		opt.switch_options(Value{0}, Value{2}), "Assertion failed: *is_valid");
+	EXPECT_DEBUG_DEATH(
+		opt.switch_options(Value{1}, Value{0}), "Assertion failed: *is_valid");
+	EXPECT_DEBUG_DEATH(
+		opt.switch_options(Value{5}, Value{2}), "Assertion failed: *is_valid");
+	EXPECT_DEBUG_DEATH(
+		opt.switch_options(Value{2}, Value{5}), "Assertion failed: *is_valid");
+#endif // NDEBUG
+
+	EXPECT_EQ(opt.switch_options(Value{1}, Value{4}), Options<4>{});
+	Options<4> opt1{std::bitset<5>{"11001"}};
+	EXPECT_EQ(
+		opt1.switch_options(Value{1}, Value{4}),
+		Options<4>{std::bitset<5>{"01011"}});
+	EXPECT_EQ(
+		opt1.switch_options(Value{1}, Value{1}),
+		Options<4>{std::bitset<5>{"01011"}}); // self
+}
+
 } // namespace SudokuTests::OptionsTest
