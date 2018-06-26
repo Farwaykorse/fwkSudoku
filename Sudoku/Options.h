@@ -1,12 +1,12 @@
-//===--- Sudoku/Options.h                                               ---===//
+//====---- Sudoku/Options.h                                           ----====//
 //
 // Data object containing and managing available options.
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
 // Templated with element size.
 //
 // The 0-bit is the inverse answer-bit. if [0]==0 the answer is set.
 //
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
 #pragma once
 
 #include "Size.h"
@@ -105,7 +105,7 @@ private:
 
 }; // class Options
 
-//===--- free-functions ---------------------------------------------------===//
+//====---- free-functions ------------------------------------------------====//
 
 template<int E>
 [[nodiscard]] bool is_answer(Options<E> const&) noexcept;
@@ -151,7 +151,7 @@ template<int E>
 template<int E>
 [[nodiscard]] Options<E> shared(Options<E>& A, Options<E>& B) noexcept;
 
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
 
 namespace impl
 {
@@ -184,7 +184,7 @@ namespace impl
 	}
 } // namespace impl
 
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
 
 //	construct with all options set
 template<int E>
@@ -277,6 +277,7 @@ inline Options<E>& Options<E>::remove_option(const Value value)
 template<int E>
 inline Options<E>& Options<E>::add(Value const& value)
 {
+	assert(is_valid_option<E>(value));
 	data_.set(static_cast<size_t>(value), true);
 	return *this;
 }
@@ -285,7 +286,7 @@ inline Options<E>& Options<E>::add(Value const& value)
 template<int E>
 inline Options<E>& Options<E>::add_nocheck(Value const& value) noexcept
 {
-	assert(value <= Value{E});
+	assert(is_valid_option<E>(value));
 	data_[static_cast<size_t>(value)] = true;
 	return *this;
 }

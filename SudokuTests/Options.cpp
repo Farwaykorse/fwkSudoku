@@ -634,90 +634,108 @@ TEST(Options, mf_changeAll)
 TEST(Options, mf_remove_option)
 {
 	Options<4> TMP{};
+	ASSERT_TRUE(TMP.all());
+	// return type
+	static_assert(
+		std::is_same_v<Options<4>&, decltype(TMP.remove_option(Value{3}))>);
+
+	EXPECT_EQ(TMP.remove_option(Value{1}).DebugString(), "11101");
+	EXPECT_EQ(TMP.remove_option(Value{3}).DebugString(), "10101");
+
 	static_assert(not noexcept(TMP.remove_option(Value{3})));
-	ASSERT_NO_THROW(TMP.remove_option(Value{3}));
-#ifndef NDEBUG
-	EXPECT_DEATH(
-		TMP.remove_option(Value{5}), "Assertion failed: is_valid_option<E>");
-#else
+	EXPECT_DEBUG_DEATH(TMP.remove_option(Value{0}), "is_valid_option");
+#ifdef NDEBUG
+	EXPECT_EQ(TMP.DebugString(), "10100");
 	EXPECT_THROW(TMP.remove_option(Value{5}), std::out_of_range);
+#else
+	EXPECT_DEBUG_DEATH(TMP.remove_option(Value{5}), "is_valid_option");
 #endif // NDEBUG
+	// check to prevent removing answer
 	TMP.set(Value{3});
-	EXPECT_DEBUG_DEATH(
-		TMP.remove_option(Value{3}), "Assertion failed: not Sudoku::is_answer");
+	EXPECT_DEBUG_DEATH(TMP.remove_option(Value{3}), "not Sudoku::is_answer");
+	// already removed: nothing happens
+	TMP.remove_option(Value{1});
 
 	ASSERT_TRUE(TMP.reset().all()) << "Reset test data failed";
-	ASSERT_EQ(TMP.size(), size_t{5}) << "Test requires Options<4> object";
-	EXPECT_TRUE(TMP.test(Value{3}));
-	EXPECT_NO_THROW(TMP.remove_option(Value{3}));
-	EXPECT_FALSE(TMP.test(Value{3}));
-	EXPECT_EQ(TMP.count(), 3u);
+	EXPECT_EQ(TMP.remove_option(Value{3}).DebugString(), "10111");
 }
 TEST(Options, mf_add)
 {
-	// add(int)
-	// Options& add(int value);			// add single option
 	Options<4> Opt{std::bitset<5>{"00000"}};
+	ASSERT_TRUE(Opt.is_empty());
+	// return type
+	static_assert(std::is_same_v<Options<4>&, decltype(Opt.add(Value{3}))>);
+
+	EXPECT_EQ(Opt.add(Value{1}).DebugString(), "00010");
+	EXPECT_EQ(Opt.add(Value{4}).DebugString(), "10010");
+
 	static_assert(not noexcept(Opt.add(Value{4})));
-	ASSERT_NO_THROW(Opt.add(Value{4})) << "add(Value)";
-	EXPECT_EQ(Opt.DebugString(), "10000");
-	ASSERT_THROW(Opt.add(Value{5}), std::out_of_range);
-	ASSERT_NO_THROW(Opt.add(Value{0}));
-	EXPECT_EQ(Opt.DebugString(), "10001"); //??? better way?
-
-	ASSERT_EQ(Opt.clear().DebugString(), "00000") << "clear() required";
-	constexpr Value u_i{2};
-	EXPECT_NO_THROW(Opt.add(u_i)) << "add(Value) failed";
-	EXPECT_EQ(Opt.DebugString(), "00100");
-	EXPECT_THROW(Opt.add(Value{12}), std::out_of_range);
-
-	// add_noexcept(int)
-	Opt = std::bitset<5>{"00000"};
-	static_assert(noexcept(Opt.add_nocheck(Value{1})));
-	// assertion death tests
-#ifndef NDEBUG
-	EXPECT_DEATH({ Opt.add_nocheck(Value{5}); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH(Opt.add(Value{0}), "is_valid_option");
+#ifdef NDEBUG
+	EXPECT_EQ(Opt.DebugString(), "10011");
+	EXPECT_THROW(Opt.add(Value{5}), std::out_of_range);
 #else
-	// EXPECT_NO_THROW(Opt.add_nocheck(Value{6}));
-	// EXPECT_NO_THROW(Opt.add_nocheck(-1));
+	EXPECT_DEBUG_DEATH(Opt.add(Value{5}), "is_valid_option");
 #endif // NDEBUG
-	EXPECT_NO_THROW(Opt.add_nocheck(Value{3}));
-	EXPECT_EQ(Opt.DebugString(), "01000");
-	EXPECT_FALSE(Opt.count_all() == 0u);
-	EXPECT_TRUE(Opt.test(Value{3}));
-	EXPECT_TRUE(Opt.add_nocheck(Value{4}).test(Value{4}));
+}
+TEST(Options, mf_add_nocheck)
+{
+	Options<4> Opt{std::bitset<5>{"00000"}};
+	// return type
+	static_assert(
+		std::is_same_v<Options<4>&, decltype(Opt.add_nocheck(Value{3}))>);
+
+	EXPECT_EQ(Opt.add_nocheck(Value{1}).DebugString(), "00010");
+	EXPECT_EQ(Opt.add_nocheck(Value{4}).DebugString(), "10010");
+
+	static_assert(noexcept(Opt.add_nocheck(Value{1})));
+	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{0});, "is_valid_option");
+#ifdef NDEBUG
+	EXPECT_EQ(Opt.DebugString(), "10011");
+	//EXPECT_NO_FATAL_FAILURE(Opt.add_nocheck(Value{5}));
+#else
+	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{5});, "is_valid_option");
+#endif // NDEBUG
 }
 TEST(Options, mf_set)
 {
-	// set(int)
 	Options<4> TMP{};
-	static_assert(!noexcept(TMP.set(Value{4})));
-	EXPECT_NO_THROW(TMP.set(Value{4}));
-	EXPECT_THROW(TMP.set(Value{5}), std::out_of_range);
-	EXPECT_NO_THROW(TMP.set(Value{0}));
-	EXPECT_TRUE(is_answer(TMP.set(Value{4})));
-	EXPECT_TRUE(is_answer(TMP, Value{4}));
-	EXPECT_EQ(TMP.count(), 0u);
-	EXPECT_TRUE(is_answer(TMP.set(Value{1}), Value{1}));
-	EXPECT_FALSE(is_answer(TMP, Value{4}));
-	EXPECT_FALSE(TMP.set(Value{0}).is_empty());
-	EXPECT_EQ(TMP.count(), 0u);
-	EXPECT_EQ(TMP.count_all(), 0u);
-	EXPECT_EQ(TMP.DebugString(), "00001");
+	// return type
+	static_assert(std::is_same_v<Options<4>&, decltype(TMP.set(Value{3}))>);
 
-	// set_noexcept(int)
-	static_assert(noexcept(TMP.set_nocheck(Value{2})));
-	EXPECT_TRUE(TMP.clear().is_empty());
-	EXPECT_NO_THROW(TMP.set_nocheck(Value{1}));
-	EXPECT_EQ(TMP.DebugString(), "00010");
-	EXPECT_TRUE(is_answer(TMP.set_nocheck(Value{2}), Value{2}));
-	// assertion death tests
-	EXPECT_TRUE(TMP.clear().is_empty());
-#ifndef NDEBUG
-	EXPECT_DEATH({ TMP.set_nocheck(Value{15}); }, "Assertion failed: .*");
+	EXPECT_EQ(TMP.set(Value{1}).DebugString(), "00010");
+	EXPECT_TRUE(is_answer(TMP.set(Value{2}), Value{2}));
+	EXPECT_EQ(TMP.set(Value{4}).DebugString(), "10000");
+
+	static_assert(not noexcept(TMP.set(Value{4})));
+	EXPECT_DEBUG_DEATH(TMP.set(Value{0}), "is_valid_option");
+#ifdef NDEBUG
+	EXPECT_EQ(TMP.DebugString(), "00001");
+	EXPECT_THROW(TMP.set(Value{5}), std::out_of_range);
+#else
+	EXPECT_DEBUG_DEATH(TMP.set(Value{5}), "is_valid_option");
 #endif // NDEBUG
-	EXPECT_NO_THROW(TMP.set_nocheck(Value{0}));
-	TMP = Value{1}; // suppress warning: assigned only once
+}
+TEST(Options, mf_set_nocheck)
+{
+	Options<4> TMP{};
+	ASSERT_TRUE(TMP.all());
+	// return type
+	static_assert(
+		std::is_same_v<Options<4>&, decltype(TMP.set_nocheck(Value{3}))>);
+
+	EXPECT_EQ(TMP.set_nocheck(Value{1}).DebugString(), "00010");
+	EXPECT_TRUE(is_answer(TMP.set_nocheck(Value{2}), Value{2}));
+	EXPECT_EQ(TMP.set_nocheck(Value{4}).DebugString(), "10000");
+
+	static_assert(noexcept(TMP.set_nocheck(Value{2})));
+	EXPECT_DEBUG_DEATH(TMP.set_nocheck(Value{0}), "is_valid_option");
+#ifdef NDEBUG
+	EXPECT_EQ(TMP.DebugString(), "00001");
+	//EXPECT_NO_FATAL_FAILURE(TMP.add_nocheck(Value{5}));
+#else
+	EXPECT_DEBUG_DEATH(TMP.set_nocheck(Value{5}), "is_valid_option");
+#endif // NDEBUG
 }
 
 TEST(Options, mf_booleanComparison)
