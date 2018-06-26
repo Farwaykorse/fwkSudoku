@@ -40,7 +40,7 @@ public:
 	Options& clear() noexcept; // remove all options
 	Options& reset() noexcept; // set all options
 	Options& flip() noexcept;
-	Options& remove_option(Value); // remove single option
+	Options& remove_option(Value const&); // remove single option
 	// TODO Options& remove_option(Value, ...);	// remove mentioned
 	Options& add(Value const&);                  // add single option
 	Options& set(Value const&);                  // set to answer
@@ -264,7 +264,7 @@ inline Options<E>& Options<E>::flip() noexcept
 
 //	remove single option
 template<int E>
-inline Options<E>& Options<E>::remove_option(const Value value)
+inline Options<E>& Options<E>::remove_option(Value const& value)
 {
 	assert(is_valid_option<E>(value));
 	assert(not Sudoku::is_answer(*this, value));
