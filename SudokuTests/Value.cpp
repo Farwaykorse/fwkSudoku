@@ -79,6 +79,7 @@ namespace compiletime
 	static_assert(not std::is_convertible_v<size_t, typeT>);
 
 	// By implicit conversion to size_t first:
+	static_assert(std::is_constructible_v<typeT, char>);
 	static_assert(std::is_constructible_v<typeT, int>);
 	static_assert(std::is_constructible_v<typeT, unsigned int>);
 	static_assert(std::is_constructible_v<typeT, unsigned long int>);
@@ -314,6 +315,23 @@ TEST(Value, to_Value)
 	static_assert(not(noexcept(to_Value<3>(-1L))));
 	static_assert(not(noexcept(to_Value<3>(10L))));
 	static_assert(not(noexcept(to_Value<3>(21L))));
+
+	// Input: char
+	static_assert(to_Value<3>(char{0}) == Value{0});
+	static_assert(to_Value<3>(char{1}) == Value{1});
+	static_assert(to_Value<3>(char{9}) == Value{9});
+	// static_assert(noexcept(to_Value<3>(2))); // fails with Clang
+	static_assert(not(noexcept(to_Value<3>(char{-2}))));
+	static_assert(not(noexcept(to_Value<3>(char{10}))));
+	static_assert(not(noexcept(to_Value<3>(char{21}))));
+
+	EXPECT_THROW(to_Value<3>(char{-1}), std::domain_error);
+	EXPECT_THROW(to_Value<3>(char{10}), std::domain_error);
+
+	// Will not compile when elements cannot be represented.
+	[[maybe_unused]] Value U =
+		to_Value<15>(static_cast<unsigned char>(0));  // N < 16
+	[[maybe_unused]] Value V = to_Value<11>(char{0}); // N < 12
 }
 
 } // namespace SudokuTests::ValueTest

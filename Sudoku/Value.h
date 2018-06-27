@@ -10,6 +10,7 @@
 #include <gsl/gsl>
 #include <vector>
 #include <algorithm> // all_of
+#include <limits>
 #include <stdexcept>
 #include <type_traits> // is_same
 #include <cstddef>     // size_t
@@ -102,10 +103,12 @@ inline constexpr Value to_Value(T val)
 	}
 	else if constexpr (std::is_unsigned_v<T>)
 	{
+		static_assert(elem_size<N> < std::numeric_limits<T>::max());
 		return to_Value<N>(static_cast<Value>(val));
 	}
 	else if constexpr (std::is_integral_v<T>)
 	{
+		static_assert(std::numeric_limits<T>::max() > elem_size<N>);
 		if (val < 0)
 		{
 			throw std::domain_error("Value can not be negative");
