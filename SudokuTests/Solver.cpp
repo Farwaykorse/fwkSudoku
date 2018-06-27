@@ -44,7 +44,7 @@ using ::Sudoku::Value;
 TEST(Solver, unique_in_section)
 {
 	// clang-format off
-	const std::array<int, 16> v1
+	const std::array<char, 16> v1
 	{
 		// start	// after set_Value
 		0,2, 0,0,	// 1	2	3	4
@@ -65,7 +65,7 @@ TEST(Solver, unique_in_section)
 	EXPECT_EQ(B1, cB1) << "row 0 was completely fixed by set_Value";
 
 	// clang-format off
-	const std::array<int, 16> v2
+	const std::array<char, 16> v2
 	{
 		//start		// after set_Value
 		3,2, 0,0,	// 3	2	14	14		3	2	14	14
@@ -95,7 +95,7 @@ TEST(Solver, unique_in_section)
 	EXPECT_EQ(B2[3][0], Value{2});
 
 	// clang-format off
-	const std::array<int, 16> v3
+	const std::array<char, 16> v3
 	{
 		// start	// after set_Value
 		0,0, 1,0,	// 
@@ -134,7 +134,7 @@ TEST(Solver, section_exclusive)
 	// same result as unique_in_section
 	{
 		// clang-format off
-		const std::array<int, 16> v3
+		const std::array<char, 16> v3
 		{
 			// start	// after set_Value
 			0,0, 1,0,	// 
@@ -331,7 +331,7 @@ TEST(Solver, section_exclusive)
 
 	{
 		// clang-format off
-		constexpr std::array<int, 81> b1
+		constexpr std::array<char, 81> b1
 		{
 			0, 0, 0,	0, 0, 0,	0, 1, 2,
 			0, 0, 0,	0, 3, 5,	0, 0, 0,
@@ -343,7 +343,7 @@ TEST(Solver, section_exclusive)
 			0, 8, 0,	0, 0, 0,	0, 4, 0,
 			0, 5, 0,	0, 0, 0,	6, 0, 0
 		};
-		constexpr std::array<int, 81> b1a	// requires unique
+		constexpr std::array<char, 81> b1a	// requires unique
 		{
 			6, 7, 3,	8, 9, 4,	5, 1, 2,
 			9, 1, 2,	7, 3, 5,	4, 8, 6,
@@ -419,7 +419,7 @@ TEST(Solver, section_exclusive)
 	}
 	{
 		// clang-format off
-		constexpr std::array<int, 81> b5
+		constexpr std::array<char, 81> b5
 		{
 			4, 0, 0,	0, 0, 0,	0, 3, 8,
 			0, 0, 2,	0, 0, 4,	1, 0, 0,
@@ -433,7 +433,7 @@ TEST(Solver, section_exclusive)
 			0, 0, 3,	9, 0, 0,	4, 0, 0,
 			2, 4, 0,	0, 0, 0,	0, 0, 9
 		};
-		constexpr std::array<int, 81> b5a // requires double_option, not unique
+		constexpr std::array<char, 81> b5a // requires double_option, not unique
 		{
 			4, 6, 1,	5, 7, 2,	9, 3, 8,
 			7, 3, 2,	8, 9, 4,	1, 5, 6,
@@ -507,7 +507,7 @@ TEST(Solver, section_exclusive)
 	// reproduce functionality of unique
 	//===------------------------------------------------------------------===//
 	// clang-format off
-	constexpr std::array<int, 16> V1
+	constexpr std::array<char, 16> V1
 	{
 		// start	// after set_Value	// unique_block
 		0,0, 1,0,	// 
@@ -551,7 +551,7 @@ TEST(Solver, section_exclusive)
 	// working for more than 1 unique (use set_section_locals)
 	//===------------------------------------------------------------------===//
 	// clang-format off
-	constexpr std::array<int, 81> V2
+	constexpr std::array<char, 81> V2
 	{
 	/*	start board					answer board
 	*	 _ _ _ _ _ _ _ _ _ _ _ _	 _ _ _ _ _ _ _ _ _ _ _ _
@@ -712,7 +712,7 @@ TEST(Solver, single_option)
 	// set_value, with single_option should give the same result
 	Board<Options<4>, 2> B3;
 	// clang-format off
-	constexpr std::array<int, 16> v1
+	constexpr std::array<char, 16> v1
 	{
 		// start	// after set_Value
 		0,2, 0,0,	// 1	2	34	34
@@ -824,7 +824,7 @@ TEST(Solver, dual_option)
 	*	after:	8,0: contains all except 4,7,8
 	*	after:  block 4 contains all options in all cells
 	*/
-	constexpr std::array<int, 81> b1
+	constexpr std::array<char, 81> b1
 	{
 		0, 0, 3,	0, 0, 0,	0, 0, 0,
 		4, 5, 6,	0, 0, 0,	0, 0, 0,
@@ -878,7 +878,7 @@ TEST(Solver, multi_option)
 	 *	no change:  block 4 contains all options in all cells
 	 */
 	// clang-format off
-	constexpr std::array<int, 81> b1
+	constexpr std::array<char, 81> b1
 	{
 		0, 0, 0,	0, 0, 0,	0, 0, 0,
 		4, 5, 6,	0, 0, 0,	0, 0, 0,
@@ -915,7 +915,7 @@ TEST(Solver, multi_option)
 
 	// run for block
 	// clang-format off
-	constexpr std::array<int, 81> b2
+	constexpr std::array<char, 81> b2
 	{ //							 //  _ _ _ _ _ _ _ _ _ _ _ _
 		0, 0, 3,  0, 0, 0,  7, 0, 0, // |     3 |       | 7     | diagonal:1,5,9
 		4, 0, 6,  2, 7, 0,  0, 0, 0, // | 4   6 | 2 7   |       |
@@ -954,7 +954,7 @@ TEST(Solver, multi_option)
 
 	// clang-format off
 	// 9*9 partials forming a set: 3 cells containing (123,12,13)
-	constexpr std::array<int, 81> b3
+	constexpr std::array<char, 81> b3
 	{ //							 //  _ _ _ _ _ _ _ _ _ _ _ _
 		0, 0, 0,  0, 0, 0,  0, 0, 0, // |       |       |       | row: 1,2; 1,2,3; 1,2,3
 		4, 5, 6,  0, 0, 0,  0, 0, 0, // | 4 5 6 |       |       |
@@ -1266,7 +1266,7 @@ TEST(Solver, solve_board)
 	 *	|_ _5_ _|_ _ _ _|_6_ _ _|	|_3_5_1_|_9_4_7_|_6_2_8_|
 	 */
 	// clang-format off
-	constexpr std::array<int, 81> b1
+	constexpr std::array<char, 81> b1
 	{
 		0, 0, 0,	0, 0, 0,	0, 1, 2,
 		0, 0, 0,	0, 3, 5,	0, 0, 0,
@@ -1278,7 +1278,7 @@ TEST(Solver, solve_board)
 		0, 8, 0,	0, 0, 0,	0, 4, 0,
 		0, 5, 0,	0, 0, 0,	6, 0, 0
 	};
-	constexpr std::array<int, 81> b1a
+	constexpr std::array<char, 81> b1a
 	{
 		6, 7, 3,	8, 9, 4,	5, 1, 2,
 		9, 1, 2,	7, 3, 5,	4, 8, 6,

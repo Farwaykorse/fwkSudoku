@@ -678,7 +678,7 @@ TEST(Solver, appearance_once)
 {
 	using ::Sudoku::appearance_once;
 	// clang-format off
-	constexpr std::array<int, 16> v1
+	constexpr std::array<char, 16> v1
 	{
 		// start	// after set_Value
 		0,0, 1,0,	// 
@@ -762,7 +762,7 @@ TEST(Solver, appearance_once)
 	//	0	0	1	0	234	234	1	234
 	{
 		Board<Options<4>, 2> B4{};
-		constexpr std::array<int, 16> v4{
+		constexpr std::array<char, 16> v4{
 			0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 		set_Value(B4, v4.cbegin(), v4.cend());
 		EXPECT_EQ(B4[0][0].count(), 3U);
@@ -807,7 +807,7 @@ TEST(Solver, appearance_once)
 	}
 	{ // all set in a section
 		Board<Options<4>, 2> B5{};
-		constexpr std::array<int, 16> v5{
+		constexpr std::array<char, 16> v5{
 			1, 2, 3, 4, 3, 4, 1, 2, 2, 1, 4, 3, 4, 3, 2, 1};
 		set_Value(B5, v5.cbegin(), v5.cend());
 		EXPECT_TRUE(is_answer(B5[0][0], Value{1}));
@@ -1005,7 +1005,7 @@ TEST(Solver, appearance_sets)
 	//	0	0	1	0	234	234	1	234
 	{
 		Board<Options<4>, 2> B4{};
-		constexpr std::array<int, 16> v4{
+		constexpr std::array<char, 16> v4{
 			0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 		set_Value(B4, v4.cbegin(), v4.cend());
 		EXPECT_EQ(B4[0][0].count(), 3U);

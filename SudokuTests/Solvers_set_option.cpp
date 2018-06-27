@@ -24,8 +24,8 @@
 // Debug Output
 #include "print_Options.h"
 // library
+#include <array>
 #include <bitset>
-#include <vector>
 #include <type_traits>
 
 
@@ -121,19 +121,19 @@ TEST(Solver, set_Value_vector)
 			!noexcept(set_Value(B1, too_long.cbegin(), too_long.cend())));
 		const std::array<Options<4>, 16> optie{};
 		static_assert(!noexcept(set_Value(B1, optie.cbegin(), optie.cend())));
-		constexpr std::array<int, 16> ints{};
+		constexpr std::array<char, 16> ints{};
 		static_assert(!noexcept(set_Value(B1, ints.cbegin(), ints.cend())));
 
-		constexpr std::array<int, 16> zero{
+		constexpr std::array<char, 16> zero{
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		Board<Options<4>, 2> B2;
 		EXPECT_EQ(set_Value(B2, zero.cbegin(), zero.cend()), 0);
-		constexpr std::array<int, 16> negative{
+		constexpr std::array<char, 16> negative{
 			0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		EXPECT_THROW(
 			set_Value(B2, negative.cbegin(), negative.cend()),
 			std::domain_error);
-		constexpr std::array<int, 16> wrong{
+		constexpr std::array<char, 16> wrong{
 			0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		EXPECT_THROW(
 			set_Value(B2, wrong.cbegin(), wrong.cend()), std::domain_error);
@@ -163,7 +163,7 @@ TEST(Solver, set_Value_vector)
 		// check if processed single option cells:
 		EXPECT_EQ(B2[0][3], Value{4});
 		EXPECT_EQ(B2[3][1], Value{4});
-		// from vector didn't cascade over single option cells
+		// from array didn't cascade over single option cells
 		EXPECT_EQ(B2[0][0], Value{1});
 		EXPECT_EQ(B2[0][2], Value{3});
 		EXPECT_EQ(B2[1][1], Value{3});
@@ -171,7 +171,7 @@ TEST(Solver, set_Value_vector)
 	}
 	{      // using int as input
 		// clang-format off
-		constexpr std::array<int, 16> v1
+		constexpr std::array<char, 16> v1
 		{	// start	// after set_Value
 			0,2, 0,0,	// 1	2	3	4
 			4,0, 0,0,	// 4	3	1,2	1,2
@@ -507,7 +507,7 @@ TEST(Solver, set_unique)
 	using ::Sudoku::set_unique;
 	using L = Location<2>;
 	Board<Options<4>, 2> board{};
-	constexpr std::array<int, 16> v1{
+	constexpr std::array<char, 16> v1{
 		0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 	set_Value(board, v1.cbegin(), v1.cend());
 	const Board<Options<4>, 2> cB1{board}; // to reset board
@@ -560,7 +560,7 @@ TEST(Solver, set_uniques)
 	//	0	0	1	0	234	234	1	234
 	//
 	Board<Options<4>, 2> B1{};
-	constexpr std::array<int, 16> v1{
+	constexpr std::array<char, 16> v1{
 		0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 	set_Value(B1, v1.cbegin(), v1.cend());
 	const Board<Options<4>, 2> cB1{B1}; // to reset B1
@@ -636,8 +636,8 @@ TEST(Solver, deathtest_set_option)
 	Board<Options<4>, 2> B{};
 
 	{ // SetValue(Itr, Itr)
-		constexpr std::array<int, 10> v1{};
-		constexpr std::array<int, 18> v2{};
+		constexpr std::array<char, 10> v1{};
+		constexpr std::array<char, 18> v2{};
 		// input too short / too long
 		EXPECT_DEBUG_DEATH(
 			set_Value(B, v1.cbegin(), v1.cend()), "Assertion failed:");
