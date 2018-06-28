@@ -37,4 +37,7 @@ constexpr auto elem_size = Size<N>::elem; // default 9
 template<int N>
 constexpr auto full_size = Size<N>::full; // default 81
 
+template<int N>
+static constexpr int all_options = full_size<N>* elem_size<N>;
+
 } // namespace Sudoku
