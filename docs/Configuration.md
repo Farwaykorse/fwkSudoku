@@ -254,7 +254,7 @@ Flags not set for all translation units are marked with a `*`.
 /w45024 'type': move constructor was implicitly defined as deleted
 /w45025 'type': move assignment operator was implicitly defined as deleted
 */w45026 'type': move constructor was implicitly defined as deleted
-         (*/precompiled.cpp | system_error & gtest)
+         (*/precompiled.cpp | system_error, optional & gtest)
 --/w45027 'type': move assignment operator was implicitly defined as deleted
           (hits on system_error & gsl/multi_span)
           (hits on all classes with a `const` data-member)
