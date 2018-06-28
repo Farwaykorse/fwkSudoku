@@ -122,8 +122,7 @@ template<int N>
 template<int E>
 [[nodiscard]] std::vector<Value> available(const Options<E>&) noexcept(true);
 template<int E>
-[[nodiscard]] Value
-	read_next(const Options<E>&, Value start = Value{0}) noexcept;
+[[nodiscard]] Value read_next(const Options<E>&, Value = Value{0}) noexcept;
 
 template<int E>
 [[nodiscard]] bool operator!=(Options<E> const&, Options<E> const&) noexcept;

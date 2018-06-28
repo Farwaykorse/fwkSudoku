@@ -51,7 +51,7 @@ int remove_option_section(
 	Board<Options, N>&,
 	SectionT,
 	const std::vector<Location<N>>& ignore,
-	const Options& mask);
+	const Options& values);
 
 template<int N, typename Options = Options<elem_size<N>>, typename SectionT>
 int remove_option_outside_block(
@@ -205,15 +205,15 @@ int remove_option_section(
 	Board<Options, N>& board,
 	const SectionT section,
 	const std::vector<Location<N>>& ignore,
-	const Options& values)
+	const Options& mask)
 {
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
 		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
-		assert(!values.all());
-		assert(!values.is_empty());
+		assert(!mask.all());
+		assert(!mask.is_empty());
 		assert(is_same_section(section, ignore));
 	}
 	int changes{0};
@@ -227,7 +227,7 @@ int remove_option_section(
 				return L1 == L2;
 			})) // <algorithm>
 		{
-			changes += remove_option(board, itr.location(), values);
+			changes += remove_option(board, itr.location(), mask);
 		}
 	}
 	return changes;
