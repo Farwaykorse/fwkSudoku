@@ -35,7 +35,7 @@ The library and Console projects compile and run with GCC on Linux (in the WSL).
 Several static analysers and extensive warning settings are used with each
 compiler.  
 More on the project and compiler configurations in: 
-[Configuration.md](./Configuration.md).
+[docs/Configuration](./docs/Configuration.md).
 
 #### Dependencies:
 Non-of the external dependencies have been included in the repository.
