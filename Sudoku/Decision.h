@@ -60,6 +60,8 @@ class Multipass_Base
 
 public:
 	Multipass_Base() = delete;
+	Multipass_Base(Multipass_Base&&) = default;
+	Multipass_Base& operator=(Multipass_Base&&) = default;
 	explicit Multipass_Base(Board_t<Options> start)
 	{
 		int changes = all_options<N> - count_options(start);

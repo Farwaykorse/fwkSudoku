@@ -88,7 +88,7 @@ namespace constructors
 	static_assert(not std::is_trivially_default_constructible_v<typeT>);
 
 	// copy constructor: typeT(const typeT&)
-	static_assert(std::is_copy_constructible_v<typeT>);
+	static_assert(not std::is_copy_constructible_v<typeT>);
 	static_assert(not std::is_nothrow_copy_constructible_v<typeT>);
 	static_assert(not std::is_trivially_copy_constructible_v<typeT>);
 
@@ -186,7 +186,7 @@ namespace swapping
 namespace assignment
 {
 	// Copy assignment
-	static_assert(std::is_copy_assignable_v<typeT>);
+	static_assert(not std::is_copy_assignable_v<typeT>);
 	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);
 	static_assert(not std::is_trivially_copy_assignable_v<typeT>);
 
