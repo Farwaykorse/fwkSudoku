@@ -101,16 +101,14 @@ int set_Value(Board<Options, N>& board, const ItrT begin, const ItrT end)
 
 		if (value != Value{0})
 		{
-			if (not is_valid<N>(value))
-			{
-				throw std::domain_error{"Invalid Value"};
-			}
+			if (!is_valid<N>(value)) throw std::domain_error{"Invalid Value"};
 
 			if (is_option(board.at(loc), value))
 			{ // update options on board
 				changes += single_option(board, loc, value);
 			}
-			assert(is_answer(board.at(loc), value));
+			else if (!is_answer(board[loc], value))
+				throw error::invalid_Board();
 		}
 	}
 	assert(n == full_size<N>);

@@ -137,6 +137,18 @@ TEST(Solver, set_Value_vector)
 			0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		EXPECT_THROW(
 			set_Value(B2, wrong.cbegin(), wrong.cend()), std::domain_error);
+		// clang-format off
+		constexpr std::array<char, 16> conflict
+		{
+			0,2, 3,4,
+			4,0, 0,0,
+			1,0, 4,0, // (2,0):1 conflict with (0,0)
+			0,0, 0,0
+		}; // clang-format on
+		B2.clear();
+		EXPECT_THROW(
+			set_Value(B2, conflict.cbegin(), conflict.cend()),
+			::Sudoku::error::invalid_Board);
 
 		// return type
 		static_assert(
