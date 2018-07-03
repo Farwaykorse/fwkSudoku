@@ -278,7 +278,6 @@ TEST(Options, Construction)
 		TMP = Value{1}; // set() // clear() // add()
 		EXPECT_EQ(TMP.DebugString(), "00010");
 		EXPECT_EQ((TMP = Value{3}).DebugString(), "01000");
-		EXPECT_EQ((TMP = Value{0}).DebugString(), "00001"); // [count-0]
 	}
 	{ // assert serves to catch E+1 case
 		EXPECT_DEBUG_DEATH({ Options<3>{Value{4}}; }, "Assertion failed: .*");

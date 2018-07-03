@@ -215,7 +215,7 @@ inline constexpr Options<E>::Options(Value value) noexcept
 template<int E>
 inline Options<E>& Options<E>::operator=(Value value) noexcept
 {
-	assert(value <= Value{E});
+	assert(is_valid_option<E>(value));
 
 	data_ = impl::exp2_<E>(value);
 	return *this;
