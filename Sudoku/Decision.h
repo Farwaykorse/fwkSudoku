@@ -16,7 +16,7 @@
 #include <optional>
 #include <stack>
 #include <vector>
-#include <algorithm> // find_if_not
+#include <algorithm> // find_if_not, min_element
 #include <memory>    // unique_ptr
 #include <numeric>   // iota, reduce
 #include <utility>   // forward, move
@@ -37,8 +37,7 @@ namespace impl
 	template<int N>
 	struct worker_Board
 	{
-		using Options = ::Sudoku::Options<elem_size<N>>;
-		using Board   = ::Sudoku::Board<Options, N>;
+		using Board = ::Sudoku::Board<Options<elem_size<N>>, N>;
 
 		int changes{};
 		std::unique_ptr<Board> board;
@@ -48,10 +47,8 @@ namespace impl
 template<int N>
 class Multipass_Base
 {
-	template<typename T>
-	using Board_t      = ::Sudoku::Board<T, N>;
 	using Options      = ::Sudoku::Options<elem_size<N>>;
-	using Board_ptr    = std::unique_ptr<Board_t<Options>>;
+	using Board_ptr    = std::unique_ptr<Board<Options, N>>;
 	using worker_Board = impl::worker_Board<N>;
 	using Stack        = std::stack<worker_Board, std::vector<worker_Board>>;
 
@@ -59,33 +56,14 @@ class Multipass_Base
 	std::vector<Board_ptr> answers;
 
 public:
-	Multipass_Base() = delete;
+	Multipass_Base()                 = default;
 	Multipass_Base(Multipass_Base&&) = default;
 	Multipass_Base& operator=(Multipass_Base&&) = default;
-	explicit Multipass_Base(Board_t<Options> start)
-	{
-		int changes = all_options<N> - count_options(start);
 
-		if (changes == 0)
-		{
-			changes = fill_begin_empty_board(start);
-		}
-		add_to_queue(worker_Board{
-			changes, std::make_unique<decltype(start)>(std::move(start))});
-	}
-	explicit Multipass_Base(Board_t<Value> const& start)
-	{
-		int changes{};
-		Board_t<Options> local{};
-		changes = set_Value(local, start.cbegin(), start.cend());
-
-		if (changes == 0)
-		{
-			changes = fill_begin_empty_board(local);
-		}
-		add_to_queue(worker_Board{
-			changes, std::make_unique<decltype(local)>(std::move(local))});
-	}
+	explicit Multipass_Base(Board<Options, N> const&) noexcept(true);
+	explicit Multipass_Base(Board<Value, N> const&);
+	Multipass_Base& operator=(Board<Options, N> const&) noexcept(true);
+	Multipass_Base& operator=(Board<Value, N> const&);
 
 	bool finished() const noexcept { return queue.empty(); }
 	int answer_count() const noexcept
@@ -100,11 +78,11 @@ public:
 			answers.push_back(std::move(item.board));
 		}
 	}
-	void add_to_queue(worker_Board&& board)
+	void add_to_queue(worker_Board&& board) noexcept(true)
 	{
 		queue.emplace(std::forward<worker_Board>(board));
 	}
-	std::optional<worker_Board> get_from_queue()
+	std::optional<worker_Board> get_from_queue() noexcept
 	{
 		if (!finished())
 		{
@@ -123,6 +101,10 @@ public:
 		}
 		return answers;
 	}
+
+private:
+	void shared_setup(int changes, Board<Options, N>) noexcept(true);
+	void clear() noexcept;
 };
 
 //====--------------------------------------------------------------------====//
@@ -130,7 +112,7 @@ public:
 template<int N>
 [[nodiscard]] bool answered(Multipass_Base<N>&, impl::worker_Board<N>&);
 template<int N>
-void guess(Multipass_Base<N>&, impl::worker_Board<N> const&);
+void guess(Multipass_Base<N>&, impl::worker_Board<N> const&) noexcept(true);
 template<int N>
 [[nodiscard]] Location<N>
 	pick_location(Board<Options<elem_size<N>>, N> const&) noexcept;
@@ -149,6 +131,66 @@ void scheduler(Multipass_Base<N>&);
 //====--------------------------------------------------------------------====//
 // member-function definitions
 
+template<int N>
+inline void Multipass_Base<N>::shared_setup(
+	int changes, Board<Options, N> board) noexcept(true)
+{
+	assert(changes == all_options<N> - count_options(board));
+	if (changes == 0)
+	{
+		changes = fill_begin_empty_board(board);
+	}
+	add_to_queue(worker_Board{
+		changes, std::make_unique<decltype(board)>(std::move(board))});
+}
+// constructors
+template<int N>
+Multipass_Base<N>::Multipass_Base(Board<Options, N> const& start) noexcept(true)
+{
+	int changes = all_options<N> - count_options(start);
+	shared_setup(changes, start);
+}
+template<int N>
+Multipass_Base<N>::Multipass_Base(Board<Value, N> const& start)
+{
+	Board<Options, N> local{};
+	int changes = set_Value(local, start.cbegin(), start.cend());
+	shared_setup(changes, local);
+}
+template<int N>
+inline Multipass_Base<N>& Multipass_Base<N>::
+	operator=(Board<Options, N> const& input) noexcept(true)
+{
+	clear();
+
+	int changes = all_options<N> - count_options(input);
+	shared_setup(changes, input);
+
+	return *this;
+}
+template<int N>
+inline Multipass_Base<N>& Multipass_Base<N>::
+	operator=(Board<Value, N> const& input)
+{
+	clear();
+
+	Board<Options, N> local{};
+	int changes = set_Value(local, input.cbegin(), input.cend());
+	shared_setup(changes, local);
+
+	return *this;
+}
+// Remove data in answers and queue.
+template<int N>
+inline void Multipass_Base<N>::clear() noexcept
+{
+	answers.clear();
+	while (!queue.empty())
+	{
+		queue.pop();
+	}
+}
+
 //====--------------------------------------------------------------------====//
 // free-function definitions
 
@@ -166,7 +208,8 @@ inline bool answered(Multipass_Base<N>& base, impl::worker_Board<N>& item)
 
 // For an unanswered location, add new boards to the queue for each possibility
 template<int N>
-inline void guess(Multipass_Base<N>& base, impl::worker_Board<N> const& input)
+inline void guess(
+	Multipass_Base<N>& base, impl::worker_Board<N> const& input) noexcept(true)
 {
 	using Board = Board<Options<elem_size<N>>, N>;
 
@@ -175,34 +218,52 @@ inline void guess(Multipass_Base<N>& base, impl::worker_Board<N> const& input)
 
 	for (auto const& value : options)
 	{
+		int changes = input.changes;
 		Board board = *(input.board);
 		try
 		{
-			int changes = single_option(board, loc, value);
-			changes += input.changes;
-			base.add_to_queue(impl::worker_Board<N>{
-				changes, std::make_unique<Board>(std::move(board))});
+			changes += single_option(board, loc, value);
 		}
 		catch (error::invalid_Board const&)
-		{ // continue to try next
+		{
+			continue; // to try next
 		}
+		base.add_to_queue(impl::worker_Board<N>{
+			changes, std::make_unique<Board>(std::move(board))});
 	}
 }
 
-// Pick a suitable location
+// Return a not answered location, or Location 0 when all answered.
 template<int N>
-Location<N> pick_location(Board<Options<elem_size<N>>, N> const& board) noexcept
+inline Location<N>
+	pick_location(Board<Options<elem_size<N>>, N> const& board) noexcept
 {
-	// first implementation, just return the first not answered location
+#if false
+	// Just return the first not answered location
 	auto itr = std::find_if_not(
 		board.cbegin(), board.cend(), [](Options<elem_size<N>> x) {
 			return is_answer(x);
 		});
-	assert(itr != board.cend());
+	if (itr == board.cend())
+	{
+		assert(false); // [board] already finished
+		return Location<N>{0};
+	}
+#else
+	// find: non answer, with least options
+	// Expect faster solving by queueing less branches and reduce memory usage.
+	// At the price of making this function more expensive.
+	auto itr = std::min_element(
+		board.cbegin(),
+		board.cend(),
+		[](Options<elem_size<N>> const& a, Options<elem_size<N>> const& b) {
+			return (
+				!is_answer_fast(a) &&
+				(a.count() < b.count() || is_answer_fast(b)));
+		});
+	assert(!is_answer_fast(*itr)); // [board] already finished
+#endif
 	return Location<N>{itr};
-
-	// TODO improved: first, non answer, with least options
-	// ...
 }
 
 template<int N>
@@ -282,7 +343,8 @@ int test_unique(Board<Options<elem_size<N>>, N>& board)
 	return changes;
 }
 
-// Set the first row to answers: [1, elem_size<N>], ordered
+// Set the first row to answers: [1, elem_size<N>], ordered.
+// Note: always same result depending only on template<int N>.
 template<int N>
 int fill_begin_empty_board(Board<Options<elem_size<N>>, N>& board)
 {

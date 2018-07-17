@@ -83,8 +83,8 @@ namespace constructors
 {
 	// default constructor: typeT()
 	// NOTE: not, to prevent accidental processing of an empty board
-	static_assert(not std::is_default_constructible_v<typeT>);
-	static_assert(not std::is_nothrow_default_constructible_v<typeT>);
+	static_assert(std::is_default_constructible_v<typeT>);
+	static_assert(std::is_nothrow_default_constructible_v<typeT>);
 	static_assert(not std::is_trivially_default_constructible_v<typeT>);
 
 	// copy constructor: typeT(const typeT&)
@@ -110,9 +110,9 @@ namespace constructors
 	static_assert(not std::is_nothrow_constructible_v<typeT, vBoard&>);
 	// a Board<Options>
 	static_assert(std::is_constructible_v<typeT, oBoard>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, oBoard>);
+	static_assert(std::is_nothrow_constructible_v<typeT, oBoard>);
 	static_assert(std::is_constructible_v<typeT, oBoard&>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, oBoard&>);
+	static_assert(std::is_nothrow_constructible_v<typeT, oBoard&>);
 
 	//====----------------------------------------------------------------====//
 	// Board<int>& and element number:
