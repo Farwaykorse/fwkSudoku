@@ -1,8 +1,8 @@
-//===--- Sudoku/Location.h                                              ---===//
+//====---- Sudoku/Location.h                                          ----====//
 //
 // class Location: represent locations within a board,
 // and calculate location related properties.
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
 //
 // Everything is `constexpr` and `noexcept`.
 // All values are `const`.
@@ -10,7 +10,7 @@
 // A separate Location_Block class offers block properties.
 // There is no implicit conversion between these.
 //
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
 #pragma once
 
 #include "Size.h"
@@ -25,8 +25,6 @@ class Location
 {
 	using Size  = ::Sudoku::Size<N>;
 	using index = gsl::index;
-
-	static_assert(N > 1, "Location.h: base_size value too small");
 
 	// prefer signed integers for calculations
 	static_assert(std::is_signed_v<decltype(Size::base)>);
@@ -77,13 +75,11 @@ private:
 	const index id_{};
 };
 
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
 
 template<int N>
 class Location_Block
 {
-	static_assert(N > 1, "Location_Block: base_size value too small");
-
 	using Size     = ::Sudoku::Size<N>;
 	using Location = ::Sudoku::Location<N>;
 
@@ -148,7 +144,7 @@ private:
 	const Location loc_{};
 };
 
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
 // free-function declarations
 template<int N>
 constexpr bool
@@ -187,7 +183,7 @@ constexpr bool
 	operator>(const Location_Block<N>&, const Location_Block<N>&) noexcept;
 
 
-//===----------------------------------------------------------------------===//
+//====--------------------------------------------------------------------====//
 // definitions
 
 template<int N>

@@ -16,7 +16,7 @@ struct Size
 	static constexpr int full = elem * elem; // 81 for default
 
 	static_assert(
-		base < elem && base < full && elem < full,
+		1 < base && base < elem && base < full && elem < full,
 		"struct Size: Board size out of bounds.");
 	static_assert(
 		N < std::numeric_limits<int>::max() / base &&

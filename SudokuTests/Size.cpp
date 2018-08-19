@@ -1,27 +1,11 @@
-﻿//===--- SudokuTests/Size.cpp                                           ---===//
+﻿//====---- SudokuTests/Size.cpp                                       ----====//
 //
 //	Unit tests for the template class Sudoku::Size
-//===----------------------------------------------------------------------===//
-//	Implemented with GoogleTest
-//
-//	Notes:
-//	gTest is limited for use with multiple template parameters.
-//	These expressions need to be implemented between extra parentheses
-//	- test elements implementing this are flagged with [gTest]
-//	- not implemented tests are flagged as NEEDTEST [gTest]
-//	gTest tries to print iterators if they use inheritance,
-//		if used in *_EQ/NE etc.
-//		use an explicit test like EXPECT_TRUE(.. == ..).
-//
-//===----------------------------------------------------------------------===//
+//=====--------------------------------------------------------------------====//
 #include <gtest/gtest.h>
 
 // Class under test
 #include <Sudoku/Size.h>
-
-// Helpers
-
-// additional
 
 
 namespace SudokuTests::SizeTest
@@ -94,7 +78,9 @@ namespace compiletime
 
 	static_assert(Size<2>::base == 2);
 	static_assert(Size<3>::base == 3);
+	static_assert(Size<2>::elem == 4);
 	static_assert(Size<3>::elem == 9);
+	static_assert(Size<2>::full == 16);
 	static_assert(Size<3>::full == 81);
 	static_assert(Size<3>::base == ::Sudoku::base_size<3>);
 	static_assert(Size<3>::elem == ::Sudoku::elem_size<3>);
