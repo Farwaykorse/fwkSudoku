@@ -12,6 +12,7 @@
 #include "Location.h"
 #include "Location_Utilities.h"
 #include "traits.h"
+#include <gsl/gsl> // index
 
 #include <iterator>
 #include <type_traits>
@@ -68,7 +69,7 @@ class Section_iterator
 
 public:
 	// member types
-	using difference_type   = int;
+	using difference_type   = std::ptrdiff_t;
 	using value_type        = T;
 	using pointer           = std::conditional_t<is_const, T const*, T*>;
 	using reference         = std::conditional_t<is_const, T const&, T&>;
@@ -167,8 +168,8 @@ public:
 
 private:
 	owner_type* board_{nullptr};
-	difference_type id_{0};
-	difference_type elem_{0};
+	gsl::index id_{0};
+	gsl::index elem_{0};
 
 	friend constexpr bool is_same_Section(
 		Section_iterator const& A, Section_iterator const& B) noexcept

@@ -9,6 +9,7 @@
 #include "Location_Utilities.h"
 #include "exceptions.h"
 #include "traits.h"
+#include <gsl/gsl> // index
 
 #include <type_traits>
 #include <cassert>
@@ -75,7 +76,7 @@ public:
 	}
 
 	[[nodiscard]] static constexpr int size() noexcept { return elem_size<N>; }
-	[[nodiscard]] int id() const noexcept { return id_; }
+	[[nodiscard]] gsl::index id() const noexcept { return id_; }
 	[[nodiscard]] constexpr Location location(int elem) const noexcept;
 
 	[[nodiscard]] reference front() noexcept { return (*this)[0]; }
@@ -127,10 +128,10 @@ public:
 
 private:
 	OwnerT board_;
-	const int id_{};
+	const gsl::index id_{};
 
 	// Internal helper
-	static constexpr int to_id(Location loc) noexcept;
+	static constexpr gsl::index to_id(Location loc) noexcept;
 };
 
 //====--------------------------------------------------------------------====//
@@ -163,7 +164,7 @@ template<typename T, int N, Section S, bool is_const>
 
 // Internal helper
 template<typename T, int N, Section S, bool is_const>
-inline constexpr int
+inline constexpr gsl::index
 	Board_Section_<T, N, S, is_const>::to_id(Location loc) noexcept
 {
 	switch (S)

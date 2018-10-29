@@ -14,7 +14,8 @@
 #pragma once
 
 #include "Size.h"
-#include <type_traits> // is_signed
+#include <gsl/gsl> // index
+#include <type_traits>  // is_signed
 
 
 namespace Sudoku
@@ -22,7 +23,8 @@ namespace Sudoku
 template<int N>
 class Location
 {
-	using Size = ::Sudoku::Size<N>;
+	using Size  = ::Sudoku::Size<N>;
+	using index = gsl::index;
 
 	static_assert(N > 1, "Location.h: base_size value too small");
 
@@ -30,7 +32,7 @@ class Location
 	static_assert(std::is_signed_v<decltype(Size::base)>);
 	static_assert(std::is_signed_v<decltype(Size::elem)>);
 
-	static constexpr int location(int row, int col) noexcept
+	static constexpr gsl::index location(index row, index col) noexcept
 	{
 		return row * Size::elem + col; // [0,full)
 	}
@@ -38,26 +40,28 @@ class Location
 public:
 	// constructors
 	constexpr Location() = default;
-	explicit constexpr Location(int element) noexcept : id_(element) {}
-	constexpr Location(int row, int col) noexcept : id_(location(row, col)) {}
+	explicit constexpr Location(index element) noexcept : id_(element) {}
+	constexpr Location(index row, index col) noexcept : id_(location(row, col))
+	{
+	}
 
 	// information
-	constexpr int element() const noexcept { return id_; } // default [0,full)
-	constexpr int row() const noexcept { return id_ / Size::elem; } // [0,elem)
-	constexpr int col() const noexcept { return id_ % Size::elem; } // [0,elem)
-	constexpr int block() const noexcept
+	constexpr index element() const noexcept { return id_; } // default [0,full)
+	constexpr index row() const noexcept { return id_ / Size::elem; } //[0,elem)
+	constexpr index col() const noexcept { return id_ % Size::elem; } //[0,elem)
+	constexpr index block() const noexcept
 	{
 		return row() / Size::base * Size::base + col() / Size::base; // [0,elem)
 	}
-	constexpr int block_row() const noexcept
+	constexpr index block_row() const noexcept
 	{
 		return row() % Size::base; // [0,base)
 	}
-	constexpr int block_col() const noexcept
+	constexpr index block_col() const noexcept
 	{
 		return col() % Size::base; // [0,base)
 	}
-	constexpr int block_elem() const noexcept
+	constexpr index block_elem() const noexcept
 	{
 		return block_row() * Size::base + block_col(); // [0,elem)
 	}
@@ -70,7 +74,7 @@ public:
 	}
 
 private:
-	const int id_{};
+	const index id_{};
 };
 
 //===----------------------------------------------------------------------===//
@@ -86,17 +90,22 @@ class Location_Block
 	// prefer signed integers for calculations
 	static_assert(std::is_signed_v<decltype(Size::base)>);
 
-	static constexpr int block_element(int row, int col) noexcept
+	static constexpr gsl::index
+		block_element(gsl::index row, gsl::index col) noexcept
 	{
 		return row * Size::base + col; // [0,elem)
 	}
-	static constexpr Location block_loc(int id, int element) noexcept
+	static constexpr Location
+		block_loc(gsl::index id, gsl::index element) noexcept
 	{
-		const int row{(id / Size::base) * Size::base + element / Size::base};
-		const int col{(id % Size::base) * Size::base + element % Size::base};
+		const gsl::index row{(id / Size::base) * Size::base +
+							 element / Size::base};
+		const gsl::index col{(id % Size::base) * Size::base +
+							 element % Size::base};
 		return Location(row, col);
 	}
-	static constexpr Location block_loc(int id, int row, int col) noexcept
+	static constexpr Location
+		block_loc(gsl::index id, gsl::index row, gsl::index col) noexcept
 	{
 		return block_loc(id, block_element(row, col));
 	}
@@ -106,22 +115,32 @@ public:
 	explicit constexpr Location_Block(Location loc) noexcept : loc_(loc)
 	{ // empty constructor
 	}
-	constexpr Location_Block(int id, int element) noexcept
+	constexpr Location_Block(gsl::index id, gsl::index element) noexcept
 		: loc_(block_loc(id, element))
 	{ // empty constructor
 	}
-	constexpr Location_Block(int id, int row, int col) noexcept
+	constexpr Location_Block(
+		gsl::index id, gsl::index row, gsl::index col) noexcept
 		: loc_(block_loc(id, row, col))
 	{ // empty constructor
 	}
 
-	constexpr int id() const noexcept { return loc_.block(); } // [0,elem)
-	constexpr int element() const noexcept
+	constexpr gsl::index id() const noexcept
+	{
+		return loc_.block();
+	} // [0,elem)
+	constexpr gsl::index element() const noexcept
 	{
 		return loc_.block_elem(); // [0,elem)
 	}
-	constexpr int row() const noexcept { return loc_.block_row(); } // [0,base)
-	constexpr int col() const noexcept { return loc_.block_col(); } // [0,base)
+	constexpr gsl::index row() const noexcept
+	{
+		return loc_.block_row();
+	} // [0,base)
+	constexpr gsl::index col() const noexcept
+	{
+		return loc_.block_col();
+	} // [0,base)
 
 	constexpr operator Location() const noexcept { return loc_; }
 

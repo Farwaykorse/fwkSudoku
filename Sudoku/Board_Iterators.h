@@ -43,7 +43,7 @@ class Board_iterator
 
 public:
 	// member types
-	using difference_type = int;
+	using difference_type = std::ptrdiff_t;
 	static_assert(
 		full_size<N> < std::numeric_limits<difference_type>::max(),
 		"Use std::ptrdiff_t for Board_iterator::difference_type.");
@@ -146,7 +146,7 @@ public:
 
 private:
 	owner_type* board_{nullptr};
-	difference_type elem_{0};
+	gsl::index elem_{0};
 
 	friend constexpr bool
 		is_same_Board(Board_iterator const A, Board_iterator const B) noexcept

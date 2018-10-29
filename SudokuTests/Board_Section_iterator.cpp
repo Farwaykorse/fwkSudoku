@@ -712,7 +712,7 @@ TEST(Section_Itr, equal)
 	static_assert(std::is_same_v<bool, decltype(A.begin() == A.begin())>);
 	static_assert(std::is_same_v<bool, decltype(A.cbegin() == A.cbegin())>);
 
-	[[maybe_unused]] bool U {};
+	[[maybe_unused]] bool U{};
 	EXPECT_NO_THROW(U = (A.begin() == A.end()));
 	EXPECT_NO_THROW(U = (A.end() == A.end()));
 	EXPECT_NO_THROW(U = (A.cbegin() == A.cend()));
@@ -781,7 +781,7 @@ TEST(Section_Itr, not_equal)
 			static_assert(not((itr() = L{0}) != (itr() = L{0})));
 			static_assert((itr() = L{3}) != itr());
 		}
-		[[maybe_unused]] bool U {};
+		[[maybe_unused]] bool U{};
 		EXPECT_NO_THROW(U = (A.begin() != A.end()));
 		EXPECT_NO_THROW(U = (A.cbegin() != A.cend()));
 		EXPECT_NO_THROW(U = (A.rbegin() != A.rend()));
@@ -908,7 +908,7 @@ TEST(Section_Itr, OutputIterator)
 		EXPECT_EQ(tmp[1], 5);
 	}
 
-	[[maybe_unused]] int U {};
+	[[maybe_unused]] int U{};
 	EXPECT_NO_THROW(U = *tmp.begin()); // pre-condition
 	EXPECT_NO_THROW(U = *tmp.begin() = 5);
 	EXPECT_EQ(tmp[0], 5);
@@ -1797,9 +1797,12 @@ TEST(Section_Itr, difference)
 			"is_same_Section");
 
 		// Return type:
-		static_assert(std::is_same_v<int, decltype(A.begin() - A.end())>);
-		static_assert(std::is_same_v<int, decltype(A.cbegin() - A.cend())>);
-		static_assert(std::is_same_v<int, decltype(A.rbegin() - A.rend())>);
+		static_assert(
+			std::is_same_v<std::ptrdiff_t, decltype(A.begin() - A.end())>);
+		static_assert(
+			std::is_same_v<std::ptrdiff_t, decltype(A.cbegin() - A.cend())>);
+		static_assert(
+			std::is_same_v<std::ptrdiff_t, decltype(A.rbegin() - A.rend())>);
 
 		ASSERT_EQ(A.size(), 4);
 		EXPECT_EQ(A.begin() - A.begin(), 0);

@@ -8,6 +8,7 @@
 #include "Location.h"
 #include "Size.h"
 #include "traits.h"
+#include <gsl/gsl> // index
 
 #include <vector>
 #include <algorithm> // minmax_element, is_sorted, all_of
@@ -30,9 +31,9 @@ template<int N>
 constexpr bool is_valid(const std::vector<Location<N>>& locs) noexcept(true);
 
 template<int N>
-constexpr bool is_valid_size(int elem) noexcept;
+constexpr bool is_valid_size(gsl::index elem) noexcept;
 template<int N>
-constexpr bool is_valid_size(int row, int col) noexcept;
+constexpr bool is_valid_size(gsl::index row, gsl::index col) noexcept;
 
 template<int N>
 constexpr bool is_same_row(Location<N>, Location<N>) noexcept;
@@ -114,14 +115,15 @@ inline constexpr bool
 
 // Test row/col/block-element
 template<int N>
-inline constexpr bool is_valid_size(const int elem) noexcept
+inline constexpr bool is_valid_size(const gsl::index elem) noexcept
 {
 	return (elem >= 0 && elem < elem_size<N>);
 }
 
 // Test if location on Board
 template<int N>
-inline constexpr bool is_valid_size(const int row, const int col) noexcept
+inline constexpr bool
+	is_valid_size(const gsl::index row, const gsl::index col) noexcept
 {
 	return is_valid_size<N>(row) && is_valid_size<N>(col);
 }

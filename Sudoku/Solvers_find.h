@@ -34,8 +34,8 @@ template<int N, typename SectionT>
 	list_where_option(SectionT, Value, int rep_count = elem_size<N>);
 
 template<int N, typename ItrT>
-[[nodiscard]] auto
-	list_where_option(ItrT begin, ItrT end, Value, int rep_count = 0);
+[[nodiscard]] auto list_where_option(
+	ItrT begin, ItrT end, Value, std::ptrdiff_t rep_count = 0);
 
 template<int N, typename SectionT, typename Options = Options<elem_size<N>>>
 [[nodiscard]] auto
@@ -90,7 +90,10 @@ inline auto list_where_option(
 // List locations where [value] is an option
 template<int N, typename ItrT>
 auto list_where_option(
-	const ItrT begin, const ItrT end, const Value value, int rep_count /*= 0*/)
+	const ItrT begin,
+	const ItrT end,
+	const Value value,
+	std::ptrdiff_t rep_count /*= 0*/)
 {
 	using Options = Options<elem_size<N>>;
 	{

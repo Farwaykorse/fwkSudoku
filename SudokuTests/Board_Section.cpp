@@ -464,8 +464,8 @@ TEST(Board_Section, id)
 
 	static_assert(noexcept(Row(board, 2).id()));
 	// return type
-	static_assert(std::is_same_v<int, decltype(Row(board, 4).id())>);
-	static_assert(std::is_same_v<int, decltype(Col(board, 5).id())>);
+	static_assert(std::is_same_v<gsl::index, decltype(Row(board, 4).id())>);
+	static_assert(std::is_same_v<gsl::index, decltype(Col(board, 5).id())>);
 
 	EXPECT_EQ(Row(board, 0).id(), 0);
 	EXPECT_EQ(Row(board, 1).id(), 1);

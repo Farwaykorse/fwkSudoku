@@ -66,7 +66,7 @@ namespace iterator
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-	// can be converted with reinterpret_cast
+	static_assert(std::has_unique_object_representations_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
@@ -155,7 +155,7 @@ namespace const_iterator
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-	// can be converted with reinterpret_cast
+	static_assert(std::has_unique_object_representations_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
@@ -244,7 +244,7 @@ namespace reverse_iterator
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-	// can be converted with reinterpret_cast
+	static_assert(std::has_unique_object_representations_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
@@ -333,7 +333,7 @@ namespace const_reverse_iterator
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-	// can be converted with reinterpret_cast
+	static_assert(std::has_unique_object_representations_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
@@ -455,7 +455,7 @@ namespace iterator_traits
 	static_assert(std::is_same_v<Rtraits::value_type, dataT>);
 	static_assert(std::is_same_v<CRtraits::value_type, dataT>);
 
-	using difference_type = int;
+	using difference_type = std::ptrdiff_t;
 	static_assert(std::is_same_v<traits::difference_type, difference_type>);
 	static_assert(std::is_same_v<Ctraits::difference_type, difference_type>);
 	static_assert(std::is_same_v<Rtraits::difference_type, difference_type>);
@@ -962,7 +962,7 @@ TEST(Board_Iterator, equal)
 		static_assert(((itr() = L{0}) == (itr() = L{0})));
 		static_assert(not((itr() = L{3}) == itr()));
 	}
-	[[maybe_unused]] bool U {};
+	[[maybe_unused]] bool U{};
 	EXPECT_NO_THROW(U = (A.begin() == A.end()));
 	EXPECT_NO_THROW(U = (A.end() == A.end()));
 	EXPECT_NO_THROW(U = (A.cbegin() == A.cend()));
@@ -1033,7 +1033,7 @@ TEST(Board_Iterator, not_equal)
 			static_assert(not((itr() = L{0}) != (itr() = L{0})));
 			static_assert((itr() = L{3}) != itr());
 		}
-		[[maybe_unused]] bool U {};
+		[[maybe_unused]] bool U{};
 		EXPECT_NO_THROW(U = (A.begin() != A.end()));
 		EXPECT_NO_THROW(U = (A.cbegin() != A.cend()));
 		EXPECT_NO_THROW(U = (A.rbegin() != A.rend()));
@@ -1156,7 +1156,7 @@ TEST(Board_Iterator, OutputIterator)
 		EXPECT_EQ(tmp[0][1], 5);
 	}
 
-	[[maybe_unused]] int U {};
+	[[maybe_unused]] int U{};
 	EXPECT_NO_THROW(U = *tmp.begin()); // pre-condition
 	static_assert(noexcept(*tmp.begin() = 5));
 	EXPECT_NO_THROW(U = *tmp.begin() = 5);
@@ -2033,9 +2033,12 @@ TEST(Board_Iterator, difference)
 			[[maybe_unused]] auto U = A.cend() - cA.cbegin(), "is_same_Board");
 
 		// Return type:
-		static_assert(std::is_same_v<int, decltype(A.begin() - A.end())>);
-		static_assert(std::is_same_v<int, decltype(A.cbegin() - A.cend())>);
-		static_assert(std::is_same_v<int, decltype(A.rbegin() - A.rend())>);
+		static_assert(
+			std::is_same_v<std::ptrdiff_t, decltype(A.begin() - A.end())>);
+		static_assert(
+			std::is_same_v<std::ptrdiff_t, decltype(A.cbegin() - A.cend())>);
+		static_assert(
+			std::is_same_v<std::ptrdiff_t, decltype(A.rbegin() - A.rend())>);
 
 		ASSERT_EQ(A.size(), 16u);
 		EXPECT_EQ(A.begin() - A.begin(), 0);
