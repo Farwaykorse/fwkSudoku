@@ -31,23 +31,30 @@ using ::Sudoku::Size;
 namespace compiletime
 { // Type properties
 	using typeT = Size<3>;
-	static_assert(
-		std::is_class<typeT>::value, "a class, hiding data representation");
-	static_assert(std::is_trivial<typeT>::value); // ++
-	// trivial default constructors & trivially copyable
-	static_assert(std::is_trivially_copyable<typeT>::value); // ++
-	// compatible with std::memcpy & binary copy from/to files
-	static_assert(std::is_standard_layout<typeT>::value); // ++
-	// StandardLayoutType can be converted with reinterpret_cast
-	// static_assert(std::has_unique_object_representations<typeT>::value);
-	// C++17	trivially_copyable same object representation
-	static_assert(std::is_empty<typeT>::value);
-	// class with data members, nothing virtual
-	static_assert(!std::is_polymorphic<typeT>::value); // --
-	// inherits at least one virtual function
-	static_assert(!std::is_final<typeT>::value); // cannot be used as base class
-	static_assert(!std::is_abstract<typeT>::value); // --
-	// inherits or declares at least one pure virtual function
+	// http://howardhinnant.github.io/TypeHiearchy.pdf
+	// Composite Type Categories
+	static_assert(not std::is_fundamental_v<typeT>);
+	static_assert(std::is_object_v<typeT>);
+	static_assert(std::is_compound_v<typeT>);
+
+	static_assert(not std::is_scalar_v<typeT>);
+	static_assert(not std::is_array_v<typeT>);
+	static_assert(not std::is_union_v<typeT>);
+	static_assert(std::is_class_v<typeT>);
+	static_assert(not std::is_reference_v<typeT>);
+	static_assert(not std::is_function_v<typeT>);
+	// Type Properties
+	static_assert(not std::is_const_v<typeT>);
+	static_assert(not std::is_volatile_v<typeT>);
+	static_assert(std::is_trivial_v<typeT>);
+	static_assert(std::is_trivially_copyable_v<typeT>);
+	static_assert(std::is_standard_layout_v<typeT>);
+	static_assert(not std::has_unique_object_representations_v<typeT>);
+	static_assert(std::is_empty_v<typeT>);
+	static_assert(not std::is_polymorphic_v<typeT>);
+	static_assert(not std::is_abstract_v<typeT>);
+	static_assert(not std::is_final_v<typeT>);
+	static_assert(std::is_aggregate_v<typeT>);
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible<typeT>::value);           // ++

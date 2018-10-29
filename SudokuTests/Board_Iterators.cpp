@@ -53,16 +53,21 @@ namespace iterator
 	using BoardT = Board<dataT, 3>;
 	using typeT  = BoardT::iterator;
 
-	static_assert(std::is_object_v<typeT>);
-	static_assert(not std::is_const_v<typeT>);
+	// Composite Type Categories
 	static_assert(not std::is_fundamental_v<typeT>);
+	static_assert(std::is_object_v<typeT>);
 	static_assert(std::is_compound_v<typeT>);
-	static_assert(not std::is_scalar_v<typeT>);
-	static_assert(not std::is_arithmetic_v<typeT>);
-	static_assert(not std::is_signed_v<typeT>);
-	static_assert(not std::is_unsigned_v<typeT>);
 
+	static_assert(not std::is_scalar_v<typeT>);
+	static_assert(not std::is_array_v<typeT>);
+	static_assert(not std::is_union_v<typeT>);
 	static_assert(std::is_class_v<typeT>);
+
+	static_assert(not std::is_reference_v<typeT>);
+	static_assert(not std::is_function_v<typeT>);
+	// Type Properties
+	static_assert(not std::is_const_v<typeT>);
+	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
@@ -71,6 +76,7 @@ namespace iterator
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
+	static_assert(not std::is_aggregate_v<typeT>);
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -142,16 +148,21 @@ namespace const_iterator
 	using BoardT = Board<dataT, 3>;
 	using typeT  = BoardT::const_iterator;
 
-	static_assert(std::is_object_v<typeT>);
-	static_assert(not std::is_const_v<typeT>);
+	// Composite Type Categories
 	static_assert(not std::is_fundamental_v<typeT>);
+	static_assert(std::is_object_v<typeT>);
 	static_assert(std::is_compound_v<typeT>);
-	static_assert(not std::is_scalar_v<typeT>);
-	static_assert(not std::is_arithmetic_v<typeT>);
-	static_assert(not std::is_signed_v<typeT>);
-	static_assert(not std::is_unsigned_v<typeT>);
 
+	static_assert(not std::is_scalar_v<typeT>);
+	static_assert(not std::is_array_v<typeT>);
+	static_assert(not std::is_union_v<typeT>);
 	static_assert(std::is_class_v<typeT>);
+
+	static_assert(not std::is_reference_v<typeT>);
+	static_assert(not std::is_function_v<typeT>);
+	// Type Properties
+	static_assert(not std::is_const_v<typeT>);
+	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
@@ -160,6 +171,7 @@ namespace const_iterator
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
+	static_assert(not std::is_aggregate_v<typeT>);
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -231,16 +243,21 @@ namespace reverse_iterator
 	using BoardT = Board<dataT, 3>;
 	using typeT  = BoardT::reverse_iterator;
 
-	static_assert(std::is_object_v<typeT>);
-	static_assert(not std::is_const_v<typeT>);
+	// Composite Type Categories
 	static_assert(not std::is_fundamental_v<typeT>);
+	static_assert(std::is_object_v<typeT>);
 	static_assert(std::is_compound_v<typeT>);
-	static_assert(not std::is_scalar_v<typeT>);
-	static_assert(not std::is_arithmetic_v<typeT>);
-	static_assert(not std::is_signed_v<typeT>);
-	static_assert(not std::is_unsigned_v<typeT>);
 
+	static_assert(not std::is_scalar_v<typeT>);
+	static_assert(not std::is_array_v<typeT>);
+	static_assert(not std::is_union_v<typeT>);
 	static_assert(std::is_class_v<typeT>);
+
+	static_assert(not std::is_reference_v<typeT>);
+	static_assert(not std::is_function_v<typeT>);
+	// Type Properties
+	static_assert(not std::is_const_v<typeT>);
+	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
@@ -249,6 +266,7 @@ namespace reverse_iterator
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
+	static_assert(not std::is_aggregate_v<typeT>);
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -320,16 +338,21 @@ namespace const_reverse_iterator
 	using BoardT = Board<dataT, 3>;
 	using typeT  = BoardT::const_reverse_iterator;
 
-	static_assert(std::is_object_v<typeT>);
-	static_assert(not std::is_const_v<typeT>);
+	// Composite Type Categories
 	static_assert(not std::is_fundamental_v<typeT>);
+	static_assert(std::is_object_v<typeT>);
 	static_assert(std::is_compound_v<typeT>);
-	static_assert(not std::is_scalar_v<typeT>);
-	static_assert(not std::is_arithmetic_v<typeT>);
-	static_assert(not std::is_signed_v<typeT>);
-	static_assert(not std::is_unsigned_v<typeT>);
 
+	static_assert(not std::is_scalar_v<typeT>);
+	static_assert(not std::is_array_v<typeT>);
+	static_assert(not std::is_union_v<typeT>);
 	static_assert(std::is_class_v<typeT>);
+
+	static_assert(not std::is_reference_v<typeT>);
+	static_assert(not std::is_function_v<typeT>);
+	// Type Properties
+	static_assert(not std::is_const_v<typeT>);
+	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
@@ -338,6 +361,7 @@ namespace const_reverse_iterator
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
+	static_assert(not std::is_aggregate_v<typeT>);
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);

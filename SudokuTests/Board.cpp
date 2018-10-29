@@ -47,11 +47,22 @@ namespace compiletime
 
 	// Type properties
 	using typeT = Board<int, 3>;
+
+	// Composite Type Categories
+	static_assert(not std::is_fundamental_v<typeT>);
+	static_assert(std::is_object_v<typeT>);
+	static_assert(std::is_compound_v<typeT>);
+
+	static_assert(not std::is_scalar_v<typeT>);
+	static_assert(not std::is_array_v<typeT>);
+	static_assert(not std::is_union_v<typeT>);
 	static_assert(std::is_class_v<typeT>);
-	static_assert(not std::is_trivial_v<typeT>); // ++
-	// trivial default constructors & trivially copyable
-	static_assert(not std::is_trivially_copyable_v<typeT>); // ++
-	// compatible with std::memcpy & binary copy from / to files"
+	static_assert(not std::is_reference_v<typeT>);
+	static_assert(not std::is_function_v<typeT>);
+	// Type Properties
+	static_assert(not std::is_const_v<typeT>);
+	static_assert(not std::is_trivial_v<typeT>);
+	static_assert(not std::is_trivially_copyable_v<typeT>);
 #ifdef _DEBUG
 	//? WHY different behaviour between debug/release mode? (MSVC & Clang, !GCC)
 	// static_assert(not std::is_standard_layout_v<typeT>, "standard layout");
@@ -59,15 +70,11 @@ namespace compiletime
 	static_assert(std::is_standard_layout_v<typeT>, "standard layout");
 	// can be converted with reinterpret_cast
 #endif // _DEBUG
-	// static_assert(std::has_unique_object_representations_v<typeT>,"");//C++17
-	// trivially_copyable same object representation
 	static_assert(not std::is_empty_v<typeT>);
-	// class with no data-members; nothing virtual
-	static_assert(not std::is_polymorphic_v<typeT>); // --
-	// inherits at least one virtual function
+	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
-	static_assert(not std::is_abstract_v<typeT>); // ++
-	// inherits or declares at least one pure virtual function");
+	static_assert(not std::is_abstract_v<typeT>);
+	static_assert(not std::is_aggregate_v<typeT>);
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);               // ++

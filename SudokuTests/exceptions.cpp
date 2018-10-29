@@ -32,18 +32,34 @@ TEST(Error, invalid_Board)
 	{ // Type properties
 		using typeT = invalid_Board;
 
+		// Composite Type Categories
+		static_assert(not std::is_fundamental_v<typeT>);
+		static_assert(std::is_object_v<typeT>);
+		static_assert(std::is_compound_v<typeT>);
+
+		static_assert(not std::is_scalar_v<typeT>);
+		static_assert(not std::is_array_v<typeT>);
+		static_assert(not std::is_union_v<typeT>);
 		static_assert(std::is_class_v<typeT>);
+		static_assert(not std::is_reference_v<typeT>);
+		static_assert(not std::is_function_v<typeT>);
+		// Type Properties
+		static_assert(not std::is_const_v<typeT>);
+		static_assert(not std::is_volatile_v<typeT>);
+		static_assert(not std::is_trivial_v<typeT>);            // ++
+		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
+		static_assert(not std::is_standard_layout_v<typeT>);
+		static_assert(not std::has_unique_object_representations_v<typeT>);
+		static_assert(not std::is_empty_v<typeT>);
+		static_assert(std::is_polymorphic_v<typeT>); // --
+		static_assert(not std::is_abstract_v<typeT>); // ++
+		static_assert(not std::is_final_v<typeT>);
+		static_assert(not std::is_aggregate_v<typeT>);
+
 		static_assert(std::is_base_of_v<std::exception, typeT>);
 		static_assert(std::is_base_of_v<std::logic_error, typeT>);
 		static_assert(std::is_convertible_v<typeT, std::logic_error>);
 
-		static_assert(not std::is_trivial_v<typeT>);            // ++
-		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
-		static_assert(not std::is_standard_layout_v<typeT>);
-		static_assert(not std::is_empty_v<typeT>);
-		static_assert(std::is_polymorphic_v<typeT>); // --
-		static_assert(not std::is_final_v<typeT>);
-		static_assert(not std::is_abstract_v<typeT>); // ++
 		// default constructor: typeT()
 		static_assert(std::is_default_constructible_v<typeT>);         // ++
 		static_assert(std::is_nothrow_default_constructible_v<typeT>); // ++
@@ -92,19 +108,35 @@ TEST(Error, invalid_Location)
 	{ // Type properties
 		using typeT = invalid_Location;
 
+		// Composite Type Categories
+		static_assert(not std::is_fundamental_v<typeT>);
+		static_assert(std::is_object_v<typeT>);
+		static_assert(std::is_compound_v<typeT>);
+
+		static_assert(not std::is_scalar_v<typeT>);
+		static_assert(not std::is_array_v<typeT>);
+		static_assert(not std::is_union_v<typeT>);
 		static_assert(std::is_class_v<typeT>);
+		static_assert(not std::is_reference_v<typeT>);
+		static_assert(not std::is_function_v<typeT>);
+		// Type Properties
+		static_assert(not std::is_const_v<typeT>);
+		static_assert(not std::is_volatile_v<typeT>);
+		static_assert(not std::is_trivial_v<typeT>);            // ++
+		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
+		static_assert(not std::is_standard_layout_v<typeT>);
+		static_assert(not std::has_unique_object_representations_v<typeT>);
+		static_assert(not std::is_empty_v<typeT>);
+		static_assert(std::is_polymorphic_v<typeT>); // --
+		static_assert(not std::is_abstract_v<typeT>); // ++
+		static_assert(not std::is_final_v<typeT>);
+		static_assert(not std::is_aggregate_v<typeT>);
+
 		static_assert(std::is_base_of_v<std::exception, typeT>);
 		static_assert(std::is_base_of_v<std::logic_error, typeT>);
 		static_assert(std::is_base_of_v<std::out_of_range, typeT>);
 		static_assert(std::is_convertible_v<typeT, std::logic_error>);
 
-		static_assert(not std::is_trivial_v<typeT>);            // ++
-		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
-		static_assert(not std::is_standard_layout_v<typeT>);
-		static_assert(not std::is_empty_v<typeT>);
-		static_assert(std::is_polymorphic_v<typeT>); // --
-		static_assert(not std::is_final_v<typeT>);
-		static_assert(not std::is_abstract_v<typeT>); // ++
 		// default constructor: typeT()
 		static_assert(std::is_default_constructible_v<typeT>);         // ++
 		static_assert(std::is_nothrow_default_constructible_v<typeT>); // ++

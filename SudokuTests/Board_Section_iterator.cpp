@@ -71,21 +71,28 @@ using const_rev_Block_Itr = const_reverse_Block_iterator<dataT, size>;
 namespace type_properties
 {
 	// Composite Type Categories
+	static_assert(not std::is_fundamental_v<typeT>);
 	static_assert(std::is_object_v<typeT>);
 	static_assert(std::is_compound_v<typeT>);
-	// Primary Type Categories
+
+	static_assert(not std::is_scalar_v<typeT>);
+	static_assert(not std::is_array_v<typeT>);
+	static_assert(not std::is_union_v<typeT>);
 	static_assert(std::is_class_v<typeT>);
+	static_assert(not std::is_reference_v<typeT>);
+	static_assert(not std::is_function_v<typeT>);
 	// Type Properties
 	static_assert(not std::is_const_v<typeT>);
-	static_assert(not std::is_fundamental_v<typeT>);
+	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-	// Can be converted with reinterpret_cast
-	static_assert(not std::is_empty_v<typeT>); // nothing virtual
+	static_assert(std::has_unique_object_representations_v<typeT>);
+	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
-	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
+	static_assert(not std::is_final_v<typeT>);
+	static_assert(not std::is_aggregate_v<typeT>);
 } // namespace type_properties
 
 namespace constructors
