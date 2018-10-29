@@ -27,20 +27,29 @@ using Board_ptr = std::unique_ptr<Board>;
 namespace properties
 {
 	// Composite Type Categories
+	static_assert(not std::is_fundamental_v<typeT>);
 	static_assert(std::is_compound_v<typeT>);
 	static_assert(std::is_object_v<typeT>);
-	// Primary Type Categories
+
+	static_assert(not std::is_scalar_v<typeT>);
+	static_assert(not std::is_array_v<typeT>);
+	static_assert(not std::is_union_v<typeT>);
 	static_assert(std::is_class_v<typeT>);
+	static_assert(not std::is_reference_v<typeT>);
+	static_assert(not std::is_function_v<typeT>);
 	// Type Properties
 	static_assert(not std::is_const_v<typeT>);
 	static_assert(not std::is_volatile_v<typeT>);
-
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(not std::is_trivially_copyable_v<typeT>);
+	static_assert(not std::is_trivially_default_constructible_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-	// can be converted with reinterpret_cast
+	static_assert(not std::has_unique_object_representations_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
+	static_assert(not std::is_final_v<typeT>);
+	static_assert(not std::is_abstract_v<typeT>);
+	static_assert(std::is_aggregate_v<typeT>);
 } // namespace properties
 
 namespace constructors
@@ -121,21 +130,26 @@ using typeT = ::Sudoku::Multipass_Base<3>;
 namespace type_properties
 { // http://howardhinnant.github.io/TypeHiearchy.pdf
 	// Composite Type Categories
+	static_assert(not std::is_fundamental_v<typeT>);
 	static_assert(std::is_compound_v<typeT>);
 	static_assert(std::is_object_v<typeT>);
-	// Primary Type Categories
-	static_assert(std::is_class_v<typeT>);
-	// Type Properties
-	static_assert(not std::is_volatile_v<typeT>);
 
+	static_assert(not std::is_scalar_v<typeT>);
+	static_assert(not std::is_array_v<typeT>);
+	static_assert(not std::is_union_v<typeT>);
+	static_assert(std::is_class_v<typeT>);
+	static_assert(not std::is_reference_v<typeT>);
+	static_assert(not std::is_function_v<typeT>);
+	// Type Properties
+	static_assert(not std::is_const_v<typeT>);
+	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-	// static_assert(not std::is_trivially_copyable_v<typeT>); // Clang
-	// Debug can be converted with reinterpret_cast
+	static_assert(not std::is_trivially_copyable_v<typeT>);
+	static_assert(not std::is_trivially_default_constructible_v<typeT>);
+	static_assert(not std::has_unique_object_representations_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
-	static_assert(not std::is_final_v<typeT>);
-	static_assert(not std::is_abstract_v<typeT>);
-	// static_assert(not std::is_aggregate_v<typeT>); // C++17
+	static_assert(not std::is_aggregate_v<typeT>);
 } // namespace type_properties
 
 namespace constructors
@@ -887,6 +901,7 @@ TEST(Multipass, empty_base_2)
 	EXPECT_EQ(answers.size(), 12u);
 }
 
+//! NOTE: way to much options to run.
 // TEST(Multipass, empty_base_3)
 //{
 //	Board<Value, 3> empty{};
@@ -953,11 +968,10 @@ TEST(Multipass, guess)
 	using ::Sudoku::impl::worker_Board;
 
 	::Sudoku::Multipass_Base<2> base;
-	static_assert(noexcept(guess(base, worker_Board<2>{})));
+	static_assert(noexcept(guess(base, worker_Board<2>())));
 	ASSERT_TRUE(base.finished());
 	// add_to_queue() & available() can result in an out of memory exception.
-	// A programming error in available could cause a different exception in
-	// singe_option.
+	// single_option should not throw, outside programming errors in available.
 
 	// all possible options are valid
 	Board<Options<4>, 2> B_empty;
@@ -968,8 +982,7 @@ TEST(Multipass, guess)
 	{
 		++counter;
 		auto item = base.get_from_queue();
-		// reported changes
-		EXPECT_EQ(item.value().changes, 11);
+		EXPECT_EQ(item.value().changes, 11); // reported changes
 	}
 	EXPECT_EQ(counter, 4); // number of boards added to the queue
 
