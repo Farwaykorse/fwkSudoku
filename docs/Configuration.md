@@ -284,6 +284,8 @@ Use `-Xclang ` before a command to actually force it to the compiler.
 
 *All configurations*:
 `````
+Use lld-link: No // not working with vcpkg (llvm v7.0.0).
+
 /std:c++latest        sets: -std=c++2a
   /std:c++17          sets: -std=c++17
   -Xclang -std=c++17  Set language version to C++17
