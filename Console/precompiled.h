@@ -11,13 +11,14 @@
 //===---------------------------------------------------------------------===//
 #pragma once
 
+#if defined(_WIN64)
 #include "targetver.h"
+#endif // _WIN64
 
 // console
 #include <cstdio>
-#include <tchar.h>
 
-#define _setargv 0 // disable commandline arguments
+#define _setargv 0 // disable command-line arguments
 #define _setenvp 0 // disable environmental table
 
 // reference additional headers your program requires here

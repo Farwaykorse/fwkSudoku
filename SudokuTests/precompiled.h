@@ -13,7 +13,6 @@
 
 // console requirements
 #include <cstdio>
-#include <tchar.h>
 
 // Main library
 #include <gtest/gtest.h>
