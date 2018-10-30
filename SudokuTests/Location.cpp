@@ -27,8 +27,13 @@ namespace compiletime
 	using typeT = Location<3>;
 	static_assert(std::is_class_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-	//! different between VC++ / Clang
-	// static_assert(not std::is_trivially_copyable_v<typeT>);
+#if defined (__clang__) || defined(__GNUC__)
+	static_assert(std::is_trivially_copyable_v<typeT>);
+	static_assert(std::has_unique_object_representations_v<typeT>);
+#else
+	static_assert(not std::is_trivially_copyable_v<typeT>);
+	static_assert(not std::has_unique_object_representations_v<typeT>);
+#endif // __clang__
 	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
@@ -111,8 +116,12 @@ namespace Location_Block_compiletime
 	using typeT = Location_Block<3>;
 	static_assert(std::is_class_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-	//! different between VC++ / Clang
-	// static_assert(not std::is_trivially_copyable_v<typeT>);
+#if defined(__GNUC__)
+	static_assert(std::is_trivially_copyable_v<typeT>);
+	static_assert(std::has_unique_object_representations_v<typeT>);
+#else
+	static_assert(not std::has_unique_object_representations_v<typeT>);
+#endif // __GNUC__
 	static_assert(std::is_standard_layout_v<typeT>);
 	// can be converted with reinterpret_cast
 	static_assert(not std::is_empty_v<typeT>);
