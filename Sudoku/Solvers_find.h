@@ -31,11 +31,11 @@ namespace Sudoku
 //===----------------------------------------------------------------------===//
 template<int N, typename SectionT>
 [[nodiscard]] auto
-	list_where_option(SectionT, Value, int rep_count = elem_size<N>);
+	list_where_option(SectionT, Value, ptrdiff_t rep_count = elem_size<N>);
 
 template<int N, typename ItrT>
 [[nodiscard]] auto list_where_option(
-	ItrT begin, ItrT end, Value, std::ptrdiff_t rep_count = 0);
+	ItrT begin, ItrT end, Value, ptrdiff_t rep_count = 0);
 
 template<int N, typename SectionT, typename Options = Options<elem_size<N>>>
 [[nodiscard]] auto
@@ -75,7 +75,7 @@ template<int N, typename InItr_>
 // List locations in [section] where [value] is an option
 template<int N, typename SectionT>
 inline auto list_where_option(
-	const SectionT section, Value value, const int rep_count /*= elem_size<N>*/)
+	const SectionT section, Value value, const ptrdiff_t rep_count /*= elem_size<N>*/)
 {
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
@@ -93,7 +93,7 @@ auto list_where_option(
 	const ItrT begin,
 	const ItrT end,
 	const Value value,
-	std::ptrdiff_t rep_count /*= 0*/)
+	ptrdiff_t rep_count /*= 0*/)
 {
 	using Options = Options<elem_size<N>>;
 	{

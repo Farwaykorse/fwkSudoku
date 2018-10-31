@@ -34,6 +34,7 @@ class Board
 	static_assert(N > 1, "Board.h base_size value too small");
 	static constexpr auto Size = size_t{full_size<N>};
 
+	using index       = gsl::index;
 	using Location    = ::Sudoku::Location<N>;
 	using Row         = Board_Section::Row<T, N>;
 	using const_Row   = Board_Section::const_Row<T, N>;
@@ -45,7 +46,7 @@ class Board
 public:
 	using value_type             = T;
 	using size_type              = size_t;
-	using difference_type        = int;
+	using difference_type        = std::ptrdiff_t;
 	using reference              = value_type&;
 	using const_reference        = value_type const&;
 	using pointer                = value_type*;
@@ -75,18 +76,18 @@ public:
 	// Checked
 	T& at(Location);
 	const T& at(Location) const;
-	T& at(int row, int col);
-	const T& at(int row, int col) const;
-	[[deprecated]] T& at(int elem);
-	[[deprecated]] const T& at(int elem) const;
+	T& at(index row, index col);
+	const T& at(index row, index col) const;
+	[[deprecated]] T& at(index elem);
+	[[deprecated]] const T& at(index elem) const;
 	// Unchecked
 	T& operator[](Location) noexcept;
 	const T& operator[](Location) const noexcept;
 
 	// Element Selection Operator (using a proxy object)
 	//   usable as [row][col] where col is processed by the (const_)Row
-	Row operator[](int row_id) noexcept { return row(row_id); }
-	const_Row operator[](int row_id) const noexcept { return row(row_id); }
+	Row operator[](index row_id) noexcept { return row(row_id); }
+	const_Row operator[](index row_id) const noexcept { return row(row_id); }
 
 
 	// Iterators
@@ -108,18 +109,18 @@ public:
 
 	// Sections
 	// clang-format off
-	Row         row(int id) noexcept         { return Row(*this, id); }
-	const_Row   row(int id) const noexcept   { return const_Row(*this, id); }
+	Row         row(index id) noexcept       { return Row(*this, id); }
+	const_Row   row(index id) const noexcept { return const_Row(*this, id); }
 	Row         row(Location loc) noexcept   { return Row(*this, loc); }
 	const_Row   row(Location loc) const noexcept
 											 { return const_Row(*this, loc); }
-	Col         col(int id) noexcept         { return Col(*this, id); }
-	const_Col   col(int id) const noexcept   { return const_Col(*this, id); }
+	Col         col(index id) noexcept       { return Col(*this, id); }
+	const_Col   col(index id) const noexcept { return const_Col(*this, id); }
 	Col         col(Location loc) noexcept   { return Col(*this, loc); }
 	const_Col   col(Location loc) const noexcept
 											 { return const_Col(*this, loc); }
-	Block       block(int id) noexcept       { return Block(*this, id); }
-	const_Block block(int id) const noexcept { return const_Block(*this, id); }
+	Block       block(index id) noexcept     { return Block(*this, id); }
+	const_Block block(index id) const noexcept{ return const_Block(*this, id); }
 	Block       block(Location loc) noexcept { return Block(*this, loc); }
 	const_Block block(Location loc) const noexcept
 											 { return const_Block(*this, loc); }
@@ -208,7 +209,7 @@ const T& Board<T, N>::at(const Location loc) const
 }
 
 template<typename T, int N>
-T& Board<T, N>::at(const int row, const int col)
+T& Board<T, N>::at(const index row, const index col)
 {
 	if (!is_valid_size<N>(row, col))
 	{
@@ -218,7 +219,7 @@ T& Board<T, N>::at(const int row, const int col)
 }
 
 template<typename T, int N>
-const T& Board<T, N>::at(const int row, const int col) const
+const T& Board<T, N>::at(const index row, const index col) const
 {
 	if (!is_valid_size<N>(row, col))
 	{
@@ -229,7 +230,7 @@ const T& Board<T, N>::at(const int row, const int col) const
 
 // deprecated
 template<typename T, int N>
-T& Board<T, N>::at(const int elem)
+T& Board<T, N>::at(const index elem)
 {
 	if (!is_valid_size<N>(elem))
 	{
@@ -240,7 +241,7 @@ T& Board<T, N>::at(const int elem)
 
 // deprecated
 template<typename T, int N>
-const T& Board<T, N>::at(const int elem) const
+const T& Board<T, N>::at(const index elem) const
 {
 	if (!is_valid_size<N>(elem))
 	{

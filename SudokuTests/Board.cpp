@@ -149,7 +149,7 @@ namespace compiletime
 	static_assert(std::is_same_v<Board<Options<4>, 2>::value_type, Options<4>>);
 	static_assert(std::is_same_v<typeT::value_type const, const int>);
 	static_assert(std::is_same_v<typeT::size_type, decltype(typeT::size())>);
-	static_assert(std::is_same_v<typeT::difference_type, int>);
+	static_assert(std::is_same_v<typeT::difference_type, std::ptrdiff_t>);
 	static_assert(std::is_same_v<typeT::reference, int&>);
 	static_assert(std::is_same_v<typeT::const_reference, int const&>);
 	static_assert(std::is_same_v<typeT::pointer, int*>);

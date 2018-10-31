@@ -26,6 +26,7 @@ namespace Sudoku::Board_Section
 template<typename T, int N, Section S, bool is_const>
 class [[nodiscard]] Board_Section_
 {
+	using index          = gsl::index;
 	using Location       = ::Sudoku::Location<N>;
 	using Location_Block = ::Sudoku::Location_Block<N>;
 	using OwnerT =
@@ -65,7 +66,7 @@ public:
 		bool B,
 		typename = std::enable_if_t<!B || B == is_const>>
 	constexpr Board_Section_(
-		Board_Section_<T, N, Sx, B> other, int pivot_elem) noexcept
+		Board_Section_<T, N, Sx, B> other, index pivot_elem) noexcept
 		: board_(other.board_), id_(to_id(other.location(pivot_elem)))
 	{
 	}
@@ -76,21 +77,21 @@ public:
 	}
 
 	[[nodiscard]] static constexpr int size() noexcept { return elem_size<N>; }
-	[[nodiscard]] gsl::index id() const noexcept { return id_; }
-	[[nodiscard]] constexpr Location location(int elem) const noexcept;
+	[[nodiscard]] index id() const noexcept { return id_; }
+	[[nodiscard]] constexpr Location location(index elem) const noexcept;
 
 	[[nodiscard]] reference front() noexcept { return (*this)[0]; }
 	[[nodiscard]] reference back() noexcept { return (*this)[size() - 1]; }
-	[[nodiscard]] reference operator[](const int elem) noexcept
+	[[nodiscard]] reference operator[](const index elem) noexcept
 	{
 		return board_[location(elem)];
 	}
-	[[nodiscard]] T const& operator[](const int elem) const noexcept
+	[[nodiscard]] T const& operator[](const index elem) const noexcept
 	{
 		return board_[location(elem)];
 	}
 	// Checked access
-	[[nodiscard]] reference at(const int elem);
+	[[nodiscard]] reference at(const index elem);
 
 	constexpr iterator begin() noexcept { return iterator(&board_, id_, 0); }
 	constexpr iterator end() noexcept { return iterator(&board_, id_, size()); }
@@ -140,18 +141,18 @@ private:
 // Checked access
 template<typename T, int N, Section S, bool is_const>
 [[nodiscard]] inline typename Board_Section_<T, N, S, is_const>::reference
-	Board_Section_<T, N, S, is_const>::at(const int elem)
+	Board_Section_<T, N, S, is_const>::at(const index elem)
 {
 	if (!is_valid_size<N>(elem))
 	{
-		throw error::invalid_Location{"Board_Section::at(int elem)"};
+		throw error::invalid_Location{"Board_Section::at(elem)"};
 	}
 	return board_.at(location(elem));
 }
 
 template<typename T, int N, Section S, bool is_const>
 [[nodiscard]] constexpr Location<N>
-	Board_Section_<T, N, S, is_const>::location(int elem) const noexcept
+	Board_Section_<T, N, S, is_const>::location(index elem) const noexcept
 {
 	assert(is_valid_size<N>(elem));
 	switch (S)
