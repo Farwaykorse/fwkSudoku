@@ -56,9 +56,9 @@ class Multipass_Base
 	std::vector<Board_ptr> answers;
 
 public:
-	Multipass_Base()                 = default;
-	Multipass_Base(Multipass_Base&&) = default;
-	Multipass_Base& operator=(Multipass_Base&&) = default;
+	Multipass_Base()                          = default;
+	Multipass_Base(Multipass_Base&&) noexcept = default;
+	Multipass_Base& operator=(Multipass_Base&&) noexcept = default;
 
 	explicit Multipass_Base(Board<Options, N> const&) noexcept(true);
 	explicit Multipass_Base(Board<Value, N> const&);
