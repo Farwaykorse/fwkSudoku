@@ -69,7 +69,7 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 *All configurations*:
 ```
 /I$(SolutionDir)   Adding the solution directory to the include path.
-                   Therefor allowing use of `#include <Sudoku/Board.h>`.
+                   Therefore allowing use of `#include <Sudoku/Board.h>`.
 /std:c++17         ISO C++ 17 standard
 /sdl               Enable SDL checks, additional warnings focused on security
 /MP                Multiprocessor compilation (Do not use /Gm)
@@ -300,6 +300,8 @@ Use lld-link: No // not working with vcpkg (llvm v7.0.0).
 `````
 *Debug configurations*:
 `````
+Support Just My Code = false
+  // Not supported in v7.0.0. (Enabled by default for debug builds.)
 /Zi        alias for /Z7 CodeView debug information in object files (no pdb)
 `````
 *Release configurations*:  
