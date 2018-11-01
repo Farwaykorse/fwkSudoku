@@ -30,7 +30,7 @@ static void
 	constexpr int reruns{10};   // reruns (fastest are summed)
 #endif // _DEBUG
 	using time     = std::chrono::time_point<std::chrono::steady_clock>;
-	using duration = std::chrono::duration<long long, std::nano>;
+	using duration = std::chrono::duration<int64_t, std::nano>;
 
 	Sudoku::Board<Sudoku::Options<9>, 3> options{};
 	{
