@@ -31,9 +31,9 @@ Board<T, N> transpose_row_col(const Board<T, N>& input) noexcept(
 	else
 	{
 		Board<T, N> result{};
-		for (int i{}; i < elem_size<N>; ++i)
+		for (gsl::index i{}; i < elem_size<N>; ++i)
 		{
-			for (int j{}; j < elem_size<N>; ++j)
+			for (gsl::index j{}; j < elem_size<N>; ++j)
 			{
 				result[Location<N>{i, j}] = input[Location<N>{j, i}];
 			}
@@ -58,9 +58,9 @@ Board<T, N> transpose_row_block(const Board<T, N>& input) noexcept(
 	else
 	{
 		Board<T, N> result{};
-		for (int section{}; section < elem_size<N>; ++section)
+		for (gsl::index section{}; section < elem_size<N>; ++section)
 		{
-			for (int elem{}; elem < elem_size<N>; ++elem)
+			for (gsl::index elem{}; elem < elem_size<N>; ++elem)
 			{
 				result[Location<N>{section, elem}] =
 					input[Location_Block<N>{section, elem}];
@@ -77,9 +77,9 @@ Board<T, N> transpose_row_col(Board<T, N>&& board) noexcept(
 {
 	static_assert(std::is_swappable_v<T>);
 
-	for (int i{0}; i < elem_size<N>; ++i)
+	for (gsl::index i{0}; i < elem_size<N>; ++i)
 	{
-		for (int j{i + 1}; j < elem_size<N>; ++j)
+		for (gsl::index j{i + 1}; j < elem_size<N>; ++j)
 		{
 			std::swap(board[Location<N>{i, j}], board[Location<N>{j, i}]);
 		}
@@ -98,7 +98,7 @@ Board<T, N> transpose_row_block(Board<T, N>&& board) noexcept(
 		{
 			return (x % base_size<N> + 1) * base_size<N>;
 		};
-		for (int j = start(i); j < elem_size<N>; ++j)
+		for (gsl::index j = start(i); j < elem_size<N>; ++j)
 		{
 			std::swap(board[Location_Block<N>{i, j}], board[Location<N>{i, j}]);
 		}
