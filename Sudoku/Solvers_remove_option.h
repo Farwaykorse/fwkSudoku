@@ -212,8 +212,8 @@ int remove_option_section(
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
 		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
-		assert(!mask.all());
-		assert(!mask.is_empty());
+		assert(!values.all());
+		assert(!values.is_empty());
 		assert(is_same_section(section, ignore));
 	}
 	int changes{0};
