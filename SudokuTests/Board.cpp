@@ -380,6 +380,9 @@ TEST(Board, access_front_back)
 	EXPECT_EQ(B.back(), 15);
 	EXPECT_EQ(cB.front(), 5);
 	EXPECT_EQ(cB.back(), 7);
+	// constexpr use
+	static_assert(cB.front() == 5);
+	static_assert(cB.back() == 7);
 
 	// Write
 	static_assert(noexcept(B.front() = 9));

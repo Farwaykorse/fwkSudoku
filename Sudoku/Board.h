@@ -58,7 +58,7 @@ public:
 
 	constexpr Board() noexcept;
 	explicit constexpr Board(const T& default_value);
-	constexpr Board(std::array<T,Size> const& list) : board_(list) {}
+	constexpr Board(std::array<T, Size> const& list) : board_(list) {}
 	Board(std::initializer_list<T>); // construct from initializer_list
 
 	void clear();
@@ -70,10 +70,16 @@ public:
 	[[nodiscard]] bool operator==(const Board&) const;
 
 	// Element access
-	[[nodiscard]] T& front() noexcept { return board_[0]; }
-	[[nodiscard]] const T& front() const noexcept { return board_[0]; }
-	[[nodiscard]] T& back() noexcept { return board_[size() - 1]; }
-	[[nodiscard]] const T& back() const noexcept { return board_[size() - 1]; }
+	[[nodiscard]] constexpr T& front() noexcept { return board_.front(); }
+	[[nodiscard]] constexpr T const& front() const noexcept
+	{
+		return board_.front();
+	}
+	[[nodiscard]] constexpr T& back() noexcept { return board_.back(); }
+	[[nodiscard]] constexpr T const& back() const noexcept
+	{
+		return board_.back();
+	}
 	// Checked
 	T& at(Location);
 	const T& at(Location) const;
