@@ -18,8 +18,8 @@
 #include "exceptions.h"
 
 #include <gsl/gsl>
+#include <array>
 #include <initializer_list>
-#include <vector>
 #include <cassert>
 
 // Forward declarations
@@ -56,8 +56,9 @@ public:
 	using reverse_iterator       = reverse_Board_iterator<T, N>;
 	using const_reverse_iterator = const_reverse_Board_iterator<T, N>;
 
-	Board() noexcept;
-	explicit Board(const T& default_value);
+	constexpr Board() noexcept;
+	explicit constexpr Board(const T& default_value);
+	constexpr Board(std::array<T,Size> const& list) : board_(list) {}
 	Board(std::initializer_list<T>); // construct from initializer_list
 
 	void clear();
@@ -127,7 +128,7 @@ public:
 	// clang-format on
 
 private:
-	std::vector<T> board_{};
+	std::array<T, Size> board_{};
 
 }; // class Board
 
@@ -144,29 +145,25 @@ constexpr bool operator!=(Board<T, N> const& left, Board<T, N> const& right)
 //===----------------------------------------------------------------------===//
 // Board - Constructors
 template<typename T, int N>
-Board<T, N>::Board() noexcept : board_(full_size<N>)
+constexpr Board<T, N>::Board() noexcept
 {
 	valid_dimensions<N>();
-	assert(board_.size() == size());
-	assert(board_.capacity() == size());
 }
 
 template<typename T, int N>
-Board<T, N>::Board(const T& default_value) : board_(full_size<N>, default_value)
+constexpr Board<T, N>::Board(const T& default_value)
 {
 	valid_dimensions<N>();
-	assert(board_.size() == size());
-	assert(board_.capacity() == size());
+	board_.fill(default_value);
 }
 
 template<typename T, int N>
-Board<T, N>::Board(std::initializer_list<T> list) : board_(list)
+Board<T, N>::Board(std::initializer_list<T> list)
 {
+	valid_dimensions<N>();
 	assert(list.size() == size_t{full_size<N>});
 	// TODO exception on invalid length
-	valid_dimensions<N>();
-	assert(board_.size() == size());
-	assert(board_.capacity() == size());
+	std::copy(std::begin(list), std::end(list), std::begin(board_));
 }
 
 //===----------------------------------------------------------------------===//
@@ -182,8 +179,7 @@ bool Board<T, N>::operator==(const Board& other) const
 template<typename T, int N>
 inline void Board<T, N>::clear()
 { // all elements to the empty value
-	board_.clear();
-	board_.resize(size());
+	board_.fill(T{});
 }
 
 //===----------------------------------------------------------------------===//
