@@ -81,15 +81,15 @@ public:
 		return board_.back();
 	}
 	// Checked
-	T& at(Location);
-	const T& at(Location) const;
-	T& at(index row, index col);
-	const T& at(index row, index col) const;
+	constexpr T& at(Location);
+	constexpr T const& at(Location) const;
+	constexpr T& at(index row, index col);
+	constexpr T const& at(index row, index col) const;
 	[[deprecated]] T& at(index elem);
 	[[deprecated]] const T& at(index elem) const;
 	// Unchecked
-	T& operator[](Location) noexcept;
-	const T& operator[](Location) const noexcept;
+	constexpr T& operator[](Location) noexcept;
+	constexpr T const& operator[](Location) const noexcept;
 
 	// Element Selection Operator (using a proxy object)
 	//   usable as [row][col] where col is processed by the (const_)Row
@@ -191,7 +191,7 @@ inline void Board<T, N>::clear()
 //===----------------------------------------------------------------------===//
 // Board - element access
 template<typename T, int N>
-T& Board<T, N>::at(const Location loc)
+constexpr T& Board<T, N>::at(const Location loc)
 {
 	if (!is_valid<N>(loc))
 	{
@@ -201,7 +201,7 @@ T& Board<T, N>::at(const Location loc)
 }
 
 template<typename T, int N>
-const T& Board<T, N>::at(const Location loc) const
+constexpr T const& Board<T, N>::at(const Location loc) const
 {
 	if (!is_valid<N>(loc))
 	{
@@ -211,7 +211,7 @@ const T& Board<T, N>::at(const Location loc) const
 }
 
 template<typename T, int N>
-T& Board<T, N>::at(const index row, const index col)
+constexpr T& Board<T, N>::at(const index row, const index col)
 {
 	if (!is_valid_size<N>(row, col))
 	{
@@ -221,7 +221,7 @@ T& Board<T, N>::at(const index row, const index col)
 }
 
 template<typename T, int N>
-const T& Board<T, N>::at(const index row, const index col) const
+constexpr T const& Board<T, N>::at(const index row, const index col) const
 {
 	if (!is_valid_size<N>(row, col))
 	{
@@ -253,13 +253,13 @@ const T& Board<T, N>::at(const index elem) const
 }
 
 template<typename T, int N>
-T& Board<T, N>::operator[](Location loc) noexcept
+constexpr T& Board<T, N>::operator[](Location loc) noexcept
 {
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
 
 template<typename T, int N>
-const T& Board<T, N>::operator[](Location loc) const noexcept
+constexpr T const& Board<T, N>::operator[](Location loc) const noexcept
 {
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }

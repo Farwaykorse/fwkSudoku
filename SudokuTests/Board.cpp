@@ -399,8 +399,14 @@ TEST(Board, access_checked)
 
 	// at(Location)
 	Board<int, 2> B1{};
+#if defined(__clang__)
 	static_assert(not noexcept(B1.at(Location<2>(0)) = 2));
 	static_assert(not noexcept(B1.at(Location<2>(0)) == 2));
+#else
+	static_assert(noexcept(B1.at(Location<2>(0)) = 2));
+	static_assert(noexcept(B1.at(Location<2>(0)) == 2));
+#endif // __clang__
+	static_assert(not noexcept(B1.at(Location<2>(20)) == 2));
 	static_assert(std::is_same_v<int&, decltype(B1.at(Location<2>(2)))>);
 	EXPECT_THROW({ B1.at(Location<2>{17}) = 3; }, invalid_Location);
 	EXPECT_THROW({ B1.at(Location<2>{4, 0}) = 2; }, invalid_Location);
@@ -424,7 +430,12 @@ TEST(Board, access_checked)
 	// at(Location) const
 	const Board<int, 2> cB = std::array<int, 16>{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+#if defined(__clang__)
 	static_assert(not noexcept(cB.at(Location<2>(0)) == 1));
+#else
+	static_assert(noexcept(cB.at(Location<2>(0)) == 1));
+#endif // __clang__
+	static_assert(not noexcept(cB.at(Location<2>(20)) == 1));
 	static_assert(std::is_same_v<int const&, decltype(cB.at(Location<2>(2)))>);
 	EXPECT_EQ(cB.at(Location<2>(2)), 2) << "at(Location) const";
 	EXPECT_THROW(cB.at(Location<2>(16)), invalid_Location);
@@ -435,7 +446,12 @@ TEST(Board, access_checked)
 
 	// at(row, col)
 	// at(row, col)
+#if defined(__clang__)
 	static_assert(not noexcept(B1.at(0, 1) == 1));
+#else
+	static_assert(noexcept(B1.at(0, 1) == 1));
+#endif // __clang__
+	static_assert(not noexcept(B1.at(5, 1) == 1));
 	EXPECT_THROW(B1.at(1, 4), invalid_Location);
 	EXPECT_THROW(B1.at(1, 4), std::out_of_range);
 	EXPECT_THROW(B1.at(4, 0), invalid_Location);
@@ -454,7 +470,12 @@ TEST(Board, access_checked)
 	EXPECT_THROW(B1.at(1, -2), invalid_Location);
 	// at(Location) const
 	EXPECT_NO_THROW(cB.at(2, 1));
+#if defined(__clang__)
 	static_assert(not noexcept(cB.at(0, 1) == 1));
+#else
+	static_assert(noexcept(cB.at(0, 1) == 1));
+#endif // __clang__
+	static_assert(not noexcept(cB.at(0, 9) == 1));
 	EXPECT_THROW(cB.at(1, 4), invalid_Location);
 	EXPECT_THROW(cB.at(4, 0), invalid_Location);
 	EXPECT_THROW(cB.at(-1, 0), invalid_Location);
@@ -467,7 +488,7 @@ TEST(Board, access_checked)
 TEST(Board, access_unchecked)
 {
 	Board<int, 2> B{};
-	const Board<int, 2> cB = std::array<int, 16>{
+	constexpr Board<int, 2> cB = std::array<int, 16>{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	// operator[](Location)
 	static_assert(noexcept(B[Location<2>(0)]));
@@ -487,6 +508,10 @@ TEST(Board, access_unchecked)
 	EXPECT_EQ(B[Location<2>(1)], 1);
 	static_assert(noexcept(cB[Location<2>(0)] == 1));
 	EXPECT_EQ(cB[Location<2>(5)], 5);
+
+	static_assert(cB[Location<2>(0)] == 0);
+	static_assert(cB[Location<2>(5)] == 5);
+	static_assert(cB[Location<2>(2, 1)] == 9);
 }
 
 TEST(Board, clear)
