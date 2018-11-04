@@ -205,7 +205,7 @@ int remove_option_section(
 	Board<Options, N>& board,
 	const SectionT section,
 	const std::vector<Location<N>>& ignore,
-	const Options& mask)
+	const Options& values)
 {
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
@@ -227,7 +227,7 @@ int remove_option_section(
 				return L1 == L2;
 			})) // <algorithm>
 		{
-			changes += remove_option(board, itr.location(), mask);
+			changes += remove_option(board, itr.location(), values);
 		}
 	}
 	return changes;
