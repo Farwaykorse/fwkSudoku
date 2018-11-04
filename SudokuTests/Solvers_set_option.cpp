@@ -209,7 +209,6 @@ TEST(Solver, set_section_locals)
 	// int set_section_locals(section, rep_count, worker)
 	using set = std::bitset<5>;
 	Board<Options<4>, 2> B{};
-	Board<Options<4>, 2> cB{B};
 
 	B[0][0] = Value{3};
 	B.clear();

@@ -200,12 +200,12 @@ TEST(Board, Construction)
 	{
 		SCOPED_TRACE("Copy Constructor : Board(const Board&)");
 		const Board<int, 2> D_2{};
-		const Board<int, 2> Opt{D_2};          // copy construct
-		EXPECT_NO_THROW((Board<int, 2>(D_2))); // copy construct
+		[[maybe_unused]] const Board<int, 2> Opt{D_2}; // copy construct
+		EXPECT_NO_THROW((Board<int, 2>(D_2)));         // copy construct
 		EXPECT_EQ((Board<int, 2>(D_2)), D_2);
 
 		const Board<int, 3> D_3;
-		EXPECT_NO_THROW(Board<int> Opt2 = D_3);
+		EXPECT_NO_THROW([[maybe_unused]] Board<int> Opt2 = D_3);
 	}
 	{
 		SCOPED_TRACE("Copy Assignment : Board& operator=(const Board&)");
@@ -218,8 +218,9 @@ TEST(Board, Construction)
 		SCOPED_TRACE("Move Constructor : Board(Board&&)");
 		EXPECT_NO_THROW((Board<int, 2>(Board<int, 2>())));
 
-		EXPECT_NO_THROW(Board<int> Opt = (Board<int, 3>()));
-		EXPECT_NO_THROW(auto Opt = (Board<int, 2>())); // move construct
+		EXPECT_NO_THROW([[maybe_unused]] Board<int> Opt = (Board<int, 3>()));
+		EXPECT_NO_THROW(
+			[[maybe_unused]] auto Opt = (Board<int, 2>())); // move construct
 	}
 	{
 		SCOPED_TRACE("Move Assign : Board& operator=(Board&&)");
