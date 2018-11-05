@@ -369,6 +369,7 @@ TEST(Board, access_front_back)
 	Board<int, 2> B = std::array<int, 16>{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	constexpr Board<int, 2> cB = list;
+	constexpr Board<int, 2> empty{};
 	// Read
 	static_assert(noexcept(B.front() == 9));
 	static_assert(noexcept(B.back() == 9));
@@ -384,6 +385,8 @@ TEST(Board, access_front_back)
 	// constexpr use
 	static_assert(cB.front() == 5);
 	static_assert(cB.back() == 7);
+	static_assert(empty.front() == 0);
+	static_assert(empty.back() == 0);
 
 	// Write
 	static_assert(noexcept(B.front() = 9));
@@ -428,15 +431,20 @@ TEST(Board, access_checked)
 	EXPECT_THROW(B1.at(Location<2>(-1)), std::out_of_range);
 	EXPECT_THROW(B1.at(Location<2>(-1)), invalid_Location);
 
-	// at(Location) const
+	// at(Location) const(expr)
 	const Board<int, 2> cB = std::array<int, 16>{
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	constexpr Board<int, 2> cexprB = std::array<int, 16>{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 #if defined(__clang__)
 	static_assert(not noexcept(cB.at(Location<2>(0)) == 1));
+	static_assert(not noexcept(cexprB.at(Location<2>(0)) == 1));
 #else
 	static_assert(noexcept(cB.at(Location<2>(0)) == 1));
+	static_assert(noexcept(cexprB.at(Location<2>(0)) == 1));
 #endif // __clang__
 	static_assert(not noexcept(cB.at(Location<2>(20)) == 1));
+	static_assert(not noexcept(cexprB.at(Location<2>(20)) == 1));
 	static_assert(std::is_same_v<int const&, decltype(cB.at(Location<2>(2)))>);
 	EXPECT_EQ(cB.at(Location<2>(2)), 2) << "at(Location) const";
 	EXPECT_THROW(cB.at(Location<2>(16)), invalid_Location);
@@ -534,9 +542,10 @@ TEST(Board, clear)
 }
 
 TEST(Board, InBetween)
-{
-	Board<int, 2> board = std::array<int, 16>{
+{ // Implemented in terms of Board_Section::Row()
+	constexpr Board<int, 2> cboard = std::array<int, 16>{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	Board<int, 2> board{cboard};
 	static_assert(noexcept(board[0][0]));
 	static_assert(noexcept(board[4][5]));
 	static_assert(noexcept(board[-4][-5]));
@@ -555,14 +564,15 @@ TEST(Board, InBetween)
 	EXPECT_NE(board2[2][0], Value{1});
 
 	// const_InBetween
-	const Board<int, 2> cboard = std::array<int, 16>{
-		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	static_assert(noexcept(cboard[0][0]));
 	static_assert(noexcept(cboard[4][5]));
 	EXPECT_EQ(cboard[0][0], 0);
 	EXPECT_EQ(cboard[2][0], 8);
 	EXPECT_EQ(cboard[3][3], 15);
 	EXPECT_NE(cboard[3][3], 10);
+	static_assert(cboard[0][0] == 0);
+	static_assert(cboard[2][0] == 8);
+	static_assert(cboard[3][3] == 15);
 }
 
 } // namespace SudokuTests::BoardTest

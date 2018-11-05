@@ -94,8 +94,10 @@ public:
 	// Element Selection Operator (using a proxy object)
 	//   usable as [row][col] where col is processed by the (const_)Row
 	Row operator[](index row_id) noexcept { return row(row_id); }
-	const_Row operator[](index row_id) const noexcept { return row(row_id); }
-
+	constexpr const_Row operator[](index row_id) const noexcept
+	{
+		return row(row_id);
+	}
 
 	// Iterators
 	constexpr iterator begin() noexcept;
@@ -116,21 +118,24 @@ public:
 
 	// Sections
 	// clang-format off
-	Row         row(index id) noexcept       { return Row(*this, id); }
-	const_Row   row(index id) const noexcept { return const_Row(*this, id); }
-	Row         row(Location loc) noexcept   { return Row(*this, loc); }
-	const_Row   row(Location loc) const noexcept
-											 { return const_Row(*this, loc); }
-	Col         col(index id) noexcept       { return Col(*this, id); }
-	const_Col   col(index id) const noexcept { return const_Col(*this, id); }
-	Col         col(Location loc) noexcept   { return Col(*this, loc); }
-	const_Col   col(Location loc) const noexcept
-											 { return const_Col(*this, loc); }
-	Block       block(index id) noexcept     { return Block(*this, id); }
-	const_Block block(index id) const noexcept{ return const_Block(*this, id); }
-	Block       block(Location loc) noexcept { return Block(*this, loc); }
-	const_Block block(Location loc) const noexcept
-											 { return const_Block(*this, loc); }
+	Row row(index id) noexcept         { return Row(*this, id); }
+	constexpr const_Row   row(index id) const noexcept
+									   { return const_Row(*this, id); }
+	Row row(Location loc) noexcept     { return Row(*this, loc); }
+	constexpr const_Row   row(Location loc) const noexcept
+									   { return const_Row(*this, loc); }
+	Col col(index id) noexcept         { return Col(*this, id); }
+	constexpr const_Col   col(index id) const noexcept
+									   { return const_Col(*this, id); }
+	Col col(Location loc) noexcept     { return Col(*this, loc); }
+	constexpr const_Col   col(Location loc) const noexcept
+									   { return const_Col(*this, loc); }
+	Block block(index id) noexcept     { return Block(*this, id); }
+	constexpr const_Block block(index id) const noexcept
+									   { return const_Block(*this, id); }
+	Block block(Location loc) noexcept { return Block(*this, loc); }
+	constexpr const_Block block(Location loc) const noexcept
+									   { return const_Block(*this, loc); }
 	// clang-format on
 
 private:
