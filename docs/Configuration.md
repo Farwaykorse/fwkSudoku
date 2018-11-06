@@ -18,6 +18,7 @@ Any other deviations should be considered configuration errors.
 - [Compiler Settings](#compilers)
   - [MSVC](#msvc)
   - [Clang](#clang)
+  - [Intel C++](#intel)
 - [Static Analysers](#analysers)
   - [MSVC static analyser]
   - [Clang-Tidy]
@@ -338,6 +339,46 @@ Disable (temporary) unwanted/incompatible warnings:
 -Wno-c++98-compat    (Weverything) Compatibility with C++98 is not needed
 -Wno-c++98-compat-pedantic
 ``````
+
+<!-----------------------------------------------------------><a id="intel"></a>
+### Intel C++ ###
+<!----------------------------------------------------------------------------->
+MS Build configurations:
+- IntelDebug x64
+- IntelRelease x64
+- IntelDebug x86
+- IntelRelease x86
+
+#### Basic Settings ####
+
+*All configurations*:
+```
+/MP             Multiprocessor compilation
+/GR-            Disable RTTI
+/permissive-
+/Qstd=c++17     Intel C++17 implementation.
+```
+*Debug configurations*:
+`````
+/debug:expr-source-pos
+`````
+*Release configurations*:
+````
+/O3         Highest optimization level
+/Oi         Enable intrinsics
+/guard:cf   Enable control-flow guards
+/MT         Multi-threaded static runtime library
+````
+#### Enable Warnings: ####
+<!----------------------------------------------------------------------------->
+*All configurations*:
+````
+/W5         Warning level 5  Intel specific.
+````
+*DisableSpecificWarnings*:
+/Qdiag-disable:<id>[,<id>]
+- 3924  (precompiled.cpp) attribute namespace "gsl" is unrecognised
+
 
 <!-------------------------------------------------------><a id="analysers"></a>
 ## Static Analysers ##

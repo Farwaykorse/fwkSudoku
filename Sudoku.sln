@@ -40,6 +40,10 @@ Global
 		ClangTidy|x86 = ClangTidy|x86
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		IntelDebug|x64 = IntelDebug|x64
+		IntelDebug|x86 = IntelDebug|x86
+		IntelRelease|x64 = IntelRelease|x64
+		IntelRelease|x86 = IntelRelease|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
@@ -59,6 +63,14 @@ Global
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Debug|x64.Build.0 = Debug|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Debug|x86.ActiveCfg = Debug|Win32
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Debug|x86.Build.0 = Debug|Win32
+		{98C80F78-1DEC-4651-A336-996A027E11FE}.IntelDebug|x64.ActiveCfg = IntelDebug|x64
+		{98C80F78-1DEC-4651-A336-996A027E11FE}.IntelDebug|x64.Build.0 = IntelDebug|x64
+		{98C80F78-1DEC-4651-A336-996A027E11FE}.IntelDebug|x86.ActiveCfg = IntelDebug|Win32
+		{98C80F78-1DEC-4651-A336-996A027E11FE}.IntelDebug|x86.Build.0 = IntelDebug|Win32
+		{98C80F78-1DEC-4651-A336-996A027E11FE}.IntelRelease|x64.ActiveCfg = IntelRelease|x64
+		{98C80F78-1DEC-4651-A336-996A027E11FE}.IntelRelease|x64.Build.0 = IntelRelease|x64
+		{98C80F78-1DEC-4651-A336-996A027E11FE}.IntelRelease|x86.ActiveCfg = IntelRelease|Win32
+		{98C80F78-1DEC-4651-A336-996A027E11FE}.IntelRelease|x86.Build.0 = IntelRelease|Win32
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Release|x64.ActiveCfg = Release|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Release|x64.Build.0 = Release|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Release|x86.ActiveCfg = Release|Win32
@@ -78,6 +90,14 @@ Global
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x64.Build.0 = Debug|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x86.ActiveCfg = Debug|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x86.Build.0 = Debug|Win32
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.IntelDebug|x64.ActiveCfg = IntelDebug|x64
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.IntelDebug|x64.Build.0 = IntelDebug|x64
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.IntelDebug|x86.ActiveCfg = IntelDebug|Win32
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.IntelDebug|x86.Build.0 = IntelDebug|Win32
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.IntelRelease|x64.ActiveCfg = IntelRelease|x64
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.IntelRelease|x64.Build.0 = IntelRelease|x64
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.IntelRelease|x86.ActiveCfg = IntelRelease|Win32
+		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.IntelRelease|x86.Build.0 = IntelRelease|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Release|x64.ActiveCfg = Release|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Release|x64.Build.0 = Release|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Release|x86.ActiveCfg = Release|Win32
