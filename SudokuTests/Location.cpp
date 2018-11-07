@@ -45,14 +45,18 @@ namespace compiletime
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #else
 	static_assert(not std::is_trivially_copyable_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::has_unique_object_representations_v<typeT>);
+#endif // __ICL
 #endif // __clang__
 	static_assert(std::is_standard_layout_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::is_aggregate_v<typeT>);
+#endif // __ICL
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -110,12 +114,14 @@ namespace compiletime
 	static_assert(not std::is_assignable_v<typeT, int>);
 	static_assert(not std::is_assignable_v<typeT, Location_Block<3>>);
 
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::is_swappable_v<typeT>);         // C++17
 	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
 
 	static_assert(not std::is_swappable_with_v<typeT, Location_Block<3>>);
 	static_assert(
 		not std::is_nothrow_swappable_with_v<typeT, Location_Block<3>>);
+#endif // __ICL
 
 	static_assert(std::is_destructible_v<typeT>);
 	static_assert(std::is_nothrow_destructible_v<typeT>);
@@ -146,14 +152,18 @@ namespace Location_Block_compiletime
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #else
 	static_assert(not std::is_trivially_copyable_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::has_unique_object_representations_v<typeT>);
+#endif // __ICL
 #endif // __GNUC__
 	static_assert(std::is_standard_layout_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::is_aggregate_v<typeT>);
+#endif // __ICL
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -184,8 +194,10 @@ namespace Location_Block_compiletime
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::is_swappable_v<typeT>);         // C++17
 	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
+#endif // __ICL
 	// other types
 	static_assert(not std::is_constructible_v<typeT, int>);
 	static_assert(std::is_constructible_v<typeT, Location<3>>);

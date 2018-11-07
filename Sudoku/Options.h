@@ -65,8 +65,12 @@ public:
 		return left.data_ == right.data_;
 	}
 	[[nodiscard]] friend bool
-		operator<(const Options<E>& left, const Options<E>& right) noexcept(
-			sizeof(Options<E>) <= sizeof(uint64_t))
+		operator<(const Options<E>& left, const Options<E>& right)
+#if defined(__ICL) // Intel C++ 19.0
+			noexcept(false)
+#else
+			noexcept(sizeof(Options<E>) <= sizeof(uint64_t))
+#endif // __ICL
 	{
 		if constexpr (sizeof(Options<E>) <= sizeof(unsigned long))
 		{
@@ -536,7 +540,7 @@ template<int E>
 inline Options<E>
 	operator-(const Options<E>& left, const Options<E>& right) noexcept
 {
-	Options tmp{left};
+	Options<E> tmp{left};
 	return tmp -= right;
 }
 
@@ -544,7 +548,7 @@ template<int E>
 #ifndef fwkUnitTest
 [[deprecated("Debug use only")]]
 #endif
-	inline std::string
+inline std::string
 	Options<E>::DebugString() const
 {
 	return data_.to_string();

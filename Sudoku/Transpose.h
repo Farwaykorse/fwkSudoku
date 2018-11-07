@@ -18,12 +18,20 @@ namespace Sudoku
 // Reorder Board elements so columns are rows.
 template<typename T, int N>
 Board<T, N> transpose_row_col(const Board<T, N>& input) noexcept(
+#if defined(__ICL) // Intel C++ 19.0
+	false)
+#else
 	std::is_nothrow_move_constructible_v<Board<T, N>>&&
 		std::is_nothrow_swappable_v<T>)
+#endif // __ICL
 {
 	if constexpr (
+#if defined(__ICL) // Intel C++ 19.0
+		false)
+#else
 		std::is_nothrow_move_constructible_v<Board<T, N>> &&
 		std::is_nothrow_swappable_v<T>)
+#endif // __ICL
 	{
 		Board<T, N> result{input};
 		return transpose_row_col(std::move(result));
@@ -45,12 +53,20 @@ Board<T, N> transpose_row_col(const Board<T, N>& input) noexcept(
 // Reorder Board elements so blocks are rows.
 template<typename T, int N>
 Board<T, N> transpose_row_block(const Board<T, N>& input) noexcept(
+#if defined(__ICL) // Intel C++ 19.0
+	false)
+#else
 	std::is_nothrow_move_constructible_v<Board<T, N>>&&
 		std::is_nothrow_swappable_v<T>)
+#endif // __ICL
 {
 	if constexpr (
+#if defined(__ICL) // Intel C++ 19.0
+		false)
+#else
 		std::is_nothrow_move_constructible_v<Board<T, N>> &&
 		std::is_nothrow_swappable_v<T>)
+#endif // __ICL
 	{
 		Board<T, N> result{input};
 		return transpose_row_block(std::move(result));
@@ -73,9 +89,15 @@ Board<T, N> transpose_row_block(const Board<T, N>& input) noexcept(
 // Reorder Board elements so columns are rows.
 template<typename T, int N>
 Board<T, N> transpose_row_col(Board<T, N>&& board) noexcept(
+#if defined(__ICL) // Intel C++ 19.0
+	false)
+#else
 	std::is_nothrow_swappable_v<T>)
+#endif // __ICL
 {
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(std::is_swappable_v<T>);
+#endif // __ICL
 
 	for (gsl::index i{0}; i < elem_size<N>; ++i)
 	{
@@ -90,7 +112,11 @@ Board<T, N> transpose_row_col(Board<T, N>&& board) noexcept(
 // Reorder Board elements so blocks are rows.
 template<typename T, int N>
 Board<T, N> transpose_row_block(Board<T, N>&& board) noexcept(
+#if defined(__ICL) // Intel C++ 19.0
+	false)
+#else
 	std::is_nothrow_swappable_v<T>)
+#endif // __ICL
 {
 	for (int i{0}; i < elem_size<N>; ++i)
 	{
