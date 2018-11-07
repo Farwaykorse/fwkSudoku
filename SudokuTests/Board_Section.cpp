@@ -139,7 +139,11 @@ namespace constructors
 	static_assert(std::is_nothrow_constructible_v<constT, Board const&, int>);
 	static_assert(not std::is_constructible_v<typeT, Board const&, int>);
 	// (copy) construction of Board
+#if defined(__ICL) // Intel C++ 19.0
+	static_assert(std::is_constructible_v<typeT, Board, int>);
+#else
 	static_assert(not std::is_constructible_v<typeT, Board, int>);
+#endif // __ICL
 	// Board*
 	static_assert(not std::is_constructible_v<typeT, Board*, int>);
 	// Board: Size errors
