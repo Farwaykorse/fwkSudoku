@@ -805,7 +805,11 @@ TEST(Options, mf_booleanComparison)
 	EXPECT_NE(TE.O_1, TE.E_1);
 	EXPECT_FALSE(TE.O_1 != TE.O_1);
 
+#if defined(__ICL) // Intel C++ 19.0
+	static_assert(not noexcept(TE.O_1 < TE.O_4));
+#else
 	static_assert(noexcept(TE.O_1 < TE.O_4));
+#endif // __ICL
 	EXPECT_FALSE(TE.D_1 < TE.O_4) << "both full";
 	EXPECT_FALSE(TE.E_1 < Options<4>(std::bitset<5>{"00000"})) << "both empty";
 	EXPECT_LT(TE.E_1, TE.D_1) << "empty vs default";
