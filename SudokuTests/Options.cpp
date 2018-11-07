@@ -55,12 +55,16 @@ namespace compiletime
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(std::has_unique_object_representations_v<typeT>);
+#endif // __ICL
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::is_aggregate_v<typeT>);
+#endif // __ICL
 
 	static_assert(std::is_default_constructible_v<typeT>);
 	static_assert(std::is_nothrow_default_constructible_v<typeT>);
@@ -87,8 +91,10 @@ namespace compiletime
 	static_assert(std::is_trivially_move_assignable_v<typeT>);
 
 	static_assert(std::is_trivially_copyable_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(std::is_swappable_v<typeT>);
 	static_assert(std::is_nothrow_swappable_v<typeT>);
+#endif // __ICL
 
 	// type construction
 	// from std::bitset
@@ -109,8 +115,10 @@ namespace compiletime
 	static_assert(not std::is_constructible_v<typeT, const std::bitset<9>&>);
 	static_assert(not std::is_assignable_v<Options<3>, std::bitset<3>>);
 
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::is_swappable_with_v<Options<4>, std::bitset<5>>);
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, std::bitset<10>>);
+#endif // __ICL
 
 	// Value
 	static_assert(std::is_constructible_v<Options<3>, Value>);
