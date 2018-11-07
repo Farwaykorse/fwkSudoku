@@ -96,7 +96,7 @@ namespace type_properties
 	static_assert(not std::is_const_v<constT>);
 	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-#if defined(__clang__)
+#if defined(__clang__) || defined(__GNUC__)
 	static_assert(std::is_trivially_copyable_v<typeT>);
 #else
 	static_assert(not std::is_trivially_copyable_v<typeT>);

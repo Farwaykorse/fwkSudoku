@@ -1121,7 +1121,7 @@ TEST(Board_Iterator, equal)
 	static_assert(cB.cend() == cB.cend());
 	static_assert(cB.rend() == cB.rend());
 	static_assert(cB.crend() == cB.crend());
-#if not(defined(__clang__))
+#if not(defined(__clang__) || defined(__GNUC__))
 	constexpr auto x2 = cB.begin();
 	static_assert(x2 == cB.cbegin());
 #endif // not __clang__
