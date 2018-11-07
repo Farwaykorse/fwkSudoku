@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="ClangTidy|x64">
-      <Configuration>ClangTidy</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="ClangDebug|Win32">
       <Configuration>ClangDebug</Configuration>
       <Platform>Win32</Platform>
@@ -70,12 +66,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IntelDebug|Win32'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Intel C++ Compiler 19.0</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ClangTidy|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -146,9 +136,6 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='IntelDebug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ClangTidy|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -182,9 +169,6 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <CodeAnalysisRuleSet>..\msvc\CppCoreCheckAllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ClangTidy|x64'">
-    <IncludePath>C:\src\vcpkg\installed\x64-windows\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CodeAnalysisRuleSet>..\msvc\CppCoreCheckAllRules.ruleset</CodeAnalysisRuleSet>
@@ -251,34 +235,6 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <EnableExpandedLineNumberInfo>true</EnableExpandedLineNumberInfo>
       <CCppSupport>Cpp17Support</CCppSupport>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>$(VcpkgRoot)debug\lib\manual-link\gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
-    </Link>
-    <PostBuildEvent>
-      <Command>
-      </Command>
-    </PostBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ClangTidy|x64'">
-    <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>fwkUnitTest;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>false</MinimalRebuild>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <SDLCheck>true</SDLCheck>
-      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
-      <DiagnosticsFormat>Column</DiagnosticsFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ConformanceMode>true</ConformanceMode>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -560,7 +516,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='IntelDebug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='IntelRelease|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='IntelRelease|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ClangTidy|x64'">Create</PrecompiledHeader>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'">-Wno-deprecated-declarations -Wno-undef -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'">-Wno-deprecated-declarations -Wno-undef -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">-Wno-deprecated-declarations -Wno-undef -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow %(AdditionalOptions)</AdditionalOptions>

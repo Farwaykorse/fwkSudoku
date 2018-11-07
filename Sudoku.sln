@@ -36,8 +36,6 @@ Global
 		ClangDebug|x86 = ClangDebug|x86
 		ClangRelease|x64 = ClangRelease|x64
 		ClangRelease|x86 = ClangRelease|x86
-		ClangTidy|x64 = ClangTidy|x64
-		ClangTidy|x86 = ClangTidy|x86
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
 		IntelDebug|x64 = IntelDebug|x64
@@ -56,9 +54,6 @@ Global
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangRelease|x64.Build.0 = ClangRelease|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangRelease|x86.ActiveCfg = ClangRelease|Win32
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangRelease|x86.Build.0 = ClangRelease|Win32
-		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangTidy|x64.ActiveCfg = ClangTidy|x64
-		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangTidy|x64.Build.0 = ClangTidy|x64
-		{98C80F78-1DEC-4651-A336-996A027E11FE}.ClangTidy|x86.ActiveCfg = ClangTidy|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Debug|x64.ActiveCfg = Debug|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Debug|x64.Build.0 = Debug|x64
 		{98C80F78-1DEC-4651-A336-996A027E11FE}.Debug|x86.ActiveCfg = Debug|Win32
@@ -83,9 +78,6 @@ Global
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x64.Build.0 = ClangRelease|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x86.ActiveCfg = ClangRelease|Win32
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangRelease|x86.Build.0 = ClangRelease|Win32
-		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangTidy|x64.ActiveCfg = ClangTidy|x64
-		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangTidy|x64.Build.0 = ClangTidy|x64
-		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.ClangTidy|x86.ActiveCfg = ClangTidy|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x64.ActiveCfg = Debug|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x64.Build.0 = Debug|x64
 		{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}.Debug|x86.ActiveCfg = Debug|Win32
