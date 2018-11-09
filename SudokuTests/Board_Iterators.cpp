@@ -1515,6 +1515,7 @@ TEST(Board_Iterator, BidirectionalIterator)
 		ADD_FAILURE();
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Board_Iterator, increment_by_integer)
 { // operator+=(int)
 	test_elements TE{};
@@ -1844,6 +1845,7 @@ TEST(Board_Iterator, increment_by_integer3)
 		ADD_FAILURE();
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Board_Iterator, decrement_by_integer)
 { // operator-=(int)
 	test_elements TE{};
@@ -2152,6 +2154,7 @@ TEST(Board_Iterator, difference)
 		ADD_FAILURE();
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Board_Iterator, direct_access)
 { // & operator[](int)
 	test_elements TE{};

@@ -1240,6 +1240,7 @@ TEST(Section_Itr, BidirectionalIterator)
 		ADD_FAILURE();
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Section_Itr, increment_by_integer)
 { // operator+=(int)
 	test_elements TE{};
@@ -1565,6 +1566,7 @@ TEST(Section_Itr, increment_by_integer3)
 		ADD_FAILURE();
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Section_Itr, decrement_by_integer)
 { // operator-=(int)
 	test_elements TE{};
@@ -1875,6 +1877,7 @@ TEST(Section_Itr, difference)
 		ADD_FAILURE();
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Section_Itr, direct_access)
 { // & operator[](int)
 	test_elements TE{};

@@ -200,6 +200,7 @@ TEST(Solver, set_Value_vector)
 	}
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Solver, set_section_locals)
 {
 	using ::Sudoku::set_section_locals;

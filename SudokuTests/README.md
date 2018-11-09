@@ -103,14 +103,18 @@ disabled for this project.
   Every TEST: defines a copy constructor and a copy assignment operator but
   does not define a destructor, a move constructor or a move assignment
   operator.
+- **google-readability-function-size** == `readability-function-size`
 - **hicpp-avoid-goto** avoid using 'goto' for flow control.
   Like `cppcoreguidelines-avoid-goto`.
+- **hicpp-function-size** == `readability-function-size`
+- **hicpp-move-const-arg** == `performance-move-const-arg`
 - **hicpp-no-array-decay**
   like `cppcoreguidelines-pro-bounds-array-to-pointer-decay`.
-- **hicpp-use-equals-delete** == `modernize-use-equals-delete`
-- **hicpp-vararg** == `cppcoreguidelines-pro-type-vararg`
+- **hicpp-readability-function-size** == `readability-function-size`
 - **hicpp-special-member-functions**
   == `cppcoreguidelines-special-member-functions`
+- **hicpp-use-equals-delete** == `modernize-use-equals-delete`
+- **hicpp-vararg** == `cppcoreguidelines-pro-type-vararg`
 - **modernize-use-equals-delete**
   Every TEST: use '= delete' to prohibit calling of a special member function 
 
