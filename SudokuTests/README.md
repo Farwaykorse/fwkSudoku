@@ -98,8 +98,10 @@ disabled for this project.
 - `hicpp-special-member-functions`
   == `cppcoreguidelines-special-member-functions`
 - `cppcoreguidelines-pro-bounds-array-to-pointer-decay`
-  `EXPECT_DEBUG_DEATH()`: do not implicitly decay an array into a pointer
-  consider using gsl::array_view or an explicit cast instead
+  `SCOPED_TRACE()` and `EXPECT_DEBUG_DEATH()`: do not implicitly decay an array
+  into a pointer consider using gsl::array_view or an explicit cast instead.
+- `hicpp-no-array-decay`
+  like `cppcoreguidelines-pro-bounds-array-to-pionter-decay`.
 - `modernize-use-equals-delete`
   TEST: use '= delete' to prohibit calling of a special member function 
 - `hicpp-use-equals-delete`
@@ -112,7 +114,6 @@ disabled for this project.
   uses goto.
 - `cppcoreguidelines-aboid-goto` avoid using 'goto' for flow control.
   Like `hicpp-avoid-goto`.
-
 
 
 <!-----------------------------------------------------------><a id="cover"></a>
