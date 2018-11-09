@@ -17,7 +17,7 @@
 ##  // NOLINTNEXTLINE(google-explicit-constructor, google-runtime-int)
 ##  Foo(bool param);
 ##
-##  No space before `(`, inside parenthesis whitespace is ignored.
+##  No space before `(`, inside parenthesis white-space is ignored.
 ##====--------------------------------------------------------------------====##
 #
 
@@ -54,6 +54,7 @@ Checks:
   boost-*,
   misc-*,
   cert-*,
+  -cert-dcl21-cpp,
   -android-*,
   -fuchsia-*,
   -mpi-*,

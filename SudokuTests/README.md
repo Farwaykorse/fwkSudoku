@@ -4,24 +4,20 @@
 Unit-tests for the [Sudoku](../Sudoku) library.
 Using the [Google Test](https://github.com/google/googletest/) Unit-testing
 framework.
+This file documents project specific properties used in addition to those
+documented in [docs/Configuration.md](../docs/Configuration.md).
+Most of these are related to the use of Google Test.
 
 <!-- TOC -->
-- [Configuration](#configuration)
-  - [Visual Studio Setting](#vs_settings)
-  - [Compiler settings](#compiler)
+- [Visual Studio Setting](#vs_settings)
+- [Compiler settings](#compiler)
+- [Static Analysers](#analysers)
+  - [Clang-Tidy](#tidy)
 - [Code Coverage](#cover)
 - [Notes](#notes)
 
-<!---------------------------------------------------><a id="configuration"></a>
-## Configuration ##
-<!----------------------------------------------------------------------------->
-This section documents project specific properties used in addition to those
-documented in [docs/Configuration.md](../docs/Configuration.md).
-
-Most of these are related to the use of Google Test.
-
 <!-----------------------------------------------------><a id="vs_settings"></a>
-### Visual Studio Settings ##
+## Visual Studio Settings
 <!----------------------------------------------------------------------------->
 Instructions to set-up a unit-testing project, in conjunction with
 [vcpkg](https://github.com/Microsoft/vcpkg):
@@ -36,7 +32,8 @@ Instructions to set-up a unit-testing project, in conjunction with
   therefore only one of these can be included at any time.
 
 <!--------------------------------------------------------><a id="compiler"></a>
-### Compiler settings
+## Compiler settings
+<!----------------------------------------------------------------------------->
 The preprocessor macro `fwkUnitTest` needs to be defined to disable the
 `[[deprecated]]` attribute on code meant only for testing purposes.
 
@@ -79,6 +76,39 @@ Board.cpp & Board_Iterators.cpp
 -Wno-unevaluated-expression  Assignment in constexpr
 ````
 
+<!-------------------------------------------------------><a id="analysers"></a>
+## Static Analysers ##
+<!----------------------------------------------------------------------------->
+<!------------------------------------------------------------><a id="tidy"></a>
+### Clang-Tidy ###
+<!----------------------------------------------------------------------------->
+To reduce the errors exclusively generated in GTest additional checks have been
+disabled for this project.
+##### Disabled tests:
+- `cppcoreguidelines-pro-type-vararg`
+  EXPECT_EQ() and ASSERT_EQ(): do not call c-style vararg functions 
+- `hicpp-vararg` == `cppcoreguidelines-pro-type-vararg`
+- `cppcoreguidelines-owning-memory`
+  Every TEST: initializing non-owner argument of type
+  `internal::TestFactoryBase *` with a newly created `gsl::owner<>` 
+- `cppcoreguidelines-special-member-functions`
+  Every TEST: defines a copy constructor and a copy assignment operator but
+  does not define a destructor, a move constructor or a move assignment
+  operator.
+- `hicpp-special-member-functions`
+  == `cppcoreguidelines-special-member-functions`
+- `cppcoreguidelines-pro-bounds-array-to-pointer-decay`
+  `EXPECT_DEBUG_DEATH()`: do not implicitly decay an array into a pointer
+  consider using gsl::array_view or an explicit cast instead
+- `modernize-use-equals-delete`
+  TEST: use '= delete' to prohibit calling of a special member function 
+- `hicpp-use-equals-delete`
+  == modernize-use-equals-delete
+- `cert-err58-cpp`
+  TEST: initialization of 'test_info_' with static storage duration may throw
+  an exception that cannot be caught 
+
+
 <!-----------------------------------------------------------><a id="cover"></a>
 ## Code Coverage ##
 <!----------------------------------------------------------------------------->
@@ -92,10 +122,10 @@ Generated report available in `SudokuTests\Coverage\[Debug]\index.html`
 <!-----------------------------------------------------------><a id="notes"></a>
 ## Notes ##
 <!----------------------------------------------------------------------------->
-Catch debug assert() from <cassert> with:
-
+Catch debug `assert()` from `<cassert>` with:
+```
     EXPECT_DEBUG_DEATH({ [statement]; }, "Assertion failed: .*");
+```
 
-
+----
 [top](#top)
-``````

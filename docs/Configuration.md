@@ -21,7 +21,7 @@ Any other deviations should be considered configuration errors.
   - [Intel C++](#intel)
 - [Static Analysers](#analysers)
   - [MSVC static analyser]
-  - [Clang-Tidy]
+  - [Clang-Tidy](#tidy)
   - [PVS-Studio]
   - [Cppcheck]
 
@@ -384,10 +384,28 @@ MS Build configurations:
 ## Static Analysers ##
 <!----------------------------------------------------------------------------->
 - [MSVC static analyser]
-- [Clang-Tidy]
+- [Clang-Tidy](#tidy)
 - [PVS-Studio]
 - [Cppcheck]
 
+<!------------------------------------------------------------><a id="tidy"></a>
+### Clang-Tidy ###
+<!----------------------------------------------------------------------------->
+General configuration: [.clang-tidy](../.clang-tidy).  
+For SudokuTests a modified configuration has been created:
+[SudokuTests/.clang-tidy](../SudokuTests/.clang-tidy).
+
+##### Disabled checks
+Notes on the motivation behind the disabling of some of the checks.
+- `-cert-dcl21-cpp`
+  Advice: run this check incidentally.
+  Useful to warn on use of a reference type, but with value types following this
+  advice to return const object breaks repeated use of the postfix increment and
+  decrement operators.
+  (See discussion: 
+  [Matt Godbolt on Twitter](https://twitter.com/mattgodbolt/status/981269382092468226))  
+  Documentation:
+  [cert-dcl21-cpp](https://clang.llvm.org/extra/clang-tidy/checks/cert-dcl21-cpp.html)
 
 ----
 [top](#top)

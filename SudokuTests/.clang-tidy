@@ -45,6 +45,7 @@ Checks:
   boost-*,
   misc-*,
   cert-*,
+  -cert-dcl21-cpp,
   -cert-err58-cpp,
   -android-*,
   -fuchsia-*,
@@ -52,27 +53,24 @@ Checks:
   -objc-*,
   -ziron-*'
 
-# Disabled tests:
-# -cppcoreguidelines-pro-type-vararg
-#  EXPECT_EQ() and ASSERT_EQ(): do not call c-style vararg functions 
-# -hicpp-vararg
-#  == cppcoreguidelines-pro-type-vararg
-# -cppcoreguidelines-owning-memory
-#  Every TEST: initializing non-owner argument of type
-#  'internal::TestFactoryBase *' with a newly created 'gsl::owner<>' 
-# -cppcoreguidelines-special-member-functions
-#  Every TEST: defines a copy constructor and a copy assignment operator but
-#  does not define a destructor, a move constructor or a move assignment
-#  operator 
-# -hicpp-special-member-functions
-#  == cppcoreguidelines-special-member-functions
-# -cppcoreguidelines-pro-bounds-array-to-pointer-decay
-#  EXPECT_DEBUG_DEATH(): do not implicitly decay an array into a pointer;
-#  consider using gsl::array_view or an explicit cast instead
-# -modernize-use-equals-delete
-#  TEST: use '= delete' to prohibit calling of a special member function 
-# -hicpp-use-equals-delete
-#  == modernize-use-equals-delete
-# -cert-err58-cpp
-#  TEST: initialization of 'test_info_' with static storage duration may throw
-#  an exception that cannot be caught 
+CheckOptions:
+  - key:   bugprone-argument-comment.StrictMode
+    value: '1'
+  - key:   bugprone-assert-side-effect.CheckFunctionCalls
+    value: '0'
+  - key:   bugprone-suspicious-enum-usage.StrictMode
+    value: '1'
+  - key:   readability-function-size.LineThreshold
+    value: '-1'
+  - key:   readability-function-size.StatementThreshold
+    value: '800'
+  - key:   readability-function-size.BranchThreshold
+    value: '-1'
+  - key:   readability-function-size.ParameterThreshold
+    value: '-1'
+  - key:   readability-function-size.NestingThreshold
+    value: '-1'
+  - key:   readability-braces-around-statements.ShortStatementLines
+    value: '3'
+  - key:   portability-simd-intrinsics.Suggest
+    value: '1'
