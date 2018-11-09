@@ -284,6 +284,7 @@ namespace test_class
 	public:
 		nomove()              = default;
 		nomove(const nomove&) = default;
+		// NOLINTNEXTLINE(performance-move-const-arg)
 		nomove(nomove&& x) noexcept(false) { a = std::move(x.a); }
 		nomove& operator=(const nomove& x) noexcept
 		{
