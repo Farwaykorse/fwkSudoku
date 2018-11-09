@@ -24,6 +24,7 @@
 #include <Sudoku/traits.h>
 // library
 #include <type_traits>
+#include <cstdint>
 
 namespace SudokuTests
 {
@@ -192,7 +193,8 @@ namespace constructors
 	static_assert(not std::is_constructible_v<Row_Itr, Board*, float, int>);
 	// - Re-enabled implicit conversions for [elem]:
 	static_assert(std::is_constructible_v<Row_Itr, Board*, char, char>);
-	static_assert(std::is_constructible_v<Row_Itr, Board*, long long, long>);
+	static_assert(
+		std::is_constructible_v<Row_Itr, Board*, std::int64_t, std::int32_t>);
 	static_assert(std::is_constructible_v<Row_Itr, Board*, size_t, size_t>);
 
 	// Implicit conversion to const_*
@@ -254,7 +256,7 @@ namespace destructors
 
 namespace swapping
 {
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL))                                // Intel C++ 19.0
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
 
@@ -262,7 +264,7 @@ namespace swapping
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
-#endif // __ICL
+#endif                                                                // __ICL
 } // namespace swapping
 
 namespace assignment

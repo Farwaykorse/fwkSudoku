@@ -19,6 +19,7 @@
 // library
 #include <type_traits>
 #include <utility>
+#include <cstdint>
 
 
 namespace SudokuTests::Type
@@ -157,11 +158,11 @@ namespace constructors
 	// - blocked implicit conversions:
 	static_assert(not std::is_constructible_v<typeT, Board&, bool>);
 	// - re-enabled implicit conversions for [id]:
-	static_assert(std::is_constructible_v<typeT, Board&, long>);
-	static_assert(std::is_constructible_v<typeT, Board&, long long>);
+	static_assert(std::is_constructible_v<typeT, Board&, std::int32_t>);
+	static_assert(std::is_constructible_v<typeT, Board&, std::int32_t>);
 	static_assert(std::is_constructible_v<typeT, Board&, size_t>);
-	static_assert(std::is_constructible_v<typeT, Board&, unsigned long>);
-	static_assert(std::is_constructible_v<typeT, Board&, unsigned long long>);
+	static_assert(std::is_constructible_v<typeT, Board&, std::uint32_t>);
+	static_assert(std::is_constructible_v<typeT, Board&, std::uint64_t>);
 	static_assert(not std::is_constructible_v<typeT, Board&, float>);
 	static_assert(not std::is_constructible_v<typeT, Board&, double>);
 	static_assert(not std::is_constructible_v<typeT, Board&, long double>);

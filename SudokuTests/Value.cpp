@@ -11,6 +11,7 @@
 // additional
 #include <vector>
 #include <type_traits>
+#include <cstdint>
 
 
 namespace SudokuTests::ValueTest
@@ -95,8 +96,8 @@ namespace compiletime
 	static_assert(std::is_constructible_v<typeT, char>);
 	static_assert(std::is_constructible_v<typeT, int>);
 	static_assert(std::is_constructible_v<typeT, unsigned int>);
-	static_assert(std::is_constructible_v<typeT, unsigned long int>);
-	static_assert(std::is_constructible_v<typeT, unsigned long long int>);
+	static_assert(std::is_constructible_v<typeT, std::uint32_t>);
+	static_assert(std::is_constructible_v<typeT, std::uint64_t>);
 	static_assert(std::is_constructible_v<typeT, bool>); // ... via size_t
 	// explicit construction from Value:
 	static_assert(std::is_constructible_v<size_t, typeT>);

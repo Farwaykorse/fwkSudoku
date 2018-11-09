@@ -18,6 +18,7 @@
 #include <utility>
 #include <cassert>
 #include <cstddef> // size_t
+#include <cstdint> // int64_t, uint32
 
 
 namespace Sudoku
@@ -69,10 +70,10 @@ public:
 #if defined(__ICL) // Intel C++ 19.0
 			noexcept(false)
 #else
-			noexcept(sizeof(Options<E>) <= sizeof(uint64_t))
+			noexcept(sizeof(Options<E>) <= sizeof(std::uint64_t))
 #endif // __ICL
 	{
-		if constexpr (sizeof(Options<E>) <= sizeof(unsigned long))
+		if constexpr (sizeof(Options<E>) <= sizeof(std::uint32_t))
 		{
 			return left.data_.to_ulong() < right.data_.to_ulong();
 		}
