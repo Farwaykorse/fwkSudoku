@@ -106,7 +106,13 @@ disabled for this project.
   == modernize-use-equals-delete
 - `cert-err58-cpp`
   TEST: initialization of 'test_info_' with static storage duration may throw
-  an exception that cannot be caught 
+  an exception that cannot be caught.
+- `hicpp-avoid-goto` avoid using 'goto' for flow control.
+  Every gtest `EXPECT_NO_THROW()` and `EXPECT_DEBUG_DEATH()` macro internally
+  uses goto.
+- `cppcoreguidelines-aboid-goto` avoid using 'goto' for flow control.
+  Like `hicpp-avoid-goto`.
+
 
 
 <!-----------------------------------------------------------><a id="cover"></a>
