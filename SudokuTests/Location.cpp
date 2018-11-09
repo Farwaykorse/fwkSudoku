@@ -1228,9 +1228,9 @@ TEST(Location_Utilities, get_same_section)
 	std::vector<Location<3>> list3{};
 	for (int i{}; i < 9; ++i)
 	{
-		list1.push_back(Location<3>{i});
-		// list2.push_back(Location<3>{i*3});
-		list3.push_back(Location<3>{i * 9});
+		list1.emplace_back(Location<3>{i});
+		// list2.emplace_back(Location<3>{i*3});
+		list3.emplace_back(Location<3>{i * 9});
 	}
 	const std::vector<Location<3>> clist1{list1};
 
