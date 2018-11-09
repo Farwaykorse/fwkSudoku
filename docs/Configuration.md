@@ -64,10 +64,11 @@ MS Build configurations:
 - Release x86
 
 #### Basic Settings ####
+<!----------------------------------------------------------------------------->
 **The IDE:**  
 Add the Sudoku project as a reference to each project for IntelliSense support.
 
-*All configurations*:
+##### All configurations
 ```
 /I$(SolutionDir)   Adding the solution directory to the include path.
                    Therefore allowing use of `#include <Sudoku/Board.h>`.
@@ -87,7 +88,7 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 /FC                Full-path of source code file in diagnostics (default)
 /Gm-               Prefer /MP (default)
 ```
-*Debug configurations*:
+##### Debug configurations
 `````
 ---- implicitly set flags:
 /ZI              Program database for edit-and-continue (sets /Gy and /FC)
@@ -98,7 +99,7 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
                  Enable generation of full-program database is needed for
                  OpenCppCoverage. (default for Debug in linker)
 `````
-*Release configurations*:
+##### Release configurations
 ```
 /MT        Runtime library for linking: Multi-threaded (static library, *.lib)
 /guard:cf  Control Flow Guard, compiler analyses control flow for indirect calls
@@ -111,7 +112,8 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 /O2        Maximize Speed (default Release)
 /GL        Whole program optimization (default Release)
 ```
-*Useful settings for incidental use*:
+#### Useful settings for incidental use ####
+<!----------------------------------------------------------------------------->
 ```
 /nologo    Disable to see the command-line input
 /E
@@ -119,6 +121,7 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 /showIncludes
 ```
 #### Links ####
+<!----------------------------------------------------------------------------->
 - [Visual C++ compiler options (documentation)](https://docs.microsoft.com/en-gb/cpp/build/reference/compiler-options-listed-by-category)
 - [Visual C++ conformance mode, using the permissive- switch](https://blogs.msdn.microsoft.com/vcblog/2016/11/16/permissive-switch/)
   - Adds [two-phase name lookup](https://blogs.msdn.microsoft.com/vcblog/2017/09/11/two-phase-name-lookup-support-comes-to-msvc/)
@@ -131,18 +134,18 @@ These warning settings are used for all configurations.
 Documentation:
 [VC++ Compiler Warnings](https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings)
 
-*All configurations*:
+##### All configurations
 ````
 /W4        Warning level 4 (=highest) (/Wall triggers library warnings)
 ````
 
-*DisableSpecificWarnings*:
+##### DisableSpecificWarnings
 - C4715  bugged, warns when all switch over all cases in an enum.
 
-*Additional command-line options* are used almost exclusively to enable
+**Additional command-line options** are used almost exclusively to enable
 [compiler warnings that are off by default](https://docs.microsoft.com/en-gb/cpp/preprocessor/compiler-warnings-that-are-off-by-default).  
 
-*Warning level configuration flag format*:
+**Warning level configuration flag format**:
 ```
 /w19999	sets the warning level for "9999" to 1
 /wd9999	disables warning "9999"
@@ -154,11 +157,11 @@ levels. "Nonstandard extension" warnings are promoted to errors.
 
 Warnings for precompiled.cpp are less strict were needed for external libraries.
 
-*Format*:  
+**Document format**:
 Flags currently not enabled are marked with a `--`.  
 Flags not set for all translation units are marked with a `*`.  
 ````
-/w44062 enumerator 'identifier' in switch of enum 'enumeration'is not handled
+/w44062 enumerator 'identifier' in switch of enum 'enumeration' is not handled
         and there is no default label (C4061 would always require a case label).
 /w34191 'operator/operation': unsafe conversion from 'type of expression' to
         'type required'
@@ -281,9 +284,9 @@ Lists all options supported by Clang-cl.
 Use `-###` to output the commands that actually reach the compiler, per file.  
     `-v`   Verbose mode (as above?)  
 Use `-Xclang ` before a command to actually force it to the compiler.  
-*Inactive settings are indented.*
+*Note: Inactive settings are indented.*
 
-*All configurations*:
+##### All configurations
 `````
 Use lld-link: No // not working with vcpkg (llvm v7.0.0).
 
@@ -299,20 +302,21 @@ Use lld-link: No // not working with vcpkg (llvm v7.0.0).
   -fms-compatibility Excepting enough invalid C++ to parse most MS headers
   -fno-ms-compatibility
 `````
-*Debug configurations*:
+##### Debug configurations
 `````
 Support Just My Code = false
   // Not supported in v7.0.0. (Enabled by default for debug builds.)
 /Zi        alias for /Z7 CodeView debug information in object files (no pdb)
 `````
-*Release configurations*:  
+##### Release configurations
 Compiler:  Debug information format: none; drastically reduce binary size.  
 Linker:    Generate debug info:      no
 ```
 /MT        Use static run-time
 ```
 
-#### Enable Warnings: ####
+#### Enable Warnings
+<!----------------------------------------------------------------------------->
 [lefiticus/cppbestpractices](https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#gcc--clang)  
 Some warnings are explicitly set so they stay active when an encompassing
 setting is disabled.  
@@ -330,11 +334,11 @@ setting is disabled.
   -Wold-style-cast   Warn for c-style casts
   -Wdouble-promotion `float` implicit promoted to `double`
 ````
-Promote to errors:
+##### Promote to errors
 ````````
 -Werror=return-type
 ````````
-Disable (temporary) unwanted/incompatible warnings:
+##### Disable (temporary) unwanted/incompatible warnings
 ``````
 -Wno-c++98-compat    (Weverything) Compatibility with C++98 is not needed
 -Wno-c++98-compat-pedantic
@@ -350,19 +354,19 @@ MS Build configurations:
 - IntelRelease x86
 
 #### Basic Settings ####
-
-*All configurations*:
+<!----------------------------------------------------------------------------->
+##### All configurations
 ```
 /MP             Multiprocessor compilation
 /GR-            Disable RTTI
 /permissive-
 /Qstd=c++17     Intel C++17 implementation.
 ```
-*Debug configurations*:
+##### Debug configurations
 `````
 /debug:expr-source-pos
 `````
-*Release configurations*:
+##### Release configurations
 ````
 /O3         Highest optimization level
 /Oi         Enable intrinsics
@@ -371,11 +375,11 @@ MS Build configurations:
 ````
 #### Enable Warnings: ####
 <!----------------------------------------------------------------------------->
-*All configurations*:
+##### All configurations
 ````
 /W5         Warning level 5  Intel specific.
 ````
-*DisableSpecificWarnings*:
+##### DisableSpecificWarnings
 /Qdiag-disable:<id>[,<id>]
 - 3924  (precompiled.cpp) attribute namespace "gsl" is unrecognised
 
