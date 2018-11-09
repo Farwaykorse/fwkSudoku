@@ -258,7 +258,7 @@ TEST(Location, Construction)
 	EXPECT_NO_THROW([[maybe_unused]] Location<3> L2(1, 8));
 
 	// move construct
-	EXPECT_NO_THROW([[maybe_unused]] Location<3> L3(Location<3>(6)));
+	EXPECT_NO_THROW([[maybe_unused]] auto L3(Location<3>(6)));
 	static_assert(noexcept(Location<3>(Location<3>(6))));
 	// copy construct
 	constexpr Location<3> c1(12);
