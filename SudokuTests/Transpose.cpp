@@ -286,11 +286,7 @@ namespace test_class
 		nomove(const nomove&) = default;
 		// NOLINTNEXTLINE(performance-move-const-arg)
 		nomove(nomove&& x) noexcept(false) { a = std::move(x.a); }
-		nomove& operator=(const nomove& x) noexcept
-		{
-			a = x.a;
-			return *this;
-		}
+		nomove& operator=(const nomove& x) noexcept = default;
 		bool operator==(const nomove& x) const noexcept { return a == x.a; }
 	};
 	static_assert(std::is_copy_constructible_v<nomove>);
