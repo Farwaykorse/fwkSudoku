@@ -85,36 +85,34 @@ Board.cpp & Board_Iterators.cpp
 To reduce the errors exclusively generated in GTest additional checks have been
 disabled for this project.
 ##### Disabled tests:
-- `cppcoreguidelines-pro-type-vararg`
-  EXPECT_EQ() and ASSERT_EQ(): do not call c-style vararg functions 
-- `hicpp-vararg` == `cppcoreguidelines-pro-type-vararg`
-- `cppcoreguidelines-owning-memory`
+- **cert-err58-cpp**
+  Every TEST: initialization of 'test_info_' with static storage duration may
+   throw an exception that cannot be caught.
+- **cppcoreguidelines-avoid-goto** avoid using 'goto' for flow control.
+  Every gtest `EXPECT_NO_THROW()` and `EXPECT_DEBUG_DEATH()` macro internally
+  uses goto.
+- **cppcoreguidelines-owning-memory**
   Every TEST: initializing non-owner argument of type
   `internal::TestFactoryBase *` with a newly created `gsl::owner<>` 
-- `cppcoreguidelines-special-member-functions`
+- **cppcoreguidelines-pro-bounds-array-to-pointer-decay**
+  `SCOPED_TRACE()` and `EXPECT_DEBUG_DEATH()`: do not implicitly decay an array
+  into a pointer consider using gsl::array_view or an explicit cast instead.
+- **cppcoreguidelines-pro-type-vararg**
+  `EXPECT_EQ()` and `ASSERT_EQ()`: do not call c-style vararg functions 
+- **cppcoreguidelines-special-member-functions**
   Every TEST: defines a copy constructor and a copy assignment operator but
   does not define a destructor, a move constructor or a move assignment
   operator.
-- `hicpp-special-member-functions`
+- **hicpp-avoid-goto** avoid using 'goto' for flow control.
+  Like `cppcoreguidelines-avoid-goto`.
+- **hicpp-no-array-decay**
+  like `cppcoreguidelines-pro-bounds-array-to-pointer-decay`.
+- **hicpp-use-equals-delete** == `modernize-use-equals-delete`
+- **hicpp-vararg** == `cppcoreguidelines-pro-type-vararg`
+- **hicpp-special-member-functions**
   == `cppcoreguidelines-special-member-functions`
-- `cppcoreguidelines-pro-bounds-array-to-pointer-decay`
-  `SCOPED_TRACE()` and `EXPECT_DEBUG_DEATH()`: do not implicitly decay an array
-  into a pointer consider using gsl::array_view or an explicit cast instead.
-- `hicpp-no-array-decay`
-  like `cppcoreguidelines-pro-bounds-array-to-pionter-decay`.
-- `modernize-use-equals-delete`
-  TEST: use '= delete' to prohibit calling of a special member function 
-- `hicpp-use-equals-delete`
-  == modernize-use-equals-delete
-- `cert-err58-cpp`
-  TEST: initialization of 'test_info_' with static storage duration may throw
-  an exception that cannot be caught.
-- `hicpp-avoid-goto` avoid using 'goto' for flow control.
-  Every gtest `EXPECT_NO_THROW()` and `EXPECT_DEBUG_DEATH()` macro internally
-  uses goto.
-- `cppcoreguidelines-aboid-goto` avoid using 'goto' for flow control.
-  Like `hicpp-avoid-goto`.
-
+- **modernize-use-equals-delete**
+  Every TEST: use '= delete' to prohibit calling of a special member function 
 
 <!-----------------------------------------------------------><a id="cover"></a>
 ## Code Coverage ##
