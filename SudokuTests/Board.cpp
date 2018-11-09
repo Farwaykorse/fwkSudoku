@@ -187,11 +187,12 @@ TEST(Board, Construction)
 	{
 		SCOPED_TRACE("Copy Constructor : Board(const Board&)");
 		const Board<int, 2> D_2{};
+		// NOLINTNEXTLINE(performance-unnecessary-copy-initialization)
 		const Board<int, 2> Opt{D_2};          // copy construct
 		EXPECT_NO_THROW((Board<int, 2>(D_2))); // copy construct
 		EXPECT_EQ((Board<int, 2>(D_2)), D_2);
-
 		const Board<int, 3> D_3;
+		// NOLINTNEXTLINE(performance-unnecessary-copy-initialization)
 		EXPECT_NO_THROW(Board<int> Opt2 = D_3);
 	}
 	{
