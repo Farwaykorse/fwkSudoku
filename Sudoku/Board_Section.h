@@ -70,7 +70,7 @@ public:
 		: board_(other.board_), id_(to_id(other.location(pivot_elem)))
 	{
 	}
-	// Implicit conversion to const
+	// [[implicit]] conversion to const
 	constexpr operator Board_Section_<T, N, S, true>() const noexcept
 	{
 		return Board_Section_<T, N, S, true>(board_, id_);
