@@ -28,6 +28,16 @@
 
 namespace SudokuTests
 {
+using ::Sudoku::Board;
+using ::Sudoku::Location;
+using ::Sudoku::Options;
+using ::Sudoku::Value;
+using ::Sudoku::Board_iterator;
+using ::Sudoku::const_Board_iterator;
+using ::Sudoku::Board_Section::Row;
+using ::Sudoku::Board_Section::Col;
+using ::Sudoku::Board_Section::Block;
+using ::Sudoku::Board_Section::const_Row;
 using ::Sudoku::Board_Section::Section_iterator;
 using ::Sudoku::Board_Section::Row_iterator;
 using ::Sudoku::Board_Section::Col_iterator;
@@ -256,20 +266,19 @@ namespace destructors
 
 namespace swapping
 {
-#if not(defined(__ICL))                                // Intel C++ 19.0
-	static_assert(std::is_swappable_v<typeT>);         // C++17
-	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
+#if not(defined(__ICL)) // Intel C++ 19.0
+	static_assert(std::is_swappable_v<typeT>);
+	static_assert(std::is_nothrow_swappable_v<typeT>);
 
-	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
-	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
-	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
-	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
-#endif                                                                // __ICL
+	static_assert(not std::is_swappable_with_v<typeT, int>);
+	static_assert(not std::is_swappable_with_v<typeT, unsigned int>);
+	static_assert(not std::is_swappable_with_v<typeT, size_t>);
+	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);
+#endif // __ICL
 } // namespace swapping
 
 namespace assignment
 {
-	// copy assignment
 	static_assert(std::is_copy_assignable_v<typeT>);
 	static_assert(std::is_nothrow_copy_assignable_v<typeT>);
 	static_assert(std::is_trivially_copy_assignable_v<typeT>);
@@ -285,13 +294,6 @@ namespace assignment
 
 namespace SudokuTests::Members
 {
-using namespace ::Sudoku;
-// using namespace ::Sudoku::Board_Section;
-using ::Sudoku::Board_Section::Row;
-using ::Sudoku::Board_Section::Col;
-using ::Sudoku::Board_Section::Block;
-using ::Sudoku::Board_Section::const_Row;
-
 using ::Sudoku::traits::is_input;
 using ::Sudoku::traits::is_forward;
 using ::Sudoku::traits::is_bidir;
