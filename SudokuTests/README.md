@@ -52,6 +52,13 @@ Promote to errors:
 ````````
 -Werror=return-type
 ````````
+**Intel:**
+Disabled warnings:
+`/Qdiag-disable:<id>[,<id>]`
+- 304   Message: access control not specified ("public" by default in `struct`)
+- 383   Message: value copied to temporary, reference to temporary used
+  Generates expressed on every gtest `TEST()` and `EXPECT_*()` element.
+- 981   Message: operands are evaluated in unspecified order
 #### Custom settings for precompiled.cpp
 **VC++:**  
 ```
@@ -68,6 +75,11 @@ Disabled warnings:
 -Wno-missing-noreturn
 -Wno-shift-sign-overflow
 ````
+**Intel:**
+Warning-level:
+`````
+/W0       Disable warnings.
+`````
 #### Custom settings per file
 **Clang:**
 Disabled warnings:  

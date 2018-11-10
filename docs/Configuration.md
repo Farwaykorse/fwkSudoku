@@ -378,11 +378,16 @@ MS Build configurations:
 ##### All configurations
 ````
 /W5         Warning level 5  Intel specific.
+/W4         (precompiled.cpp)
 ````
 ##### DisableSpecificWarnings
-/Qdiag-disable:<id>[,<id>]
-- 3924  (precompiled.cpp) attribute namespace "gsl" is unrecognised
+`/Qdiag-disable:<id>[,<id>]`
+- 304   Message: access control not specified ("public" by default in `struct`)
+- 981   Message: operands are evaluated in unspecified order
 
+**precompiled.cpp**
+- 1292  Message: unknown attribute "gsl::suppress"
+- 3924  Warning: attribute namespace "gsl" is unrecognised
 
 <!-------------------------------------------------------><a id="analysers"></a>
 ## Static Analysers ##
