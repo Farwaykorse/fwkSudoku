@@ -620,14 +620,14 @@ TEST(Board_Iterator, construction)
 	}
 	{
 		// assignment
-		Board_iterator<int, 2> LI{};
+		[[maybe_unused]] Board_iterator<int, 2> LI{};
 		LI = I1;
-		const_Board_iterator<int, 2> cLI{};
+		[[maybe_unused]] const_Board_iterator<int, 2> cLI{};
 		cLI = cI1;
 		cLI = I1;
-		reverse_Board_iterator<int, 2> rLI{};
+		[[maybe_unused]] reverse_Board_iterator<int, 2> rLI{};
 		rLI = rI1;
-		const_reverse_Board_iterator<int, 2> crLI{};
+		[[maybe_unused]] const_reverse_Board_iterator<int, 2> crLI{};
 		crLI = rI1;
 		crLI = crI1;
 	}
@@ -653,7 +653,7 @@ TEST(Board_Iterator, assign_Location)
 
 	test_elements TE{};
 	auto& A        = TE.A;
-	auto const& cA = TE.cA;
+	[[maybe_unused]] auto const& cA = TE.cA;
 
 	using not_null = ::gsl::not_null<decltype(&A)>;
 
@@ -939,7 +939,7 @@ TEST(Board_Iterator, post_increment)
 {
 	test_elements TE{};
 	auto& A        = TE.A;
-	auto const& cA = TE.cA;
+	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
 		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
@@ -1068,7 +1068,7 @@ TEST(Board_Iterator, not_equal)
 { // InputIterator
 	test_elements TE{};
 	auto& A        = TE.A;
-	auto const& cA = TE.cA;
+	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
 		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
@@ -1297,7 +1297,7 @@ TEST(Board_Iterator, pre_decrement)
 { // operator--()
 	test_elements TE{};
 	auto& A        = TE.A;
-	auto const& cA = TE.cA;
+	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
 		is_bidir<decltype(A.begin())> && is_bidir<decltype(A.cbegin())> &&
@@ -1377,7 +1377,7 @@ TEST(Board_Iterator, post_decrement)
 {
 	test_elements TE{};
 	auto& A        = TE.A;
-	auto const& cA = TE.cA;
+	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
 		is_bidir<decltype(A.begin())> && is_bidir<decltype(A.cbegin())> &&
@@ -1520,7 +1520,7 @@ TEST(Board_Iterator, increment_by_integer)
 { // operator+=(int)
 	test_elements TE{};
 	auto& A        = TE.A;
-	auto const& cA = TE.cA;
+	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
@@ -1657,7 +1657,7 @@ TEST(Board_Iterator, increment_by_integer2)
 { // operator+(int)
 	test_elements TE{};
 	auto& A        = TE.A;
-	auto const& cA = TE.cA;
+	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
@@ -1753,7 +1753,7 @@ TEST(Board_Iterator, increment_by_integer3)
 { // operator+(int, iterator)
 	test_elements TE{};
 	auto& A        = TE.A;
-	auto const& cA = TE.cA;
+	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
@@ -1971,7 +1971,7 @@ TEST(Board_Iterator, decrement_by_integer2)
 { // operator-(int)
 	test_elements TE{};
 	auto& A        = TE.A;
-	auto const& cA = TE.cA;
+	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&

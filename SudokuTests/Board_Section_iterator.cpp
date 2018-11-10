@@ -405,14 +405,14 @@ TEST(Section_Itr, begin_end)
 	}
 	{
 		// assignment
-		Row_iterator<int, 2> LI{};
+		[[maybe_unused]] Row_iterator<int, 2> LI{};
 		LI = I1;
-		const_Row_iterator<int, 2> cLI{};
+		[[maybe_unused]] const_Row_iterator<int, 2> cLI{};
 		cLI = cI1;
 		cLI = I1;
-		reverse_Row_iterator<int, 2> rLI{};
+		[[maybe_unused]] reverse_Row_iterator<int, 2> rLI{};
 		rLI = rI1;
-		const_reverse_Row_iterator<int, 2> crLI{};
+		[[maybe_unused]] const_reverse_Row_iterator<int, 2> crLI{};
 		crLI = rI1;
 		crLI = crI1;
 	}
