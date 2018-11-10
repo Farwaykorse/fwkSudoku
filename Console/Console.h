@@ -129,16 +129,6 @@ inline Console::Console(delimiter del) : d(std::move(del))
 	// empty constructor
 }
 
-inline int Console::charsize(int value) const
-{
-	assert(value >= 0);
-	if (value < 10)
-	{
-		return 1;
-	}
-	return charsize(value, 2);
-}
-
 inline int Console::charsize(int value, int length) const
 {
 	if (value < std::pow(10, length))
@@ -147,6 +137,16 @@ inline int Console::charsize(int value, int length) const
 	}
 	++length;
 	return charsize(value, length);
+}
+
+inline int Console::charsize(int value) const
+{
+	assert(value >= 0);
+	if (value < 10)
+	{
+		return 1;
+	}
+	return charsize(value, 2);
 }
 
 template<int N>
