@@ -16,65 +16,16 @@
 
 namespace Sudoku
 {
+// Solver-function declarations:
 template<int N>
-void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
-{
-	int found{1};
-	while (found > 0)
-	{
-		found = 0;
-		for (gsl::index i = 0; i < elem_size<N>; ++i)
-		{
-			found += unique_in_section(board, board.row(i));
-		}
-		for (gsl::index i = 0; i < elem_size<N>; ++i)
-		{
-			found += unique_in_section(board, board.col(i));
-		}
-		for (gsl::index i = 0; i < elem_size<N>; ++i)
-		{
-			found += unique_in_section(board, board.block(i));
-		}
-	}
-}
-
+void test_solver_unique(Board<Options<elem_size<N>>, N>&);
 template<int N>
-void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
-{
-	int found{1};
-	while (found > 0)
-	{
-		found = 0;
-		for (gsl::index i = 0; i < elem_size<N>; ++i)
-		{
-			found += section_exclusive(board, board.row(i));
-		}
-		for (gsl::index i = 0; i < elem_size<N>; ++i)
-		{
-			found += section_exclusive(board, board.col(i));
-		}
-		for (gsl::index i = 0; i < elem_size<N>; ++i)
-		{
-			found += section_exclusive(board, board.block(i));
-		}
-	}
-}
-
+void test_solver_exclusive(Board<Options<elem_size<N>>, N>&);
 template<int N>
-Board<Value, N>
-	getResult(const Board<Options<elem_size<N>>, N>& options) noexcept
-{
-	Board<Value, N> result{};
-	for (gsl::index i = 0; i < full_size<N>; ++i)
-	{
-		if (options[Location<N>(i)].is_answer())
-		{
-			result[Location<N>(i)] = get_answer(options[Location<N>(i)]);
-		}
-	}
-	return result;
-}
+Board<Value, N> getResult(Board<Options<elem_size<N>>, N> const&) noexcept;
 
+
+//====--------------------------------------------------------------------====//
 
 class Console
 {
@@ -101,7 +52,8 @@ public:
 	template<int N>
 	std::stringstream print_row(const Board<int, N>&, gsl::index row_id) const;
 	template<int N, int E>
-	std::stringstream print_row(const Board<Options<E>, N>&, gsl::index row_id) const;
+	std::stringstream
+		print_row(const Board<Options<E>, N>&, gsl::index row_id) const;
 	template<int N>
 	std::stringstream print_board(const Board<int, N>&) const;
 	template<int N, int E>
@@ -118,6 +70,9 @@ private:
 	// format col-block section
 	// format row-block = separator line
 };
+
+//====--------------------------------------------------------------------====//
+// Member-functions:
 
 inline Console::Console() noexcept : d(display)
 {
@@ -290,4 +245,67 @@ std::stringstream Console::print_row(
 	}
 	return stream;
 }
+
+//====--------------------------------------------------------------------====//
+// Solver function applications:
+template<int N>
+void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
+{
+	int found{1};
+	while (found > 0)
+	{
+		found = 0;
+		for (gsl::index i = 0; i < elem_size<N>; ++i)
+		{
+			found += unique_in_section(board, board.row(i));
+		}
+		for (gsl::index i = 0; i < elem_size<N>; ++i)
+		{
+			found += unique_in_section(board, board.col(i));
+		}
+		for (gsl::index i = 0; i < elem_size<N>; ++i)
+		{
+			found += unique_in_section(board, board.block(i));
+		}
+	}
+}
+
+template<int N>
+void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
+{
+	int found{1};
+	while (found > 0)
+	{
+		found = 0;
+		for (gsl::index i = 0; i < elem_size<N>; ++i)
+		{
+			found += section_exclusive(board, board.row(i));
+		}
+		for (gsl::index i = 0; i < elem_size<N>; ++i)
+		{
+			found += section_exclusive(board, board.col(i));
+		}
+		for (gsl::index i = 0; i < elem_size<N>; ++i)
+		{
+			found += section_exclusive(board, board.block(i));
+		}
+	}
+}
+
+template<int N>
+Board<Value, N>
+	getResult(const Board<Options<elem_size<N>>, N>& options) noexcept
+{
+	Board<Value, N> result{};
+	for (gsl::index i = 0; i < full_size<N>; ++i)
+	{
+		if (options[Location<N>(i)].is_answer())
+		{
+			result[Location<N>(i)] = get_answer(options[Location<N>(i)]);
+		}
+	}
+	return result;
+}
+
+
 } // namespace Sudoku
