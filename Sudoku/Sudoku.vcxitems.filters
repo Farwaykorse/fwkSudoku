@@ -15,71 +15,71 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Board.fwd.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board.fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Board.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Board_Iterators.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board_Iterators.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Board_Section.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board_Section.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Board_Section_iterator.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board_Section_iterator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Board_Section_traits.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board_Section_traits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)exceptions.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\exceptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Location.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Location.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Location_Utilities.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Location_Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Options.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Options.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)precompiled_basic.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\precompiled_basic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Size.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Size.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Solver.fwd.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solver.fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Solver.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_find.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solvers_find.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_remove_option.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solvers_remove_option.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Solvers_set_option.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solvers_set_option.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Transpose.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Transpose.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)traits.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\traits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Value.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Value.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="$(MSBuildThisFileDirectory)Board.natvis" />
-    <Natvis Include="$(MSBuildThisFileDirectory)Location.natvis" />
-    <Natvis Include="$(MSBuildThisFileDirectory)Options.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)Sudoku\Board.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)Sudoku\Location.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)Sudoku\Options.natvis" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)README.md" />

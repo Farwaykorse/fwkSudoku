@@ -70,8 +70,6 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 
 ##### All configurations
 ```
-/I$(SolutionDir)   Adding the solution directory to the include path.
-                   Therefore allowing use of `#include <Sudoku/Board.h>`.
 /std:c++17         ISO C++ 17 standard
 /sdl               Enable SDL checks, additional warnings focused on security
 /MP                Multiprocessor compilation (Do not use /Gm)
