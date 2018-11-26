@@ -68,6 +68,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Intel C++ Compiler 19.0</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <VcpkgConfiguration>Debug</VcpkgConfiguration>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ClangDebug|Win32'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -88,6 +89,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <InterproceduralOptimization>true</InterproceduralOptimization>
+    <VcpkgConfiguration>Release</VcpkgConfiguration>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -98,6 +100,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Intel C++ Compiler 19.0</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <VcpkgConfiguration>Debug</VcpkgConfiguration>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ClangDebug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -118,6 +121,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <InterproceduralOptimization>true</InterproceduralOptimization>
+    <VcpkgConfiguration>Release</VcpkgConfiguration>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='ClangRelease|Win32'">
     <PlatformToolset>llvm</PlatformToolset>
