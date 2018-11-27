@@ -1,0 +1,61 @@
+version: "{build}"
+clone_depth: 1
+
+image: Visual Studio 2017
+
+platform:
+- x86
+- x64
+
+configuration:
+- Debug
+- Release
+
+environment:
+  APPVEYOR_SAVE_CACHE_ON_ERROR: true
+  NINJA_TAG: v1.8.2
+  NINJA_SHA512: 9B9CE248240665FCD6404B989F3B3C27ED9682838225E6DC9B67B551774F251E4FF8A207504F941E7C811E7A8BE1945E7BCB94472A335EF15E23A0200A32E6D5
+  NINJA_PATH: C:\Tools\ninja\ninja-%NINJA_TAG%
+  VCVAR2017: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
+
+cache:
+- C:\Tools\ninja
+- C:\Tools\vcpkg\installed
+
+install:
+- ps: |
+    if (![IO.File]::Exists("$env:NINJA_PATH\ninja.exe")) {
+      Start-FileDownload `
+        "https://github.com/ninja-build/ninja/releases/download/$env:NINJA_TAG/ninja-win.zip"
+      $hash = (Get-FileHash ninja-win.zip -Algorithm SHA512).Hash
+      if ($env:NINJA_SHA512 -eq $hash) {
+        7z e -y -bso0 ninja-win.zip -o"$env:NINJA_PATH"
+      } else {
+        Write-Warning "Ninja download hash changed!"; Write-Output "$hash"
+        $env:APPVEYOR_CACHE_SKIP_SAVE = true
+      }
+    }
+    if ([IO.File]::Exists("$env:NINJA_PATH\ninja.exe")) {
+      $env:PATH = "$env:NINJA_PATH;$env:PATH"
+    } else { Write-Warning "Failed to find ninja.exe in expected location." }
+- vcpkg install ms-gsl:%PLATFORM%-windows
+- vcpkg install gtest:%PLATFORM%-windows
+
+before_build:
+- ps: |
+    if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -eq "Visual Studio 2017") {
+      $env:VCVARSALL = $env:VCVAR2017
+    }
+    $env:ARCHITECTURE = $env:PLATFORM
+- mkdir build
+- cd build
+
+build_script:
+- call "%VCVARSALL%" %ARCHITECTURE%
+- cmake .. -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
+- cmake --build . --config %CONFIGURATION% -- -j %NUMBER_OF_PROCESSORS%
+
+test_script:
+- ctest -j %NUMBER_OF_PROCESSORS%
+
+deploy: off
