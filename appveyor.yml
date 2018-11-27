@@ -18,6 +18,10 @@ environment:
   NINJA_PATH: C:\Tools\ninja\ninja-%NINJA_TAG%
   VCVAR2017: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
 
+  matrix:
+  - USE_TOOLSET: MSVC
+  - USE_TOOLSET: LLVM
+
 cache:
 - C:\Tools\ninja
 - C:\Tools\vcpkg\installed
@@ -47,6 +51,17 @@ before_build:
       $env:VCVARSALL = $env:VCVAR2017
     }
     $env:ARCHITECTURE = $env:PLATFORM
+    if ("$env:USE_TOOLSET" -eq "LLVM") {
+      $env:CC  = "clang-cl"
+      $env:CXX = "clang-cl"
+      if ("$env:PLATFORM" -eq "x86") {
+        $env:CFLAGS   = "-m32";
+        $env:CXXFLAGS = "-m32";
+      } else {
+        $env:CFLAGS   = "-m64";
+        $env:CXXFLAGS = "-m64";
+      }
+    }
 - mkdir build
 - cd build
 
