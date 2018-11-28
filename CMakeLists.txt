@@ -14,6 +14,7 @@ if(CMAKE_COMPILER_IS_GNUCC)
 endif()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/enable_project_warnings.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/set_precompiled_header.cmake)
 
 # Shared dependencies
 find_path(GSL_INCLUDE_DIR gsl/gsl)

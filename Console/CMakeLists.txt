@@ -17,3 +17,7 @@ set_target_properties(console
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
 )
+
+# custom settings for precompiled headers
+set_precompiled_header(console "precompiled.h" "precompiled.cpp")
+
