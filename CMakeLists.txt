@@ -13,23 +13,7 @@ if(CMAKE_COMPILER_IS_GNUCC)
   endif()
 endif()
 
-# Link this 'library' to configure warnings
-add_library(project_warnings INTERFACE)
-
-if(MSVC)
-  target_compile_options(project_warnings
-    INTERFACE
-	  /W4)
-else()
-  target_compile_options(project_warnings
-    INTERFACE
-	  -Wall
-	  -Wextra
-	  -Wshadow
-  )
-endif()
-
-
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/enable_project_warnings.cmake)
 
 # Shared dependencies
 find_path(GSL_INCLUDE_DIR gsl/gsl)
@@ -57,10 +41,10 @@ target_compile_options(Sudoku
   INTERFACE
     $<$<CXX_COMPILER_ID:MSVC>:
 	  /EHsc
-	  /permissive-
+	  /permissive-    # disable non-conforming constructs in VC++
+	  /GR-            # disable RTTI (smaller image)
 	>
 )
-
 
 # Console sub-project
 add_subdirectory(Console)
