@@ -62,13 +62,14 @@ before_build:
         $env:CXXFLAGS = "-m64";
       }
     }
+    $env:NINJA_FLAGS = "-j $env:NUMBER_OF_PROCESSORS -v -d stats"
 - mkdir build
 - cd build
 
 build_script:
 - call "%VCVARSALL%" %ARCHITECTURE%
 - cmake .. -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
-- cmake --build . --config %CONFIGURATION% -- -j %NUMBER_OF_PROCESSORS%
+- cmake --build . --config %CONFIGURATION% -- %NINJA_FLAGS%
 
 test_script:
 - ctest -j %NUMBER_OF_PROCESSORS%
