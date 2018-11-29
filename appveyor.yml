@@ -65,10 +65,10 @@ before_build:
     $env:NINJA_FLAGS = "-j $env:NUMBER_OF_PROCESSORS -v -d stats"
 - mkdir build
 - cd build
-
-build_script:
 - call "%VCVARSALL%" %ARCHITECTURE%
 - cmake .. -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+build_script:
 - cmake --build . --config %CONFIGURATION% -- %NINJA_FLAGS%
 
 test_script:
