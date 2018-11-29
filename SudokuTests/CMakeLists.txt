@@ -43,5 +43,16 @@ set_target_properties(SudokuTests
     CXX_EXTENSIONS NO
 )
 
+set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
+
+enable_project_warnings(SudokuTests
+  DISABLE
+    4365
+    4623
+    4668
+    4774
+    5026
+)
+
 #gtest_add_tests(TARGET SudokuTests)
 gtest_discover_tests(SudokuTests)
