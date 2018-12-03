@@ -16,11 +16,15 @@ environment:
   NINJA_TAG: v1.8.2
   NINJA_SHA512: 9B9CE248240665FCD6404B989F3B3C27ED9682838225E6DC9B67B551774F251E4FF8A207504F941E7C811E7A8BE1945E7BCB94472A335EF15E23A0200A32E6D5
   NINJA_PATH: C:\Tools\ninja\ninja-%NINJA_TAG%
+  TOOLCHAIN_FILE: 'C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake'
+  VCVAR2015: 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat'
   VCVAR2017: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
 
   matrix:
   - USE_TOOLSET: MSVC
+    USE_GENERATOR: Ninja
   - USE_TOOLSET: LLVM
+    USE_GENERATOR: Ninja
 
 cache:
 - C:\Tools\ninja
@@ -47,10 +51,32 @@ install:
 
 before_build:
 - ps: |
-    if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -eq "Visual Studio 2017") {
-      $env:VCVARSALL = $env:VCVAR2017
+    $ToolChainFile = "-DCMAKE_TOOLCHAIN_FILE=$env:TOOLCHAIN_FILE"
+    if ("$env:USE_GENERATOR" -eq "Ninja") {
+      $GeneratorFlags = '-v -k 10'
+      $Architecture = $env:PLATFORM
+      if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -eq "Visual Studio 2015") {
+        $env:VCVARSALL = "`"$env:VCVAR2015`" $Architecture"
+      } else {
+        $env:VCVARSALL = "`"$env:VCVAR2017`" $Architecture"
+      }
+      $env:CMakeGenFlags = "-G Ninja $ToolChainFile"
+    } else {
+      $GeneratorFlags = '/m /v:minimal'
+      if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -eq "Visual Studio 2015") {
+        $Generator = 'Visual Studio 14 2015'
+      } else {
+        $Generator = 'Visual Studio 15 2017'
+      }
+      if ("$env:PLATFORM" -eq "x86") { $Architecture = "Win32"}
+      else { $Architecture = "x64" }
+      if ("$env:USE_TOOLSET" -eq "LLVM") {
+        $env:CMakeGenFlags = `
+          "-G `"$Generator`" -A $Architecture -T llvm $ToolChainFile"
+      } else {
+        $env:CMakeGenFlags = "-G `"$Generator`" -A $Architecture $ToolChainFile"
+      }
     }
-    $env:ARCHITECTURE = $env:PLATFORM
     if ("$env:USE_TOOLSET" -eq "LLVM") {
       $env:CC  = "clang-cl"
       $env:CXX = "clang-cl"
@@ -62,14 +88,16 @@ before_build:
         $env:CXXFLAGS = "-m64";
       }
     }
-    $env:NINJA_FLAGS = "-j $env:NUMBER_OF_PROCESSORS -v -d stats"
+    $env:CMakeBuildFlags = "--config $env:CONFIGURATION -- $GeneratorFlags"
 - mkdir build
 - cd build
-- call "%VCVARSALL%" %ARCHITECTURE%
-- cmake .. -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
+- if %USE_GENERATOR%==Ninja (call %VCVARSALL%)
+- echo %CMakeGenFlags%
+- cmake .. %CMakeGenFlags%
 
 build_script:
-- cmake --build . --config %CONFIGURATION% -- %NINJA_FLAGS%
+- echo %CMakeBuildFlags%
+- cmake --build . %CMakeBuildFlags%
 
 test_script:
 - ctest -j %NUMBER_OF_PROCESSORS%
