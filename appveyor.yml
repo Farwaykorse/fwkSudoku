@@ -50,6 +50,10 @@ install:
 - vcpkg install gtest:%PLATFORM%-windows
 
 before_build:
+- cmake --version
+- ninja --version
+- echo "%APPVEYOR_BUILD_WORKER_IMAGE% %PLATFORM% %CONFIGURATION%"
+- echo "Compiler %USE_TOOLSET%; Generator %USE_GENERATOR%"
 - ps: |
     $ToolChainFile = "-DCMAKE_TOOLCHAIN_FILE=$env:TOOLCHAIN_FILE"
     if ("$env:USE_GENERATOR" -eq "Ninja") {
