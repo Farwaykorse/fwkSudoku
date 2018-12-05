@@ -16,13 +16,6 @@ endif()
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/enable_project_warnings.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/set_precompiled_header.cmake)
 
-# Shared dependencies
-find_path(GSL_INCLUDE_DIR gsl/gsl)
-if(GSL_INCLUDE_DIR STREQUAL "GSL_INCLUDE_DIR-NOTFOUND")
-  message(FATAL_ERROR "Could not find Guidelines Support Library.")
-endif()
-# include by all
-include_directories(SYSTEM ${GSL_INCLUDE_DIR})
 
 # The library: Sudoku
 # (INTERFACE libraries: header-only)
@@ -46,6 +39,17 @@ target_compile_options(Sudoku
 	  /GR-            # disable RTTI (smaller image)
 	>
 )
+
+# Dependencies
+find_path(GSL_INCLUDE_DIR gsl/gsl)
+if(GSL_INCLUDE_DIR STREQUAL "GSL_INCLUDE_DIR-NOTFOUND")
+  message(FATAL_ERROR "Could not find Guidelines Support Library.")
+endif()
+target_include_directories(Sudoku
+  SYSTEM
+    INTERFACE ${GSL_INCLUDE_DIR}
+)
+
 
 # Console sub-project
 add_subdirectory(Console)
