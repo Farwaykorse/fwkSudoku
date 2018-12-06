@@ -1,7 +1,11 @@
+##====---- fwkSudoku/Console/CMakeLists.txt                           ----====##
+##
+##====--------------------------------------------------------------------====##
 cmake_minimum_required(VERSION 3.11.4...3.13)
 
 project(SudokuConsole LANGUAGES CXX)
 
+##====--------------------------------------------------------------------====##
 add_executable(console
   Console.cpp
 )
@@ -18,6 +22,7 @@ set_target_properties(console
     CXX_EXTENSIONS OFF
 )
 
+##====--------------------------------------------------------------------====##
 # custom settings for precompiled headers
 set_precompiled_header(console "precompiled.h" "precompiled.cpp")
 

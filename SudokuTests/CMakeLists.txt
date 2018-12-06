@@ -1,3 +1,7 @@
+##====---- fwkSudoku/SudokuTests/CMakeLists.txt                       ----====##
+## Tests for library Sudoku.
+##
+##====--------------------------------------------------------------------====##
 cmake_minimum_required(VERSION 3.10.3...3.13)
 
 project(fwkSudokuTests LANGUAGES CXX)
@@ -8,6 +12,7 @@ find_package(GTest MODULE REQUIRED)
 message("GTEST_INCLUDE_DIRS = ${GTEST_INCLUDE_DIRS}")
 message("GTEST_LIBRARIES = ${GTEST_LIBRARIES}")
 
+##====--------------------------------------------------------------------====##
 add_executable(SudokuTests
   print_options.h
 #  SudokuTests.cpp
@@ -42,6 +47,7 @@ set_target_properties(SudokuTests
     CXX_EXTENSIONS NO
 )
 
+##====--------------------------------------------------------------------====##
 set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
 
 enable_project_warnings(SudokuTests
@@ -53,5 +59,7 @@ enable_project_warnings(SudokuTests
     5026 # system_error & gtest
 )
 
+##====--------------------------------------------------------------------====##
 #gtest_add_tests(TARGET SudokuTests)
 gtest_discover_tests(SudokuTests)
+
