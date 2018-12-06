@@ -33,7 +33,6 @@ target_link_libraries(SudokuTests
     Sudoku
     GTest::GTest
     GTest::Main
-#    ${GTEST_LIBRARIES}
 )
 
 set_target_properties(SudokuTests
@@ -47,11 +46,11 @@ set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
 
 enable_project_warnings(SudokuTests
   DISABLE
-    4365
-    4623
-    4668
-    4774
-    5026
+    4365 # stl
+    4623 # gtest
+    4668 # gsl_byte & gtest
+    4774 # stl
+    5026 # system_error & gtest
 )
 
 #gtest_add_tests(TARGET SudokuTests)
