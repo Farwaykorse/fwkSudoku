@@ -17,11 +17,11 @@ add_executable(SudokuTests)
 
 target_sources(SudokuTests
   PRIVATE
-    print_options.h
+    print_Options.h
 #    SudokuTests.cpp
   PRIVATE
     Board.cpp
-    Board_iterators.cpp
+    Board_Iterators.cpp
     Board_Section_iterator.cpp
     Board_Section_traits.cpp
     exceptions.cpp
