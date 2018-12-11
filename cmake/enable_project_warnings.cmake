@@ -1,5 +1,6 @@
 ##====---- enable_project_warnings.cmake                              ----====##
 ## Enable as many warnings as possible.
+## MSVC only.
 ##
 ## Usage:
 ## ````cmake
@@ -13,7 +14,7 @@
 ##====--------------------------------------------------------------------====##
 
 function(enable_project_warnings Target)
-if(${ARGC} GREATER 0)
+if(${ARGC} GREATER 1)
   set(Disable_List ${ARGN})
   if(${ARGV1} STREQUAL "DISABLE")
     list(REMOVE_AT Disable_List 0)
@@ -26,7 +27,7 @@ set(lib_name "${Target}_warnings")
 
 add_library(${lib_name} INTERFACE)
 
-if(MSVC)
+if(MSVC AND CMAKE_COMPILER_ID STREQUAL "MSVC")
   set(Warning_List
     # bugged:
     /wd4715 # warns when switch goes over all cases in an enum
@@ -115,14 +116,7 @@ if(MSVC)
       /W4     # highest warning level /Wall triggers library warnings
       ${Warning_List}
   )
-else()
-  target_compile_options(${lib_name}
-    INTERFACE
-      -Wall
-      -Wextra
-      -Wshadow
-  )
-endif(MSVC)
+endif()
 
 target_link_libraries(${Target}
   PRIVATE

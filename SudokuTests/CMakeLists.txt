@@ -44,6 +44,11 @@ target_link_libraries(SudokuTests
     GTest::Main
 )
 
+target_compile_definitions(SudokuTests
+  PRIVATE
+    fwkUnitTest
+)
+
 set_target_properties(SudokuTests
   PROPERTIES
     CXX_STANDARD 17
@@ -52,16 +57,69 @@ set_target_properties(SudokuTests
 )
 
 ##====--------------------------------------------------------------------====##
+# Configuration
+if(MSVC) # MSVC or simulating MSVC
+  target_compile_options(SudokuTests PRIVATE
+    /EHsc
+    /MP               # multiprocessor compilation (requires /Gm-)
+    /permissive-      # disable non-conforming constructs in VC++
+    $<$<CXX_COMPILER_ID:MSVC>:
+      /Gm-            # prefer /MP
+      /GR-            # disable RTTI (smaller image)
+      /GS             # buffer security check
+      /sdl
+    >
+    $<$<CXX_COMPILER_ID:Clang>:
+      -fno-strict-aliasing
+    >
+  )
+else()
+  target_compile_options(SudokuTests PRIVATE
+    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
+    >
+  )
+endif()
+
 set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
 
-enable_project_warnings(SudokuTests
-  DISABLE
-    4365 # stl
-    4623 # gtest
-    4668 # gsl_byte & gtest
-    4774 # stl
-    5026 # system_error & gtest
-)
+##====--------------------------------------------------------------------====##
+# Warning Configuration
+if(MSVC) # MSVC or simulating MSVC
+  enable_project_warnings(SudokuTests)
+  target_compile_options(SudokuTests PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:
+      /W4
+      /wd4365 # stl
+      /wd4623 # gtest
+      /wd4668 # gsl_byte & gtest
+      /wd4774 # stl
+      /wd5026 # system_error & gtest
+    >
+    $<$<CXX_COMPILER_ID:Clang>:
+      -Weverything
+      -Werror=return-type
+      # disabled warnings
+      -Wno-c++98-compat
+      -Wno-c++98-compat-pedantic
+      -Wno-covered-switch-default
+      -Wno-global-constructors
+      -Wno-language-extension-token
+      -Wno-missing-noreturn
+      -Wno-shift-sign-overflow
+      -Wno-undef
+      -Wno-unevaluated-expression
+      -Wno-unused-comparison
+      -Wno-used-but-marked-unused
+      -Wno-zero-as-null-pointer-constant
+    >
+    $<$<CXX_COMPILER_ID:Intel>:
+      /W5
+      /Qdiag-disable:304,981
+    >
+  )
+else()
+
+endif()
 
 ##====--------------------------------------------------------------------====##
 #gtest_add_tests(TARGET SudokuTests)

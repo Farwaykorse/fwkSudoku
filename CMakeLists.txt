@@ -41,15 +41,6 @@ target_compile_features(Sudoku
     cxx_std_17
 )
 
-target_compile_options(Sudoku
-  INTERFACE
-    $<$<CXX_COMPILER_ID:MSVC>:
-	  /EHsc
-	  /permissive-    # disable non-conforming constructs in VC++
-	  /GR-            # disable RTTI (smaller image)
-	>
-)
-
 # Dependencies
 ##====--------------------------------------------------------------------====##
 find_path(GSL_INCLUDE_DIR gsl/gsl)
