@@ -1,0 +1,79 @@
+language: cpp
+
+git:
+  depth: 1
+  quiet: true
+
+# Defaults
+os: linux
+dist: xenial
+
+compiler: gcc
+
+env:
+  global:
+  - NINJA_SHA512='38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5  ./ninja-linux.zip'
+  - TOOLCHAIN_FILE="$HOME/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
+
+matrix:
+  include:
+  - name: GCC
+    addons:
+      apt:
+        sources: ubuntu-toolchain-r-test
+        packages: g++-7
+
+before_install:
+- mkdir -p ~/tools && cd ~/tools
+- wget -q "https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip" --tries=3 -nc -O ninja-linux.zip
+- |
+  # Install Ninja-build
+  sum=$(sha512sum ./ninja-linux.zip)
+  if [[ $sum = $NINJA_SHA512 ]]; then
+    unzip -q ninja-linux.zip -d ninja
+    export PATH=$PATH:$PWD/ninja/
+  else
+    echo "Ninja hash has changed!"  >&2
+    echo "Expecting: $NINJA_SHA512" >&2
+    echo "Actual:    $sum"          >&2
+  fi
+- |
+  # Install vcpkg
+  if [[ -x ./vcpkg/vcpkg ]]; then
+    cd ./vcpkg
+    git pull --quiet
+  else
+    git clone --depth=1 --branch=master --quiet https://github.com/Microsoft/vcpkg.git
+    eval "CC=gcc-7 && CXX=g++-7"
+    ./vcpkg/bootstrap-vcpkg.sh
+  fi
+
+install:
+# dependencies
+- cd ~/tools/vcpkg
+- ./vcpkg install ms-gsl
+- ./vcpkg install gtest
+
+before_script:
+- |
+  cd "${TRAVIS_BUILD_DIR}"
+  CMakeGenFlags="-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}"
+  mkdir -p build
+  cd build
+  echo ${CMakeGenFlags}
+- cmake .. ${CMakeGenFlags}
+
+script:
+- cmake --build . -- -j$(nproc)
+
+before_cache:
+- |
+  # Cleaning build cache
+  rm -rf ~/tools/vcpkg/buildtrees
+  rm -rf ~/tools/vcpkg/downloads
+
+cache:
+  directories:
+  - ~/tools/vcpkg
+
+after_script: true
