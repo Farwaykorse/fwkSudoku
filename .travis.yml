@@ -16,14 +16,21 @@ env:
 
 matrix:
   include:
-  - name: GCC
+  - name: GCC-7
+    env:
+    - C_compiler=gcc-7
+    - CXX_compiler=g++-7
     addons:
       apt:
-        sources: ubuntu-toolchain-r-test
-        packages: g++-7
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-7
 
 before_install:
 - mkdir -p ~/tools && cd ~/tools
+- |
+  eval "CC=${C_compiler:?} && CXX=${CXX_compiler:?}"
 - |
   { # Download Ninja-build
     os=${TRAVIS_OS_NAME}
@@ -44,15 +51,19 @@ before_install:
     fi
   }
 - |
-  # Install vcpkg
-  if [[ -x ./vcpkg/vcpkg ]]; then
-    cd ./vcpkg
-    git pull --quiet
-  else
-    git clone --depth=1 --branch=master --quiet https://github.com/Microsoft/vcpkg.git
-    eval "CC=gcc-7 && CXX=g++-7"
-    ./vcpkg/bootstrap-vcpkg.sh
-  fi
+  { # Install vcpkg
+    if [[ -x ./vcpkg/vcpkg ]]; then
+      cd ./vcpkg
+      git pull --quiet
+    else
+      git clone --depth=1 --branch=master --quiet https://github.com/Microsoft/vcpkg.git
+      if [[ ${TRAVIS_OS_NAME} == linux && ${CXX_compiler} != g++* || ${CXX_compiler%g++-} < 7 ]]
+      then
+        eval "CC=gcc-7 && CXX=g++-7"
+      fi
+      ./vcpkg/bootstrap-vcpkg.sh
+    fi
+  }
 
 install:
 # dependencies
