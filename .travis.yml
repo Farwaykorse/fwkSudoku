@@ -13,8 +13,6 @@ env:
   - NINJA_VER=v1.8.2
   - NINJA_SHA512='38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5  ./ninja.zip'
   - TOOLCHAIN_FILE="$HOME/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
-  matrix:
-  - CONFIGURATION=Debug
 
 matrix:
   include:
@@ -22,6 +20,7 @@ matrix:
     env:
     - C_compiler=gcc-7
     - CXX_compiler=g++-7
+    - CONFIGURATION=Debug
     addons:
       apt:
         sources:
@@ -33,6 +32,7 @@ matrix:
     env:
     - C_compiler=gcc-8
     - CXX_compiler=g++-8
+    - CONFIGURATION=Debug
     addons:
       apt:
         sources:
@@ -45,6 +45,7 @@ matrix:
     env:
     - C_compiler=clang-6.0
     - CXX_compiler=clang++-6.0
+    - CONFIGURATION=Debug
     addons:
       apt:
         sources:
@@ -59,6 +60,7 @@ matrix:
     env:
     - C_compiler=clang
     - CXX_compiler=clang++
+    - CONFIGURATION=Debug
     addons:
       apt:
         sources:
