@@ -13,6 +13,8 @@ env:
   - NINJA_VER=v1.8.2
   - NINJA_SHA512='38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5  ./ninja.zip'
   - TOOLCHAIN_FILE="$HOME/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
+  matrix:
+  - CONFIGURATION=Debug
 
 matrix:
   include:
@@ -110,15 +112,20 @@ install:
 
 before_script:
 - |
-  cd "${TRAVIS_BUILD_DIR}"
-  CMakeGenFlags="-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}"
-  mkdir -p build
-  cd build
-  echo ${CMakeGenFlags}
-- cmake .. ${CMakeGenFlags}
+  { # Configuration
+    cd "${TRAVIS_BUILD_DIR}"
+    CMakeGenFlags="-G Ninja -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}"
+    GeneratorFlags='-k 10' # Ninja
+    CMakeBuildFlags="--config ${CONFIGURATION:?} -- ${GeneratorFlags}"
+    mkdir -p build
+    cd build
+  }
+- echo $CMakeGenFlags
+- cmake .. ${CMakeGenFlags:?}
+- echo $CMakeBuildFlags
 
 script:
-- cmake --build . -- -j$(nproc)
+- cmake --build . ${CMakeBuildFlags:?}
 
 before_cache:
 - |
