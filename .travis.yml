@@ -27,6 +27,43 @@ matrix:
         packages:
         - g++-7
 
+  - name: GCC-8
+    env:
+    - C_compiler=gcc-8
+    - CXX_compiler=g++-8
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-8
+
+  - name: Clang-6.0
+    dist: xenial
+    env:
+    - C_compiler=clang-6.0
+    - CXX_compiler=clang++-6.0
+    addons:
+      apt:
+        sources:
+        - llvm-toolchain-xenial-6.0
+        - ubuntu-toolchain-r-test
+        packages:
+        - clang-6.0
+        - g++-7
+
+  - name: Clang-7
+    dist: xenial
+    env:
+    - C_compiler=clang
+    - CXX_compiler=clang++
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-7
+
 before_install:
 - mkdir -p ~/tools && cd ~/tools
 - |
