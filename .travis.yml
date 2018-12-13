@@ -8,7 +8,7 @@ git:
 env:
   global:
   - NINJA_VER=v1.8.2
-  - NINJA_SHA512='38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5  ./ninja.zip'
+  - NINJA_SHA512='38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5  ninja-linux.zip'
   - TOOLCHAIN_FILE="$HOME/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 ##====--------------------------------------------------------------------====##
@@ -104,30 +104,34 @@ matrix:
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
 before_install:
-- mkdir -p ~/tools && cd ~/tools
 - |
+  # Setup
+  set -e # stop Bash execution on error
+  mkdir -p ~/tools
   eval "CC=${C_compiler:?} && CXX=${CXX_compiler:?}"
 - |
-  { # Download Ninja-build
+  # Install Ninja-build
+  (
     os=${TRAVIS_OS_NAME}
-    NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/ninja-${os}.zip"
-    wget -q "${NINJA_URL}" --tries=3 -nc -O ninja.zip
-  }
-- |
-  { # Install Ninja-build
-    sum=$(sha512sum ./ninja.zip)
+    file_name="ninja-${os}.zip"
+    NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
+    cd ~/tools
+    wget -q "${NINJA_URL}" --tries=3 -nc
+    sum=$(sha512sum ${file_name})
     if [[ $sum = ${NINJA_SHA512} ]]; then
-      unzip -q ninja.zip -d ninja
-      export PATH=$PATH:$PWD/ninja/
+      unzip -q ${file_name} -d ninja
     else
       echo "Ninja hash has changed!"  >&2
       echo "Expecting: $NINJA_SHA512" >&2
       echo "Actual:    $sum"          >&2
       exit 1
     fi
-  }
+  )
+  export PATH=$PATH:$HOME/tools/ninja/
 - |
-  { # Install vcpkg
+  # Install vcpkg
+  (
+    cd ~/tools
     if [[ -x ./vcpkg/vcpkg ]]; then
       cd ./vcpkg
       git pull --quiet
@@ -139,7 +143,7 @@ before_install:
       fi
       ./vcpkg/bootstrap-vcpkg.sh
     fi
-  }
+  )
 
 install:
 - cd ~/tools/vcpkg
