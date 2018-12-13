@@ -8,7 +8,7 @@ git:
 env:
   global:
   - NINJA_VER: v1.8.2
-  - NINJA_SHA512: '38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5  ninja-linux.zip'
+  - NINJA_SHA512: 38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5
   - TOOLCHAIN_FILE: "$HOME/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 ##====--------------------------------------------------------------------====##
@@ -152,7 +152,7 @@ before_install:
     cd ~/tools
     wget -q "${NINJA_URL}" --tries=3 -nc
     sum=$(sha512sum ${file_name})
-    if [[ $sum = ${NINJA_SHA512} ]]; then
+    if [[ ${sum:0:128} = ${NINJA_SHA512} ]]; then
       unzip -q ${file_name} -d ninja
     else
       echo "Ninja hash has changed!"  >&2
