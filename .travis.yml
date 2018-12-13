@@ -101,11 +101,39 @@ matrix:
     - CONFIGURATION=Release
     addons: *clang7
 
+  - name: Clang-7 libc++ Debug
+    dist: xenial
+    env:
+    - C_compiler=clang
+    - CXX_compiler=clang++
+    - CXX_lib=libc++
+    - CONFIGURATION=Debug
+    addons: &clang7lib
+      apt:
+        sources:
+        - llvm-toolchain-xenial-7
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-7
+        - libc++-7-dev
+        - libc++abi-7-dev
+
+  - name: Clang-7 libc++ Release
+    dist: xenial
+    env:
+    - C_compiler=clang
+    - CXX_compiler=clang++
+    - CXX_lib=libc++
+    - CONFIGURATION=Release
+    addons: *clang7lib
+
   allow_failures:
   - name: Clang-6.0 Debug
   - name: Clang-6.0 Release
   - name: Clang-7 Debug
   - name: Clang-7 Release
+  - name: Clang-7 libc++ Debug
+  - name: Clang-7 libc++ Release
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
@@ -150,6 +178,16 @@ before_install:
       ./vcpkg/bootstrap-vcpkg.sh
     fi
   )
+- |
+  # Using libc++
+  if [[ ${CXX_compiler} == clang* && ${CXX_lib} ]]; then
+    FLAGS="-stdlib=${CXX_lib}"
+    #if [[ ${CXX_lib} == libc++ ]]; then
+    #  FLAGS="${FLAGS} -lc++fs"
+    #  FLAGS="${FLAGS} -lc++experimental"
+    #fi
+    export CXXFLAGS=$FLAGS
+  fi
 
 install:
 - cd ~/tools/vcpkg
