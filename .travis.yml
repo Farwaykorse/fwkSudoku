@@ -101,6 +101,12 @@ matrix:
     - CONFIGURATION=Release
     addons: *clang7
 
+  allow_failures:
+  - name: Clang-6.0 Debug
+  - name: Clang-6.0 Release
+  - name: Clang-7 Debug
+  - name: Clang-7 Release
+
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
 before_install:
