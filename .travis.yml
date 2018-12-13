@@ -7,9 +7,9 @@ git:
 
 env:
   global:
-  - NINJA_VER=v1.8.2
-  - NINJA_SHA512='38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5  ninja-linux.zip'
-  - TOOLCHAIN_FILE="$HOME/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
+  - NINJA_VER: v1.8.2
+  - NINJA_SHA512: '38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5  ninja-linux.zip'
+  - TOOLCHAIN_FILE: "$HOME/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 ##====--------------------------------------------------------------------====##
 ## Define Build Configurations
@@ -21,9 +21,9 @@ matrix:
   include:
   - name: GCC-7 Debug
     env:
-    - C_compiler=gcc-7
-    - CXX_compiler=g++-7
-    - CONFIGURATION=Debug
+    - C_compiler:   gcc-7
+    - CXX_compiler: g++-7
+    - CONFIGURATION: Debug
     addons: &GCC7
       apt:
         sources:
@@ -33,16 +33,16 @@ matrix:
 
   - name: GCC-7 Release
     env:
-    - C_compiler=gcc-7
-    - CXX_compiler=g++-7
-    - CONFIGURATION=Release
+    - C_compiler:   gcc-7
+    - CXX_compiler: g++-7
+    - CONFIGURATION: Release
     addons: *GCC7
 
   - name: GCC-8 Debug
     env:
-    - C_compiler=gcc-8
-    - CXX_compiler=g++-8
-    - CONFIGURATION=Debug
+    - C_compiler:   gcc-8
+    - CXX_compiler: g++-8
+    - CONFIGURATION: Debug
     addons: &GCC8
       apt:
         sources:
@@ -52,17 +52,17 @@ matrix:
 
   - name: GCC-8 Release
     env:
-    - C_compiler=gcc-8
-    - CXX_compiler=g++-8
-    - CONFIGURATION=Release
+    - C_compiler:   gcc-8
+    - CXX_compiler: g++-8
+    - CONFIGURATION: Release
     addons: *GCC8
 
   - name: Clang-6.0 Debug
     dist: xenial
     env:
-    - C_compiler=clang-6.0
-    - CXX_compiler=clang++-6.0
-    - CONFIGURATION=Debug
+    - C_compiler: clang-6.0
+    - CXX_compiler: clang++-6.0
+    - CONFIGURATION: Debug
     addons: &clang6
       apt:
         sources:
@@ -75,17 +75,17 @@ matrix:
   - name: Clang-6.0 Release
     dist: xenial
     env:
-    - C_compiler=clang-6.0
-    - CXX_compiler=clang++-6.0
-    - CONFIGURATION=Release
+    - C_compiler: clang-6.0
+    - CXX_compiler: clang++-6.0
+    - CONFIGURATION: Release
     addons: *clang6
 
   - name: Clang-7 Debug
     dist: xenial
     env:
-    - C_compiler=clang
-    - CXX_compiler=clang++
-    - CONFIGURATION=Debug
+    - C_compiler:   clang
+    - CXX_compiler: clang++
+    - CONFIGURATION: Debug
     addons: &clang7
       apt:
         sources:
@@ -96,18 +96,18 @@ matrix:
   - name: Clang-7 Release
     dist: xenial
     env:
-    - C_compiler=clang
-    - CXX_compiler=clang++
-    - CONFIGURATION=Release
+    - C_compiler:   clang
+    - CXX_compiler: clang++
+    - CONFIGURATION: Release
     addons: *clang7
 
   - name: Clang-7 libc++ Debug
     dist: xenial
     env:
-    - C_compiler=clang
-    - CXX_compiler=clang++
-    - CXX_lib=libc++
-    - CONFIGURATION=Debug
+    - C_compiler:   clang
+    - CXX_compiler: clang++
+    - CXX_lib: libc++
+    - CONFIGURATION: Debug
     addons: &clang7lib
       apt:
         sources:
@@ -121,10 +121,10 @@ matrix:
   - name: Clang-7 libc++ Release
     dist: xenial
     env:
-    - C_compiler=clang
-    - CXX_compiler=clang++
-    - CXX_lib=libc++
-    - CONFIGURATION=Release
+    - C_compiler:   clang
+    - CXX_compiler: clang++
+    - CXX_lib: libc++
+    - CONFIGURATION: Release
     addons: *clang7lib
 
   allow_failures:
