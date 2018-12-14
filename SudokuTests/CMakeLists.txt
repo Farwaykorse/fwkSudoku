@@ -58,45 +58,30 @@ set_target_properties(SudokuTests
 
 ##====--------------------------------------------------------------------====##
 # Configuration
+set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
+
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(SudokuTests PRIVATE
     /EHsc
     /MP               # multiprocessor compilation (requires /Gm-)
     /permissive-      # disable non-conforming constructs in VC++
     $<$<CXX_COMPILER_ID:MSVC>:
-      /Gm-            # prefer /MP
-      /GR-            # disable RTTI (smaller image)
-      /GS             # buffer security check
+      /Gm-
+      /GR-
+      /GS
       /sdl
-    >
-    $<$<CXX_COMPILER_ID:Clang>:
-      -fno-strict-aliasing
-    >
-  )
-else()
-  target_compile_options(SudokuTests PRIVATE
-    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
-    >
-  )
-endif()
-
-set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
-
-##====--------------------------------------------------------------------====##
-# Warning Configuration
-if(MSVC) # MSVC or simulating MSVC
-  enable_project_warnings(SudokuTests)
-  target_compile_options(SudokuTests PRIVATE
-    $<$<CXX_COMPILER_ID:MSVC>:
+      # warnings
       /W4
+      ${MSVC_Extra_Warnings}
       /wd4365 # stl
       /wd4623 # gtest
       /wd4668 # gsl_byte & gtest
-      /wd4715
       /wd4774 # stl
       /wd5026 # system_error & gtest
     >
     $<$<CXX_COMPILER_ID:Clang>:
+      -fno-strict-aliasing
+      # warnings
       -Weverything
       -Werror=return-type
       # disabled warnings
@@ -119,7 +104,10 @@ if(MSVC) # MSVC or simulating MSVC
     >
   )
 else()
-
+  target_compile_options(SudokuTests PRIVATE
+    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
+    >
+  )
 endif()
 
 ##====--------------------------------------------------------------------====##

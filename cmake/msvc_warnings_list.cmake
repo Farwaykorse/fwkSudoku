@@ -1,34 +1,19 @@
-##====---- enable_project_warnings.cmake                              ----====##
-## Enable as many warnings as possible.
-## MSVC only.
+##====---- msvc_warnings_list.cmake                                   ----====##
+## Enable additional warnings, not included in /W4.
 ##
 ## Usage:
 ## ````cmake
-## include(cmake/enable_project_warnings.cmake)
-## enable_project_warnings(<target>
-##   # disable warnings:
-##   1234
-##   5999
+## include(cmake/msvc_warnings_list.cmake)
+## target_compile_options(<target>
+##   /W4
+##   ${MSVC_Extra_Warnings}
 ## )
 ## ````
 ##====--------------------------------------------------------------------====##
 
-function(enable_project_warnings Target)
-if(${ARGC} GREATER 1)
-  set(Disable_List ${ARGN})
-  if(${ARGV1} STREQUAL "DISABLE")
-    list(REMOVE_AT Disable_List 0)
-  else()
-    message(AUTHOR_WARNING "Possible options are: DISABLE")
-  endif()
-endif()
-
-set(lib_name "${Target}_warnings")
-
-add_library(${lib_name} INTERFACE)
-
-if(MSVC AND CMAKE_COMPILER_ID STREQUAL "MSVC")
-  set(Warning_List
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" AND
+   NOT DEFINED "MSVC_Extra_Warnings")
+  set(MSVC_Extra_Warnings
     # bugged:
     /wd4715 # warns when switch goes over all cases in an enum
     # extra warnings not part of /W4
@@ -97,30 +82,4 @@ if(MSVC AND CMAKE_COMPILER_ID STREQUAL "MSVC")
     /w45031 # #pragma warning(pop): likely mismatch
     /w45032 # detected #pragma warning(push), no corresponding warning(pop)
   )
-
-  if(DEFINED Disable_List)
-    foreach(item ${Disable_List})
-      if(${item} MATCHES "^[0-9][0-9][0-9][0-9]$")
-        list(FILTER Warning_List EXCLUDE REGEX "/w.${item}")
-        list(APPEND Warning_List "/wd${item}")
-      else()
-        message(AUTHOR_WARNING "expecting MSVC warning code (9999)")
-      endif()
-    endforeach(item)
-  endif(DEFINED Disable_List)
-
-  list(REMOVE_DUPLICATES Warning_List)
-
-  target_compile_options(${lib_name}
-    INTERFACE
-      /W4     # highest warning level /Wall triggers library warnings
-      ${Warning_List}
-  )
 endif()
-
-target_link_libraries(${Target}
-  PRIVATE
-    ${lib_name}
-)
-
-endfunction(enable_project_warnings)

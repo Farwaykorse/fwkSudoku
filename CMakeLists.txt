@@ -18,10 +18,10 @@ if(CMAKE_COMPILER_IS_GNUCC)
 endif()
 
 ##====--------------------------------------------------------------------====##
-# CMake Configuration Functions
+# External CMake Configuration Files
 ##====--------------------------------------------------------------------====##
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/enable_project_warnings.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/set_precompiled_header.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/msvc_warnings_list.cmake)
 
 ##====--------------------------------------------------------------------====##
 # The library: Sudoku
