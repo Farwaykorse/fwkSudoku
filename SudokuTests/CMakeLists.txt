@@ -63,12 +63,12 @@ set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(SudokuTests PRIVATE
     /EHsc
-    /MP               # multiprocessor compilation (requires /Gm-)
+    /GR-              # disable RTTI (smaller image)
+    /GS               # buffer security check
     /permissive-      # disable non-conforming constructs in VC++
     $<$<CXX_COMPILER_ID:MSVC>:
-      /Gm-
-      /GR-
-      /GS
+      /Gm-            # prefer /MP
+      /MP             # multiprocessor compilation (requires /Gm-)
       /sdl
       # warnings
       /W4
@@ -88,12 +88,13 @@ if(MSVC) # MSVC or simulating MSVC
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
       -Wno-covered-switch-default
+      -Wno-deprecated-declarations       # gtest: fopen, strncpy, chdir, ...
       -Wno-global-constructors
       -Wno-language-extension-token
       -Wno-missing-noreturn
       -Wno-shift-sign-overflow
       -Wno-undef
-      -Wno-unevaluated-expression
+      -Wno-unevaluated-expression        # Board.cpp & Board_Iterators.cpp
       -Wno-unused-comparison
       -Wno-used-but-marked-unused
       -Wno-zero-as-null-pointer-constant
@@ -106,6 +107,9 @@ if(MSVC) # MSVC or simulating MSVC
 else()
   target_compile_options(SudokuTests PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
+      -Wno-padded
+      -Wno-unevaluated-expression        # Board.cpp & Board_Iterators.cpp
+      -Wno-weak-vtables
     >
   )
 endif()

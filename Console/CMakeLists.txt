@@ -31,11 +31,11 @@ set_precompiled_header(console "precompiled.h" "precompiled.cpp")
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(console PRIVATE
     /EHsc
+    /GR-              # disable RTTI (smaller image)
+    /GS               # buffer security check
     /permissive-      # disable non-conforming constructs in VC++
     $<$<CXX_COMPILER_ID:MSVC>:
       /Gm-            # prefer /MP
-      /GR-            # disable RTTI (smaller image)
-      /GS             # buffer security check
       /MP             # multiprocessor compilation (requires /Gm-)
       /sdl
       # warnings
@@ -53,6 +53,7 @@ if(MSVC) # MSVC or simulating MSVC
       # disabled warnings
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
+      -Wno-undef                 # ms-gsl
     >
     $<$<CXX_COMPILER_ID:Intel>:
       /W5
