@@ -50,9 +50,10 @@ if(MSVC)
     endif()
   endforeach(file_name)
 
-  set_target_properties(${Target}
-    PROPERTIES
-      COMPILE_OPTIONS "/Fp${PCH_FILE}"
+  target_compile_options(${Target}
+    PRIVATE
+      /Fp${PCH_FILE}
   )
+
 endif(MSVC)
 endfunction(set_precompiled_header)
