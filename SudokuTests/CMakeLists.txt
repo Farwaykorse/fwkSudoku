@@ -92,6 +92,7 @@ if(MSVC) # MSVC or simulating MSVC
       /wd4365 # stl
       /wd4623 # gtest
       /wd4668 # gsl_byte & gtest
+      /wd4715
       /wd4774 # stl
       /wd5026 # system_error & gtest
     >
