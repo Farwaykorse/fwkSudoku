@@ -6,8 +6,8 @@
 ## ````cmake
 ## set_precompiled_header(
 ##   <target>
-##   <HeaderFile> # string
-##   <SourceFile> # string
+##   <HeaderFile> # string i.e. precompiled.h
+##   <SourceFile> # string i.e. precompiled.cpp
 ## )
 ## ````
 ##====--------------------------------------------------------------------====##
@@ -33,7 +33,7 @@ if(MSVC)
           OBJECT_OUTPUTS "${PCH_FILE}"
       )
     else()
-      set_target_properties(${Target}
+      set_source_files_properties(${file_name}
         PROPERTIES
           COMPILE_OPTIONS "/FI${HeaderFile};/Yu${HeaderFile}"
           OBJECT_DEPENDS "${PCH_FILE}"
