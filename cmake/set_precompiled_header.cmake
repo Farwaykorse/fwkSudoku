@@ -1,6 +1,5 @@
 ##====---- set_precompiled_header.cmake                               ----====##
 ## Perform the precompiled header configuration.
-## MSVC only.
 ##
 ## Usage:
 ## ````cmake
@@ -21,6 +20,16 @@ if(MSVC)
       ${SourceFile}
   )
   get_property(Files TARGET ${Target} PROPERTY SOURCES)
+
+  # Workaround Clang's /\-mixing and resulting warning (-Wmicrosoft-include).
+  # Lets CMake set the full path.
+  # Confirmed for clang 7.0
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND
+      ${CMAKE_CXX_COMPILER_VERSION} EQUAL 7
+  )
+    set(HeaderFile "${CMAKE_CURRENT_SOURCE_DIR}/${HeaderFile}")
+  endif()
+  # /Workaround
 
   foreach(file_name ${Files})
     if(NOT ${file_name} MATCHES ".*\.cpp$")
