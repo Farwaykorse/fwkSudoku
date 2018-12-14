@@ -1,18 +1,34 @@
-##====---- msvc_warnings_list.cmake                                   ----====##
-## Enable additional warnings, not included in /W4.
+##====---- cmake/msvc_warnings_list.cmake                             ----====##
+## Adds the CACHEd variable: `MSVC_Extra_Warnings`.
+## With a list of Microsoft Visual C++ warning flags.
+## To be added to a targets the compile options.
 ##
+## Contains:
+## - A collection of warnings, not enabled by default.
+##   Set to their default warning level. (/w[1-4]*)
+## - Disabled warnings. (/wd*)
+## - Warnings promoted to errors. (/we*)
+##
+## Visual C++ documentation:
+##  https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings
+##
+##====--------------------------------------------------------------------====##
 ## Usage:
 ## ````cmake
 ## include(cmake/msvc_warnings_list.cmake)
+##
+## # Optionally edited (local only):
+## list(APPEND MSVC_Extra_Warnings "/wd4715")
+##
 ## target_compile_options(<target>
 ##   /W4
 ##   ${MSVC_Extra_Warnings}
+##   # OR: $CACHE{MSVC_Extra_Warnings} # to ensure the original variable is used
 ## )
 ## ````
 ##====--------------------------------------------------------------------====##
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" AND
-   NOT DEFINED "MSVC_Extra_Warnings")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   set(MSVC_Extra_Warnings
     # bugged:
     /wd4715 # warns when switch goes over all cases in an enum
@@ -81,5 +97,6 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" AND
     /we5029 # non-standard extension: alignment attributes do not apply here
     /w45031 # #pragma warning(pop): likely mismatch
     /w45032 # detected #pragma warning(push), no corresponding warning(pop)
+    CACHE STRING "Additional warning flags for MSVC to be used with /W4"
   )
 endif()
