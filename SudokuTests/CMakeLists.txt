@@ -110,7 +110,7 @@ else()
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
       -Wno-padded
       -Wno-unevaluated-expression        # Board.cpp & Board_Iterators.cpp
-      -Wno-weak-vtables
+      -Wno-weak-vtables                  # exceptions
     >
   )
 endif()

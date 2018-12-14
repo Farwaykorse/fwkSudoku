@@ -68,6 +68,7 @@ else()
       # disabled warnings
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
+      -Wno-weak-vtables                  # exceptions
     >
   )
 endif()
