@@ -57,7 +57,7 @@ Disabled warnings:
 ``````
 -Wno-c++98-compat
 -Wno-c++98-compat-pedantic
--Wno-unused-comparison       Every comparrison check ...
+-Wno-unused-comparison       Every comparison check ...
 -Wno-zero-as-null-pointer-constant
 -Wno-global-constructors     gTest macro
 -Wno-used-but-marked-unused  gTest macros
