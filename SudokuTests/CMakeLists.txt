@@ -73,6 +73,7 @@ if(MSVC) # MSVC or simulating MSVC
       # warnings
       /W4
       ${MSVC_Extra_Warnings}
+      /wd4251 # gtest (non dll interface class used as base for dll-interface)
       /wd4365 # stl
       /wd4623 # gtest
       /wd4668 # gsl_byte & gtest
