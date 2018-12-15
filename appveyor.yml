@@ -86,7 +86,7 @@ before_build:
 - ps: |
     $ToolChainFile = "-DCMAKE_TOOLCHAIN_FILE=$env:TOOLCHAIN_FILE"
     if ("$env:USE_BUILDSYSTEM" -eq "Ninja") {
-      $GeneratorFlags = '-v -k 10'
+      $GeneratorFlags = '-k 10'
       $Architecture = $env:PLATFORM
       if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -eq "Visual Studio 2015") {
         $env:VCVARSALL = "`"$env:VCVAR2015`" $Architecture"
