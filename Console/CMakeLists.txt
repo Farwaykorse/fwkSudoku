@@ -23,11 +23,7 @@ set_target_properties(console
 )
 
 ##====--------------------------------------------------------------------====##
-# custom settings for precompiled headers
-set_precompiled_header(console "precompiled.h" "precompiled.cpp")
-
-##====--------------------------------------------------------------------====##
-# Configuration
+# Compiler Specific Configuration
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(console PRIVATE
     /EHsc
@@ -38,27 +34,43 @@ if(MSVC) # MSVC or simulating MSVC
       /Gm-            # prefer /MP
       /MP             # multiprocessor compilation (requires /Gm-)
       /sdl
-      # warnings
-      /W4
-      ${MSVC_Extra_Warnings}
-      /wd4668 # gsl_byte
-      /wd4774 # stl
-      /wd5026 # system_error
     >
     $<$<CXX_COMPILER_ID:Clang>:
       -fno-strict-aliasing
-      # warnings
+    >
+  )
+endif()
+
+# Warnings
+if(MSVC) # MSVC or simulating MSVC
+  target_compile_options(console PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:
+      /W4
+      ${MSVC_Extra_Warnings}
+    >
+    $<$<CXX_COMPILER_ID:Clang>:
       -Weverything
       -Werror=return-type
       # disabled warnings
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
-      -Wno-undef                 # ms-gsl
     >
     $<$<CXX_COMPILER_ID:Intel>:
       /W5
       /Qdiag-disable:304,981
     >
+  )
+  set_source_files_compile_options(
+    precompiled.cpp
+    OPTIONS
+      $<$<CXX_COMPILER_ID:MSVC>:
+        /wd4668 # gsl_byte
+        /wd4774 # stl
+        /wd5026 # system_error
+      >
+      $<$<CXX_COMPILER_ID:Clang>:
+        -Wno-undef               # ms-gsl (PR created)
+      >
   )
 else()
   target_compile_options(console PRIVATE
@@ -72,3 +84,8 @@ else()
     >
   )
 endif()
+
+##====--------------------------------------------------------------------====##
+# custom settings for precompiled headers
+set_precompiled_header(console "precompiled.h" "precompiled.cpp")
+

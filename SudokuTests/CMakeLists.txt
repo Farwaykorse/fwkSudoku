@@ -44,6 +44,8 @@ target_link_libraries(SudokuTests
     GTest::Main
 )
 
+##====--------------------------------------------------------------------====##
+# General Configuration
 target_compile_definitions(SudokuTests
   PRIVATE
     fwkUnitTest
@@ -57,9 +59,7 @@ set_target_properties(SudokuTests
 )
 
 ##====--------------------------------------------------------------------====##
-# Configuration
-set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
-
+# Compiler Specific Configuration
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(SudokuTests PRIVATE
     /EHsc
@@ -70,11 +70,19 @@ if(MSVC) # MSVC or simulating MSVC
       /Gm-            # prefer /MP
       /MP             # multiprocessor compilation (requires /Gm-)
       /sdl
-      # warnings
+    >
+    $<$<CXX_COMPILER_ID:Clang>:
+      -fno-strict-aliasing
+    >
+  )
+endif()
+
+# Warnings
+if(MSVC) # MSVC or simulating MSVC
+  target_compile_options(SudokuTests PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:
       /W4
       ${MSVC_Extra_Warnings}
-      /wd4251 # gtest (needs to have dll-interface to be used by clients)
-      /wd4275 # gtest (non dll interface class used as base for dll-interface)
       /wd4365 # stl
       /wd4623 # gtest
       /wd4668 # gsl_byte & gtest
@@ -82,21 +90,13 @@ if(MSVC) # MSVC or simulating MSVC
       /wd5026 # system_error & gtest
     >
     $<$<CXX_COMPILER_ID:Clang>:
-      -fno-strict-aliasing
-      # warnings
       -Weverything
       -Werror=return-type
       # disabled warnings
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
       -Wno-covered-switch-default
-      -Wno-deprecated-declarations       # gtest: fopen, strncpy, chdir, ...
       -Wno-global-constructors
-      -Wno-language-extension-token
-      -Wno-missing-noreturn
-      -Wno-shift-sign-overflow
-      -Wno-undef
-      -Wno-unevaluated-expression        # Board.cpp & Board_Iterators.cpp
       -Wno-unused-comparison
       -Wno-used-but-marked-unused
       -Wno-zero-as-null-pointer-constant
@@ -106,15 +106,45 @@ if(MSVC) # MSVC or simulating MSVC
       /Qdiag-disable:304,981
     >
   )
+  set_source_files_compile_options(
+    Board.cpp
+    Board_Iterators.cpp
+    OPTIONS 
+      $<$<CXX_COMPILER_ID:Clang>:-Wno-unevaluated-expression>
+  )
+  set_source_files_compile_options(
+    precompiled.cpp
+    OPTIONS
+      $<$<CXX_COMPILER_ID:MSVC>:
+        /wd4251 # gtest (needs to have dll-interface to be used by clients)
+        /wd4275 # gtest (non dll interface class used as base for dll-interface)
+      >
+      $<$<CXX_COMPILER_ID:Clang>:
+        -Wno-deprecated-declarations     # gtest: fopen, strncpy, chdir, ...
+        -Wno-language-extension-token
+        -Wno-missing-noreturn
+        -Wno-shift-sign-overflow
+        -Wno-undef
+      >
+  )
 else()
   target_compile_options(SudokuTests PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
       -Wno-padded
-      -Wno-unevaluated-expression        # Board.cpp & Board_Iterators.cpp
-      -Wno-weak-vtables                  # exceptions
+      -Wno-weak-vtables                  # exceptions.h
     >
   )
+  set_source_files_compile_options(
+    Board.cpp
+    Board_Iterators.cpp
+    OPTIONS 
+      $<$<CXX_COMPILER_ID:Clang>:-Wno-unevaluated-expression>
+  )
 endif()
+
+##====--------------------------------------------------------------------====##
+# custom settings for precompiled headers
+set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
 
 ##====--------------------------------------------------------------------====##
 #gtest_add_tests(TARGET SudokuTests)
