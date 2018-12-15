@@ -210,15 +210,14 @@ Flags not set for all translation units are marked with a `*`.
         header
 /w14605 '/Dmacro' specified on current command line, but was not specified when
         precompiled header was built
-*/w34619 pragma warning: there is no warning number 'number'
-         (SudokuTests/precompiled.cpp | gtest.h (no warning number 4800))
+/w34619 pragma warning: there is no warning number 'number'
 */w44623 'derived class': default constructor was implicitly defined as deleted.
          because a base class default constructor is inaccessible or deleted.
          (SudokuTests/precompiled.cpp | gtest, in <xtree> from gtest-internal.h)
 --/w44625 'derived class': copy constructor could not be generated because a base
          base class copy constructor is inaccessible
          (*/precompiled.cpp | warns on stl)
-		 (warns on class containing a std::unique_ptr)
+         (warns on class containing a std::unique_ptr)
 --/w44626 'derived class': assignment operator could not be generated because a
           base assignment operator is inaccessible
           (*/precompiled.cpp | warns on gsl/multi_span and stl)
