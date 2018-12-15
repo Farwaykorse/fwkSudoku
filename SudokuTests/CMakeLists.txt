@@ -133,6 +133,7 @@ else()
       -Weverything
       -Wno-c++98-c++11-c++14-compat
       -Wno-c++98-compat
+      -Wno-c++98-compat-pedantic
       -Wno-covered-switch-default
       -Wno-global-constructors
       -Wno-padded
