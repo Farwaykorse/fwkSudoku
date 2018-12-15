@@ -7,12 +7,18 @@ git:
 
 env:
   global:
+  # Ninja-build
   - NINJA_VER: v1.8.2
   - NINJA_SHA512: 38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5
+  # vcpkg
   - TOOLCHAIN_FILE: "$HOME/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 ##====--------------------------------------------------------------------====##
 ## Define Build Configurations
+# No build matrix, each item in matrix:include is single build configuration.
+#
+# Building vcpkg requires at least g++-7
+#
 # Defaults
 os: linux
 dist: xenial
