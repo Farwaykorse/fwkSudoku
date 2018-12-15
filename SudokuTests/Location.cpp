@@ -347,7 +347,6 @@ TEST(Location, Construction_Block)
 
 	// move construct
 	static_assert(noexcept(Location_Block<3>{Location_Block<3>()}));
-	EXPECT_NO_THROW(Location_Block<3>{Location_Block<3>(6, 3)});
 
 	// copy construct
 	constexpr Location_Block<3> c1{1, 3};

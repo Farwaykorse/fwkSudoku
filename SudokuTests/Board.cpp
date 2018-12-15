@@ -204,8 +204,6 @@ TEST(Board, Construction)
 	}
 	{
 		SCOPED_TRACE("Move Constructor : Board(Board&&)");
-		EXPECT_NO_THROW((Board<int, 2>{Board<int, 2>()}));
-
 		EXPECT_NO_THROW(Board<int> Opt = (Board<int, 3>()));
 		EXPECT_NO_THROW(auto Opt = (Board<int, 2>())); // move construct
 	}
