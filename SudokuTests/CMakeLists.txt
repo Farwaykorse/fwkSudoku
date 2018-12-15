@@ -130,6 +130,7 @@ if(MSVC) # MSVC or simulating MSVC
 else()
   target_compile_options(SudokuTests PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
+      -Weverything
       -Wno-padded
       -Wno-weak-vtables                  # exceptions.h
     >
