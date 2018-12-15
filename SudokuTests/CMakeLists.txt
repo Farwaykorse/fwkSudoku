@@ -63,12 +63,12 @@ set_target_properties(SudokuTests
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(SudokuTests PRIVATE
     /EHsc
-    /GR-              # disable RTTI (smaller image)
-    /GS               # buffer security check
-    /permissive-      # disable non-conforming constructs in VC++
+    /GR-         # disable RTTI (smaller image)
+    /GS          # buffer security check
+    /permissive- # disable non-conforming constructs in VC++
     $<$<CXX_COMPILER_ID:MSVC>:
-      /Gm-            # prefer /MP
-      /MP             # multiprocessor compilation (requires /Gm-)
+      /Gm-       # prefer /MP
+      /MP        # multiprocessor compilation (requires /Gm-)
       /sdl
     >
     $<$<CXX_COMPILER_ID:Clang>:
@@ -117,10 +117,10 @@ if(MSVC) # MSVC or simulating MSVC
     OPTIONS
       $<$<CXX_COMPILER_ID:MSVC>:
         /wd4251 # gtest (needs to have dll-interface to be used by clients)
-        /wd4275 # gtest (non dll interface class used as base for dll-interface)
+        /wd4275 # gtest (non dll-interface class used as base for dll-interface)
       >
       $<$<CXX_COMPILER_ID:Clang>:
-        -Wno-deprecated-declarations     # gtest: fopen, strncpy, chdir, ...
+        -Wno-deprecated-declarations  # gtest: fopen, strncpy, chdir, ...
         -Wno-language-extension-token
         -Wno-missing-noreturn
         -Wno-shift-sign-overflow
@@ -131,6 +131,7 @@ else()
   target_compile_options(SudokuTests PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
       -Weverything
+      # disabled warnings
       -Wno-c++98-c++11-c++14-compat
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
@@ -138,7 +139,7 @@ else()
       -Wno-global-constructors
       -Wno-padded
       -Wno-used-but-marked-unused
-      -Wno-weak-vtables                  # exceptions.h
+      -Wno-weak-vtables           # exceptions.h
     >
     $<$<CXX_COMPILER_ID:GNU>:
       -Wall
@@ -163,7 +164,7 @@ else()
   set_source_files_compile_options(
     Board.cpp
     Board_Iterators.cpp
-    OPTIONS 
+    OPTIONS
       $<$<CXX_COMPILER_ID:Clang>:-Wno-unevaluated-expression>
   )
 endif()

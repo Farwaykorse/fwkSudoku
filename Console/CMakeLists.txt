@@ -27,12 +27,12 @@ set_target_properties(console
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(console PRIVATE
     /EHsc
-    /GR-              # disable RTTI (smaller image)
-    /GS               # buffer security check
-    /permissive-      # disable non-conforming constructs in VC++
+    /GR-         # disable RTTI (smaller image)
+    /GS          # buffer security check
+    /permissive- # disable non-conforming constructs in VC++
     $<$<CXX_COMPILER_ID:MSVC>:
-      /Gm-            # prefer /MP
-      /MP             # multiprocessor compilation (requires /Gm-)
+      /Gm-       # prefer /MP
+      /MP        # multiprocessor compilation (requires /Gm-)
       /sdl
     >
     $<$<CXX_COMPILER_ID:Clang>:
@@ -69,7 +69,7 @@ if(MSVC) # MSVC or simulating MSVC
         /wd5026 # system_error
       >
       $<$<CXX_COMPILER_ID:Clang>:
-        -Wno-undef               # ms-gsl (PR created)
+        -Wno-undef        # ms-gsl (PR created)
       >
   )
 else()
@@ -80,7 +80,7 @@ else()
       # disabled warnings
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
-      -Wno-weak-vtables          # exceptions
+      -Wno-weak-vtables   # exceptions
     >
     $<$<CXX_COMPILER_ID:GNU>:
       -Wall
@@ -106,7 +106,7 @@ else()
     Console.cpp
     OPTIONS
       $<$<CXX_COMPILER_ID:Clang>:
-      -Wno-padded
+        -Wno-padded
       >
   )
 endif()
