@@ -131,7 +131,12 @@ else()
   target_compile_options(SudokuTests PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
       -Weverything
+      -Wno-c++98-c++11-c++14-compat
+      -Wno-c++98-compat
+      -Wno-covered-switch-default
+      -Wno-global-constructors
       -Wno-padded
+      -Wno-used-but-marked-unused
       -Wno-weak-vtables                  # exceptions.h
     >
   )
