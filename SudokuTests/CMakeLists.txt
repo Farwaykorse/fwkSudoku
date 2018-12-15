@@ -143,7 +143,9 @@ else()
     $<$<CXX_COMPILER_ID:GNU>:
       -Wall
       -Wcast-align        # potential performance issue
-      #-Wconversion        # potential data-loss
+      $<$<NOT:$<VERSION_LESS:$<CXX_COMPILER_VERSION>,8>>:
+        -Wconversion      # potential data-loss
+      >
       -Wdouble-promotion  # since 4.6; float implicit to double
       -Wduplicated-branches # since 7.0; identical if-else branches
       -Wduplicated-cond   # since 6.0; duplicated if-else conditions
