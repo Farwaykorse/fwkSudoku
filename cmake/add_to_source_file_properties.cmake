@@ -37,6 +37,7 @@
 ## )
 ## ````
 ##====--------------------------------------------------------------------====##
+include_guard()
 
 function(add_to_source_file_properties)
   list(FIND ARGN PROPERTIES prop_loc)

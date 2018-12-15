@@ -27,6 +27,7 @@
 ## )
 ## ````
 ##====--------------------------------------------------------------------====##
+include_guard()
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   set(MSVC_Extra_Warnings

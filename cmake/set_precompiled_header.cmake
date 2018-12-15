@@ -10,6 +10,7 @@
 ## )
 ## ````
 ##====--------------------------------------------------------------------====##
+include_guard()
 
 function(set_precompiled_header Target HeaderFile SourceFile)
 if(MSVC)
