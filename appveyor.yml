@@ -48,6 +48,13 @@ environment:
     VCVAR2017: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
     # vcpkg
     TOOLCHAIN_FILE: 'C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake'
+##====---------
+matrix:
+  exclude:
+  # Not supported by script / invalid combination:
+  - image: Visual Studio 2015
+    USE_BUILDSYSTEM: MSBuild
+    USE_TOOLSET: LLVM
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
