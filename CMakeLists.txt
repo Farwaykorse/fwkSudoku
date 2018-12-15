@@ -18,8 +18,9 @@ if(CMAKE_COMPILER_IS_GNUCC)
 endif()
 
 ##====--------------------------------------------------------------------====##
-# External CMake Configuration Files
+# External CMake Function definitions / Configuration Files
 ##====--------------------------------------------------------------------====##
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/add_to_source_file_properties.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/set_precompiled_header.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/msvc_warnings_list.cmake)
 

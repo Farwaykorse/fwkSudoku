@@ -21,6 +21,8 @@ if(MSVC)
   )
   get_property(Files TARGET ${Target} PROPERTY SOURCES)
 
+  list(FILTER Files INCLUDE REGEX ".*\.cpp$")
+
   # Workaround Clang's /\-mixing and resulting warning (-Wmicrosoft-include).
   # Lets CMake set the full path.
   # Confirmed for clang 7.0
@@ -31,24 +33,28 @@ if(MSVC)
   endif()
   # /Workaround
 
-  foreach(file_name ${Files})
-    if(NOT ${file_name} MATCHES ".*\.cpp$")
-      continue()
-    endif()
-    if(${file_name} STREQUAL ${SourceFile})
-      set_source_files_properties(${file_name}
-        PROPERTIES
-          COMPILE_OPTIONS "/Yc${HeaderFile}"
-          OBJECT_OUTPUTS "${PCH_FILE}"
-      )
-    else()
-      set_source_files_properties(${file_name}
-        PROPERTIES
-          COMPILE_OPTIONS "/FI${HeaderFile};/Yu${HeaderFile}"
-          OBJECT_DEPENDS "${PCH_FILE}"
-      )
-    endif()
-  endforeach(file_name)
+  # Create *.pch
+  list(FIND Files ${SourceFile} loc)
+  list(REMOVE_AT Files ${loc})
+  set_source_files_compile_options(${SourceFile}
+    OPTIONS
+      /Yc${HeaderFile} # Create precompiled header
+  )
+  add_to_source_file_properties(${SourceFile}
+    PROPERTIES
+      OBJECT_OUTPUTS ${PCH_FILE}
+  )
+
+  # Configure all other files to use the precompiled header
+  set_source_files_compile_options(${Files}
+    OPTIONS
+      /FI${HeaderFile} # Force-include, required for Clang-cl
+      /Yu${HeaderFile} # Use precompiled header
+  )
+  add_to_source_file_properties(${Files}
+    PROPERTIES
+      OBJECT_DEPENDS ${PCH_FILE}
+  )
 
   target_compile_options(${Target}
     PRIVATE
