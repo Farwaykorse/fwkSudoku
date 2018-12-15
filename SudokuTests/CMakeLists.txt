@@ -139,6 +139,23 @@ else()
       -Wno-used-but-marked-unused
       -Wno-weak-vtables                  # exceptions.h
     >
+    $<$<CXX_COMPILER_ID:GNU>:
+      -Wall
+      -Wcast-align        # potential performance issue
+      -Wconversion
+      -Wdouble-promotion  # since 4.6; float implicit to double
+      -Wduplicated-branches # since 7.0; identical if-else branches
+      -Wduplicated-cond   # since 6.0; duplicated if-else conditions
+      -Wextra
+      -Wformat=2
+      -Wlogical-op        # suspicious uses of logical operators
+      -Wmisleading-indentation # since 6.0
+      -Wnull-dereference  # since 6.0; detected paths with erroneous or undefined behaviour
+      -Wpedantic          # non-standard C++
+      -Wshadow            # variable declaration shadows parent context
+      -Wsign-conversion   # since 4.3
+      -Wuseless-cast      # since 4.8; casting to its own type
+    >
   )
   set_source_files_compile_options(
     Board.cpp
