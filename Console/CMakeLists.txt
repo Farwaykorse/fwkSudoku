@@ -80,8 +80,15 @@ else()
       # disabled warnings
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
-      -Wno-weak-vtables                  # exceptions
+      -Wno-weak-vtables          # exceptions
     >
+  )
+  set_source_files_compile_options(
+    Console.cpp
+    OPTIONS
+      $<$<CXX_COMPILER_ID:Clang>:
+      -Wno-padded
+      >
   )
 endif()
 
