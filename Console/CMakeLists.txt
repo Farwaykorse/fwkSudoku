@@ -85,7 +85,7 @@ else()
     $<$<CXX_COMPILER_ID:GNU>:
       -Wall
       -Wcast-align        # potential performance issue
-      -Wconversion
+      #-Wconversion        # potential data-loss
       -Wdouble-promotion  # since 4.6; float implicit to double
       -Wduplicated-branches # since 7.0; identical if-else branches
       -Wduplicated-cond   # since 6.0; duplicated if-else conditions
@@ -96,7 +96,7 @@ else()
       -Wnull-dereference  # since 6.0; detected paths with erroneous or undefined behaviour
       -Wpedantic          # non-standard C++
       -Wshadow            # variable declaration shadows parent context
-      -Wsign-conversion   # since 4.3
+      #-Wsign-conversion   # since 4.3
       -Wuseless-cast      # since 4.8; casting to its own type
     >
   )
