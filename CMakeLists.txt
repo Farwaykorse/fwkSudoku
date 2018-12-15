@@ -9,6 +9,7 @@ project(fwk_Sudoku LANGUAGES CXX)
 ##====--------------------------------------------------------------------====##
 # Configuration
 ##====--------------------------------------------------------------------====##
+option(WARNINGS_TO_ERRORS "Make compiler warnings into errors" FALSE)
 #option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" OFF)
 if(CMAKE_COMPILER_IS_GNUCC)
   option(ENABLE_COVERAGE "Enable coverage reporting for gcc/clang" FALSE)

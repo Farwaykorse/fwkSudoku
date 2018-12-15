@@ -77,6 +77,9 @@ endif()
 # Warnings
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(SudokuTests PRIVATE
+    $<$<BOOL:${WARNINGS_TO_ERRORS}>:
+      /WX
+    >
     $<$<CXX_COMPILER_ID:MSVC>:
       /W4
       ${MSVC_Extra_Warnings}
@@ -126,6 +129,9 @@ if(MSVC) # MSVC or simulating MSVC
   )
 else()
   target_compile_options(SudokuTests PRIVATE
+    $<$<BOOL:${WARNINGS_TO_ERRORS}>:
+      -Werror
+    >
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
       -Weverything
       # disabled warnings
