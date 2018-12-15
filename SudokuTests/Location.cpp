@@ -147,7 +147,7 @@ namespace Location_Block_compiletime
 	static_assert(not std::is_const_v<typeT>);
 	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-#if defined(__GNUC__)
+#if defined(__GNUC__) && !defined(__clang__)
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #else
