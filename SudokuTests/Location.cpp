@@ -259,7 +259,7 @@ TEST(Location, Construction)
 
 	// move construct
 	EXPECT_NO_THROW([[maybe_unused]] auto L3(Location<3>(6)));
-	static_assert(noexcept(Location<3>(Location<3>(6))));
+	static_assert(noexcept(Location<3>{Location<3>(6)}));
 	// copy construct
 	constexpr Location<3> c1(12);
 	static_assert(noexcept(Location<3>(c1)));
@@ -279,10 +279,6 @@ TEST(Location, Construction_result)
 	static_assert(Location<3>{1, 8}.element() == 17);
 	EXPECT_EQ(Location<3>(1, 8).element(), 17);
 
-	static_assert(Location<3>(Location<3>(6)).element() == 6);
-	EXPECT_EQ(Location<3>(Location<3>(6)).element(), 6);
-	static_assert(Location<3>(Location<3>{6}).element() == 6);
-	EXPECT_EQ(Location<3>(Location<3>{6}).element(), 6);
 	static_assert(Location<3>{Location<3>(6)}.element() == 6);
 	EXPECT_EQ(Location<3>{Location<3>(6)}.element(), 6);
 	static_assert(Location<3>{Location<3>{6}}.element() == 6);
@@ -350,8 +346,8 @@ TEST(Location, Construction_Block)
 	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> L4(0, 0, 0));
 
 	// move construct
-	static_assert(noexcept(Location_Block<3>(Location_Block<3>())));
-	EXPECT_NO_THROW(Location_Block<3>(Location_Block<3>(6, 3)));
+	static_assert(noexcept(Location_Block<3>{Location_Block<3>()}));
+	EXPECT_NO_THROW(Location_Block<3>{Location_Block<3>(6, 3)});
 
 	// copy construct
 	constexpr Location_Block<3> c1{1, 3};
@@ -388,11 +384,9 @@ TEST(Location, Construction_result_Block)
 	const Location_Block<3> B6{0, 0, 2};
 	EXPECT_EQ(B6.element(), 2);
 
-	static_assert(Location_Block<3>(Location_Block<3>(0, 2)).element() == 2);
+	static_assert(Location_Block<3>{Location_Block<3>(0, 2)}.element() == 2);
 	const Location_Block<3> B4(Location_Block<3>(0, 2));
 	EXPECT_EQ(B4.element(), 2) << "Move constructor";
-	EXPECT_EQ(Location_Block<3>(Location_Block<3>(0, 2)).element(), 2);
-	EXPECT_EQ(Location_Block<3>(Location_Block<3>{0, 2}).element(), 2);
 	EXPECT_EQ((Location_Block<3>{Location_Block<3>{0, 2}}.element()), 2);
 	EXPECT_EQ(Location_Block<3>{Location_Block<3>(0, 2)}.element(), 2);
 
