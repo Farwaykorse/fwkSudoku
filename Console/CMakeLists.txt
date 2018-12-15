@@ -35,9 +35,6 @@ if(MSVC) # MSVC or simulating MSVC
       /MP        # multiprocessor compilation (requires /Gm-)
       /sdl
     >
-    $<$<CXX_COMPILER_ID:Clang>:
-      -fno-strict-aliasing
-    >
   )
 endif()
 
