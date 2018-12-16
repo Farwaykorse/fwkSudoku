@@ -1,15 +1,17 @@
 ##====---- add_to_source_file_properties.cmake                        ----====##
 ## Collection of functions to add source file specific settings.
 ##
-## Specialized functions:
+## Specialized functions (preferred):
 ## - set_source_files_compile_definitions(<file-list> DEFINITIONS <item-list>)
+##   Add definitions to use when compiler the file(s).
 ## - set_source_files_compile_options(<file-list> OPTIONS <item-list>)
+##   Add any flag to the compiler.
 ## General functions, free to set any property:
 ## - add_to_source_file_properties(<file-list> PROPERTIES <property> <item-list>)
 ##
-##
-## Interfaces like `target_compile_options()`, implemented on top of
-## `set_source_files_properties()`:
+## Offers behaviour like the equivalent `target_*` functions.
+## Implemented on top of `set_source_files_properties()`.
+## 
 ## + All list syntaxes work, "a;b;c", or spaces and line-breaks, etc.
 ## + Append items to the property.
 ## = Can apply simultaneously to multiple files.
@@ -27,7 +29,9 @@
 ##     <Options1> # string i.e. -Weverything
 ##     <Options2>
 ## )
+## ````
 ##
+## ````cmake
 ## add_to_source_file_properties(
 ##   <file_1>
 ##   <file_2>
@@ -39,6 +43,45 @@
 ##====--------------------------------------------------------------------====##
 include_guard()
 
+
+function(set_source_files_compile_definitions)
+# COMPILE_DEFINITIONS
+# COMPILE_DEFINITIONS_<CONFIG>
+# COMPILE_DEFINITIONS_DEBUG
+  list(FIND ARGN DEFINITIONS prop_loc)
+  if(${prop_loc} EQUAL -1)
+    message(SEND_ERROR "Missing keyword DEFINITIONS.")
+    return()
+  elseif(${prop_loc} LESS 1)
+    message(SEND_ERROR "Expecting file names before DEFINITIONS.")
+  endif()
+
+  list(REMOVE_AT ARGN ${prop_loc})
+  list(APPEND new_list COMPILE_DEFINITIONS ${prop_loc} ${ARGN})
+  __internal_add_source_file_properties(${new_list})
+
+endfunction(set_source_files_compile_definitions)
+
+
+##====--------------------------------------------------------------------====##
+function(set_source_files_compile_options)
+  list(FIND ARGN OPTIONS prop_loc)
+  if(${prop_loc} EQUAL -1)
+    message(SEND_ERROR "Missing keyword OPTIONS.")
+    return()
+  elseif(${prop_loc} LESS 1)
+    message(SEND_ERROR "Expecting file names before OPTIONS.")
+  endif()
+
+  list(REMOVE_AT ARGN ${prop_loc})
+  list(APPEND new_list COMPILE_OPTIONS ${prop_loc} ${ARGN})
+  __internal_add_source_file_properties(${new_list})
+
+endfunction(set_source_files_compile_options)
+
+
+##====--------------------------------------------------------------------====##
+# Add any property to a source file.
 function(add_to_source_file_properties)
   list(FIND ARGN PROPERTIES prop_loc)
   if(${prop_loc} EQUAL -1)
@@ -61,42 +104,9 @@ function(add_to_source_file_properties)
 
 endfunction(add_to_source_file_properties)
 
-##====--------------------------------------------------------------------====##
-function(set_source_files_compile_definitions)
-# COMPILE_DEFINITIONS
-# COMPILE_DEFINITIONS_<CONFIG>
-# COMPILE_DEFINITIONS_DEBUG
-  list(FIND ARGN DEFINITIONS prop_loc)
-  if(${prop_loc} EQUAL -1)
-    message(SEND_ERROR "Missing keyword DEFINITIONS.")
-    return()
-  elseif(${prop_loc} LESS 1)
-    message(SEND_ERROR "Expecting file names before DEFINITIONS.")
-  endif()
-
-  list(REMOVE_AT ARGN ${prop_loc})
-  list(APPEND new_list COMPILE_DEFINITIONS ${prop_loc} ${ARGN})
-  __internal_add_source_file_properties(${new_list})
-
-endfunction(set_source_files_compile_definitions)
-##====--------------------------------------------------------------------====##
-function(set_source_files_compile_options)
-  list(FIND ARGN OPTIONS prop_loc)
-  if(${prop_loc} EQUAL -1)
-    message(SEND_ERROR "Missing keyword OPTIONS.")
-    return()
-  elseif(${prop_loc} LESS 1)
-    message(SEND_ERROR "Expecting file names before OPTIONS.")
-  endif()
-
-  list(REMOVE_AT ARGN ${prop_loc})
-  list(APPEND new_list COMPILE_OPTIONS ${prop_loc} ${ARGN})
-  __internal_add_source_file_properties(${new_list})
-
-endfunction(set_source_files_compile_options)
-
 
 ##====--------------------------------------------------------------------====##
+# Internal shared implementation.
 function(__internal_add_source_file_properties property_name num_files)
   list(SUBLIST ARGN 0 ${num_files} list_files)
   list(SUBLIST ARGN ${num_files} -1 list_items)
