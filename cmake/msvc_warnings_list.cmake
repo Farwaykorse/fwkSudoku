@@ -100,4 +100,6 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     /w45032 # detected #pragma warning(push), no corresponding warning(pop)
     CACHE STRING "Additional warning flags for MSVC to be used with /W4"
   )
+else()
+  set(MSVC_Extra_Warnings "") # suppress --warn-uninitialized
 endif()
