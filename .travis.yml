@@ -134,10 +134,6 @@ matrix:
     addons: *clang7lib
 
   allow_failures:
-  - name: Clang-6.0 Debug
-  - name: Clang-6.0 Release
-  - name: Clang-7 Debug
-  - name: Clang-7 Release
   - name: Clang-7 libc++ Debug
   - name: Clang-7 libc++ Release
 
