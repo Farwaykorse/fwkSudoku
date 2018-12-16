@@ -113,13 +113,18 @@ before_build:
     if ("$env:USE_TOOLSET" -eq "LLVM") {
       $env:CC  = "clang-cl"
       $env:CXX = "clang-cl"
+      $env:CFLAGS   = "$env:CFLAGS -Werror"
+      $env:CXXFLAGS = "$env:CXXFLAGS -Werror"
       if ("$env:PLATFORM" -eq "x86") {
-        $env:CFLAGS   = "-m32";
-        $env:CXXFLAGS = "-m32";
+        $env:CFLAGS   = "$env:CFLAGS -m32";
+        $env:CXXFLAGS = "$env:CXXFLAGS -m32";
       } else {
-        $env:CFLAGS   = "-m64";
-        $env:CXXFLAGS = "-m64";
+        $env:CFLAGS   = "$env:CFLAGS -m64";
+        $env:CXXFLAGS = "$env:CXXFLAGS -m64";
       }
+    } else {
+      $env:CFLAGS   = "$env:CFLAGS /WX"
+      $env:CXXFLAGS = "$env:CXXFLAGS /WX"
     }
     $env:CMakeBuildFlags = "--config $env:CONFIGURATION -- $GeneratorFlags"
 - mkdir build

@@ -188,7 +188,7 @@ before_install:
     #  FLAGS="${FLAGS} -lc++fs"
     #  FLAGS="${FLAGS} -lc++experimental"
     #fi
-    export CXXFLAGS=$FLAGS
+    export CXXFLAGS="${CXXFLAGS} ${FLAGS}"
   fi
 
 install:
@@ -200,10 +200,12 @@ install:
 before_script:
 - |
   # Configuration
-  cd "${TRAVIS_BUILD_DIR}"
   CMakeGenFlags="-G Ninja -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}"
   GeneratorFlags='-k 10' # Ninja
   CMakeBuildFlags="--config ${CONFIGURATION:?} -- ${GeneratorFlags}"
+  export CFLAGS="${CFLAGS} -Werror"
+  export CXXFLAGS="${CXXFLAGS} -Werror"
+  cd "${TRAVIS_BUILD_DIR}"
   mkdir -p build
   cd build
 - echo $CMakeGenFlags
