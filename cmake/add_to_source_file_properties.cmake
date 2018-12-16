@@ -21,6 +21,16 @@
 ##====--------------------------------------------------------------------====##
 ## Usage:
 ## ````cmake
+## set_source_files_compile_definitions(<file-list> DEFINITIONS <options-list>)
+## set_source_files_compile_definitions(
+##   <file_1>
+##   DEFINITIONS
+##     <def1> # string e.g. NDEBUG or -DNDEBUG or /DWIN32 (-D or /D is optional)
+##     <def2> # string or ;-separated-list
+## )
+## ````
+
+## ````cmake
 ## set_source_files_compile_options(<file-list> PROPERTIES <option-list>)
 ## set_source_files_compile_options(
 ##   <file_1>
@@ -45,9 +55,6 @@ include_guard()
 
 
 function(set_source_files_compile_definitions)
-# COMPILE_DEFINITIONS
-# COMPILE_DEFINITIONS_<CONFIG>
-# COMPILE_DEFINITIONS_DEBUG
   list(FIND ARGN DEFINITIONS prop_loc)
   if(${prop_loc} EQUAL -1)
     message(SEND_ERROR "Missing keyword DEFINITIONS.")
@@ -56,8 +63,18 @@ function(set_source_files_compile_definitions)
     message(SEND_ERROR "Expecting file names before DEFINITIONS.")
   endif()
 
-  list(REMOVE_AT ARGN ${prop_loc})
-  list(APPEND new_list COMPILE_DEFINITIONS ${prop_loc} ${ARGN})
+  list(SUBLIST ARGN 0 ${prop_loc} files)
+  list(SUBLIST ARGN ${prop_loc} -1 definitions)
+  list(REMOVE_AT definitions 0) # DEFINITIONS
+  list(TRANSFORM definitions STRIP)
+  list(TRANSFORM definitions REPLACE "^[-/]D[ ]?(.*)" "\\1")
+  list(FILTER definitions INCLUDE REGEX ".+") # Remove empty
+  if(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+    list(TRANSFORM definitions PREPEND "/D")
+  else()
+    list(TRANSFORM definitions PREPEND "-D")
+  endif()
+  list(APPEND new_list COMPILE_DEFINITIONS ${prop_loc} ${files} ${definitions})
   __internal_add_source_file_properties(${new_list})
 
 endfunction(set_source_files_compile_definitions)
