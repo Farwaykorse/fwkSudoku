@@ -84,7 +84,6 @@ before_build:
 - echo "%APPVEYOR_BUILD_WORKER_IMAGE% %PLATFORM% %CONFIGURATION%"
 - echo "Compiler %USE_TOOLSET%; Generator %USE_BUILDSYSTEM%"
 - ps: |
-    $ToolChainFile = "-DCMAKE_TOOLCHAIN_FILE=$env:TOOLCHAIN_FILE"
     if ("$env:USE_BUILDSYSTEM" -eq "Ninja") {
       $GeneratorFlags = '-k 10'
       $Architecture = $env:PLATFORM
@@ -93,7 +92,7 @@ before_build:
       } else {
         $env:VCVARSALL = "`"$env:VCVAR2017`" $Architecture"
       }
-      $env:CMakeGenFlags = "-G Ninja $ToolChainFile"
+      $CMakeGenFlags = "-G Ninja"
     } else {
       $GeneratorFlags = '/m /v:minimal'
       if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -eq "Visual Studio 2015") {
@@ -104,10 +103,10 @@ before_build:
       if ("$env:PLATFORM" -eq "x86") { $Architecture = "Win32"}
       else { $Architecture = "x64" }
       if ("$env:USE_TOOLSET" -eq "LLVM") {
-        $env:CMakeGenFlags = `
-          "-G `"$Generator`" -A $Architecture -T llvm $ToolChainFile"
+        $CMakeGenFlags = `
+          "-G `"$Generator`" -A $Architecture -T llvm"
       } else {
-        $env:CMakeGenFlags = "-G `"$Generator`" -A $Architecture $ToolChainFile"
+        $CMakeGenFlags = "-G `"$Generator`" -A $Architecture"
       }
     }
     if ("$env:USE_TOOLSET" -eq "LLVM") {
@@ -126,6 +125,11 @@ before_build:
       $env:CFLAGS   = "$env:CFLAGS /WX"
       $env:CXXFLAGS = "$env:CXXFLAGS /WX"
     }
+    $env:CMakeGenFlags = "$CMakeGenFlags"            `
+      +" -DCMAKE_TOOLCHAIN_FILE=$env:TOOLCHAIN_FILE" `
+      +" -Wdev"                                      `
+      +" -Werror=dev"                                `
+      +" --warn-uninitialized"
     $env:CMakeBuildFlags = "--config $env:CONFIGURATION -- $GeneratorFlags"
 - mkdir build
 - cd build

@@ -200,19 +200,25 @@ install:
 before_script:
 - |
   # Configuration
-  CMakeGenFlags="-G Ninja -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}"
-  GeneratorFlags='-k 10' # Ninja
-  CMakeBuildFlags="--config ${CONFIGURATION:?} -- ${GeneratorFlags}"
-  export CFLAGS="${CFLAGS} -Werror"
-  export CXXFLAGS="${CXXFLAGS} -Werror"
   cd "${TRAVIS_BUILD_DIR}"
   mkdir -p build
   cd build
-- echo $CMakeGenFlags
-- cmake .. ${CMakeGenFlags:?}
-- echo $CMakeBuildFlags
+  GeneratorFlags='-k 10' # Ninja
+  export CFLAGS="${CFLAGS} -Werror"
+  export CXXFLAGS="${CXXFLAGS} -Werror"
+- >
+  CMakeGenFlags="-G Ninja
+    -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}
+    -Wdev
+    -Werror=dev
+    --warn-uninitialized
+  " && echo $CMakeGenFlags
+- |
+  CMakeBuildFlags="--config ${CONFIGURATION:?} -- ${GeneratorFlags=}"
+  echo $CMakeBuildFlags
 
 script:
+- cmake ${CMakeGenFlags:?} ..
 - cmake --build . ${CMakeBuildFlags:?}
 
 ##====--------------------------------------------------------------------====##
