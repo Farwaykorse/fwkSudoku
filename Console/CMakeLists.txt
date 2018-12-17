@@ -89,6 +89,11 @@ else()
       -Wno-c++98-compat-pedantic
       -Wno-weak-vtables   # exceptions
     >
+    $<$<CXX_COMPILER_ID:Clang>:
+      $<$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>:
+        -Wno-missing-braces
+      >
+    >
     $<$<CXX_COMPILER_ID:GNU>:
       -Wall
       -Wcast-align        # potential performance issue
