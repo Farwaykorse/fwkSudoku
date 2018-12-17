@@ -71,16 +71,17 @@ namespace iterator
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__clang__) && __clang_major__ < 6)
 	static_assert(std::has_unique_object_representations_v<typeT>);
-#endif // __ICL
+#endif
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -111,10 +112,10 @@ namespace iterator
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
-#endif // __ICL
+#endif
 
 	// explicit conversion from other iterators
 	static_assert(std::is_constructible_v<typeT, BoardT::iterator>);
@@ -141,13 +142,13 @@ namespace iterator
 	static_assert(not std::is_assignable_v<typeT, bool>);
 	static_assert(not std::is_assignable_v<bool, typeT>);
 
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_with_v<typeT, Location<3>>);  // C++17
 	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
-#endif // __ICL
+#endif
 } // namespace iterator
 namespace const_iterator
 {
@@ -174,14 +175,15 @@ namespace const_iterator
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__clang__) && __clang_major__ < 6)
 	static_assert(std::has_unique_object_representations_v<typeT>);
-#endif // __ICL
+#endif
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif // __ICL
 
@@ -214,10 +216,10 @@ namespace const_iterator
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
-#endif // __ICL
+#endif
 
 	// explicit conversion from other iterators
 	static_assert(std::is_constructible_v<typeT, BoardT::iterator>);
@@ -244,13 +246,13 @@ namespace const_iterator
 	static_assert(not std::is_assignable_v<typeT, bool>);
 	static_assert(not std::is_assignable_v<bool, typeT>);
 
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_with_v<typeT, Location<3>>);  // C++17
 	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
-#endif // __ICL
+#endif
 } // namespace const_iterator
 namespace reverse_iterator
 {
@@ -277,16 +279,17 @@ namespace reverse_iterator
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__clang__) && __clang_major__ < 6)
 	static_assert(std::has_unique_object_representations_v<typeT>);
-#endif // __ICL
+#endif
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -317,10 +320,10 @@ namespace reverse_iterator
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
-#endif // __ICL
+#endif
 
 	// explicit conversion from other iterators
 	static_assert(not std::is_constructible_v<typeT, BoardT::iterator>);
@@ -347,13 +350,13 @@ namespace reverse_iterator
 	static_assert(not std::is_assignable_v<typeT, bool>);
 	static_assert(not std::is_assignable_v<bool, typeT>);
 
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_with_v<typeT, Location<3>>);  // C++17
 	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
-#endif // __ICL
+#endif
 } // namespace reverse_iterator
 namespace const_reverse_iterator
 {
@@ -380,14 +383,15 @@ namespace const_reverse_iterator
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__clang__) && __clang_major__ < 6)
 	static_assert(std::has_unique_object_representations_v<typeT>);
-#endif // __ICL
+#endif
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif // __ICL
 
@@ -420,10 +424,10 @@ namespace const_reverse_iterator
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
-#endif // __ICL
+#endif
 
 	// explicit conversion from other iterators
 	static_assert(not std::is_constructible_v<typeT, BoardT::iterator>);
@@ -450,13 +454,13 @@ namespace const_reverse_iterator
 	static_assert(not std::is_assignable_v<typeT, bool>);
 	static_assert(not std::is_assignable_v<bool, typeT>);
 
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_with_v<typeT, Location<3>>);  // C++17
 	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
-#endif // __ICL
+#endif
 } // namespace const_reverse_iterator
 
 namespace iterator_traits
@@ -652,7 +656,7 @@ TEST(Board_Iterator, assign_Location)
 	using L = Location<2>;
 
 	test_elements TE{};
-	auto& A        = TE.A;
+	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
 
 	using not_null = ::gsl::not_null<decltype(&A)>;
@@ -938,7 +942,7 @@ TEST(Board_Iterator, pre_increment)
 TEST(Board_Iterator, post_increment)
 {
 	test_elements TE{};
-	auto& A        = TE.A;
+	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
@@ -1067,7 +1071,7 @@ TEST(Board_Iterator, equal)
 TEST(Board_Iterator, not_equal)
 { // InputIterator
 	test_elements TE{};
-	auto& A        = TE.A;
+	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
@@ -1296,7 +1300,7 @@ TEST(Board_Iterator, ForwardIterator)
 TEST(Board_Iterator, pre_decrement)
 { // operator--()
 	test_elements TE{};
-	auto& A        = TE.A;
+	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
@@ -1376,7 +1380,7 @@ TEST(Board_Iterator, pre_decrement)
 TEST(Board_Iterator, post_decrement)
 {
 	test_elements TE{};
-	auto& A        = TE.A;
+	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
@@ -1519,7 +1523,7 @@ TEST(Board_Iterator, BidirectionalIterator)
 TEST(Board_Iterator, increment_by_integer)
 { // operator+=(int)
 	test_elements TE{};
-	auto& A        = TE.A;
+	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
@@ -1656,7 +1660,7 @@ TEST(Board_Iterator, increment_by_integer)
 TEST(Board_Iterator, increment_by_integer2)
 { // operator+(int)
 	test_elements TE{};
-	auto& A        = TE.A;
+	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
@@ -1752,7 +1756,7 @@ TEST(Board_Iterator, increment_by_integer2)
 TEST(Board_Iterator, increment_by_integer3)
 { // operator+(int, iterator)
 	test_elements TE{};
-	auto& A        = TE.A;
+	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (
@@ -1970,7 +1974,7 @@ TEST(Board_Iterator, decrement_by_integer)
 TEST(Board_Iterator, decrement_by_integer2)
 { // operator-(int)
 	test_elements TE{};
-	auto& A        = TE.A;
+	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
 
 	if constexpr (

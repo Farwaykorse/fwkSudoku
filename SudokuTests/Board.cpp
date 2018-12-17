@@ -74,7 +74,7 @@ namespace compiletime
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif // __ICL
 
@@ -107,10 +107,10 @@ namespace compiletime
 	static_assert(not std::is_trivially_destructible_v<typeT>); // ++
 	static_assert(not std::has_virtual_destructor_v<typeT>);    // --
 
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
-#endif // __ICL
+#endif                                                 // __ICL
 
 	// is_constructible from different types
 	// set to non-default value at initialization
@@ -142,11 +142,11 @@ namespace compiletime
 	static_assert(std::is_assignable_v<
 				  Board<Options<3>, 3>,
 				  std::initializer_list<Options<3>>>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_with_v<typeT, Options<9>>); // C++17
 	static_assert(
 		not std::is_nothrow_swappable_with_v<typeT, Options<9>>); // C++17
-#endif // __ICL
+#endif                                                            // __ICL
 
 	//====----------------------------------------------------------------====//
 	// Member types
@@ -204,8 +204,6 @@ TEST(Board, Construction)
 	}
 	{
 		SCOPED_TRACE("Move Constructor : Board(Board&&)");
-		EXPECT_NO_THROW((Board<int, 2>(Board<int, 2>())));
-
 		EXPECT_NO_THROW(Board<int> Opt = (Board<int, 3>()));
 		EXPECT_NO_THROW(auto Opt = (Board<int, 2>())); // move construct
 	}

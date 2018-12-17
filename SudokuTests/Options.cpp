@@ -55,7 +55,7 @@ namespace compiletime
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL)) && not(defined(__clang__) && __clang_major__ < 6)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif // __ICL
 	static_assert(not std::is_empty_v<typeT>);
@@ -302,7 +302,7 @@ TEST(Options, Construction)
 		// outside domain
 		EXPECT_TRUE(Options<4>{Value{5}}.is_empty());
 		EXPECT_TRUE(Options<9>{Value{10}}.is_empty());
-#endif // NDEBUG
+#endif                  // NDEBUG
 		TMP = Value{4}; // suppress warning: assigned only once
 		EXPECT_EQ(TMP.DebugString(), "10000");
 	}
@@ -718,7 +718,7 @@ TEST(Options, mf_add_nocheck)
 	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{0});, "is_valid_option");
 #ifdef NDEBUG
 	EXPECT_EQ(Opt.DebugString(), "10011");
-	//EXPECT_NO_FATAL_FAILURE(Opt.add_nocheck(Value{5}));
+	// EXPECT_NO_FATAL_FAILURE(Opt.add_nocheck(Value{5}));
 #else
 	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{5});, "is_valid_option");
 #endif // NDEBUG
@@ -758,7 +758,7 @@ TEST(Options, mf_set_nocheck)
 	EXPECT_DEBUG_DEATH(TMP.set_nocheck(Value{0}), "is_valid_option");
 #ifdef NDEBUG
 	EXPECT_EQ(TMP.DebugString(), "00001");
-	//EXPECT_NO_FATAL_FAILURE(TMP.add_nocheck(Value{5}));
+	// EXPECT_NO_FATAL_FAILURE(TMP.add_nocheck(Value{5}));
 #else
 	EXPECT_DEBUG_DEATH(TMP.set_nocheck(Value{5}), "is_valid_option");
 #endif // NDEBUG

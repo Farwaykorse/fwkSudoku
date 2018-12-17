@@ -289,6 +289,7 @@ Use `-Xclang ` before a command to actually force it to the compiler.
   /std:c++17          sets: -std=c++17
   -Xclang -std=c++17  Set language version to C++17
 /GR-                  sets: -fno-rtti
+/GS                   Buffer Security Check. (default)
 -fno-strict-aliasing
   -Xclang -fms-compatibility-version=19.12
   // Since v6.0.0: the full version number is inherited from VC.
@@ -354,6 +355,7 @@ MS Build configurations:
 ```
 /MP             Multiprocessor compilation
 /GR-            Disable RTTI
+/GS             Buffer security check (default)
 /permissive-
 /Qstd=c++17     Intel C++17 implementation.
 ```
