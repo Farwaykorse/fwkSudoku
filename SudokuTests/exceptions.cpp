@@ -49,11 +49,11 @@ TEST(Error, invalid_Board)
 		static_assert(not std::is_trivial_v<typeT>);            // ++
 		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 		static_assert(not std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL)) && not(defined(__clang__) && __clang_major__ < 6)
 		static_assert(not std::has_unique_object_representations_v<typeT>);
-#endif // __ICL
+#endif
 		static_assert(not std::is_empty_v<typeT>);
-		static_assert(std::is_polymorphic_v<typeT>); // --
+		static_assert(std::is_polymorphic_v<typeT>);  // --
 		static_assert(not std::is_abstract_v<typeT>); // ++
 		static_assert(not std::is_final_v<typeT>);
 #if not(defined(__ICL)) // Intel C++ 19.0
@@ -87,10 +87,10 @@ TEST(Error, invalid_Board)
 		static_assert(std::is_nothrow_destructible_v<typeT>);          // ++
 		static_assert(not std::is_trivially_destructible_v<typeT>);    // ++
 		static_assert(std::has_virtual_destructor_v<typeT>);           // --
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL))
 		static_assert(std::is_swappable_v<typeT>);         // ++ C++17
 		static_assert(std::is_nothrow_swappable_v<typeT>); // ++ C++17
-#endif // __ICL
+#endif
 	}
 
 	const std::string name{"invalid_Board"};
@@ -131,16 +131,16 @@ TEST(Error, invalid_Location)
 		static_assert(not std::is_trivial_v<typeT>);            // ++
 		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 		static_assert(not std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL)) && not(defined(__clang__) && __clang_major__ < 6)
 		static_assert(not std::has_unique_object_representations_v<typeT>);
-#endif // __ICL
+#endif
 		static_assert(not std::is_empty_v<typeT>);
-		static_assert(std::is_polymorphic_v<typeT>); // --
+		static_assert(std::is_polymorphic_v<typeT>);  // --
 		static_assert(not std::is_abstract_v<typeT>); // ++
 		static_assert(not std::is_final_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL))
 		static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 
 		static_assert(std::is_base_of_v<std::exception, typeT>);
 		static_assert(std::is_base_of_v<std::logic_error, typeT>);
@@ -170,14 +170,14 @@ TEST(Error, invalid_Location)
 		static_assert(std::is_nothrow_destructible_v<typeT>);          // ++
 		static_assert(not std::is_trivially_destructible_v<typeT>);    // ++
 		static_assert(std::has_virtual_destructor_v<typeT>);           // --
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL))
 		static_assert(std::is_swappable_v<typeT>);         // ++ C++17
 		static_assert(std::is_nothrow_swappable_v<typeT>); // ++ C++17
-#endif // __ICL
+#endif
 	}
 
 	const std::string name{"invalid_Location"};
-	//const std::string name_wrong{"invalid_chairs"};
+	// const std::string name_wrong{"invalid_chairs"};
 	try
 	{
 		throw invalid_Location();
