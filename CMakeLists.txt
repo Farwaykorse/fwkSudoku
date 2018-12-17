@@ -9,7 +9,7 @@ project(fwk_Sudoku LANGUAGES CXX)
 ##====--------------------------------------------------------------------====##
 # Configuration
 ##====--------------------------------------------------------------------====##
-option(WARNINGS_TO_ERRORS "Make compiler warnings into errors" FALSE)
+# options()
 
 ##====--------------------------------------------------------------------====##
 # External CMake definitions
