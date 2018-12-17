@@ -9,8 +9,6 @@ project(fwkSudokuTests LANGUAGES CXX)
 include(GoogleTest)
 
 find_package(GTest MODULE REQUIRED)
-message("GTEST_INCLUDE_DIRS = ${GTEST_INCLUDE_DIRS}")
-message("GTEST_LIBRARIES = ${GTEST_LIBRARIES}")
 
 ##====--------------------------------------------------------------------====##
 add_executable(SudokuTests)
@@ -78,7 +76,8 @@ if(MSVC) # MSVC or simulating MSVC
   )
 endif()
 
-# Warnings
+##====--------------------------------------------------------------------====##
+# Maximize Warnings-level per compiler
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(SudokuTests PRIVATE
     $<$<BOOL:${WARNINGS_TO_ERRORS}>:
@@ -187,6 +186,5 @@ endif()
 set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
 
 ##====--------------------------------------------------------------------====##
-#gtest_add_tests(TARGET SudokuTests)
 gtest_discover_tests(SudokuTests)
 

@@ -42,7 +42,8 @@ if(MSVC) # MSVC or simulating MSVC
   )
 endif()
 
-# Warnings
+##====--------------------------------------------------------------------====##
+# Maximize Warnings-level per compiler
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(console PRIVATE
     $<$<BOOL:${WARNINGS_TO_ERRORS}>:
@@ -124,6 +125,6 @@ else()
 endif()
 
 ##====--------------------------------------------------------------------====##
-# custom settings for precompiled headers
+# Custom settings for precompiled headers
 set_precompiled_header(console "precompiled.h" "precompiled.cpp")
 
