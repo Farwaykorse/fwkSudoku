@@ -148,6 +148,11 @@ else()
       -Wno-used-but-marked-unused
       -Wno-weak-vtables           # exceptions.h
     >
+    $<$<CXX_COMPILER_ID:Clang>:
+      $<$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>:
+        -Wno-zero-as-null-pointer-constant
+      >
+    >
     $<$<CXX_COMPILER_ID:GNU>:
       -Wall
       -Wcast-align        # potential performance issue
