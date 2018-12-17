@@ -163,7 +163,6 @@ matrix:
 
   allow_failures:
   - name: Clang-4.0 Debug
-  - name: Clang-5.0 Debug
   - name: Clang-7 libc++ Debug
   - name: Clang-7 libc++ Release
 
