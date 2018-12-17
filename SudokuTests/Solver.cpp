@@ -126,6 +126,7 @@ TEST(Solver, unique_in_section)
 	EXPECT_TRUE(is_answer(B3[3][3], Value{1}));
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Solver, section_exclusive)
 {
 	// section_exclusive(SectionT)
@@ -992,6 +993,7 @@ TEST(Solver, multi_option)
 	EXPECT_EQ(B3[0][3].DebugString(), "1101100001") << "after 48";
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Solver, multi_option_2)
 {
 	using L = Location<2>;

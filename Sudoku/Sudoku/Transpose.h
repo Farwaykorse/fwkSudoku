@@ -106,7 +106,7 @@ Board<T, N> transpose_row_col(Board<T, N>&& board) noexcept(
 			std::swap(board[Location<N>{i, j}], board[Location<N>{j, i}]);
 		}
 	}
-	return board;
+	return std::move(board);
 }
 
 // Reorder Board elements so blocks are rows.
@@ -129,7 +129,7 @@ Board<T, N> transpose_row_block(Board<T, N>&& board) noexcept(
 			std::swap(board[Location_Block<N>{i, j}], board[Location<N>{i, j}]);
 		}
 	}
-	return board;
+	return std::move(board);
 }
 
 

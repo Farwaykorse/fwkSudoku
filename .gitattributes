@@ -5,11 +5,19 @@
 
 *.cpp				eol=lf
 *.h					eol=lf
+*.md                eol=lf
+*.bat               eol=crlf
 *.sln				eol=crlf
 *.vcxproj			eol=crlf
 *.vcxproj.filters	eol=crlf
+*.cmake             eol=lf
+CMakeLists.txt      eol=lf
+CMakeSettings.json  eol=crlf
 .git				eol=lf
 .gitattributes		eol=lf
+.clang-formats      eol=lf
+.clang-tidy         eol=lf
+*.yml               eol=lf
 
 ###############################################################################
 # Set the merge driver for project and solution files

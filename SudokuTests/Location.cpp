@@ -40,12 +40,14 @@ namespace compiletime
 	static_assert(not std::is_const_v<typeT>);
 	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-#if defined (__clang__) || defined(__GNUC__)
+#if defined(__clang__) || defined(__GNUC__)
 	static_assert(std::is_trivially_copyable_v<typeT>);
+#if not(defined(__clang__) && __clang_major__ < 6)
 	static_assert(std::has_unique_object_representations_v<typeT>);
+#endif
 #else
 	static_assert(not std::is_trivially_copyable_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::has_unique_object_representations_v<typeT>);
 #endif // __ICL
 #endif // __clang__
@@ -54,7 +56,7 @@ namespace compiletime
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif // __ICL
 
@@ -114,7 +116,7 @@ namespace compiletime
 	static_assert(not std::is_assignable_v<typeT, int>);
 	static_assert(not std::is_assignable_v<typeT, Location_Block<3>>);
 
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_v<typeT>);         // C++17
 	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
 
@@ -147,21 +149,23 @@ namespace Location_Block_compiletime
 	static_assert(not std::is_const_v<typeT>);
 	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-#if defined(__GNUC__)
+#if defined(__GNUC__) && !defined(__clang__)
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #else
 	static_assert(not std::is_trivially_copyable_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__clang__) && __clang_major__ < 6)
 	static_assert(not std::has_unique_object_representations_v<typeT>);
-#endif // __ICL
+#endif // __ICL && ! clang before 6.0
 #endif // __GNUC__
 	static_assert(std::is_standard_layout_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
+	static_assert(not std::is_aggregate_v<typeT>);
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif // __ICL
 
@@ -194,10 +198,10 @@ namespace Location_Block_compiletime
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_v<typeT>);         // C++17
 	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
-#endif // __ICL
+#endif                                                     // __ICL
 	// other types
 	static_assert(not std::is_constructible_v<typeT, int>);
 	static_assert(std::is_constructible_v<typeT, Location<3>>);
@@ -258,8 +262,8 @@ TEST(Location, Construction)
 	EXPECT_NO_THROW([[maybe_unused]] Location<3> L2(1, 8));
 
 	// move construct
-	EXPECT_NO_THROW([[maybe_unused]] Location<3> L3(Location<3>(6)));
-	static_assert(noexcept(Location<3>(Location<3>(6))));
+	EXPECT_NO_THROW([[maybe_unused]] auto L3(Location<3>(6)));
+	static_assert(noexcept(Location<3>{Location<3>(6)}));
 	// copy construct
 	constexpr Location<3> c1(12);
 	static_assert(noexcept(Location<3>(c1)));
@@ -279,10 +283,6 @@ TEST(Location, Construction_result)
 	static_assert(Location<3>{1, 8}.element() == 17);
 	EXPECT_EQ(Location<3>(1, 8).element(), 17);
 
-	static_assert(Location<3>(Location<3>(6)).element() == 6);
-	EXPECT_EQ(Location<3>(Location<3>(6)).element(), 6);
-	static_assert(Location<3>(Location<3>{6}).element() == 6);
-	EXPECT_EQ(Location<3>(Location<3>{6}).element(), 6);
 	static_assert(Location<3>{Location<3>(6)}.element() == 6);
 	EXPECT_EQ(Location<3>{Location<3>(6)}.element(), 6);
 	static_assert(Location<3>{Location<3>{6}}.element() == 6);
@@ -350,8 +350,7 @@ TEST(Location, Construction_Block)
 	EXPECT_NO_THROW([[maybe_unused]] Location_Block<3> L4(0, 0, 0));
 
 	// move construct
-	static_assert(noexcept(Location_Block<3>(Location_Block<3>())));
-	EXPECT_NO_THROW(Location_Block<3>(Location_Block<3>(6, 3)));
+	static_assert(noexcept(Location_Block<3>{Location_Block<3>()}));
 
 	// copy construct
 	constexpr Location_Block<3> c1{1, 3};
@@ -388,11 +387,9 @@ TEST(Location, Construction_result_Block)
 	const Location_Block<3> B6{0, 0, 2};
 	EXPECT_EQ(B6.element(), 2);
 
-	static_assert(Location_Block<3>(Location_Block<3>(0, 2)).element() == 2);
+	static_assert(Location_Block<3>{Location_Block<3>(0, 2)}.element() == 2);
 	const Location_Block<3> B4(Location_Block<3>(0, 2));
 	EXPECT_EQ(B4.element(), 2) << "Move constructor";
-	EXPECT_EQ(Location_Block<3>(Location_Block<3>(0, 2)).element(), 2);
-	EXPECT_EQ(Location_Block<3>(Location_Block<3>{0, 2}).element(), 2);
 	EXPECT_EQ((Location_Block<3>{Location_Block<3>{0, 2}}.element()), 2);
 	EXPECT_EQ(Location_Block<3>{Location_Block<3>(0, 2)}.element(), 2);
 
@@ -1228,9 +1225,9 @@ TEST(Location_Utilities, get_same_section)
 	std::vector<Location<3>> list3{};
 	for (int i{}; i < 9; ++i)
 	{
-		list1.push_back(Location<3>{i});
-		// list2.push_back(Location<3>{i*3});
-		list3.push_back(Location<3>{i * 9});
+		list1.emplace_back(Location<3>{i});
+		// list2.emplace_back(Location<3>{i*3});
+		list3.emplace_back(Location<3>{i * 9});
 	}
 	const std::vector<Location<3>> clist1{list1};
 
