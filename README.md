@@ -1,7 +1,7 @@
 <!-------------------------------------------------------------><a id="top"></a>
 # fwkSudoku
 <!----------------------------------------------------------------------------->
-[![Build Status](https://travis-ci.com/Farwaykorse/fwkSudoku.svg?branch=master)](https://travis-ci.com/Farwaykorse/fwkSudoku)
+[![Build Status](https://travis-ci.com/Farwaykorse/fwkSudoku.svg?branch=master)](https://travis-ci.com/Farwaykorse/fwkSudoku/branches)
 [![Build status](https://ci.appveyor.com/api/projects/status/fuasqqstakl49tfb/branch/master?svg=true)](https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master)
 <!-- Description -->
 This project is mostly focused on the implementation of the data-structures.  
