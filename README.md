@@ -6,7 +6,7 @@
 <!-- Description -->
 This project is mostly focused on the implementation of the data-structures.  
 Originally this started as a one of many small experiments while starting to
-learn C++. With a mild intrest in properties of sudokus.
+learn C++. With a mild interest in properties of sudokus.
 It served mostly as a place to figure out the implementation and use of STL
 iterators.
 When it became a bit more complex, it became a familiar project to come back to.
@@ -29,15 +29,23 @@ is experimentation and learning through play.
 <!----------------------------------------------------------------------------->
 <!-- installation -->
 <!-- usage -->
-Several C++17 compiler and STL features are used in this project.
 The code is mainly written using the Visual Studio platform, and compiled with
-the latest stable versions of MSVC and Clang on Windows.
-The library and Console projects compile and run with GCC on Linux (in the WSL).
+the latest stable versions of MSVC, Clang and Intel on Windows, and GCC on Linux
+(in the WSL).
+
+Both MSBuild and CMake configurations are maintained.
+The MSBuild projects are updated to the last stable Visual Studio version.
+With configurations for Clang on Windows and the Intel C++ compilers.  
+The CMake configuration applies the same settings but for a wider variety of
+tool-chains and support for older compiler version.
 
 Several static analysers and extensive warning settings are used with each
 compiler.  
 More on the project and compiler configurations in: 
 [docs/Configuration](./docs/Configuration.md).
+
+#### Requirements:
+A C++17 compiler.
 
 #### Dependencies:
 Non-of the external dependencies have been included in the repository.
