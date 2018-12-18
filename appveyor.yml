@@ -2,6 +2,10 @@
 version: "{build}"
 clone_depth: 20
 
+branches:
+  except:
+  - /^[Tt]ravis.*/
+
 cache:
 - C:\Tools\ninja
 - C:\Tools\vcpkg\installed
