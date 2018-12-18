@@ -99,12 +99,4 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="$(MSBuildThisFileDirectory)Board.natvis" />
-    <Natvis Include="$(MSBuildThisFileDirectory)Location.natvis" />
-    <Natvis Include="$(MSBuildThisFileDirectory)Options.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)README.md" />
-  </ItemGroup>
 </Project>

@@ -24,9 +24,20 @@
 #include <Sudoku/traits.h>
 // library
 #include <type_traits>
+#include <cstdint>
 
 namespace SudokuTests
 {
+using ::Sudoku::Board;
+using ::Sudoku::Location;
+using ::Sudoku::Options;
+using ::Sudoku::Value;
+using ::Sudoku::Board_iterator;
+using ::Sudoku::const_Board_iterator;
+using ::Sudoku::Board_Section::Row;
+using ::Sudoku::Board_Section::Col;
+using ::Sudoku::Board_Section::Block;
+using ::Sudoku::Board_Section::const_Row;
 using ::Sudoku::Board_Section::Section_iterator;
 using ::Sudoku::Board_Section::Row_iterator;
 using ::Sudoku::Board_Section::Col_iterator;
@@ -87,12 +98,16 @@ namespace type_properties
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
+#if not(defined(__ICL)) && not(defined(__clang__) && __clang_major__ < 6)
 	static_assert(std::has_unique_object_representations_v<typeT>);
+#endif
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::is_aggregate_v<typeT>);
+#endif // __ICL
 } // namespace type_properties
 
 namespace constructors
@@ -188,7 +203,8 @@ namespace constructors
 	static_assert(not std::is_constructible_v<Row_Itr, Board*, float, int>);
 	// - Re-enabled implicit conversions for [elem]:
 	static_assert(std::is_constructible_v<Row_Itr, Board*, char, char>);
-	static_assert(std::is_constructible_v<Row_Itr, Board*, long long, long>);
+	static_assert(
+		std::is_constructible_v<Row_Itr, Board*, std::int64_t, std::int32_t>);
 	static_assert(std::is_constructible_v<Row_Itr, Board*, size_t, size_t>);
 
 	// Implicit conversion to const_*
@@ -250,18 +266,19 @@ namespace destructors
 
 namespace swapping
 {
-	static_assert(std::is_swappable_v<typeT>);         // C++17
-	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
+#if not(defined(__ICL)) // Intel C++ 19.0
+	static_assert(std::is_swappable_v<typeT>);
+	static_assert(std::is_nothrow_swappable_v<typeT>);
 
-	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
-	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
-	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
-	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
+	static_assert(not std::is_swappable_with_v<typeT, int>);
+	static_assert(not std::is_swappable_with_v<typeT, unsigned int>);
+	static_assert(not std::is_swappable_with_v<typeT, size_t>);
+	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);
+#endif // __ICL
 } // namespace swapping
 
 namespace assignment
 {
-	// copy assignment
 	static_assert(std::is_copy_assignable_v<typeT>);
 	static_assert(std::is_nothrow_copy_assignable_v<typeT>);
 	static_assert(std::is_trivially_copy_assignable_v<typeT>);
@@ -277,13 +294,6 @@ namespace assignment
 
 namespace SudokuTests::Members
 {
-using namespace ::Sudoku;
-// using namespace ::Sudoku::Board_Section;
-using ::Sudoku::Board_Section::Row;
-using ::Sudoku::Board_Section::Col;
-using ::Sudoku::Board_Section::Block;
-using ::Sudoku::Board_Section::const_Row;
-
 using ::Sudoku::traits::is_input;
 using ::Sudoku::traits::is_forward;
 using ::Sudoku::traits::is_bidir;
@@ -395,14 +405,14 @@ TEST(Section_Itr, begin_end)
 	}
 	{
 		// assignment
-		Row_iterator<int, 2> LI{};
+		[[maybe_unused]] Row_iterator<int, 2> LI{};
 		LI = I1;
-		const_Row_iterator<int, 2> cLI{};
+		[[maybe_unused]] const_Row_iterator<int, 2> cLI{};
 		cLI = cI1;
 		cLI = I1;
-		reverse_Row_iterator<int, 2> rLI{};
+		[[maybe_unused]] reverse_Row_iterator<int, 2> rLI{};
 		rLI = rI1;
-		const_reverse_Row_iterator<int, 2> crLI{};
+		[[maybe_unused]] const_reverse_Row_iterator<int, 2> crLI{};
 		crLI = rI1;
 		crLI = crI1;
 	}
@@ -1232,6 +1242,7 @@ TEST(Section_Itr, BidirectionalIterator)
 		ADD_FAILURE();
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Section_Itr, increment_by_integer)
 { // operator+=(int)
 	test_elements TE{};
@@ -1557,6 +1568,7 @@ TEST(Section_Itr, increment_by_integer3)
 		ADD_FAILURE();
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Section_Itr, decrement_by_integer)
 { // operator-=(int)
 	test_elements TE{};
@@ -1867,6 +1879,7 @@ TEST(Section_Itr, difference)
 		ADD_FAILURE();
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Section_Itr, direct_access)
 { // & operator[](int)
 	test_elements TE{};

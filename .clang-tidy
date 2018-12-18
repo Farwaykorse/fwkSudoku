@@ -7,57 +7,59 @@
 ##   https://clang.llvm.org/extra/clang-tidy/checks/list.html
 ##
 ## Disable locally:
-##  // Silent all the diagnostics for the line
+##  // Silence all the diagnostics for the line
 ##  Foo(int param); // NOLINT
 ##
-##  // Silent only the specified checks for the line
+##  // Silence only the specified checks for the line
 ##  Foo(double param); // NOLINT(google-explicit-constructor, google-runtime-int)
 ##
-##  // Silent only the specified diagnostics for the next line
+##  // Silence only the specified diagnostics for the next line
 ##  // NOLINTNEXTLINE(google-explicit-constructor, google-runtime-int)
 ##  Foo(bool param);
 ##
-##  No space before `(`, inside parenthesis whitespace is ignored.
+##  No space before `(`, inside parenthesis white-space is ignored.
 ##====--------------------------------------------------------------------====##
+## Please, keep sorted by name.
 #
 
 HeaderFilterRegex: 'Sudoku[\\\/].*'
 Checks:
  '*,
+  abseil-*,
+  -android-*,
+  boost-*,
   bugprone-*,
-  cppcoreguidelines-*,
-  modernize-*,
-  performance-*,
-  portability-*,
-  readability-*,
-  -readability-braces-around-statements,
-  -readability-avoid-const-params-in-decls,
-  -readability-named-parameter,
-  -readability-else-after-return,
-  hicpp-*,
-  -hicpp-braces-around-statements,
+  cert-*,
+  -cert-dcl21-cpp,
   clang-analyzer-*,
   -clang-analyzer-optin\.mpi*,
   -clang-analyzer-optin\.osx*,
   -clang-analyzer-osx*,
   -clang-analyzer-unix*,
+  cppcoreguidelines-*,
+  -fuchsia-*,
+  google-*,
+  -google-objc-*,
+  -google-readability-braces-around-statements,
+  -google-readability-namespace-comments,
+  -google-readability-todo,
+  hicpp-*,
+  -hicpp-braces-around-statements,
   llvm-*,
   -llvm-header-guard,
   -llvm-include-order,
   -llvm-namespace-comment,
-  google-*,
-  -google-readability-braces-around-statements,
-  -google-readability-namespace-comments,
-  -google-readability-todo,
-  -google-objc-*,
-  abseil-*,
-  boost-*,
   misc-*,
-  cert-*,
-  -android-*,
-  -fuchsia-*,
+  modernize-*,
   -mpi-*,
   -objc-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -readability-avoid-const-params-in-decls,
+  -readability-braces-around-statements,
+  -readability-else-after-return,
+  -readability-named-parameter,
   -ziron-*'
 
 CheckOptions:
@@ -67,17 +69,17 @@ CheckOptions:
     value: '0'
   - key:   bugprone-suspicious-enum-usage.StrictMode
     value: '1'
-  - key:   readability-function-size.LineThreshold
-    value: '-1'
-  - key:   readability-function-size.StatementThreshold
-    value: '800'
+  - key:   portability-simd-intrinsics.Suggest
+    value: '1'
+  - key:   readability-braces-around-statements.ShortStatementLines
+    value: '3'
   - key:   readability-function-size.BranchThreshold
     value: '-1'
-  - key:   readability-function-size.ParameterThreshold
+  - key:   readability-function-size.LineThreshold
     value: '-1'
   - key:   readability-function-size.NestingThreshold
     value: '-1'
-  - key:   readability-braces-around-statements.ShortStatementLines
-    value: '3'
-  - key:   portability-simd-intrinsics.Suggest
-    value: '1'
+  - key:   readability-function-size.ParameterThreshold
+    value: '-1'
+  - key:   readability-function-size.StatementThreshold
+    value: '800'

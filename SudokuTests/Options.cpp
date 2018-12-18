@@ -55,12 +55,16 @@ namespace compiletime
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
+#if not(defined(__ICL)) && not(defined(__clang__) && __clang_major__ < 6)
 	static_assert(std::has_unique_object_representations_v<typeT>);
+#endif // __ICL
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::is_aggregate_v<typeT>);
+#endif // __ICL
 
 	static_assert(std::is_default_constructible_v<typeT>);
 	static_assert(std::is_nothrow_default_constructible_v<typeT>);
@@ -87,8 +91,10 @@ namespace compiletime
 	static_assert(std::is_trivially_move_assignable_v<typeT>);
 
 	static_assert(std::is_trivially_copyable_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(std::is_swappable_v<typeT>);
 	static_assert(std::is_nothrow_swappable_v<typeT>);
+#endif // __ICL
 
 	// type construction
 	// from std::bitset
@@ -109,8 +115,10 @@ namespace compiletime
 	static_assert(not std::is_constructible_v<typeT, const std::bitset<9>&>);
 	static_assert(not std::is_assignable_v<Options<3>, std::bitset<3>>);
 
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::is_swappable_with_v<Options<4>, std::bitset<5>>);
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, std::bitset<10>>);
+#endif // __ICL
 
 	// Value
 	static_assert(std::is_constructible_v<Options<3>, Value>);
@@ -293,7 +301,7 @@ TEST(Options, Construction)
 		// outside domain
 		EXPECT_TRUE(Options<4>{Value{5}}.is_empty());
 		EXPECT_TRUE(Options<9>{Value{10}}.is_empty());
-#endif // NDEBUG
+#endif                  // NDEBUG
 		TMP = Value{4}; // suppress warning: assigned only once
 		EXPECT_EQ(TMP.DebugString(), "10000");
 	}
@@ -709,7 +717,7 @@ TEST(Options, mf_add_nocheck)
 	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{0});, "is_valid_option");
 #ifdef NDEBUG
 	EXPECT_EQ(Opt.DebugString(), "10011");
-	//EXPECT_NO_FATAL_FAILURE(Opt.add_nocheck(Value{5}));
+	// EXPECT_NO_FATAL_FAILURE(Opt.add_nocheck(Value{5}));
 #else
 	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{5});, "is_valid_option");
 #endif // NDEBUG
@@ -749,7 +757,7 @@ TEST(Options, mf_set_nocheck)
 	EXPECT_DEBUG_DEATH(TMP.set_nocheck(Value{0}), "is_valid_option");
 #ifdef NDEBUG
 	EXPECT_EQ(TMP.DebugString(), "00001");
-	//EXPECT_NO_FATAL_FAILURE(TMP.add_nocheck(Value{5}));
+	// EXPECT_NO_FATAL_FAILURE(TMP.add_nocheck(Value{5}));
 #else
 	EXPECT_DEBUG_DEATH(TMP.set_nocheck(Value{5}), "is_valid_option");
 #endif // NDEBUG
@@ -804,7 +812,11 @@ TEST(Options, mf_booleanComparison)
 	EXPECT_NE(TE.O_1, TE.E_1);
 	EXPECT_FALSE(TE.O_1 != TE.O_1);
 
+#if defined(__ICL) // Intel C++ 19.0
+	static_assert(not noexcept(TE.O_1 < TE.O_4));
+#else
 	static_assert(noexcept(TE.O_1 < TE.O_4));
+#endif // __ICL
 	EXPECT_FALSE(TE.D_1 < TE.O_4) << "both full";
 	EXPECT_FALSE(TE.E_1 < Options<4>(std::bitset<5>{"00000"})) << "both empty";
 	EXPECT_LT(TE.E_1, TE.D_1) << "empty vs default";

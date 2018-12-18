@@ -19,6 +19,7 @@
 // library
 #include <type_traits>
 #include <utility>
+#include <cstdint>
 
 
 namespace SudokuTests::Type
@@ -47,12 +48,16 @@ namespace properties_Section
 	static_assert(std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(std::has_unique_object_representations_v<typeT>);
+#endif // __ICL
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::is_aggregate_v<typeT>);
+#endif // __ICL
 } // namespace properties_Section
 
 // Board_Section
@@ -94,7 +99,9 @@ namespace type_properties
 	static_assert(not std::is_trivial_v<typeT>);
 	// static_assert(not std::is_trivially_copyable_v<typeT>); //! Clang Debug
 	static_assert(not std::is_standard_layout_v<typeT>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::is_aggregate_v<typeT>);
+#endif // __ICL
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
@@ -133,7 +140,11 @@ namespace constructors
 	static_assert(std::is_nothrow_constructible_v<constT, Board const&, int>);
 	static_assert(not std::is_constructible_v<typeT, Board const&, int>);
 	// (copy) construction of Board
+#if defined(__ICL) // Intel C++ 19.0
+	static_assert(std::is_constructible_v<typeT, Board, int>);
+#else
 	static_assert(not std::is_constructible_v<typeT, Board, int>);
+#endif // __ICL
 	// Board*
 	static_assert(not std::is_constructible_v<typeT, Board*, int>);
 	// Board: Size errors
@@ -147,11 +158,11 @@ namespace constructors
 	// - blocked implicit conversions:
 	static_assert(not std::is_constructible_v<typeT, Board&, bool>);
 	// - re-enabled implicit conversions for [id]:
-	static_assert(std::is_constructible_v<typeT, Board&, long>);
-	static_assert(std::is_constructible_v<typeT, Board&, long long>);
+	static_assert(std::is_constructible_v<typeT, Board&, std::int32_t>);
+	static_assert(std::is_constructible_v<typeT, Board&, std::int32_t>);
 	static_assert(std::is_constructible_v<typeT, Board&, size_t>);
-	static_assert(std::is_constructible_v<typeT, Board&, unsigned long>);
-	static_assert(std::is_constructible_v<typeT, Board&, unsigned long long>);
+	static_assert(std::is_constructible_v<typeT, Board&, std::uint32_t>);
+	static_assert(std::is_constructible_v<typeT, Board&, std::uint64_t>);
 	static_assert(not std::is_constructible_v<typeT, Board&, float>);
 	static_assert(not std::is_constructible_v<typeT, Board&, double>);
 	static_assert(not std::is_constructible_v<typeT, Board&, long double>);
@@ -409,6 +420,7 @@ namespace destructors
 
 namespace swapping
 {
+#if not(defined(__ICL)) // Intel C++ 19.0
 	static_assert(not std::is_swappable_v<typeT>);         // C++17
 	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
 
@@ -416,6 +428,7 @@ namespace swapping
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
+#endif // __ICL
 } // namespace swapping
 
 namespace assignment

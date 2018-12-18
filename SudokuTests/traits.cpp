@@ -58,17 +58,19 @@ static_assert(not is_int_v<double>);
 static_assert(not is_int_v<long double>);
 
 // cstdint
-static_assert(is_int_v<int8_t>);
-static_assert(is_int_v<int16_t>);
-static_assert(is_int_v<int32_t>);
-static_assert(is_int_v<uint8_t>);
-static_assert(is_int_v<uint16_t>);
-static_assert(is_int_v<uint32_t>);
+static_assert(is_int_v<std::int8_t>);
+static_assert(is_int_v<std::int16_t>);
+static_assert(is_int_v<std::int32_t>);
+static_assert(is_int_v<std::uint8_t>);
+static_assert(is_int_v<std::uint16_t>);
+static_assert(is_int_v<std::uint32_t>);
 
 // cstddef
 static_assert(is_int_v<std::size_t>);
 static_assert(is_int_v<std::ptrdiff_t>);
+#if not(defined(__ICL)) // Intel C++ 19.0
 static_assert(not is_int_v<std::byte>);
+#endif // __ICL
 
 // cwchar
 static_assert(is_int_v<std::wint_t>);

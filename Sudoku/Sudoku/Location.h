@@ -138,6 +138,7 @@ public:
 		return loc_.block_col();
 	} // [0,base)
 
+	// [[implicit]]
 	constexpr operator Location() const noexcept { return loc_; }
 
 private:

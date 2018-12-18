@@ -119,6 +119,7 @@ TEST(Solver, set_Value_vector)
 		// exceptions
 		static_assert(
 			!noexcept(set_Value(B1, too_long.cbegin(), too_long.cend())));
+		// NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
 		const std::array<Options<4>, 16> optie{};
 		static_assert(!noexcept(set_Value(B1, optie.cbegin(), optie.cend())));
 		constexpr std::array<char, 16> ints{};
@@ -212,6 +213,7 @@ TEST(Solver, set_Value_vector)
 	}
 }
 
+// NOLINTNEXTLINE(readability-function-size)
 TEST(Solver, set_section_locals)
 {
 	using ::Sudoku::set_section_locals;

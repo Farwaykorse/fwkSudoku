@@ -6,4 +6,4 @@
 // include WinSDKVer.h and set the _WIN32_WINNT macro to the platform you wish
 // to support before including SDKDDKVer.h.
 
-#include <SDKDDKVer.h>
+#include <sdkddkver.h>

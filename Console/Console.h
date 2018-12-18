@@ -16,65 +16,16 @@
 
 namespace Sudoku
 {
+// Solver-function declarations:
 template<int N>
-void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
-{
-	int found{1};
-	while (found > 0)
-	{
-		found = 0;
-		for (int i = 0; i < elem_size<N>; ++i)
-		{
-			found += unique_in_section(board, board.row(i));
-		}
-		for (int i = 0; i < elem_size<N>; ++i)
-		{
-			found += unique_in_section(board, board.col(i));
-		}
-		for (int i = 0; i < elem_size<N>; ++i)
-		{
-			found += unique_in_section(board, board.block(i));
-		}
-	}
-}
-
+void test_solver_unique(Board<Options<elem_size<N>>, N>&);
 template<int N>
-void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
-{
-	int found{1};
-	while (found > 0)
-	{
-		found = 0;
-		for (int i = 0; i < elem_size<N>; ++i)
-		{
-			found += section_exclusive(board, board.row(i));
-		}
-		for (int i = 0; i < elem_size<N>; ++i)
-		{
-			found += section_exclusive(board, board.col(i));
-		}
-		for (int i = 0; i < elem_size<N>; ++i)
-		{
-			found += section_exclusive(board, board.block(i));
-		}
-	}
-}
-
+void test_solver_exclusive(Board<Options<elem_size<N>>, N>&);
 template<int N>
-Board<Value, N>
-	getResult(const Board<Options<elem_size<N>>, N>& options) noexcept
-{
-	Board<Value, N> result{};
-	for (int i = 0; i < full_size<N>; ++i)
-	{
-		if (options[Location<N>(i)].is_answer())
-		{
-			result[Location<N>(i)] = get_answer(options[Location<N>(i)]);
-		}
-	}
-	return result;
-}
+Board<Value, N> getResult(Board<Options<elem_size<N>>, N> const&) noexcept;
 
+
+//====--------------------------------------------------------------------====//
 
 class Console
 {
@@ -99,9 +50,10 @@ public:
 	//~Console() = default;
 
 	template<int N>
-	std::stringstream print_row(const Board<int, N>&, int row_id) const;
+	std::stringstream print_row(const Board<int, N>&, gsl::index row_id) const;
 	template<int N, int E>
-	std::stringstream print_row(const Board<Options<E>, N>&, int row_id) const;
+	std::stringstream
+		print_row(const Board<Options<E>, N>&, gsl::index row_id) const;
 	template<int N>
 	std::stringstream print_board(const Board<int, N>&) const;
 	template<int N, int E>
@@ -113,11 +65,14 @@ private:
 	int charsize(int value) const;
 	int charsize(int, int length) const; // recursion
 	//	bool Format::find_option(const Board<std::set<int>>&, Location, int
-	//value);
+	// value);
 	// format elem
 	// format col-block section
 	// format row-block = separator line
 };
+
+//====--------------------------------------------------------------------====//
+// Member-functions:
 
 inline Console::Console() noexcept : d(display)
 {
@@ -127,16 +82,6 @@ inline Console::Console() noexcept : d(display)
 inline Console::Console(delimiter del) : d(std::move(del))
 {
 	// empty constructor
-}
-
-inline int Console::charsize(int value) const
-{
-	assert(value >= 0);
-	if (value < 10)
-	{
-		return 1;
-	}
-	return charsize(value, 2);
 }
 
 inline int Console::charsize(int value, int length) const
@@ -149,15 +94,25 @@ inline int Console::charsize(int value, int length) const
 	return charsize(value, length);
 }
 
+inline int Console::charsize(int value) const
+{
+	assert(value >= 0);
+	if (value < 10)
+	{
+		return 1;
+	}
+	return charsize(value, 2);
+}
+
 template<int N>
 std::stringstream
-	Console::print_row(const Board<int, N>& input, int row_id) const
+	Console::print_row(const Board<int, N>& input, gsl::index row_id) const
 {
 	std::stringstream stream;
 	const int chars = charsize(elem_size<N>) + 1;
 
 	stream << d.col_block << std::setfill(d.space);
-	for (int i = 0; i < elem_size<N>; ++i)
+	for (gsl::index i = 0; i < elem_size<N>; ++i)
 	{
 		if (input[row_id][i] == 0) // no value
 		{
@@ -184,7 +139,7 @@ std::stringstream Console::print_board(const Board<int, N>& input) const
 
 	// opening bar
 	temp << d.block_cross;
-	for (int j = 0; j < base_size<N>; ++j)
+	for (gsl::index j = 0; j < base_size<N>; ++j)
 	{
 		temp << std::setfill(d.row_block[0])
 			 << std::setw(chars * base_size<N> + 2) << d.block_cross;
@@ -194,7 +149,7 @@ std::stringstream Console::print_board(const Board<int, N>& input) const
 	stream << bar << '\n';
 
 	// loop rows
-	for (int i = 0; i < elem_size<N>; ++i)
+	for (gsl::index i = 0; i < elem_size<N>; ++i)
 	{
 		stream << print_row(input, i).str() << d.newl;
 		if ((i + 1) % base_size<N> == 0)
@@ -210,8 +165,8 @@ std::stringstream Console::print_board(const Board<Options<E>, N>& input) const
 {
 	static_assert(E == N * N);
 	static_assert(elem_size<N> == 9); // no support for different sizes yet
-	const int block_size = elem_size<N> + base_size<N> + 2;
-	const int row_length = base_size<N> * block_size;
+	const gsl::index block_size = elem_size<N> + base_size<N> + 2;
+	const gsl::index row_length = base_size<N> * block_size;
 	/*
 	9   9   9
 	o-----------------------------------------o
@@ -236,7 +191,7 @@ std::stringstream Console::print_board(const Board<Options<E>, N>& input) const
 
 	stream << '\n' << n0.str();
 
-	for (int row{0}; row < elem_size<N>; ++row)
+	for (gsl::index row{0}; row < elem_size<N>; ++row)
 	{
 		stream << print_row(input, row).str();
 
@@ -253,18 +208,18 @@ std::stringstream Console::print_board(const Board<Options<E>, N>& input) const
 }
 
 template<int N, int E>
-std::stringstream
-	Console::print_row(const Board<Options<E>, N>& input, int row_id) const
+std::stringstream Console::print_row(
+	const Board<Options<E>, N>& input, gsl::index row_id) const
 {
 	std::stringstream stream;
 
-	auto X{1};
-	for (auto k{0}; k < base_size<N>; ++k)
+	gsl::index X{1};
+	for (gsl::index k{0}; k < base_size<N>; ++k)
 	{
 		stream << d.col_block << d.space;
-		for (auto col{0}; col < elem_size<N>; ++col)
+		for (gsl::index col{0}; col < elem_size<N>; ++col)
 		{
-			for (auto i{X}; i < X + base_size<N>; ++i)
+			for (gsl::index i{X}; i < X + base_size<N>; ++i)
 			{
 				if (input[row_id][col].test(to_Value<N>(i)))
 				{
@@ -290,4 +245,67 @@ std::stringstream
 	}
 	return stream;
 }
+
+//====--------------------------------------------------------------------====//
+// Solver function applications:
+template<int N>
+void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
+{
+	int found{1};
+	while (found > 0)
+	{
+		found = 0;
+		for (gsl::index i = 0; i < elem_size<N>; ++i)
+		{
+			found += unique_in_section(board, board.row(i));
+		}
+		for (gsl::index i = 0; i < elem_size<N>; ++i)
+		{
+			found += unique_in_section(board, board.col(i));
+		}
+		for (gsl::index i = 0; i < elem_size<N>; ++i)
+		{
+			found += unique_in_section(board, board.block(i));
+		}
+	}
+}
+
+template<int N>
+void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
+{
+	int found{1};
+	while (found > 0)
+	{
+		found = 0;
+		for (gsl::index i = 0; i < elem_size<N>; ++i)
+		{
+			found += section_exclusive(board, board.row(i));
+		}
+		for (gsl::index i = 0; i < elem_size<N>; ++i)
+		{
+			found += section_exclusive(board, board.col(i));
+		}
+		for (gsl::index i = 0; i < elem_size<N>; ++i)
+		{
+			found += section_exclusive(board, board.block(i));
+		}
+	}
+}
+
+template<int N>
+Board<Value, N>
+	getResult(const Board<Options<elem_size<N>>, N>& options) noexcept
+{
+	Board<Value, N> result{};
+	for (gsl::index i = 0; i < full_size<N>; ++i)
+	{
+		if (options[Location<N>(i)].is_answer())
+		{
+			result[Location<N>(i)] = get_answer(options[Location<N>(i)]);
+		}
+	}
+	return result;
+}
+
+
 } // namespace Sudoku
