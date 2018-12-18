@@ -249,7 +249,7 @@ before_script:
 script:
 - cmake ${CMakeGenFlags:?} ..
 - cmake --build . ${CMakeBuildFlags:?}
-- ctest -j $(nproc)
+- ctest -j $(nproc) --output-on-failure
 
 ##====--------------------------------------------------------------------====##
 before_cache:
