@@ -289,15 +289,15 @@ TEST(Options, Construction)
 		EXPECT_EQ((TMP = Value{0}).DebugString(), "00001"); // [count-0]
 	}
 	{ // assert serves to catch E+1 case
-		EXPECT_DEBUG_DEATH({ Options<3>{Value{4}}; }, "Assertion failed: .*");
-		EXPECT_DEBUG_DEATH({ Options<3>{Value{5}}; }, "Assertion failed: .*");
+		EXPECT_DEBUG_DEATH({ Options<3>{Value{4}}; }, "Assertion .*");
+		EXPECT_DEBUG_DEATH({ Options<3>{Value{5}}; }, "Assertion .*");
 		// debug contains assert( <= )
-		EXPECT_DEBUG_DEATH(Options<4>{Value{5}}, "Assertion failed:");
+		EXPECT_DEBUG_DEATH(Options<4>{Value{5}}, "Assertion .*");
 
 		Options<4> TMP{};
 		EXPECT_TRUE(TMP.all());
-		EXPECT_DEBUG_DEATH(TMP = Value{6}, "Assertion failed:");
-		EXPECT_DEBUG_DEATH(TMP = Value{10}, "Assertion failed:");
+		EXPECT_DEBUG_DEATH(TMP = Value{6}, "Assertion .*");
+		EXPECT_DEBUG_DEATH(TMP = Value{10}, "Assertion .*");
 #ifdef NDEBUG
 		// outside domain
 		EXPECT_TRUE(Options<4>{Value{5}}.is_empty());
@@ -416,7 +416,7 @@ TEST(Options, is_answer)
 		static_assert(noexcept(is_answer(TE.O_1, Value{1})));
 		EXPECT_DEBUG_DEATH(
 			{ U = is_answer(TE.A_1, Value{15}); },
-			"Assertion failed: value <= Value.E."); // constructor
+			"Assertion .*value <= Value.E."); // constructor
 	}
 	{ // test for specific answer
 		static_assert(noexcept(is_answer(TE.O_1, Value{1})));
@@ -453,7 +453,7 @@ TEST(Options, is_answer)
 #ifndef NDEBUG
 		EXPECT_DEATH(
 			{ U = is_answer_fast(Options<9>{Value{10}}); },
-			"Assertion failed: value <= Value.E.");
+			"Assertion .*value <= Value.E.");
 #endif // NDEBUG
 
 		EXPECT_TRUE(is_answer_fast(TE.A_1));
@@ -473,11 +473,9 @@ TEST(Options, is_option)
 {
 	static_assert(not noexcept(is_option(TE.O_1, Value{2})));
 	[[maybe_unused]] bool U{};
-	EXPECT_DEBUG_DEATH(
-		{ U = is_option(TE.O_1, Value{0}); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ U = is_option(TE.O_1, Value{0}); }, "Assertion .*");
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(
-		{ U = is_option(TE.O_1, Value{15}); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ U = is_option(TE.O_1, Value{15}); }, "Assertion .*");
 #else
 	// std::bitset::test
 	EXPECT_THROW(U = is_option(TE.O_1, Value{15}), std::out_of_range);
@@ -773,9 +771,8 @@ TEST(Options, mf_booleanComparison)
 	static_assert(noexcept(Value{1} == TE.A_1));
 	EXPECT_DEBUG_DEATH(
 		{ U = operator==(TE.A_1, Value{15}); },
-		"Assertion failed: .*"); // constructor
-	EXPECT_DEBUG_DEATH(
-		{ U = operator==(Value{15}, TE.A_1); }, "Assertion failed: .*");
+		"Assertion .*Value"); // constructor
+	EXPECT_DEBUG_DEATH({ U = operator==(Value{15}, TE.A_1); }, "Assertion .*");
 #ifdef NDEBUG
 	EXPECT_FALSE(operator==(TE.A_1, Value{15}));
 	EXPECT_FALSE(operator==(Value{15}, TE.A_1));
@@ -788,10 +785,8 @@ TEST(Options, mf_booleanComparison)
 	// operator!=(Value) const
 	static_assert(noexcept(TE.A_1 != Value{1}));
 	static_assert(noexcept(Value{1} != TE.A_1));
-	EXPECT_DEBUG_DEATH(
-		{ U = operator!=(TE.A_1, Value{15}); }, "Assertion failed: .*");
-	EXPECT_DEBUG_DEATH(
-		{ U = operator!=(Value{15}, TE.A_1); }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ U = operator!=(TE.A_1, Value{15}); }, "Assertion .*");
+	EXPECT_DEBUG_DEATH({ U = operator!=(Value{15}, TE.A_1); }, "Assertion .*");
 	U = false; // suppress warning: assigned only once
 #ifdef NDEBUG
 	EXPECT_TRUE(operator!=(TE.A_1, Value{15}));
@@ -880,8 +875,7 @@ TEST(Options, mf_constOperators)
 
 #ifndef NDEBUG
 	EXPECT_DEATH(
-		{ [[maybe_unused]] bool val = TE.O_3[Value{5}]; },
-		"Assertion failed: .*");
+		{ [[maybe_unused]] bool val = TE.O_3[Value{5}]; }, "Assertion .*");
 #else
 	//! supposed to be noexcept, and no bounds-checks in release-mode
 	//  might still trigger SEH error?
@@ -901,7 +895,7 @@ TEST(Options, Operators)
 	///// non-const operators /////
 	static_assert(noexcept(TMP.operator[](Value{0}) = true));
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH({ TMP[Value{5}] = true; }, "Assertion failed: .*");
+	EXPECT_DEBUG_DEATH({ TMP[Value{5}] = true; }, "Assertion .*");
 #else
 	//! supposed to be noexcept, and no bounds-checks in release-mode
 	//  might still trigger SEH error?

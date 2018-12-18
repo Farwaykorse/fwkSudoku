@@ -612,14 +612,15 @@ TEST(Solver, single_option)
 	static_assert(not noexcept(single_option(B1, L(), Value{1})));
 	// set_Value: throws for invalid Location
 #ifndef NDEBUG
-	EXPECT_DEATH(single_option(B1, L{-1}, Value{1}), ".*: is_valid.loc.");
-	EXPECT_DEATH(single_option(B1, L{16}, Value{1}), ".*: is_valid.loc.");
+	EXPECT_DEATH(single_option(B1, L{-1}, Value{1}), "is_valid\\(loc\\)");
+	EXPECT_DEATH(single_option(B1, L{16}, Value{1}), "is_valid\\(loc\\)");
 #else
 	EXPECT_THROW(single_option(B1, L{-1}, Value{1}), invalid_Location);
 	EXPECT_THROW(single_option(B1, L{16}, Value{1}), invalid_Location);
 #endif // NDEBUG
 	// invalid Value:
-	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{0}), ".* is_valid.*value");
+	EXPECT_DEBUG_DEATH(
+		single_option(B1, L{0}, Value{0}), "is_valid<N>\\(value\\)");
 #ifdef NDEBUG
 	EXPECT_THROW(single_option(B1, L(1), Value{1}), invalid_Board);
 	EXPECT_THROW(single_option(B1, L(2), Value{4}), invalid_Board);
@@ -628,12 +629,13 @@ TEST(Solver, single_option)
 #else
 	EXPECT_NO_THROW(single_option(B1, L(1), Value{1}));
 	EXPECT_NO_THROW(single_option(B1, L(2), Value{4}));
-	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{5}), ".* is_valid.*value");
+	EXPECT_DEBUG_DEATH(
+		single_option(B1, L{0}, Value{5}), "is_valid<N>\\(value\\)");
 #endif // NDEBUG
 	// not an option:
 	B1[0][0] = Options<4>{Value{2}};
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{1}), ".*: .*test.value.");
+	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{1}), "test\\(value\\)");
 	EXPECT_NO_THROW(single_option(B1, L(0), Value{2}));
 #else
 	EXPECT_THROW(single_option(B1, L{0}, Value{1}), invalid_Board);
@@ -741,8 +743,10 @@ TEST(Solver, dual_option)
 
 	// invalid Loc
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{-1}), ".*is_valid.loc.");
-	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{16}), ".*is_valid.loc.");
+	EXPECT_DEBUG_DEATH(
+		dual_option(board, Location<2>{-1}), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(
+		dual_option(board, Location<2>{16}), "is_valid\\(loc\\)");
 #else
 	EXPECT_THROW(dual_option(board, Location<2>{-1}), invalid_Location);
 	EXPECT_THROW(dual_option(board, Location<2>{16}), invalid_Location);
@@ -754,7 +758,7 @@ TEST(Solver, dual_option)
 	// count != 2
 	board[0][1] = Options<4>{};
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{1}), ".*count.. == 2");
+	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{1}), "count\\(\\) == 2");
 #else
 	EXPECT_THROW(dual_option(board, Location<2>{1}), invalid_Board);
 #endif
@@ -1030,10 +1034,10 @@ TEST(Solver, multi_option_2)
 	EXPECT_NO_THROW(multi_option(board, L{15}));
 	EXPECT_NO_THROW(multi_option(board, L{15}, 3));
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(multi_option(board, L{-1}), ".*: is_valid.loc.");
-	EXPECT_DEBUG_DEATH(multi_option(board, L{16}), ".*: is_valid.loc.");
-	EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 3), ".*: is_valid.loc.");
-	EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 3), ".*: is_valid.loc.");
+	EXPECT_DEBUG_DEATH(multi_option(board, L{-1}), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(multi_option(board, L{16}), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 3), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 3), "is_valid\\(loc\\)");
 #else
 	using ::Sudoku::error::invalid_Location;
 	EXPECT_THROW(multi_option(board, L{-1}), invalid_Location);
@@ -1042,7 +1046,7 @@ TEST(Solver, multi_option_2)
 	EXPECT_THROW(multi_option(board, L{16}, 3), invalid_Location);
 #endif // NDEBUG
 	// count > elem_size
-	EXPECT_DEBUG_DEATH(multi_option(board, L{}, 5), ".*: count < elem_size<N>");
+	EXPECT_DEBUG_DEATH(multi_option(board, L{}, 5), "count < elem_size<N>");
 	{ // single_option specialization (count = 1)
 		board[0][0] = Options<4>{B{"01001"}};
 		EXPECT_NO_THROW(multi_option(board, L{0}));
@@ -1051,8 +1055,8 @@ TEST(Solver, multi_option_2)
 		EXPECT_NO_THROW(multi_option(board, L{15}, 1));
 		EXPECT_NO_THROW(multi_option(board, L{15}));
 #ifndef NDEBUG
-		EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 1), ".*: is_valid.loc.");
-		EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 1), ".*: is_valid.loc.");
+		EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 1), "is_valid\\(loc\\)");
+		EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 1), "is_valid\\(loc\\)");
 #else
 		// thrown by Board::at(Location)
 		EXPECT_THROW(multi_option(board, L{-1}, 1), invalid_Location);
@@ -1068,8 +1072,8 @@ TEST(Solver, multi_option_2)
 		EXPECT_NO_THROW(multi_option(board, L{15}, 2));
 		EXPECT_NO_THROW(multi_option(board, L{15}));
 #ifndef NDEBUG
-		EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 2), ".*: is_valid.loc.");
-		EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 2), ".*: is_valid.loc.");
+		EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 2), "is_valid\\(loc\\)");
+		EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 2), "is_valid\\(loc\\)");
 #else
 		EXPECT_THROW(multi_option(board, L{-1}, 2), invalid_Location);
 		EXPECT_THROW(multi_option(board, L{16}, 2), invalid_Location);
@@ -1078,11 +1082,11 @@ TEST(Solver, multi_option_2)
 	// count too small
 	board[0][0] = Options<4>{B{"11111"}};
 	EXPECT_DEBUG_DEATH(
-		multi_option(board, L{0}, 3), ".*: item.count.. == count");
+		multi_option(board, L{0}, 3), "item.count\\(\\) == count");
 	// count too large
 	board[0][0] = Options<4>{B{"11001"}};
 	EXPECT_DEBUG_DEATH(
-		multi_option(board, L{0}, 3), ".*: item.count.. == count");
+		multi_option(board, L{0}, 3), "item.count\\(\\) == count");
 
 	//====----------------------------------------------------------------====//
 	// Operational testing
@@ -1314,8 +1318,7 @@ TEST(Solver, deathtest)
 	// when wrong value
 	B[1][2] = std::bitset<5>{"00011"}; // 1, not answer
 	EXPECT_DEBUG_DEATH(
-		single_option(B, Location<2>(1, 2), Value{4}),
-		"Assertion failed: .*test.*");
+		single_option(B, Location<2>(1, 2), Value{4}), "Assertion .*test.*");
 #endif // NDEBUG
 }
 
