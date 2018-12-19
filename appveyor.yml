@@ -3,7 +3,6 @@ version: "{build}"
 clone_depth: 20
 
 cache:
-- C:\Tools\ninja
 - C:\Tools\vcpkg\installed
 
 ##====--------------------------------------------------------------------====##
@@ -56,33 +55,46 @@ matrix:
     USE_BUILDSYSTEM: MSBuild
     USE_TOOLSET: LLVM
 
+# Customize matrix items
+# Note: overwrites existing, only new variables and notifications are merged.
+for:
+-
+  matrix:
+    only:
+    - USE_BUILDSYSTEM: Ninja
+  cache:
+  - C:\Tools\ninja
+  - C:\Tools\vcpkg\installed
+
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
 install:
 - ps: |
-    if (![IO.File]::Exists("$env:NINJA_PATH\ninja.exe")) {
-      Start-FileDownload `
-        "https://github.com/ninja-build/ninja/releases/download/$env:NINJA_TAG/ninja-win.zip"
-      $hash = (Get-FileHash ninja-win.zip -Algorithm SHA512).Hash
-      if ($env:NINJA_SHA512 -eq $hash) {
-        7z e -y -bso0 ninja-win.zip -o"$env:NINJA_PATH"
-      } else {
-        Write-Warning "Ninja download hash changed!"; Write-Output "$hash"
-        $env:APPVEYOR_CACHE_SKIP_SAVE = true
+    if("$env:USE_BUILDSYSTEM" -eq "Ninja") {
+      if (![IO.File]::Exists("$env:NINJA_PATH\ninja.exe")) {
+        Start-FileDownload `
+          "https://github.com/ninja-build/ninja/releases/download/$env:NINJA_TAG/ninja-win.zip"
+        $hash = (Get-FileHash ninja-win.zip -Algorithm SHA512).Hash
+        if ($env:NINJA_SHA512 -eq $hash) {
+          7z e -y -bso0 ninja-win.zip -o"$env:NINJA_PATH"
+        } else {
+          Write-Warning "Ninja download hash changed!"; Write-Output "$hash"
+          $env:APPVEYOR_CACHE_SKIP_SAVE = true
+        }
       }
+      if ([IO.File]::Exists("$env:NINJA_PATH\ninja.exe")) {
+        $env:PATH = "$env:NINJA_PATH;$env:PATH"
+      } else { Write-Warning "Failed to find ninja.exe in expected location." }
     }
-    if ([IO.File]::Exists("$env:NINJA_PATH\ninja.exe")) {
-      $env:PATH = "$env:NINJA_PATH;$env:PATH"
-    } else { Write-Warning "Failed to find ninja.exe in expected location." }
 - vcpkg install ms-gsl:%PLATFORM%-windows
 - vcpkg install gtest:%PLATFORM%-windows
 
 ##====--------------------------------------------------------------------====##
 before_build:
-- cmake --version
-- ninja --version
 - echo "%APPVEYOR_BUILD_WORKER_IMAGE% %PLATFORM% %CONFIGURATION%"
 - echo "Compiler %USE_TOOLSET%; Generator %USE_BUILDSYSTEM%"
+- cmake --version
+- if %USE_BUILDSYSTEM%==Ninja (ninja --version)
 - ps: |
     if ("$env:USE_BUILDSYSTEM" -eq "Ninja") {
       $GeneratorFlags = '-k 10'
