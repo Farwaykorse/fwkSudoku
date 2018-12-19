@@ -1,6 +1,7 @@
 ##====---- appveyor.yml                                               ----====##
 version: "{build}"
-clone_depth: 20
+# fetch repository as a zip archive
+shallow_clone: true
 
 cache:
 - C:\Tools\vcpkg\installed
