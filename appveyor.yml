@@ -6,10 +6,10 @@ cache:
 - C:\Tools\vcpkg\installed
 
 ##====--------------------------------------------------------------------====##
-## Define Build Matrix
+## Build Matrix Configuration
 # Dimensions: 4 (image; platform; configuration; environment:matrix)
 #
-##====---------
+##====-----------------
 # Options:        Values (supported for this script):
 # ------------------------------------------------------------------------------
 # image           Visual Studio 2017 (default), Visual Studio 2015
@@ -19,7 +19,8 @@ cache:
 #                 Ninja - requires CMake generator
 # USE_TOOLSET     MSVC (default)
 #                 LLVM - use the installed clang-cl version
-##====---------
+##====-----------------
+## Create_Matrix
 image: Visual Studio 2017
 
 platform:
@@ -36,22 +37,25 @@ environment:
     USE_BUILDSYSTEM: Ninja
   - USE_TOOLSET: LLVM
     USE_BUILDSYSTEM: Ninja
-  ##====---------
   global:
     APPVEYOR_SAVE_CACHE_ON_ERROR: true
     VCVAR2015: 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat'
     VCVAR2017: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
     # vcpkg
     TOOLCHAIN_FILE: 'C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake'
-##====---------
+## /Create_Matrix
+##====-----------------
+## Remove_from_Matrix
 matrix:
   exclude:
   # Not supported by script / invalid combination:
   - image: Visual Studio 2015
     USE_BUILDSYSTEM: MSBuild
     USE_TOOLSET: LLVM
-
-# Customize matrix items
+## /Remove_from_Matrix
+##====-----------------
+## Modify_Matrix
+# Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
 for:
 -
@@ -65,6 +69,7 @@ for:
   cache:
   - C:\Tools\ninja
   - C:\Tools\vcpkg\installed
+## /Modify_Matrix
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
