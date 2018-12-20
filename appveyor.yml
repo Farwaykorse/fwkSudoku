@@ -15,7 +15,7 @@ cache:
 # ------------------------------------------------------------------------------
 # image           Visual Studio 2017 (default), Visual Studio 2015
 # platform        x64 (default), x86
-# USE_GENERATOR   CMake (default)
+# USE_MSBUILD_SOLUTION true, [undefined] using CMake (default)
 # USE_BUILDSYSTEM MSBuild (default)
 #                 Ninja - requires CMake generator
 # USE_TOOLSET     MSVC (default)
@@ -38,6 +38,7 @@ environment:
     USE_BUILDSYSTEM: Ninja
   - USE_TOOLSET: LLVM
     USE_BUILDSYSTEM: Ninja
+  - USE_MSBUILD_SOLUTION: true
   global:
     APPVEYOR_SAVE_CACHE_ON_ERROR: true
     VCVAR2015: 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat'
@@ -70,6 +71,17 @@ for:
   cache:
   - C:\Tools\ninja
   - C:\Tools\vcpkg\installed
+-
+  matrix:
+    only:
+    - USE_MSBUILD_SOLUTION: true
+  before_build: true
+  build_script:
+  - >-
+    MSBuild
+    -nologo
+    -verbosity:minimal
+    -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 ## /Modify_Matrix
 
 ##====--------------------------------------------------------------------====##
