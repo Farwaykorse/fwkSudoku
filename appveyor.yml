@@ -89,7 +89,24 @@ for:
 ## Install tools and dependencies
 install:
 - ps: |
+    $out =  "-- CI Session Configuration --`n"
+    $out += "$env:APPVEYOR_BUILD_WORKER_IMAGE - $env:CONFIGURATION - "
+    $out += "$env:PLATFORM`nOS / platform:       "
+    $tmp = (Get-WmiObject Win32_OperatingSystem).name
+    $out += "$($tmp -split "[|]" | Select-Object -First 1) / "
+    $out += "$((Get-WmiObject Win32_OperatingSystem).OSArchitecture)`n"
+    if ($env:USE_TOOLSET) { $out += "Toolset:             $env:USE_TOOLSET`n" }
+    if ($env:USE_MSBUILD_SOLUTION) {
+      $out += 'Build configuration: MSBuild projects'
+    } else {
+      $out += 'Build configuration: CMake // '
+      $out += "$(cmake --version | Select-Object -First 1)`n"
+      $out += "Build system:        $env:USE_BUILDSYSTEM"
+      if ($env:NINJA_TAG) { $out +=": $env:NINJA_TAG" }
+    }; Write-Output "$out"
+- ps: |
     if("$env:USE_BUILDSYSTEM" -eq "Ninja") {
+      Write-Verbose "Install Ninja-build $env:NINJA_TAG"
       if (![IO.File]::Exists("$env:NINJA_PATH\ninja.exe")) {
         Start-FileDownload `
           "https://github.com/ninja-build/ninja/releases/download/$env:NINJA_TAG/ninja-win.zip"
@@ -103,6 +120,7 @@ install:
       }
       if ([IO.File]::Exists("$env:NINJA_PATH\ninja.exe")) {
         $env:PATH = "$env:NINJA_PATH;$env:PATH"
+        ninja --version 1>$null # will fail if not available on path
       } else { Write-Warning "Failed to find ninja.exe in expected location." }
     }
 - cd C:\Tools\vcpkg & git pull --quiet
@@ -117,10 +135,6 @@ install:
 
 ##====--------------------------------------------------------------------====##
 before_build:
-- echo "%APPVEYOR_BUILD_WORKER_IMAGE% %PLATFORM% %CONFIGURATION%"
-- echo "Compiler %USE_TOOLSET%; Generator %USE_BUILDSYSTEM%"
-- cmake --version
-- if %USE_BUILDSYSTEM%==Ninja (ninja --version)
 - ps: |
     if ("$env:USE_BUILDSYSTEM" -eq "Ninja") {
       $GeneratorFlags = '-k 10'
