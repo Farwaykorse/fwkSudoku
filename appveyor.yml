@@ -127,11 +127,20 @@ install:
       } else { Write-Warning "Failed to find ninja.exe in expected location." }
     }
 - cd C:\Tools\vcpkg & git pull --quiet
+- vcpkg list
+- vcpkg update
 - ps: |
-    if ($(vcpkg version) -match "version 0\.0\.113") {
-      Write-Warning "Temporary fix updating vcpkg ..."
-      .\bootstrap-vcpkg.bat 1>$null
-      vcpkg integrate install 1>$null
+    if (
+      ($(vcpkg upgrade) -notmatch "^All installed packages are up-to-date") -or
+      ($(vcpkg list) -match "^ms-gsl:$env:PLATFORM-windows").count -or
+      ($(vcpkg list) -match "^gtest:$env:PLATFORM-windows").count
+    ) {
+      if ($(vcpkg version) -match "version 0\.0\.113") {
+        Write-Warning "Temporary fix updating vcpkg ..."
+        .\bootstrap-vcpkg.bat 1>$null
+        vcpkg integrate install 1>$null
+      }
+      vcpkg upgrade --no-dry-run
     }
 - vcpkg install ms-gsl:%PLATFORM%-windows
 - vcpkg install gtest:%PLATFORM%-windows
