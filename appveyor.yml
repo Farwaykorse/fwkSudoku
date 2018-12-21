@@ -57,6 +57,9 @@ matrix:
 ## /Remove_from_Matrix
 ##====-----------------
 ## Modify_Matrix
+  allow_failures:
+  # Temporary, until the GSL has been updated (added PR #741)
+  - USE_TOOLSET: LLVM
 # Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
 for:
