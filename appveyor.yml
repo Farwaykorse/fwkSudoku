@@ -11,15 +11,19 @@ cache:
 # Dimensions: 4 (image; platform; configuration; environment:matrix)
 #
 ##====-----------------
-# Options:        Values (supported for this script):
+# Options:              Values (supported for this script):
 # ------------------------------------------------------------------------------
-# image           Visual Studio 2017 (default), Visual Studio 2015
-# platform        x64 (default), x86
-# USE_MSBUILD_SOLUTION true, [undefined] using CMake (default)
-# USE_BUILDSYSTEM MSBuild (default)
-#                 Ninja - requires CMake generator
-# USE_TOOLSET     MSVC (default)
-#                 LLVM - use the installed clang-cl version
+# image                 Visual Studio 2017 (default), Visual Studio 2015
+# platform              Platform configuration names:
+#                       x64 (default), x86
+# configuration         Solution configuration names:
+#                       Debug, Release ...       (use the MSVC compiler)
+#                       LLVM_(Debug, Release)... (use the LLVM/clang compiler)
+# USE_MSBUILD_SOLUTION  true - use MSBuild project files
+#                       [undefined] - use CMake (default)
+# USE_BUILDSYSTEM       MSBuild - (default)
+#                       Ninja - requires CMake generator
+# USE_TOOLSET           llvm - use the installed clang-cl version
 ##====-----------------
 ## Create_Matrix
 image: Visual Studio 2017
@@ -31,13 +35,13 @@ platform:
 configuration:
 - Debug
 - Release
+- LLVM_Debug
+- LLVM_Release
 
 environment:
   matrix:
-  - USE_TOOLSET: MSVC
-    USE_BUILDSYSTEM: Ninja
-  - USE_TOOLSET: LLVM
-    USE_BUILDSYSTEM: Ninja
+  - USE_BUILDSYSTEM: Ninja
+  - USE_BUILDSYSTEM: MSBuild
   - USE_MSBUILD_SOLUTION: true
   global:
     APPVEYOR_SAVE_CACHE_ON_ERROR: true
@@ -52,14 +56,18 @@ matrix:
   exclude:
   # Not supported by script / invalid combination:
   - image: Visual Studio 2015
+    configuration: LLVM_Debug
     USE_BUILDSYSTEM: MSBuild
-    USE_TOOLSET: LLVM
+  - image: Visual Studio 2015
+    configuration: LLVM_Release
+    USE_BUILDSYSTEM: MSBuild
 ## /Remove_from_Matrix
 ##====-----------------
 ## Modify_Matrix
   allow_failures:
-  # Temporary, until the GSL has been updated (added PR #741)
-  - USE_TOOLSET: LLVM
+  # Temporary, until the GSL has been updated (submitted PR #741)
+  - configuration: LLVM_Debug
+  - configuration: LLVM_Release
 # Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
 for:
@@ -106,6 +114,7 @@ for:
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
 install:
+- ps: if ($env:CONFIGURATION -match "^LLVM_.*") { $env:USE_TOOLSET = "llvm" }
 - ps: |
     $out =  "-- CI Session Configuration --`n"
     $out += "$env:APPVEYOR_BUILD_WORKER_IMAGE - $env:CONFIGURATION - "
@@ -181,14 +190,14 @@ before_build:
       }
       if ("$env:PLATFORM" -eq "x86") { $Architecture = "Win32"}
       else { $Architecture = "x64" }
-      if ("$env:USE_TOOLSET" -eq "LLVM") {
+      if ($env:USE_TOOLSET) {
         $CMakeGenFlags = `
-          "-G `"$Generator`" -A $Architecture -T llvm"
+          "-G `"$Generator`" -A $Architecture -T $env:USE_TOOLSET"
       } else {
         $CMakeGenFlags = "-G `"$Generator`" -A $Architecture"
       }
     }
-    if ("$env:USE_TOOLSET" -eq "LLVM") {
+    if ("$env:CONFIGURATION" -match "LLVM_.*") {
       $env:CC  = "clang-cl"
       $env:CXX = "clang-cl"
       $env:CFLAGS   = "$env:CFLAGS -Werror"
