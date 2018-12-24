@@ -98,6 +98,7 @@ for:
     VSTest.Console
     %TEST_EXE_PATH%
     /UseVsixExtensions:true
+    /Settings:msvc\GoogleTestAdapter.RunSettings
     /logger:Appveyor
     )
 ## /Modify_Matrix
