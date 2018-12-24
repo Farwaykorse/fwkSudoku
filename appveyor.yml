@@ -195,6 +195,10 @@ build_script:
 - echo %CMakeBuildFlags%
 - cmake --build . %CMakeBuildFlags%
 
+after_build:
+- ps: |
+    Get-ChildItem -Recurse -Include *.exe, *.dll | Select-Object Length, Name
+
 ##====--------------------------------------------------------------------====##
 test_script:
 - >-
