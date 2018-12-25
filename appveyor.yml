@@ -151,6 +151,15 @@ install:
       } else { Write-Warning "Failed to find ninja.exe in expected location." }
     }
 - cd C:\Tools\vcpkg & git pull --quiet
+- ps: |
+    if ($(vcpkg list) -match "2018-11-08|2018-11-26" -or
+      !($(vcpkg list) -match "ms-gsl:$env:PLATFORM-windows")
+    ) {
+      Write-Warning "Temporary patch for ms-gsl."
+      Start-FileDownload `
+        "https://gist.githubusercontent.com/Farwaykorse/c1901cf149c69085e6b3001fcc561321/raw/71c2fe5a432fac2cac93d4e4687065468e444bdd/vcpkg_ms-gsl.patch"
+      git apply vcpkg_ms-gsl.patch
+    }
 - vcpkg list
 - vcpkg update
 - ps: |
