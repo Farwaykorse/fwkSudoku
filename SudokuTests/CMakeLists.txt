@@ -20,6 +20,7 @@ target_sources(SudokuTests
   PRIVATE
     Board.cpp
     Board_Iterators.cpp
+    Board_Section.cpp
     Board_Section_iterator.cpp
     Board_Section_traits.cpp
     exceptions.cpp
