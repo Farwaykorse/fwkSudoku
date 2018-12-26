@@ -92,6 +92,8 @@ for:
     MSBuild
     -nologo
     -verbosity:minimal
+    -p:Configuration="%CONFIGURATION%"
+    -p:Platform="%PLATFORM%"
     -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   test_script:
   - ps: |
