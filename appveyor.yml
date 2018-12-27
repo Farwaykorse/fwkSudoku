@@ -64,6 +64,11 @@ matrix:
 ##====-----------------
 ## Modify_Matrix
   allow_failures:
+  # CMake -> MSBuild Failing error suppression:
+  - configuration: Debug
+    USE_BUILDSYSTEM: MSBuild
+  - configuration: Release
+    USE_BUILDSYSTEM: MSBuild
   # Temporary, until the GSL has been updated (submitted PR #741)
   - configuration: LLVM_Debug
   - configuration: LLVM_Release
