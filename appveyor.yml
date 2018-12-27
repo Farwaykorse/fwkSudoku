@@ -69,9 +69,6 @@ matrix:
     USE_BUILDSYSTEM: MSBuild
   - configuration: Release
     USE_BUILDSYSTEM: MSBuild
-  # Temporary, until the GSL has been updated (submitted PR #741)
-  - configuration: LLVM_Debug
-  - configuration: LLVM_Release
 # Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
 for:
