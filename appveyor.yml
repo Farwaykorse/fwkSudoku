@@ -25,7 +25,9 @@ cache:
 #                       Ninja - requires CMake generator
 ##====-----------------
 ## Create_Matrix
-image: Visual Studio 2017
+image:
+- Visual Studio 2017
+- Visual Studio 2019 Preview
 
 platform:
 - x86
@@ -46,6 +48,7 @@ environment:
     APPVEYOR_SAVE_CACHE_ON_ERROR: true
     VCVAR2015: 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat'
     VCVAR2017: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
+    VCVAR2019: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\VC\Auxiliary\Build\vcvarsall.bat'
     # vcpkg
     TOOLCHAIN_FILE: 'C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake'
 ## /Create_Matrix
@@ -64,6 +67,16 @@ matrix:
     USE_MSBUILD_SOLUTION: true
   # Disabled to reduce AppVeyor test-load
   - USE_BUILDSYSTEM: MSBuild
+  # Reduce preview build to: Ninja - x64 - Release & LLVM_Release
+  - image: Visual Studio 2019 Preview
+    platform: x86
+  - image: Visual Studio 2019 Preview
+    configuration: Debug
+  - image: Visual Studio 2019 Preview
+    configuration: LLVM_Debug
+  - image: Visual Studio 2019 Preview
+    USE_MSBUILD_SOLUTION: true
+    configuration: LLVM_Release
 ## /Remove_from_Matrix
 ##====-----------------
 ## Modify_Matrix
@@ -73,6 +86,8 @@ matrix:
     USE_BUILDSYSTEM: MSBuild
   - configuration: Release
     USE_BUILDSYSTEM: MSBuild
+  # Try Preview:
+  - image: Visual Studio 2019 Preview
 # Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
 for:
@@ -196,16 +211,20 @@ before_build:
       $Architecture = $env:PLATFORM
       if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2015") {
         $env:VCVARSALL = "`"$env:VCVAR2015`" $Architecture"
-      } else {
+      } elseif ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2017"){
         $env:VCVARSALL = "`"$env:VCVAR2017`" $Architecture"
+      } else {
+        $env:VCVARSALL = "`"$env:VCVAR2019`" $Architecture"
       }
       $CMakeGenFlags = "-G Ninja"
     } else {
       $GeneratorFlags = '/m /v:minimal'
       if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2015") {
         $Generator = 'Visual Studio 14 2015'
-      } else {
+      } elseif ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2017"){
         $Generator = 'Visual Studio 15 2017'
+      } else {
+        $Generator = 'Visual Studio 16 2019'
       }
       if ("$env:PLATFORM" -eq "x86") { $Architecture = "Win32"}
       else { $Architecture = "x64" }
