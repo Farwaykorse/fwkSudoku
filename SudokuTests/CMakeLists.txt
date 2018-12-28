@@ -71,6 +71,7 @@ if(MSVC) # MSVC or simulating MSVC
       /sdl
     >
   )
+  # Ninja-build only,
   # Remove conflicting flags set by CMake (MSVC warning D9025)
   string(REGEX REPLACE "(/GR|/W[0-4]) ?" ""
     CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}"
