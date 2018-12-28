@@ -60,6 +60,8 @@ matrix:
   - image: Visual Studio 2015
     configuration: LLVM_Release
     USE_BUILDSYSTEM: MSBuild
+  - image: Visual Studio 2015
+    USE_MSBUILD_SOLUTION: true
   # Disabled to reduce AppVeyor test-load
   - USE_BUILDSYSTEM: MSBuild
 ## /Remove_from_Matrix
