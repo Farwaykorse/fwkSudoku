@@ -194,7 +194,7 @@ before_build:
     if ("$env:USE_BUILDSYSTEM" -eq "Ninja") {
       $GeneratorFlags = '-k 10'
       $Architecture = $env:PLATFORM
-      if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -eq "Visual Studio 2015") {
+      if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2015") {
         $env:VCVARSALL = "`"$env:VCVAR2015`" $Architecture"
       } else {
         $env:VCVARSALL = "`"$env:VCVAR2017`" $Architecture"
@@ -202,7 +202,7 @@ before_build:
       $CMakeGenFlags = "-G Ninja"
     } else {
       $GeneratorFlags = '/m /v:minimal'
-      if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -eq "Visual Studio 2015") {
+      if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2015") {
         $Generator = 'Visual Studio 14 2015'
       } else {
         $Generator = 'Visual Studio 15 2017'
