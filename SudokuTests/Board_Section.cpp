@@ -56,7 +56,7 @@ namespace properties_Section
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif // __ICL
 } // namespace properties_Section
@@ -100,7 +100,7 @@ namespace type_properties
 	static_assert(not std::is_trivial_v<typeT>);
 	// static_assert(not std::is_trivially_copyable_v<typeT>); //! Clang Debug
 	static_assert(not std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif // __ICL
 	static_assert(not std::is_empty_v<typeT>);
@@ -141,7 +141,7 @@ namespace constructors
 	static_assert(std::is_nothrow_constructible_v<constT, Board const&, int>);
 	static_assert(not std::is_constructible_v<typeT, Board const&, int>);
 	// (copy) construction of Board
-#if defined(__ICL) // Intel C++ 19.0
+#if defined(__ICL) && __ICL <= 1900
 	static_assert(std::is_constructible_v<typeT, Board, int>);
 #else
 	static_assert(not std::is_constructible_v<typeT, Board, int>);
@@ -421,7 +421,7 @@ namespace destructors
 
 namespace swapping
 {
-#if not(defined(__ICL))                                    // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_v<typeT>);         // C++17
 	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
 
