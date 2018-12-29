@@ -65,8 +65,6 @@ matrix:
     USE_BUILDSYSTEM: MSBuild
   - image: Visual Studio 2015
     USE_MSBUILD_SOLUTION: true
-  # Disabled to reduce AppVeyor test-load
-  - USE_BUILDSYSTEM: MSBuild
   # Reduce preview build to: Ninja - x64 - Release & LLVM_Release
   - image: Visual Studio 2019 Preview
     platform: x86
@@ -91,6 +89,13 @@ matrix:
 # Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
 for:
+- # Only build for [master] to reduce AppVeyor test-load
+  matrix:
+    only:
+    - USE_BUILDSYSTEM: MSBuild
+  branches:
+    only:
+    - master
 -
   matrix:
     only:
