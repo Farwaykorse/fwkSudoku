@@ -6,6 +6,13 @@ shallow_clone: true
 cache:
 - C:\Tools\vcpkg\installed
 
+skip_commits:
+  files:
+  - LICENSE
+  - docs/
+  - '**/*.md'
+  - '**/*.filters'
+
 ##====--------------------------------------------------------------------====##
 ## Build Matrix Configuration
 # Dimensions: 4 (image; platform; configuration; environment:matrix)
@@ -89,10 +96,11 @@ matrix:
 # Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
 for:
-- # Only build for [master] to reduce AppVeyor test-load
+-
   matrix:
     only:
     - USE_BUILDSYSTEM: MSBuild
+  # Only build for [master] to reduce AppVeyor test-load
   branches:
     only:
     - master
@@ -111,6 +119,11 @@ for:
   matrix:
     only:
     - USE_MSBUILD_SOLUTION: true
+  skip_commits:
+    files:
+    - cmake/
+    - '**/*.cmake'
+    - '**/CMakeLists.txt'
   before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
   build_script:
