@@ -108,6 +108,11 @@ for:
   matrix:
     only:
     - USE_BUILDSYSTEM: Ninja
+  skip_commits:
+    files:
+    - '**/*.sln'
+    - '**/*.vcxproj'
+    - '**/*.vcxitems'
   environment:
     NINJA_TAG:    v1.8.2
     NINJA_SHA512: 9B9CE248240665FCD6404B989F3B3C27ED9682838225E6DC9B67B551774F251E4FF8A207504F941E7C811E7A8BE1945E7BCB94472A335EF15E23A0200A32E6D5
