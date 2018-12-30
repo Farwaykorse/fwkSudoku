@@ -4,10 +4,20 @@
 <!-- Description -->
 This document tries to document the used compiler and project configuration
 settings.
-To give an overview and keep track of any exceptions.
-While supplying motivation and discussion.
-No historic data is kept, since it is part of the git log.
-Unless a setting is considered a temporary fix.
+Supplying the motivation and discussion and to keep track of any exceptions.
+No historic data is kept (since it is part of the git log), unless a setting is
+considered a temporary fix.
+
+This document mostly reflects the MSBuild project configurations.
+Which supports only the most recent versions of the used toolchains at the time
+of commit.
+
+The CMakeLists are kept, as much as possible, in sync with the addition of
+support for the toolchains used on the CI environments.
+See:
+[AppVeyor](https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master)
+_(master branch)_ for the Windows builds and
+[TravisCI](https://travis-ci.com/Farwaykorse/fwkSudoku/branches) for Linux.
 
 Project specific settings are documented in their individual README files.
 Any other deviations should be considered configuration errors.

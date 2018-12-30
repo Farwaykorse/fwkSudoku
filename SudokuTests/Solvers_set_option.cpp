@@ -57,13 +57,13 @@ TEST(Solver, set_Value)
 	EXPECT_NO_THROW(set_Value(board, L{1}, Value{4}));
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
-		set_Value(board, Location<2>{-1}, Value{1}), ".*: is_valid.loc.");
+		set_Value(board, Location<2>{-1}, Value{1}), "is_valid\\(loc\\)");
 	EXPECT_DEBUG_DEATH(
-		set_Value(board, Location<2>{16}, Value{1}), ".*: is_valid.loc.");
+		set_Value(board, Location<2>{16}, Value{1}), "is_valid\\(loc\\)");
 	EXPECT_DEBUG_DEATH(
-		set_Value(board, Location<2>{1}, Value{0}), ".*: is_valid<N>.value.");
+		set_Value(board, Location<2>{1}, Value{0}), "is_valid<N>\\(value\\)");
 	EXPECT_DEBUG_DEATH(
-		set_Value(board, Location<2>{1}, Value{5}), ".*: is_valid<N>.value.");
+		set_Value(board, Location<2>{1}, Value{5}), "is_valid<N>\\(value\\)");
 #else
 	// thrown by Board::at(Location)
 	EXPECT_THROW(
@@ -232,7 +232,7 @@ TEST(Solver, set_section_locals)
 	EXPECT_DEBUG_DEATH(
 		set_section_locals(B, B.row(2), 4, worker), "rep_count <= N");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.row(2), 3, worker), ".*rep_count <= N");
+		set_section_locals(B, B.row(2), 3, worker), "rep_count <= N");
 #ifdef NDEBUG
 	EXPECT_EQ(set_section_locals(B, B.row(2), 0, worker), 0);
 	EXPECT_EQ(set_section_locals(B, B.row(2), 1, worker), 1);
@@ -249,23 +249,23 @@ TEST(Solver, set_section_locals)
 	worker  = Value{2};
 	ASSERT_TRUE(worker[Value{2}]);
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.row(0), 2, worker), "Assertion failed: .*");
+		set_section_locals(B, B.row(0), 2, worker), "Assertion .*");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.col(0), 2, worker), "Assertion failed: .*");
+		set_section_locals(B, B.col(0), 2, worker), "Assertion .*");
 	B[1][0] = set{"11011"};
 	B[1][1] = set{"11011"};
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.block(0), 2, worker), "Assertion failed: .*");
+		set_section_locals(B, B.block(0), 2, worker), "Assertion .*");
 	// worker empty
 	worker = set{"00000"};
 	ASSERT_TRUE(worker.is_empty());
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.row(0), 2, worker), "count_all.. > 0");
+		set_section_locals(B, B.row(0), 2, worker), "count_all\\(\\) > 0");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.col(0), 2, worker), "count_all.. > 0");
+		set_section_locals(B, B.col(0), 2, worker), "count_all\\(\\) > 0");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.block(0), 2, worker), "count_all.. > 0");
+		set_section_locals(B, B.block(0), 2, worker), "count_all\\(\\) > 0");
 #else
 	EXPECT_EQ(set_section_locals(B, B.row(0), 2, worker), 0);
 	EXPECT_EQ(set_section_locals(B, B.col(0), 2, worker), 0);
@@ -274,11 +274,11 @@ TEST(Solver, set_section_locals)
 	// worker empty (with answer-bit)
 	worker = set{"00001"};
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.row(0), 2, worker), "count_all.. > 0");
+		set_section_locals(B, B.row(0), 2, worker), "count_all\\(\\) > 0");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.col(0), 2, worker), "count_all.. > 0");
+		set_section_locals(B, B.col(0), 2, worker), "count_all\\(\\) > 0");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.block(0), 2, worker), "count_all.. > 0");
+		set_section_locals(B, B.block(0), 2, worker), "count_all\\(\\) > 0");
 	// worker all set
 	worker = set{"11111"};
 	EXPECT_DEBUG_DEATH(
@@ -312,9 +312,9 @@ TEST(Solver, set_section_locals)
 	worker  = Value{2};
 	ASSERT_TRUE(worker[Value{2}]);
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.block(0), 2, worker), "Assertion failed: .*");
+		set_section_locals(B, B.block(0), 2, worker), "Assertion .*");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.row(0), 2, worker), "Assertion failed: .*");
+		set_section_locals(B, B.row(0), 2, worker), "Assertion .*");
 
 
 	//====----------------------------------------------------------------====//
@@ -526,7 +526,7 @@ TEST(Solver, set_unique)
 	// Death tests
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
-		set_unique(board, board.row(2), Value{12}), ".*is_valid<N>.value");
+		set_unique(board, board.row(2), Value{12}), "is_valid<N>\\(value\\)");
 #else
 	EXPECT_THROW(set_unique(board, board.row(2), Value{12}), std::out_of_range);
 #endif // NDEBUG
@@ -540,10 +540,10 @@ TEST(Solver, set_unique)
 		::Sudoku::error::invalid_Board);
 	board = cB1; // reset
 	// Section is not a part of board
-	EXPECT_DEBUG_DEATH(set_unique(board, cB1.row(0), Value{1}), ".*board");
+	EXPECT_DEBUG_DEATH(set_unique(board, cB1.row(0), Value{1}), "board");
 	// Value is not unique
 	EXPECT_DEBUG_DEATH(
-		set_unique(board, board.row(2), Value{4}), ".*std::find_if");
+		set_unique(board, board.row(2), Value{4}), "std::find_if");
 }
 
 TEST(Solver, set_uniques)
@@ -641,9 +641,9 @@ TEST(Solver, deathtest_set_option)
 		constexpr std::array<char, 18> v2{};
 		// input too short / too long
 		EXPECT_DEBUG_DEATH(
-			set_Value(B, v1.cbegin(), v1.cend()), "Assertion failed:");
+			set_Value(B, v1.cbegin(), v1.cend()), "Assertion .*");
 		EXPECT_DEBUG_DEATH(
-			set_Value(B, v2.cbegin(), v2.cend()), "Assertion failed:");
+			set_Value(B, v2.cbegin(), v2.cend()), "Assertion .*");
 	}
 	// set_uniques
 	//{

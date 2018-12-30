@@ -49,14 +49,15 @@ TEST(Error, invalid_Board)
 		static_assert(not std::is_trivial_v<typeT>);            // ++
 		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 		static_assert(not std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) && not(defined(__clang__) && __clang_major__ < 6)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__clang__) && __clang_major__ < 6)
 		static_assert(not std::has_unique_object_representations_v<typeT>);
 #endif
 		static_assert(not std::is_empty_v<typeT>);
 		static_assert(std::is_polymorphic_v<typeT>);  // --
 		static_assert(not std::is_abstract_v<typeT>); // ++
 		static_assert(not std::is_final_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(not std::is_aggregate_v<typeT>);
 #endif // __ICL
 
@@ -87,7 +88,7 @@ TEST(Error, invalid_Board)
 		static_assert(std::is_nothrow_destructible_v<typeT>);          // ++
 		static_assert(not std::is_trivially_destructible_v<typeT>);    // ++
 		static_assert(std::has_virtual_destructor_v<typeT>);           // --
-#if not(defined(__ICL))
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(std::is_swappable_v<typeT>);         // ++ C++17
 		static_assert(std::is_nothrow_swappable_v<typeT>); // ++ C++17
 #endif
@@ -131,14 +132,15 @@ TEST(Error, invalid_Location)
 		static_assert(not std::is_trivial_v<typeT>);            // ++
 		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 		static_assert(not std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) && not(defined(__clang__) && __clang_major__ < 6)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__clang__) && __clang_major__ < 6)
 		static_assert(not std::has_unique_object_representations_v<typeT>);
 #endif
 		static_assert(not std::is_empty_v<typeT>);
 		static_assert(std::is_polymorphic_v<typeT>);  // --
 		static_assert(not std::is_abstract_v<typeT>); // ++
 		static_assert(not std::is_final_v<typeT>);
-#if not(defined(__ICL))
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(not std::is_aggregate_v<typeT>);
 #endif
 
@@ -170,7 +172,7 @@ TEST(Error, invalid_Location)
 		static_assert(std::is_nothrow_destructible_v<typeT>);          // ++
 		static_assert(not std::is_trivially_destructible_v<typeT>);    // ++
 		static_assert(std::has_virtual_destructor_v<typeT>);           // --
-#if not(defined(__ICL))
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(std::is_swappable_v<typeT>);         // ++ C++17
 		static_assert(std::is_nothrow_swappable_v<typeT>); // ++ C++17
 #endif

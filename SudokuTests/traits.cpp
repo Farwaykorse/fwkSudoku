@@ -68,7 +68,7 @@ static_assert(is_int_v<std::uint32_t>);
 // cstddef
 static_assert(is_int_v<std::size_t>);
 static_assert(is_int_v<std::ptrdiff_t>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 static_assert(not is_int_v<std::byte>);
 #endif // __ICL
 

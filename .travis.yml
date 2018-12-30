@@ -5,6 +5,10 @@ git:
   depth: 20
   quiet: true
 
+branches:
+  except:
+  - /^[Aa]pp[Vv]eyor.*/
+
 env:
   global:
   # Ninja-build
@@ -249,6 +253,7 @@ before_script:
 script:
 - cmake ${CMakeGenFlags:?} ..
 - cmake --build . ${CMakeBuildFlags:?}
+- ctest -j $(nproc) --output-on-failure
 
 ##====--------------------------------------------------------------------====##
 before_cache:
