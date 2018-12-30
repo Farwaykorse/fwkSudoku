@@ -102,6 +102,14 @@ matrix:
 # Note: overwrites existing, only new variables and notifications are merged.
 for:
 -
+  branches:
+    only:
+    - master
+  notifications:
+  - provider: Email
+    to: '{{committerEmail}}'
+    on_build_success: false
+-
   matrix:
     only:
     - USE_BUILDSYSTEM: MSBuild
