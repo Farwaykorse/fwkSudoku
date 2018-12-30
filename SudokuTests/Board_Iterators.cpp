@@ -703,8 +703,8 @@ TEST(Board_Iterator, Location)
 	using L = Location<2>;
 
 	test_elements TE{};
-	auto& A        = TE.A;
-	auto const& cA = TE.cA;
+	auto& A                        = TE.A;
+	auto const& cA                 = TE.cA;
 	constexpr Board<int, 2> cBoard = std::array<int, 16>{
 		5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
@@ -730,9 +730,13 @@ TEST(Board_Iterator, Location)
 	static_assert(cBoard.end().location() == Location<2>{16});
 	static_assert(cBoard.cbegin().location() == Location<2>{0});
 	static_assert(cBoard.cend().location() == Location<2>{16});
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(cBoard.rbegin().location() == Location<2>{15});
+#endif // __ICL
 	static_assert(cBoard.rend().location() == Location<2>{-1});
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(cBoard.crbegin().location() == Location<2>{15});
+#endif // __ICL
 	static_assert(cBoard.crend().location() == Location<2>{-1});
 	// Conversion to Location
 	static_assert(Location<2>{Board_iterator<int, 2>()} == Location<2>{0});
@@ -766,8 +770,10 @@ TEST(Board_Iterator, Location)
 		static_assert((Board_iterator<int, 2>() = L{13}).location() == L{13});
 		static_assert((cBoard.begin() = L{13}).location() == L{13});
 		static_assert((cBoard.cbegin() = L{11}).location() == L{11});
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert((cBoard.rbegin() = L{1}).location() == L{1});
 		static_assert((cBoard.crbegin() = L{13}).location() == L{13});
+#endif // __ICL
 	}
 }
 
@@ -838,9 +844,11 @@ TEST(Board_Iterator, dereference)
 		EXPECT_EQ(*itr, 9);
 		static_assert(*cBoard.begin() == 5);
 		static_assert(*cBoard.cbegin() == 5);
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(*cBoard.rbegin() == 20);
 		static_assert(*cBoard.crbegin() == 20);
-		// Input iterator: No guarantee it can be dereferenced more than once
+#endif // __ICL
+	   // Input iterator: No guarantee it can be dereferenced more than once
 		if constexpr (is_forward<decltype(itr)>)
 		{
 			EXPECT_EQ(*itr, 9);
@@ -969,11 +977,13 @@ TEST(Board_Iterator, pre_increment)
 		EXPECT_TRUE(++A.rbegin() == ++A.rbegin());
 		EXPECT_FALSE(++A.rbegin() == ++(++A.rbegin()));
 		EXPECT_EQ(*(++A.rbegin()), 14);
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(cBoard.rbegin() != ++cBoard.rbegin());
 		static_assert(++cBoard.rbegin() == ++cBoard.rbegin());
 		static_assert(++cBoard.rbegin() != ++(++cBoard.rbegin()));
 		static_assert(*(++cBoard.rbegin()) == 19);
 		static_assert(*(++(++cBoard.rbegin())) == 18);
+#endif // __ICL
 	}
 	else
 		ADD_FAILURE();
@@ -992,8 +1002,8 @@ TEST(Board_Iterator, post_increment)
 	test_elements TE{};
 	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
-	constexpr Board<int, 2> cBoard = std::array<int, 16>{
-		5, 6, 1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+	constexpr Board<int, 2> cBoard  = std::array<int, 16>{
+        5, 6, 1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
 	if constexpr (
 		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
@@ -1047,12 +1057,16 @@ TEST(Board_Iterator, post_increment)
 		EXPECT_EQ(*A.crbegin()++, 15);
 		static_assert(cBoard.begin()++ == cBoard.begin());
 		static_assert(cBoard.cbegin()++ == cBoard.cbegin());
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(cBoard.rbegin()++ == cBoard.rbegin());
 		static_assert(cBoard.crbegin()++ == cBoard.crbegin());
+#endif // __ICL
 		static_assert(*cBoard.begin()++ == 5);
 		static_assert(*cBoard.cbegin()++ == 5);
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(*cBoard.rbegin()++ == 20);
 		static_assert(*cBoard.crbegin()++ == 20);
+#endif // __ICL
 		static_assert(*((cBoard.begin()++)++)++ == 5);
 	}
 	else
@@ -1116,15 +1130,21 @@ TEST(Board_Iterator, equal)
 	EXPECT_TRUE(cx == A.cbegin());
 	static_assert(cB.begin() == cB.begin());
 	static_assert(cB.cbegin() == cB.cbegin());
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(cB.rbegin() == cB.rbegin());
 	static_assert(cB.crbegin() == cB.crbegin());
+#endif // __ICL
 	static_assert(cB.begin() == cB.cbegin());
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(cB.rbegin() == cB.crbegin());
+#endif // __ICL
 	static_assert(cB.end() == cB.end());
 	static_assert(cB.cend() == cB.cend());
 	static_assert(cB.rend() == cB.rend());
 	static_assert(cB.crend() == cB.crend());
-#if not(defined(__clang__) || defined(__GNUC__))
+#if not(                                                                       \
+	defined(__clang__) || defined(__GNUC__) ||                                 \
+	(defined(__ICL) && __ICL <= 1900))
 	constexpr auto x2 = cB.begin();
 	static_assert(x2 == cB.cbegin());
 #endif // not __clang__
@@ -1363,8 +1383,10 @@ TEST(Board_Iterator, ForwardIterator)
 		EXPECT_EQ(*++r, *++(++i));
 		static_assert(*cB.begin()++ == cB[0][0]);
 		static_assert(*cB.cbegin()++ == cB[0][0]);
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(*cB.rbegin()++ == cB[3][3]);
 		static_assert(*cB.crbegin()++ == cB[3][3]);
+#endif // __ICL
 		static_assert(cB.begin() == cB.begin());
 		static_assert(++cB.begin() == ++cB.begin());
 		{ // Algorithm requiring forward_iterator
@@ -1390,8 +1412,8 @@ TEST(Board_Iterator, pre_decrement)
 	test_elements TE{};
 	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
-	constexpr Board<int, 2> cB = std::array<int, 16>{
-		5, 6, 1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+	constexpr Board<int, 2> cB      = std::array<int, 16>{
+        5, 6, 1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
 	if constexpr (
 		is_bidir<decltype(A.begin())> && is_bidir<decltype(A.cbegin())> &&
@@ -1493,8 +1515,8 @@ TEST(Board_Iterator, post_decrement)
 	test_elements TE{};
 	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
-	constexpr Board<int, 2> cB = std::array<int, 16>{
-		5, 6, 1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+	constexpr Board<int, 2> cB      = std::array<int, 16>{
+        5, 6, 1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
 	if constexpr (
 		is_bidir<decltype(A.begin())> && is_bidir<decltype(A.cbegin())> &&
@@ -1656,8 +1678,10 @@ TEST(Board_Iterator, increment_by_integer)
 	test_elements TE{};
 	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
-	constexpr Board<int, 2> cB = std::array<int, 16>{
-		5, 6, 1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+#if not(defined(__ICL) && __ICL <= 1900)
+	constexpr Board<int, 2> cB      = std::array<int, 16>{
+        5, 6, 1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+#endif // __ICL
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
@@ -1700,12 +1724,14 @@ TEST(Board_Iterator, increment_by_integer)
 		EXPECT_TRUE((A.begin() += 16) == A.end());
 		EXPECT_DEBUG_DEATH(A.begin() += 17, "<= full_size");
 		EXPECT_DEBUG_DEATH(A.begin() += 50, "<= full_size");
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert((cB.begin() += -0) == cB.begin());
 		static_assert(*(cB.begin() += -0) == 5);
 		static_assert((cB.begin() += 0) == cB.begin());
 		static_assert(*(cB.begin() += 0) == 5);
 		static_assert((cB.begin() += 1) == ++cB.begin());
 		static_assert((cB.begin() += 16) == cB.end());
+#endif // __ICL
 
 		EXPECT_DEBUG_DEATH(A.end() += 1, "<= full_size");
 		EXPECT_TRUE((A.end() += 0) == A.end());
@@ -1717,11 +1743,13 @@ TEST(Board_Iterator, increment_by_integer)
 		EXPECT_DEBUG_DEATH(A.end() += -17, ">= 0");
 		EXPECT_DEBUG_DEATH(A.end() += -50, ">= 0");
 		EXPECT_EQ(*(A.begin() += 15), 15);
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert((cB.end() += -0) == cB.end());
 		static_assert((cB.end() += 0) == cB.end());
 		static_assert(*(cB.end() += -1) == 20);
 		static_assert((cB.end() += -1) == --cB.end());
 		static_assert((cB.end() += -16) == cB.begin());
+#endif    // __ICL
 		{ // return reference to iterator
 			auto I = A.begin();
 			EXPECT_TRUE((I += 1) == ++A.begin());
@@ -1998,7 +2026,9 @@ TEST(Board_Iterator, decrement_by_integer)
 { // operator-=(int)
 	test_elements TE{};
 	auto& A = TE.A;
+#if not(defined(__ICL) && __ICL <= 1900)
 	constexpr Board<int, 2> cB{};
+#endif // __ICL
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
@@ -2028,10 +2058,12 @@ TEST(Board_Iterator, decrement_by_integer)
 		EXPECT_TRUE((A.end() -= 1) == --A.end());
 		EXPECT_TRUE((A.end() -= 16) == A.begin());
 		EXPECT_DEBUG_DEATH(A.end() -= 17, ">= 0");
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert((cB.end() -= -0) == cB.end());
 		static_assert((cB.end() -= 0) == cB.end());
 		static_assert((cB.end() -= 1) == --cB.end());
 		static_assert((cB.end() -= 16) == cB.begin());
+#endif // __ICL
 
 		EXPECT_DEBUG_DEATH(A.begin() -= 1, ">= 0");
 		EXPECT_TRUE((A.begin() -= 0) == A.begin());
@@ -2041,10 +2073,12 @@ TEST(Board_Iterator, decrement_by_integer)
 		EXPECT_TRUE((A.begin() -= -16) == A.end());
 		EXPECT_EQ(*(A.end() -= 16), 9);
 		EXPECT_DEBUG_DEATH(A.begin() -= -17, "<= full_size");
+#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert((cB.begin() -= -0) == cB.begin());
 		static_assert((cB.begin() -= 0) == cB.begin());
 		static_assert((cB.begin() -= -1) == ++cB.begin());
 		static_assert((cB.begin() -= -16) == cB.end());
+#endif    // __ICL
 		{ // return reference to iterator
 			auto I = A.end();
 			EXPECT_TRUE((I -= 1) == --A.end());

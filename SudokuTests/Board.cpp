@@ -402,7 +402,7 @@ TEST(Board, access_checked)
 
 	// at(Location)
 	Board<int, 2> B1{};
-#if defined(__clang__)
+#if defined(__clang__) || defined(__ICL) && __ICL <= 1900
 	static_assert(not noexcept(B1.at(Location<2>(0)) = 2));
 	static_assert(not noexcept(B1.at(Location<2>(0)) == 2));
 #else
@@ -435,11 +435,14 @@ TEST(Board, access_checked)
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	constexpr Board<int, 2> cexprB = std::array<int, 16>{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-#if defined(__clang__)
+#if defined(__clang__) || defined(__ICL) && __ICL <= 1900
 	static_assert(not noexcept(cB.at(Location<2>(0)) == 1));
-	static_assert(not noexcept(cexprB.at(Location<2>(0)) == 1));
 #else
 	static_assert(noexcept(cB.at(Location<2>(0)) == 1));
+#endif // __clang__ || __ICL
+#if defined(__clang__)
+	static_assert(not noexcept(cexprB.at(Location<2>(0)) == 1));
+#else
 	static_assert(noexcept(cexprB.at(Location<2>(0)) == 1));
 #endif // __clang__
 	static_assert(not noexcept(cB.at(Location<2>(20)) == 1));
@@ -454,7 +457,7 @@ TEST(Board, access_checked)
 
 	// at(row, col)
 	// at(row, col)
-#if defined(__clang__)
+#if defined(__clang__) || defined(__ICL) && __ICL <= 1900
 	static_assert(not noexcept(B1.at(0, 1) == 1));
 #else
 	static_assert(noexcept(B1.at(0, 1) == 1));
@@ -478,7 +481,7 @@ TEST(Board, access_checked)
 	EXPECT_THROW(B1.at(1, -2), invalid_Location);
 	// at(Location) const
 	EXPECT_NO_THROW(cB.at(2, 1));
-#if defined(__clang__)
+#if defined(__clang__) || defined(__ICL) && __ICL <= 1900
 	static_assert(not noexcept(cB.at(0, 1) == 1));
 #else
 	static_assert(noexcept(cB.at(0, 1) == 1));
