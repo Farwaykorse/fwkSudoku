@@ -172,8 +172,8 @@ template<typename T, int N>
 Board<T, N>::Board(std::initializer_list<T> list)
 {
 	valid_dimensions<N>();
-	assert(list.size() == size_t{full_size<N>});
-	// TODO exception on invalid length
+	if (list.size() != size_t{full_size<N>})
+		throw std::length_error{"Invalid length initializer_list"};
 	std::copy(std::begin(list), std::end(list), std::begin(board_));
 }
 

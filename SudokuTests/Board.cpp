@@ -257,14 +257,8 @@ TEST(Board, Construction)
 		const std::initializer_list<int> short_list{0, 1, 2, 3};
 		const std::initializer_list<int> long_list{
 			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-		EXPECT_DEBUG_DEATH({ (Board<int, 2>{short_list}); }, "");
-		EXPECT_DEBUG_DEATH({ (Board<int, 2>{long_list}); }, "");
-#ifdef NDEBUG
-		// exceptions not implemented yet
-		// TODO implement exceptions
-		EXPECT_NO_THROW((Board<int, 2>{short_list}));
-		EXPECT_NO_THROW((Board<int, 2>{long_list}));
-#endif // NDEBUG
+		EXPECT_THROW((Board<int, 2>{short_list}), std::length_error);
+		EXPECT_THROW((Board<int, 2>{long_list}), std::length_error);
 	}
 }
 
@@ -576,5 +570,4 @@ TEST(Board, InBetween)
 	static_assert(cboard[2][0] == 8);
 	static_assert(cboard[3][3] == 15);
 }
-
 } // namespace SudokuTests::BoardTest
