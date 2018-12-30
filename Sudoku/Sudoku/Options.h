@@ -67,7 +67,7 @@ public:
 	}
 	[[nodiscard]] friend bool
 		operator<(const Options<E>& left, const Options<E>& right)
-#if defined(__ICL) // Intel C++ 19.0
+#if defined(__ICL) && __ICL <= 1900
 			noexcept(false)
 #else
 			noexcept(sizeof(Options<E>) <= sizeof(std::uint64_t))

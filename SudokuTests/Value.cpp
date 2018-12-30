@@ -43,14 +43,15 @@ namespace compiletime
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) && not(defined(__clang__) && __clang_major__ < 6)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__clang__) && __clang_major__ < 6)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif // __ICL
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif // __ICL
 
@@ -83,7 +84,7 @@ namespace compiletime
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-#if not(defined(__ICL))
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
 #endif
@@ -118,7 +119,7 @@ namespace compiletime
 	static_assert(not std::is_assignable_v<typeT, bool>);
 	static_assert(not std::is_assignable_v<bool, typeT>);
 
-#if not(defined(__ICL))
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17

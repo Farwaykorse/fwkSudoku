@@ -5,6 +5,10 @@ git:
   depth: 20
   quiet: true
 
+branches:
+  except:
+  - /^[Aa]pp[Vv]eyor.*/
+
 env:
   global:
   # Ninja-build
