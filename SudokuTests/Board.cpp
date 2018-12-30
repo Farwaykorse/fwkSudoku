@@ -223,7 +223,7 @@ TEST(Board, Construction)
 	}
 	{
 		SCOPED_TRACE("Move Assign : Board& operator=(Board&&)");
-		Board<int, 2> Opt{};
+		[[maybe_unused]] Board<int, 2> Opt{};
 		EXPECT_NO_THROW(Opt = (Board<int, 2>()));
 	}
 	{
