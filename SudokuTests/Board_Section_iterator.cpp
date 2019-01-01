@@ -1047,7 +1047,6 @@ TEST(Section_Itr, pre_decrement)
 		static_assert(std::is_same_v<int&, decltype(*(--A.end()))>);
 		static_assert(
 			std::is_same_v<decltype(A.cend())&, decltype(--A.cend())>);
-		static_assert(std::is_same_v<int&, decltype(*(--A.end()))>);
 		static_assert(std::is_same_v<int const&, decltype(*(--A.cend()))>);
 
 		// Sanity-check

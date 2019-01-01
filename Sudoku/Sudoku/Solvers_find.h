@@ -120,7 +120,7 @@ auto list_where_option(
 	// slightly faster, it saves one run of find_if on each execution,
 	// but rep_count can be too small
 	auto itr = begin;
-	for (int i{0}; i < rep_count; ++i)
+	for (gsl::index i{0}; i < rep_count; ++i)
 	{
 		itr = std::find_if(itr, end, check_option);
 		if (itr == end)

@@ -18,8 +18,8 @@
 #include "exceptions.h"
 
 #include <gsl/gsl>
+#include <array>
 #include <initializer_list>
-#include <vector>
 #include <cassert>
 
 // Forward declarations
@@ -56,8 +56,9 @@ public:
 	using reverse_iterator       = reverse_Board_iterator<T, N>;
 	using const_reverse_iterator = const_reverse_Board_iterator<T, N>;
 
-	Board() noexcept;
-	explicit Board(const T& default_value);
+	constexpr Board() noexcept;
+	explicit constexpr Board(const T& default_value);
+	constexpr Board(std::array<T, Size> const& list) : board_(list) {}
 	Board(std::initializer_list<T>); // construct from initializer_list
 
 	void clear();
@@ -69,26 +70,34 @@ public:
 	[[nodiscard]] bool operator==(const Board&) const;
 
 	// Element access
-	[[nodiscard]] T& front() noexcept { return board_[0]; }
-	[[nodiscard]] const T& front() const noexcept { return board_[0]; }
-	[[nodiscard]] T& back() noexcept { return board_[size() - 1]; }
-	[[nodiscard]] const T& back() const noexcept { return board_[size() - 1]; }
+	[[nodiscard]] constexpr T& front() noexcept { return board_.front(); }
+	[[nodiscard]] constexpr T const& front() const noexcept
+	{
+		return board_.front();
+	}
+	[[nodiscard]] constexpr T& back() noexcept { return board_.back(); }
+	[[nodiscard]] constexpr T const& back() const noexcept
+	{
+		return board_.back();
+	}
 	// Checked
-	T& at(Location);
-	const T& at(Location) const;
-	T& at(index row, index col);
-	const T& at(index row, index col) const;
+	constexpr T& at(Location);
+	constexpr T const& at(Location) const;
+	constexpr T& at(index row, index col);
+	constexpr T const& at(index row, index col) const;
 	[[deprecated]] T& at(index elem);
 	[[deprecated]] const T& at(index elem) const;
 	// Unchecked
-	T& operator[](Location) noexcept;
-	const T& operator[](Location) const noexcept;
+	constexpr T& operator[](Location) noexcept;
+	constexpr T const& operator[](Location) const noexcept;
 
 	// Element Selection Operator (using a proxy object)
 	//   usable as [row][col] where col is processed by the (const_)Row
 	Row operator[](index row_id) noexcept { return row(row_id); }
-	const_Row operator[](index row_id) const noexcept { return row(row_id); }
-
+	constexpr const_Row operator[](index row_id) const noexcept
+	{
+		return row(row_id);
+	}
 
 	// Iterators
 	constexpr iterator begin() noexcept;
@@ -109,25 +118,28 @@ public:
 
 	// Sections
 	// clang-format off
-	Row         row(index id) noexcept       { return Row(*this, id); }
-	const_Row   row(index id) const noexcept { return const_Row(*this, id); }
-	Row         row(Location loc) noexcept   { return Row(*this, loc); }
-	const_Row   row(Location loc) const noexcept
-											 { return const_Row(*this, loc); }
-	Col         col(index id) noexcept       { return Col(*this, id); }
-	const_Col   col(index id) const noexcept { return const_Col(*this, id); }
-	Col         col(Location loc) noexcept   { return Col(*this, loc); }
-	const_Col   col(Location loc) const noexcept
-											 { return const_Col(*this, loc); }
-	Block       block(index id) noexcept     { return Block(*this, id); }
-	const_Block block(index id) const noexcept{ return const_Block(*this, id); }
-	Block       block(Location loc) noexcept { return Block(*this, loc); }
-	const_Block block(Location loc) const noexcept
-											 { return const_Block(*this, loc); }
+	Row row(index id) noexcept         { return Row(*this, id); }
+	constexpr const_Row   row(index id) const noexcept
+									   { return const_Row(*this, id); }
+	Row row(Location loc) noexcept     { return Row(*this, loc); }
+	constexpr const_Row   row(Location loc) const noexcept
+									   { return const_Row(*this, loc); }
+	Col col(index id) noexcept         { return Col(*this, id); }
+	constexpr const_Col   col(index id) const noexcept
+									   { return const_Col(*this, id); }
+	Col col(Location loc) noexcept     { return Col(*this, loc); }
+	constexpr const_Col   col(Location loc) const noexcept
+									   { return const_Col(*this, loc); }
+	Block block(index id) noexcept     { return Block(*this, id); }
+	constexpr const_Block block(index id) const noexcept
+									   { return const_Block(*this, id); }
+	Block block(Location loc) noexcept { return Block(*this, loc); }
+	constexpr const_Block block(Location loc) const noexcept
+									   { return const_Block(*this, loc); }
 	// clang-format on
 
 private:
-	std::vector<T> board_{};
+	std::array<T, Size> board_{};
 
 }; // class Board
 
@@ -144,29 +156,25 @@ constexpr bool operator!=(Board<T, N> const& left, Board<T, N> const& right)
 //===----------------------------------------------------------------------===//
 // Board - Constructors
 template<typename T, int N>
-Board<T, N>::Board() noexcept : board_(full_size<N>)
+constexpr Board<T, N>::Board() noexcept
 {
 	valid_dimensions<N>();
-	assert(board_.size() == size());
-	assert(board_.capacity() == size());
 }
 
 template<typename T, int N>
-Board<T, N>::Board(const T& default_value) : board_(full_size<N>, default_value)
+constexpr Board<T, N>::Board(const T& default_value)
 {
 	valid_dimensions<N>();
-	assert(board_.size() == size());
-	assert(board_.capacity() == size());
+	board_.fill(default_value);
 }
 
 template<typename T, int N>
-Board<T, N>::Board(std::initializer_list<T> list) : board_(list)
+Board<T, N>::Board(std::initializer_list<T> list)
 {
-	assert(list.size() == size_t{full_size<N>});
-	// TODO exception on invalid length
 	valid_dimensions<N>();
-	assert(board_.size() == size());
-	assert(board_.capacity() == size());
+	if (list.size() != size_t{full_size<N>})
+		throw std::length_error{"Invalid length initializer_list"};
+	std::copy(std::begin(list), std::end(list), std::begin(board_));
 }
 
 //===----------------------------------------------------------------------===//
@@ -182,14 +190,13 @@ bool Board<T, N>::operator==(const Board& other) const
 template<typename T, int N>
 inline void Board<T, N>::clear()
 { // all elements to the empty value
-	board_.clear();
-	board_.resize(size());
+	board_.fill(T{});
 }
 
 //===----------------------------------------------------------------------===//
 // Board - element access
 template<typename T, int N>
-T& Board<T, N>::at(const Location loc)
+constexpr T& Board<T, N>::at(const Location loc)
 {
 	if (!is_valid<N>(loc))
 	{
@@ -199,7 +206,7 @@ T& Board<T, N>::at(const Location loc)
 }
 
 template<typename T, int N>
-const T& Board<T, N>::at(const Location loc) const
+constexpr T const& Board<T, N>::at(const Location loc) const
 {
 	if (!is_valid<N>(loc))
 	{
@@ -209,7 +216,7 @@ const T& Board<T, N>::at(const Location loc) const
 }
 
 template<typename T, int N>
-T& Board<T, N>::at(const index row, const index col)
+constexpr T& Board<T, N>::at(const index row, const index col)
 {
 	if (!is_valid_size<N>(row, col))
 	{
@@ -219,7 +226,7 @@ T& Board<T, N>::at(const index row, const index col)
 }
 
 template<typename T, int N>
-const T& Board<T, N>::at(const index row, const index col) const
+constexpr T const& Board<T, N>::at(const index row, const index col) const
 {
 	if (!is_valid_size<N>(row, col))
 	{
@@ -251,13 +258,13 @@ const T& Board<T, N>::at(const index elem) const
 }
 
 template<typename T, int N>
-T& Board<T, N>::operator[](Location loc) noexcept
+constexpr T& Board<T, N>::operator[](Location loc) noexcept
 {
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
 
 template<typename T, int N>
-const T& Board<T, N>::operator[](Location loc) const noexcept
+constexpr T const& Board<T, N>::operator[](Location loc) const noexcept
 {
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
