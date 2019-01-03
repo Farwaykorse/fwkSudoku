@@ -178,6 +178,27 @@ else()
 endif()
 
 ##====--------------------------------------------------------------------====##
+if(CODE_COVERAGE)
+  if(MSVC) # MSVC or simulating MSVC
+  else()
+    target_compile_options(SudokuTests PRIVATE
+      -O0        # no optimization
+      -g         # add debug info
+      --coverage
+    ) 
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+      target_link_options(SudokuTests PRIVATE
+        --coverage
+      )
+    else()
+      target_link_libraries(SudokuTests PRIVATE
+        --coverage
+      )
+    endif()
+  endif()
+endif(CODE_COVERAGE)
+
+##====--------------------------------------------------------------------====##
 # custom settings for precompiled headers
 set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
 

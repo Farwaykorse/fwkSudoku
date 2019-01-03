@@ -9,7 +9,7 @@ project(fwk_Sudoku LANGUAGES CXX)
 ##====--------------------------------------------------------------------====##
 # Configuration
 ##====--------------------------------------------------------------------====##
-# options()
+option(CODE_COVERAGE "Enable coverage reporting" OFF)
 
 ##====--------------------------------------------------------------------====##
 # External CMake definitions
