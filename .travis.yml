@@ -27,6 +27,16 @@ env:
 os: linux
 dist: xenial
 
+# Toolchain installation
+# Documentation: https://docs.travis-ci.com/user/installing-dependencies/
+# Finding apt packages: https://packages.ubuntu.com/search?keywords=search
+# Ubuntu Toolchain test builds:
+#   https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
+# LLVM apt resources: https://apt.llvm.org
+# TravisCI apt safelist:
+#   https://github.com/travis-ci/apt-source-safelist/blob/master/ubuntu.json
+# libcxx documentation:
+#   https://libcxx.llvm.org/docs/UsingLibcxx.html
 matrix:
   include:
   - name: GCC-8 Debug
