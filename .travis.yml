@@ -204,11 +204,14 @@ before_install:
     if [[ -x ./vcpkg/vcpkg ]]; then
       cd ./vcpkg
       git pull --quiet
+      if [[ $(./vcpkg upgrade) != 'installed packages are up-to-date'* ]]; then
+        ./vcpkg upgrade --no-dry-run
+      fi
     else
       git clone --depth=1 --branch=master --quiet https://github.com/Microsoft/vcpkg.git
       if [[ ${TRAVIS_OS_NAME} == linux && ${CXX_compiler} != g++* || ${CXX_compiler%g++-} < 7 ]]
       then
-        eval "CC=gcc-7 && CXX=g++-7"
+        eval "CC=gcc-7 && CXX=g++-7" # Minimum requirement vcpkg on Linux
       fi
       ./vcpkg/bootstrap-vcpkg.sh
     fi
