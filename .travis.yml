@@ -198,12 +198,14 @@ before_install:
   )
   export PATH=$PATH:$HOME/tools/ninja/
 - |
-  # Install vcpkg
+  # Install vcpkg / update installed packages
   (
     cd ~/tools
     if [[ -x ./vcpkg/vcpkg ]]; then
       cd ./vcpkg
       git pull --quiet
+      ./vcpkg list   # print installed versions
+      ./vcpkg update # print potential updates
       if [[ $(./vcpkg upgrade) != 'installed packages are up-to-date'* ]]; then
         ./vcpkg upgrade --no-dry-run
       fi
