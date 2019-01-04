@@ -206,6 +206,9 @@ before_install:
       git pull --quiet
       ./vcpkg list   # print installed versions
       ./vcpkg update # print potential updates
+      if [[ $(./vcpkg update) = 'Warning: Different source'*'for vcpkg' ]]; then
+        ./bootstrap-vcpkg.sh
+      fi
       if [[ $(./vcpkg upgrade) != 'installed packages are up-to-date'* ]]; then
         ./vcpkg upgrade --no-dry-run
       fi
