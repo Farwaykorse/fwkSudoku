@@ -295,6 +295,7 @@ before_script:
   export CXXFLAGS="${CXXFLAGS} -Werror"
 - >
   CMakeGenFlags="-G Ninja
+    -DCMAKE_BUILD_TYPE=${CONFIGURATION:?}
     -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}
     -DCODE_COVERAGE=${coverage_bool:?}
     -Wdev
