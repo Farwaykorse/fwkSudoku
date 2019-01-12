@@ -327,7 +327,7 @@ after_success:
   cd "${TRAVIS_BUILD_DIR}"
   if [[ ${Coverage:-} ]]; then
   ( set -euxo pipefail
-    bash_flags="-n ${TRAVIS_JOB_NAME}"
+    bash_flags="-n ${TRAVIS_JOB_NAME/ /_}" # Replace space with '_'
     if [[ ${Coverage} == "grcov" ]]; then
       coverage_report="coverage.json"
       flags="-t coveralls+ --token unused --commit-sha ${TRAVIS_COMMIT}"
