@@ -179,6 +179,17 @@ matrix:
         - clang-4.0
         - g++-7
 
+  - name: AppleClang
+    os: osx
+    env:
+    - Coverage: grcov
+    - CONFIGURATION: Debug
+    addons:
+      homebrew:
+        packages:
+        - coreutils # for sha512sum & nproc
+        - ninja
+
   allow_failures:
   - name: Clang-7 libc++ Debug
   - name: Clang-7 libc++ Release
@@ -190,19 +201,24 @@ before_install:
 - |
   # Setup
   mkdir -p ~/tools
-  eval "CC=${C_compiler:?} && CXX=${CXX_compiler:?}"
+  if [[ ${C_compiler:-} ]]; then   export CC=${C_compiler:?}; fi
+  if [[ ${CXX_compiler:-} ]]; then export CXX=${CXX_compiler:?}; fi
+  if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
+    export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+  fi
 - |
-  # Install Ninja-build
+  # Install Ninja-build (if not installed)
+  if [[ ! -x "$(command -v ninja)" ]]; then
   ( set -euxo pipefail
-    os=${TRAVIS_OS_NAME}
-    file_name="ninja-${os}.zip"
+    echo "-- Install Ninja-build..."
+    file_name="ninja-${TRAVIS_OS_NAME}.zip"
     NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
     cd ~/tools
     wget -q "${NINJA_URL}" --tries=3 --timeout 90 -nc
     sum=$(sha512sum ${file_name})
     if [[ ${sum:0:128} = ${NINJA_SHA512} ]]; then
       unzip -q ${file_name} -d ninja
-      echo "-- Finished Ninja-build install"
+      echo "-- Install Ninja-build... done"
     else
       echo "Ninja hash has changed!"  >&2
       echo "Expecting: $NINJA_SHA512" >&2
@@ -211,6 +227,7 @@ before_install:
     fi
   )
   export PATH=$HOME/tools/ninja:$PATH
+  fi
 - |
   # Install Mozilla/grcov
   if [[ ${Coverage:-} && ${Coverage} == "grcov" ]]; then
@@ -221,6 +238,7 @@ before_install:
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
       GRCOV_SHA512="94a9bca1ca54e6d0b3eadc0aa88263852df8e29f5d3739142ff981a486ec90e25fb01f63443a90805856aec28b64d0e4327530cd4b50bb37ac4a8b05e9594481"
     fi
+    echo "-- Install grcov..."
     file_name="grcov-${TRAVIS_OS_NAME}-x86_64.tar.bz2"
     GRCOV_URL="https://github.com/mozilla/grcov/releases/download/${GRCOV_TAG}/${file_name}"
     wget "${GRCOV_URL}" --tries=3 --timeout 90 -nc
