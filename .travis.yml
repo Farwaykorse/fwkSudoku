@@ -201,9 +201,10 @@ before_install:
   # Install vcpkg / update installed packages
   (
     cd ~/tools
+    git clone --depth=1 --branch=master --quiet https://github.com/Microsoft/vcpkg.git
+    mv -f -t ./vcpkg ~/tools/.cache/vcpkg/*|| echo "No cached files for vcpkg."
     if [[ -x ./vcpkg/vcpkg ]]; then
       cd ./vcpkg
-      git pull --quiet
       ./vcpkg list   # print installed versions
       ./vcpkg update # print potential updates
       if [[ $(./vcpkg update) = 'Warning: Different source'*'for vcpkg' ]]; then
@@ -213,7 +214,6 @@ before_install:
         ./vcpkg upgrade --no-dry-run
       fi
     else
-      git clone --depth=1 --branch=master --quiet https://github.com/Microsoft/vcpkg.git
       if [[ ${TRAVIS_OS_NAME} == linux && ${CXX_compiler} != g++* || ${CXX_compiler%g++-} < 7 ]]
       then
         eval "CC=gcc-7 && CXX=g++-7" # Minimum requirement vcpkg on Linux
@@ -266,13 +266,13 @@ script:
 ##====--------------------------------------------------------------------====##
 before_cache:
 - |
-  # Cleaning build cache
-  rm -rf ~/tools/vcpkg/buildtrees
-  rm -rf ~/tools/vcpkg/downloads
+  # Select files for caching
+  mkdir -p ~/tools/.cache/vcpkg
+  mv -u -t ~/tools/.cache/vcpkg ~/tools/vcpkg/vcpkg ~/tools/vcpkg/installed
 
 cache:
   directories:
-  - ~/tools/vcpkg
+  - ~/tools/.cache
 
 ##====--------------------------------------------------------------------====##
 after_script: true
