@@ -1,8 +1,10 @@
 <!-------------------------------------------------------------><a id="top"></a>
 # fwkSudoku
 <!----------------------------------------------------------------------------->
-[![Build Status](https://travis-ci.com/Farwaykorse/fwkSudoku.svg?branch=master)](https://travis-ci.com/Farwaykorse/fwkSudoku/branches)
-[![Build status](https://ci.appveyor.com/api/projects/status/fuasqqstakl49tfb/branch/master?svg=true)](https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master)
+<!-- Badges -->
+[![Build Status][Travis-badge]][Travis-link]
+[![Build status][AppVeyor-badge]][AppVeyor-link]
+[![codecov][Codecov-badge]][Codecov-link]
 <!-- Description -->
 This project is mostly focused on the implementation of the data-structures.  
 Originally this started as a one of many small experiments while starting to
@@ -51,11 +53,11 @@ A C++17 compiler.
 Non-of the external dependencies have been included in the repository.
 The project configurations expect these to be available in the include path.
 For this project the latest versions of external libraries have been imported
-using the [vcpkg project](https://github.com/Microsoft/vcpkg).
+using the [vcpkg project][github-vcpkg].
 - It makes use of elements from the GSL (Guideline Support Library), available
-  at: [Microsoft/GSL](https://github.com/Microsoft/GSL).
+  at: [Microsoft/GSL][github-ms-gsl].
 - The unit-tests for the Sudoku library are implemented with
-  [Google Test](https://github.com/google/googletest).
+  [Google Test][github-GTest].
 
 
 <!--------------------------------------------------------><a id="elements"></a>
@@ -87,7 +89,7 @@ to supply timings and detect performance regressions.
 
 ### SudokuTest ###
 The SudokuTest project contains the unit-tests for the Sudoku library.
-This uses the [Google Test](https://github.com/google/googletest).
+This uses the [Google Test][github-GTest].
  unit-testing framework.
 
 Note that the tests are in general extremely verbose.
@@ -115,3 +117,14 @@ implementation.
 Code licensed under the [MIT License](./LICENSE).
 
 [top](#top)
+
+[AppVeyor-badge]: https://ci.appveyor.com/api/projects/status/fuasqqstakl49tfb/branch/master?svg=true
+[AppVeyor-link]:  https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master
+[Codecov-badge]:  https://codecov.io/gh/Farwaykorse/fwkSudoku/branch/master/graph/badge.svg
+[Codecov-link]:   https://codecov.io/gh/Farwaykorse/fwkSudoku
+[Travis-badge]:   https://travis-ci.com/Farwaykorse/fwkSudoku.svg?branch=master
+[Travis-link]:    https://travis-ci.com/Farwaykorse/fwkSudoku/branches
+
+[github-GTest]:   https://github.com/google/googletest
+[github-ms-gsl]:  https://github.com/Microsoft/GSL
+[github-vcpkg]:   https://github.com/Microsoft/vcpk
