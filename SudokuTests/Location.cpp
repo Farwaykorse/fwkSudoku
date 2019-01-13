@@ -42,7 +42,8 @@ namespace compiletime
 	static_assert(not std::is_trivial_v<typeT>);
 #if defined(__clang__) || defined(__GNUC__)
 	static_assert(std::is_trivially_copyable_v<typeT>);
-#if not(defined(__clang__) && __clang_major__ < 6)
+#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
+	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif
 #else
@@ -155,7 +156,8 @@ namespace Location_Block_compiletime
 #else
 	static_assert(not std::is_trivially_copyable_v<typeT>);
 #if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__clang__) && __clang_major__ < 6)
+	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(not std::has_unique_object_representations_v<typeT>);
 #endif // __ICL && ! clang before 6.0
 #endif // __GNUC__
