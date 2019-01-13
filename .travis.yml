@@ -201,7 +201,7 @@ matrix:
 before_install:
 - |
   # Setup
-  mkdir -p ~/tools
+  mkdir -p ~/tools && cd ~/tools
   if [[ ${C_compiler:-} ]]; then   export CC=${C_compiler:?}; fi
   if [[ ${CXX_compiler:-} ]]; then export CXX=${CXX_compiler:?}; fi
   if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
@@ -261,19 +261,20 @@ before_install:
   fi
 - |
   # Install vcpkg / update installed packages
-  ( set -euo pipefail
     cd ~/tools
+  ( set -euo pipefail
     git clone --depth=1 --branch=master --quiet https://github.com/Microsoft/vcpkg.git
     mv -f -t ./vcpkg ~/tools/.cache/vcpkg/*|| echo "No cached files for vcpkg."
     if [[ -x ./vcpkg/vcpkg ]]; then
-      cd ./vcpkg
-      ./vcpkg list   # print installed versions
-      ./vcpkg update # print potential updates
-      if [[ $(./vcpkg update) = 'Warning: Different source'*'for vcpkg' ]]; then
-        ./bootstrap-vcpkg.sh
+      ./vcpkg/vcpkg list   # print installed versions
+      ./vcpkg/vcpkg update # print potential updates
+      if [[ $(./vcpkg/vcpkg update) = 'Warning: Different source'*'for vcpkg' ]]
+      then
+        ./vcpkg/bootstrap-vcpkg.sh
       fi
-      if [[ $(./vcpkg upgrade) != 'installed packages are up-to-date'* ]]; then
-        ./vcpkg upgrade --no-dry-run
+      if [[ $(./vcpkg/vcpkg upgrade) != 'installed packages are up-to-date'* ]]
+      then
+        ./vcpkg/vcpkg upgrade --no-dry-run
       fi
     else
       if [[ ${TRAVIS_OS_NAME} == "linux" &&
