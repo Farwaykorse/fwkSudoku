@@ -189,6 +189,7 @@ matrix:
         packages:
         - coreutils # for sha512sum & nproc
         - ninja
+        - gcc6 # vcpkg requires gcc-6 or better
 
   allow_failures:
   - name: Clang-7 libc++ Debug
@@ -275,10 +276,12 @@ before_install:
         ./vcpkg upgrade --no-dry-run
       fi
     else
-      if [[ ${TRAVIS_OS_NAME} == linux &&
+      if [[ ${TRAVIS_OS_NAME} == "linux" &&
         ( ${CXX_compiler} != g++* || ${CXX_compiler%g++-} < 7 ) ]]
       then
         eval "CC=gcc-7 && CXX=g++-7" # Minimum requirement vcpkg on Linux
+      elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
+        eval "CC=gcc-6 && CXX=g++-6" # Minimum requirement vcpkg on OSX
       fi
       ./vcpkg/bootstrap-vcpkg.sh
     fi
