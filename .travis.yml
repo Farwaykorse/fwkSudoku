@@ -218,8 +218,6 @@ matrix:
     addons: *OSX-legacy
 
   allow_failures:
-  - name: Clang-7 libc++ Debug
-  - name: Clang-7 libc++ Release
   - name: Clang-4.0 Debug
   - name: AppleClang Xcode-9.4
   - name: AppleClang Xcode-9
