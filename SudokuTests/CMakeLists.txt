@@ -173,7 +173,9 @@ else()
     Board.cpp
     Board_Iterators.cpp
     OPTIONS
-      $<$<CXX_COMPILER_ID:Clang>:-Wno-unevaluated-expression>
+      $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
+        -Wno-unevaluated-expression
+      >
   )
 endif()
 

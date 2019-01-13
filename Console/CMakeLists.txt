@@ -113,7 +113,7 @@ else()
   set_source_files_compile_options(
     Console.cpp
     OPTIONS
-      $<$<CXX_COMPILER_ID:Clang>:
+      $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
         -Wno-padded
       >
   )
