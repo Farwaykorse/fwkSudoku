@@ -106,6 +106,7 @@ matrix:
     - C_compiler:   clang
     - CXX_compiler: clang++
     - CXX_lib: libc++
+    - Coverage: grcov
     - CONFIGURATION: Debug
     addons: &clang7lib
       apt:
@@ -179,22 +180,49 @@ matrix:
         - clang-4.0
         - g++-7
 
-  - name: AppleClang
+  - name: AppleClang Xcode-10.1
     os: osx
+    osx_image: xcode10.1 # same compiler as Xcode 10.0
     env:
     - Coverage: grcov
     - CONFIGURATION: Debug
-    addons:
+    addons: &OSX
       homebrew:
         packages:
         - coreutils # for sha512sum & nproc
         - ninja
         - gcc6 # vcpkg requires gcc-6 or better
 
+  - name: AppleClang Xcode-9.4
+    os: osx
+    osx_image: xcode9.4 # same compiler as Xcode 9.3
+    env:
+    - Coverage: grcov
+    - CONFIGURATION: Debug
+    addons: &OSX-legacy
+      homebrew:
+        packages:
+        - coreutils # for sha512sum & nproc
+        - ninja
+        - gcc6 # vcpkg requires gcc-6 or better
+        - cmake # Xcode 9.4 and earlier have 3.11.4
+        update: true
+
+  - name: AppleClang Xcode-9
+    os: osx
+    osx_image: xcode9
+    osx_image: xcode9 # same compiler in Xcode 9.0, 9.1 and 9.2
+    env:
+    - Coverage: grcov
+    - CONFIGURATION: Debug
+    addons: *OSX-legacy
+
   allow_failures:
   - name: Clang-7 libc++ Debug
   - name: Clang-7 libc++ Release
   - name: Clang-4.0 Debug
+  - name: AppleClang Xcode-9.4
+  - name: AppleClang Xcode-9
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
