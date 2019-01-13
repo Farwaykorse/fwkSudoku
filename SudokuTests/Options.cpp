@@ -906,7 +906,14 @@ TEST(Options, Operators)
 	TMP.clear();
 	EXPECT_TRUE(TMP[Value{0}] = true);
 	EXPECT_TRUE(TMP[Value{0}] == true);
-	EXPECT_FALSE(TMP[Value{0}].flip());
+	// std::bitset<N>::reference::flip()
+	static_assert(
+		std::is_same_v<std::bitset<5>::reference, decltype(TMP[Value{0}])>);
+	// Fails with libc++
+	// static_assert(std::is_same_v<
+	//			  std::bitset<5>::reference&,
+	//			  decltype(TMP[Value{0}].flip())>);
+	TMP[Value{0}].flip();
 	EXPECT_TRUE(TMP[Value{0}] == false);
 	// Options& XOR(Options&)			XOR
 	static_assert(noexcept(TMP.XOR(TE.O_1)));
