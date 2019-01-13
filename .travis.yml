@@ -272,7 +272,7 @@ before_install:
       then
         ./vcpkg/bootstrap-vcpkg.sh
       fi
-      if [[ $(./vcpkg/vcpkg upgrade) != 'installed packages are up-to-date'* ]]
+      if [[ $(./vcpkg/vcpkg upgrade) != *'installed packages are up-to-date'* ]]
       then
         ./vcpkg/vcpkg upgrade --no-dry-run
       fi
@@ -289,7 +289,7 @@ before_install:
   )
 - |
   # Using libc++
-  if [[ ${CXX_compiler} == clang* && ${CXX_lib} ]]; then
+  if [[ ${CXX_compiler} == clang* && ${CXX_lib:-} ]]; then
     FLAGS="-stdlib=${CXX_lib}"
     #if [[ ${CXX_lib} == libc++ ]]; then
     #  FLAGS="${FLAGS} -lc++fs"
