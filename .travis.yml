@@ -275,7 +275,8 @@ before_install:
         ./vcpkg upgrade --no-dry-run
       fi
     else
-      if [[ ${TRAVIS_OS_NAME} == linux && ${CXX_compiler} != g++* || ${CXX_compiler%g++-} < 7 ]]
+      if [[ ${TRAVIS_OS_NAME} == linux &&
+        ( ${CXX_compiler} != g++* || ${CXX_compiler%g++-} < 7 ) ]]
       then
         eval "CC=gcc-7 && CXX=g++-7" # Minimum requirement vcpkg on Linux
       fi
