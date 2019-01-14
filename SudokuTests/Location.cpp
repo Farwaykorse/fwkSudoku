@@ -57,9 +57,12 @@ namespace compiletime
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -166,10 +169,12 @@ namespace Location_Block_compiletime
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
