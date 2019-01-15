@@ -405,4 +405,8 @@ after_success:
   fi
 
 ##====--------------------------------------------------------------------====##
-after_script: true
+after_script:
+- |
+  # Binary sizes:
+  ls -l "${TRAVIS_BUILD_DIR}/build/Console/console" 2>/dev/null || echo
+  ls -l "${TRAVIS_BUILD_DIR}/build/SudokuTests/SudokuTests" 2>/dev/null) || echo
