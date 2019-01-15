@@ -349,21 +349,19 @@ before_script:
   fi
   export CFLAGS="${CFLAGS} -Werror"
   export CXXFLAGS="${CXXFLAGS} -Werror"
+- |
+  CMakeGenFlags=("-G Ninja")
+  CMakeGenFlags+=("-DCMAKE_BUILD_TYPE=${CONFIGURATION:-Debug}")
+  CMakeGenFlags+=("-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}")
+  CMakeGenFlags+=("-DCODE_COVERAGE=${coverage_bool:?}")
+  CMakeGenFlags+=(-Wdev -Werror=dev --warn-uninitialized)
+  echo ${CMakeGenFlags[@]}
 - >
-  CMakeGenFlags="-G Ninja
-    -DCMAKE_BUILD_TYPE=${CONFIGURATION:=Debug}
-    -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}
-    -DCODE_COVERAGE=${coverage_bool:?}
-    -Wdev
-    -Werror=dev
-    --warn-uninitialized
-  " && echo $CMakeGenFlags
-- >
-  CMakeBuildFlags="--config ${CONFIGURATION:?} -- ${GeneratorFlags}"
+  CMakeBuildFlags="--config ${CONFIGURATION:-Debug} -- ${GeneratorFlags}"
   && echo $CMakeBuildFlags
 
 script:
-- cmake ${CMakeGenFlags:?} ..
+- cmake ${CMakeGenFlags[@]:?} ..
 - cmake --build . ${CMakeBuildFlags:?}
 - ctest -j $(nproc) --output-on-failure
 
@@ -384,25 +382,25 @@ after_success:
   cd "${TRAVIS_BUILD_DIR}"
   if [[ ${Coverage:-} ]]; then
   ( set -euxo pipefail
-    bash_flags="-n ${TRAVIS_JOB_NAME/ /_}" # Replace space with '_'
+    bash_flags=("-n ${TRAVIS_JOB_NAME/ /_}") # Replace space with '_'
     if [[ ${Coverage} == "grcov" ]]; then
       coverage_report="coverage.json"
-      flags="-t coveralls+ --token unused --commit-sha ${TRAVIS_COMMIT}"
-      if [[ ${CXX_compiler:-} == clang* ]]; then flags="${flags} --llvm"; fi
-      flags="${flags} --branch"
-      grcov ./build ${flags} > ${coverage_report}
+      flags=("-t coveralls+" "--token unused" "--commit-sha ${TRAVIS_COMMIT}")
+      if [[ ${CXX_compiler:-} == clang* ]]; then flags+=("--llvm"); fi
+      flags+=("--branch")
+      grcov ./build ${flags[@]} > ${coverage_report}
     elif [[ ${Coverage} == "lcov" ]]; then
       coverage_report="coverage.info"
       lcov --capture --directory ./build --output-file coverage.info
       lcov --remove coverage.info '/usr/*' --output-file coverage.info
       lcov --list coverage.info
     else
-      bash_flags="${bash_flags} -x ${Coverage}"
+      bash_flags+=("-x ${Coverage}")
     fi
     if [[ ${coverage_report:-} && -f "${coverage_report}" ]]; then
-      bash_flags="${bash_flags} -f ${coverage_report}"
+      bash_flags+=("-f ${coverage_report}")
     fi
-    bash <(curl -s https://codecov.io/bash) ${bash_flags} ||
+    bash <(curl -s https://codecov.io/bash) ${bash_flags[@]} ||
       echo "Codecov did not collect coverage reports"
   )
   fi
