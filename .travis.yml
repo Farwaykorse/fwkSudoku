@@ -351,7 +351,7 @@ script:
   cd "${TRAVIS_BUILD_DIR}/build2"
 - if [[ ${B_REL:-} ]]; then cmake ${CMakeGenFlags2[@]:?} ..; fi
 - if [[ ${B_REL:-} ]]; then cmake --build . --config Release -- ${GeneratorFlags}; fi
-- ctest -j $(nproc) --output-on-failure
+- if [[ ${B_REL:-} ]]; then ctest -j $(nproc) --output-on-failure; fi
 
 ##====--------------------------------------------------------------------====##
 before_cache:
