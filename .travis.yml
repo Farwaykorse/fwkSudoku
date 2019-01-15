@@ -1,4 +1,7 @@
 ##====---- .travis.yml                                                ----====##
+# TravisCI build configuration.
+# Continuous integration testing on Linux and OSX. Using GCC, LLVM/Clang and
+# AppleClang. Debug and Release builds, unit tests and codecoverage.
 language: cpp
 
 git:
@@ -18,22 +21,41 @@ env:
 ## Define Build Configurations
 # No build matrix, each item in matrix:include is single build configuration.
 #
-# Building vcpkg requires at least g++-7
+# Environment variables:
+# - C_compiler: overwrites default value of CC.
+# - CXX_compiler: overwrites default value of CXX.
+# - CXX_lib: library selection.
+#   - libc++  (Linux only, default on OSX.)
+# - CONFIGURATION: specifies the build configuration.
+#   When not set both a Debug and a Release configurations are build in single
+#   job session.
+# - Coverage:
+#   Send code coverage data to codecov.io.
+#   When no CONFIGURATION defined, only Debug build runs coverage.
+#   - grcov: currently the only option supporting LLVM/clang and AppleClang.
+#   - lcov:  GNU tool, mostly redundant by Codecov's bash script.
+#   - *: if an executable on the PATH, like: gcov-6, run by the bash script.
+#   - any other value runs the bash script in default mode. (I.e. true)
 #
+## Toolchain installation information:
+# https://docs.travis-ci.com/user/installing-dependencies/
+# Finding apt packages:
+# https://packages.ubuntu.com/search
+# Ubuntu Toolchain test builds:
+# https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
+# LLVM apt resources:
+# https://apt.llvm.org
+# TravisCI apt safelist:
+# https://github.com/travis-ci/apt-source-safelist/blob/master/ubuntu.json
+# libc++ documentation:
+# https://libcxx.llvm.org/docs/UsingLibcxx.html
+# Homebrew OSX packages:
+# https://formulae.brew.sh/formula/
+
 # Defaults
 os: linux
 dist: xenial
 
-# Toolchain installation
-# Documentation: https://docs.travis-ci.com/user/installing-dependencies/
-# Finding apt packages: https://packages.ubuntu.com/search
-# Ubuntu Toolchain test builds:
-#   https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
-# LLVM apt resources: https://apt.llvm.org
-# TravisCI apt safelist:
-#   https://github.com/travis-ci/apt-source-safelist/blob/master/ubuntu.json
-# libcxx documentation:
-#   https://libcxx.llvm.org/docs/UsingLibcxx.html
 matrix:
   include:
   - name: GCC-8
@@ -66,7 +88,7 @@ matrix:
     - CXX_compiler: clang++
     - Coverage: grcov
     addons:
-      apt:
+      apt: # vcpkg executable requires GCC 7 or better
         sources:
         - ubuntu-toolchain-r-test
         packages:
@@ -342,6 +364,7 @@ cache:
   directories:
   - ~/tools/.cache
 
+##====--------------------------------------------------------------------====##
 after_success:
 - |
   # Code coverage
@@ -360,7 +383,7 @@ after_success:
       lcov --capture --directory ./build --output-file coverage.info
       lcov --remove coverage.info '/usr/*' --output-file coverage.info
       lcov --list coverage.info
-    else
+    elif [[ -x "$(command -v ${Coverage})" ]]; then
       bash_flags+=("-x ${Coverage}")
     fi
     if [[ ${coverage_report:-} && -f "${coverage_report}" ]]; then
