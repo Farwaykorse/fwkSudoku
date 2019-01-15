@@ -39,11 +39,10 @@ dist: xenial
 #   https://libcxx.llvm.org/docs/UsingLibcxx.html
 matrix:
   include:
-  - name: GCC-8 Debug
+  - name: GCC-8
     env:
     - C_compiler:   gcc-8
     - CXX_compiler: g++-8
-    - CONFIGURATION: Debug
     addons: &GCC8
       apt:
         sources:
@@ -58,12 +57,11 @@ matrix:
     - CONFIGURATION: Release
     addons: *GCC8
 
-  - name: GCC-7 Debug
+  - name: GCC-7
     env:
     - C_compiler:   gcc-7
     - CXX_compiler: g++-7
     - Coverage:     gcov-7
-    - CONFIGURATION: Debug
     addons: &GCC7
       apt:
         sources:
@@ -79,13 +77,12 @@ matrix:
     - CONFIGURATION: Release
     addons: *GCC7
 
-  - name: Clang-7 Debug
+  - name: Clang-7
     dist: xenial
     env:
     - C_compiler:   clang
     - CXX_compiler: clang++
     - Coverage: grcov
-    - CONFIGURATION: Debug
     addons: &clang7
       apt:
         sources:
@@ -101,14 +98,13 @@ matrix:
     - CONFIGURATION: Release
     addons: *clang7
 
-  - name: Clang-7 libc++ Debug
+  - name: Clang-7 libc++
     dist: xenial
     env:
     - C_compiler:   clang
     - CXX_compiler: clang++
     - CXX_lib: libc++
     - Coverage: grcov
-    - CONFIGURATION: Debug
     addons: &clang7lib
       apt:
         sources:
@@ -128,13 +124,12 @@ matrix:
     - CONFIGURATION: Release
     addons: *clang7lib
 
-  - name: Clang-6.0 Debug
+  - name: Clang-6.0
     dist: xenial
     env:
     - C_compiler: clang-6.0
     - CXX_compiler: clang++-6.0
     - Coverage: grcov
-    - CONFIGURATION: Debug
     addons: &clang6
       apt:
         sources:
@@ -153,13 +148,12 @@ matrix:
     - CONFIGURATION: Release
     addons: *clang6
 
-  - name: Clang-5.0 Debug
+  - name: Clang-5.0
     dist: xenial
     env:
     - C_compiler: clang-5.0
     - CXX_compiler: clang++-5.0
     - Coverage: grcov
-    - CONFIGURATION: Debug
     addons: &clang5
       apt:
         sources:
@@ -168,13 +162,12 @@ matrix:
         - clang-5.0
         - g++-7
 
-  - name: Clang-4.0 Debug
+  - name: Clang-4.0
     if: branch = master
     dist: xenial
     env:
     - C_compiler: clang-4.0
     - CXX_compiler: clang++-4.0
-    - CONFIGURATION: Debug
     addons: &clang4
       apt:
         sources:
@@ -188,7 +181,6 @@ matrix:
     osx_image: xcode10.1 # same compiler as Xcode 10.0
     env:
     - Coverage: grcov
-    - CONFIGURATION: Debug
     addons: &OSX
       homebrew:
         packages:
@@ -210,7 +202,6 @@ matrix:
     osx_image: xcode9.4 # same compiler as Xcode 9.3
     env:
     - Coverage: grcov
-    - CONFIGURATION: Debug
     addons: &OSX-legacy
       homebrew:
         packages:
@@ -227,7 +218,6 @@ matrix:
     osx_image: xcode9 # same compiler in Xcode 9.0, 9.1 and 9.2
     env:
     - Coverage: grcov
-    - CONFIGURATION: Debug
     addons: *OSX-legacy
 
   allow_failures:
@@ -361,16 +351,16 @@ before_script:
   export CXXFLAGS="${CXXFLAGS} -Werror"
 - >
   CMakeGenFlags="-G Ninja
-    -DCMAKE_BUILD_TYPE=${CONFIGURATION:?}
+    -DCMAKE_BUILD_TYPE=${CONFIGURATION:=Debug}
     -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}
     -DCODE_COVERAGE=${coverage_bool:?}
     -Wdev
     -Werror=dev
     --warn-uninitialized
   " && echo $CMakeGenFlags
-- |
-  CMakeBuildFlags="--config ${CONFIGURATION:?} -- ${GeneratorFlags=}"
-  echo $CMakeBuildFlags
+- >
+  CMakeBuildFlags="--config ${CONFIGURATION:?} -- ${GeneratorFlags}"
+  && echo $CMakeBuildFlags
 
 script:
 - cmake ${CMakeGenFlags:?} ..
