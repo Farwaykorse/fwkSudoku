@@ -43,39 +43,24 @@ matrix:
     env:
     - C_compiler:   gcc-8
     - CXX_compiler: g++-8
-    addons: &GCC8
+    addons:
       apt:
         sources:
         - ubuntu-toolchain-r-test
         packages:
         - g++-8
 
-  - name: GCC-8 Release
-    env:
-    - C_compiler:   gcc-8
-    - CXX_compiler: g++-8
-    - CONFIGURATION: Release
-    addons: *GCC8
-
   - name: GCC-7
     env:
     - C_compiler:   gcc-7
     - CXX_compiler: g++-7
     - Coverage:     gcov-7
-    addons: &GCC7
+    addons:
       apt:
         sources:
         - ubuntu-toolchain-r-test
         packages:
         - g++-7
-
-  - name: GCC-7 Release
-    if: branch = master
-    env:
-    - C_compiler:   gcc-7
-    - CXX_compiler: g++-7
-    - CONFIGURATION: Release
-    addons: *GCC7
 
   - name: Clang-7
     dist: xenial
@@ -83,20 +68,12 @@ matrix:
     - C_compiler:   clang
     - CXX_compiler: clang++
     - Coverage: grcov
-    addons: &clang7
+    addons:
       apt:
         sources:
         - ubuntu-toolchain-r-test
         packages:
         - g++-7
-
-  - name: Clang-7 Release
-    dist: xenial
-    env:
-    - C_compiler:   clang
-    - CXX_compiler: clang++
-    - CONFIGURATION: Release
-    addons: *clang7
 
   - name: Clang-7 libc++
     dist: xenial
@@ -105,7 +82,7 @@ matrix:
     - CXX_compiler: clang++
     - CXX_lib: libc++
     - Coverage: grcov
-    addons: &clang7lib
+    addons:
       apt:
         sources:
         - llvm-toolchain-xenial-7
@@ -115,22 +92,13 @@ matrix:
         - libc++-7-dev
         - libc++abi-7-dev
 
-  - name: Clang-7 libc++ Release
-    dist: xenial
-    env:
-    - C_compiler:   clang
-    - CXX_compiler: clang++
-    - CXX_lib: libc++
-    - CONFIGURATION: Release
-    addons: *clang7lib
-
   - name: Clang-6.0
     dist: xenial
     env:
     - C_compiler: clang-6.0
     - CXX_compiler: clang++-6.0
     - Coverage: grcov
-    addons: &clang6
+    addons:
       apt:
         sources:
         - llvm-toolchain-xenial-6.0
@@ -139,22 +107,13 @@ matrix:
         - clang-6.0
         - g++-7
 
-  - name: Clang-6.0 Release
-    if: branch = master
-    dist: xenial
-    env:
-    - C_compiler: clang-6.0
-    - CXX_compiler: clang++-6.0
-    - CONFIGURATION: Release
-    addons: *clang6
-
   - name: Clang-5.0
     dist: xenial
     env:
     - C_compiler: clang-5.0
     - CXX_compiler: clang++-5.0
     - Coverage: grcov
-    addons: &clang5
+    addons:
       apt:
         sources:
         - ubuntu-toolchain-r-test
@@ -162,13 +121,14 @@ matrix:
         - clang-5.0
         - g++-7
 
-  - name: Clang-4.0
+  - name: Clang-4.0 Debug
     if: branch = master
     dist: xenial
     env:
     - C_compiler: clang-4.0
     - CXX_compiler: clang++-4.0
-    addons: &clang4
+    - CONFIGURATION: Debug
+    addons:
       apt:
         sources:
         - ubuntu-toolchain-r-test
@@ -181,20 +141,12 @@ matrix:
     osx_image: xcode10.1 # same compiler as Xcode 10.0
     env:
     - Coverage: grcov
-    addons: &OSX
+    addons:
       homebrew:
         packages:
         - coreutils # for sha512sum & nproc
         - ninja
         - gcc6 # vcpkg requires gcc-6 or better
-
-  - name: AppleClang Xcode-10.1 Release
-    if: branch = master
-    os: osx
-    osx_image: xcode10.1 # same compiler as Xcode 10.0
-    env:
-    - CONFIGURATION: Release
-    addons: *OSX
 
   - name: AppleClang Xcode-9.4
     if: branch = master
@@ -342,7 +294,7 @@ before_script:
   # Configuration
   cd "${TRAVIS_BUILD_DIR}"
   mkdir -p build
-  cd build
+  mkdir -p build2
   GeneratorFlags='-k 10' # Ninja
   if [[ ${Coverage} ]]; then coverage_bool="ON"
   else coverage_bool="OFF"
@@ -356,13 +308,24 @@ before_script:
   CMakeGenFlags+=("-DCODE_COVERAGE=${coverage_bool:?}")
   CMakeGenFlags+=(-Wdev -Werror=dev --warn-uninitialized)
   echo ${CMakeGenFlags[@]}
-- >
-  CMakeBuildFlags="--config ${CONFIGURATION:-Debug} -- ${GeneratorFlags}"
-  && echo $CMakeBuildFlags
+  if [[ ! ${CONFIGURATION:-} ]]; then
+    B_REL="Build both Debug and Release configurations"
+    CMakeGenFlags2=("-G Ninja")
+    CMakeGenFlags2+=("-DCMAKE_BUILD_TYPE=Release")
+    CMakeGenFlags2+=("-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}")
+    CMakeGenFlags2+=(-Wdev -Werror=dev --warn-uninitialized)
+  fi
 
 script:
+- >
+  cd "${TRAVIS_BUILD_DIR}/build"
 - cmake ${CMakeGenFlags[@]:?} ..
-- cmake --build . ${CMakeBuildFlags:?}
+- cmake --build . --config ${CONFIGURATION:-Debug} -- ${GeneratorFlags}
+- ctest -j $(nproc) --output-on-failure
+- >
+  cd "${TRAVIS_BUILD_DIR}/build2"
+- if [[ ${B_REL:-} ]]; then cmake ${CMakeGenFlags2[@]:?} ..; fi
+- if [[ ${B_REL:-} ]]; then cmake --build . --config Release -- ${GeneratorFlags}; fi
 - ctest -j $(nproc) --output-on-failure
 
 ##====--------------------------------------------------------------------====##
@@ -411,3 +374,5 @@ after_script:
   # Binary sizes:
   ls -l "${TRAVIS_BUILD_DIR}/build/Console/console" 2>/dev/null || echo
   ls -l "${TRAVIS_BUILD_DIR}/build/SudokuTests/SudokuTests" 2>/dev/null) || echo
+  ls -l "${TRAVIS_BUILD_DIR}/build2/Console/console" 2>/dev/null) || echo
+  ls -l "${TRAVIS_BUILD_DIR}/build2/SudokuTests/SudokuTests" 2>/dev/null) || echo
