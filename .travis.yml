@@ -72,6 +72,7 @@ matrix:
         - g++-7
 
   - name: GCC-7 Release
+    if: branch = master
     env:
     - C_compiler:   gcc-7
     - CXX_compiler: g++-7
@@ -144,6 +145,7 @@ matrix:
         - g++-7
 
   - name: Clang-6.0 Release
+    if: branch = master
     dist: xenial
     env:
     - C_compiler: clang-6.0
@@ -167,6 +169,7 @@ matrix:
         - g++-7
 
   - name: Clang-4.0 Debug
+    if: branch = master
     dist: xenial
     env:
     - C_compiler: clang-4.0
@@ -193,7 +196,16 @@ matrix:
         - ninja
         - gcc6 # vcpkg requires gcc-6 or better
 
+  - name: AppleClang Xcode-10.1 Release
+    if: branch = master
+    os: osx
+    osx_image: xcode10.1 # same compiler as Xcode 10.0
+    env:
+    - CONFIGURATION: Release
+    addons: *OSX
+
   - name: AppleClang Xcode-9.4
+    if: branch = master
     os: osx
     osx_image: xcode9.4 # same compiler as Xcode 9.3
     env:
@@ -209,6 +221,7 @@ matrix:
         update: true
 
   - name: AppleClang Xcode-9
+    if: branch = master
     os: osx
     osx_image: xcode9
     osx_image: xcode9 # same compiler in Xcode 9.0, 9.1 and 9.2
