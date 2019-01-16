@@ -13,10 +13,13 @@ cache:
 skip_branch_with_pr: true
 skip_commits:
   files:
-  - LICENSE
+  - .git*
+  - .travis.yml
   - docs/
-  - '**/*.md'
+  - LICENSE
+  - '**/.clang-*'
   - '**/*.filters'
+  - '**/*.md'
 
 ##====--------------------------------------------------------------------====##
 ## Build Matrix Configuration
@@ -123,6 +126,10 @@ for:
     - USE_BUILDSYSTEM: Ninja
   skip_commits:
     files:
+    - .git*
+    - docs/
+    - '**/*.filters'
+    - '**/*.md'
     - '**/*.sln'
     - '**/*.vcxproj'
     - '**/*.vcxitems'
@@ -139,9 +146,13 @@ for:
     - USE_MSBUILD_SOLUTION: true
   skip_commits:
     files:
+    - .git*
     - cmake/
-    - '**/*.cmake'
+    - docs/
     - '**/CMakeLists.txt'
+    - '**/*.cmake'
+    - '**/*.filters'
+    - '**/*.md'
   before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
   build_script:
