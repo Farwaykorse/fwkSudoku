@@ -26,18 +26,17 @@ skip_commits:
 # Dimensions: 4 (image; platform; configuration; environment:matrix)
 #
 ##====-----------------
-# Options:              Values (supported for this script):
+# Options:         Values (supported for this script):
 # ------------------------------------------------------------------------------
-# image                 Visual Studio 2017 (default), Visual Studio 2015
-# platform              Platform configuration names:
-#                       x64 (default), x86
-# configuration         Solution configuration names:
-#                       Debug, Release ...       (use the MSVC compiler)
-#                       LLVM_(Debug, Release)... (use the LLVM/clang compiler)
-# USE_MSBUILD_SOLUTION  true - use MSBuild project files
-#                       [undefined] - use CMake (default)
-# USE_BUILDSYSTEM       MSBuild - (default)
-#                       Ninja - requires CMake generator
+# image            Visual Studio 2017 (default), Visual Studio 2015
+# platform         Platform configuration names:
+#                  x64 (default), x86
+# configuration    Solution configuration names:
+#                  Debug, Release        - use the MSVC compiler
+#                  LLVM_(Debug, Release) - use the LLVM/clang compiler
+# USE_BUILDSYSTEM  MSBuild - (default) requires CMake generator
+#                  Ninja - requires CMake generator
+#                  MSBuild_Solution - use Visual Studio project configurations
 ##====-----------------
 ## Create_Matrix
 image:
@@ -58,7 +57,7 @@ environment:
   matrix:
   - USE_BUILDSYSTEM: Ninja
   - USE_BUILDSYSTEM: MSBuild
-  - USE_MSBUILD_SOLUTION: true
+  - USE_BUILDSYSTEM: MSBuild_Solution
   global:
     APPVEYOR_SAVE_CACHE_ON_ERROR: true
     VCVAR2015: 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat'
@@ -79,7 +78,7 @@ matrix:
     configuration: LLVM_Release
     USE_BUILDSYSTEM: MSBuild
   - image: Visual Studio 2015
-    USE_MSBUILD_SOLUTION: true
+    USE_BUILDSYSTEM: MSBuild_Solution
   # Reduce preview build to: Ninja - x64 - Release & LLVM_Release
   - image: Visual Studio 2019 Preview
     platform: x86
@@ -88,7 +87,7 @@ matrix:
   - image: Visual Studio 2019 Preview
     configuration: LLVM_Debug
   - image: Visual Studio 2019 Preview
-    USE_MSBUILD_SOLUTION: true
+    USE_BUILDSYSTEM: MSBuild_Solution
     configuration: LLVM_Release
 ## /Remove_from_Matrix
 ##====-----------------
@@ -143,7 +142,7 @@ for:
 -
   matrix:
     only:
-    - USE_MSBUILD_SOLUTION: true
+    - USE_BUILDSYSTEM: MSBuild_Solution
   skip_commits:
     files:
     - .git*
@@ -190,7 +189,7 @@ install:
     $tmp = (Get-WmiObject Win32_OperatingSystem).name
     $out += "$($tmp -split "[|]" | Select-Object -First 1) / "
     $out += "$((Get-WmiObject Win32_OperatingSystem).OSArchitecture)`n"
-    if ($env:USE_MSBUILD_SOLUTION) {
+    if ("$env:USE_BUILDSYSTEM" -eq "MSBuild_Solution") {
       $out += 'Build configuration: MSBuild projects'
     } else {
       $out += 'Build configuration: CMake // '
