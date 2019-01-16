@@ -132,13 +132,6 @@ for:
     - '**/*.sln'
     - '**/*.vcxproj'
     - '**/*.vcxitems'
-  environment:
-    NINJA_TAG:    v1.8.2
-    NINJA_SHA512: 9B9CE248240665FCD6404B989F3B3C27ED9682838225E6DC9B67B551774F251E4FF8A207504F941E7C811E7A8BE1945E7BCB94472A335EF15E23A0200A32E6D5
-    NINJA_PATH:   C:\Tools\ninja\ninja-%NINJA_TAG%
-  cache:
-  - C:\Tools\ninja
-  - C:\Tools\vcpkg\installed
 -
   matrix:
     only:
@@ -199,21 +192,25 @@ install:
     }; Write-Output "$out"
 - ps: |
     if("$env:BUILDSYSTEM" -eq "Ninja") {
-      Write-Verbose "Install Ninja-build $env:NINJA_TAG"
-      if (![IO.File]::Exists("$env:NINJA_PATH\ninja.exe")) {
+      $NINJA_TAG = 'v1.8.2'
+      $NINJA_PATH = "C:\Tools\ninja\ninja-${NINJA_TAG}"
+      $NINJA_SHA512 = '9B9CE248240665FCD6404B989F3B3C27ED9682838225E6DC9B67B551774F251E4FF8A207504F941E7C811E7A8BE1945E7BCB94472A335EF15E23A0200A32E6D5'
+
+      Write-Output "-- Install Ninja-build ${NINJA_TAG} ..."
+      if (![IO.File]::Exists("${NINJA_PATH}\ninja.exe")) {
         Start-FileDownload `
-          "https://github.com/ninja-build/ninja/releases/download/$env:NINJA_TAG/ninja-win.zip"
+          "https://github.com/ninja-build/ninja/releases/download/${NINJA_TAG}/ninja-win.zip"
         $hash = (Get-FileHash ninja-win.zip -Algorithm SHA512).Hash
-        if ($env:NINJA_SHA512 -eq $hash) {
-          7z e -y -bso0 ninja-win.zip -o"$env:NINJA_PATH"
+        if ($NINJA_SHA512 -eq $hash) {
+          7z e -y -bso0 ninja-win.zip -o"${NINJA_PATH}"
         } else {
           Write-Warning "Ninja download hash changed!"; Write-Output "$hash"
-          $env:APPVEYOR_CACHE_SKIP_SAVE = true
         }
       }
-      if ([IO.File]::Exists("$env:NINJA_PATH\ninja.exe")) {
-        $env:PATH = "$env:NINJA_PATH;$env:PATH"
+      if ([IO.File]::Exists("${NINJA_PATH}\ninja.exe")) {
+        $env:PATH = "${NINJA_PATH};$env:PATH"
         ninja --version 1>$null # will fail if not available on path
+        Write-Output "-- Install Ninja-build ${NINJA_TAG} ... done"
       } else { Write-Warning "Failed to find ninja.exe in expected location." }
     }
 - cd C:\Tools\vcpkg & git pull --quiet
