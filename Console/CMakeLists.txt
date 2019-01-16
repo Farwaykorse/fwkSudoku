@@ -71,9 +71,6 @@ if(MSVC) # MSVC or simulating MSVC
         /wd4774 # stl
         /wd5026 # system_error
       >
-      $<$<CXX_COMPILER_ID:Clang>:
-        -Wno-undef        # ms-gsl (PR created)
-      >
   )
 else()
   target_compile_options(console PRIVATE
