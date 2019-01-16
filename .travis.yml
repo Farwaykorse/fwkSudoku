@@ -239,10 +239,11 @@ before_install:
   # Install Mozilla/grcov
   if [[ ${Coverage:-} && ${Coverage} == "grcov" ]]; then
   ( set -euxo pipefail
-    GRCOV_TAG="v0.3.2"
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-      GRCOV_SHA512="8d29bd3aee6855a50d0b55b3e3ea14a51b989451aedebb8f2f15d309d4887e5aa005ed140148800fe198fadbeb844355e8df310d47f77edc453d8754f667c790"
+      GRCOV_TAG="v0.4.1"
+      GRCOV_SHA512="dfc1e9899694109ce82e46fb9184454340b710bb2cff29feb4ada917493ee681c4aff1cca3c6a0ad3b08e4f7a85e5c4c63fe9580171710d1782e5df15f45c57e"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
+      GRCOV_TAG="v0.3.2"
       GRCOV_SHA512="94a9bca1ca54e6d0b3eadc0aa88263852df8e29f5d3739142ff981a486ec90e25fb01f63443a90805856aec28b64d0e4327530cd4b50bb37ac4a8b05e9594481"
     fi
     echo "-- Install grcov..."
