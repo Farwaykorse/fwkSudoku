@@ -70,11 +70,11 @@ Promote to errors:
 #### Custom settings for precompiled.cpp
 Disabled warnings:
 ````
--Wno-deprecated-declarations gTest uses deprecated POSIX names (i.e. chdir)
--Wno-undef
+-Wno-deprecated-declarations  gTest uses deprecated POSIX names (i.e. chdir)
 -Wno-language-extension-token
 -Wno-missing-noreturn
 -Wno-shift-sign-overflow
+-Wno-undef                    gTest
 ````
 #### Custom settings per file
 Disabled warnings:  

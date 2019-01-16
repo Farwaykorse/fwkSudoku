@@ -3,21 +3,19 @@
 <!----------------------------------------------------------------------------->
 <!-- Description -->
 This document tries to document the used compiler and project configuration
-settings.
+settings, related to C++ compilation.
 Supplying the motivation and discussion and to keep track of any exceptions.
 No historic data is kept (since it is part of the git log), unless a setting is
 considered a temporary fix.
 
-This document mostly reflects the MSBuild project configurations.
-Which supports only the most recent versions of the used toolchains at the time
-of commit.
+This document reflects the MSBuild project configurations, supporting only the
+most recent versions of the used toolchains at the time of commit.
 
-The CMakeLists are kept, as much as possible, in sync with the addition of
-support for the toolchains used on the CI environments.
+The CMake configurations are kept in sync.
+With additional support for the toolchains used on the CI environments.  
 See:
-[AppVeyor](https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master)
-_(master branch)_ for the Windows builds and
-[TravisCI](https://travis-ci.com/Farwaykorse/fwkSudoku/branches) for Linux.
+[AppVeyor][AppVeyor-link] _(master branch)_ for the Windows builds and
+[TravisCI][Travis-link] for Linux and Apple OSX builds.
 
 Project specific settings are documented in their individual README files.
 Any other deviations should be considered configuration errors.
@@ -39,11 +37,12 @@ Any other deviations should be considered configuration errors.
 ## General Information ##
 <!----------------------------------------------------------------------------->
 Targets:
-- Cross-platform (currently: Windows, Linux, ... / x86/x64, ...)
 - Standard conforming (currently: C++17)
-- Compiling with any conforming compiler (currently: MSVC, Clang, GCC, ...)
+- Cross-platform (currently: Windows, Linux and OSX)
+- Compiling with any conforming compiler
+  (currently: MSVC, LLVM/clang, Intel C++, GCC and AppleClang)
 - Being warning free, while enabling as many warnings as possible
-- Increase execution performance (with a preference for x64 with MSVC)
+- Increase execution performance (with a preference for x64 and MSVC)
 
 
 <!----------------------------------------------------------><a id="format"></a>
@@ -68,10 +67,8 @@ project.
 ### MSVC ###
 <!----------------------------------------------------------------------------->
 MS Build configurations:
-- Debug x64
-- Release x64
-- Debug x86
-- Release x86
+- Debug x64/x86
+- Release x64/x86
 
 #### Basic Settings ####
 <!----------------------------------------------------------------------------->
@@ -281,10 +278,8 @@ Flags not set for all translation units are marked with a `*`.
 ### Clang-cl ###
 <!----------------------------------------------------------------------------->
 MS Build configurations:
-- ClangDebug x64
-- ClangRelease x64
-- ClangDebug x86
-- ClangRelease x86
+- LLVM_Debug x64/x86
+- LLVM_Release x64/x86
 
 [The latest user manual](https://clang.llvm.org/docs/UsersManual.html)
 Lists all options supported by Clang-cl.  
@@ -323,7 +318,7 @@ Linker:    Generate debug info:      no
 
 #### Enable Warnings
 <!----------------------------------------------------------------------------->
-[lefiticus/cppbestpractices](https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#gcc--clang)  
+[lefticus/cppbestpractices](https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#gcc--clang)  
 Some warnings are explicitly set so they stay active when an encompassing
 setting is disabled.  
 [Clang diagnostics reference](https://clang.llvm.org/docs/DiagnosticsReference.html)
@@ -354,10 +349,8 @@ setting is disabled.
 ### Intel C++ ###
 <!----------------------------------------------------------------------------->
 MS Build configurations:
-- IntelDebug x64
-- IntelRelease x64
-- IntelDebug x86
-- IntelRelease x86
+- Intel_Debug x64/x86
+- Intel_Release x64/x86
 
 #### Basic Settings ####
 <!----------------------------------------------------------------------------->
@@ -425,3 +418,6 @@ Notes on the motivation behind the disabling of some of the checks.
 
 ----
 [top](#top)
+
+[AppVeyor-link]:  https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master
+[Travis-link]:    https://travis-ci.com/Farwaykorse/fwkSudoku/branches
