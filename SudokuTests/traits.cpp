@@ -68,7 +68,10 @@ static_assert(is_int_v<std::uint32_t>);
 // cstddef
 static_assert(is_int_v<std::size_t>);
 static_assert(is_int_v<std::ptrdiff_t>);
-#if not(defined(__ICL) && __ICL <= 1900)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 static_assert(not is_int_v<std::byte>);
 #endif // __ICL
 

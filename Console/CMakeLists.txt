@@ -1,7 +1,7 @@
 ##====---- fwkSudoku/Console/CMakeLists.txt                           ----====##
 ##
 ##====--------------------------------------------------------------------====##
-cmake_minimum_required(VERSION 3.11.4...3.13)
+cmake_minimum_required(VERSION 3.12...3.13)
 
 project(SudokuConsole LANGUAGES CXX)
 
@@ -71,9 +71,6 @@ if(MSVC) # MSVC or simulating MSVC
         /wd4774 # stl
         /wd5026 # system_error
       >
-      $<$<CXX_COMPILER_ID:Clang>:
-        -Wno-undef        # ms-gsl (PR created)
-      >
   )
 else()
   target_compile_options(console PRIVATE
@@ -87,6 +84,11 @@ else()
     >
     $<$<CXX_COMPILER_ID:Clang>:
       $<$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>:
+        -Wno-missing-braces
+      >
+    >
+    $<$<CXX_COMPILER_ID:AppleClang>:
+      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10>:
         -Wno-missing-braces
       >
     >
@@ -113,7 +115,7 @@ else()
   set_source_files_compile_options(
     Console.cpp
     OPTIONS
-      $<$<CXX_COMPILER_ID:Clang>:
+      $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
         -Wno-padded
       >
   )
