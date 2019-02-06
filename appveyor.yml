@@ -173,8 +173,7 @@ for:
 ## /Modify_Matrix
 
 ##====--------------------------------------------------------------------====##
-## Install tools and dependencies
-install:
+init:
 - ps: |
     $out =  "-- CI Session Configuration --`n"
     $out += "$env:APPVEYOR_BUILD_WORKER_IMAGE - $env:CONFIGURATION - "
@@ -190,6 +189,15 @@ install:
       $out += "Build system:        $env:BUILDSYSTEM"
       if ($env:NINJA_TAG) { $out +=": $env:NINJA_TAG" }
     }; Write-Output "$out"
+- ps: |
+    if (! $env:TOOLSET -and $env:CONFIGURATION -match "^LLVM_.*") {
+      $env:TOOLSET = "llvm"
+      $env:CONFIGURATION = $env:CONFIGURATION -replace "^LLVM_",""
+    }
+
+##====--------------------------------------------------------------------====##
+## Install tools and dependencies
+install:
 - ps: |
     if("$env:BUILDSYSTEM" -eq "Ninja") {
       $NINJA_TAG = 'v1.8.2'
@@ -243,11 +251,6 @@ install:
 
 ##====--------------------------------------------------------------------====##
 before_build:
-- ps: |
-    if (! $env:TOOLSET -and $env:CONFIGURATION -match "^LLVM_.*") {
-      $env:TOOLSET = "llvm"
-      $env:CONFIGURATION = $env:CONFIGURATION -replace "^LLVM_",""
-    }
 - ps: |
     if ("$env:BUILDSYSTEM" -eq "Ninja") {
       $GeneratorFlags = '-k 10'
