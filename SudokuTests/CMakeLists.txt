@@ -188,14 +188,53 @@ endif()
 
 ##====--------------------------------------------------------------------====##
 if(CODE_COVERAGE)
-  if(MSVC) # MSVC or simulating MSVC
-  else()
+  if(MSVC AND CMAKE_CXX_COMPILER_ID STREQUAL Clang)
+    if(DEFINED CMAKE_CXX_COMPILER)
+      string(REPLACE "/bin/clang-cl.exe" "" LLVM_ROOT "${CMAKE_CXX_COMPILER}")
+      set(LLVM_COMPILER-RT_PATH
+        # Assumed path relative to the compiler (valid for v7.0.1)
+        "${LLVM_ROOT}/lib/clang/${CMAKE_CXX_COMPILER_VERSION}/lib/windows"
+      )
+      find_library(PROFILE_RT 
+        NAMES
+          clang_rt.profile-x86_64
+          clang_rt.profile-i386
+        HINTS ${LLVM_COMPILER-RT_PATH}
+      )
+    endif()
+    if(DEFINED PROFILE_RT AND PROFILE_RT)
+      message(STATUS "Found the llvm compiler-rt profile library:\n"
+        "${PROFILE_RT}")
+      message(STATUS "Compile with code coverage information.")
+      target_compile_options(SudokuTests PRIVATE
+        /O0
+        --coverage
+      )
+      if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+        target_link_options(SudokuTests PRIVATE
+          /nodefaultlib:libcmt.lib # Warning LNK4098: conflict
+        )
+      else()
+        target_link_libraries(SudokuTests PRIVATE -nodefaultlib:libcmt.lib)
+      endif()
+      target_link_libraries(SudokuTests PRIVATE
+        ${PROFILE_RT}
+      )
+    else()
+      message(WARNING "Could not find the llvm compiler-rt profile library.")
+    endif()
+  elseif(NOT MSVC AND
+    CMAKE_CXX_COMPILER_ID STREQUAL GNU OR
+    CMAKE_CXX_COMPILER_ID STREQUAL Clang OR
+    CMAKE_CXX_COMPILER_ID STREQUAL AppleClang
+  )
+    message(STATUS "Compile with code coverage information.")
     target_compile_options(SudokuTests PRIVATE
       -O0        # no optimization
       -g         # add debug info
       --coverage
-    ) 
-    if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+    )
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
       target_link_options(SudokuTests PRIVATE
         --coverage
       )
