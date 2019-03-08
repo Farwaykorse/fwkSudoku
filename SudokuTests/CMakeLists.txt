@@ -122,11 +122,13 @@ if(MSVC) # MSVC or simulating MSVC
         /wd4275 # gtest (non dll-interface class used as base for dll-interface)
       >
       $<$<CXX_COMPILER_ID:Clang>:
+	    -Wno-deprecated # gtest
         -Wno-deprecated-declarations  # gtest: fopen, strncpy, chdir, ...
         -Wno-language-extension-token
         -Wno-missing-noreturn
         -Wno-shift-sign-overflow
         -Wno-undef
+		-Wno-unused-parameter # gtest
       >
   )
 else()
