@@ -189,7 +189,12 @@ endif()
 ##====--------------------------------------------------------------------====##
 if(CODE_COVERAGE)
   if(MSVC AND CMAKE_CXX_COMPILER_ID STREQUAL Clang)
-    if(DEFINED CMAKE_CXX_COMPILER)
+    if(CMAKE_CXX_FLAGS MATCHES "-m(32|64)")
+	  # Changed target architecture. Assuming cross-compilation.
+	  # No matching profile-rt library provided with the official pre-build
+	  # binaries for Windows.
+      message(WARNING "No coverage support for cross-compilation.")
+    elseif(DEFINED CMAKE_CXX_COMPILER AND CMAKE_CXX_COMPILER)
       string(REPLACE "/bin/clang-cl.exe" "" LLVM_ROOT "${CMAKE_CXX_COMPILER}")
       set(LLVM_COMPILER-RT_PATH
         # Assumed path relative to the compiler (valid for v7.0.1)
