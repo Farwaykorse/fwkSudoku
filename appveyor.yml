@@ -277,12 +277,9 @@ before_build:
       $env:CXX = "clang-cl"
       $env:CFLAGS   = "$env:CFLAGS -Werror"
       $env:CXXFLAGS = "$env:CXXFLAGS -Werror"
-      if ("$env:PLATFORM" -eq "x86") {
+      if ("$env:PLATFORM" -eq "x86") { # Cross-compile to x86
         $env:CFLAGS   = "$env:CFLAGS -m32";
         $env:CXXFLAGS = "$env:CXXFLAGS -m32";
-      } else {
-        $env:CFLAGS   = "$env:CFLAGS -m64";
-        $env:CXXFLAGS = "$env:CXXFLAGS -m64";
       }
     } else {
       $env:CFLAGS   = "$env:CFLAGS /WX"
