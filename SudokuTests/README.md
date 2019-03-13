@@ -21,14 +21,6 @@ Most of these are related to the use of Google Test.
 Instructions to set-up a unit-testing project, in conjunction with
 [vcpkg](https://github.com/Microsoft/vcpkg):
 - Add reference to the project under test (context menu)
-- Add: Configuration Properties > Linker > Input > Additional Dependencies:
-  `$(VcpkgRoot)debug\lib\manual-link\gtestd.lib` // Debug-mode (note the 'd')
-  `$(VcpkgRoot)lib\manual-link\gtest.lib`        // Release-mode
-  ** disabled: **
-  `$(VcpkgRoot)debug\lib\manual-link\gtest_maind.lib` // If no custom main()
-  `$(VcpkgRoot)lib\manual-link\gtest_main.lib`        // If no custom main()
-  *Note*: if gmock is used, `gmock.lib` contains all of `gtest.lib`,
-  therefore only one of these can be included at any time.
 
 <!--------------------------------------------------------><a id="compiler"></a>
 ## Compiler settings
