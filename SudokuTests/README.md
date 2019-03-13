@@ -13,7 +13,6 @@ Most of these are related to the use of Google Test.
 - [Compiler settings](#compiler)
 - [Static Analysers](#analysers)
   - [Clang-Tidy](#tidy)
-- [Code Coverage](#cover)
 - [Notes](#notes)
 
 <!-----------------------------------------------------><a id="vs_settings"></a>
@@ -142,15 +141,6 @@ disabled for this project.
 - **hicpp-vararg** == `cppcoreguidelines-pro-type-vararg`
 - **modernize-use-equals-delete**
   Every TEST: use '= delete' to prohibit calling of a special member function 
-
-<!-----------------------------------------------------------><a id="cover"></a>
-## Code Coverage ##
-<!----------------------------------------------------------------------------->
-Code coverage checks using OpenCppCoverage.
-https://opencppcoverage.codeplex.com
-Run by the PowerShell script: coverage.ps1
-
-Generated report available in `SudokuTests\Coverage\[Debug]\index.html`
 
 
 <!-----------------------------------------------------------><a id="notes"></a>
