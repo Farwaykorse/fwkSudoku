@@ -15,6 +15,7 @@ skip_commits:
   files:
   - .git*
   - .travis.yml
+  - .codecov.yml
   - docs/
   - LICENSE
   - '**/.clang-*'
