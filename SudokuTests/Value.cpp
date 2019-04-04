@@ -350,9 +350,10 @@ TEST(Value, to_Value)
 	EXPECT_THROW(to_Value<3>(char{10}), std::domain_error);
 
 	// Will not compile when elements cannot be represented.
-	[[maybe_unused]] Value U =
-		to_Value<15>(static_cast<unsigned char>(0));  // N < 16
-	[[maybe_unused]] Value V = to_Value<11>(char{0}); // N < 12
+	using u_char = unsigned char;
+
+	[[maybe_unused]] Value U = to_Value<15>(u_char{0}); // N < 16
+	[[maybe_unused]] Value V = to_Value<11>(char{0});   // N < 12
 }
 
 } // namespace SudokuTests::ValueTest
