@@ -83,7 +83,7 @@ public:
 	[[nodiscard]] constexpr reference front() noexcept { return (*this)[0]; }
 	[[nodiscard]] constexpr reference back() noexcept
 	{
-		return (*this)[size() - 1];
+		return (*this)[static_cast<index>(size()) - 1];
 	}
 	[[nodiscard]] constexpr reference operator[](const index elem) noexcept
 	{

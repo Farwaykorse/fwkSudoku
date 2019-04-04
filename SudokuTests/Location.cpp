@@ -1242,7 +1242,7 @@ TEST(Location_Utilities, get_same_section)
 	std::vector<Location<3>> list1{};
 	// std::vector<Location<3>> list2{};
 	std::vector<Location<3>> list3{};
-	for (int i{}; i < 9; ++i)
+	for (gsl::index i{}; i < 9; ++i)
 	{
 		list1.emplace_back(Location<3>{i});
 		// list2.emplace_back(Location<3>{i*3});
