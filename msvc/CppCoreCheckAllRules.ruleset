@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="C++ Core Check All Rules" Description="Custom rule set combining all C++ Core Check Rules and the Native Recommended Rules." ToolsVersion="15.0">
+<RuleSet Name="C++ Core Check All Rules" Description="Custom rule set combining all C++ Core Check Rules and the Native Recommended Rules." ToolsVersion="16.0">
   <Include Path="CppCoreCheckRules.ruleset" Action="Default" />
   <Include Path="NativeRecommendedRules.ruleset" Action="Default" />
 </RuleSet>
