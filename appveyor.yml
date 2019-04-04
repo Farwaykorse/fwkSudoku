@@ -64,31 +64,38 @@ environment:
     # vcpkg
     TOOLCHAIN_FILE: 'C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake'
 ## /Create_Matrix
-##====-----------------
+
 ## Remove_from_Matrix
 matrix:
   exclude:
   # Not supported by script / invalid combination:
+  - image: Visual Studio 2013
   - image: Visual Studio 2015
     configuration: LLVM_Debug
     USE_BUILDSYSTEM: MSBuild
   - image: Visual Studio 2015
     configuration: LLVM_Release
     USE_BUILDSYSTEM: MSBuild
+  # MSBuild solution version (VS2019)
   - image: Visual Studio 2015
     USE_MSBUILD_SOLUTION: true
+  - image: Visual Studio 2017
+    USE_MSBUILD_SOLUTION: true
+  # MSBuild generator for VS2019 requires CMake v3.14
+  - image: Visual Studio 2019 Preview
+    USE_BUILDSYSTEM: MSBuild
   # Reduce preview build to: Ninja - x64 - Release & LLVM_Release
   - image: Visual Studio 2019 Preview
+    USE_BUILDSYSTEM: Ninja
     platform: x86
   - image: Visual Studio 2019 Preview
+    USE_BUILDSYSTEM: Ninja
     configuration: Debug
   - image: Visual Studio 2019 Preview
+    USE_BUILDSYSTEM: Ninja
     configuration: LLVM_Debug
-  - image: Visual Studio 2019 Preview
-    USE_MSBUILD_SOLUTION: true
-    configuration: LLVM_Release
 ## /Remove_from_Matrix
-##====-----------------
+
 ## Modify_Matrix
   allow_failures:
   # CMake -> MSBuild Failing error suppression:
