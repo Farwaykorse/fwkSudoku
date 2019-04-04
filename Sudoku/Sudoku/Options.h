@@ -26,6 +26,7 @@ namespace Sudoku
 template<int E>
 class Options
 {
+	static_assert(E >= 1);
 	using bitset = std::bitset<E + 1>;
 
 public:

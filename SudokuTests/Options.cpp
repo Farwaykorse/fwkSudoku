@@ -199,7 +199,6 @@ TEST(Options, Construction)
 		static_assert(noexcept(Options<4>()), "Options() should be noexcept");
 		static_assert(noexcept(Options<4>{}), "Options{} should be noexcept");
 
-		EXPECT_EQ(Options<0>().DebugString(), "1");
 		EXPECT_EQ(Options<1>().DebugString(), "11");
 		EXPECT_EQ(Options<2>().DebugString(), "111");
 		EXPECT_EQ(Options<4>().DebugString(), "11111");
