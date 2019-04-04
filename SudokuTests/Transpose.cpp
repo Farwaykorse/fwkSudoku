@@ -55,7 +55,7 @@ TEST(Transpose, row_col)
 #else
 	static_assert(noexcept(transpose_row_col(row)));
 #endif // __ICL
-	Board<int, 2> col = transpose_row_col(row);
+	const Board<int, 2> col = transpose_row_col(row);
 	EXPECT_EQ(row[L{0}], col[L{0}]);
 	EXPECT_EQ(row[L{1}], (col[L{1, 0}]));
 	EXPECT_EQ(row[L{2}], (col[L{2, 0}]));
@@ -69,7 +69,7 @@ TEST(Transpose, row_col)
 	EXPECT_EQ((row[L{2, 2}]), (col[L{2, 2}]));
 	EXPECT_EQ((row[L{2, 3}]), (col[L{3, 2}]));
 
-	Board<int, 2> undo = transpose_row_col(col);
+	const Board<int, 2> undo = transpose_row_col(col);
 	EXPECT_EQ(undo, row);
 }
 
@@ -90,7 +90,7 @@ TEST(Transpose, row_col3)
 			63, 64, 65, 66, 67, 68, 69, 70, 71, //
 			72, 73, 74, 75, 76, 77, 78, 79, 80  //
 		};
-		Board<int, 3> col = transpose_row_col(row);
+		const Board<int, 3> col = transpose_row_col(row);
 		EXPECT_EQ(row[L{0}], col[L{0}]);
 		EXPECT_EQ(row[L{1}], (col[L{1, 0}]));
 		EXPECT_EQ(row[L{2}], (col[L{2, 0}]));
@@ -104,7 +104,7 @@ TEST(Transpose, row_col3)
 		EXPECT_EQ((row[L{2, 2}]), (col[L{2, 2}]));
 		EXPECT_EQ((row[L{2, 3}]), (col[L{3, 2}]));
 
-		Board<int, 3> undo = transpose_row_col(col);
+		const Board<int, 3> undo = transpose_row_col(col);
 		EXPECT_EQ(undo, row);
 	}
 }
@@ -116,7 +116,7 @@ TEST(Transpose, row_block2)
 
 	const Board<int, 2> row{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-	Board<int, 2> block = transpose_row_block(row);
+	const Board<int, 2> block = transpose_row_block(row);
 	EXPECT_EQ(row[L{0}], (block[B{0, 0}]));
 	EXPECT_EQ(row[L{1}], (block[B{0, 1}]));
 	EXPECT_EQ(row[L{2}], (block[B{0, 2}]));
@@ -130,7 +130,7 @@ TEST(Transpose, row_block2)
 	EXPECT_EQ((row[L{2, 2}]), (block[B{2, 2}]));
 	EXPECT_EQ((row[L{2, 3}]), (block[B{2, 3}]));
 
-	Board<int, 2> undo = transpose_row_block(block);
+	const Board<int, 2> undo = transpose_row_block(block);
 	EXPECT_EQ(undo, row);
 }
 
@@ -152,7 +152,7 @@ TEST(Transpose, row_block3)
 			63, 64, 65, 66, 67, 68, 69, 70, 71, //
 			72, 73, 74, 75, 76, 77, 78, 79, 80  //
 		};
-		Board<int, 3> block = transpose_row_block(row);
+		const Board<int, 3> block = transpose_row_block(row);
 		EXPECT_EQ(row[L{0}], (block[B{0, 0}]));
 		EXPECT_EQ(row[L{1}], (block[B{0, 1}]));
 		EXPECT_EQ(row[L{2}], (block[B{0, 2}]));
@@ -167,7 +167,7 @@ TEST(Transpose, row_block3)
 		EXPECT_EQ((row[L{2, 2}]), (block[B{2, 2}]));
 		EXPECT_EQ((row[L{2, 3}]), (block[B{2, 3}]));
 
-		Board<int, 3> undo = transpose_row_block(block);
+		const Board<int, 3> undo = transpose_row_block(block);
 		EXPECT_EQ(undo, row);
 	}
 }
@@ -189,22 +189,22 @@ TEST(Transpose, wrong_order)
 		72, 73, 74, 75, 76, 77, 78, 79, 80  //
 	};
 	// first
-	Board<int, 3> col = transpose_row_col(row);
+	const Board<int, 3> col = transpose_row_col(row);
 	EXPECT_EQ((row[L{1, 3}]), (col[L{3, 1}]));
 
 	// second
-	Board<int, 3> block_col = transpose_row_block(col);
+	const Board<int, 3> block_col = transpose_row_block(col);
 	EXPECT_EQ((col[L{1, 3}]), (block_col[B{1, 3}]));
 
 	// Trying to undo first, while still in second configuration.
-	Board<int, 3> block_row = transpose_row_col(block_col);
+	const Board<int, 3> block_row = transpose_row_col(block_col);
 	// Trying to undo second, while in a new unique situation.
-	Board<int, 3> row2 = transpose_row_block(block_row);
+	const Board<int, 3> row2 = transpose_row_block(block_row);
 	// NOT EQUAL to starting situation.
 	EXPECT_NE(row, row2);
 
 	// Undo all to get back to start.
-	Board<int, 3> row3 = transpose_row_block(
+	const Board<int, 3> row3 = transpose_row_block(
 		transpose_row_col(transpose_row_block(transpose_row_col(row2))));
 	EXPECT_EQ(row, row3);
 }
@@ -305,12 +305,11 @@ TEST(Transpose, throwing_move)
 {
 	using L = Location<3>;
 
-
-	Board<test_class::nomove, 3> board{};
+	Board<test_class::nomove, 3> const board{};
 	EXPECT_EQ(board[L{8}], test_class::nomove());
-	Board<test_class::nomove, 3> col = transpose_row_col(board);
+	Board<test_class::nomove, 3> const col = transpose_row_col(board);
 	EXPECT_EQ(col[L{1}], test_class::nomove());
-	Board<test_class::nomove, 3> block = transpose_row_block(board);
+	Board<test_class::nomove, 3> const block = transpose_row_block(board);
 	EXPECT_EQ(block[L{3}], test_class::nomove());
 }
 

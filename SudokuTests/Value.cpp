@@ -352,8 +352,8 @@ TEST(Value, to_Value)
 	// Will not compile when elements cannot be represented.
 	using u_char = unsigned char;
 
-	[[maybe_unused]] Value U = to_Value<15>(u_char{0}); // N < 16
-	[[maybe_unused]] Value V = to_Value<11>(char{0});   // N < 12
+	[[maybe_unused]] const Value U = to_Value<15>(u_char{0}); // N < 16
+	[[maybe_unused]] const Value V = to_Value<11>(char{0});   // N < 12
 }
 
 } // namespace SudokuTests::ValueTest

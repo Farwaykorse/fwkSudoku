@@ -78,7 +78,7 @@ static void
 			tSolver_total += tSolver;
 			tTotal_total += tTotal;
 		}
-		auto time_in_microsec = [](duration t_in) {
+		const auto time_in_microsec = [](duration t_in) {
 			return std::chrono::duration_cast<std::chrono::microseconds>(t_in)
 				.count();
 		};
@@ -90,7 +90,7 @@ static void
 		std::cout << "Total:\t" << time_in_microsec(tTotal) << " us"
 				  << " (" << time_in_microsec(tTotal_total) << " us)\n";
 
-		auto result = Sudoku::getResult(options);
+		const auto result = Sudoku::getResult(options);
 		if (result == answer)
 		{
 			std::cout << " : ) Found the answer!\n";
@@ -147,7 +147,7 @@ static void
 			tSolver_total += tSolver;
 			tTotal_total += tTotal;
 		}
-		auto time_in_microsec = [](duration t_in) {
+		const auto time_in_microsec = [](duration t_in) {
 			return std::chrono::duration_cast<std::chrono::microseconds>(t_in)
 				.count();
 		};
@@ -159,7 +159,7 @@ static void
 		std::cout << "Total:\t" << time_in_microsec(tTotal) << " us"
 				  << " (" << time_in_microsec(tTotal_total) << " us)\n";
 
-		auto result = Sudoku::getResult(options);
+		const auto result = Sudoku::getResult(options);
 		if (result == answer)
 		{
 			std::cout << " : ) Found the answer!\n";
