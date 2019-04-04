@@ -258,13 +258,13 @@ const T& Board<T, N>::at(const index elem) const
 }
 
 template<typename T, int N>
-constexpr T& Board<T, N>::operator[](Location loc) noexcept
+constexpr T& Board<T, N>::operator[](const Location loc) noexcept
 {
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
 
 template<typename T, int N>
-constexpr T const& Board<T, N>::operator[](Location loc) const noexcept
+constexpr T const& Board<T, N>::operator[](const Location loc) const noexcept
 {
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
