@@ -937,15 +937,27 @@ TEST(Location_Utilities, Size_definitions)
 	static_assert(base_size<2> == 2);
 	static_assert(elem_size<2> == 4);
 	static_assert(full_size<2> == 16);
+#if defined(__ICL) && __ICL <= 1900
+	EXPECT_TRUE(base_size<2> == 2);
+	EXPECT_TRUE(elem_size<2> == 4);
+	EXPECT_TRUE(full_size<2> == 16);
+#else
 	EXPECT_EQ(base_size<2>, 2);
 	EXPECT_EQ(elem_size<2>, 4);
 	EXPECT_EQ(full_size<2>, 16);
+#endif // __ICL
 	static_assert(base_size<3> == 3);
 	static_assert(elem_size<3> == 9);
 	static_assert(full_size<3> == 81);
+#if defined(__ICL) && __ICL <= 1900
+	EXPECT_TRUE(base_size<3> == 3);
+	EXPECT_TRUE(elem_size<3> == 9);
+	EXPECT_TRUE(full_size<3> == 81);
+#else
 	EXPECT_EQ(base_size<3>, 3);
 	EXPECT_EQ(elem_size<3>, 9);
 	EXPECT_EQ(full_size<3>, 81);
+#endif // __ICL
 	static_assert(base_size<4> == 4);
 	static_assert(elem_size<4> == 16);
 	static_assert(full_size<4> == 256);
