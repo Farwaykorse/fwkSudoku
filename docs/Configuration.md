@@ -8,8 +8,11 @@ Supplying the motivation and discussion and to keep track of any exceptions.
 No historic data is kept (since it is part of the git log), unless a setting is
 considered a temporary fix.
 
-This document reflects the MSBuild project configurations, supporting only the
-most recent versions of the used toolchains at the time of commit.
+This document reflects the MSBuild project configurations.
+The Visual Studio solution contains configurations for:
+- VC++ v142 (Visual Studio 2019)
+- LLVM/Clang (v6.0 or later) [link][LLVM-Extension-link]
+- Intel C++ Compiler 19.0 [link][Intel-cpp-link] (partial)
 
 The CMake configurations are kept in sync.
 With additional support for the toolchains used on the CI environments.  
@@ -127,7 +130,7 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 ```
 #### Links ####
 <!----------------------------------------------------------------------------->
-- [Visual C++ compiler options (documentation)](https://docs.microsoft.com/en-gb/cpp/build/reference/compiler-options-listed-by-category)
+- [Visual C++ compiler options (documentation)](https://docs.microsoft.com/cpp/build/reference/compiler-options-listed-by-category)
 - [Visual C++ conformance mode, using the permissive- switch](https://blogs.msdn.microsoft.com/vcblog/2016/11/16/permissive-switch/)
   - Adds [two-phase name lookup](https://blogs.msdn.microsoft.com/vcblog/2017/09/11/two-phase-name-lookup-support-comes-to-msvc/)
 - [Security features](https://blogs.msdn.microsoft.com/vcblog/2017/06/28/security-features-in-microsoft-visual-c/)
@@ -419,5 +422,7 @@ Notes on the motivation behind the disabling of some of the checks.
 ----
 [top](#top)
 
-[AppVeyor-link]:  https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master
-[Travis-link]:    https://travis-ci.com/Farwaykorse/fwkSudoku/branches
+[AppVeyor-link]:       https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master
+[Travis-link]:         https://travis-ci.com/Farwaykorse/fwkSudoku/branches
+[LLVM-extension-link]: https://marketplace.visualstudio.com/items?itemName=LLVMExtensions.llvm-toolchain
+[Intel-cpp-link]:      https://software.intel.com/c-compilers/
