@@ -174,7 +174,7 @@ matrix:
         - g++-7
 
   - name: Clang-4.0 Debug
-    if: branch =~ /^(master|[Tt]ravis.*)$/
+    if: branch =~ /^[Tt]ravis.*$/
     dist: xenial
     env:
     - C_compiler: clang-4.0
@@ -212,7 +212,7 @@ matrix:
         - gcc@7 # vcpkg requires gcc-7 or better
 
   - name: AppleClang Xcode-9.4
-    if: branch =~ /^(master|[Tt]ravis.*)$/
+    if: branch =~ /^[Tt]ravis.*$/
     os: osx
     osx_image: xcode9.4 # AppleClang 9.1.0 same compiler as Xcode 9.3
     env:
