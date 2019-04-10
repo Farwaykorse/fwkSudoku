@@ -211,7 +211,7 @@ matrix:
 before_install:
 - |
   # Setup
-  mkdir -p ~/tools && cd ~/tools
+  mkdir -p ~/tools
   if [[ ${C_compiler:-} ]]; then   export CC=${C_compiler:?}; fi
   if [[ ${CXX_compiler:-} ]]; then export CXX=${CXX_compiler:?}; fi
   if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
@@ -221,6 +221,7 @@ before_install:
   # Install Ninja-build (if not installed)
   if [[ ! -x "$(command -v ninja)" ]]; then
   ( set -euxo pipefail
+    cd ~/tools
     NINJA_VER="v1.9.0"
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
       file_name="ninja-linux.zip"
@@ -231,7 +232,6 @@ before_install:
     fi
     echo "-- Install Ninja-build..."
     NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
-    cd ~/tools
     wget -q "${NINJA_URL}" --tries=3 --timeout 90 -nc
     sum=$(sha512sum ${file_name})
     if [[ ${sum:0:128} = ${NINJA_SHA512} ]]; then
@@ -251,6 +251,7 @@ before_install:
   # Install Mozilla/grcov
   if [[ ${Coverage:-} && ${Coverage} == "grcov" ]]; then
   ( set -euxo pipefail
+    cd ~/tools
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
       GRCOV_TAG="v0.4.1"
       GRCOV_SHA512="dfc1e9899694109ce82e46fb9184454340b710bb2cff29feb4ada917493ee681c4aff1cca3c6a0ad3b08e4f7a85e5c4c63fe9580171710d1782e5df15f45c57e"
@@ -281,8 +282,8 @@ before_install:
   fi
 - |
   # Download vcpkg
-  cd ~/tools
   ( set -euo pipefail
+    cd ~/tools
     git clone --depth=1 --branch=master --quiet https://github.com/Microsoft/vcpkg.git
     mv -f -t ./vcpkg ~/tools/.cache/vcpkg/* || echo "No cached files for vcpkg."
   )
@@ -290,6 +291,7 @@ before_install:
 - |
   # Install/Update vcpkg
   ( set -euxo pipefail
+    cd ~/tools
     if [[ ! -x "$(command -v vcpkg)" ||
       ( $(vcpkg update) == 'Warning: Different source'*'for vcpkg' ) ]]
     then
@@ -300,7 +302,7 @@ before_install:
       elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
         eval "CC=gcc-7 && CXX=g++-7" # Minimum requirement vcpkg on OSX
       fi
-      ~/tools/vcpkg/bootstrap-vcpkg.sh
+      ./vcpkg/bootstrap-vcpkg.sh
     fi
   )
 - |
@@ -356,13 +358,11 @@ before_script:
   fi
 
 script:
-- >
-  cd "${TRAVIS_BUILD_DIR}/build"
+- cd ./build
 - cmake ${CMakeGenFlags[@]:?} ..
 - cmake --build . --config ${CONFIGURATION:-Debug} -- ${GeneratorFlags}
 - ctest -j $(nproc) --output-on-failure
-- >
-  cd "${TRAVIS_BUILD_DIR}/build2"
+- cd ../build2
 - if [[ ${B_REL:-} ]]; then cmake ${CMakeGenFlags2[@]:?} ..; fi
 - if [[ ${B_REL:-} ]]; then cmake --build . --config Release -- ${GeneratorFlags}; fi
 - if [[ ${B_REL:-} ]]; then ctest -j $(nproc) --output-on-failure; fi
