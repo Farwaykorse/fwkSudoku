@@ -221,14 +221,15 @@ before_install:
   # Install Ninja-build (if not installed)
   if [[ ! -x "$(command -v ninja)" ]]; then
   ( set -euxo pipefail
-    NINJA_VER="v1.8.2"
+    NINJA_VER="v1.9.0"
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-      NINJA_SHA512="38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5"
+      file_name="ninja-linux.zip"
+      NINJA_SHA512="a9c1f73c03aef147f1f43f50936d282c3065d0b72e1776d533abe47193c8b87777f39147ecc12db7ed240fc86c2944b60a90fd8cfd886bbd856ee53ee2c18dd0"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
-      NINJA_SHA512=""
+      file_name="ninja-mac.zip"
+      NINJA_SHA512="0b83eb025e58bb5feea353c44ba3b746689163b3203fb766341d75e18ce7fcc81f22207ee9218e1aa084e22e0b267969f7c5d473d96951db81ac033ef0d897a8"
     fi
     echo "-- Install Ninja-build..."
-    file_name="ninja-${TRAVIS_OS_NAME}.zip"
     NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
     cd ~/tools
     wget -q "${NINJA_URL}" --tries=3 --timeout 90 -nc
