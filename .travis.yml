@@ -81,8 +81,41 @@ matrix:
         packages:
         - g++-7
 
-  - name: Clang-7
+  - name: Clang-8
     dist: xenial
+    env:
+    - C_compiler:   clang-8
+    - CXX_compiler: clang++-8
+    - Coverage: grcov
+    addons:
+      apt:
+        sources:
+        - llvm-toolchain-xenial-8
+        - ubuntu-toolchain-r-test
+        packages:
+        - clang-8
+        - g++-7
+
+  - name: Clang-8 libc++
+    dist: xenial
+    env:
+    - C_compiler:   clang-8
+    - CXX_compiler: clang++-8
+    - CXX_lib: libc++
+    - Coverage: grcov
+    addons:
+      apt:
+        sources:
+        - llvm-toolchain-xenial-8
+        - ubuntu-toolchain-r-test
+        packages:
+        - clang-8
+        - g++-7
+        - libc++-8-dev
+        - libc++abi-8-dev
+
+  - name: Clang-7
+    dist: xenial # Ships with Clang 7
     env:
     - C_compiler:   clang
     - CXX_compiler: clang++
