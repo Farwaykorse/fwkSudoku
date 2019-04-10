@@ -155,9 +155,21 @@ matrix:
         - clang-4.0
         - g++-7
 
+  - name: AppleClang Xcode-10.2
+    os: osx
+    osx_image: xcode10.2 # AppleClang 10.0.1
+    env:
+    - Coverage: grcov
+    addons:
+      homebrew:
+        packages:
+        - coreutils # for sha512sum & nproc
+        - ninja
+        - gcc@7 # vcpkg requires gcc-7 or later
+
   - name: AppleClang Xcode-10.1
     os: osx
-    osx_image: xcode10.1 # same compiler as Xcode 10.0
+    osx_image: xcode10.1 # AppleClang 10.0.0 same compiler as Xcode 10.0
     env:
     - Coverage: grcov
     addons:
@@ -170,7 +182,7 @@ matrix:
   - name: AppleClang Xcode-9.4
     if: branch = master
     os: osx
-    osx_image: xcode9.4 # same compiler as Xcode 9.3
+    osx_image: xcode9.4 # AppleClang 9.1.0 same compiler as Xcode 9.3
     env:
     - Coverage: grcov
     addons: &OSX-legacy
@@ -186,7 +198,7 @@ matrix:
     if: branch = master
     os: osx
     osx_image: xcode9
-    osx_image: xcode9 # same compiler in Xcode 9.0, 9.1 and 9.2
+    osx_image: xcode9 # AppleClang 9.1.0 same compiler in Xcode 9.0, 9.1 and 9.2
     env:
     - Coverage: grcov
     addons: *OSX-legacy
