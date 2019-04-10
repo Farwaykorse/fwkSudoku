@@ -163,7 +163,6 @@ matrix:
     addons:
       homebrew:
         packages:
-        - coreutils # for sha512sum & nproc
         - ninja
         - gcc@7 # vcpkg requires gcc-7 or later
 
@@ -175,7 +174,6 @@ matrix:
     addons:
       homebrew:
         packages:
-        - coreutils # for sha512sum & nproc
         - ninja
         - gcc@7 # vcpkg requires gcc-7 or better
 
@@ -188,7 +186,6 @@ matrix:
     addons: &OSX-legacy
       homebrew:
         packages:
-        - coreutils # for sha512sum & nproc
         - ninja
         - gcc@7 # vcpkg requires gcc-7 or better
         - cmake # Xcode 9.4 and earlier have 3.11.4
