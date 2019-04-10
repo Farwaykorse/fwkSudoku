@@ -221,7 +221,7 @@ before_install:
   # Install Ninja-build (if not installed)
   if [[ ! -x "$(command -v ninja)" ]]; then
   ( set -euxo pipefail
-    cd ~/tools
+    pushd ~/tools
     NINJA_VER="v1.9.0"
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
       file_name="ninja-linux.zip"
@@ -283,15 +283,15 @@ before_install:
 - |
   # Download vcpkg
   ( set -euo pipefail
-    cd ~/tools
-    git clone --depth=1 --branch=master --quiet https://github.com/Microsoft/vcpkg.git
-    mv -f -t ./vcpkg ~/tools/.cache/vcpkg/* || echo "No cached files for vcpkg."
+    git clone --depth=1 --branch=master --quiet \
+      https://github.com/Microsoft/vcpkg.git $HOME/tools/vcpkg
+    mv -f -t ~/tools/vcpkg ~/tools/.cache/vcpkg/* ||
+      echo "No cached files for vcpkg."
   )
   export PATH=$PATH:$HOME/tools/vcpkg
 - |
   # Install/Update vcpkg
   ( set -euxo pipefail
-    cd ~/tools
     if [[ ! -x "$(command -v vcpkg)" ||
       ( $(vcpkg update) == 'Warning: Different source'*'for vcpkg' ) ]]
     then
@@ -302,7 +302,7 @@ before_install:
       elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
         eval "CC=gcc-7 && CXX=g++-7" # Minimum requirement vcpkg on OSX
       fi
-      ./vcpkg/bootstrap-vcpkg.sh
+      ~/tools/vcpkg/bootstrap-vcpkg.sh
     fi
   )
 - |
