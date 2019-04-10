@@ -236,6 +236,7 @@ before_install:
     sum=$(sha512sum ${file_name})
     if [[ ${sum:0:128} = ${NINJA_SHA512} ]]; then
       unzip -q ${file_name} -d ninja
+      chmod -c +x ninja/ninja
       echo "-- Install Ninja-build... done"
     else
       echo "Ninja hash has changed!"  >&2
@@ -266,6 +267,7 @@ before_install:
     if [[ ${sum} == ${GRCOV_SHA512} ]]; then
       mkdir -p ~/tools/grcov
       tar --extract --bzip2 --file=${file_name} --directory=grcov
+      chmod -c +x grcov/grcov
       rm ${file_name}
       echo "-- Install grcov... done"
     else
