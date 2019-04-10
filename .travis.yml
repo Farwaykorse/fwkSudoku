@@ -165,7 +165,7 @@ matrix:
         packages:
         - coreutils # for sha512sum & nproc
         - ninja
-        - gcc6 # vcpkg requires gcc-6 or better
+        - gcc@7 # vcpkg requires gcc-7 or better
 
   - name: AppleClang Xcode-9.4
     if: branch = master
@@ -178,7 +178,7 @@ matrix:
         packages:
         - coreutils # for sha512sum & nproc
         - ninja
-        - gcc6 # vcpkg requires gcc-6 or better
+        - gcc@7 # vcpkg requires gcc-7 or better
         - cmake # Xcode 9.4 and earlier have 3.11.4
         update: true
 
@@ -285,7 +285,7 @@ before_install:
       then
         eval "CC=gcc-7 && CXX=g++-7" # Minimum requirement vcpkg on Linux
       elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
-        eval "CC=gcc-6 && CXX=g++-6" # Minimum requirement vcpkg on OSX
+        eval "CC=gcc-7 && CXX=g++-7" # Minimum requirement vcpkg on OSX
       fi
       ~/tools/vcpkg/bootstrap-vcpkg.sh
     fi
