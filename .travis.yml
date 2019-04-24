@@ -256,10 +256,10 @@ before_install:
     NINJA_VER="v1.9.0"
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
       file_name="ninja-linux.zip"
-      NINJA_SHA512="a9c1f73c03aef147f1f43f50936d282c3065d0b72e1776d533abe47193c8b87777f39147ecc12db7ed240fc86c2944b60a90fd8cfd886bbd856ee53ee2c18dd0"
+      NINJA_SHA512="751fd86520a1a38fb47baadf4a46ab49f9ebb11d6ff9c01e71326564ebf10f141ca2627620e315fcab82db1493a30123f11194f41226241d80413d5008acfc59"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
       file_name="ninja-mac.zip"
-      NINJA_SHA512="0b83eb025e58bb5feea353c44ba3b746689163b3203fb766341d75e18ce7fcc81f22207ee9218e1aa084e22e0b267969f7c5d473d96951db81ac033ef0d897a8"
+      NINJA_SHA512="ec2294b430b89134f54f3388bafd760697c7eb33792bc094416b918371619e79592629973a60fcc35335a92eaa9ed84a41f2bc53c846eb8abf3422d4322cd3e5"
     fi
     echo "-- Install Ninja-build..."
     NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
