@@ -108,7 +108,6 @@ private:
 	// 0th bit is "need to solve":
 	// false if answer has been set = inverse of answer
 	bitset data_{};
-
 }; // class Options
 
 //====---- free-functions ------------------------------------------------====//

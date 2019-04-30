@@ -140,7 +140,6 @@ public:
 
 private:
 	std::array<T, Size> board_{};
-
 }; // class Board
 
 //===--- free-functions ---------------------------------------------------===//

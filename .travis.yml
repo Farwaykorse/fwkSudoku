@@ -228,7 +228,6 @@ matrix:
   - name: AppleClang Xcode-9
     if: branch =~ /^(master|[Tt]ravis.*)$/
     os: osx
-    osx_image: xcode9
     osx_image: xcode9 # AppleClang 9.1.0 same compiler in Xcode 9.0, 9.1 and 9.2
     env:
     - Coverage: grcov
