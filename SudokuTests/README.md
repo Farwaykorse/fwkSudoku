@@ -13,7 +13,6 @@ Most of these are related to the use of Google Test.
 - [Compiler settings](#compiler)
 - [Static Analysers](#analysers)
   - [Clang-Tidy](#tidy)
-- [Code Coverage](#cover)
 - [Notes](#notes)
 
 <!-----------------------------------------------------><a id="vs_settings"></a>
@@ -22,14 +21,6 @@ Most of these are related to the use of Google Test.
 Instructions to set-up a unit-testing project, in conjunction with
 [vcpkg](https://github.com/Microsoft/vcpkg):
 - Add reference to the project under test (context menu)
-- Add: Configuration Properties > Linker > Input > Additional Dependencies:
-  `$(VcpkgRoot)debug\lib\manual-link\gtestd.lib` // Debug-mode (note the 'd')
-  `$(VcpkgRoot)lib\manual-link\gtest.lib`        // Release-mode
-  ** disabled: **
-  `$(VcpkgRoot)debug\lib\manual-link\gtest_maind.lib` // If no custom main()
-  `$(VcpkgRoot)lib\manual-link\gtest_main.lib`        // If no custom main()
-  *Note*: if gmock is used, `gmock.lib` contains all of `gtest.lib`,
-  therefore only one of these can be included at any time.
 
 <!--------------------------------------------------------><a id="compiler"></a>
 ## Compiler settings
@@ -70,11 +61,13 @@ Promote to errors:
 #### Custom settings for precompiled.cpp
 Disabled warnings:
 ````
--Wno-deprecated-declarations gTest uses deprecated POSIX names (i.e. chdir)
--Wno-undef
+-Wno-deprecated               gTest
+-Wno-deprecated-declarations  gTest uses deprecated POSIX names (i.e. chdir)
 -Wno-language-extension-token
 -Wno-missing-noreturn
 -Wno-shift-sign-overflow
+-Wno-undef                    gTest
+-Wno-unused-parameter         gTest
 ````
 #### Custom settings per file
 Disabled warnings:  
@@ -140,15 +133,6 @@ disabled for this project.
 - **hicpp-vararg** == `cppcoreguidelines-pro-type-vararg`
 - **modernize-use-equals-delete**
   Every TEST: use '= delete' to prohibit calling of a special member function 
-
-<!-----------------------------------------------------------><a id="cover"></a>
-## Code Coverage ##
-<!----------------------------------------------------------------------------->
-Code coverage checks using OpenCppCoverage.
-https://opencppcoverage.codeplex.com
-Run by the PowerShell script: coverage.ps1
-
-Generated report available in `SudokuTests\Coverage\[Debug]\index.html`
 
 
 <!-----------------------------------------------------------><a id="notes"></a>

@@ -56,16 +56,20 @@ namespace compiletime
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
 #if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__clang__) && __clang_major__ < 6)
+	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
-#endif // __ICL
+#endif
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 
 	static_assert(std::is_default_constructible_v<typeT>);
 	static_assert(std::is_nothrow_default_constructible_v<typeT>);
@@ -195,7 +199,6 @@ TEST(Options, Construction)
 		static_assert(noexcept(Options<4>()), "Options() should be noexcept");
 		static_assert(noexcept(Options<4>{}), "Options{} should be noexcept");
 
-		EXPECT_EQ(Options<0>().DebugString(), "1");
 		EXPECT_EQ(Options<1>().DebugString(), "11");
 		EXPECT_EQ(Options<2>().DebugString(), "111");
 		EXPECT_EQ(Options<4>().DebugString(), "11111");
@@ -906,7 +909,14 @@ TEST(Options, Operators)
 	TMP.clear();
 	EXPECT_TRUE(TMP[Value{0}] = true);
 	EXPECT_TRUE(TMP[Value{0}] == true);
-	EXPECT_FALSE(TMP[Value{0}].flip());
+	// std::bitset<N>::reference::flip()
+	static_assert(
+		std::is_same_v<std::bitset<5>::reference, decltype(TMP[Value{0}])>);
+	// Fails with libc++
+	// static_assert(std::is_same_v<
+	//			  std::bitset<5>::reference&,
+	//			  decltype(TMP[Value{0}].flip())>);
+	TMP[Value{0}].flip();
 	EXPECT_TRUE(TMP[Value{0}] == false);
 	// Options& XOR(Options&)			XOR
 	static_assert(noexcept(TMP.XOR(TE.O_1)));

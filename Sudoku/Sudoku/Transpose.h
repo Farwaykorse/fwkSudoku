@@ -120,7 +120,7 @@ Board<T, N> transpose_row_block(Board<T, N>&& board) noexcept(
 {
 	for (int i{0}; i < elem_size<N>; ++i)
 	{
-		auto start = [](int x) constexpr
+		const auto start = [](int x) constexpr
 		{
 			return (x % base_size<N> + 1) * base_size<N>;
 		};

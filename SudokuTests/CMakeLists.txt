@@ -2,7 +2,7 @@
 ## Tests for library Sudoku.
 ##
 ##====--------------------------------------------------------------------====##
-cmake_minimum_required(VERSION 3.10.3...3.13)
+cmake_minimum_required(VERSION 3.12...3.13)
 
 project(fwkSudokuTests LANGUAGES CXX)
 
@@ -122,11 +122,13 @@ if(MSVC) # MSVC or simulating MSVC
         /wd4275 # gtest (non dll-interface class used as base for dll-interface)
       >
       $<$<CXX_COMPILER_ID:Clang>:
+	    -Wno-deprecated # gtest
         -Wno-deprecated-declarations  # gtest: fopen, strncpy, chdir, ...
         -Wno-language-extension-token
         -Wno-missing-noreturn
         -Wno-shift-sign-overflow
         -Wno-undef
+		-Wno-unused-parameter # gtest
       >
   )
 else()
@@ -147,6 +149,11 @@ else()
       $<$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>:
         -Wno-missing-braces
         -Wno-zero-as-null-pointer-constant
+      >
+    >
+    $<$<CXX_COMPILER_ID:AppleClang>:
+      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10>:
+        -Wno-missing-braces
       >
     >
     $<$<CXX_COMPILER_ID:GNU>:
@@ -173,7 +180,9 @@ else()
     Board.cpp
     Board_Iterators.cpp
     OPTIONS
-      $<$<CXX_COMPILER_ID:Clang>:-Wno-unevaluated-expression>
+      $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
+        -Wno-unevaluated-expression
+      >
   )
 endif()
 

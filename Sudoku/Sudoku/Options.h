@@ -26,6 +26,7 @@ namespace Sudoku
 template<int E>
 class Options
 {
+	static_assert(E >= 1);
 	using bitset = std::bitset<E + 1>;
 
 public:
@@ -107,7 +108,6 @@ private:
 	// 0th bit is "need to solve":
 	// false if answer has been set = inverse of answer
 	bitset data_{};
-
 }; // class Options
 
 //====---- free-functions ------------------------------------------------====//
@@ -531,7 +531,7 @@ template<int E>
 inline Options<E>& Options<E>::operator-=(const Options& other) noexcept
 {
 	assert(is_answer_fast(other)); // do not remove the answer-bit
-	Options tmp = ::Sudoku::XOR(*this, other);
+	const Options tmp = ::Sudoku::XOR(*this, other);
 	data_ &= tmp.data_;
 	return *this;
 }

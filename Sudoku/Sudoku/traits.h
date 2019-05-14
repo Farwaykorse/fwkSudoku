@@ -23,7 +23,6 @@ inline namespace traits
 	template<typename T>
 	inline static constexpr bool is_int_v = is_int<T>::value;
 
-
 	//====----------------------------------------------------------------====//
 	// Iterator, helper functions to check properties
 	template<typename Itr>
@@ -53,6 +52,5 @@ inline namespace traits
 	template<typename ItrT, typename TargetT>
 	constexpr bool iterator_to = std::
 		is_same_v<typename std::iterator_traits<ItrT>::value_type, TargetT>;
-
 } // namespace traits
 } // namespace Sudoku

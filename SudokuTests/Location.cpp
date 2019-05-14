@@ -42,7 +42,8 @@ namespace compiletime
 	static_assert(not std::is_trivial_v<typeT>);
 #if defined(__clang__) || defined(__GNUC__)
 	static_assert(std::is_trivially_copyable_v<typeT>);
-#if not(defined(__clang__) && __clang_major__ < 6)
+#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
+	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif
 #else
@@ -56,9 +57,12 @@ namespace compiletime
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -155,7 +159,8 @@ namespace Location_Block_compiletime
 #else
 	static_assert(not std::is_trivially_copyable_v<typeT>);
 #if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__clang__) && __clang_major__ < 6)
+	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(not std::has_unique_object_representations_v<typeT>);
 #endif // __ICL && ! clang before 6.0
 #endif // __GNUC__
@@ -164,10 +169,12 @@ namespace Location_Block_compiletime
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -930,15 +937,27 @@ TEST(Location_Utilities, Size_definitions)
 	static_assert(base_size<2> == 2);
 	static_assert(elem_size<2> == 4);
 	static_assert(full_size<2> == 16);
+#if defined(__ICL) && __ICL <= 1900
+	EXPECT_TRUE(base_size<2> == 2);
+	EXPECT_TRUE(elem_size<2> == 4);
+	EXPECT_TRUE(full_size<2> == 16);
+#else
 	EXPECT_EQ(base_size<2>, 2);
 	EXPECT_EQ(elem_size<2>, 4);
 	EXPECT_EQ(full_size<2>, 16);
+#endif // __ICL
 	static_assert(base_size<3> == 3);
 	static_assert(elem_size<3> == 9);
 	static_assert(full_size<3> == 81);
+#if defined(__ICL) && __ICL <= 1900
+	EXPECT_TRUE(base_size<3> == 3);
+	EXPECT_TRUE(elem_size<3> == 9);
+	EXPECT_TRUE(full_size<3> == 81);
+#else
 	EXPECT_EQ(base_size<3>, 3);
 	EXPECT_EQ(elem_size<3>, 9);
 	EXPECT_EQ(full_size<3>, 81);
+#endif // __ICL
 	static_assert(base_size<4> == 4);
 	static_assert(elem_size<4> == 16);
 	static_assert(full_size<4> == 256);
@@ -1223,7 +1242,7 @@ TEST(Location_Utilities, get_same_section)
 	std::vector<Location<3>> list1{};
 	// std::vector<Location<3>> list2{};
 	std::vector<Location<3>> list3{};
-	for (int i{}; i < 9; ++i)
+	for (gsl::index i{}; i < 9; ++i)
 	{
 		list1.emplace_back(Location<3>{i});
 		// list2.emplace_back(Location<3>{i*3});
