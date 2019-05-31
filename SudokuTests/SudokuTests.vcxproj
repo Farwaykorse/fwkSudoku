@@ -239,6 +239,7 @@
       <EnableExpandedLineNumberInfo>true</EnableExpandedLineNumberInfo>
       <CCppSupport>Cpp17Support</CCppSupport>
       <DisableSpecificDiagnostics>304,383,981</DisableSpecificDiagnostics>
+      <LanguageStandard />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -284,6 +285,7 @@
       <EnableExpandedLineNumberInfo>true</EnableExpandedLineNumberInfo>
       <CCppSupport>Cpp17Support</CCppSupport>
       <DisableSpecificDiagnostics>304,383,981</DisableSpecificDiagnostics>
+      <LanguageStandard />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -332,6 +334,7 @@
       <CCppSupport>Cpp17Support</CCppSupport>
       <WarningLevel>Level5</WarningLevel>
       <DisableSpecificDiagnostics>304,383,981</DisableSpecificDiagnostics>
+      <LanguageStandard />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -381,6 +384,7 @@
       <CCppSupport>Cpp17Support</CCppSupport>
       <WarningLevel>Level5</WarningLevel>
       <DisableSpecificDiagnostics>304,383,981</DisableSpecificDiagnostics>
+      <LanguageStandard />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

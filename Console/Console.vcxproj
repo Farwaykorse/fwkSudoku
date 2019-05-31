@@ -242,6 +242,7 @@
       <CCppSupport>Cpp17Support</CCppSupport>
       <CheckPointers>MpxRw</CheckPointers>
       <DisableSpecificDiagnostics>304,981</DisableSpecificDiagnostics>
+      <LanguageStandard />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -307,6 +308,7 @@
       <EnableExpandedLineNumberInfo>true</EnableExpandedLineNumberInfo>
       <CCppSupport>Cpp17Support</CCppSupport>
       <DisableSpecificDiagnostics>304,981</DisableSpecificDiagnostics>
+      <LanguageStandard />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -379,6 +381,7 @@
       <CCppSupport>Cpp17Support</CCppSupport>
       <Optimization>MaxSpeedHighLevel</Optimization>
       <DisableSpecificDiagnostics>304,981</DisableSpecificDiagnostics>
+      <LanguageStandard />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -428,6 +431,7 @@
       <CCppSupport>Cpp17Support</CCppSupport>
       <Optimization>MaxSpeedHighLevel</Optimization>
       <DisableSpecificDiagnostics>304,981</DisableSpecificDiagnostics>
+      <LanguageStandard />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
