@@ -1180,11 +1180,12 @@ TEST(Location_Utilities, is_same_section)
 	EXPECT_FALSE(is_same_block<3>(row.cbegin(), row.cend()));
 
 	// is_same_section (taking a section)
+	bool tmp{};
 	const ::Sudoku::Board<int, 3> B1;
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.row(0), L()))>);
 	static_assert(noexcept(is_same_section(B1.row(0), L(12))));
-	EXPECT_NO_THROW(is_same_section(B1.row(0), L(12)));
+	EXPECT_NO_THROW(tmp = is_same_section(B1.row(0), L(12)));
 	EXPECT_TRUE(is_same_section(B1.row(0), L(8)));
 	EXPECT_TRUE(is_same_section(B1.row(1), L(12)));
 	EXPECT_TRUE(is_same_section(B1.row(7), L(70)));
@@ -1192,14 +1193,14 @@ TEST(Location_Utilities, is_same_section)
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.col(0), L()))>);
 	static_assert(noexcept(is_same_section(B1.col(0), L(12))));
-	EXPECT_NO_THROW(is_same_section(B1.col(0), L(12)));
+	EXPECT_NO_THROW(tmp = is_same_section(B1.col(0), L(12)));
 	EXPECT_TRUE(is_same_section(B1.col(0), L(0)));
 	EXPECT_TRUE(is_same_section(B1.col(0), L(72)));
 	EXPECT_FALSE(is_same_section(B1.col(1), L(9)));
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.block(0), L()))>);
 	static_assert(noexcept(is_same_section(B1.block(0), L(12))));
-	EXPECT_NO_THROW(is_same_section(B1.block(0), L(12)));
+	EXPECT_NO_THROW(tmp = is_same_section(B1.block(0), L(12)));
 	EXPECT_TRUE(is_same_section(B1.block(0), L(10)));
 	EXPECT_FALSE(is_same_section(B1.block(1), L(16)));
 
@@ -1207,14 +1208,14 @@ TEST(Location_Utilities, is_same_section)
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.row(0), row))>);
 	// static_assert(noexcept(is_same_section(B1.row(0), row)));
-	EXPECT_NO_THROW(is_same_section(B1.row(0), row));
+	EXPECT_NO_THROW(tmp = is_same_section(B1.row(0), row));
 	EXPECT_TRUE(is_same_section(B1.row(0), row));
 	EXPECT_TRUE(is_same_section(B1.row(0), col));
 	EXPECT_FALSE(is_same_section(B1.row(0), blo));
 	EXPECT_FALSE(is_same_section(B1.row(1), row));
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.col(0), col))>);
-	EXPECT_NO_THROW(is_same_section(B1.col(0), row));
+	EXPECT_NO_THROW(tmp = is_same_section(B1.col(0), row));
 	EXPECT_TRUE(is_same_section(B1.col(0), row));
 	EXPECT_TRUE(is_same_section(B1.col(6), col));
 	EXPECT_FALSE(is_same_section(B1.col(0), col));
@@ -1222,14 +1223,14 @@ TEST(Location_Utilities, is_same_section)
 	EXPECT_TRUE(is_same_section(B1.col(5), blo));
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.col(0), col))>);
-	EXPECT_NO_THROW(is_same_section(B1.block(0), row));
+	EXPECT_NO_THROW(tmp = is_same_section(B1.block(0), row));
 	EXPECT_TRUE(is_same_section(B1.block(4), blo));
 	EXPECT_FALSE(is_same_section(B1.block(5), blo));
 
 	// intersect_block
 	static_assert(noexcept(intersect_block(B1.row(0), L(12))));
-	EXPECT_NO_THROW(intersect_block(B1.row(0), L(55)));
-	EXPECT_NO_THROW(intersect_block(B1.col(0), L(55)));
+	EXPECT_NO_THROW(tmp = intersect_block(B1.row(0), L(55)));
+	EXPECT_NO_THROW(tmp = intersect_block(B1.col(0), L(55)));
 	EXPECT_TRUE(intersect_block(B1.row(0), L(8)));
 	EXPECT_TRUE(intersect_block(B1.row(6), L(54)));
 	EXPECT_FALSE(intersect_block(B1.row(5), L(59)));
