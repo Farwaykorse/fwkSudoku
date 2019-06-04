@@ -282,11 +282,11 @@ before_install:
   if [[ ${Coverage:-} && ${Coverage} == "grcov" ]]; then
   ( set -euxo pipefail
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-      GRCOV_TAG="v0.5.0"
-      GRCOV_SHA512="f33f5ba2762810d33399e196ab010c1aeac2940a3c2974d2070f30169aceccb80d92091c69df4c44f8fd00316d904c1f87a8df0b3f41a91657e54a23d1c398dd"
+      GRCOV_TAG="v0.5.1"
+      GRCOV_SHA512="5086b0b53ba15843ca83c55e4ea95cdccf544fd648382cab8d603e9f634772f4edf7221032809f35055986c29c7fa6678ab2ab291e4f9c430f3068117239996e"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
-      GRCOV_TAG="v0.5.0"
-      GRCOV_SHA512="1cab74b4f9a942c150c59b5d2ee44a0bb49fdff0f281909532baa60e615958eeae50229cdd6741511d47279780a76daff8a0676c2b41899f42b077f08fc8278d"
+      GRCOV_TAG="v0.5.1"
+      GRCOV_SHA512="26ffcea469e3e02b55352766c2a8889f34c116e03acc809abf22a78b027173a7e3c6c34144ba98338f3c10d231139b878b1f70517cb2a39084d1a0227222de6a"
     fi
     echo "-- Install grcov..."
     file_name="grcov-${TRAVIS_OS_NAME}-x86_64.tar.bz2"
