@@ -2,17 +2,16 @@
 # Configuration #
 <!----------------------------------------------------------------------------->
 <!-- Description -->
-This document tries to document the used compiler and project configuration
-settings, related to C++ compilation.
-Supplying the motivation and discussion and to keep track of any exceptions.
+This document tries to document the compiler and project configuration settings.
+To document the motivation and to keep track of any exceptions.
 No historic data is kept (since it is part of the git log), unless a setting is
 considered a temporary fix.
 
 This document reflects the MSBuild project configurations, supporting only the
-most recent versions of the used toolchains at the time of commit.
+most recent version of the used toolchain at the time of commit.
 
-The CMake configurations are kept in sync.
-With additional support for the toolchains used on the CI environments.  
+The CMake configurations are kept in sync and contain additional toolchains as
+used on the CI environments.  
 See:
 [AppVeyor][AppVeyor-link] _(master branch)_ for the Windows builds and
 [TravisCI][Travis-link] for Linux and Apple OSX builds.
@@ -409,8 +408,8 @@ Notes on the motivation behind the disabling of some of the checks.
 - `-cert-dcl21-cpp`
   Advice: run this check incidentally.
   Useful to warn on use of a reference type, but with value types following this
-  advice to return const object breaks repeated use of the postfix increment and
-  decrement operators.
+  advice, to return a const object, breaks repeated use of the postfix increment
+  and decrement operators.
   (See discussion: 
   [Matt Godbolt on Twitter](https://twitter.com/mattgodbolt/status/981269382092468226))  
   Documentation:
