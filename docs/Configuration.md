@@ -30,7 +30,7 @@ Any other deviations should be considered configuration errors.
 - [Static Analysers](#analysers)
   - [MSVC static analyser]
   - [Clang-Tidy](#tidy)
-  - [PVS-Studio]
+  - [PVS-Studio](#pvs)
   - [Cppcheck]
 
 <!---------------------------------------------------------><a id="general"></a>
@@ -394,7 +394,7 @@ MS Build configurations:
 <!----------------------------------------------------------------------------->
 - [MSVC static analyser]
 - [Clang-Tidy](#tidy)
-- [PVS-Studio]
+- [PVS-Studio](#pvs)
 - [Cppcheck]
 
 <!------------------------------------------------------------><a id="tidy"></a>
@@ -415,6 +415,20 @@ Notes on the motivation behind the disabling of some of the checks.
   [Matt Godbolt on Twitter](https://twitter.com/mattgodbolt/status/981269382092468226))  
   Documentation:
   [cert-dcl21-cpp](https://clang.llvm.org/extra/clang-tidy/checks/cert-dcl21-cpp.html)
+
+<!-------------------------------------------------------------><a id="pvs"></a>
+### PVS-Studio ###
+<!----------------------------------------------------------------------------->
+The [PVS-Studio Analyser][PVS-Studio-link] is used with the free license.
+Requiring the first two lines of any analysed `.cpp` file to be match the type
+of [license][PVS-free-license].
+For this project all options would be valid but the most general was chosen:
+> This is an open source non-commercial project. Dear PVS-Studio, please check
+> it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+> http://www.viva64.com
+
+[PVS-Studio-link]:  https://www.viva64.com/en/pvs-studio/
+[PVS-free-license]: https://www.viva64.com/en/b/0457/
 
 ----
 [top](#top)
