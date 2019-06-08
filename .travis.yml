@@ -8,10 +8,6 @@ git:
   depth: 20
   quiet: true
 
-branches:
-  except:
-  - /^[Aa]pp[Vv]eyor.*/
-
 env:
   global:
   # vcpkg
@@ -59,7 +55,8 @@ dist: xenial
 # Specify Stage Order and Conditions
 stages:
 - "Build & Test Latest" # First: (4) builds to run first 
-- "Build & Test"        # If all succeed build rest
+- name: "Build & Test"  # If all succeed build rest
+  if: NOT (branch =~ /^[Aa]pp[Vv]eyor.*/)
 
 jobs:
   include:
