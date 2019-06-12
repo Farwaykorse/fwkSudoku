@@ -1,4 +1,4 @@
-﻿//===--- SudokuTests/precompiled.cpp                                    ---===//
+//===--- SudokuTests/precompiled.cpp                                    ---===//
 //
 // precompiled.cpp : source file that includes just the standard includes
 //===----------------------------------------------------------------------===//

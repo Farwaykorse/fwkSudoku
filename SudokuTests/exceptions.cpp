@@ -1,4 +1,4 @@
-﻿//===--- SudokuTests/exceptions.cpp                                     ---===//
+//===--- SudokuTests/exceptions.cpp                                     ---===//
 //
 //	Unit tests for the custom exceptions defined in Sudoku::error
 //===----------------------------------------------------------------------===//

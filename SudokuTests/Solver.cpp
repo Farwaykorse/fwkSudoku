@@ -1,4 +1,4 @@
-﻿//===--- SudokuTests/Solver.cpp                                         ---===//
+//===--- SudokuTests/Solver.cpp                                         ---===//
 //
 //	Unit tests for the template class Sudoku::Solver
 //===----------------------------------------------------------------------===//

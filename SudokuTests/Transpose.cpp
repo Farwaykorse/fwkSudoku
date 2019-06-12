@@ -1,4 +1,4 @@
-﻿//====---- SudokuTests/Transpose.cpp                                  ----====//
+//====---- SudokuTests/Transpose.cpp                                  ----====//
 //
 // Unit tests for the transpose functions.
 //====--------------------------------------------------------------------====//

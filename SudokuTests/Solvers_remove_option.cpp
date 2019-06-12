@@ -1,4 +1,4 @@
-﻿//===--- SudokuTests/Solver_remove_option.cpp                           ---===//
+//===--- SudokuTests/Solver_remove_option.cpp                           ---===//
 //
 // Unit tests for the option removing functions in Sudoku::Solver
 //===----------------------------------------------------------------------===//

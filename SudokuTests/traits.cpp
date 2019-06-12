@@ -1,4 +1,4 @@
-﻿//====---- SudokuTests/traits.cpp                                     ----====//
+//====---- SudokuTests/traits.cpp                                     ----====//
 //
 // Unit tests for type traits defined in Sudoku/traits.h.
 //====--------------------------------------------------------------------====//

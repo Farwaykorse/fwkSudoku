@@ -1,4 +1,4 @@
-﻿//===--- Sudoku/Transpose.h                                             ---===//
+//===--- Sudoku/Transpose.h                                             ---===//
 //
 // Exchange/reorder Board by section types
 //===----------------------------------------------------------------------===//

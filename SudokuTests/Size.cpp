@@ -1,4 +1,4 @@
-﻿//====---- SudokuTests/Size.cpp                                       ----====//
+//====---- SudokuTests/Size.cpp                                       ----====//
 //
 //	Unit tests for the template class Sudoku::Size
 //=====--------------------------------------------------------------------====//

@@ -1,4 +1,4 @@
-﻿##====---- SudokuTests/.clang-tidy                                    ----====##
+##====---- SudokuTests/.clang-tidy                                    ----====##
 ##
 ## Specialization for use in a Google-Test project
 ## Based on '../.clang-tidy'. (Keep in sync!)

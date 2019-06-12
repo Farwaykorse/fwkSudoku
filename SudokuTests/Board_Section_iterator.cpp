@@ -1,4 +1,4 @@
-﻿//====---- SudokuTests/Board_Section_iterator.cpp                    ----====//
+//====---- SudokuTests/Board_Section_iterator.cpp                    ----====//
 //
 // Unit tests for the template class Sudoku::Board_Section
 //====--------------------------------------------------------------------====//

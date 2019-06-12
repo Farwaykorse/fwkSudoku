@@ -1,4 +1,4 @@
-﻿//====---- SudokuTests/Board_Section_traits.cpp                       ----====//
+//====---- SudokuTests/Board_Section_traits.cpp                       ----====//
 //
 // Unit tests for the traits defined for the Board_Section class.
 //====--------------------------------------------------------------------====//

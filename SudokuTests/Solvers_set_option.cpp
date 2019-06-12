@@ -1,4 +1,4 @@
-﻿//===--- SudokuTests/Solver_set_option.cpp                              ---===//
+//===--- SudokuTests/Solver_set_option.cpp                              ---===//
 //
 //===----------------------------------------------------------------------===//
 // Implemented with GoogleTest

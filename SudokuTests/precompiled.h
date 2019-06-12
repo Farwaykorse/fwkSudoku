@@ -1,4 +1,4 @@
-﻿//===--- SudokuTests/precompiled.h                                      ---===//
+//===--- SudokuTests/precompiled.h                                      ---===//
 //
 // - Compiled from precompiled.cpp
 // - Included in project by compiler configuration

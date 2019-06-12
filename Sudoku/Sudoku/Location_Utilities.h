@@ -1,4 +1,4 @@
-﻿//===--- Sudoku/Location_Utilities.h                                    ---===//
+//===--- Sudoku/Location_Utilities.h                                    ---===//
 //
 // Utilities for class Sudoku::Location
 //===----------------------------------------------------------------------===//

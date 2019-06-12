@@ -1,5 +1,6 @@
-﻿//===--- SudokuTests/Solver_find.cpp                                    ---===//
+//===--- SudokuTests/Solver_find.cpp                                    ---===//
 //
+// Unit tests for solvers on Sudoku::Board.
 //===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
 //

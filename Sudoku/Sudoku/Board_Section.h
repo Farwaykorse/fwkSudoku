@@ -1,4 +1,4 @@
-﻿//====---- Sudoku/Board_Section.h                                     ----====//
+//====---- Sudoku/Board_Section.h                                     ----====//
 //
 // Internal in-between object for provide access to a section of Board.
 //====--------------------------------------------------------------------====//

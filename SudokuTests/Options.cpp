@@ -1,4 +1,4 @@
-﻿//===--- SudokuTests/Options.cpp                                        ---===//
+//===--- SudokuTests/Options.cpp                                        ---===//
 //
 // Unit tests for the template class Sudoku::Options
 //===----------------------------------------------------------------------===//
