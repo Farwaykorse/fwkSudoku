@@ -2,7 +2,7 @@
 ## Tests for library Sudoku.
 ##
 ##====--------------------------------------------------------------------====##
-cmake_minimum_required(VERSION 3.12...3.13)
+subproject_cmake_minimum_required(3.12)
 
 project(fwkSudokuTests LANGUAGES CXX)
 
@@ -122,13 +122,13 @@ if(MSVC) # MSVC or simulating MSVC
         /wd4275 # gtest (non dll-interface class used as base for dll-interface)
       >
       $<$<CXX_COMPILER_ID:Clang>:
-	    -Wno-deprecated # gtest
+        -Wno-deprecated # gtest
         -Wno-deprecated-declarations  # gtest: fopen, strncpy, chdir, ...
         -Wno-language-extension-token
         -Wno-missing-noreturn
         -Wno-shift-sign-overflow
         -Wno-undef
-		-Wno-unused-parameter # gtest
+        -Wno-unused-parameter # gtest
       >
   )
 else()

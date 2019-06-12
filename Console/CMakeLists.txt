@@ -1,7 +1,7 @@
 ##====---- fwkSudoku/Console/CMakeLists.txt                           ----====##
 ##
 ##====--------------------------------------------------------------------====##
-cmake_minimum_required(VERSION 3.12...3.13)
+subproject_cmake_minimum_required(3.12)
 
 project(SudokuConsole LANGUAGES CXX)
 
