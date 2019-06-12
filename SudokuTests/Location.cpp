@@ -1184,7 +1184,7 @@ TEST(Location_Utilities, is_same_section)
 	EXPECT_FALSE(is_same_block<3>(row.cbegin(), row.cend()));
 
 	// is_same_section (taking a section)
-	bool tmp{};
+	[[maybe_unused]] bool tmp{};
 	const ::Sudoku::Board<int, 3> B1;
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.row(0), L()))>);
