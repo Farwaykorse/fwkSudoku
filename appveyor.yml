@@ -79,6 +79,9 @@ matrix:
     BUILDSYSTEM: MSBuild
   - image: Visual Studio 2015
     BUILDSYSTEM: MSBuild_Solution
+  # Reduce build count testing CMake generators for MSBuild.
+  - BUILDSYSTEM: MSBuild
+    platform: x86
   # Reduce VS2019 build to: Ninja - x64 - Release & LLVM_Release
   - image: Visual Studio 2019
     platform: x86
