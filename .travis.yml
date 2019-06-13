@@ -8,10 +8,6 @@ git:
   depth: 20
   quiet: true
 
-branches:
-  except:
-  - /^[Aa]pp[Vv]eyor.*/
-
 env:
   global:
   # vcpkg
@@ -56,9 +52,16 @@ env:
 os: linux
 dist: xenial
 
-matrix:
+# Specify Stage Order and Conditions
+stages:
+- "Build & Test Latest" # First: (4) builds to run first 
+- name: "Build & Test"  # If all succeed build rest
+  if: NOT (branch =~ /^[Aa]pp[Vv]eyor.*/)
+
+jobs:
   include:
   - name: GCC-8
+    stage: "Build & Test Latest"
     env:
     - C_compiler:   gcc-8
     - CXX_compiler: g++-8
@@ -70,6 +73,7 @@ matrix:
         - g++-8
 
   - name: GCC-7
+    stage: "Build & Test Latest"
     env:
     - C_compiler:   gcc-7
     - CXX_compiler: g++-7
@@ -82,6 +86,7 @@ matrix:
         - g++-7
 
   - name: Clang-8
+    stage: "Build & Test Latest"
     dist: xenial
     env:
     - C_compiler:   clang-8
@@ -97,6 +102,7 @@ matrix:
         - g++-7
 
   - name: Clang-8 libc++
+    stage: "Build & Test Latest"
     dist: xenial
     env:
     - C_compiler:   clang-8
@@ -115,6 +121,7 @@ matrix:
         - libc++abi-8-dev
 
   - name: Clang-7
+    stage: "Build & Test"
     dist: xenial # Ships with Clang 7
     env:
     - C_compiler:   clang
@@ -282,11 +289,11 @@ before_install:
   if [[ ${Coverage:-} && ${Coverage} == "grcov" ]]; then
   ( set -euxo pipefail
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-      GRCOV_TAG="v0.4.3"
-      GRCOV_SHA512="5aa63df0aab2c742c48aa1d44bb9ecf3bfd917f4b50fa243c721b128b8bf259a38bc32bbd44ced4449b8fd1de17c59862732ea5d1cd2d004721ca61f960c76af"
+      GRCOV_TAG="v0.5.1"
+      GRCOV_SHA512="5086b0b53ba15843ca83c55e4ea95cdccf544fd648382cab8d603e9f634772f4edf7221032809f35055986c29c7fa6678ab2ab291e4f9c430f3068117239996e"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
-      GRCOV_TAG="v0.4.3"
-      GRCOV_SHA512="d605889dc58ead7c1236257561b2717e0f116d64bbeb1ff1102f0297c993f2c56d78fd0478d6218bcdc6a15f51046a5c1c52ab1d2c7a11c9b6551528eca690c1"
+      GRCOV_TAG="v0.5.1"
+      GRCOV_SHA512="26ffcea469e3e02b55352766c2a8889f34c116e03acc809abf22a78b027173a7e3c6c34144ba98338f3c10d231139b878b1f70517cb2a39084d1a0227222de6a"
     fi
     echo "-- Install grcov..."
     file_name="grcov-${TRAVIS_OS_NAME}-x86_64.tar.bz2"
