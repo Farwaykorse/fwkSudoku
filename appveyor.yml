@@ -82,6 +82,9 @@ matrix:
   # Reduce build count testing CMake generators for MSBuild.
   - BUILDSYSTEM: MSBuild
     platform: x86
+  # Reduce builds failing due to CMake generator limitations for MSVC. GitHub #2.
+  - BUILDSYSTEM: MSBuild
+    Configuration: Release
   # Reduce VS2019 build to: Ninja - x64 - Release & LLVM_Release
   - image: Visual Studio 2019
     platform: x86
@@ -96,7 +99,7 @@ matrix:
 ##====-----------------
 ## Modify_Matrix
   allow_failures:
-  # CMake -> MSBuild Failing error suppression:
+  # CMake generator limitations: MSBuild Failing error suppression. GitHub #2.
   - configuration: Debug
     BUILDSYSTEM: MSBuild
   - configuration: Release
