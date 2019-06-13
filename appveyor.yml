@@ -41,7 +41,7 @@ skip_commits:
 ## Create_Matrix
 image:
 - Visual Studio 2017
-- Visual Studio 2019 Preview
+- Visual Studio 2019
 
 platform:
 - x86
@@ -62,7 +62,7 @@ environment:
     APPVEYOR_SAVE_CACHE_ON_ERROR: true
     VCVAR2015: 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat'
     VCVAR2017: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
-    VCVAR2019: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\VC\Auxiliary\Build\vcvarsall.bat'
+    VCVAR2019: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat'
     # vcpkg
     TOOLCHAIN_FILE: 'C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake'
 ## /Create_Matrix
@@ -79,14 +79,14 @@ matrix:
     BUILDSYSTEM: MSBuild
   - image: Visual Studio 2015
     BUILDSYSTEM: MSBuild_Solution
-  # Reduce preview build to: Ninja - x64 - Release & LLVM_Release
-  - image: Visual Studio 2019 Preview
+  # Reduce VS2019 build to: Ninja - x64 - Release & LLVM_Release
+  - image: Visual Studio 2019
     platform: x86
-  - image: Visual Studio 2019 Preview
+  - image: Visual Studio 2019
     configuration: Debug
-  - image: Visual Studio 2019 Preview
+  - image: Visual Studio 2019
     configuration: LLVM_Debug
-  - image: Visual Studio 2019 Preview
+  - image: Visual Studio 2019
     BUILDSYSTEM: MSBuild_Solution
     configuration: LLVM_Release
 ## /Remove_from_Matrix
@@ -98,8 +98,8 @@ matrix:
     BUILDSYSTEM: MSBuild
   - configuration: Release
     BUILDSYSTEM: MSBuild
-  # Try Preview:
-  - image: Visual Studio 2019 Preview
+  # Try VS2019:
+  - image: Visual Studio 2019
 # Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
 for:
