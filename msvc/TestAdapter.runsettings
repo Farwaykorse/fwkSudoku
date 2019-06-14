@@ -5,7 +5,7 @@
       <Settings>
         <DebugMode>false</DebugMode>
         <WorkingDir>$(ExecutableDir)</WorkingDir>
-        <TestDiscoveryRegex>.*Tests.exe</TestDiscoveryRegex>
+        <TestDiscoveryRegex>.*[Tt]est[s]?\.exe</TestDiscoveryRegex>
         <CatchExceptions>true</CatchExceptions>
         <BreakOnFailure>false</BreakOnFailure>
         <PrintTestOutput>false</PrintTestOutput>

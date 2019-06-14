@@ -1,4 +1,4 @@
-﻿//===--- Sudoku/Solver_remove_option.h                                  ---===//
+//===--- Sudoku/Solver_remove_option.h                                  ---===//
 //
 // Helper functions, to remove options
 //===----------------------------------------------------------------------===//

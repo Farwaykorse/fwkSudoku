@@ -2,20 +2,20 @@
 # Configuration #
 <!----------------------------------------------------------------------------->
 <!-- Description -->
-This document tries to document the used compiler and project configuration
-settings, related to C++ compilation.
-Supplying the motivation and discussion and to keep track of any exceptions.
+This document tries to document the compiler and project configuration settings.
+To document the motivation and to keep track of any exceptions.
 No historic data is kept (since it is part of the git log), unless a setting is
 considered a temporary fix.
 
-This document reflects the MSBuild project configurations.
+This document reflects the MSBuild project configurations, supporting only the
+most recent version of the used toolchain at the time of commit.
 The Visual Studio solution contains configurations for:
 - VC++ v142 (Visual Studio 2019)
 - LLVM/Clang (v6.0 or later) [link][LLVM-Extension-link]
 - Intel C++ Compiler 19.0 [link][Intel-cpp-link] (partial)
 
-The CMake configurations are kept in sync.
-With additional support for the toolchains used on the CI environments.  
+The CMake configurations are kept in sync and contain additional toolchains as
+used on the CI environments.  
 See:
 [AppVeyor][AppVeyor-link] _(master branch)_ for the Windows builds and
 [TravisCI][Travis-link] for Linux and Apple OSX builds.
@@ -33,7 +33,7 @@ Any other deviations should be considered configuration errors.
 - [Static Analysers](#analysers)
   - [MSVC static analyser]
   - [Clang-Tidy](#tidy)
-  - [PVS-Studio]
+  - [PVS-Studio](#pvs)
   - [Cppcheck]
 
 <!---------------------------------------------------------><a id="general"></a>
@@ -397,7 +397,7 @@ MS Build configurations:
 <!----------------------------------------------------------------------------->
 - [MSVC static analyser]
 - [Clang-Tidy](#tidy)
-- [PVS-Studio]
+- [PVS-Studio](#pvs)
 - [Cppcheck]
 
 <!------------------------------------------------------------><a id="tidy"></a>
@@ -412,12 +412,26 @@ Notes on the motivation behind the disabling of some of the checks.
 - `-cert-dcl21-cpp`
   Advice: run this check incidentally.
   Useful to warn on use of a reference type, but with value types following this
-  advice to return const object breaks repeated use of the postfix increment and
-  decrement operators.
+  advice, to return a const object, breaks repeated use of the postfix increment
+  and decrement operators.
   (See discussion: 
   [Matt Godbolt on Twitter](https://twitter.com/mattgodbolt/status/981269382092468226))  
   Documentation:
   [cert-dcl21-cpp](https://clang.llvm.org/extra/clang-tidy/checks/cert-dcl21-cpp.html)
+
+<!-------------------------------------------------------------><a id="pvs"></a>
+### PVS-Studio ###
+<!----------------------------------------------------------------------------->
+The [PVS-Studio Analyser][PVS-Studio-link] is used with the free license.
+Requiring the first two lines of any analysed `.cpp` file to be match the type
+of [license][PVS-free-license].
+For this project all options would be valid but the most general was chosen:
+> This is an open source non-commercial project. Dear PVS-Studio, please check
+> it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+> http://www.viva64.com
+
+[PVS-Studio-link]:  https://www.viva64.com/en/pvs-studio/
+[PVS-free-license]: https://www.viva64.com/en/b/0457/
 
 ----
 [top](#top)

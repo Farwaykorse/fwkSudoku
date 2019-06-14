@@ -1,4 +1,4 @@
-﻿//====---- Sudoku/Board_Section_iterator.h                            ----====//
+//====---- Sudoku/Board_Section_iterator.h                            ----====//
 //
 // Location aware iterator implementation for Sections
 //====--------------------------------------------------------------------====//

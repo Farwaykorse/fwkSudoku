@@ -1,5 +1,10 @@
-﻿//===--- SudokuTests/Solver_find.cpp                                    ---===//
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
 //
+//===--- SudokuTests/Solver_find.cpp                                    ---===//
+//
+// Unit tests for solvers on Sudoku::Board.
 //===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
 //
@@ -154,8 +159,10 @@ TEST(Solver, list_where_option__itr)
 	// 2 begin, end, Value, rep_count
 	static_assert(not noexcept(
 		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1}, 3)));
+#if not (defined(__ICL) && __ICL <= 1900 && defined(_DEBUG))
 	static_assert(not noexcept(
 		list_where_option<2>(B.row(0).begin(), B.row(0).end(), Value{1}, 3)));
+#endif // __ICL
 	// return type
 	static_assert(std::is_same_v<
 				  std::vector<loc>,

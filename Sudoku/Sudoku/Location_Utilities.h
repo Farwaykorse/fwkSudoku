@@ -1,4 +1,4 @@
-﻿//===--- Sudoku/Location_Utilities.h                                    ---===//
+//===--- Sudoku/Location_Utilities.h                                    ---===//
 //
 // Utilities for class Sudoku::Location
 //===----------------------------------------------------------------------===//
@@ -97,14 +97,14 @@ constexpr void valid_dimensions() noexcept
 
 // Test if Location on Board
 template<int N>
-inline constexpr bool is_valid(const Location<N> loc) noexcept
+[[nodiscard]] inline constexpr bool is_valid(const Location<N> loc) noexcept
 {
 	return (loc.element() >= 0 && loc.element() < full_size<N>);
 }
 
 // Test if Locations on Board and if sorted (ascending)
 template<int N>
-inline constexpr bool
+[[nodiscard]] inline constexpr bool
 	is_valid(const std::vector<Location<N>>& locs) noexcept(true)
 { // std::is_sorted can throw std::bad_alloc
 	return (
@@ -115,14 +115,15 @@ inline constexpr bool
 
 // Test row/col/block-element
 template<int N>
-inline constexpr bool is_valid_size(const gsl::index elem) noexcept
+[[nodiscard]] inline constexpr bool
+	is_valid_size(const gsl::index elem) noexcept
 {
 	return (elem >= 0 && elem < elem_size<N>);
 }
 
 // Test if location on Board
 template<int N>
-inline constexpr bool
+[[nodiscard]] inline constexpr bool
 	is_valid_size(const gsl::index row, const gsl::index col) noexcept
 {
 	return is_valid_size<N>(row) && is_valid_size<N>(col);
@@ -133,7 +134,7 @@ inline constexpr bool
 
 // check
 template<int N>
-inline constexpr bool
+[[nodiscard]] inline constexpr bool
 	is_same_row(const Location<N> left, const Location<N> right) noexcept
 {
 	return (is_valid<N>(left) && is_valid<N>(right)) &&
@@ -142,7 +143,8 @@ inline constexpr bool
 
 // check: all in same row
 template<int N, typename ItrT>
-constexpr bool is_same_row(const ItrT begin, const ItrT end) noexcept
+[[nodiscard]] constexpr bool
+	is_same_row(const ItrT begin, const ItrT end) noexcept
 {
 	{
 		static_assert(traits::is_forward<ItrT>);
@@ -171,7 +173,7 @@ template<int N>
 
 // check
 template<int N>
-inline constexpr bool
+[[nodiscard]] inline constexpr bool
 	is_same_col(const Location<N> left, const Location<N> right) noexcept
 {
 	return (is_valid<N>(left) && is_valid<N>(right)) &&
@@ -180,7 +182,7 @@ inline constexpr bool
 
 // check: all in same col
 template<int N, typename ItrT>
-inline constexpr bool is_same_col(const ItrT begin, const ItrT end) noexcept
+[[nodiscard]] inline constexpr bool is_same_col(const ItrT begin, const ItrT end) noexcept
 {
 	{
 		static_assert(traits::is_forward<ItrT>);
@@ -209,7 +211,7 @@ template<int N>
 
 // check
 template<int N>
-inline constexpr bool
+[[nodiscard]] inline constexpr bool
 	is_same_block(const Location<N> left, const Location<N> right) noexcept
 {
 	return (is_valid<N>(left) && is_valid<N>(right)) &&
@@ -218,7 +220,7 @@ inline constexpr bool
 
 // check all in same block
 template<int N, typename ItrT>
-inline constexpr bool is_same_block(const ItrT begin, const ItrT end) noexcept
+[[nodiscard]] inline constexpr bool is_same_block(const ItrT begin, const ItrT end) noexcept
 {
 	{
 		static_assert(traits::is_forward<ItrT>);
@@ -248,7 +250,7 @@ template<int N>
 
 // check: [loc] is in [section]
 template<int N, typename S>
-inline constexpr bool
+[[nodiscard]] inline constexpr bool
 	is_same_section(const S section, const Location<N> loc) noexcept
 {
 	static_assert(Board_Section::traits::is_Section_v<S>);
@@ -263,7 +265,7 @@ inline constexpr bool
 
 // check: [section] intersects block containing [loc]
 template<int N, typename S, typename>
-inline bool
+[[nodiscard]] inline bool
 	intersect_block(const S section, const Location<N> block_loc) noexcept
 {
 	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
@@ -278,7 +280,7 @@ inline bool
 
 // check: at least one [location] inside [section]
 template<typename SectionT, int N>
-inline bool is_same_section(
+[[nodiscard]] inline bool is_same_section(
 	SectionT const section, std::vector<Location<N>> const& locs) noexcept
 {
 	return std::any_of(locs.cbegin(), locs.cend(), [section](Location<N> L) {

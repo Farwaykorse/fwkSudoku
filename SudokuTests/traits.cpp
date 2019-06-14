@@ -1,4 +1,8 @@
-﻿//====---- SudokuTests/traits.cpp                                     ----====//
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+//
+//====---- SudokuTests/traits.cpp                                     ----====//
 //
 // Unit tests for type traits defined in Sudoku/traits.h.
 //====--------------------------------------------------------------------====//

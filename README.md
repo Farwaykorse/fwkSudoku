@@ -5,6 +5,7 @@
 [![Build Status][Travis-badge]][Travis-link]
 [![Build status][AppVeyor-badge]][AppVeyor-link]
 [![codecov][Codecov-badge]][Codecov-link]
+[![CodeFactor][CodeFactor-badge]][CodeFactor-link]
 <!-- Description -->
 Originally this started as a one of many small experiments while starting to
 learn C++. With a mild interest in properties of sudokus. It was mainly focused
@@ -127,6 +128,8 @@ Code licensed under the [MIT License](./LICENSE).
 [AppVeyor-link]:  https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master
 [Codecov-badge]:  https://codecov.io/gh/Farwaykorse/fwkSudoku/branch/master/graph/badge.svg
 [Codecov-link]:   https://codecov.io/gh/Farwaykorse/fwkSudoku
+[CodeFactor-badge]: https://www.codefactor.io/repository/github/farwaykorse/fwksudoku/badge/master
+[CodeFactor-link]:  https://www.codefactor.io/repository/github/farwaykorse/fwksudoku/overview/master
 [Travis-badge]:   https://travis-ci.com/Farwaykorse/fwkSudoku.svg?branch=master
 [Travis-link]:    https://travis-ci.com/Farwaykorse/fwkSudoku/branches
 

@@ -1,4 +1,8 @@
-﻿//====---- SudokuTests/Value.cpp                                      ----====//
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+//
+//====---- SudokuTests/Value.cpp                                      ----====//
 //
 //	Unit tests for the template class Sudoku::Value
 //====--------------------------------------------------------------------====//
@@ -350,9 +354,10 @@ TEST(Value, to_Value)
 	EXPECT_THROW(to_Value<3>(char{10}), std::domain_error);
 
 	// Will not compile when elements cannot be represented.
-	[[maybe_unused]] Value U =
-		to_Value<15>(static_cast<unsigned char>(0));  // N < 16
-	[[maybe_unused]] Value V = to_Value<11>(char{0}); // N < 12
+	using u_char = unsigned char;
+
+	[[maybe_unused]] const Value U = to_Value<15>(u_char{0}); // N < 16
+	[[maybe_unused]] const Value V = to_Value<11>(char{0});   // N < 12
 }
 
 } // namespace SudokuTests::ValueTest

@@ -8,10 +8,6 @@ git:
   depth: 20
   quiet: true
 
-branches:
-  except:
-  - /^[Aa]pp[Vv]eyor.*/
-
 env:
   global:
   # vcpkg
@@ -56,9 +52,16 @@ env:
 os: linux
 dist: xenial
 
-matrix:
+# Specify Stage Order and Conditions
+stages:
+- "Build & Test Latest" # First: (4) builds to run first 
+- name: "Build & Test"  # If all succeed build rest
+  if: NOT (branch =~ /^[Aa]pp[Vv]eyor.*/)
+
+jobs:
   include:
   - name: GCC-8
+    stage: "Build & Test Latest"
     env:
     - C_compiler:   gcc-8
     - CXX_compiler: g++-8
@@ -70,6 +73,7 @@ matrix:
         - g++-8
 
   - name: GCC-7
+    stage: "Build & Test Latest"
     env:
     - C_compiler:   gcc-7
     - CXX_compiler: g++-7
@@ -81,8 +85,44 @@ matrix:
         packages:
         - g++-7
 
-  - name: Clang-7
+  - name: Clang-8
+    stage: "Build & Test Latest"
     dist: xenial
+    env:
+    - C_compiler:   clang-8
+    - CXX_compiler: clang++-8
+    - Coverage: grcov
+    addons:
+      apt:
+        sources:
+        - llvm-toolchain-xenial-8
+        - ubuntu-toolchain-r-test
+        packages:
+        - clang-8
+        - g++-7
+
+  - name: Clang-8 libc++
+    stage: "Build & Test Latest"
+    dist: xenial
+    env:
+    - C_compiler:   clang-8
+    - CXX_compiler: clang++-8
+    - CXX_lib: libc++
+    - Coverage: grcov
+    addons:
+      apt:
+        sources:
+        - llvm-toolchain-xenial-8
+        - ubuntu-toolchain-r-test
+        packages:
+        - clang-8
+        - g++-7
+        - libc++-8-dev
+        - libc++abi-8-dev
+
+  - name: Clang-7
+    stage: "Build & Test"
+    dist: xenial # Ships with Clang 7
     env:
     - C_compiler:   clang
     - CXX_compiler: clang++
@@ -141,7 +181,7 @@ matrix:
         - g++-7
 
   - name: Clang-4.0 Debug
-    if: branch = master
+    if: branch =~ /^[Tt]ravis.*$/
     dist: xenial
     env:
     - C_compiler: clang-4.0
@@ -155,38 +195,47 @@ matrix:
         - clang-4.0
         - g++-7
 
-  - name: AppleClang Xcode-10.1
+  - name: AppleClang Xcode-10.2
     os: osx
-    osx_image: xcode10.1 # same compiler as Xcode 10.0
+    osx_image: xcode10.2 # AppleClang 10.0.1
     env:
     - Coverage: grcov
     addons:
       homebrew:
         packages:
-        - coreutils # for sha512sum & nproc
         - ninja
-        - gcc6 # vcpkg requires gcc-6 or better
+        - gcc@7 # vcpkg requires gcc-7 or later
+
+  - name: AppleClang Xcode-10.1
+    if: branch =~ /^(master|[Tt]ravis.*)$/
+    os: osx
+    osx_image: xcode10.1 # AppleClang 10.0.0 same compiler as Xcode 10.0
+    env:
+    - Coverage: grcov
+    addons:
+      homebrew:
+        packages:
+        - ninja
+        - gcc@7 # vcpkg requires gcc-7 or better
 
   - name: AppleClang Xcode-9.4
-    if: branch = master
+    if: branch =~ /^[Tt]ravis.*$/
     os: osx
-    osx_image: xcode9.4 # same compiler as Xcode 9.3
+    osx_image: xcode9.4 # AppleClang 9.1.0 same compiler as Xcode 9.3
     env:
     - Coverage: grcov
     addons: &OSX-legacy
       homebrew:
         packages:
-        - coreutils # for sha512sum & nproc
         - ninja
-        - gcc6 # vcpkg requires gcc-6 or better
+        - gcc@7 # vcpkg requires gcc-7 or better
         - cmake # Xcode 9.4 and earlier have 3.11.4
         update: true
 
   - name: AppleClang Xcode-9
-    if: branch = master
+    if: branch =~ /^(master|[Tt]ravis.*)$/
     os: osx
-    osx_image: xcode9
-    osx_image: xcode9 # same compiler in Xcode 9.0, 9.1 and 9.2
+    osx_image: xcode9 # AppleClang 9.1.0 same compiler in Xcode 9.0, 9.1 and 9.2
     env:
     - Coverage: grcov
     addons: *OSX-legacy
@@ -194,7 +243,6 @@ matrix:
   allow_failures:
   - name: Clang-4.0 Debug
   - name: AppleClang Xcode-9.4
-  - name: AppleClang Xcode-9
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
@@ -211,20 +259,21 @@ before_install:
   # Install Ninja-build (if not installed)
   if [[ ! -x "$(command -v ninja)" ]]; then
   ( set -euxo pipefail
-    NINJA_VER="v1.8.2"
+    NINJA_VER="v1.9.0"
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-      NINJA_SHA512="38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5"
+      file_name="ninja-linux.zip"
+      NINJA_SHA512="751fd86520a1a38fb47baadf4a46ab49f9ebb11d6ff9c01e71326564ebf10f141ca2627620e315fcab82db1493a30123f11194f41226241d80413d5008acfc59"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
-      NINJA_SHA512=""
+      file_name="ninja-mac.zip"
+      NINJA_SHA512="ec2294b430b89134f54f3388bafd760697c7eb33792bc094416b918371619e79592629973a60fcc35335a92eaa9ed84a41f2bc53c846eb8abf3422d4322cd3e5"
     fi
     echo "-- Install Ninja-build..."
-    file_name="ninja-${TRAVIS_OS_NAME}.zip"
     NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
-    cd ~/tools
     wget -q "${NINJA_URL}" --tries=3 --timeout 90 -nc
     sum=$(sha512sum ${file_name})
     if [[ ${sum:0:128} = ${NINJA_SHA512} ]]; then
       unzip -q ${file_name} -d ninja
+      chmod -c +x ninja/ninja
       echo "-- Install Ninja-build... done"
     else
       echo "Ninja hash has changed!"  >&2
@@ -240,11 +289,11 @@ before_install:
   if [[ ${Coverage:-} && ${Coverage} == "grcov" ]]; then
   ( set -euxo pipefail
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-      GRCOV_TAG="v0.4.1"
-      GRCOV_SHA512="dfc1e9899694109ce82e46fb9184454340b710bb2cff29feb4ada917493ee681c4aff1cca3c6a0ad3b08e4f7a85e5c4c63fe9580171710d1782e5df15f45c57e"
+      GRCOV_TAG="v0.5.1"
+      GRCOV_SHA512="5086b0b53ba15843ca83c55e4ea95cdccf544fd648382cab8d603e9f634772f4edf7221032809f35055986c29c7fa6678ab2ab291e4f9c430f3068117239996e"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
-      GRCOV_TAG="v0.3.2"
-      GRCOV_SHA512="94a9bca1ca54e6d0b3eadc0aa88263852df8e29f5d3739142ff981a486ec90e25fb01f63443a90805856aec28b64d0e4327530cd4b50bb37ac4a8b05e9594481"
+      GRCOV_TAG="v0.5.1"
+      GRCOV_SHA512="26ffcea469e3e02b55352766c2a8889f34c116e03acc809abf22a78b027173a7e3c6c34144ba98338f3c10d231139b878b1f70517cb2a39084d1a0227222de6a"
     fi
     echo "-- Install grcov..."
     file_name="grcov-${TRAVIS_OS_NAME}-x86_64.tar.bz2"
@@ -255,6 +304,7 @@ before_install:
     if [[ ${sum} == ${GRCOV_SHA512} ]]; then
       mkdir -p ~/tools/grcov
       tar --extract --bzip2 --file=${file_name} --directory=grcov
+      chmod -c +x grcov/grcov
       rm ${file_name}
       echo "-- Install grcov... done"
     else
@@ -268,24 +318,25 @@ before_install:
   fi
 - |
   # Download vcpkg
-  cd ~/tools
   ( set -euo pipefail
-    git clone --depth=1 --branch=master --quiet https://github.com/Microsoft/vcpkg.git
-    mv -f -t ./vcpkg ~/tools/.cache/vcpkg/* || echo "No cached files for vcpkg."
+    git clone --depth=1 --branch=master --quiet \
+      https://github.com/Microsoft/vcpkg.git $HOME/tools/vcpkg
+    mv -f -t ~/tools/vcpkg ~/tools/.cache/vcpkg/* ||
+      echo "No cached files for vcpkg."
   )
   export PATH=$PATH:$HOME/tools/vcpkg
 - |
   # Install/Update vcpkg
   ( set -euxo pipefail
     if [[ ! -x "$(command -v vcpkg)" ||
-      ( $(vcpkg update) = 'Warning: Different source'*'for vcpkg' ) ]]
+      ( $(vcpkg update) == 'Warning: Different source'*'for vcpkg' ) ]]
     then
       if [[ ${TRAVIS_OS_NAME} == "linux" &&
         ( ${CXX_compiler} != g++* || ${CXX_compiler%g++-} < 7 ) ]]
       then
         eval "CC=gcc-7 && CXX=g++-7" # Minimum requirement vcpkg on Linux
       elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
-        eval "CC=gcc-6 && CXX=g++-6" # Minimum requirement vcpkg on OSX
+        eval "CC=gcc-7 && CXX=g++-7" # Minimum requirement vcpkg on OSX
       fi
       ~/tools/vcpkg/bootstrap-vcpkg.sh
     fi
@@ -343,13 +394,11 @@ before_script:
   fi
 
 script:
-- >
-  cd "${TRAVIS_BUILD_DIR}/build"
+- cd ./build
 - cmake ${CMakeGenFlags[@]:?} ..
 - cmake --build . --config ${CONFIGURATION:-Debug} -- ${GeneratorFlags}
 - ctest -j $(nproc) --output-on-failure
-- >
-  cd "${TRAVIS_BUILD_DIR}/build2"
+- cd ../build2
 - if [[ ${B_REL:-} ]]; then cmake ${CMakeGenFlags2[@]:?} ..; fi
 - if [[ ${B_REL:-} ]]; then cmake --build . --config Release -- ${GeneratorFlags}; fi
 - if [[ ${B_REL:-} ]]; then ctest -j $(nproc) --output-on-failure; fi

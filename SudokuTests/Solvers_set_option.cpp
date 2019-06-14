@@ -1,4 +1,8 @@
-﻿//===--- SudokuTests/Solver_set_option.cpp                              ---===//
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+//
+//===--- SudokuTests/Solver_set_option.cpp                              ---===//
 //
 //===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
@@ -196,8 +200,10 @@ TEST(Solver, set_Value_vector)
 		EXPECT_EQ(B2[3][1], Value{4});
 
 		// using Options as input:
+#if not(defined(__ICL) && __ICL <= 1900 && defined(_DEBUG))
 		Board<Options<4>, 2> B3;
 		EXPECT_EQ(set_Value(B3, B2.cbegin(), B2.cend()), 49);
+#endif // __ICL
 	}
 }
 

@@ -1,4 +1,4 @@
-﻿//====---- Sudoku/Value.h                                             ----====//
+//====---- Sudoku/Value.h                                             ----====//
 //
 // Strongly typed Value type.
 // Unsigned for use as a bit-mask.

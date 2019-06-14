@@ -1,4 +1,4 @@
-﻿//===--- Sudoku/Solver_find.h                                           ---===//
+//===--- Sudoku/Solver_find.h                                           ---===//
 //
 // Helper functions, to find available options
 //===----------------------------------------------------------------------===//

@@ -1,4 +1,4 @@
-﻿//===--- Sudoku/precompiled_basic.h                                     ---===//
+//===--- Sudoku/precompiled_basic.h                                     ---===//
 //
 // Lists the standard system includes consumed by this library,
 // or project specific include files that are used frequently, but
