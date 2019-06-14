@@ -36,12 +36,12 @@ skip_commits:
 #                  Ninja - requires CMake generator
 #                  MSBuild_Solution - use Visual Studio project configurations
 # TOOLSET          (default empty) - set to image default or by configuration
-#                  llvm, v141, v140, v140_xp
+#                  E.g. llvm, v142, v141, v140, v140_xp
 ##====-----------------
 ## Create_Matrix
 image:
-- Visual Studio 2017
 - Visual Studio 2019
+- Visual Studio 2017
 
 platform:
 - x86
@@ -56,8 +56,8 @@ configuration:
 environment:
   matrix:
   - BUILDSYSTEM: Ninja
-  - BUILDSYSTEM: MSBuild
   - BUILDSYSTEM: MSBuild_Solution
+  - BUILDSYSTEM: MSBuild
   global:
     APPVEYOR_SAVE_CACHE_ON_ERROR: true
     VCVAR2015: 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat'
