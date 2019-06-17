@@ -242,6 +242,11 @@ if(CODE_COVERAGE)
       -O0        # no optimization
       -g         # add debug info
       --coverage
+      $<$<CXX_COMPILER_ID:GNU>:
+        $<$<NOT:$<VERSION_LESS:$<CXX_COMPILER_VERSION>,8>>:
+          -fprofile-abs-path # absolute path names in the `.gcno` files
+        >
+      >
     )
     if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
       target_link_options(SudokuTests PRIVATE
