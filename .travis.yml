@@ -54,7 +54,7 @@ dist: xenial
 
 # Specify Stage Order and Conditions
 stages:
-- "Build & Test Latest" # First: (4) builds to run first 
+- "Build & Test Latest" # First: (4) builds to run first
 - name: "Build & Test"  # If all succeed build rest
   if: NOT (branch =~ /^[Aa]pp[Vv]eyor.*/)
 
@@ -87,7 +87,7 @@ jobs:
         - g++-8
 
   - name: GCC-7
-    stage: "Build & Test Latest"
+    stage: "Build & Test"
     env:
     - C_compiler:   gcc-7
     - CXX_compiler: g++-7
