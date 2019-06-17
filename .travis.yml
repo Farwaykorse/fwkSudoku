@@ -435,16 +435,20 @@ after_success:
   cd "${TRAVIS_BUILD_DIR}/build"
   if [[ ${Coverage:-} ]]; then
   ( set -euxo pipefail
+    Source_Dir="${TRAVIS_BUILD_DIR}"
+    Build_Dir="${TRAVIS_BUILD_DIR}/build"
     bash_flags=("-n ${TRAVIS_JOB_NAME/ /_}") # Replace space with '_'
     if [[ ${Coverage} == "grcov" ]]; then
       coverage_report="coverage.json"
-      flags=("-t coveralls+" "--token unused" "--commit-sha ${TRAVIS_COMMIT}")
+      flags=("--branch")
       if [[ ${CXX_compiler:-} == clang* ]]; then flags+=("--llvm"); fi
-      flags+=("--branch")
-      grcov . ${flags[@]} > ${coverage_report}
+      options=("-s ${Source_Dir:?}")
+      options+=("-t coveralls+" "--token unused")
+      options+=("--commit-sha ${TRAVIS_COMMIT}")
+      grcov ${Build_Dir:?} ${flags[@]} ${options[@]} > ${coverage_report:?}
     elif [[ ${Coverage} == "lcov" ]]; then
       coverage_report="coverage.info"
-      lcov --capture --directory . --output-file coverage.info
+      lcov --capture --directory ${Build_Dir:?} --output-file coverage.info
       lcov --remove coverage.info '/usr/*' --output-file coverage.info
       lcov --list coverage.info
     elif [[ -x "$(command -v ${Coverage})" ]]; then
