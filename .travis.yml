@@ -445,6 +445,7 @@ after_success:
       options=("-s ${Source_Dir:?}")
       options+=("-t coveralls+" "--token unused")
       options+=("--commit-sha ${TRAVIS_COMMIT}")
+      options+=("--prefix-dir ../") # suppress warning grcov v0.5.1
       grcov ${Build_Dir:?} ${flags[@]} ${options[@]} > ${coverage_report:?}
     elif [[ ${Coverage} == "lcov" ]]; then
       coverage_report="coverage.info"
