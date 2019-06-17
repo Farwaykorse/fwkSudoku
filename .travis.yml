@@ -432,7 +432,7 @@ cache:
 after_success:
 - |
   # Code coverage
-  cd "${TRAVIS_BUILD_DIR}"
+  cd "${TRAVIS_BUILD_DIR}/build"
   if [[ ${Coverage:-} ]]; then
   ( set -euxo pipefail
     bash_flags=("-n ${TRAVIS_JOB_NAME/ /_}") # Replace space with '_'
@@ -441,10 +441,10 @@ after_success:
       flags=("-t coveralls+" "--token unused" "--commit-sha ${TRAVIS_COMMIT}")
       if [[ ${CXX_compiler:-} == clang* ]]; then flags+=("--llvm"); fi
       flags+=("--branch")
-      grcov ./build ${flags[@]} > ${coverage_report}
+      grcov . ${flags[@]} > ${coverage_report}
     elif [[ ${Coverage} == "lcov" ]]; then
       coverage_report="coverage.info"
-      lcov --capture --directory ./build --output-file coverage.info
+      lcov --capture --directory . --output-file coverage.info
       lcov --remove coverage.info '/usr/*' --output-file coverage.info
       lcov --list coverage.info
     elif [[ -x "$(command -v ${Coverage})" ]]; then
