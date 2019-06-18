@@ -231,6 +231,7 @@ jobs:
         packages:
         - ninja
         - gcc@7 # vcpkg requires gcc-7 or better
+        update: true
 
   - name: AppleClang Xcode-9.4
     if: branch =~ /^[Tt]ravis.*$/
