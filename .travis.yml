@@ -54,17 +54,31 @@ dist: xenial
 
 # Specify Stage Order and Conditions
 stages:
-- "Build & Test Latest" # First: (4) builds to run first 
+- "Build & Test Latest" # First: (4) builds to run first
 - name: "Build & Test"  # If all succeed build rest
   if: NOT (branch =~ /^[Aa]pp[Vv]eyor.*/)
 
 jobs:
   include:
-  - name: GCC-8
+  - name: GCC-9
     stage: "Build & Test Latest"
+    env:
+    - C_compiler:   gcc-9
+    - CXX_compiler: g++-9
+    - Coverage:     gcov-9
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-9
+
+  - name: GCC-8
+    stage: "Build & Test"
     env:
     - C_compiler:   gcc-8
     - CXX_compiler: g++-8
+    - Coverage:     gcov-8
     addons:
       apt:
         sources:
@@ -73,7 +87,7 @@ jobs:
         - g++-8
 
   - name: GCC-7
-    stage: "Build & Test Latest"
+    stage: "Build & Test"
     env:
     - C_compiler:   gcc-7
     - CXX_compiler: g++-7
@@ -217,6 +231,7 @@ jobs:
         packages:
         - ninja
         - gcc@7 # vcpkg requires gcc-7 or better
+        update: true
 
   - name: AppleClang Xcode-9.4
     if: branch =~ /^[Tt]ravis.*$/
@@ -418,19 +433,24 @@ cache:
 after_success:
 - |
   # Code coverage
-  cd "${TRAVIS_BUILD_DIR}"
+  cd "${TRAVIS_BUILD_DIR}/build"
   if [[ ${Coverage:-} ]]; then
   ( set -euxo pipefail
+    Source_Dir="${TRAVIS_BUILD_DIR}"
+    Build_Dir="${TRAVIS_BUILD_DIR}/build"
     bash_flags=("-n ${TRAVIS_JOB_NAME/ /_}") # Replace space with '_'
     if [[ ${Coverage} == "grcov" ]]; then
       coverage_report="coverage.json"
-      flags=("-t coveralls+" "--token unused" "--commit-sha ${TRAVIS_COMMIT}")
+      flags=("--branch")
       if [[ ${CXX_compiler:-} == clang* ]]; then flags+=("--llvm"); fi
-      flags+=("--branch")
-      grcov ./build ${flags[@]} > ${coverage_report}
+      options=("-s ${Source_Dir:?}")
+      options+=("-t coveralls+" "--token unused")
+      options+=("--commit-sha ${TRAVIS_COMMIT}")
+      options+=("--prefix-dir ../") # suppress warning grcov v0.5.1
+      grcov ${Build_Dir:?} ${flags[@]} ${options[@]} > ${coverage_report:?}
     elif [[ ${Coverage} == "lcov" ]]; then
       coverage_report="coverage.info"
-      lcov --capture --directory ./build --output-file coverage.info
+      lcov --capture --directory ${Build_Dir:?} --output-file coverage.info
       lcov --remove coverage.info '/usr/*' --output-file coverage.info
       lcov --list coverage.info
     elif [[ -x "$(command -v ${Coverage})" ]]; then
@@ -439,8 +459,15 @@ after_success:
     if [[ ${coverage_report:-} && -f "${coverage_report}" ]]; then
       bash_flags+=("-f ${coverage_report}")
     fi
-    bash <(curl -s https://codecov.io/bash) ${bash_flags[@]} ||
-      echo "Codecov did not collect coverage reports"
+    if [[ "${Coverage}" == "gcov-8" ]]; then
+      # Filter-out messages: Prevent exceeding log length.
+      bash <(curl -s https://codecov.io/bash) ${bash_flags[@]} 2>&1 |
+        grep -v "has arcs" ||
+        echo "Codecov did not collect coverage reports"
+    else
+      bash <(curl -s https://codecov.io/bash) ${bash_flags[@]} ||
+        echo "Codecov did not collect coverage reports"
+    fi
   )
   fi
 
