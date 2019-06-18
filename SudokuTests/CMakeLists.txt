@@ -160,13 +160,17 @@ else()
       -Wall
       -Wcast-align        # potential performance issue
       $<$<NOT:$<VERSION_LESS:$<CXX_COMPILER_VERSION>,8>>:
-        -Wconversion      # potential data-loss
+        -Wcast-align=strict # since 8.0; increase alignment (i.e. char* to int*)
+        -Wconversion      # since 8.0; potential data-loss
       >
       -Wdouble-promotion  # since 4.6; float implicit to double
       -Wduplicated-branches # since 7.0; identical if-else branches
       -Wduplicated-cond   # since 6.0; duplicated if-else conditions
       -Wextra
       -Wformat=2
+      -Wformat-overflow=2 # since 7.0
+      -Wformat-signedness # since 5.0; sign change on input of format functions
+      -Wformat-truncation=2 # since 7.0
       -Wlogical-op        # suspicious uses of logical operators
       -Wmisleading-indentation # since 6.0
       -Wnull-dereference  # since 6.0; detected paths with erroneous or undefined behaviour
@@ -238,6 +242,11 @@ if(CODE_COVERAGE)
       -O0        # no optimization
       -g         # add debug info
       --coverage
+      $<$<CXX_COMPILER_ID:GNU>:
+        $<$<NOT:$<VERSION_LESS:$<CXX_COMPILER_VERSION>,8>>:
+          -fprofile-abs-path # absolute path names in the `.gcno` files
+        >
+      >
     )
     if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
       target_link_options(SudokuTests PRIVATE
