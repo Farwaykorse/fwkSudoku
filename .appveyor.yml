@@ -128,8 +128,8 @@ for:
     - master
 -
   matrix:
-    only:
-    - BUILDSYSTEM: Ninja
+    except:
+    - BUILDSYSTEM: MSBuild_Solution
   skip_commits:
     files:
     - .git*
