@@ -723,6 +723,13 @@ TEST(Board_Section, checked_access)
 	Block<int, 2>(board, 3).at(1) = 31;
 	EXPECT_EQ((Row<int, 2>(board, 2).at(3)), 31);
 	EXPECT_EQ((Col<int, 2>(board, 3).at(2)), 31);
+
+	// Out of range
+	[[maybe_unused]] int tmp{};
+	EXPECT_THROW(tmp = row.at(4), Sudoku::error::invalid_Location);
+	EXPECT_THROW(tmp = row.at(4), std::out_of_range);
+	EXPECT_THROW(tmp = row.at(-1), Sudoku::error::invalid_Location);
+	EXPECT_THROW(tmp = row.at(-1), std::out_of_range);
 }
 
 } // namespace SudokuTests::Members
