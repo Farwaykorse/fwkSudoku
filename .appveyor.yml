@@ -229,8 +229,13 @@ install:
       } else { Write-Warning "Failed to find ninja.exe in expected location." }
     }
 - ps: |
-    # Install vcpkg if not available.
-    if(-not (Test-Path C:\Tools\vcpkg\vcpkg.exe) ) {
+    if (Test-Path C:\Tools\vcpkg\vcpkg.exe) {
+      cd C:\Tools\vcpkg; git pull --quiet
+      if ($(vcpkg version) -match "version 2018\.11\.23") {
+        Write-Warning "Temporary fix updating vcpkg ..."
+        .\bootstrap-vcpkg.bat 1>$null
+      }
+    } else {
       Write-Warning "vcpkg not installed in expected location"
       cd C:\Tools
       if (Test-Path .\vcpkg) { Rename-Item vcpkg vcpkg_tmp 1>$null }
@@ -240,7 +245,6 @@ install:
       $env:PATH = "C:\Tools\vcpkg;$env:PATH"
       if (Test-Path .\vcpkg_tmp) { Move-Item .\vcpkg_tmp\* .\vcpkg 1>$null }
     }
-- cd C:\Tools\vcpkg & git pull --quiet
 - vcpkg list
 - vcpkg update
 - ps: |
@@ -251,7 +255,7 @@ install:
     ) {
       if ($(vcpkg version) -match "version 0\.0\.113") {
         Write-Warning "Temporary fix updating vcpkg ..."
-        .\bootstrap-vcpkg.bat 1>$null
+        bootstrap-vcpkg.bat 1>$null
         vcpkg integrate install 1>$null
       }
       vcpkg upgrade --no-dry-run
