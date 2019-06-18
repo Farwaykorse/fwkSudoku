@@ -78,38 +78,32 @@ matrix:
   - image: Visual Studio 2015
     configuration: LLVM_Release
     BUILDSYSTEM: MSBuild
-  # MSBuild solution version (VS2019)
-  - BUILDSYSTEM: MSBuild_Solution
-    image: Visual Studio 2015
+  # Not supported by provided MSBuild Solution/project files:
   - BUILDSYSTEM: MSBuild_Solution
     image: Visual Studio 2017
-  # Reduce build count testing CMake generators for MSBuild.
+  # Reduce job count: Only have CMake generate MSBuild files for VS2019.
+  - BUILDSYSTEM: MSBuild
+    image: Visual Studio 2017
+  # Reduce job count: Testing CMake generators for MSBuild.
   - BUILDSYSTEM: MSBuild
     platform: x86
-  # Reduce builds failing due to CMake generator limitations for MSVC. GitHub #2.
+  # Reduce always failing job count: CMake generator limitations. GitHub #2.
   - BUILDSYSTEM: MSBuild
     Configuration: Release
-  # Reduce VS2019 build to: Ninja - x64 - Release & LLVM_Release
-  - image: Visual Studio 2019
-    platform: x86
-  - image: Visual Studio 2019
-    configuration: Debug
-  - image: Visual Studio 2019
-    configuration: LLVM_Debug
-  - image: Visual Studio 2019
-    BUILDSYSTEM: MSBuild_Solution
-    configuration: LLVM_Release
 ## /Remove_from_Matrix
 
 ## Modify_Matrix
   allow_failures:
   # CMake generator limitations: MSBuild Failing error suppression. GitHub #2.
-  - configuration: Debug
-    BUILDSYSTEM: MSBuild
-  - configuration: Release
-    BUILDSYSTEM: MSBuild
+  - BUILDSYSTEM: MSBuild
+    configuration: Debug
+  - BUILDSYSTEM: MSBuild
+    configuration: Release
   # Try VS2019:
   - image: Visual Studio 2019
+    BUILDSYSTEM: MSBuild_Solution
+  - image: Visual Studio 2019
+    BUILDSYSTEM: MSBuild
 # Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
 for:
