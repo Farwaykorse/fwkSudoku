@@ -14,8 +14,9 @@ skip_branch_with_pr: true
 skip_commits:
   files:
   - .git*
-  - .travis.yml
   - .codecov.yml
+  - .travis.yml
+  - .yamllint
   - docs/
   - LICENSE
   - '**/.clang-*'
