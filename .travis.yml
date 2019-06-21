@@ -415,7 +415,10 @@ script:
 - ctest -j $(nproc) --output-on-failure
 - cd ../build2
 - if [[ ${B_REL:-} ]]; then cmake ${CMakeGenFlags2[@]:?} ..; fi
-- if [[ ${B_REL:-} ]]; then cmake --build . --config Release -- ${GeneratorFlags}; fi
+- |
+  if [[ ${B_REL:-} ]]; then
+    cmake --build . --config Release -- ${GeneratorFlags}
+  fi
 - if [[ ${B_REL:-} ]]; then ctest -j $(nproc) --output-on-failure; fi
 
 ##====--------------------------------------------------------------------====##
