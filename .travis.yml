@@ -344,7 +344,7 @@ before_install:
   # Install/Update vcpkg
   ( set -euxo pipefail
     if [[ ! -x "$(command -v vcpkg)" ||
-      ( $(vcpkg update) == 'Warning: Different source'*'for vcpkg' ) ]]
+      ( $(vcpkg update) == 'Warning: Different source'*'for vcpkg'* ) ]]
     then
       if [[ ${TRAVIS_OS_NAME} == "linux" &&
         ( ${CXX_compiler} != g++* || ${CXX_compiler%g++-} < 7 ) ]]
