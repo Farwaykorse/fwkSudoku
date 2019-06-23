@@ -130,7 +130,6 @@ jobs:
         - ubuntu-toolchain-r-test
         packages:
         - clang-8
-        - g++-7
         - libc++-8-dev
         - libc++abi-8-dev
 
