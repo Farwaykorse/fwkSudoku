@@ -15,7 +15,7 @@
 ##====--------------------------------------------------------------------====##
 ## Usage:
 ## ````cmake
-## include(cmake/msvc_warnings_list.cmake)
+## include(msvc_warnings_list)
 ##
 ## # Optionally edited (local only):
 ## list(APPEND MSVC_Extra_Warnings "/wd4715")
