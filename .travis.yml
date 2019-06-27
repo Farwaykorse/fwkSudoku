@@ -2,6 +2,8 @@
 # TravisCI build configuration.
 # Continuous integration testing on Linux and OSX. Using GCC, LLVM/Clang and
 # AppleClang. Debug and Release builds, unit tests and codecoverage.
+language: cpp
+
 git:
   depth: 20
   quiet: true
@@ -136,7 +138,6 @@ jobs:
   - name: Clang-7
     stage: "Build & Test"
     dist: xenial # Ships with Clang 7
-    language: cpp
     compiler: clang
     env:
     - CXX_vcpkg: g++-7
@@ -216,7 +217,6 @@ jobs:
   - name: AppleClang Xcode-10.2
     os: osx
     osx_image: xcode10.2 # AppleClang 10.0.1
-    language: cpp
     env:
     - CXX_vcpkg: g++-7
     - Coverage: grcov
@@ -230,7 +230,6 @@ jobs:
     if: branch =~ /^(master|[Tt]ravis.*)$/
     os: osx
     osx_image: xcode10.1 # AppleClang 10.0.0 same compiler as Xcode 10.0
-    language: cpp
     env:
     - CXX_vcpkg: g++-7
     - Coverage: grcov
@@ -245,7 +244,6 @@ jobs:
     if: branch =~ /^[Tt]ravis.*$/
     os: osx
     osx_image: xcode9.4 # AppleClang 9.1.0 same compiler as Xcode 9.3
-    language: cpp
     env:
     - CXX_vcpkg: g++-7
     - Coverage: grcov
@@ -261,7 +259,6 @@ jobs:
     if: branch =~ /^(master|[Tt]ravis.*)$/
     os: osx
     osx_image: xcode9 # AppleClang 9.1.0 same compiler in Xcode 9.0, 9.1 and 9.2
-    language: cpp
     env:
     - CXX_vcpkg: g++-7
     - Coverage: grcov
