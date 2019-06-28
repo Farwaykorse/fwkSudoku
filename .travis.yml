@@ -48,6 +48,8 @@ env:
 # https://libcxx.llvm.org/docs/UsingLibcxx.html
 # Homebrew OSX packages:
 # https://formulae.brew.sh/formula/
+# Xcode compiler list and relation to LLVM:
+# https://en.wikipedia.org/wiki/Xcode#Toolchain_versions
 
 # Defaults
 os: linux
