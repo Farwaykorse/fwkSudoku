@@ -242,21 +242,8 @@ jobs:
         - gcc@7 # vcpkg requires gcc-7 or better
         update: true
 
-  - name: AppleClang Xcode-9.4
-    if: branch =~ /^[Tt]ravis.*$/
-    os: osx
-    osx_image: xcode9.4 # AppleClang 9.1.0 same compiler as Xcode 9.3
-    env:
-    - CXX_vcpkg: g++-7
-    - Coverage: grcov
-    addons: &OSX-legacy
-      homebrew:
-        packages:
-        - ninja
-        - gcc@7 # vcpkg requires gcc-7 or better
-        - cmake # Xcode 9.4 and earlier have 3.11.4
-        update: true
-
+  # Note: can not build vcpkg on xcode-9.3/4, missing OSX update on Travis.
+  # Earliest available with C++17 support
   - name: AppleClang Xcode-9
     if: branch =~ /^(master|[Tt]ravis.*)$/
     os: osx
@@ -264,11 +251,16 @@ jobs:
     env:
     - CXX_vcpkg: g++-7
     - Coverage: grcov
-    addons: *OSX-legacy
+    addons:
+      homebrew:
+        packages:
+        - ninja
+        - gcc@7 # vcpkg requires gcc-6 or better
+        - cmake # Xcode 9.4 and earlier have 3.11.4
+        update: true
 
   allow_failures:
   - name: Clang-4.0 Debug
-  - name: AppleClang Xcode-9.4
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
