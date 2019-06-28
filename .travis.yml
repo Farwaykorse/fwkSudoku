@@ -277,6 +277,9 @@ before_install:
   if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
     export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
   fi
+  if [[ ${TRAVIS_EVENT_TYPE} == "cron" ]]; then
+    Coverage=""
+  fi
 - |
   # Install Ninja-build (if not installed)
   if [[ ! -x "$(command -v ninja)" ]]; then
