@@ -360,6 +360,9 @@ before_install:
     then
       if [[ ${CC_vcpkg:-} ]];  then eval "CC=${CC_vcpkg}"; fi
       if [[ ${CXX_vcpkg:-} ]]; then eval "CXX=${CXX_vcpkg}"; fi
+      if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
+        export CXXFLAGS="${CXXFLAGS:-} -stdlib=${CXX_lib}"
+      fi
       bootstrap-vcpkg.sh
       eval ${GENERATE_SRC_HASH} > ${VCPKG_SRC_HASH}
     fi
@@ -372,7 +375,7 @@ before_install:
     #  FLAGS="${FLAGS} -lc++fs"
     #  FLAGS="${FLAGS} -lc++experimental"
     #fi
-    export CXXFLAGS="${CXXFLAGS} ${FLAGS}"
+    export CXXFLAGS="${CXXFLAGS:-} ${FLAGS}"
   fi
 
 install:
