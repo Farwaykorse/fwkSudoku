@@ -2,6 +2,11 @@
 ## Tests for library Sudoku.
 ##
 ##====--------------------------------------------------------------------====##
+include(add_to_source_file_properties)
+include(msvc_warnings_list)
+include(set_precompiled_header)
+include(subproject_functions)
+
 subproject_cmake_minimum_required(3.12)
 
 project(fwkSudokuTests LANGUAGES CXX)
