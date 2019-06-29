@@ -14,8 +14,9 @@ skip_branch_with_pr: true
 skip_commits:
   files:
   - .git*
-  - .travis.yml
   - .codecov.yml
+  - .travis.yml
+  - .yamllint
   - docs/
   - LICENSE
   - '**/.clang-*'
@@ -60,16 +61,19 @@ environment:
   - BUILDSYSTEM: MSBuild_Solution
   - BUILDSYSTEM: MSBuild
   global:
+    # yamllint disable rule:line-length
     APPVEYOR_SAVE_CACHE_ON_ERROR: true
     VCVAR2015: 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat'
     VCVAR2017: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
     VCVAR2019: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat'
     # vcpkg
     TOOLCHAIN_FILE: 'C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake'
+    # yamllint enable rule:line-length
 ## /Create_Matrix
 
-## Remove_from_Matrix
+##====-----------------
 matrix:
+  ## Remove_from_Matrix
   exclude:
   # Not supported by script / invalid combination:
   - image: Visual Studio 2013
@@ -207,7 +211,8 @@ install:
     if("$env:BUILDSYSTEM" -eq "Ninja") {
       $NINJA_TAG = 'v1.9.0'
       $NINJA_PATH = "C:\Tools\ninja\ninja-${NINJA_TAG}"
-      $NINJA_SHA512 = '1C050E602EC63D4DCF44D9AB3D2D02AC731B4B2977BC0B420A21E85604487F58EC8D3045941D4153EF06AB00C175CA7CF9D57B8E20A757528290E135639962AC'
+      $NINJA_SHA512 = `
+        '1C050E602EC63D4DCF44D9AB3D2D02AC731B4B2977BC0B420A21E85604487F58EC8D3045941D4153EF06AB00C175CA7CF9D57B8E20A757528290E135639962AC'
 
       Write-Output "-- Install Ninja-build ${NINJA_TAG} ..."
       if (![IO.File]::Exists("${NINJA_PATH}\ninja.exe")) {
@@ -343,7 +348,8 @@ on_finish:
     if (Test-Path ".\Testing\TAG") {
       $tag_name = "$(Get-Content .\Testing\TAG -TotalCount 1)"
       Copy-Item .\Testing\$tag_name\Test.xml .\Test.xml
-      $template = "https://raw.githubusercontent.com/rpavlik/jenkins-ctest-plugin/master/ctest-to-junit.xsl"
+      $template = `
+        "https://raw.githubusercontent.com/rpavlik/jenkins-ctest-plugin/master/ctest-to-junit.xsl"
       $XSLInputElement = New-Object System.Xml.Xsl.XslCompiledTransform
       $XSLInputElement.Load("$template")
       $XSLInputElement.Transform(
@@ -356,4 +362,3 @@ on_finish:
         (Resolve-Path .\ctest-to-junit-results.xml)
       )
     }
-

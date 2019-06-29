@@ -1,0 +1,67 @@
+##====---- .yamllint                                                  ----====##
+# yamllint configuration file
+# Requires yamllint version: 1.10.0
+##====--------------------------------------------------------------------====##
+---
+
+extends: default
+
+rules:
+  braces:
+    min-spaces-inside: 0
+    max-spaces-inside: -1
+    max-spaces-inside-empty: 0
+    level: warning
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: -1
+    max-spaces-inside-empty: 0
+    level: warning
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: -1
+  commas:
+    max-spaces-before: 0
+    min-spaces-after:  1
+    max-spaces-after: -1
+  comments:
+    require-starting-space: false
+    min-spaces-from-content: 1
+    level: warning
+  comments-indentation:
+    level: warning
+  document-end: disable
+  document-start: disable
+  empty-lines:
+    max: 1
+    level: warning
+  empty-values:
+    forbid-in-block-mappings: true
+    forbid-in-flow-mappings: true
+  hyphens:
+    max-spaces-after: 1
+    level: warning
+  indentation:
+    spaces: 2
+    indent-sequences: false
+    check-multi-line-strings: false
+    level: warning
+  key-duplicates: enable
+  key-ordering: disable
+  line-length:
+    max: 80
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+    level: warning
+  new-line-at-end-of-file: enable
+  new-lines:
+    type: unix
+  # octal-values: # requires yamllint v1.11.0
+  #  forbid-implicit-octal: true
+  #  quoted-strings: disable
+  trailing-spaces: enable
+  truthy: disable
+  #  allowed-values: ['true', 'false', 'on', 'off'] # requires yamllint v1.16.0
+  #  level: warning
+
+...

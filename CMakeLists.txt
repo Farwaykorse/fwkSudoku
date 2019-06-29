@@ -14,12 +14,7 @@ option(CODE_COVERAGE "Enable coverage reporting" OFF)
 ##====--------------------------------------------------------------------====##
 # External CMake definitions
 ##====--------------------------------------------------------------------====##
-# Functions
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/add_to_source_file_properties.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/set_precompiled_header.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/subproject_functions.cmake)
-# Properties
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/msvc_warnings_list.cmake)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 ##====--------------------------------------------------------------------====##
 # The library: Sudoku

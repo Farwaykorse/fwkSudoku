@@ -11,6 +11,7 @@ git:
 env:
   global:
   # vcpkg
+  - VCPKG_DIR:       $HOME/tools/vcpkg
   - TOOLCHAIN_FILE: "$HOME/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 ##====--------------------------------------------------------------------====##
@@ -18,10 +19,10 @@ env:
 # No build matrix, each item in matrix:include is single build configuration.
 #
 # Environment variables:
-# - C_compiler: overwrites default value of CC.
-# - CXX_compiler: overwrites default value of CXX.
 # - CXX_lib: library selection.
 #   - libc++  (Linux only, default on OSX.)
+# - CC/CXX_vcpkg: build vcpkg with a different compiler.
+#   Linux minimum: `g++-7`; OSX minimum: `g++-6`; Or clang-8 (with libc++-8).
 # - CONFIGURATION: specifies the build configuration.
 #   When not set both a Debug and a Release configurations are build in single
 #   job session.
@@ -63,9 +64,9 @@ jobs:
   - name: GCC-9
     stage: "Build & Test Latest"
     env:
-    - C_compiler:   gcc-9
-    - CXX_compiler: g++-9
-    - Coverage:     gcov-9
+    - CC:  gcc-9
+    - CXX: g++-9
+    - Coverage: gcov-9
     addons:
       apt:
         sources:
@@ -76,9 +77,9 @@ jobs:
   - name: GCC-8
     stage: "Build & Test"
     env:
-    - C_compiler:   gcc-8
-    - CXX_compiler: g++-8
-    - Coverage:     gcov-8
+    - CC:  gcc-8
+    - CXX: g++-8
+    - Coverage: gcov-8
     addons:
       apt:
         sources:
@@ -89,9 +90,9 @@ jobs:
   - name: GCC-7
     stage: "Build & Test"
     env:
-    - C_compiler:   gcc-7
-    - CXX_compiler: g++-7
-    - Coverage:     gcov-7
+    - CC:  gcc-7
+    - CXX: g++-7
+    - Coverage: gcov-7
     addons:
       apt:
         sources:
@@ -103,8 +104,9 @@ jobs:
     stage: "Build & Test Latest"
     dist: xenial
     env:
-    - C_compiler:   clang-8
-    - CXX_compiler: clang++-8
+    - CC: clang-8
+    - CXX: clang++-8
+    - CXX_vcpkg: g++-7
     - Coverage: grcov
     addons:
       apt:
@@ -119,8 +121,8 @@ jobs:
     stage: "Build & Test Latest"
     dist: xenial
     env:
-    - C_compiler:   clang-8
-    - CXX_compiler: clang++-8
+    - CC: clang-8
+    - CXX: clang++-8
     - CXX_lib: libc++
     - Coverage: grcov
     addons:
@@ -130,16 +132,15 @@ jobs:
         - ubuntu-toolchain-r-test
         packages:
         - clang-8
-        - g++-7
         - libc++-8-dev
         - libc++abi-8-dev
 
   - name: Clang-7
     stage: "Build & Test"
     dist: xenial # Ships with Clang 7
+    compiler: clang
     env:
-    - C_compiler:   clang
-    - CXX_compiler: clang++
+    - CXX_vcpkg: g++-7
     - Coverage: grcov
     addons:
       apt: # vcpkg executable requires GCC 7 or better
@@ -151,9 +152,10 @@ jobs:
   - name: Clang-7 libc++
     dist: xenial
     env:
-    - C_compiler:   clang
-    - CXX_compiler: clang++
+    - CC:  clang
+    - CXX: clang++
     - CXX_lib: libc++
+    - CXX_vcpkg: g++-7
     - Coverage: grcov
     addons:
       apt:
@@ -168,8 +170,9 @@ jobs:
   - name: Clang-6.0
     dist: xenial
     env:
-    - C_compiler: clang-6.0
-    - CXX_compiler: clang++-6.0
+    - CC: clang-6.0
+    - CXX: clang++-6.0
+    - CXX_vcpkg: g++-7
     - Coverage: grcov
     addons:
       apt:
@@ -183,8 +186,9 @@ jobs:
   - name: Clang-5.0
     dist: xenial
     env:
-    - C_compiler: clang-5.0
-    - CXX_compiler: clang++-5.0
+    - CC: clang-5.0
+    - CXX: clang++-5.0
+    - CXX_vcpkg: g++-7
     - Coverage: grcov
     addons:
       apt:
@@ -198,8 +202,9 @@ jobs:
     if: branch =~ /^[Tt]ravis.*$/
     dist: xenial
     env:
-    - C_compiler: clang-4.0
-    - CXX_compiler: clang++-4.0
+    - CC: clang-4.0
+    - CXX: clang++-4.0
+    - CXX_vcpkg: g++-7
     - CONFIGURATION: Debug
     addons:
       apt:
@@ -213,6 +218,7 @@ jobs:
     os: osx
     osx_image: xcode10.2 # AppleClang 10.0.1
     env:
+    - CXX_vcpkg: g++-7
     - Coverage: grcov
     addons:
       homebrew:
@@ -225,6 +231,7 @@ jobs:
     os: osx
     osx_image: xcode10.1 # AppleClang 10.0.0 same compiler as Xcode 10.0
     env:
+    - CXX_vcpkg: g++-7
     - Coverage: grcov
     addons:
       homebrew:
@@ -238,6 +245,7 @@ jobs:
     os: osx
     osx_image: xcode9.4 # AppleClang 9.1.0 same compiler as Xcode 9.3
     env:
+    - CXX_vcpkg: g++-7
     - Coverage: grcov
     addons: &OSX-legacy
       homebrew:
@@ -252,6 +260,7 @@ jobs:
     os: osx
     osx_image: xcode9 # AppleClang 9.1.0 same compiler in Xcode 9.0, 9.1 and 9.2
     env:
+    - CXX_vcpkg: g++-7
     - Coverage: grcov
     addons: *OSX-legacy
 
@@ -265,10 +274,11 @@ before_install:
 - |
   # Setup
   mkdir -p ~/tools && cd ~/tools
-  if [[ ${C_compiler:-} ]]; then   export CC=${C_compiler:?}; fi
-  if [[ ${CXX_compiler:-} ]]; then export CXX=${CXX_compiler:?}; fi
   if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
     export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+  fi
+  if [[ ${TRAVIS_EVENT_TYPE} == "cron" ]]; then
+    Coverage=""
   fi
 - |
   # Install Ninja-build (if not installed)
@@ -334,37 +344,41 @@ before_install:
 - |
   # Download vcpkg
   ( set -euo pipefail
-    git clone --depth=1 --branch=master --quiet \
-      https://github.com/Microsoft/vcpkg.git $HOME/tools/vcpkg
-    mv -f -t ~/tools/vcpkg ~/tools/.cache/vcpkg/* ||
-      echo "No cached files for vcpkg."
+    # Full history clone for rebuild detection.
+    git clone --quiet https://github.com/Microsoft/vcpkg.git ${VCPKG_DIR}
+    mv -f -t ${VCPKG_DIR} ~/tools/.cache/vcpkg/* || echo "No cached files."
   )
-  export PATH=$PATH:$HOME/tools/vcpkg
+  export PATH=$PATH:${VCPKG_DIR}
 - |
   # Install/Update vcpkg
+  cd ${VCPKG_DIR}
   ( set -euxo pipefail
+    VCPKG_SRC_HASH="${VCPKG_DIR}/vcpkg_src_hash" && touch ${VCPKG_SRC_HASH}
+    GENERATE_SRC_HASH="(
+      git log --format=format:\"%H\" --max-count=1 -- toolsrc
+    )"
     if [[ ! -x "$(command -v vcpkg)" ||
-      ( $(vcpkg update) == 'Warning: Different source'*'for vcpkg' ) ]]
+      ( $(vcpkg update) == 'Warning: Different source'*'for vcpkg'* ) ||
+      ( $(eval ${GENERATE_SRC_HASH}) != $(< ${VCPKG_SRC_HASH}) ) ]]
     then
-      if [[ ${TRAVIS_OS_NAME} == "linux" &&
-        ( ${CXX_compiler} != g++* || ${CXX_compiler%g++-} < 7 ) ]]
-      then
-        eval "CC=gcc-7 && CXX=g++-7" # Minimum requirement vcpkg on Linux
-      elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
-        eval "CC=gcc-7 && CXX=g++-7" # Minimum requirement vcpkg on OSX
+      if [[ ${CC_vcpkg:-} ]];  then eval "CC=${CC_vcpkg}"; fi
+      if [[ ${CXX_vcpkg:-} ]]; then eval "CXX=${CXX_vcpkg}"; fi
+      if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
+        export CXXFLAGS="${CXXFLAGS:-} -stdlib=${CXX_lib}"
       fi
-      ~/tools/vcpkg/bootstrap-vcpkg.sh
+      bootstrap-vcpkg.sh
+      eval ${GENERATE_SRC_HASH} > ${VCPKG_SRC_HASH}
     fi
   )
 - |
   # Using libc++
-  if [[ ${CXX_compiler} == clang* && ${CXX_lib:-} ]]; then
+  if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
     FLAGS="-stdlib=${CXX_lib}"
     #if [[ ${CXX_lib} == libc++ ]]; then
     #  FLAGS="${FLAGS} -lc++fs"
     #  FLAGS="${FLAGS} -lc++experimental"
     #fi
-    export CXXFLAGS="${CXXFLAGS} ${FLAGS}"
+    export CXXFLAGS="${CXXFLAGS:-} ${FLAGS}"
   fi
 
 install:
@@ -415,7 +429,10 @@ script:
 - ctest -j $(nproc) --output-on-failure
 - cd ../build2
 - if [[ ${B_REL:-} ]]; then cmake ${CMakeGenFlags2[@]:?} ..; fi
-- if [[ ${B_REL:-} ]]; then cmake --build . --config Release -- ${GeneratorFlags}; fi
+- |
+  if [[ ${B_REL:-} ]]; then
+    cmake --build . --config Release -- ${GeneratorFlags}
+  fi
 - if [[ ${B_REL:-} ]]; then ctest -j $(nproc) --output-on-failure; fi
 
 ##====--------------------------------------------------------------------====##
@@ -423,7 +440,8 @@ before_cache:
 - |
   # Select files for caching
   mkdir -p ~/tools/.cache/vcpkg
-  mv -u -t ~/tools/.cache/vcpkg ~/tools/vcpkg/vcpkg ~/tools/vcpkg/installed
+  mv -u -t ~/tools/.cache/vcpkg ${VCPKG_DIR}/vcpkg ${VCPKG_DIR}/installed
+  mv -u -t ~/tools/.cache/vcpkg ${VCPKG_DIR}/vcpkg_src_hash
 
 cache:
   directories:
@@ -442,7 +460,7 @@ after_success:
     if [[ ${Coverage} == "grcov" ]]; then
       coverage_report="coverage.json"
       flags=("--branch")
-      if [[ ${CXX_compiler:-} == clang* ]]; then flags+=("--llvm"); fi
+      if [[ ${CXX} == clang* ]]; then flags+=("--llvm"); fi
       options=("-s ${Source_Dir:?}")
       options+=("-t coveralls+" "--token unused")
       options+=("--commit-sha ${TRAVIS_COMMIT}")
