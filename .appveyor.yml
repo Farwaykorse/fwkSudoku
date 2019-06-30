@@ -173,11 +173,34 @@ for:
           Write-Error "Invalid test executable path."
         }
       }
+  - ps: |
+      $extensions = 'C:\Program Files (x86)\Microsoft Visual Studio\'
+      if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2019"){
+        $extensions += '2019'
+      } elseif ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2017"){
+        $extensions += '2017'
+      }
+      $extensions += '\Community\Common7\IDE\Extensions\'
+      $TestAdapterPath = (
+        Get-ChildItem -Path ${extensions} -Recurse |
+        Where-Object { $_.Name -eq 'GoogleTestAdapter.TestAdapter.dll' } |
+        Select-Object -First 1
+      ).DirectoryName
+      if (! $TestAdapterPath) {
+        echo "Can't find GoogleTestAdapter."
+        $env:TESTADAPTER = '/UseVsixExtensions:true'
+      } else {
+        echo $TestAdapterPath
+        $env:TESTADAPTER = "/TestAdapterPath:`"$TestAdapterPath`""
+      }
   - >-
     VSTest.Console
     %TEST_EXE_PATH%
-    /UseVsixExtensions:true
+    /Platform:%PLATFORM%
     /Settings:msvc\TestAdapter.runsettings
+    --
+    /Parallel
+    %TESTADAPTER%
     /logger:Appveyor
 ## /Modify_Matrix
 
