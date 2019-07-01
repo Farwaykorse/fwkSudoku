@@ -2,7 +2,7 @@
 ## Base configuration.
 ##
 ##====--------------------------------------------------------------------====##
-cmake_minimum_required(VERSION 3.12...3.14)
+cmake_minimum_required(VERSION 3.12...3.15)
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
 project(fwk_Sudoku LANGUAGES CXX)
