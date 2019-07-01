@@ -61,6 +61,33 @@ stages:
 
 jobs:
   include:
+  - name: CMake versions
+    stage: "Build & Test Latest"
+    env:
+    - CMake_version: '"3.15.0-rc3 3.14.5 3.13.5 3.12.4 3.12.0"'
+    - CC:  gcc-7
+    - CXX: g++-7
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-7
+    script:
+    - |
+      cd ./build
+      ( set -eu
+        for CMAKE in ${CMAKE_path[@]}; do
+          $CMAKE ${CMakeGenFlags[@]:?} ..
+          rm ./* -rf
+        done
+        export CXX=clang++
+        for CMAKE in ${CMAKE_path[@]}; do
+          $CMAKE ${CMakeGenFlags[@]:?} ..
+          rm ./* -rf
+        done
+      )
+
   - name: GCC-9
     stage: "Build & Test Latest"
     env:
@@ -341,6 +368,26 @@ before_install:
   )
   export PATH=$HOME/tools/grcov:$PATH
   fi
+- |
+  # Install CMake versions
+  ( set -euo pipefail
+    CMAKE_INSTALLER=install-cmake.sh
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then OS="Linux"; EXT="sh"; fi
+    for VERSION in ${CMake_version:-}; do
+      CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${VERSION:?}/cmake-${VERSION}-${OS:?}-x86_64.${EXT:?}"
+      curl -sSL ${CMAKE_URL:?} -o ${CMAKE_INSTALLER:?}
+      chmod +x ${CMAKE_INSTALLER}
+      mkdir ${HOME}/tools/cmake-${VERSION}
+      sudo ./${CMAKE_INSTALLER} --prefix=${HOME}/tools/cmake-${VERSION} \
+        --skip-license
+      rm ${CMAKE_INSTALLER}
+    done
+  )
+  for VERSION in ${CMake_version:-}; do
+    tmp_path="$HOME/tools/cmake-${VERSION}/bin/cmake"
+    if [[ -x "$(command -v $tmp_path)" ]]; then CMAKE_path+=("$tmp_path"); fi
+  done
+  CMAKE_path=${CMAKE_path:-cmake} # default if empty
 - |
   # Download vcpkg
   ( set -euo pipefail
