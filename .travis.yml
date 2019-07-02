@@ -77,14 +77,24 @@ jobs:
     - |
       cd ./build
       ( set -eu
-        for CMAKE in ${CMAKE_path[@]}; do
+        for CMAKE in ${CMAKE_path[@]}; do echo "----------------"
           $CMAKE ${CMakeGenFlags[@]:?} ..
           rm ./* -rf
+          if [[ ${B_REL:-} ]]; then echo
+            echo "Configuration = Release"
+            $CMAKE ${CMakeGenFlags2[@]:?} ..
+            rm ./* -rf
+          fi
         done
         export CXX=clang++
-        for CMAKE in ${CMAKE_path[@]}; do
+        for CMAKE in ${CMAKE_path[@]}; do echo "----------------"
           $CMAKE ${CMakeGenFlags[@]:?} ..
           rm ./* -rf
+          if [[ ${B_REL:-} ]]; then echo
+            echo "Configuration = Release"
+            $CMAKE ${CMakeGenFlags2[@]:?} ..
+            rm ./* -rf
+          fi
         done
       )
 
@@ -104,9 +114,14 @@ jobs:
     - |
       cd ./build
       ( set -eu
-        for CMAKE in ${CMAKE_path[@]}; do
+        for CMAKE in ${CMAKE_path[@]}; do echo "----------------"
           $CMAKE ${CMakeGenFlags[@]:?} ..
           rm ./* -rf
+          if [[ ${B_REL:-} ]]; then echo
+            echo "Configuration = Release"
+            $CMAKE ${CMakeGenFlags2[@]:?} ..
+            rm ./* -rf
+          fi
         done
       )
 
