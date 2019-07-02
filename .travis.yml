@@ -431,11 +431,11 @@ before_install:
       rm --recursive --force ./CMake_tmp ${CMAKE_INSTALLER}
     done
   )
+  CMAKE_path=("cmake") # installed CMake version
   for VERSION in ${CMake_version:-}; do
     tmp_path="$HOME/tools/cmake-${VERSION}/bin/cmake"
     if [[ -x "$(command -v $tmp_path)" ]]; then CMAKE_path+=("$tmp_path"); fi
   done
-  CMAKE_path=${CMAKE_path:-cmake} # default if empty
 - |
   # Download vcpkg
   ( set -euo pipefail
