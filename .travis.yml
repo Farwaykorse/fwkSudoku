@@ -42,6 +42,8 @@ env:
 # https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
 # LLVM apt resources:
 # https://apt.llvm.org
+# Kitware apt repository (CMake):
+# https://apt.kitware.com
 # TravisCI apt safelist:
 # https://github.com/travis-ci/apt-source-safelist/blob/master/ubuntu.json
 # libc++ documentation:
@@ -71,7 +73,11 @@ jobs:
       apt:
         sources:
         - ubuntu-toolchain-r-test
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ xenial main'
+          key_url: 'https://apt.kitware.com/keys/kitware-archive-latest.asc'
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ xenial-rc main'
         packages:
+        - cmake
         - g++-7
     script:
     - |
@@ -108,6 +114,7 @@ jobs:
     addons:
       homebrew:
         packages:
+        - cmake
         - ninja
         - gcc@7 # vcpkg requires gcc-6 or later
     script:
