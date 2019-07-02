@@ -88,6 +88,28 @@ jobs:
         done
       )
 
+  - name: CMake versions
+    stage: "Build & Test"
+    os: osx
+    osx_image: xcode10.2 # AppleClang 10.0.1
+    env:
+    - CMake_version: '"3.15.0-rc3 3.14.5 3.13.5 3.12.4 3.12.0"'
+    - CXX_vcpkg: g++-7
+    addons:
+      homebrew:
+        packages:
+        - ninja
+        - gcc@7 # vcpkg requires gcc-6 or later
+    script:
+    - |
+      cd ./build
+      ( set -eu
+        for CMAKE in ${CMAKE_path[@]}; do
+          $CMAKE ${CMakeGenFlags[@]:?} ..
+          rm ./* -rf
+        done
+      )
+
   - name: GCC-9
     stage: "Build & Test Latest"
     env:
@@ -371,16 +393,27 @@ before_install:
 - |
   # Install CMake versions
   ( set -euo pipefail
-    CMAKE_INSTALLER=install-cmake.sh
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then OS="Linux"; EXT="sh"; fi
+    if [[ ${CMake_version:-} ]]; then
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then OS="Linux"; EXT="sh"
+      elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then OS="Darwin"; EXT="tar.gz"
+      else echo "CMake install not supported for this OS."; exit 1
+      fi
+      CMAKE_INSTALLER="install-cmake.${EXT}"
+    fi
     for VERSION in ${CMake_version:-}; do
-      CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${VERSION:?}/cmake-${VERSION}-${OS:?}-x86_64.${EXT:?}"
-      curl -sSL ${CMAKE_URL:?} -o ${CMAKE_INSTALLER:?}
-      chmod +x ${CMAKE_INSTALLER}
-      mkdir ${HOME}/tools/cmake-${VERSION}
-      sudo ./${CMAKE_INSTALLER} --prefix=${HOME}/tools/cmake-${VERSION} \
-        --skip-license
-      rm ${CMAKE_INSTALLER}
+      CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${VERSION}/cmake-${VERSION}-${OS}-x86_64.${EXT}"
+      curl -sSL ${CMAKE_URL} -o ${CMAKE_INSTALLER}
+      CMAKE_DIR="${HOME}/tools/cmake-${VERSION}"
+      mkdir -p ${CMAKE_DIR}
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        chmod +x ${CMAKE_INSTALLER}
+        sudo ./${CMAKE_INSTALLER} --prefix=${CMAKE_DIR} --skip-license
+      else # OSX
+        mkdir -p ./CMake_tmp
+        tar --extract --gzip --file=${CMAKE_INSTALLER} --directory=./CMake_tmp
+        mv ./CMake_tmp/*/CMake.app/Contents/* ${CMAKE_DIR}
+      fi
+      rm --recursive --force ./CMake_tmp ${CMAKE_INSTALLER}
     done
   )
   for VERSION in ${CMake_version:-}; do
