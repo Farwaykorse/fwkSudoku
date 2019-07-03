@@ -444,6 +444,17 @@ before_install:
     if [[ -x "$(command -v $tmp_path)" ]]; then CMAKE_path+=("$tmp_path"); fi
   done
 - |
+  # CMake wrapper (Trusty & Xenial); restore default behaviour.
+  if [[ "${TRAVIS_OS_NAME}" == "linux" &&
+        "$(lsb_release --codename)" =~ (trusty|xenial)$ ]]
+  then
+    if [[ -x $(command -v /usr/local/bin/cmake) ]]; then
+      function cmake { command /usr/local/bin/cmake $@; }
+    elif [[ -x $(command -v /usr/bin/cmake) ]]; then
+      function cmake { command /usr/bin/cmake $@; }
+    fi
+  fi
+- |
   # Download vcpkg
   ( set -euo pipefail
     # Full history clone for rebuild detection.
