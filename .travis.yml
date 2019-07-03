@@ -114,6 +114,7 @@ jobs:
     env:
     - CC:  gcc-9
     - CXX: g++-9
+    - CMake_version: 3.14.5
     - Coverage: gcov-9
     addons:
       apt:
@@ -267,6 +268,7 @@ jobs:
     osx_image: xcode10.2 # AppleClang 10.0.1
     env:
     - CXX_vcpkg: g++-7
+    - CMake_version: 3.15.0-rc3
     - Coverage: grcov
     addons:
       homebrew:
@@ -393,7 +395,12 @@ before_install:
   # Install CMake versions
   ( set -euo pipefail
     if [[ ${CMake_version:-} ]]; then
-      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then OS="Linux"; EXT="sh"
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        OS="Linux"; EXT="sh"
+        if [[ ! ("${CMake_version:-}" =~ .+[' '].+) ]]; then
+          # Single entry -> default CMake version
+          CMAKE_DIR="/usr/local"
+        fi
       elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then OS="Darwin"; EXT="tar.gz"
       else echo "CMake install not supported for this OS."; exit 1
       fi
@@ -402,7 +409,7 @@ before_install:
     for VERSION in ${CMake_version:-}; do
       CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${VERSION}/cmake-${VERSION}-${OS}-x86_64.${EXT}"
       curl -sSL ${CMAKE_URL} -o ${CMAKE_INSTALLER}
-      CMAKE_DIR="${HOME}/tools/cmake-${VERSION}"
+      CMAKE_DIR="${CMAKE_DIR:-"${HOME}/tools/cmake-${VERSION}"}"
       mkdir -p ${CMAKE_DIR}
       if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
         chmod +x ${CMAKE_INSTALLER}
@@ -415,6 +422,10 @@ before_install:
       rm --recursive --force ./CMake_tmp ${CMAKE_INSTALLER}
     done
   )
+  if [[ "${TRAVIS_OS_NAME}" == "osx" && ! ("${CMake_version:-}" =~ .+[' '].+) ]]
+  then # Single entry -> default CMake version
+    export PATH=${HOME}/tools/cmake-${CMake_version}/bin:$PATH
+  fi
   CMAKE_path=("cmake") # installed CMake version
   for VERSION in ${CMake_version:-}; do
     tmp_path="$HOME/tools/cmake-${VERSION}/bin/cmake"
