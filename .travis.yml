@@ -83,25 +83,9 @@ jobs:
     - |
       cd ./build
       ( set -eu
-        for CMAKE in ${CMAKE_path[@]}; do echo "----------------"
-          $CMAKE ${CMakeGenFlags[@]:?} ..
-          rm ./* -rf
-          if [[ ${B_REL:-} ]]; then echo
-            echo "Configuration = Release"
-            $CMAKE ${CMakeGenFlags2[@]:?} ..
-            rm ./* -rf
-          fi
-        done
+        for CMAKE in ${CMAKE_path[@]}; do test_CMake_generate $CMAKE; done
         export CXX=clang++
-        for CMAKE in ${CMAKE_path[@]}; do echo "----------------"
-          $CMAKE ${CMakeGenFlags[@]:?} ..
-          rm ./* -rf
-          if [[ ${B_REL:-} ]]; then echo
-            echo "Configuration = Release"
-            $CMAKE ${CMakeGenFlags2[@]:?} ..
-            rm ./* -rf
-          fi
-        done
+        for CMAKE in ${CMAKE_path[@]}; do test_CMake_generate $CMAKE; done
       )
 
   - name: CMake versions
@@ -121,15 +105,7 @@ jobs:
     - |
       cd ./build
       ( set -eu
-        for CMAKE in ${CMAKE_path[@]}; do echo "----------------"
-          $CMAKE ${CMakeGenFlags[@]:?} ..
-          rm ./* -rf
-          if [[ ${B_REL:-} ]]; then echo
-            echo "Configuration = Release"
-            $CMAKE ${CMakeGenFlags2[@]:?} ..
-            rm ./* -rf
-          fi
-        done
+        for CMAKE in ${CMAKE_path[@]}; do test_CMake_generate $CMAKE; done
       )
 
   - name: GCC-9
@@ -443,6 +419,19 @@ before_install:
     tmp_path="$HOME/tools/cmake-${VERSION}/bin/cmake"
     if [[ -x "$(command -v $tmp_path)" ]]; then CMAKE_path+=("$tmp_path"); fi
   done
+  function test_CMake_generate {
+    # $1: cmake or full path to cmake
+    if [[ "$1" == "cmake" || -x "$(command -v $1)" && "$1" =~ .*cmake$ ]]; then
+      echo "----------------"
+      $1 ${CMakeGenFlags[@]:?} ..
+      rm ./* -rf
+      if [[ ${B_REL:-} ]]; then echo "Configuration = Release"
+        $1 ${CMakeGenFlags2[@]:?} ..
+        rm ./* -rf
+      fi
+    else echo "Non existing command: $1"
+    fi
+  }
 - |
   # CMake wrapper (Trusty & Xenial); restore default behaviour.
   if [[ "${TRAVIS_OS_NAME}" == "linux" &&
