@@ -101,6 +101,7 @@ jobs:
         - cmake
         - ninja
         - gcc@7 # vcpkg requires gcc-6 or later
+        update: true # get latest
     script:
     - |
       cd ./build
