@@ -185,6 +185,11 @@ for:
 ##====--------------------------------------------------------------------====##
 init:
 - ps: |
+    New-Item -ItemType Directory -Force ~\tools | pushd
+    git clone https://github.com/Farwaykorse/AppVeyorHelpers.git --quiet
+    Import-Module -Name .\AppVeyorHelpers\AppVeyorHelpers.psd1
+    popd
+- ps: |
     $out =  "-- CI Session Configuration --`n"
     $out += "$env:APPVEYOR_BUILD_WORKER_IMAGE - $env:CONFIGURATION - "
     $out += "$env:PLATFORM`nOS / platform:       "
