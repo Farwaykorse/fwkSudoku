@@ -187,15 +187,10 @@ init:
 - ps: |
     New-Item -ItemType Directory -Force ~\tools | pushd
     git clone https://github.com/Farwaykorse/AppVeyorHelpers.git --quiet
-    Import-Module -Name .\AppVeyorHelpers\AppVeyorHelpers.psd1
+    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.10.1
     popd
+- ps: Show-SystemInfo -LLVM -CMake -Curl
 - ps: |
-    $out =  "-- CI Session Configuration --`n"
-    $out += "$env:APPVEYOR_BUILD_WORKER_IMAGE - $env:CONFIGURATION - "
-    $out += "$env:PLATFORM`nOS / platform:       "
-    $tmp = (Get-WmiObject Win32_OperatingSystem).name
-    $out += "$($tmp -split "[|]" | Select-Object -First 1) / "
-    $out += "$((Get-WmiObject Win32_OperatingSystem).OSArchitecture)`n"
     if ("$env:BUILDSYSTEM" -eq "MSBuild_Solution") {
       $out += 'Build configuration: MSBuild projects'
     } else {
