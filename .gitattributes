@@ -1,70 +1,46 @@
-###############################################################################
-# Set default behavior to automatically normalize line endings.
-###############################################################################
-* text=auto
-
-*.cpp				eol=lf
-*.h					eol=lf
-*.md                eol=lf
-*.bat               eol=crlf
-*.sln				eol=crlf
-*.vcxproj			eol=crlf
-*.vcxproj.filters	eol=crlf
-*.cmake             eol=lf
-CMakeLists.txt      eol=lf
+# Set git behaviour for files.
+# Verify application using: `git check-attr --all -- <pathname>`
+#------------------------------------------------------------------------------#
+# Macro attributes
+[attr]cmake     eol=lf whitespace=trailing-space,tab-in-indent,tabwidth=4
+[attr]cpp       eol=lf diff=cpp whitespace=trailing-space,space-before-tab,indent-with-non-tab,tabwidth=4
+[attr]markdown  eol=lf whitespace=-blank-at-eol,blank-at-eof,tab-in-indent,tabwidth=4
+[attr]xml       eol=lf whitespace=trailing-space,tab-in-indent,tabwidth=4
+[attr]yaml      eol=lf whitespace=trailing-space,tab-in-indent,tabwidth=4
+#------------------------------------------------------------------------------#
+# Normalize line-endings (disable with -text)
+*   text=auto
+#------------------------------------------------------------------------------#
+# Per file-extension settings
+*.bat           eol=crlf
+*.[ch]          cpp
+*.[ch]pp        cpp
+*.cmake         cmake
+*.markdown      markdown
+*.md            markdown
+*.natvis        xml
+*.ruleset       xml
+*.runsettings   xml
+*.sln           eol=crlf whitespace=trailing-space
+*.vcxitems      xml eol=crlf
+*.vcxitems.filters  xml eol=crlf
+*.vcxproj       xml eol=crlf
+*.vcxproj.filters   xml eol=crlf
+*.yaml          yaml
+*.yml           yaml
+# Per file settings
+.gitignore          eol=lf whitespace=trailing-space
+.gitattributes      eol=lf whitespace=trailing-space
+.clang-format       eol=lf whitespace=trailing-space,tab-in-indent,tabwidth=4
+.clang-tidy         eol=lf whitespace=trailing-space,tab-in-indent,tabwidth=4
+.yamllint           yaml
+CMakeLists.txt      cmake
 CMakeSettings.json  eol=crlf
-.git				eol=lf
-.gitattributes		eol=lf
-.clang-formats      eol=lf
-.clang-tidy         eol=lf
-*.yml               eol=lf
 
-###############################################################################
-# Set the merge driver for project and solution files
-#
-# Merging from the command prompt will add diff markers to the files if there
-# are conflicts (Merging from VS is not affected by the settings below, in VS
-# the diff markers are never inserted). Diff markers may cause the following 
-# file extensions to fail to load in VS. An alternative would be to treat
-# these files as binary and thus will always conflict and require user
-# intervention with every merge. To do so, just uncomment the entries below
-###############################################################################
-#*.sln       merge=binary
-#*.csproj    merge=binary
-#*.vbproj    merge=binary
-#*.vcxproj   merge=binary
-#*.vcproj    merge=binary
-#*.dbproj    merge=binary
-#*.fsproj    merge=binary
-#*.lsproj    merge=binary
-#*.wixproj   merge=binary
-#*.modelproj merge=binary
-#*.sqlproj   merge=binary
-#*.wwaproj   merge=binary
-
-###############################################################################
-# behavior for image files
-#
-# image files are treated as binary by default.
-###############################################################################
+#------------------------------------------------------------------------------#
+# Image files (treat as binary)
+*.gif   binary
 *.jpg   binary
 *.png   binary
-*.gif   binary
 
-###############################################################################
-# diff behavior for common document formats
-# 
-# Convert binary document formats to text before diffing them. This feature
-# is only available from the command line. Turn it on by uncommenting the 
-# entries below.
-###############################################################################
-#*.doc   diff=astextplain
-#*.DOC   diff=astextplain
-#*.docx  diff=astextplain
-#*.DOCX  diff=astextplain
-#*.dot   diff=astextplain
-#*.DOT   diff=astextplain
-#*.pdf   diff=astextplain
-#*.PDF   diff=astextplain
-#*.rtf   diff=astextplain
-#*.RTF   diff=astextplain
+#------------------------------------------------------------------------------#
