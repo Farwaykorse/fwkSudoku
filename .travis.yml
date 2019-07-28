@@ -399,7 +399,7 @@ before_install:
         OS="Linux"; EXT="sh"
         if [[ ! ("${CMake_version:-}" =~ .+[' '].+) ]]; then
           # Single entry -> default CMake version
-          CMAKE_DIR="/usr/local"
+          CMAKE_DEFAULT_DIR="/usr/local"
         fi
       elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then OS="Darwin"; EXT="tar.gz"
       else echo "CMake install not supported for this OS."; exit 1
@@ -409,7 +409,7 @@ before_install:
     for VERSION in ${CMake_version:-}; do
       CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${VERSION}/cmake-${VERSION}-${OS}-x86_64.${EXT}"
       curl -sSL ${CMAKE_URL} -o ${CMAKE_INSTALLER}
-      CMAKE_DIR="${CMAKE_DIR:-"${HOME}/tools/cmake-${VERSION}"}"
+      CMAKE_DIR="${CMAKE_DEFAULT_DIR:-"${HOME}/tools/cmake-${VERSION}"}"
       mkdir -p ${CMAKE_DIR}
       if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
         chmod +x ${CMAKE_INSTALLER}
