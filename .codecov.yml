@@ -22,7 +22,7 @@ coverage:
         base: auto
         target: 0
     patch: yes
-    changes: yes
+    changes: no
 
 parsers:
   gcov:
