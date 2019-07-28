@@ -11,9 +11,11 @@
 ## ````
 ##====--------------------------------------------------------------------====##
 include_guard()
+include(add_to_source_file_properties)
 
 function(set_precompiled_header Target HeaderFile SourceFile)
 if(MSVC)
+  cmake_minimum_required(VERSION 3.12...3.15) # add_to_source_file_properties()
   set(PCH_FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pch")
 
   target_sources(${Target}

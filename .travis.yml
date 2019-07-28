@@ -42,6 +42,8 @@ env:
 # https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
 # LLVM apt resources:
 # https://apt.llvm.org
+# Kitware apt repository (CMake):
+# https://apt.kitware.com
 # TravisCI apt safelist:
 # https://github.com/travis-ci/apt-source-safelist/blob/master/ubuntu.json
 # libc++ documentation:
@@ -61,11 +63,58 @@ stages:
 
 jobs:
   include:
+  - name: CMake versions
+    stage: "Build & Test Latest"
+    env:
+    - CMake_version: '"3.15.1 3.14.5 3.13.5 3.12.4 3.12.0"'
+    - CC:  gcc-7
+    - CXX: g++-7
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ xenial main'
+          key_url: 'https://apt.kitware.com/keys/kitware-archive-latest.asc'
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ xenial-rc main'
+        packages:
+        - cmake
+        - g++-7
+    script:
+    - |
+      cd ./build
+      ( set -eu
+        for CMAKE in ${CMAKE_path[@]}; do test_CMake_generate $CMAKE; done
+        export CXX=clang++
+        for CMAKE in ${CMAKE_path[@]}; do test_CMake_generate $CMAKE; done
+      )
+
+  - name: CMake versions
+    stage: "Build & Test"
+    os: osx
+    osx_image: xcode10.2 # AppleClang 10.0.1
+    env:
+    - CMake_version: '"3.15.1 3.14.5 3.13.5 3.12.4 3.12.0"'
+    - CXX_vcpkg: g++-7
+    addons:
+      homebrew:
+        packages:
+        - cmake
+        - ninja
+        - gcc@7 # vcpkg requires gcc-6 or later
+        update: true # get latest
+    script:
+    - |
+      cd ./build
+      ( set -eu
+        for CMAKE in ${CMAKE_path[@]}; do test_CMake_generate $CMAKE; done
+      )
+
   - name: GCC-9
     stage: "Build & Test Latest"
     env:
     - CC:  gcc-9
     - CXX: g++-9
+    - CMake_version: 3.15.1
     - Coverage: gcov-9
     addons:
       apt:
@@ -219,6 +268,7 @@ jobs:
     osx_image: xcode10.2 # AppleClang 10.0.1
     env:
     - CXX_vcpkg: g++-7
+    - CMake_version: 3.15.1
     - Coverage: grcov
     addons:
       homebrew:
@@ -340,6 +390,70 @@ before_install:
     fi
   )
   export PATH=$HOME/tools/grcov:$PATH
+  fi
+- |
+  # Install CMake versions
+  ( set -euo pipefail
+    if [[ ${CMake_version:-} ]]; then
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        OS="Linux"; EXT="sh"
+        if [[ ! ("${CMake_version:-}" =~ .+[' '].+) ]]; then
+          # Single entry -> default CMake version
+          CMAKE_DEFAULT_DIR="/usr/local"
+        fi
+      elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then OS="Darwin"; EXT="tar.gz"
+      else echo "CMake install not supported for this OS."; exit 1
+      fi
+      CMAKE_INSTALLER="install-cmake.${EXT}"
+    fi
+    for VERSION in ${CMake_version:-}; do
+      CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${VERSION}/cmake-${VERSION}-${OS}-x86_64.${EXT}"
+      curl -sSL ${CMAKE_URL} -o ${CMAKE_INSTALLER}
+      CMAKE_DIR="${CMAKE_DEFAULT_DIR:-"${HOME}/tools/cmake-${VERSION}"}"
+      mkdir -p ${CMAKE_DIR}
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        chmod +x ${CMAKE_INSTALLER}
+        sudo ./${CMAKE_INSTALLER} --prefix=${CMAKE_DIR} --skip-license
+      else # OSX
+        mkdir -p ./CMake_tmp
+        tar --extract --gzip --file=${CMAKE_INSTALLER} --directory=./CMake_tmp
+        mv ./CMake_tmp/*/CMake.app/Contents/* ${CMAKE_DIR}
+      fi
+      rm --recursive --force ./CMake_tmp ${CMAKE_INSTALLER}
+    done
+  )
+  if [[ "${TRAVIS_OS_NAME}" == "osx" && ! ("${CMake_version:-}" =~ .+[' '].+) ]]
+  then # Single entry -> default CMake version
+    export PATH=${HOME}/tools/cmake-${CMake_version}/bin:$PATH
+  fi
+  CMAKE_path=("cmake") # installed CMake version
+  for VERSION in ${CMake_version:-}; do
+    tmp_path="$HOME/tools/cmake-${VERSION}/bin/cmake"
+    if [[ -x "$(command -v $tmp_path)" ]]; then CMAKE_path+=("$tmp_path"); fi
+  done
+  function test_CMake_generate {
+    # $1: cmake or full path to cmake
+    if [[ "$1" == "cmake" || -x "$(command -v $1)" && "$1" =~ .*cmake$ ]]; then
+      echo "----------------"
+      $1 ${CMakeGenFlags[@]:?} ..
+      rm ./* -rf
+      if [[ ${B_REL:-} ]]; then echo "Configuration = Release"
+        $1 ${CMakeGenFlags2[@]:?} ..
+        rm ./* -rf
+      fi
+    else echo "Non existing command: $1"
+    fi
+  }
+- |
+  # CMake wrapper (Trusty & Xenial); restore default behaviour.
+  if [[ "${TRAVIS_OS_NAME}" == "linux" &&
+        "$(lsb_release --codename)" =~ (trusty|xenial)$ ]]
+  then
+    if [[ -x $(command -v /usr/local/bin/cmake) ]]; then
+      function cmake { command /usr/local/bin/cmake $@; }
+    elif [[ -x $(command -v /usr/bin/cmake) ]]; then
+      function cmake { command /usr/bin/cmake $@; }
+    fi
   fi
 - |
   # Download vcpkg
