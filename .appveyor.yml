@@ -321,6 +321,7 @@ test_script:
   ctest -j %NUMBER_OF_PROCESSORS%
   --test-action test --no-compress-output
   --quiet
+- ps: $null = Assert-ValidCodecovYML
 
 ##====--------------------------------------------------------------------====##
 deploy: off
