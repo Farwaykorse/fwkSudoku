@@ -83,7 +83,7 @@ else()
       -Wno-weak-vtables   # exceptions
     >
     $<$<CXX_COMPILER_ID:Clang>:
-      $<$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>:
+      $<$<OR:$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>,$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0.1>>:
         -Wno-missing-braces
       >
     >
