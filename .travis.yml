@@ -53,7 +53,7 @@ env:
 
 # Defaults
 os: linux
-dist: xenial
+dist: bionic
 
 # Specify Stage Order and Conditions
 stages:
@@ -84,44 +84,32 @@ jobs:
     - Coverage: gcov-8
     addons:
       apt:
-        sources:
-        - ubuntu-toolchain-r-test
         packages:
         - g++-8
 
-  - name: GCC-7
+  - name: GCC-7 # default on Bionic image
     stage: "Build & Test"
     env:
     - CC:  gcc-7
     - CXX: g++-7
     - Coverage: gcov-7
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - g++-7
 
   - name: Clang-8
     stage: "Build & Test Latest"
-    dist: xenial
     env:
     - CC: clang-8
     - CXX: clang++-8
-    - CXX_vcpkg: g++-7
+    - CXX_vcpkg: g++
     - Coverage: grcov
     addons:
       apt:
         sources:
-        - llvm-toolchain-xenial-8
-        - ubuntu-toolchain-r-test
+        - llvm-toolchain-bionic-8
         packages:
         - clang-8
-        - g++-7
 
   - name: Clang-8 libc++
     stage: "Build & Test Latest"
-    dist: xenial
     env:
     - CC: clang-8
     - CXX: clang++-8
@@ -130,91 +118,66 @@ jobs:
     addons:
       apt:
         sources:
-        - llvm-toolchain-xenial-8
-        - ubuntu-toolchain-r-test
+        - sourceline: 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
         packages:
         - clang-8
         - libc++-8-dev
         - libc++abi-8-dev
 
-  - name: Clang-7
+  - name: Clang-7 # default on Xenial and Bionic images
     stage: "Build & Test"
-    dist: xenial # Ships with Clang 7
     compiler: clang
     env:
-    - CXX_vcpkg: g++-7
+    - CXX_vcpkg: g++ # vcpkg executable requires GCC-7 or better
     - Coverage: grcov
-    addons:
-      apt: # vcpkg executable requires GCC 7 or better
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - g++-7
 
   - name: Clang-7 libc++
-    dist: xenial
     env:
     - CC:  clang
     - CXX: clang++
     - CXX_lib: libc++
-    - CXX_vcpkg: g++-7
+    - CXX_vcpkg: g++
     - Coverage: grcov
     addons:
       apt:
-        sources:
-        - llvm-toolchain-xenial-7
-        - ubuntu-toolchain-r-test
         packages:
-        - g++-7
         - libc++-7-dev
         - libc++abi-7-dev
 
   - name: Clang-6.0
-    dist: xenial
     env:
     - CC: clang-6.0
     - CXX: clang++-6.0
-    - CXX_vcpkg: g++-7
+    - CXX_vcpkg: g++
     - Coverage: grcov
     addons:
       apt:
-        sources:
-        - llvm-toolchain-xenial-6.0
-        - ubuntu-toolchain-r-test
         packages:
         - clang-6.0
-        - g++-7
 
   - name: Clang-5.0
-    dist: xenial
     env:
     - CC: clang-5.0
     - CXX: clang++-5.0
-    - CXX_vcpkg: g++-7
+    - CXX_vcpkg: g++
     - Coverage: grcov
     addons:
       apt:
-        sources:
-        - ubuntu-toolchain-r-test
         packages:
         - clang-5.0
-        - g++-7
 
   - name: Clang-4.0 Debug
     if: branch =~ /^[Tt]ravis.*$/
-    dist: xenial
     env:
     - CC: clang-4.0
     - CXX: clang++-4.0
-    - CXX_vcpkg: g++-7
+    - CXX_vcpkg: g++
     - CONFIGURATION: Debug
     addons:
       apt:
-        sources:
-        - ubuntu-toolchain-r-test
         packages:
         - clang-4.0
-        - g++-7
 
   - name: AppleClang Xcode-10.2
     os: osx
