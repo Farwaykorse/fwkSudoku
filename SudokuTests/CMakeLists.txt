@@ -148,7 +148,6 @@ else()
     $<$<CXX_COMPILER_ID:Clang>:
       $<$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>:
         -Wno-missing-braces
-        -Wno-zero-as-null-pointer-constant
       >
     >
     $<$<CXX_COMPILER_ID:AppleClang>:
