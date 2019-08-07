@@ -156,6 +156,20 @@ jobs:
         packages:
         - clang-6.0
 
+  - name: Clang-6.0 libc++
+    env:
+    - CC: clang-6.0
+    - CXX: clang++-6.0
+    - CXX_lib: libc++
+    - CXX_vcpkg: g++-7
+    - Coverage: grcov
+    addons:
+      apt:
+        packages:
+        - clang-6.0
+        - libc++-dev # 6.0 on Bionic
+        - libc++abi-dev
+
   - name: Clang-5.0
     env:
     - CC: clang-5.0
