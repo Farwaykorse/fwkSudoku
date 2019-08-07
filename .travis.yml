@@ -69,18 +69,14 @@ jobs:
     stage: "Build & Test Latest"
     env:
     - CMake_version: '"3.15.1 3.14.5 3.13.5 3.12.4 3.12.0"'
-    - CC:  gcc-7
-    - CXX: g++-7
     addons:
       apt:
         sources:
-        - ubuntu-toolchain-r-test
-        - sourceline: 'deb https://apt.kitware.com/ubuntu/ xenial main'
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ bionic main'
           key_url: 'https://apt.kitware.com/keys/kitware-archive-latest.asc'
-        - sourceline: 'deb https://apt.kitware.com/ubuntu/ xenial-rc main'
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ bionic-rc main'
         packages:
         - cmake
-        - g++-7
     script:
     - |
       cd ./build
