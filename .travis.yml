@@ -343,6 +343,11 @@ before_install:
     Coverage=""
   fi
 - |
+  # Temporary fix for image: xcode11 to use GCC.
+  if [[ ${TRAVIS_OSX_IMAGE} == "xcode11" ]]; then
+    sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+  fi
+- |
   # Install Ninja-build (if not installed)
   if [[ ! -x "$(command -v ninja)" ]]; then
   ( set -euxo pipefail
