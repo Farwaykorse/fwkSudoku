@@ -350,7 +350,9 @@ before_install:
   fi
 - |
   # Temporary fix for image: xcode11 to use GCC.
-  if [[ ${TRAVIS_OSX_IMAGE} == "xcode11" ]]; then
+  if [[ ${TRAVIS_OSX_IMAGE} == "xcode11" &&
+    ( "${CXX_vcpkg:-}" || ${CXX} == g++-* )
+  ]]; then
     sudo installer -pkg \
     /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg\
     -target /
