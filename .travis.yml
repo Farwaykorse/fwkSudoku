@@ -325,6 +325,7 @@ jobs:
     env:
     - CC:  gcc-8
     - CXX: g++-8
+    - MACOSX_DEPLOYMENT_TARGET: '10.12' # minimum supported: xcode9 image
     install: skip
     before_script: skip
     script: skip
@@ -516,6 +517,9 @@ before_install:
       if [[ ${CXX_vcpkg:-} ]]; then eval "CXX=${CXX_vcpkg}"; fi
       if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
         export CXXFLAGS="${CXXFLAGS:-} -stdlib=${CXX_lib}"
+      fi
+      if [[ ${TRAVIS_OS_NAME} == "osx" && ${CXX} == g++-* ]]; then
+        export LDFLAGS="${LDFLAGS:-} -static-libstdc++ -static-libgcc"
       fi
       bootstrap-vcpkg.sh
       eval ${GENERATE_SRC_HASH} > ${VCPKG_SRC_HASH}
