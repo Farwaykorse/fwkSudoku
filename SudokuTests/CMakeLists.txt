@@ -151,9 +151,8 @@ else()
       -Wno-weak-vtables           # exceptions.h
     >
     $<$<CXX_COMPILER_ID:Clang>:
-      $<$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>:
+      $<$<OR:$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>,$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0.1>>:
         -Wno-missing-braces
-        -Wno-zero-as-null-pointer-constant
       >
     >
     $<$<CXX_COMPILER_ID:AppleClang>:
