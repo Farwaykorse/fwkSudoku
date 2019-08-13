@@ -370,6 +370,51 @@ before_install:
     fi
   fi
 - |
+  # Download vcpkg
+  ( set -euo pipefail
+    # Full history clone for rebuild detection.
+    git clone --quiet https://github.com/Microsoft/vcpkg.git ${VCPKG_DIR}
+    mv -f -t ${VCPKG_DIR} ~/tools/.cache/vcpkg/* || echo "No cached files."
+  )
+  export PATH=$PATH:${VCPKG_DIR}
+- |
+  # Install/Update vcpkg
+  if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
+    cd ${VCPKG_DIR}
+  ( set -euxo pipefail
+    VCPKG_SRC_HASH="${VCPKG_DIR}/vcpkg_src_hash" && touch ${VCPKG_SRC_HASH}
+    GENERATE_SRC_HASH="(
+      git log --format=format:\"%H\" --max-count=1 -- toolsrc
+    )"
+    if [[ ! -x "$(command -v vcpkg)" ||
+      ( $(vcpkg update) == 'Warning: Different source'*'for vcpkg'* ) ||
+      ( $(eval ${GENERATE_SRC_HASH}) != $(< ${VCPKG_SRC_HASH}) ) ]]
+    then
+      if [[ ${CC_vcpkg:-} ]];  then eval "CC=${CC_vcpkg}"; fi
+      if [[ ${CXX_vcpkg:-} ]]; then eval "CXX=${CXX_vcpkg}"; fi
+      if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
+        export CXXFLAGS="${CXXFLAGS:-} -stdlib=${CXX_lib}"
+      fi
+      if [[ ${TRAVIS_OS_NAME} == "osx" && ${CXX} == g++-* ]]; then
+        export LDFLAGS="${LDFLAGS:-} -static-libstdc++ -static-libgcc"
+      fi
+      bootstrap-vcpkg.sh
+      eval ${GENERATE_SRC_HASH} > ${VCPKG_SRC_HASH}
+    fi
+  ); fi
+- |
+  # Using libc++
+  if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
+    FLAGS="-stdlib=${CXX_lib}"
+    #if [[ ${CXX_lib} == libc++ ]]; then
+    #  FLAGS="${FLAGS} -lc++fs"
+    #  FLAGS="${FLAGS} -lc++experimental"
+    #fi
+    export CXXFLAGS="${CXXFLAGS:-} ${FLAGS}"
+  fi
+
+install:
+- |
   # Install Ninja-build (if not installed)
   if [[ ! -x "$(command -v ninja)" ]]; then
   ( set -euxo pipefail
@@ -494,51 +539,7 @@ before_install:
       function cmake { command /usr/bin/cmake $@; }
     fi
   fi
-- |
-  # Download vcpkg
-  ( set -euo pipefail
-    # Full history clone for rebuild detection.
-    git clone --quiet https://github.com/Microsoft/vcpkg.git ${VCPKG_DIR}
-    mv -f -t ${VCPKG_DIR} ~/tools/.cache/vcpkg/* || echo "No cached files."
-  )
-  export PATH=$PATH:${VCPKG_DIR}
-- |
-  # Install/Update vcpkg
-  if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
-    cd ${VCPKG_DIR}
-  ( set -euxo pipefail
-    VCPKG_SRC_HASH="${VCPKG_DIR}/vcpkg_src_hash" && touch ${VCPKG_SRC_HASH}
-    GENERATE_SRC_HASH="(
-      git log --format=format:\"%H\" --max-count=1 -- toolsrc
-    )"
-    if [[ ! -x "$(command -v vcpkg)" ||
-      ( $(vcpkg update) == 'Warning: Different source'*'for vcpkg'* ) ||
-      ( $(eval ${GENERATE_SRC_HASH}) != $(< ${VCPKG_SRC_HASH}) ) ]]
-    then
-      if [[ ${CC_vcpkg:-} ]];  then eval "CC=${CC_vcpkg}"; fi
-      if [[ ${CXX_vcpkg:-} ]]; then eval "CXX=${CXX_vcpkg}"; fi
-      if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
-        export CXXFLAGS="${CXXFLAGS:-} -stdlib=${CXX_lib}"
-      fi
-      if [[ ${TRAVIS_OS_NAME} == "osx" && ${CXX} == g++-* ]]; then
-        export LDFLAGS="${LDFLAGS:-} -static-libstdc++ -static-libgcc"
-      fi
-      bootstrap-vcpkg.sh
-      eval ${GENERATE_SRC_HASH} > ${VCPKG_SRC_HASH}
-    fi
-  ); fi
-- |
-  # Using libc++
-  if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
-    FLAGS="-stdlib=${CXX_lib}"
-    #if [[ ${CXX_lib} == libc++ ]]; then
-    #  FLAGS="${FLAGS} -lc++fs"
-    #  FLAGS="${FLAGS} -lc++experimental"
-    #fi
-    export CXXFLAGS="${CXXFLAGS:-} ${FLAGS}"
-  fi
 
-install:
 - vcpkg install ms-gsl
 - vcpkg install gtest
 - |
