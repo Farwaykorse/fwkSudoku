@@ -333,7 +333,7 @@ Use `-Xclang ` before a command to actually force it to the compiler.
   -Xclang -std=c++17  Set language version to C++17
 /GR-                  sets: -fno-rtti
 /GS                   Buffer Security Check. (default)
--fno-strict-aliasing
+  -fno-strict-aliasing
   -Xclang -fms-compatibility-version=19.12
   // Since v6.0.0: the full version number is inherited from VC.
   // Upgrade to actual VS version, override `-fmsc-version=1912` as set in the
