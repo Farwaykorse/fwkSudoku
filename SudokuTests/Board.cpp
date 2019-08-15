@@ -403,14 +403,14 @@ TEST(Board, access_checked)
 
 	// at(Location)
 	Board<int, 2> B1{};
-#if defined(__clang__) || defined(__ICL) && __ICL <= 1900 ||                   \
-	defined(__GNUC__) && __GNUC__ == 9
-	static_assert(not noexcept(B1.at(Location<2>(0)) = 2));
-	static_assert(not noexcept(B1.at(Location<2>(0)) == 2));
-#else
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
+							   defined(__GNUC__) && __GNUC__ < 9)
 	static_assert(noexcept(B1.at(Location<2>(0)) = 2));
 	static_assert(noexcept(B1.at(Location<2>(0)) == 2));
-#endif // __clang__
+#else // newer compilers
+	static_assert(not noexcept(B1.at(Location<2>(0)) = 2));
+	static_assert(not noexcept(B1.at(Location<2>(0)) == 2));
+#endif
 	static_assert(not noexcept(B1.at(Location<2>(20)) == 2));
 	static_assert(std::is_same_v<int&, decltype(B1.at(Location<2>(2)))>);
 	EXPECT_THROW({ B1.at(Location<2>{17}) = 3; }, invalid_Location);
@@ -437,17 +437,19 @@ TEST(Board, access_checked)
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	constexpr Board<int, 2> cexprB = std::array<int, 16>{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-#if defined(__clang__) || defined(__ICL) && __ICL <= 1900 ||                   \
-	defined(__GNUC__) && __GNUC__ == 9
-	static_assert(not noexcept(cB.at(Location<2>(0)) == 1));
-#else
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
+							   defined(__GNUC__) && __GNUC__ < 9)
 	static_assert(noexcept(cB.at(Location<2>(0)) == 1));
-#endif // __clang__ || __ICL
-#if defined(__clang__) || defined(__GNUC__) && __GNUC__ == 9
-	static_assert(not noexcept(cexprB.at(Location<2>(0)) == 1));
 #else
+	static_assert(not noexcept(cB.at(Location<2>(0)) == 1));
+#endif
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
+							   defined(__GNUC__) && __GNUC__ < 9) ||           \
+	defined(__ICL)
 	static_assert(noexcept(cexprB.at(Location<2>(0)) == 1));
-#endif // __clang__
+#else
+	static_assert(not noexcept(cexprB.at(Location<2>(0)) == 1));
+#endif
 	static_assert(not noexcept(cB.at(Location<2>(20)) == 1));
 	static_assert(not noexcept(cexprB.at(Location<2>(20)) == 1));
 	static_assert(std::is_same_v<int const&, decltype(cB.at(Location<2>(2)))>);
@@ -460,12 +462,12 @@ TEST(Board, access_checked)
 
 	// at(row, col)
 	// at(row, col)
-#if defined(__clang__) || defined(__ICL) && __ICL <= 1900 ||                   \
-	defined(__GNUC__) && __GNUC__ == 9
-	static_assert(not noexcept(B1.at(0, 1) == 1));
-#else
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
+							   defined(__GNUC__) && __GNUC__ < 9)
 	static_assert(noexcept(B1.at(0, 1) == 1));
-#endif // __clang__
+#else
+	static_assert(not noexcept(B1.at(0, 1) == 1));
+#endif
 	static_assert(not noexcept(B1.at(5, 1) == 1));
 	EXPECT_THROW(B1.at(1, 4), invalid_Location);
 	EXPECT_THROW(B1.at(1, 4), std::out_of_range);
@@ -485,12 +487,12 @@ TEST(Board, access_checked)
 	EXPECT_THROW(B1.at(1, -2), invalid_Location);
 	// at(Location) const
 	EXPECT_NO_THROW(cB.at(2, 1));
-#if defined(__clang__) || defined(__ICL) && __ICL <= 1900 ||                   \
-	defined(__GNUC__) && __GNUC__ == 9
-	static_assert(not noexcept(cB.at(0, 1) == 1));
-#else
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
+							   defined(__GNUC__) && __GNUC__ < 9)
 	static_assert(noexcept(cB.at(0, 1) == 1));
-#endif // __clang__
+#else
+	static_assert(not noexcept(cB.at(0, 1) == 1));
+#endif
 	static_assert(not noexcept(cB.at(0, 9) == 1));
 	EXPECT_THROW(cB.at(1, 4), invalid_Location);
 	EXPECT_THROW(cB.at(4, 0), invalid_Location);
