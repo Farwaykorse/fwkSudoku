@@ -104,7 +104,6 @@ if(MSVC) # MSVC or simulating MSVC
       -Wno-c++98-compat-pedantic
       -Wno-covered-switch-default
       -Wno-global-constructors
-      -Wno-unused-comparison
       -Wno-used-but-marked-unused
       -Wno-zero-as-null-pointer-constant
     >
@@ -128,7 +127,6 @@ if(MSVC) # MSVC or simulating MSVC
       >
       $<$<CXX_COMPILER_ID:Clang>:
         -Wno-deprecated # gtest
-        -Wno-deprecated-declarations  # gtest: fopen, strncpy, chdir, ...
         -Wno-language-extension-token
         -Wno-missing-noreturn
         -Wno-shift-sign-overflow
