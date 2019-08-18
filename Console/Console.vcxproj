@@ -255,7 +255,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MinimalRebuild>
       </MinimalRebuild>
-      <AdditionalOptions>-Weverything -Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <Verbose>true</Verbose>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -326,7 +326,7 @@
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
-      <AdditionalOptions>-Weverything -Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
       <SDLCheck />
       <MultiProcessorCompilation />
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -442,7 +442,7 @@
     <ClCompile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MinimalRebuild />
-      <AdditionalOptions>-Weverything -Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -462,7 +462,7 @@
     <ClCompile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MinimalRebuild />
-      <AdditionalOptions>-Weverything -Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
