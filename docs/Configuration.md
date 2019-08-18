@@ -323,7 +323,7 @@ setting is disabled.
 [Clang diagnostics reference](https://clang.llvm.org/docs/DiagnosticsReference.html)
 ````
 /Wall                Enables -Weverything
--Weverything         All warnings enabled
+  -Weverything       All warnings enabled
   -Wall              
   -Wextra            
   -Wpedantic         ISO C/C++ conformance (warn on extensions)
