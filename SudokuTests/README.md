@@ -48,11 +48,10 @@ Disabled warnings:
 ``````
 -Wno-c++98-compat
 -Wno-c++98-compat-pedantic
--Wno-unused-comparison       Every comparison check ...
--Wno-zero-as-null-pointer-constant
+-Wno-covered-switch-default  gTest macro debug-death on: Board.cpp
 -Wno-global-constructors     gTest macro
 -Wno-used-but-marked-unused  gTest macros
--Wno-covered-switch-default  gTest macro debug-death on: Board.cpp
+-Wno-zero-as-null-pointer-constant  Board_Section_iterator.cpp
 ``````
 Promote to errors:
 ````````
@@ -62,7 +61,6 @@ Promote to errors:
 Disabled warnings:
 ````
 -Wno-deprecated               gTest
--Wno-deprecated-declarations  gTest uses deprecated POSIX names (i.e. chdir)
 -Wno-language-extension-token
 -Wno-missing-noreturn
 -Wno-shift-sign-overflow
