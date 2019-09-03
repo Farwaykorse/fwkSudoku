@@ -529,9 +529,9 @@ install:
     fi
   }
 - |
-  # CMake wrapper (Trusty & Xenial); restore default behaviour.
+  # CMake wrapper (Trusty, Xenial & Bionic); restore default behaviour.
   if [[ "${TRAVIS_OS_NAME}" == "linux" &&
-        "$(lsb_release --codename)" =~ (trusty|xenial)$ ]]
+        "$(lsb_release --codename)" =~ (trusty|xenial|bionic)$ ]]
   then
     if [[ -x $(command -v /usr/local/bin/cmake) ]]; then
       function cmake { command /usr/local/bin/cmake $@; }
