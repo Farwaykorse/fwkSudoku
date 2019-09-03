@@ -212,7 +212,7 @@ install:
 - ps: |
     if("$env:BUILDSYSTEM" -eq "Ninja") {
       New-Item -Path C:\Tools\ninja -ItemType Directory 1>$null
-      Install-Ninja -InstallDir C:\Tools\ninja -AddToPath `
+      $null = Install-Ninja -InstallDir C:\Tools\ninja -AddToPath `
         -Tag 'v1.9.0' -SHA512 `
           '1C050E602EC63D4DCF44D9AB3D2D02AC731B4B2977BC0B420A21E85604487F58EC8D3045941D4153EF06AB00C175CA7CF9D57B8E20A757528290E135639962AC'
     }
