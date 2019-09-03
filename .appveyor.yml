@@ -8,6 +8,7 @@ branches:
   - /^[Tt]ravis.*/
 
 cache:
+- C:\Users\appveyor\Tools\cache\vcpkg
 - C:\Tools\vcpkg\installed
 
 skip_branch_with_pr: true
@@ -207,12 +208,12 @@ for:
 ##====--------------------------------------------------------------------====##
 init:
 - ps: |
-    $out =  "-- CI Session Configuration --`n"
-    $out += "$env:APPVEYOR_BUILD_WORKER_IMAGE - $env:CONFIGURATION - "
-    $out += "$env:PLATFORM`nOS / platform:       "
-    $tmp = (Get-WmiObject Win32_OperatingSystem).name
-    $out += "$($tmp -split "[|]" | Select-Object -First 1) / "
-    $out += "$((Get-WmiObject Win32_OperatingSystem).OSArchitecture)`n"
+    New-Item -ItemType Directory -Force ~\tools | pushd
+    git clone https://github.com/Farwaykorse/AppVeyorHelpers.git --quiet
+    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.12.1
+    popd
+- ps: Show-SystemInfo -LLVM -CMake -Curl
+- ps: |
     if ("$env:BUILDSYSTEM" -eq "MSBuild_Solution") {
       $out += 'Build configuration: MSBuild projects'
     } else {
@@ -232,60 +233,12 @@ init:
 install:
 - ps: |
     if("$env:BUILDSYSTEM" -eq "Ninja") {
-      $NINJA_TAG = 'v1.9.0'
-      $NINJA_PATH = "C:\Tools\ninja\ninja-${NINJA_TAG}"
-      $NINJA_SHA512 = `
-        '1C050E602EC63D4DCF44D9AB3D2D02AC731B4B2977BC0B420A21E85604487F58EC8D3045941D4153EF06AB00C175CA7CF9D57B8E20A757528290E135639962AC'
-
-      Write-Output "-- Install Ninja-build ${NINJA_TAG} ..."
-      if (![IO.File]::Exists("${NINJA_PATH}\ninja.exe")) {
-        Start-FileDownload `
-          "https://github.com/ninja-build/ninja/releases/download/${NINJA_TAG}/ninja-win.zip"
-        $hash = (Get-FileHash ninja-win.zip -Algorithm SHA512).Hash
-        if ($NINJA_SHA512 -eq $hash) {
-          7z e -y -bso0 ninja-win.zip -o"${NINJA_PATH}"
-        } else {
-          Write-Warning "Ninja download hash changed!"; Write-Output "$hash"
-        }
-      }
-      if ([IO.File]::Exists("${NINJA_PATH}\ninja.exe")) {
-        $env:PATH = "${NINJA_PATH};$env:PATH"
-        ninja --version 1>$null # will fail if not available on path
-        Write-Output "-- Install Ninja-build ${NINJA_TAG} ... done"
-      } else { Write-Warning "Failed to find ninja.exe in expected location." }
+      New-Item -Path C:\Tools\ninja -ItemType Directory 1>$null
+      $null = Install-Ninja -InstallDir C:\Tools\ninja -AddToPath `
+        -Tag 'v1.9.0' -SHA512 `
+          '1C050E602EC63D4DCF44D9AB3D2D02AC731B4B2977BC0B420A21E85604487F58EC8D3045941D4153EF06AB00C175CA7CF9D57B8E20A757528290E135639962AC'
     }
-- ps: |
-    if (Test-Path C:\Tools\vcpkg\vcpkg.exe) {
-      cd C:\Tools\vcpkg; git pull --quiet
-      if ($(vcpkg version) -match "version 2018\.11\.23") {
-        Write-Warning "Temporary fix updating vcpkg ..."
-        .\bootstrap-vcpkg.bat 1>$null
-      }
-    } else {
-      Write-Warning "vcpkg not installed in expected location"
-      cd C:\Tools
-      if (Test-Path .\vcpkg) { Rename-Item vcpkg vcpkg_tmp 1>$null }
-      git clone https://github.com/Microsoft/vcpkg --quiet
-      .\vcpkg\bootstrap-vcpkg.bat 1>$null
-      if (Test-Path .\vcpkg_tmp) { Move-Item .\vcpkg_tmp\* .\vcpkg 1>$null }
-    }
-    $env:PATH = "C:\Tools\vcpkg;$env:PATH"
-    vcpkg integrate install 1>$null
-- vcpkg list
-- vcpkg update
-- ps: |
-    if (
-      !($(vcpkg upgrade) -match "^All installed packages are up-to-date") -or
-      !(($(vcpkg list) -match "^ms-gsl:$env:PLATFORM-windows").count) -or
-      !(($(vcpkg list) -match "^gtest:$env:PLATFORM-windows").count)
-    ) {
-      if ($(vcpkg version) -match "version 0\.0\.113") {
-        Write-Warning "Temporary fix updating vcpkg ..."
-        bootstrap-vcpkg.bat 1>$null
-        vcpkg integrate install 1>$null
-      }
-      vcpkg upgrade --no-dry-run
-    }
+- ps: Update-Vcpkg
 - vcpkg install ms-gsl:%PLATFORM%-windows
 - vcpkg install gtest:%PLATFORM%-windows
 
@@ -360,6 +313,7 @@ test_script:
   ctest -j %NUMBER_OF_PROCESSORS%
   --test-action test --no-compress-output
   --quiet
+- ps: $null = Assert-ValidCodecovYML
 
 ##====--------------------------------------------------------------------====##
 deploy: off
