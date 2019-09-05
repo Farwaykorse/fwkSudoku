@@ -77,7 +77,7 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 ##### All configurations
 ```
 /std:c++17         ISO C++ 17 standard
-/sdl               Enable SDL checks, additional warnings focused on security
+/sdl               Recommended Security Development Life-cycle checks & codegen
 /MP                Multiprocessor compilation (Do not use /Gm)
 /permissive-       Disable non-conforming constructs in Visual C++:
                    Enables: /Zc:rvaluecast /Zc:strictStrings and more.
@@ -88,15 +88,17 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 /FI"precompiled.h" Force include, add precompiled to all files
 
 ---- implicitly set flags:
+/EHsc              Exception handling configuration (default)
 /GS                Buffer Security Check. (default)
 /FC                Full-path of source code file in diagnostics (default)
 /Gm-               Prefer /MP (default)
+/Zi                Separate PDB
 ```
 ##### Debug configurations
 `````
 ---- implicitly set flags:
-/ZI              Program database for edit-and-continue (sets /Gy and /FC)
-                 (default for Debug)
+/JMC             Support Just My Code debugging (default) available since v15.8
+/ZI              PDB for edit-and-continue (sets /Gy and /FC) (default)
 /Gy              Function-level linking. (set by /ZI)
 /INCREMENTAL     Enable incremental linking (default for Debug in linker)
 /DEBUG:FASTLINK  Debug information format, allowing for faster linking.
