@@ -72,6 +72,7 @@ if(MSVC) # MSVC or simulating MSVC
     /GS          # buffer security check
     /permissive- # disable non-conforming constructs in VC++
     /utf-8       # source files are UTF-8 encoded
+    /Gy          # function level linking
     $<$<CONFIG:Release>:
       /guard:cf  # control flow guard
     >
@@ -113,12 +114,14 @@ if(MSVC) # MSVC or simulating MSVC
       $<$<CXX_COMPILER_ID:MSVC>:
         $<$<CONFIG:Release>:
           /LTCG     # link-time code generation (goes with /GL)
+          /OPT:REF  # eliminate unreferenced COMDATs
+          /OPT:ICF  # identical COMDAT folding
         >
       >
     )
   else()
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-      string(APPEND LINK_FLAGS_RELEASE " /LTCG")
+      string(APPEND LINK_FLAGS_RELEASE " /LTCG /OPT:REF /OPT:ICF")
     endif()
   endif()
 endif()

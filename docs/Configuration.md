@@ -91,6 +91,7 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 /utf-8             Source files are UTF-8 encoded.
 /Yu"precompiled.h" Use precompiled headers
 /FI"precompiled.h" Force include, add precompiled to all files
+/Gy                Function-level linking, function as COMDAT. (set by /ZI)
 
 ---- implicitly set flags:
 /EHsc               Exception handling configuration (default)
@@ -139,6 +140,10 @@ Linker:
            During runtime Windows checks before every indirect call and raises
            an exception if any check fails at runtime.
            Can't be used with /ZI (edit and continue).
+
+Linker:
+/OPT:REF   Eliminate unused functions and data (disables incremental linking)
+/OPT:ICF   Enable identical COMDAT folding
 
 ---- implicitly set flags:
 /O2        Maximize Speed (default Release)
