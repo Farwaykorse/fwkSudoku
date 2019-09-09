@@ -355,8 +355,11 @@ Support Just My Code = false
 Compiler:  Debug information format: none; drastically reduce binary size.  
 Linker:    Generate debug info:      no
 ```
+/guard:cf  Control flow guard (v7.0.0+)
 /Oi        Enable intrinsic functions.
 /MT        Use static run-time
+/guard:cf  Control flow guard (v7.0.0+)
+/Oi        Enable intrinsic functions.
 ```
 
 #### Enable Warnings

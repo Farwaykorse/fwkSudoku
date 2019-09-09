@@ -40,7 +40,6 @@ if(MSVC) # MSVC or simulating MSVC
     /utf-8       # source files are UTF-8 encoded
     /Gy          # function level linking
     $<$<CONFIG:Release>:
-      /guard:cf  # control flow guard
       /Oi        # use intrinsics
     >
     $<$<CXX_COMPILER_ID:MSVC>:
@@ -51,6 +50,7 @@ if(MSVC) # MSVC or simulating MSVC
         /ZI       # PDB for edit-and-continue
       >
       $<$<CONFIG:Release>:
+        /guard:cf # control flow guard
         /GL       # whole program optimization
         /Zi       # separate PDB
       >
@@ -58,6 +58,11 @@ if(MSVC) # MSVC or simulating MSVC
     $<$<CXX_COMPILER_ID:Clang>:
       $<$<CONFIG:Debug>:
         /Z7       # enable debug information
+      >
+      $<$<CONFIG:Release>:
+        $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,7.0>:
+          /guard:cf # control flow guard
+        >
       >
     >
   )
