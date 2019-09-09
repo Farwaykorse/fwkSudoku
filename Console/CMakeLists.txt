@@ -100,6 +100,9 @@ if(MSVC) # MSVC or simulating MSVC
     precompiled.cpp
     OPTIONS
       $<$<CXX_COMPILER_ID:MSVC>:
+        $<$<CONFIG:Debug>:
+          /wd4365 # stl
+        >
         /wd4668 # gsl_byte
         /wd4774 # stl
         /wd5026 # system_error

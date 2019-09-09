@@ -190,9 +190,7 @@ Flags not set for all translation units are marked with a `*`.
 /w14355 'this': used in base member initializer list
 */w44365 'action': conversion from 'type_1' to 'type_2', signed/unsigned
          mismatch
-         223 hits, in stl headers: but most int -> size_t issue;
-         that should be possible to improve on
-         (*/precompiled.cpp)
+         (*/precompiled.cpp | stl: xmemory for Debug & gtest for x86 Release)
 /w14388 signed/unsigned mismatch
 /w14426 optimization flags changed after including header, may be due to #pragma
         optimize()
