@@ -75,6 +75,7 @@ if(MSVC) # MSVC or simulating MSVC
     /Gy          # function level linking
     $<$<CONFIG:Release>:
       /guard:cf  # control flow guard
+      /Oi        # use intrinsics
     >
     $<$<CXX_COMPILER_ID:MSVC>:
       /Gm-       # prefer /MP

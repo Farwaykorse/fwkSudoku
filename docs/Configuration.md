@@ -140,6 +140,7 @@ Linker:
            During runtime Windows checks before every indirect call and raises
            an exception if any check fails at runtime.
            Can't be used with /ZI (edit and continue).
+/Oi        Enable intrinsic functions.
 
 Linker:
 /OPT:REF   Eliminate unused functions and data (disables incremental linking)
@@ -354,6 +355,7 @@ Support Just My Code = false
 Compiler:  Debug information format: none; drastically reduce binary size.  
 Linker:    Generate debug info:      no
 ```
+/Oi        Enable intrinsic functions.
 /MT        Use static run-time
 ```
 
