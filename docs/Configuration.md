@@ -88,18 +88,33 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 /FI"precompiled.h" Force include, add precompiled to all files
 
 ---- implicitly set flags:
-/EHsc              Exception handling configuration (default)
-/GS                Buffer Security Check. (default)
-/FC                Full-path of source code file in diagnostics (default)
-/Gm-               Prefer /MP (default)
-/Zi                Separate PDB
+/EHsc               Exception handling configuration (default)
+/Gd                 Function calling convention (default)
+/GS                 Buffer Security Check. (default)
+/FC                 Full-path of source code file in diagnostics (default)
+/Gm-                Prefer /MP (default)
+/Zi                 Separate PDB
+/diagnostics:carret 
+/Zc:forScope        Conformence in for loop scope
+/Zc:inline          Remove unreferenced code and data
+/Zc:wchar_t         Tread wchar_t as a buildin type
+
+Linker:
+/SUBSYSTEM:CONSOLE
+/DYNAMICBASE        Random base address
+/NXCOMPAT           Mark compatible with Data Execution Prevention (DEP)
+/MANIFEST
+/MANIFESTUAC
 ```
 ##### Debug configurations
 `````
 ---- implicitly set flags:
 /JMC             Support Just My Code debugging (default) available since v15.8
 /ZI              PDB for edit-and-continue (sets /Gy and /FC) (default)
-/Gy              Function-level linking. (set by /ZI)
+/Gy              Function-level linking, function as COMDAT. (set by /ZI)
+/RTC1            Enable run-time checks
+
+Linker:
 /INCREMENTAL     Enable incremental linking (default for Debug in linker)
 /DEBUG:FASTLINK  Debug information format, allowing for faster linking.
                  Enable generation of full-program database is needed for
@@ -117,6 +132,10 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 ---- implicitly set flags:
 /O2        Maximize Speed (default Release)
 /GL        Whole program optimization (default Release)
+
+Linker:
+/GUARD:CF  Control Flow Guard
+/LTCG      Link-time code generation, with /GL
 ```
 #### Useful settings for incidental use ####
 <!----------------------------------------------------------------------------->
@@ -190,7 +209,9 @@ Flags not set for all translation units are marked with a `*`.
 /w14355 'this': used in base member initializer list
 */w44365 'action': conversion from 'type_1' to 'type_2', signed/unsigned
          mismatch
-         (*/precompiled.cpp | stl: xmemory for Debug & gtest for x86 Release)
+         223 hits, in stl headers: but most int -> size_t issue;
+         that should be possible to improve on
+         (*/precompiled.cpp)
 /w14388 signed/unsigned mismatch
 /w14426 optimization flags changed after including header, may be due to #pragma
         optimize()

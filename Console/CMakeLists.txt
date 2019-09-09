@@ -74,6 +74,21 @@ if(MSVC) # MSVC or simulating MSVC
       CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}"
     )
   endif()
+
+  # Linker Configuration
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13) 
+    target_link_options(console PRIVATE
+      $<$<CXX_COMPILER_ID:MSVC>:
+        $<$<CONFIG:Release>:
+          /LTCG     # link-time code generation (goes with /GL)
+        >
+      >
+    )
+  else()
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+      string(APPEND LINK_FLAGS_RELEASE " /LTCG")
+    endif()
+  endif()
 endif()
 
 ##====--------------------------------------------------------------------====##
