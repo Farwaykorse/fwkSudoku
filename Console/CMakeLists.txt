@@ -25,28 +25,71 @@ set_target_properties(console
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS OFF
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:DebugDLL>" # v3.15+
+    VS_JUST_MY_CODE_DEBUGGING $<IF:$<CONFIG:Debug>,ON,OFF> # v3.15+
 )
 
 ##====--------------------------------------------------------------------====##
 # Compiler Specific Configuration
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(console PRIVATE
-    /EHsc
+    /EHsc        # exception handling configuration
     /GR-         # disable RTTI (smaller image)
     /GS          # buffer security check
     /permissive- # disable non-conforming constructs in VC++
     /utf-8       # source files are UTF-8 encoded
+    $<$<CONFIG:Release>:
+      /guard:cf  # control flow guard
+    >
     $<$<CXX_COMPILER_ID:MSVC>:
       /Gm-       # prefer /MP
       /MP        # multiprocessor compilation (requires /Gm-)
-      /sdl
+      /sdl       # SDL checks and code generation
+      $<$<CONFIG:Debug>:
+        /ZI       # PDB for edit-and-continue
+      >
+      $<$<CONFIG:Release>:
+        /GL       # whole program optimization
+        /Zi       # separate PDB
+      >
+    >
+    $<$<CXX_COMPILER_ID:Clang>:
+      $<$<CONFIG:Debug>:
+        /Z7       # enable debug information
+      >
     >
   )
   # Ninja-build only,
   # Remove conflicting flags set by CMake (MSVC warning D9025)
-  string(REGEX REPLACE "(/GR|/W[0-4]) ?" ""
+  string(REGEX REPLACE "(/GR|/EHsc) ?" ""
     CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}"
   )
+  string(REGEX REPLACE "/Z[7iI] ?" ""
+    CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}"
+  )
+  if(CMAKE_VERSION VERSION_LESS 3.15) 
+    string(REGEX REPLACE "/W[0-4] ?" ""
+      CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}"
+    )
+    string(REGEX REPLACE "/MD" "/MT"
+      CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}"
+    )
+  endif()
+
+  # Linker Configuration
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13) 
+    target_link_options(console PRIVATE
+      $<$<CXX_COMPILER_ID:MSVC>:
+        $<$<CONFIG:Release>:
+          /LTCG     # link-time code generation (goes with /GL)
+        >
+      >
+    )
+  else()
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+      string(APPEND LINK_FLAGS_RELEASE " /LTCG")
+    endif()
+  endif()
 endif()
 
 ##====--------------------------------------------------------------------====##
@@ -73,6 +116,9 @@ if(MSVC) # MSVC or simulating MSVC
     precompiled.cpp
     OPTIONS
       $<$<CXX_COMPILER_ID:MSVC>:
+        $<$<CONFIG:Debug>:
+          /wd4365 # stl
+        >
         /wd4668 # gsl_byte
         /wd4774 # stl
         /wd5026 # system_error
