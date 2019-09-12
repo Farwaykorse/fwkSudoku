@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2003
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sudoku", "Sudoku\Sudoku.vcxitems", "{14B76E47-7B5D-43C1-B056-A82FCA671CC5}"
 EndProject
@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.clang-format = .clang-format
 		.clang-tidy = .clang-tidy
+		.editorconfig = .editorconfig
 		msvc\CppCoreCheckAllRules.ruleset = msvc\CppCoreCheckAllRules.ruleset
 		README.md = README.md
 	EndProjectSection
