@@ -7,9 +7,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sudoku", "Sudoku\Sudoku.vcx
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5FE296CB-7F95-44A2-A544-4009EF24F251}"
 	ProjectSection(SolutionItems) = preProject
+		.appveyor.yml = .appveyor.yml
 		.clang-format = .clang-format
 		.clang-tidy = .clang-tidy
+		.codecov.yml = .codecov.yml
 		.editorconfig = .editorconfig
+		.travis.yml = .travis.yml
+		.yamllint = .yamllint
 		msvc\CppCoreCheckAllRules.ruleset = msvc\CppCoreCheckAllRules.ruleset
 		README.md = README.md
 	EndProjectSection
@@ -24,6 +28,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{D4D3C241-1C45-44F5-97B3-44418C3AD832}"
 	ProjectSection(SolutionItems) = preProject
 		docs\Configuration.md = docs\Configuration.md
+		LICENSE = LICENSE
 	EndProjectSection
 EndProject
 Global
