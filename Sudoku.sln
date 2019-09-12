@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.travis.yml = .travis.yml
 		.yamllint = .yamllint
+		CMakeLists.txt = CMakeLists.txt
 		msvc\CppCoreCheckAllRules.ruleset = msvc\CppCoreCheckAllRules.ruleset
 		README.md = README.md
 	EndProjectSection
@@ -29,6 +30,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{D4D3C241-1
 	ProjectSection(SolutionItems) = preProject
 		docs\Configuration.md = docs\Configuration.md
 		LICENSE = LICENSE
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CMake", "CMake", "{786A2FD9-3E87-46BB-9C3A-94D6775D2015}"
+	ProjectSection(SolutionItems) = preProject
+		cmake\add_to_source_file_properties.cmake = cmake\add_to_source_file_properties.cmake
+		cmake\msvc_warnings_list.cmake = cmake\msvc_warnings_list.cmake
+		cmake\set_precompiled_header.cmake = cmake\set_precompiled_header.cmake
+		cmake\subproject_functions.cmake = cmake\subproject_functions.cmake
 	EndProjectSection
 EndProject
 Global
@@ -102,6 +111,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{786A2FD9-3E87-46BB-9C3A-94D6775D2015} = {5FE296CB-7F95-44A2-A544-4009EF24F251}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B3DA0C1D-A65C-4F76-B7A0-3F1528BA43A6}

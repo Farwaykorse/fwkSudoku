@@ -84,5 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.md" />
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
 </Project>
