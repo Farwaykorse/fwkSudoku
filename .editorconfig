@@ -1,0 +1,49 @@
+##====---- .editconfig                                                ----====##
+# Editor Configuration
+#
+# References:
+# https://editorconfig.org/
+# https://docs.microsoft.com/en-us/visualstudio/ide/create-portable-custom-editor-options
+# 
+# Notes:
+# Match settings in .gitattributes where possible.
+##====--------------------------------------------------------------------====##
+# Top-most .editconfig file
+root = true
+
+# All files (defaults)
+[*]
+charset = utf-8
+# Indentation and spacing
+indent_style = space
+indent_size = 2
+tab_width = 4
+# New line preferences
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Line length
+guidelines = 80
+
+##====--------------------------------------------------------------------====##
+# C++ files
+[*.{[ch],[ch]pp}]
+# Indentation and spacing
+indent_style = tab
+indent_size = 4
+
+##====--------------------------------------------------------------------====##
+# Markdown
+[*.{md,markdown}]
+trim_trailing_whitespace = false
+
+##====--------------------------------------------------------------------====##
+# Windows Line ending
+[{*.{bat,sln,vcx{proj,items},CMakeSettings.json}]
+end_of_line = crlf
+
+# Tab indent
+[*.sln]
+indent_style = tab
+indent_size = 4

@@ -35,6 +35,7 @@ if(MSVC) # MSVC or simulating MSVC
     /GR-         # disable RTTI (smaller image)
     /GS          # buffer security check
     /permissive- # disable non-conforming constructs in VC++
+    /utf-8       # source files are UTF-8 encoded
     $<$<CXX_COMPILER_ID:MSVC>:
       /Gm-       # prefer /MP
       /MP        # multiprocessor compilation (requires /Gm-)

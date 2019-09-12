@@ -84,6 +84,7 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
                    (Updated compiler conformance.)
 /GR-               Disable rtti (run-time type information) smaller image.
                    Turn on to use dynamic_cast or typeid.
+/utf-8             Source files are UTF-8 encoded.
 /Yu"precompiled.h" Use precompiled headers
 /FI"precompiled.h" Force include, add precompiled to all files
 
@@ -91,6 +92,13 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 /GS                Buffer Security Check. (default)
 /FC                Full-path of source code file in diagnostics (default)
 /Gm-               Prefer /MP (default)
+/source-charset:utf-8 Source files are UTF-8 encoded without a BOM. Without this
+                   the compiler interprets it as ASCII and re-encodes to UTF-8
+                   before processing. (Set by /utf-8)
+/execution-charset:utf-8 Internal representation of string and character
+                   literals. (Set by /utf-8)
+/validate-charset  Validates that source files contain only UTF-8 characters.
+                   (Set by /utf-8)
 ```
 ##### Debug configurations
 `````
@@ -301,6 +309,10 @@ Use `-Xclang ` before a command to actually force it to the compiler.
   // toolset for actual version see macro `_MSC_FULL_VER`
   -fms-compatibility Excepting enough invalid C++ to parse most MS headers
   -fno-ms-compatibility
+
+---- implicitly set flags:
+/utf-8                Source files are UTF-8 encoded. Set source and runtime
+                      encoding to UTF-8.
 `````
 ##### Debug configurations
 `````
