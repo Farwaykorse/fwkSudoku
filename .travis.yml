@@ -69,7 +69,7 @@ jobs:
   - name: CMake versions
     stage: "Build & Test Latest"
     env:
-    - CMake_version: '"3.15.1 3.14.5 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.15.2 3.14.5 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: Linux
     addons:
@@ -92,9 +92,9 @@ jobs:
   - name: CMake versions
     stage: "Build & Test"
     os: osx
-    osx_image: xcode10.2 # AppleClang 10.0.1
+    osx_image: xcode10.3 # AppleClang 10.0.1
     env:
-    - CMake_version: '"3.15.1 3.14.5 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.15.2 3.14.5 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: OSX
     script:
@@ -109,7 +109,7 @@ jobs:
     env:
     - CC:  gcc-9
     - CXX: g++-9
-    - CMake_version: 3.15.1
+    - CMake_version: 3.15.2
     - Coverage: gcov-9
     workspaces:
       use: Linux
@@ -261,11 +261,11 @@ jobs:
     workspaces:
       use: OSX
 
-  - name: AppleClang Xcode-10.2
+  - name: AppleClang Xcode-10.3
     os: osx
-    osx_image: xcode10.2 # AppleClang 10.0.1
+    osx_image: xcode10.3 # AppleClang 10.0.1 same compiler as Xcode10.2
     env:
-    - CXX_vcpkg: g++-8 # present on xcode10.2
+    - CXX_vcpkg: g++-9 # present on xcode10.3
     - Coverage: grcov
     workspaces:
       use: OSX
@@ -321,10 +321,10 @@ jobs:
         paths:
         - ~/tools/.cache/vcpkg
     os: osx
-    osx_image: xcode10.2
+    osx_image: xcode10.3
     env:
-    - CC:  gcc-8
-    - CXX: g++-8
+    - CC:  gcc-9
+    - CXX: g++-9
     - MACOSX_DEPLOYMENT_TARGET: '10.12' # minimum supported: xcode9 image
     install: skip
     before_script: skip
@@ -528,9 +528,9 @@ install:
     fi
   }
 - |
-  # CMake wrapper (Trusty & Xenial); restore default behaviour.
+  # CMake wrapper (Trusty, Xenial & Bionic); restore default behaviour.
   if [[ "${TRAVIS_OS_NAME}" == "linux" &&
-        "$(lsb_release --codename)" =~ (trusty|xenial)$ ]]
+        "$(lsb_release --codename)" =~ (trusty|xenial|bionic)$ ]]
   then
     if [[ -x $(command -v /usr/local/bin/cmake) ]]; then
       function cmake { command /usr/local/bin/cmake $@; }

@@ -81,27 +81,51 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 ##### All configurations
 ```
 /std:c++17         ISO C++ 17 standard
-/sdl               Enable SDL checks, additional warnings focused on security
+/sdl               Recommended Security Development Life-cycle checks & codegen
 /MP                Multiprocessor compilation (Do not use /Gm)
 /permissive-       Disable non-conforming constructs in Visual C++:
                    Enables: /Zc:rvaluecast /Zc:strictStrings and more.
                    (Updated compiler conformance.)
 /GR-               Disable rtti (run-time type information) smaller image.
                    Turn on to use dynamic_cast or typeid.
+/utf-8             Source files are UTF-8 encoded.
 /Yu"precompiled.h" Use precompiled headers
 /FI"precompiled.h" Force include, add precompiled to all files
 
 ---- implicitly set flags:
-/GS                Buffer Security Check. (default)
-/FC                Full-path of source code file in diagnostics (default)
-/Gm-               Prefer /MP (default)
+/EHsc               Exception handling configuration (default)
+/Gd                 Function calling convention (default)
+/GS                 Buffer Security Check. (default)
+/FC                 Full-path of source code file in diagnostics (default)
+/Gm-                Prefer /MP (default)
+/diagnostics:carret 
+/source-charset:utf-8 Source files are UTF-8 encoded without a BOM. Without this
+                   the compiler interprets it as ASCII and re-encodes to UTF-8
+                   before processing. (Set by /utf-8)
+/execution-charset:utf-8 Internal representation of string and character
+                   literals. (Set by /utf-8)
+/validate-charset  Validates that source files contain only UTF-8 characters.
+                   (Set by /utf-8)
+/Zc:forScope        Conformence in for loop scope
+/Zc:inline          Remove unreferenced code and data
+/Zc:wchar_t         Tread wchar_t as a buildin type
+
+Linker:
+/SUBSYSTEM:CONSOLE
+/DYNAMICBASE        Random base address
+/NXCOMPAT           Mark compatible with Data Execution Prevention (DEP)
+/MANIFEST
+/MANIFESTUAC
 ```
 ##### Debug configurations
 `````
 ---- implicitly set flags:
-/ZI              Program database for edit-and-continue (sets /Gy and /FC)
-                 (default for Debug)
-/Gy              Function-level linking. (set by /ZI)
+/JMC             Support Just My Code debugging (default) available since v15.8
+/ZI              PDB for edit-and-continue (sets /Gy and /FC) (default)
+/Gy              Function-level linking, function as COMDAT. (set by /ZI)
+/RTC1            Enable run-time checks
+
+Linker:
 /INCREMENTAL     Enable incremental linking (default for Debug in linker)
 /DEBUG:FASTLINK  Debug information format, allowing for faster linking.
                  Enable generation of full-program database is needed for
@@ -119,6 +143,11 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 ---- implicitly set flags:
 /O2        Maximize Speed (default Release)
 /GL        Whole program optimization (default Release)
+/Zi        Separate PDB
+
+Linker:
+/GUARD:CF  Control Flow Guard
+/LTCG      Link-time code generation, with /GL
 ```
 #### Useful settings for incidental use ####
 <!----------------------------------------------------------------------------->
@@ -305,6 +334,10 @@ Use `-Xclang ` before a command to actually force it to the compiler.
   // toolset for actual version see macro `_MSC_FULL_VER`
   -fms-compatibility Excepting enough invalid C++ to parse most MS headers
   -fno-ms-compatibility
+
+---- implicitly set flags:
+/utf-8                Source files are UTF-8 encoded. Set source and runtime
+                      encoding to UTF-8.
 `````
 ##### Debug configurations
 `````
