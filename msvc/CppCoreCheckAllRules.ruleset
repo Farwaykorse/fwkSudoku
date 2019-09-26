@@ -2,5 +2,5 @@
 <RuleSet Name="C++ Core Check All Rules" Description="Custom rule set combining all C++ Core Check Rules (excluding experimental), the Native Recommended and Concurrency Rules." ToolsVersion="16.0">
   <Include Path="CppCoreCheckRules.ruleset" Action="Default" />
   <Include Path="NativeRecommendedRules.ruleset" Action="Default" />
-  <Include Path="ConcurrencyCheckRules.ruleset" Action="Default" />
+  <Include Path="ConcurrencyRules.ruleset" Action="Default" />
 </RuleSet>
