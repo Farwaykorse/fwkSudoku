@@ -3,4 +3,5 @@
   <Include Path="CppCoreCheckRules.ruleset" Action="Default" />
   <Include Path="NativeRecommendedRules.ruleset" Action="Default" />
   <Include Path="ConcurrencyRules.ruleset" Action="Default" />
+  <Include Path="CppCoreCheckEnumRules.ruleset" Action="Default" />
 </RuleSet>
