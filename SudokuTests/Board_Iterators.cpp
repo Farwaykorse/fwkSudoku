@@ -1457,7 +1457,6 @@ TEST(Board_Iterator, pre_decrement)
 
 		// return type
 		static_assert(std::is_same_v<decltype(A.end())&, decltype(--A.end())>);
-		static_assert(std::is_same_v<int&, decltype(*(--A.end()))>);
 		static_assert(
 			std::is_same_v<decltype(A.cend())&, decltype(--A.cend())>);
 		static_assert(std::is_same_v<int&, decltype(*(--A.end()))>);
