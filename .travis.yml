@@ -23,6 +23,7 @@ env:
 #   - libc++  (Linux only, default on OSX.)
 # - CC/CXX_vcpkg: build vcpkg with a different compiler.
 #   Linux minimum: `g++-7`; OSX minimum: `g++-6`; Or clang-8 (with libc++-8).
+# - LINKER: use a specific linker. e.g. GCC: gold; LLVM/clang lld-#
 # - CONFIGURATION: specifies the build configuration.
 #   When not set both a Debug and a Release configurations are build in single
 #   job session.
@@ -405,6 +406,15 @@ before_install:
     else
       brew link gcc@8
     fi
+  fi
+- |
+  # Linker selection
+  if [[ ${LINKER:-} ]]; then
+    export LDFLAGS="-fuse-ld=${LINKER}"
+  elif [[ ${CXX} == clang++-* && $(command -v lld-${CXX:8}) ]]; then
+    export LDFLAGS="-fuse-ld=lld-${CXX:8}"
+  elif [[ ${CXX} == g++-* ]]; then
+    export LDFLAGS="-fuse-ld=gold"
   fi
 - |
   # Download vcpkg
