@@ -51,6 +51,7 @@ Checks:
   -llvm-namespace-comment,
   misc-*,
   modernize-*,
+  -modernize-use-trailing-return-type,
   -mpi-*,
   -objc-*,
   performance-*,
