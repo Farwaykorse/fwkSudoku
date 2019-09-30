@@ -82,11 +82,11 @@ public:
 	}
 	// Checked
 	constexpr T& at(Location);
-	constexpr T const& at(Location) const;
+	[[nodiscard]] constexpr T const& at(Location) const;
 	constexpr T& at(index row, index col);
-	constexpr T const& at(index row, index col) const;
+	[[nodiscard]] constexpr T const& at(index row, index col) const;
 	[[deprecated]] T& at(index elem);
-	[[deprecated]] const T& at(index elem) const;
+	[[deprecated, nodiscard]] const T& at(index elem) const;
 	// Unchecked
 	constexpr T& operator[](Location) noexcept;
 	constexpr T const& operator[](Location) const noexcept;
@@ -102,39 +102,48 @@ public:
 	// Iterators
 	constexpr iterator begin() noexcept;
 	constexpr iterator end() noexcept;
-	constexpr const_iterator cbegin() const noexcept;
-	constexpr const_iterator cend() const noexcept;
-	constexpr const_iterator begin() const noexcept { return cbegin(); }
-	constexpr const_iterator end() const noexcept { return cend(); }
+	[[nodiscard]] constexpr const_iterator cbegin() const noexcept;
+	[[nodiscard]] constexpr const_iterator cend() const noexcept;
+	[[nodiscard]] constexpr const_iterator begin() const noexcept
+	{
+		return cbegin();
+	}
+	[[nodiscard]] constexpr const_iterator end() const noexcept
+	{
+		return cend();
+	}
 	constexpr reverse_iterator rbegin() noexcept;
 	constexpr reverse_iterator rend() noexcept;
-	constexpr const_reverse_iterator crbegin() const noexcept;
-	constexpr const_reverse_iterator crend() const noexcept;
-	constexpr const_reverse_iterator rbegin() const noexcept
+	[[nodiscard]] constexpr const_reverse_iterator crbegin() const noexcept;
+	[[nodiscard]] constexpr const_reverse_iterator crend() const noexcept;
+	[[nodiscard]] constexpr const_reverse_iterator rbegin() const noexcept
 	{
 		return crbegin();
 	}
-	constexpr const_reverse_iterator rend() const noexcept { return crend(); }
+	[[nodiscard]] constexpr const_reverse_iterator rend() const noexcept
+	{
+		return crend();
+	}
 
 	// Sections
 	// clang-format off
 	Row row(index id) noexcept         { return Row(*this, id); }
-	constexpr const_Row   row(index id) const noexcept
+	[[nodiscard]] constexpr const_Row   row(index id) const noexcept
 									   { return const_Row(*this, id); }
 	Row row(Location loc) noexcept     { return Row(*this, loc); }
-	constexpr const_Row   row(Location loc) const noexcept
+	[[nodiscard]] constexpr const_Row   row(Location loc) const noexcept
 									   { return const_Row(*this, loc); }
 	Col col(index id) noexcept         { return Col(*this, id); }
-	constexpr const_Col   col(index id) const noexcept
+	[[nodiscard]] constexpr const_Col   col(index id) const noexcept
 									   { return const_Col(*this, id); }
 	Col col(Location loc) noexcept     { return Col(*this, loc); }
-	constexpr const_Col   col(Location loc) const noexcept
+	[[nodiscard]] constexpr const_Col   col(Location loc) const noexcept
 									   { return const_Col(*this, loc); }
 	Block block(index id) noexcept     { return Block(*this, id); }
-	constexpr const_Block block(index id) const noexcept
+	[[nodiscard]] constexpr const_Block block(index id) const noexcept
 									   { return const_Block(*this, id); }
 	Block block(Location loc) noexcept { return Block(*this, loc); }
-	constexpr const_Block block(Location loc) const noexcept
+	[[nodiscard]] constexpr const_Block block(Location loc) const noexcept
 									   { return const_Block(*this, loc); }
 	// clang-format on
 

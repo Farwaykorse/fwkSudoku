@@ -98,16 +98,22 @@ public:
 
 	constexpr iterator begin() noexcept { return iterator(&board_, id_, 0); }
 	constexpr iterator end() noexcept { return iterator(&board_, id_, size()); }
-	constexpr const_iterator cbegin() const noexcept
+	[[nodiscard]] constexpr const_iterator cbegin() const noexcept
 	{
 		return const_iterator(&board_, id_, 0);
 	}
-	constexpr const_iterator cend() const noexcept
+	[[nodiscard]] constexpr const_iterator cend() const noexcept
 	{
 		return const_iterator(&board_, id_, size());
 	}
-	constexpr const_iterator begin() const noexcept { return cbegin(); }
-	constexpr const_iterator end() const noexcept { return cend(); }
+	[[nodiscard]] constexpr const_iterator begin() const noexcept
+	{
+		return cbegin();
+	}
+	[[nodiscard]] constexpr const_iterator end() const noexcept
+	{
+		return cend();
+	}
 	constexpr reverse_iterator rbegin() noexcept
 	{
 		return reverse_iterator(&board_, id_, size() - 1);
@@ -116,19 +122,22 @@ public:
 	{
 		return reverse_iterator(&board_, id_, -1);
 	}
-	constexpr const_reverse_iterator crbegin() const noexcept
+	[[nodiscard]] constexpr const_reverse_iterator crbegin() const noexcept
 	{
 		return const_reverse_iterator(&board_, id_, size() - 1);
 	}
-	constexpr const_reverse_iterator crend() const noexcept
+	[[nodiscard]] constexpr const_reverse_iterator crend() const noexcept
 	{
 		return const_reverse_iterator(&board_, id_, -1);
 	}
-	constexpr const_reverse_iterator rbegin() const noexcept
+	[[nodiscard]] constexpr const_reverse_iterator rbegin() const noexcept
 	{
 		return crbegin();
 	}
-	constexpr const_reverse_iterator rend() const noexcept { return crend(); }
+	[[nodiscard]] constexpr const_reverse_iterator rend() const noexcept
+	{
+		return crend();
+	}
 
 private:
 	OwnerT board_;
