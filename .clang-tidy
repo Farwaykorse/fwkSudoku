@@ -11,7 +11,7 @@
 ##  Foo(int param); // NOLINT
 ##
 ##  // Silence only the specified checks for the line
-##  Foo(double param); // NOLINT(google-explicit-constructor, google-runtime-int)
+##  Foo(double param); // NOLINT(google-explicit-constructor,google-runtime-int)
 ##
 ##  // Silence only the specified diagnostics for the next line
 ##  // NOLINTNEXTLINE(google-explicit-constructor, google-runtime-int)
@@ -22,10 +22,10 @@
 ## Please, keep sorted by name.
 #
 
+---
 HeaderFilterRegex: Sudoku|Console[\\\/].*
 FormatStyle: file
-Checks:
- '*,
+Checks: '*,
   abseil-*,
   -android-*,
   boost-*,
@@ -65,23 +65,25 @@ Checks:
   -ziron-*'
 
 CheckOptions:
-  - key:   bugprone-argument-comment.StrictMode
-    value: '1'
-  - key:   bugprone-assert-side-effect.CheckFunctionCalls
-    value: '0'
-  - key:   bugprone-suspicious-enum-usage.StrictMode
-    value: '1'
-  - key:   portability-simd-intrinsics.Suggest
-    value: '1'
-  - key:   readability-braces-around-statements.ShortStatementLines
-    value: '3'
-  - key:   readability-function-size.BranchThreshold
-    value: '-1'
-  - key:   readability-function-size.LineThreshold
-    value: '-1'
-  - key:   readability-function-size.NestingThreshold
-    value: '-1'
-  - key:   readability-function-size.ParameterThreshold
-    value: '-1'
-  - key:   readability-function-size.StatementThreshold
-    value: '800'
+- key:   bugprone-argument-comment.StrictMode
+  value: '1'
+- key:   bugprone-assert-side-effect.CheckFunctionCalls
+  value: '0'
+- key:   bugprone-suspicious-enum-usage.StrictMode
+  value: '1'
+- key:   portability-simd-intrinsics.Suggest
+  value: '1'
+- key:   readability-braces-around-statements.ShortStatementLines
+  value: '3'
+- key:   readability-function-size.BranchThreshold
+  value: '-1'
+- key:   readability-function-size.LineThreshold
+  value: '-1'
+- key:   readability-function-size.NestingThreshold
+  value: '-1'
+- key:   readability-function-size.ParameterThreshold
+  value: '-1'
+- key:   readability-function-size.StatementThreshold
+  value: '800'
+
+...
