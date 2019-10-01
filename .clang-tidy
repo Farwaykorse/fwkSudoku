@@ -22,7 +22,8 @@
 ## Please, keep sorted by name.
 #
 
-HeaderFilterRegex: 'Sudoku[\\\/].*'
+HeaderFilterRegex: Sudoku|Console[\\\/].*
+FormatStyle: file
 Checks:
  '*,
   abseil-*,
