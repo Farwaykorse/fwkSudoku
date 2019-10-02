@@ -164,9 +164,10 @@ for:
   - >-
     MSBuild
     -nologo
+    -maxcpucount
     -verbosity:normal
-    -p:Configuration="%CONFIGURATION%"
-    -p:Platform="%PLATFORM%"
+    -property:Configuration="%CONFIGURATION%"
+    -property:Platform="%PLATFORM%"
     -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   test_script:
   - ps: |
