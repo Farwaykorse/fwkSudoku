@@ -33,7 +33,7 @@ env:
 #   - lcov:  GNU tool, mostly redundant by Codecov's bash script.
 #   - *: if an executable on the PATH, like: gcov-6, run by the bash script.
 #   - any other value runs the bash script in default mode. (I.e. true)
-# - CMAKE_CXX_CLANG_TIDY: command to execute clang-tidy.
+# - CMAKE_CXX_CLANG_TIDY: command to execute clang-tidy. Disables unit-tests.
 #
 ## Toolchain installation information:
 # https://docs.travis-ci.com/user/installing-dependencies/
@@ -648,14 +648,24 @@ script:
 - cd ./build
 - cmake ${CMakeGenFlags[@]:?} ..
 - cmake --build . --config ${CONFIGURATION:-Debug} -- ${GeneratorFlags}
-- ctest -j $(nproc) --output-on-failure
-- cd ../build2
+- |
+  if [[ ! ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
+    ctest -j $(nproc) --output-on-failure
+  fi
+- |
+  if [[ ${B_REL:-} ]]; then
+    cd ../build2
+    echo ${CMakeGenFlags2[@]:?}
+  fi
 - if [[ ${B_REL:-} ]]; then cmake ${CMakeGenFlags2[@]:?} ..; fi
 - |
   if [[ ${B_REL:-} ]]; then
     cmake --build . --config Release -- ${GeneratorFlags}
   fi
-- if [[ ${B_REL:-} ]]; then ctest -j $(nproc) --output-on-failure; fi
+- |
+  if [[ ${B_REL:-} && ! ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
+    ctest -j $(nproc) --output-on-failure
+  fi
 
 ##====--------------------------------------------------------------------====##
 before_cache:
