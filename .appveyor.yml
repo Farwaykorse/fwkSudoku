@@ -169,6 +169,7 @@ for:
     -property:Configuration="%CONFIGURATION%"
     -property:Platform="%PLATFORM%"
     -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+    -validate
   test_script:
   - ps: |
       $env:TEST_EXE_PATH = "$pwd\$env:CONFIGURATION\SudokuTests.exe"
