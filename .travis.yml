@@ -62,13 +62,14 @@ dist: bionic
 stages:
 - "Build Dependencies"
 - "Build & Test Latest" # First: (4) builds to run first
+- name: "Validation"
 - name: "Build & Test"  # If all succeed build rest
   if: NOT (branch =~ /^[Aa]pp[Vv]eyor.*/)
 
 jobs:
   include:
   - name: CMake versions
-    stage: "Build & Test Latest"
+    stage: "Validation"
     env:
     - CMake_version: '"3.15.2 3.14.5 3.13.5 3.12.4 3.12.0"'
     workspaces:
@@ -91,7 +92,7 @@ jobs:
       )
 
   - name: CMake versions
-    stage: "Build & Test"
+    stage: "Validation"
     os: osx
     osx_image: xcode10.3 # AppleClang 10.0.1
     env:
@@ -106,7 +107,7 @@ jobs:
       )
 
   - name: Clang-Tidy
-    stage: "Build & Test"
+    stage: "Validation"
     env:
     - CC: clang-9
     - CXX: clang++-9
@@ -311,6 +312,7 @@ jobs:
         - clang-4.0
 
   - name: AppleClang Xcode-11.0
+    stage: "Build & Test Latest"
     os: osx
     osx_image: xcode11 # AppleClang 11.0.0
     env:
@@ -319,6 +321,7 @@ jobs:
       use: OSX
 
   - name: AppleClang Xcode-10.3
+    stage: "Build & Test"
     os: osx
     osx_image: xcode10.3 # AppleClang 10.0.1 same compiler as Xcode10.2
     env:
@@ -373,6 +376,7 @@ jobs:
     after_success: skip
 
   - name: vcpkg for OSX
+    stage: "Build Dependencies"
     workspaces:
       create:
         name: OSX
