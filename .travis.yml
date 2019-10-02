@@ -556,6 +556,7 @@ install:
     # $1: cmake or full path to cmake
     if [[ "$1" == "cmake" || -x "$(command -v $1)" && "$1" =~ .*cmake$ ]]; then
       echo "----------------"
+      echo "Configuration = ${CONFIGURATION:-Debug}"
       $1 ${CMakeGenFlags[@]:?} ..
       rm ./* -rf
       if [[ ${B_REL:-} ]]; then echo "Configuration = Release"
