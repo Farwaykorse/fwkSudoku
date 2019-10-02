@@ -16,7 +16,7 @@ env:
 
 ##====--------------------------------------------------------------------====##
 ## Define Build Configurations
-# No build matrix, each item in matrix:include is single build configuration.
+# No build matrix, each item in jobs:include is a single build configuration.
 #
 # Environment variables:
 # - CXX_lib: library selection.
@@ -581,7 +581,7 @@ install:
     # $1: cmake or full path to cmake
     if [[ "$1" == "cmake" || -x "$(command -v $1)" && "$1" =~ .*cmake$ ]]; then
       echo "----------------"
-      $1 ${CMakeGenFlags[@]:?} ..
+      $1 ${CMakeGenFlags1[@]:?} ..
       rm ./* -rf
       if [[ ${B_REL:-} ]]; then echo "Configuration = Release"
         $1 ${CMakeGenFlags2[@]:?} ..
@@ -628,29 +628,25 @@ before_script:
   export CFLAGS="${CFLAGS} -Werror"
   export CXXFLAGS="${CXXFLAGS} -Werror"
 - |
-  CMakeGenFlags=("-G Ninja")
-  CMakeGenFlags+=("-DCMAKE_BUILD_TYPE=${CONFIGURATION:-Debug}")
-  CMakeGenFlags+=("-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}")
-  CMakeGenFlags+=("-DCODE_COVERAGE=${coverage_bool:?}")
+  # CMake parameters
+  CMakeGenFlags1=("-G Ninja -DCMAKE_BUILD_TYPE=${CONFIGURATION:-Debug}")
+  CMakeGenFlags1+=("-DCODE_COVERAGE=${coverage_bool:?}")
+  SharedGenFlags+=("-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}")
   if [[ ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
-    CMakeGenFlags+=("-DCMAKE_CXX_CLANG_TIDY=${CMAKE_CXX_CLANG_TIDY}")
+    SharedGenFlags+=("-DCMAKE_CXX_CLANG_TIDY=${CMAKE_CXX_CLANG_TIDY}")
   fi
-  CMakeGenFlags+=(-Wdev -Werror=dev --warn-uninitialized)
-  echo ${CMakeGenFlags[@]}
+  SharedGenFlags+=(-Wdev -Werror=dev --warn-uninitialized)
+  CMakeGenFlags1+=(${SharedGenFlags[@]})
+  echo ${CMakeGenFlags1[@]}
   if [[ ! ${CONFIGURATION:-} ]]; then
     B_REL="Build both Debug and Release configurations"
-    CMakeGenFlags2=("-G Ninja")
-    CMakeGenFlags2+=("-DCMAKE_BUILD_TYPE=Release")
-    CMakeGenFlags2+=("-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}")
-    if [[ ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
-      CMakeGenFlags2+=("-DCMAKE_CXX_CLANG_TIDY=${CMAKE_CXX_CLANG_TIDY}")
-    fi
-    CMakeGenFlags2+=(-Wdev -Werror=dev --warn-uninitialized)
+    CMakeGenFlags2=("-G Ninja -DCMAKE_BUILD_TYPE=Release")
+    CMakeGenFlags2+=(${SharedGenFlags[@]})
   fi
 
 script:
 - cd ./build
-- cmake ${CMakeGenFlags[@]:?} ..
+- cmake ${CMakeGenFlags1[@]:?} ..
 - cmake --build . --config ${CONFIGURATION:-Debug} -- ${GeneratorFlags}
 - |
   if [[ ! ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
