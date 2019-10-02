@@ -1,10 +1,17 @@
 ##====---- .yamllint                                                  ----====##
 # yamllint configuration file
-# Requires yamllint version: 1.10.0
+# Requires yamllint version: 1.17.0
 ##====--------------------------------------------------------------------====##
 ---
 
 extends: default
+
+yaml-files: # v1.17.0
+- '*.yaml'
+- '*.yml'
+- '.clang-format'
+- '.clang-tidy'
+- '.yamllint'
 
 rules:
   braces:
@@ -56,12 +63,12 @@ rules:
   new-line-at-end-of-file: enable
   new-lines:
     type: unix
-  # octal-values: # requires yamllint v1.11.0
-  #  forbid-implicit-octal: true
-  #  quoted-strings: disable
+  octal-values: # requires yamllint v1.11.0
+    forbid-implicit-octal: true
+  quoted-strings: disable
   trailing-spaces: enable
-  truthy: disable
-  #  allowed-values: ['true', 'false', 'on', 'off'] # requires yamllint v1.16.0
-  #  level: warning
+  truthy:
+    allowed-values: ['true', 'false', 'on', 'off'] # requires yamllint v1.16.0
+    level: warning
 
 ...
