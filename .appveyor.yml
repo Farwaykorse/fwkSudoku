@@ -16,6 +16,7 @@ skip_commits:
   files:
   - .git*
   - .codecov.yml
+  - .editorconfig
   - .travis.yml
   - .yamllint
   - docs/
