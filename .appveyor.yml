@@ -164,7 +164,7 @@ for:
   - >-
     MSBuild
     -nologo
-    -verbosity:minimal
+    -verbosity:normal
     -p:Configuration="%CONFIGURATION%"
     -p:Platform="%PLATFORM%"
     -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
@@ -241,7 +241,7 @@ before_build:
       }
       $CMakeGenFlags = "-G Ninja"
     } else {
-      $GeneratorFlags = '/m /v:minimal'
+      $GeneratorFlags = '/m /v:normal'
       if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2015") {
         $Generator = 'Visual Studio 14 2015'
       } elseif ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2017"){
