@@ -443,7 +443,7 @@ before_install:
   # Install/Update vcpkg
   if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
     cd ${VCPKG_DIR}
-  ( set -euxo pipefail
+  ( set -euo pipefail
     VCPKG_SRC_HASH="${VCPKG_DIR}/vcpkg_src_hash" && touch ${VCPKG_SRC_HASH}
     GENERATE_SRC_HASH="(
       git log --format=format:\"%H\" --max-count=1 -- toolsrc
@@ -479,7 +479,7 @@ install:
 - |
   # Install Ninja-build (if not installed)
   if [[ ! -x "$(command -v ninja)" ]]; then
-  ( set -euxo pipefail
+  ( set -euo pipefail
     NINJA_VER="v1.9.0"
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
       file_name="ninja-linux.zip"
@@ -508,7 +508,7 @@ install:
 - |
   # Install Mozilla/grcov
   if [[ ${Coverage:-} && ${Coverage} == "grcov" ]]; then
-  ( set -euxo pipefail
+  ( set -euo pipefail
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
       GRCOV_TAG="v0.5.3"
       GRCOV_SHA512="3d7f1fbfa11949d7ba57a507eeee4a1ed24580d2ac7aea8b6928324345d4fb4fc41856598169f9dbd860897537ec97e4587c65127d428bd91461f4815c8c2193"
@@ -687,7 +687,7 @@ after_success:
   # Code coverage
   cd "${TRAVIS_BUILD_DIR}/build"
   if [[ ${Coverage:-} ]]; then
-  ( set -euxo pipefail
+  ( set -euo pipefail
     Source_Dir="${TRAVIS_BUILD_DIR}"
     Build_Dir="${TRAVIS_BUILD_DIR}/build"
     bash_flags=("-n ${TRAVIS_JOB_NAME/ /_}") # Replace space with '_'
