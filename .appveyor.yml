@@ -16,6 +16,7 @@ skip_commits:
   files:
   - .git*
   - .codecov.yml
+  - .editorconfig
   - .travis.yml
   - .yamllint
   - docs/
@@ -162,10 +163,12 @@ for:
   - >-
     MSBuild
     -nologo
-    -verbosity:minimal
-    -p:Configuration="%CONFIGURATION%"
-    -p:Platform="%PLATFORM%"
+    -maxcpucount
+    -verbosity:normal
+    -property:Configuration="%CONFIGURATION%"
+    -property:Platform="%PLATFORM%"
     -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+    -validate
   test_script:
   - ps: |
       $env:TEST_EXE_PATH = "$pwd\$env:CONFIGURATION\SudokuTests.exe"
@@ -262,7 +265,7 @@ before_build:
       }
       $CMakeGenFlags = "-G Ninja"
     } else {
-      $GeneratorFlags = '/m /v:minimal'
+      $GeneratorFlags = '/m /v:normal'
       if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2015") {
         $Generator = 'Visual Studio 14 2015'
       } elseif ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2017"){

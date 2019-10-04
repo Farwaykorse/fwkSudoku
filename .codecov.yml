@@ -9,7 +9,7 @@ coverage:
 
   status:
     project:
-      default: yes # entire project
+      default: true # entire project
       sudoku:
         paths:
         - "Sudoku/Sudoku/"
@@ -21,19 +21,19 @@ coverage:
         - "SudokuTests/"
         base: auto
         target: 0
-    patch: yes
-    changes: no
+    patch: true
+    changes: false
 
 parsers:
   gcov:
     branch_detection:
-      conditional: yes
-      loop: yes
-      method: no
-      macro: no
+      conditional: true
+      loop: true
+      method: false
+      macro: false
 
 # Pull-request Comments
 comment:
   layout: "header, diff, files"
   behavior: default
-  require_changes: no
+  require_changes: false

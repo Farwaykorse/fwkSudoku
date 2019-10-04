@@ -453,12 +453,13 @@ TEST(Board, access_checked)
 	static_assert(not noexcept(cB.at(Location<2>(20)) == 1));
 	static_assert(not noexcept(cexprB.at(Location<2>(20)) == 1));
 	static_assert(std::is_same_v<int const&, decltype(cB.at(Location<2>(2)))>);
+	[[maybe_unused]] int tmp;
 	EXPECT_EQ(cB.at(Location<2>(2)), 2) << "at(Location) const";
-	EXPECT_THROW(cB.at(Location<2>(16)), invalid_Location);
-	EXPECT_THROW(cB.at(Location<2>(-1)), invalid_Location);
-	EXPECT_THROW(cB.at(Location<2>(16)), std::out_of_range);
-	EXPECT_THROW(cB.at(Location<2>(-1)), std::out_of_range);
-	EXPECT_THROW(cB.at(Location<2>{4, 0}), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(Location<2>(16)), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(Location<2>(-1)), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(Location<2>(16)), std::out_of_range);
+	EXPECT_THROW(tmp = cB.at(Location<2>(-1)), std::out_of_range);
+	EXPECT_THROW(tmp = cB.at(Location<2>{4, 0}), invalid_Location);
 
 	// at(row, col)
 	// at(row, col)
@@ -486,7 +487,7 @@ TEST(Board, access_checked)
 	EXPECT_THROW(B1.at(-1, 0), invalid_Location);
 	EXPECT_THROW(B1.at(1, -2), invalid_Location);
 	// at(Location) const
-	EXPECT_NO_THROW(cB.at(2, 1));
+	EXPECT_NO_THROW(tmp = cB.at(2, 1));
 #if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
 							   defined(__GNUC__) && __GNUC__ < 9)
 	static_assert(noexcept(cB.at(0, 1) == 1));
@@ -494,10 +495,10 @@ TEST(Board, access_checked)
 	static_assert(not noexcept(cB.at(0, 1) == 1));
 #endif
 	static_assert(not noexcept(cB.at(0, 9) == 1));
-	EXPECT_THROW(cB.at(1, 4), invalid_Location);
-	EXPECT_THROW(cB.at(4, 0), invalid_Location);
-	EXPECT_THROW(cB.at(-1, 0), invalid_Location);
-	EXPECT_THROW(cB.at(1, -2), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(1, 4), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(4, 0), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(-1, 0), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(1, -2), invalid_Location);
 	static_assert(std::is_same_v<int const&, decltype(cB.at(2, 2))>);
 	EXPECT_EQ(cB.at(0, 0), 0);
 	EXPECT_EQ(cB.at(3, 1), 13);

@@ -7,9 +7,10 @@
 ##====--------------------------------------------------------------------====##
 #
 
-HeaderFilterRegex: 'Sudoku[\\\/].*'
-Checks:
- '*,
+---
+HeaderFilterRegex: Sudoku(Tests)?[\\\/].*
+FormatStyle: file
+Checks: '*,
   abseil-*,
   -android-*,
   boost-*,
@@ -36,6 +37,7 @@ Checks:
   -llvm-namespace-comment,
   misc-*,
   modernize-*,
+  -modernize-use-trailing-return-type,
   -mpi-*,
   -objc-*,
   performance-*,
@@ -64,23 +66,25 @@ Checks:
   -modernize-use-equals-delete'
 
 CheckOptions:
-  - key:   bugprone-argument-comment.StrictMode
-    value: '1'
-  - key:   bugprone-assert-side-effect.CheckFunctionCalls
-    value: '0'
-  - key:   bugprone-suspicious-enum-usage.StrictMode
-    value: '1'
-  - key:   portability-simd-intrinsics.Suggest
-    value: '1'
-  - key:   readability-braces-around-statements.ShortStatementLines
-    value: '3'
-  - key:   readability-function-size.BranchThreshold
-    value: '-1'
-  - key:   readability-function-size.LineThreshold
-    value: '-1'
-  - key:   readability-function-size.NestingThreshold
-    value: '-1'
-  - key:   readability-function-size.ParameterThreshold
-    value: '-1'
-  - key:   readability-function-size.StatementThreshold
-    value: '800'
+- key:   bugprone-argument-comment.StrictMode
+  value: '1'
+- key:   bugprone-assert-side-effect.CheckFunctionCalls
+  value: '0'
+- key:   bugprone-suspicious-enum-usage.StrictMode
+  value: '1'
+- key:   portability-simd-intrinsics.Suggest
+  value: '1'
+- key:   readability-braces-around-statements.ShortStatementLines
+  value: '3'
+- key:   readability-function-size.BranchThreshold
+  value: '-1'
+- key:   readability-function-size.LineThreshold
+  value: '-1'
+- key:   readability-function-size.NestingThreshold
+  value: '-1'
+- key:   readability-function-size.ParameterThreshold
+  value: '-1'
+- key:   readability-function-size.StatementThreshold
+  value: '800'
+
+...

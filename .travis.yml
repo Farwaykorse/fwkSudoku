@@ -16,7 +16,7 @@ env:
 
 ##====--------------------------------------------------------------------====##
 ## Define Build Configurations
-# No build matrix, each item in matrix:include is single build configuration.
+# No build matrix, each item in jobs:include is a single build configuration.
 #
 # Environment variables:
 # - CXX_lib: library selection.
@@ -33,6 +33,7 @@ env:
 #   - lcov:  GNU tool, mostly redundant by Codecov's bash script.
 #   - *: if an executable on the PATH, like: gcov-6, run by the bash script.
 #   - any other value runs the bash script in default mode. (I.e. true)
+# - CMAKE_CXX_CLANG_TIDY: command to execute clang-tidy. Disables unit-tests.
 #
 ## Toolchain installation information:
 # https://docs.travis-ci.com/user/installing-dependencies/
@@ -61,15 +62,16 @@ dist: bionic
 stages:
 - "Build Dependencies"
 - "Build & Test Latest" # First: (4) builds to run first
+- name: "Validation"
 - name: "Build & Test"  # If all succeed build rest
   if: NOT (branch =~ /^[Aa]pp[Vv]eyor.*/)
 
 jobs:
   include:
   - name: CMake versions
-    stage: "Build & Test Latest"
+    stage: "Validation"
     env:
-    - CMake_version: '"3.15.2 3.14.5 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.15.4 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: Linux
     addons:
@@ -90,11 +92,11 @@ jobs:
       )
 
   - name: CMake versions
-    stage: "Build & Test"
+    stage: "Validation"
     os: osx
     osx_image: xcode10.3 # AppleClang 10.0.1
     env:
-    - CMake_version: '"3.15.2 3.14.5 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.15.4 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: OSX
     script:
@@ -104,12 +106,31 @@ jobs:
         for CMAKE in ${CMAKE_path[@]}; do test_CMake_generate $CMAKE; done
       )
 
+  - name: Clang-Tidy
+    stage: "Validation"
+    env:
+    - CC: clang-9
+    - CXX: clang++-9
+    - CMAKE_CXX_CLANG_TIDY: '"clang-tidy-9;--warnings-as-errors=*"'
+    - CONFIGURATION: Debug
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        sources:
+        - sourceline:
+            'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
+        packages:
+        - clang-9
+        - clang-tidy-9
+
   - name: GCC-9
     stage: "Build & Test Latest"
     env:
     - CC:  gcc-9
     - CXX: g++-9
-    - CMake_version: 3.15.2
+    - CMake_version: 3.15.4
     - Coverage: gcov-9
     workspaces:
       use: Linux
@@ -291,6 +312,7 @@ jobs:
         - clang-4.0
 
   - name: AppleClang Xcode-11.0
+    stage: "Build & Test Latest"
     os: osx
     osx_image: xcode11 # AppleClang 11.0.0
     env:
@@ -299,6 +321,7 @@ jobs:
       use: OSX
 
   - name: AppleClang Xcode-10.3
+    stage: "Build & Test"
     os: osx
     osx_image: xcode10.3 # AppleClang 10.0.1 same compiler as Xcode10.2
     env:
@@ -352,6 +375,7 @@ jobs:
     after_success: skip
 
   - name: vcpkg for OSX
+    stage: "Build Dependencies"
     workspaces:
       create:
         name: OSX
@@ -371,6 +395,7 @@ jobs:
 
   allow_failures:
   - name: Clang-4.0 Debug
+  - name: Clang-Tidy
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
@@ -417,7 +442,7 @@ before_install:
   # Install/Update vcpkg
   if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
     cd ${VCPKG_DIR}
-  ( set -euxo pipefail
+  ( set -euo pipefail
     VCPKG_SRC_HASH="${VCPKG_DIR}/vcpkg_src_hash" && touch ${VCPKG_SRC_HASH}
     GENERATE_SRC_HASH="(
       git log --format=format:\"%H\" --max-count=1 -- toolsrc
@@ -453,7 +478,7 @@ install:
 - |
   # Install Ninja-build (if not installed)
   if [[ ! -x "$(command -v ninja)" ]]; then
-  ( set -euxo pipefail
+  ( set -euo pipefail
     NINJA_VER="v1.9.0"
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
       file_name="ninja-linux.zip"
@@ -482,7 +507,7 @@ install:
 - |
   # Install Mozilla/grcov
   if [[ ${Coverage:-} && ${Coverage} == "grcov" ]]; then
-  ( set -euxo pipefail
+  ( set -euo pipefail
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
       GRCOV_TAG="v0.5.3"
       GRCOV_SHA512="3d7f1fbfa11949d7ba57a507eeee4a1ed24580d2ac7aea8b6928324345d4fb4fc41856598169f9dbd860897537ec97e4587c65127d428bd91461f4815c8c2193"
@@ -555,7 +580,8 @@ install:
     # $1: cmake or full path to cmake
     if [[ "$1" == "cmake" || -x "$(command -v $1)" && "$1" =~ .*cmake$ ]]; then
       echo "----------------"
-      $1 ${CMakeGenFlags[@]:?} ..
+      echo "Configuration = ${CONFIGURATION:-Debug}"
+      $1 ${CMakeGenFlags1[@]:?} ..
       rm ./* -rf
       if [[ ${B_REL:-} ]]; then echo "Configuration = Release"
         $1 ${CMakeGenFlags2[@]:?} ..
@@ -602,32 +628,44 @@ before_script:
   export CFLAGS="${CFLAGS} -Werror"
   export CXXFLAGS="${CXXFLAGS} -Werror"
 - |
-  CMakeGenFlags=("-G Ninja")
-  CMakeGenFlags+=("-DCMAKE_BUILD_TYPE=${CONFIGURATION:-Debug}")
-  CMakeGenFlags+=("-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}")
-  CMakeGenFlags+=("-DCODE_COVERAGE=${coverage_bool:?}")
-  CMakeGenFlags+=(-Wdev -Werror=dev --warn-uninitialized)
-  echo ${CMakeGenFlags[@]}
+  # CMake parameters
+  CMakeGenFlags1=("-G Ninja -DCMAKE_BUILD_TYPE=${CONFIGURATION:-Debug}")
+  CMakeGenFlags1+=("-DCODE_COVERAGE=${coverage_bool:?}")
+  SharedGenFlags+=("-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}")
+  if [[ ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
+    SharedGenFlags+=("-DCMAKE_CXX_CLANG_TIDY=${CMAKE_CXX_CLANG_TIDY}")
+  fi
+  SharedGenFlags+=(-Wdev -Werror=dev --warn-uninitialized)
+  CMakeGenFlags1+=(${SharedGenFlags[@]})
+  echo ${CMakeGenFlags1[@]}
   if [[ ! ${CONFIGURATION:-} ]]; then
     B_REL="Build both Debug and Release configurations"
-    CMakeGenFlags2=("-G Ninja")
-    CMakeGenFlags2+=("-DCMAKE_BUILD_TYPE=Release")
-    CMakeGenFlags2+=("-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}")
-    CMakeGenFlags2+=(-Wdev -Werror=dev --warn-uninitialized)
+    CMakeGenFlags2=("-G Ninja -DCMAKE_BUILD_TYPE=Release")
+    CMakeGenFlags2+=(${SharedGenFlags[@]})
   fi
 
 script:
 - cd ./build
-- cmake ${CMakeGenFlags[@]:?} ..
+- cmake ${CMakeGenFlags1[@]:?} ..
 - cmake --build . --config ${CONFIGURATION:-Debug} -- ${GeneratorFlags}
-- ctest -j $(nproc) --output-on-failure
-- cd ../build2
+- |
+  if [[ ! ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
+    ctest -j $(nproc) --output-on-failure
+  fi
+- |
+  if [[ ${B_REL:-} ]]; then
+    cd ../build2
+    echo ${CMakeGenFlags2[@]:?}
+  fi
 - if [[ ${B_REL:-} ]]; then cmake ${CMakeGenFlags2[@]:?} ..; fi
 - |
   if [[ ${B_REL:-} ]]; then
     cmake --build . --config Release -- ${GeneratorFlags}
   fi
-- if [[ ${B_REL:-} ]]; then ctest -j $(nproc) --output-on-failure; fi
+- |
+  if [[ ${B_REL:-} && ! ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
+    ctest -j $(nproc) --output-on-failure
+  fi
 
 ##====--------------------------------------------------------------------====##
 before_cache:
@@ -649,7 +687,7 @@ after_success:
   # Code coverage
   cd "${TRAVIS_BUILD_DIR}/build"
   if [[ ${Coverage:-} ]]; then
-  ( set -euxo pipefail
+  ( set -euo pipefail
     Source_Dir="${TRAVIS_BUILD_DIR}"
     Build_Dir="${TRAVIS_BUILD_DIR}/build"
     bash_flags=("-n ${TRAVIS_JOB_NAME/ /_}") # Replace space with '_'

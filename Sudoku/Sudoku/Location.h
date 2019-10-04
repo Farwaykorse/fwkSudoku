@@ -14,8 +14,8 @@
 #pragma once
 
 #include "Size.h"
-#include <gsl/gsl> // index
-#include <type_traits>  // is_signed
+#include <gsl/gsl>     // index
+#include <type_traits> // is_signed
 
 
 namespace Sudoku
@@ -44,22 +44,31 @@ public:
 	}
 
 	// information
-	constexpr index element() const noexcept { return id_; } // default [0,full)
-	constexpr index row() const noexcept { return id_ / Size::elem; } //[0,elem)
-	constexpr index col() const noexcept { return id_ % Size::elem; } //[0,elem)
-	constexpr index block() const noexcept
+	[[nodiscard]] constexpr index element() const noexcept
+	{
+		return id_; // default [0,full)
+	}
+	[[nodiscard]] constexpr index row() const noexcept
+	{
+		return id_ / Size::elem; //[0,elem)
+	}
+	[[nodiscard]] constexpr index col() const noexcept
+	{
+		return id_ % Size::elem; //[0,elem)
+	}
+	[[nodiscard]] constexpr index block() const noexcept
 	{
 		return row() / Size::base * Size::base + col() / Size::base; // [0,elem)
 	}
-	constexpr index block_row() const noexcept
+	[[nodiscard]] constexpr index block_row() const noexcept
 	{
 		return row() % Size::base; // [0,base)
 	}
-	constexpr index block_col() const noexcept
+	[[nodiscard]] constexpr index block_col() const noexcept
 	{
 		return col() % Size::base; // [0,base)
 	}
-	constexpr index block_elem() const noexcept
+	[[nodiscard]] constexpr index block_elem() const noexcept
 	{
 		return block_row() * Size::base + block_col(); // [0,elem)
 	}
@@ -121,22 +130,22 @@ public:
 	{ // empty constructor
 	}
 
-	constexpr gsl::index id() const noexcept
+	[[nodiscard]] constexpr gsl::index id() const noexcept
 	{
-		return loc_.block();
-	} // [0,elem)
-	constexpr gsl::index element() const noexcept
+		return loc_.block(); // [0,elem)
+	}
+	[[nodiscard]] constexpr gsl::index element() const noexcept
 	{
 		return loc_.block_elem(); // [0,elem)
 	}
-	constexpr gsl::index row() const noexcept
+	[[nodiscard]] constexpr gsl::index row() const noexcept
 	{
-		return loc_.block_row();
-	} // [0,base)
-	constexpr gsl::index col() const noexcept
+		return loc_.block_row(); // [0,base)
+	}
+	[[nodiscard]] constexpr gsl::index col() const noexcept
 	{
-		return loc_.block_col();
-	} // [0,base)
+		return loc_.block_col(); // [0,base)
+	}
 
 	// [[implicit]]
 	constexpr operator Location() const noexcept { return loc_; }
