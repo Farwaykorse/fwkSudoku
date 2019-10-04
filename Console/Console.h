@@ -62,8 +62,8 @@ public:
 	delimiter d;
 
 private:
-	int charsize(int value) const;
-	int charsize(int, int length) const; // recursion
+	[[nodiscard]] int charsize(int value) const;
+	[[nodiscard]] int charsize(int, int length) const; // recursion
 	//	bool Format::find_option(const Board<std::set<int>>&, Location, int
 	// value);
 	// format elem
