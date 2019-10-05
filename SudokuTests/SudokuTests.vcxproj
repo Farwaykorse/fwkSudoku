@@ -17,6 +17,22 @@
       <Configuration>LLVM_Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="LLVM_old_Debug|Win32">
+      <Configuration>LLVM_old_Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="LLVM_old_Debug|x64">
+      <Configuration>LLVM_old_Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="LLVM_old_Release|Win32">
+      <Configuration>LLVM_old_Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="LLVM_old_Release|x64">
+      <Configuration>LLVM_old_Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -55,12 +71,20 @@
     <ProjectGuid>{70B08F04-68D5-4BC6-8D09-4F4C8E768A81}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SudokuTests</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|Win32'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>ClangCL</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <VcpkgConfiguration>Debug</VcpkgConfiguration>
+    <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Intel_Debug|Win32'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -73,6 +97,13 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>ClangCL</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <VcpkgConfiguration>Release</VcpkgConfiguration>
+    <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Intel_Release|Win32'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -87,6 +118,13 @@
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>ClangCL</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <VcpkgConfiguration>Debug</VcpkgConfiguration>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Intel_Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Intel C++ Compiler 19.0</PlatformToolset>
@@ -99,6 +137,13 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>ClangCL</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <VcpkgConfiguration>Release</VcpkgConfiguration>
+    <SpectreMitigation>false</SpectreMitigation>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Intel_Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>Intel C++ Compiler 19.0</PlatformToolset>
@@ -107,23 +152,23 @@
     <InterproceduralOptimization>true</InterproceduralOptimization>
     <VcpkgConfiguration>Release</VcpkgConfiguration>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>llvm</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <VcpkgConfiguration>Debug</VcpkgConfiguration>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'">
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|x64'">
     <PlatformToolset>llvm</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <VcpkgConfiguration>Release</VcpkgConfiguration>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'">
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|Win32'">
     <PlatformToolset>llvm</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <VcpkgConfiguration>Release</VcpkgConfiguration>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|Win32'">
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|Win32'">
     <PlatformToolset>llvm</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <VcpkgConfiguration>Debug</VcpkgConfiguration>
@@ -136,34 +181,46 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Intel_Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Intel_Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Intel_Debug|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Intel_Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Intel_Release|x64'" Label="PropertySheets">
@@ -182,19 +239,19 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CodeAnalysisRuleSet>..\msvc\CppCoreCheckAllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|Win32'">
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|Win32'">
     <UseLldLink>false</UseLldLink>
   </PropertyGroup>
-  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|x64'">
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|x64'">
     <UseLldLink>false</UseLldLink>
   </PropertyGroup>
-  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'">
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|Win32'">
     <UseLldLink>false</UseLldLink>
   </PropertyGroup>
-  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'">
+  <PropertyGroup Label="LLVM" Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|x64'">
     <UseLldLink>false</UseLldLink>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -217,6 +274,31 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <PreprocessorDefinitions>WIN32;fwkUnitTest;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <SDLCheck>true</SDLCheck>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
+      <ConformanceMode>true</ConformanceMode>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-covered-switch-default -Wno-global-constructors -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
+      <AdditionalDependencies>gtestd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -271,6 +353,26 @@
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <PreprocessorDefinitions>fwkUnitTest;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
+      <ConformanceMode>true</ConformanceMode>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-covered-switch-default -Wno-global-constructors -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
+      <AdditionalDependencies>gtestd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Intel_Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -316,6 +418,30 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;fwkUnitTest;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-covered-switch-default -Wno-global-constructors -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant </AdditionalOptions>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
+      <ConformanceMode>true</ConformanceMode>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <ControlFlowGuard>Guard</ControlFlowGuard>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>gtest.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Intel_Release|Win32'">
@@ -369,6 +495,30 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>fwkUnitTest;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-covered-switch-default -Wno-global-constructors -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant </AdditionalOptions>
+      <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
+      <ConformanceMode>true</ConformanceMode>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <ControlFlowGuard>Guard</ControlFlowGuard>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>gtest.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Intel_Release|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -395,7 +545,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -417,7 +567,7 @@
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -440,7 +590,7 @@
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|Win32'">
     <Link>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
@@ -462,7 +612,7 @@
       <ControlFlowGuard>Guard</ControlFlowGuard>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|x64'">
     <Link>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
@@ -486,16 +636,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="Board_Iterators.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="Board_Section.cpp" />
     <ClCompile Include="Board_Section_iterator.cpp" />
@@ -512,18 +670,26 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Intel_Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Intel_Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Intel_Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Intel_Release|x64'">Create</PrecompiledHeader>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|Win32'">-Wno-deprecated -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow -Wno-undef -Wno-unused-parameter %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|x64'">-Wno-deprecated -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow -Wno-undef -Wno-unused-parameter %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'">-Wno-deprecated -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow -Wno-undef -Wno-unused-parameter %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'">-Wno-deprecated -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow -Wno-undef -Wno-unused-parameter %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|Win32'">-Wno-deprecated -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow -Wno-undef -Wno-unused-parameter %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|x64'">-Wno-deprecated -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow -Wno-undef -Wno-unused-parameter %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|Win32'">-Wno-deprecated -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow -Wno-undef -Wno-unused-parameter %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Release|x64'">-Wno-deprecated -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow -Wno-undef -Wno-unused-parameter %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/utf-8 /w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/utf-8 /w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/utf-8 /w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/utf-8 /w44062 /w34191 /w44242 /w44244 /w44254 /w44263 /w14264 /w34265 /w44266 /w34287 /we4289 /w44296 /w14355 /w44365 /w14388 /w14426 /w44437 /w34444 /w44464 /w14545 /w14546 /w14547 /w14548 /w14549 /w14555 /w44574 /w34598 /w34599 /w14605 /w34619 /w34640 /w44654 /w34686 /w34738 /w14826 /we4861 /we4868 /w14905 /w14906 /w14928 /w14946 /w44986 /we4987 /w44988 /w15022 /w15023 /w15024 /w15025 /we5029 /w45031 /w45032</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|Win32'">-Wno-deprecated -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow -Wno-undef -Wno-unused-parameter %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Debug|x64'">-Wno-deprecated -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow -Wno-undef -Wno-unused-parameter %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|Win32'">-Wno-deprecated -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow -Wno-undef -Wno-unused-parameter %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_Release|x64'">-Wno-deprecated -Wno-language-extension-token -Wno-missing-noreturn -Wno-shift-sign-overflow -Wno-undef -Wno-unused-parameter %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Intel_Debug|Win32'">TurnOffAllWarnings</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Intel_Debug|x64'">TurnOffAllWarnings</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Intel_Release|Win32'">TurnOffAllWarnings</WarningLevel>

@@ -75,8 +75,8 @@ environment:
 ## /Create_Matrix
 
 ##====-----------------
+## Modify_Matrix
 matrix:
-  ## Remove_from_Matrix
   exclude:
   # Not supported by script / invalid combination:
   - image: Visual Studio 2013
@@ -95,12 +95,7 @@ matrix:
   # Reduce job count: Testing CMake generators for MSBuild.
   - BUILDSYSTEM: MSBuild
     platform: x86
-  # Reduce always failing job count: CMake generator limitations. GitHub #2.
-  - BUILDSYSTEM: MSBuild
-    Configuration: Release
-## /Remove_from_Matrix
 
-## Modify_Matrix
   allow_failures:
   # CMake generator limitations: MSBuild Failing error suppression. GitHub #2.
   - BUILDSYSTEM: MSBuild
@@ -109,9 +104,8 @@ matrix:
     configuration: Release
   # Try VS2019:
   - image: Visual Studio 2019
-    BUILDSYSTEM: MSBuild_Solution
-  - image: Visual Studio 2019
     BUILDSYSTEM: MSBuild
+
 # Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
 for:
