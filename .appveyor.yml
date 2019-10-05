@@ -14,9 +14,9 @@ cache:
 skip_branch_with_pr: true
 skip_commits:
   files:
-  - .git*
   - .codecov.yml
   - .editorconfig
+  - .git*
   - .travis.yml
   - .yamllint
   - docs/
@@ -138,8 +138,14 @@ for:
     - BUILDSYSTEM: MSBuild_Solution
   skip_commits:
     files:
+    - .codecov.yml
+    - .editorconfig
     - .git*
+    - .travis.yml
+    - .yamllint
     - docs/
+    - LICENSE
+    - '**/.clang-*'
     - '**/*.filters'
     - '**/*.md'
     - '**/*.sln'
@@ -151,9 +157,15 @@ for:
     - BUILDSYSTEM: MSBuild_Solution
   skip_commits:
     files:
+    - .codecov.yml
     - .git*
+    - .editorconfig
+    - .travis.yml
+    - .yamllint
     - cmake/
     - docs/
+    - LICENSE
+    - '**/.clang-*'
     - '**/CMakeLists.txt'
     - '**/*.cmake'
     - '**/*.filters'
