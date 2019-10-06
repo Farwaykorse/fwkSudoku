@@ -14,6 +14,7 @@
 
 #include <gsl/gsl>
 #include <bitset>
+#include <string>
 #include <vector>
 #include <utility>
 #include <cassert>

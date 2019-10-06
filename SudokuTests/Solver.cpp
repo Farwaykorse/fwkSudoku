@@ -34,6 +34,7 @@
 #include <array>
 #include <bitset>
 #include <vector>
+#include <algorithm> // std::copy
 #include <stdexcept>
 #include <type_traits>
 

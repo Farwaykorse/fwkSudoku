@@ -16,6 +16,7 @@
 #include "traits.h"
 
 #include <gsl/gsl>
+#include <vector>
 #include <algorithm>   // find_if
 #include <iterator>    // next
 #include <stdexcept>   // logic_error

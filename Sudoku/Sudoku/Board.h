@@ -20,6 +20,7 @@
 #include <gsl/gsl>
 #include <array>
 #include <initializer_list>
+#include <algorithm>
 #include <cassert>
 
 // Forward declarations
