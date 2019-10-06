@@ -149,7 +149,8 @@ template<int N, typename ItrT>
 	{
 		static_assert(traits::is_forward<ItrT>);
 	}
-	if (begin == end) return false;
+	if (begin == end)
+		return false;
 
 	const auto itr = begin + 1;
 	return std::all_of(
@@ -182,12 +183,14 @@ template<int N>
 
 // check: all in same col
 template<int N, typename ItrT>
-[[nodiscard]] inline constexpr bool is_same_col(const ItrT begin, const ItrT end) noexcept
+[[nodiscard]] inline constexpr bool
+	is_same_col(const ItrT begin, const ItrT end) noexcept
 {
 	{
 		static_assert(traits::is_forward<ItrT>);
 	}
-	if (begin == end) return false;
+	if (begin == end)
+		return false;
 
 	const auto itr = begin + 1;
 	return std::all_of(
@@ -220,12 +223,14 @@ template<int N>
 
 // check all in same block
 template<int N, typename ItrT>
-[[nodiscard]] inline constexpr bool is_same_block(const ItrT begin, const ItrT end) noexcept
+[[nodiscard]] inline constexpr bool
+	is_same_block(const ItrT begin, const ItrT end) noexcept
 {
 	{
 		static_assert(traits::is_forward<ItrT>);
 	}
-	if (begin == end) return false;
+	if (begin == end)
+		return false;
 
 	const auto itr = begin + 1;
 	return std::all_of(itr, end, [begin](Location<N> i) {
