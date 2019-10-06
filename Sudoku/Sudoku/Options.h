@@ -143,18 +143,19 @@ template<int E>
 [[nodiscard]] bool operator!=(Value const&, const Options<E>&) noexcept;
 
 template<int E>
-[[nodiscard]] Options<E> XOR(Options<E>& A, Options<E>& B) noexcept;
+[[nodiscard]] Options<E> XOR(Options<E> const& A, Options<E> const& B) noexcept;
 
 template<int E>
 [[nodiscard]] Options<E>
-	operator+(const Options<E>&, const Options<E>&) noexcept;
+	operator+(Options<E> const&, Options<E> const&) noexcept;
 template<int E>
 [[nodiscard]] Options<E>
-	operator-(const Options<E>&, const Options<E>&) noexcept;
+	operator-(Options<E> const&, Options<E> const&) noexcept;
 
 // return shared options
 template<int E>
-[[nodiscard]] Options<E> shared(Options<E>& A, Options<E>& B) noexcept;
+[[nodiscard]] Options<E>
+	shared(Options<E> const& A, Options<E> const& B) noexcept;
 
 //====--------------------------------------------------------------------====//
 
