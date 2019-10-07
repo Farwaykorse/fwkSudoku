@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.yamllint = .yamllint
 		CMakeLists.txt = CMakeLists.txt
 		msvc\CppCoreCheckAllRules.ruleset = msvc\CppCoreCheckAllRules.ruleset
+		CPPLINT.cfg = CPPLINT.cfg
 		README.md = README.md
 	EndProjectSection
 EndProject

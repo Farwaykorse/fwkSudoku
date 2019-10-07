@@ -538,6 +538,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-tidy" />
+    <None Include="CPPLINT.cfg" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="precompiled.h" />
