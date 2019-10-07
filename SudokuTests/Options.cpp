@@ -721,12 +721,12 @@ TEST(Options, mf_add_nocheck)
 	EXPECT_EQ(Opt.add_nocheck(Value{4}).DebugString(), "10010");
 
 	static_assert(noexcept(Opt.add_nocheck(Value{1})));
-	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{0});, "is_valid_option");
+	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{0}), "is_valid_option");
 #ifdef NDEBUG
 	EXPECT_EQ(Opt.DebugString(), "10011");
 	// EXPECT_NO_FATAL_FAILURE(Opt.add_nocheck(Value{5}));
 #else
-	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{5});, "is_valid_option");
+	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{5}), "is_valid_option");
 #endif // NDEBUG
 }
 TEST(Options, mf_set)
