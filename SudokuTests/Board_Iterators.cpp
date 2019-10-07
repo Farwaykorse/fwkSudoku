@@ -1697,9 +1697,9 @@ TEST(Board_Iterator, increment_by_integer)
 	test_elements TE{};
 	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
-#if not(defined(__ICL) && __ICL <= 1900)
-	constexpr Board<int, 2> cB      = std::array<int, 16>{
-        5, 6, 1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+#if !(defined(__ICL) && __ICL <= 1900)
+	constexpr Board<int, 2> cB = std::array<int, 16>{
+		5, 6, 1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 #endif // __ICL
 
 	if constexpr (

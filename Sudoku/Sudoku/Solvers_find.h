@@ -34,8 +34,8 @@ template<int N, typename SectionT>
 	list_where_option(SectionT, Value, ptrdiff_t rep_count = elem_size<N>);
 
 template<int N, typename ItrT>
-[[nodiscard]] auto list_where_option(
-	ItrT begin, ItrT end, Value, ptrdiff_t rep_count = 0);
+[[nodiscard]] auto
+	list_where_option(ItrT begin, ItrT end, Value, ptrdiff_t rep_count = 0);
 
 template<int N, typename SectionT, typename Options = Options<elem_size<N>>>
 [[nodiscard]] auto
@@ -75,7 +75,9 @@ template<int N, typename InItr_>
 // List locations in [section] where [value] is an option
 template<int N, typename SectionT>
 inline auto list_where_option(
-	const SectionT section, Value value, const ptrdiff_t rep_count /*= elem_size<N>*/)
+	const SectionT section,
+	Value value,
+	const ptrdiff_t rep_count /*= elem_size<N>*/)
 {
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
@@ -156,8 +158,7 @@ auto list_where_option(const SectionT section, const Options sample) noexcept(
 	std::vector<Location<N>> locations{};
 	locations.reserve(size_t{elem_size<N>});
 
-	const auto check_option = [sample](Options O) noexcept
-	{
+	const auto check_option = [sample](Options O) noexcept {
 		return sample == shared(O, sample);
 	};
 	const auto end = section.cend();
@@ -256,8 +257,7 @@ auto list_where_any_option(
 	std::vector<Location> locations{};
 	locations.reserve(sample.count_all());
 
-	const auto check_option = [sample](Options O) noexcept
-	{
+	const auto check_option = [sample](Options O) noexcept {
 		return is_answer_fast(O) ? false
 								 : !(shared(O, sample).count_all() == 0u);
 	};

@@ -78,12 +78,10 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 
 	int changes{};
 	const Options& item{board.at(loc)};
-	const auto mask = [](Options x) noexcept
-	{
+	const auto mask = [](Options x) noexcept {
 		x[Value{0}] = false;
 		return x;
-	}
-	(item);
+	}(item);
 
 	for (int i{}; i < full_size<N>; ++i)
 	{
@@ -143,12 +141,10 @@ constexpr int multi_option(
 	int changes{};                      // performance counter
 	const Options& item{board.at(loc)}; // input item, to match with
 	assert(item.count() == count);
-	const auto mask = [](Options x) noexcept
-	{
+	const auto mask = [](Options x) noexcept {
 		x[Value{0}] = false;
 		return x;
-	}
-	(item);
+	}(item);
 
 	const auto list = list_where_subset(board, item);
 

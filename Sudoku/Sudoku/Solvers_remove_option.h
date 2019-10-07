@@ -72,7 +72,8 @@ int remove_option(
 
 	if (item.test(value))
 	{ // repeated answer in section (faster here)
-		if (!is_option(item, value)) throw error::invalid_Board();
+		if (!is_option(item, value))
+			throw error::invalid_Board();
 
 		++changes;
 		const auto count = item.remove_option(value).count();
