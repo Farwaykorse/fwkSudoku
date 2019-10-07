@@ -32,7 +32,7 @@ class Options
 
 public:
 	Options() noexcept;
-	Options(int) = delete;                    // by bitset
+	Options(int) = delete; // NOLINT: implicit catch all that convert to bitset
 	explicit Options(const bitset&) noexcept; // 0th bit is last in input
 	explicit Options(bitset&&) noexcept;
 	explicit constexpr Options(Value) noexcept;
