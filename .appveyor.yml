@@ -24,6 +24,7 @@ skip_commits:
   - '**/.clang-*'
   - '**/*.filters'
   - '**/*.md'
+  - '**/CPPLINT.cfg'
 
 ##====--------------------------------------------------------------------====##
 ## Build Matrix Configuration
@@ -151,6 +152,7 @@ for:
     - '**/*.sln'
     - '**/*.vcxproj'
     - '**/*.vcxitems'
+    - '**/CPPLINT.cfg'
 -
   matrix:
     only:
@@ -170,6 +172,7 @@ for:
     - '**/*.cmake'
     - '**/*.filters'
     - '**/*.md'
+    - '**/CPPLINT.cfg'
   before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
   build_script:
