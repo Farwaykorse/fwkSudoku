@@ -51,11 +51,11 @@ TEST(Solver, unique_in_section)
 	// clang-format off
 	const std::array<char, 16> v1
 	{
-		// start	// after set_Value
-		0,2, 0,0,	// 1	2	3	4
-		4,0, 0,0,	// 4	3	1,2	1,2
-		0,1, 4,0,	// 2,3	1	4	2,3
-		0,0, 0,0	// 2,3	4	1,2	1,2,3
+		// start     // after set_Value
+		0, 2,  0, 0, // 1   2   3   4
+		4, 0,  0, 0, // 4   3   1,2 1,2
+		0, 1,  4, 0, // 2,3 1   4   2,3
+		0, 0,  0, 0  // 2,3 4   1,2 1,2,3
 	}; // clang-format on
 	Board<Options<4>, 2> B1;
 	ASSERT_EQ(B1[0][0], Options<4>{}) << "incorrect instantiation";
@@ -72,11 +72,11 @@ TEST(Solver, unique_in_section)
 	// clang-format off
 	const std::array<char, 16> v2
 	{
-		//start		// after set_Value
-		3,2, 0,0,	// 3	2	14	14		3	2	14	14
-		0,0, 0,0,	// 14	14	3	2		14	14	3	2
-		0,0, 2,0,	// 14	134	2	134		14	134	2	134
-		0,0, 0,0	// 12.4	134	134	134		2	134	14	134
+		//start   // after set_Value
+		3, 2,  0, 0, // 3    2   14  14  | 3  2   14 14
+		0, 0,  0, 0, // 14   14  3   2   | 14 14  3  2
+		0, 0,  2, 0, // 14   134 2   134 | 14 134 2  134
+		0, 0,  0, 0  // 12.4 134 134 134 | 2  134 14 134
 	}; // clang-format on
 
 	Board<Options<4>, 2> B2{}; // working copy
@@ -102,11 +102,11 @@ TEST(Solver, unique_in_section)
 	// clang-format off
 	const std::array<char, 16> v3
 	{
-		// start	// after set_Value
-		0,0, 1,0,	//
-		1,0, 0,0,	//
-		0,1, 0,0,	//
-		0,0, 0,0	//					//	0	0	0	1
+		// start     // after set_Value
+		0, 0,  1, 0, //
+		1, 0,  0, 0, //
+		0, 1,  0, 0, //
+		0, 0,  0, 0  // 0 0 0 1
 	}; // clang-format on
 	Board<Options<4>, 2> B3;
 	// reset
@@ -142,11 +142,11 @@ TEST(Solver, section_exclusive)
 		// clang-format off
 		const std::array<char, 16> v3
 		{
-			// start	// after set_Value
-			0,0, 1,0,	//
-			1,0, 0,0,	//
-			0,1, 0,0,	//
-			0,0, 0,0	//					//	0	0	0	1
+			// start     // after set_Value
+			0, 0,  1, 0, //
+			1, 0,  0, 0, //
+			0, 1,  0, 0, //
+			0, 0,  0, 0  // 0 0 0 1
 		}; // clang-format on
 		Board<Options<4>, 2> B3;
 		// reset
@@ -515,11 +515,11 @@ TEST(Solver, section_exclusive)
 	// clang-format off
 	constexpr std::array<char, 16> V1
 	{
-		// start	// after set_Value	// unique_block
-		0,0, 1,0,	//
-		1,0, 0,0,	//
-		0,1, 0,0,	//
-		0,0, 0,0	//					//	0	0	0	1
+		// start     // after set_Value // unique_block
+		0, 0,  1, 0, //
+		1, 0,  0, 0, //
+		0, 1,  0, 0, //
+		0, 0,  0, 0  //                 // 0 0 0 1
 	}; // clang-format on
 	Board<Options<4>, 2> B1{};
 	set_Value(B1, V1.cbegin(), V1.cend());
@@ -722,11 +722,11 @@ TEST(Solver, single_option)
 	// clang-format off
 	constexpr std::array<char, 16> v1
 	{
-		// start	// after set_Value
-		0,2, 0,0,	// 1	2	34	34
-		4,0, 0,0,	// 4	3	12	12
-		0,1, 0,0,	// 23	1	234	234
-		0,0, 0,0	// 23	4	123	123
+		// start     // after set_Value
+		0, 2,  0, 0, // 1  2 34  34
+		4, 0,  0, 0, // 4  3 12  12
+		0, 1,  0, 0, // 23 1 234 234
+		0, 0,  0, 0  // 23 4 123 123
 	}; // clang-format on
 	ASSERT_EQ(B3[1][0], Options<4>{}) << "incorrect instantiation";
 	EXPECT_NO_THROW(set_Value(B3, v1.cbegin(), v1.cend()));
