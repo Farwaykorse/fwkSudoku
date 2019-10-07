@@ -103,9 +103,9 @@ TEST(Solver, unique_in_section)
 	const std::array<char, 16> v3
 	{
 		// start	// after set_Value
-		0,0, 1,0,	// 
-		1,0, 0,0,	// 
-		0,1, 0,0,	// 
+		0,0, 1,0,	//
+		1,0, 0,0,	//
+		0,1, 0,0,	//
 		0,0, 0,0	//					//	0	0	0	1
 	}; // clang-format on
 	Board<Options<4>, 2> B3;
@@ -143,9 +143,9 @@ TEST(Solver, section_exclusive)
 		const std::array<char, 16> v3
 		{
 			// start	// after set_Value
-			0,0, 1,0,	// 
-			1,0, 0,0,	// 
-			0,1, 0,0,	// 
+			0,0, 1,0,	//
+			1,0, 0,0,	//
+			0,1, 0,0,	//
 			0,0, 0,0	//					//	0	0	0	1
 		}; // clang-format on
 		Board<Options<4>, 2> B3;
@@ -516,9 +516,9 @@ TEST(Solver, section_exclusive)
 	constexpr std::array<char, 16> V1
 	{
 		// start	// after set_Value	// unique_block
-		0,0, 1,0,	// 
-		1,0, 0,0,	// 
-		0,1, 0,0,	// 
+		0,0, 1,0,	//
+		1,0, 0,0,	//
+		0,1, 0,0,	//
 		0,0, 0,0	//					//	0	0	0	1
 	}; // clang-format on
 	Board<Options<4>, 2> B1{};
@@ -571,7 +571,7 @@ TEST(Solver, section_exclusive)
 	*	|	8	|		|	4	|	| 2 8 7	| 3 5 6	| 1 4 9	|
 	*	|_ _5_ _|_ _ _ _|_6_ _ _|	|_3_5_1_|_9_4_7_|_6_2_8_|
 	*/
-		0, 0, 0,	0, 0, 0,	0, 1, 2,	//	
+		0, 0, 0,	0, 0, 0,	0, 1, 2,	//
 		0, 0, 0,	0, 3, 5,	0, 0, 0,	//	. . .	2 . .
 		0, 0, 0,	6, 0, 0,	0, 7, 0,	//	. . .	. 1 12	0 . [3]
 
@@ -580,8 +580,8 @@ TEST(Solver, section_exclusive)
 		1, 0, 0,	0, 0, 0,	0, 0, 0,	//
 
 		0, 0, 0,	1, 2, 0,	0, 0, 0,
-		0, 8, 0,	0, 0, 0,	0, 4, 0,	//	
-		0, 5, 0,	0, 0, 0,	6, 0, 0		//	. 5 [1] |	
+		0, 8, 0,	0, 0, 0,	0, 4, 0,	//
+		0, 5, 0,	0, 0, 0,	6, 0, 0		//	. 5 [1] |
 	};
 	// clang-format on
 	Sudoku::Board<Options<9>, 3> B2{};

@@ -688,9 +688,9 @@ TEST(Solver, appearance_once)
 	constexpr std::array<char, 16> v1
 	{
 		// start	// after set_Value
-		0,0, 1,0,	// 
-		1,0, 0,0,	// 
-		0,1, 0,0,	// 
+		0,0, 1,0,	//
+		1,0, 0,0,	//
+		0,1, 0,0,	//
 		0,0, 0,0	//					//	0	0	0	1
 	}; // clang-format on
 	Board<Options<4>, 2> B1;
