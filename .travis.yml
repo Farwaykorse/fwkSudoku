@@ -311,10 +311,10 @@ jobs:
         packages:
         - clang-4.0
 
-  - name: AppleClang Xcode-11.0
+  - name: AppleClang Xcode-11.1
     stage: "Build & Test Latest"
     os: osx
-    osx_image: xcode11 # AppleClang 11.0.0
+    osx_image: xcode11.1 # AppleClang 11.0.0 same compiler and linker as Xcode11
     env:
     - Coverage: grcov
     workspaces:
@@ -326,7 +326,6 @@ jobs:
     osx_image: xcode10.3 # AppleClang 10.0.1 same compiler as Xcode10.2
     env:
     - CXX_vcpkg: g++-9 # present on xcode10.3
-    - Coverage: grcov
     - Coverage: grcov
     workspaces:
       use: OSX
@@ -422,10 +421,10 @@ before_install:
 - |
   # OSX: set Homebrew gcc to gcc@<version>, to prevent version upgrades
   if [[ "${TRAVIS_OSX_IMAGE:-}" &&
-    ${TRAVIS_OSX_IMAGE} =~ ^xcode(11|10\.[12])$
+    ${TRAVIS_OSX_IMAGE} =~ ^xcode(11(\.1)?|10\.[12])$
   ]]; then
     brew unlink gcc
-    if [[ ${TRAVIS_OSX_IMAGE} == "xcode11" ]]; then
+    if [[ ${TRAVIS_OSX_IMAGE} == xcode11* ]]; then
       brew link gcc@9
     else
       brew link gcc@8
