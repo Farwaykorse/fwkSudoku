@@ -204,9 +204,9 @@ init:
 - ps: |
     New-Item -ItemType Directory -Force ~\tools | pushd
     git clone https://github.com/Farwaykorse/AppVeyorHelpers.git --quiet
-    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.12.1
+    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.13.1
     popd
-- ps: Show-SystemInfo -LLVM -CMake -Curl
+- ps: Show-SystemInfo -LLVM -CMake -Curl -Path
 - ps: |
     if ("$env:BUILDSYSTEM" -eq "MSBuild_Solution") {
       $out += 'Build configuration: MSBuild projects'
