@@ -321,6 +321,7 @@ jobs:
       use: OSX
 
   - name: AppleClang Xcode-11.1
+    if: branch =~ /^(master|[Tt]ravis.*)$/
     stage: "Build & Test"
     os: osx
     osx_image: xcode11.1 # AppleClang 11.0.0 same compiler and linker as Xcode11
