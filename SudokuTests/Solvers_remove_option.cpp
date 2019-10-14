@@ -277,7 +277,7 @@ TEST(Solver, removeOptionSection1)
 	ASSERT_EQ(B1[3][1].count(), 4U);
 	ASSERT_NO_THROW(
 		remove_option_section(B1, B1.row(3), vL{L(3, 0)}, Value{3}));
-	EXPECT_EQ(B1[3][1].count(), 3u);
+	EXPECT_EQ(B1[3][1].count(), 3U);
 }
 TEST(Solver, removeOptionSection2)
 {
@@ -293,30 +293,30 @@ TEST(Solver, removeOptionSection2)
 	// row
 	ASSERT_NO_THROW(
 		remove_option_section(B, B.row(0), vL{L(0), L(1)}, vV{b{"00110"}}));
-	EXPECT_EQ(B[0][3].count(), 2u);
+	EXPECT_EQ(B[0][3].count(), 2U);
 	EXPECT_EQ(
 		remove_option_section(
 			B, B.row(1), vL{L(1, 0), L(1, 1)}, vV{b{"11000"}}),
 		4);
-	EXPECT_EQ(B[0][0].count(), 4u);
-	EXPECT_EQ(B[0][1].count(), 4u);
-	EXPECT_EQ(B[1][1].count(), 4u);
-	EXPECT_EQ(B[0][2].count(), 2u);
-	EXPECT_EQ(B[0][3].count(), 2u);
+	EXPECT_EQ(B[0][0].count(), 4U);
+	EXPECT_EQ(B[0][1].count(), 4U);
+	EXPECT_EQ(B[1][1].count(), 4U);
+	EXPECT_EQ(B[0][2].count(), 2U);
+	EXPECT_EQ(B[0][3].count(), 2U);
 	// col
 	B = cB; // reset
 	ASSERT_NO_THROW(
 		remove_option_section(B, B.col(0), vL{L(0), L(1, 0)}, vV{b{"01010"}}));
-	EXPECT_EQ(B[3][0].count(), 2u);
+	EXPECT_EQ(B[3][0].count(), 2U);
 	B = cB; // reset
 	EXPECT_EQ(
 		remove_option_section(
 			B, B.col(3), vL{L(0, 3), L(1, 3)}, vV{b{"01100"}}),
 		4);
-	EXPECT_EQ(B[0][3].count(), 4u);
-	EXPECT_EQ(B[1][3].count(), 4u);
-	EXPECT_EQ(B[2][3].count(), 2u);
-	EXPECT_EQ(B[3][3].count(), 2u);
+	EXPECT_EQ(B[0][3].count(), 4U);
+	EXPECT_EQ(B[1][3].count(), 4U);
+	EXPECT_EQ(B[2][3].count(), 2U);
+	EXPECT_EQ(B[3][3].count(), 2U);
 	B = cB; // reset
 	EXPECT_THROW(
 		remove_option_section(
@@ -326,20 +326,20 @@ TEST(Solver, removeOptionSection2)
 	B = cB; // reset
 	ASSERT_NO_THROW(
 		remove_option_section(B, B.block(0), vL{L(0), L(1)}, vV{b{"01010"}}));
-	EXPECT_EQ(B[1][0].count(), 2u);
+	EXPECT_EQ(B[1][0].count(), 2U);
 	EXPECT_EQ(
 		remove_option_section(
 			B, B.block(3), vL{L(2, 2), L(3, 1)}, vV{b{"10100"}}),
 		6);
-	EXPECT_EQ(B[0][0].count(), 4u);
-	EXPECT_EQ(B[0][1].count(), 4u);
-	EXPECT_EQ(B[1][0].count(), 2u);
-	EXPECT_EQ(B[1][1].count(), 2u);
+	EXPECT_EQ(B[0][0].count(), 4U);
+	EXPECT_EQ(B[0][1].count(), 4U);
+	EXPECT_EQ(B[1][0].count(), 2U);
+	EXPECT_EQ(B[1][1].count(), 2U);
 	// single ignore value
 	B = cB; // reset
-	ASSERT_EQ(B[3][1].count(), 4u);
+	ASSERT_EQ(B[3][1].count(), 4U);
 	ASSERT_NO_THROW(remove_option_section(B, B.row(3), vL{L(3, 0)}, vV{v{3}}));
-	EXPECT_EQ(B[3][1].count(), 3u);
+	EXPECT_EQ(B[3][1].count(), 3U);
 }
 TEST(Solver, removeOptionOutsideBlock)
 {
@@ -349,17 +349,17 @@ TEST(Solver, removeOptionOutsideBlock)
 	Board<Options<4>, 2> B1;
 
 	// row
-	ASSERT_EQ(B1[0][1].count(), 4u);
+	ASSERT_EQ(B1[0][1].count(), 4U);
 	ASSERT_NO_THROW(remove_option_outside_block(B1, B1.row(0), L(0), Value{1}));
 	EXPECT_EQ(remove_option_outside_block(B1, B1.row(1), L(1, 0), Value{3}), 2);
 	// col
 	ASSERT_NO_THROW(remove_option_outside_block(B1, B1.col(0), L(0), Value{1}));
 	EXPECT_EQ(remove_option_outside_block(B1, B1.col(1), L(0, 1), Value{2}), 2);
-	EXPECT_EQ(B1[0][2].count(), 3u);
-	EXPECT_EQ(B1[0][3].count(), 3u);
-	EXPECT_EQ(B1[2][0].count(), 3u);
-	EXPECT_EQ(B1[2][1].count(), 3u);
-	EXPECT_EQ(B1[0][1].count(), 4u);
+	EXPECT_EQ(B1[0][2].count(), 3U);
+	EXPECT_EQ(B1[0][3].count(), 3U);
+	EXPECT_EQ(B1[2][0].count(), 3U);
+	EXPECT_EQ(B1[2][1].count(), 3U);
+	EXPECT_EQ(B1[0][1].count(), 4U);
 	// block (no effect) disabled: static_assert
 	// ASSERT_NO_THROW(remove_option_outside_block(B1, B1.block(0),
 	// L(0), 1));

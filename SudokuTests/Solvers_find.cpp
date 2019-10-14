@@ -537,61 +537,61 @@ TEST(Solver, listWhereSubset)
 	// normal sample
 	Options item{B{"00111"}};
 	auto result = list_where_subset(board, item);
-	ASSERT_EQ(result.size(), 2u);
+	ASSERT_EQ(result.size(), 2U);
 	EXPECT_EQ(result[0], L{2});
 	EXPECT_EQ(result[1], L{3});
 	result = list_where_subset(board, board[L{0}]);
-	ASSERT_EQ(result.size(), 3u);
+	ASSERT_EQ(result.size(), 3U);
 	EXPECT_EQ(result[0], L{0});
 	EXPECT_EQ(result[2], L{3});
 	result = list_where_subset(board, Options{B{"00101"}});
-	EXPECT_EQ(result.size(), 1u);
+	EXPECT_EQ(result.size(), 1U);
 	// answer sample
 	result = list_where_subset(board, Options{Value{2}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 	// full sample
 	result = list_where_subset(board, Options());
-	ASSERT_EQ(result.size(), 14u); // 2 marked as answer
+	ASSERT_EQ(result.size(), 14U); // 2 marked as answer
 	EXPECT_EQ(result[0], L(0));
 	EXPECT_EQ(result[13], L(15));
 	// empty sample
 	result = list_where_subset(board, Options{B{"00000"}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 	result = list_where_subset(board, Options{B{"00001"}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 	// invalid sample (answer-bit set)
 	result = list_where_subset(board, Options{B{"11110"}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 
 	// only on the row:
 	item               = B{"00111"};
 	const auto section = board.row(L{0});
 	result             = list_where_subset<2>(section, item);
-	ASSERT_EQ(result.size(), 2u);
+	ASSERT_EQ(result.size(), 2U);
 	EXPECT_EQ(result[0], L{2});
 	EXPECT_EQ(result[1], L{3});
 	result = list_where_subset<2>(section, board[L{0}]);
-	ASSERT_EQ(result.size(), 3u);
+	ASSERT_EQ(result.size(), 3U);
 	EXPECT_EQ(result[0], L{0});
 	EXPECT_EQ(result[2], L{3});
 	result = list_where_subset<2>(section, Options{B{"00101"}});
-	EXPECT_EQ(result.size(), 1u);
+	EXPECT_EQ(result.size(), 1U);
 	// answer sample
 	result = list_where_subset<2>(section, Options{Value{2}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 	// full sample
 	result = list_where_subset<2>(section, Options());
-	ASSERT_EQ(result.size(), 4u); // 2 marked as answer
+	ASSERT_EQ(result.size(), 4U); // 2 marked as answer
 	EXPECT_EQ(result[0], L(0));
 	EXPECT_EQ(result[3], L(3));
 	// empty sample
 	result = list_where_subset<2>(section, Options{B{"00000"}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 	result = list_where_subset<2>(section, Options{B{"00001"}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 	// invalid sample (answer-bit set)
 	result = list_where_subset<2>(section, Options{B{"11110"}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 }
 
 TEST(Solver, listWhereAnyOption)

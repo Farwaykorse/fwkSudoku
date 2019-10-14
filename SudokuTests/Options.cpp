@@ -349,20 +349,20 @@ TEST(Options, mfCounting)
 	static_assert(noexcept(TE.O_1.count()));
 	static_assert(noexcept(TE.O_1.count_all()));
 	// clang-format off
-	EXPECT_EQ(TE.D_0.count(), 9u);
-	EXPECT_EQ(TE.D_0.count_all(), 9u);
-	EXPECT_EQ(TE.A_2.count(), 0u); // different
-	EXPECT_EQ(TE.A_2.count_all(), 1u); //
-	EXPECT_EQ(TE.O_1.count(), 1u);
-	EXPECT_EQ(TE.O_1.count_all(), 1u);
-	EXPECT_EQ(TE.O_2.count(), 2u);
-	EXPECT_EQ(TE.O_2.count_all(), 2u);
-	EXPECT_EQ(TE.O_3.count(), 3u);
-	EXPECT_EQ(TE.O_3.count_all(), 3u);
-	EXPECT_EQ(TE.E_1.count(), 0u);
-	EXPECT_EQ(TE.E_1.count_all(), 0u);
-	EXPECT_EQ(TE.E_2.count(), 0u);
-	EXPECT_EQ(TE.E_2.count_all(), 0u);
+	EXPECT_EQ(TE.D_0.count(), 9U);
+	EXPECT_EQ(TE.D_0.count_all(), 9U);
+	EXPECT_EQ(TE.A_2.count(), 0U); // different
+	EXPECT_EQ(TE.A_2.count_all(), 1U); //
+	EXPECT_EQ(TE.O_1.count(), 1U);
+	EXPECT_EQ(TE.O_1.count_all(), 1U);
+	EXPECT_EQ(TE.O_2.count(), 2U);
+	EXPECT_EQ(TE.O_2.count_all(), 2U);
+	EXPECT_EQ(TE.O_3.count(), 3U);
+	EXPECT_EQ(TE.O_3.count_all(), 3U);
+	EXPECT_EQ(TE.E_1.count(), 0U);
+	EXPECT_EQ(TE.E_1.count_all(), 0U);
+	EXPECT_EQ(TE.E_2.count(), 0U);
+	EXPECT_EQ(TE.E_2.count_all(), 0U);
 	// clang-format on
 	static_assert(noexcept(TE.O_1.all()));
 	EXPECT_TRUE(TE.D_1.all());
@@ -628,8 +628,8 @@ TEST(Options, mfChangeAll)
 	Options<4> TMP{};
 	ASSERT_EQ(TMP.size(), size_t{5}) << "Invalid object";
 	ASSERT_TRUE(TMP.all()) << "All options should be available";
-	EXPECT_EQ(TMP.count(), 4u);
-	EXPECT_EQ(TMP.count_all(), 4u);
+	EXPECT_EQ(TMP.count(), 4U);
+	EXPECT_EQ(TMP.count_all(), 4U);
 	ASSERT_EQ(TMP, TE.D_1) << "Default set D_1 is not complete";
 
 	static_assert(noexcept(TMP.clear()));
@@ -637,8 +637,8 @@ TEST(Options, mfChangeAll)
 	ASSERT_EQ(TMP, TE.D_1) << "Reset test data failed";
 	TMP.clear();
 	EXPECT_TRUE(TMP.is_empty());
-	EXPECT_EQ(TMP.count(), 0u);
-	EXPECT_EQ(TMP.count_all(), 0u);
+	EXPECT_EQ(TMP.count(), 0U);
+	EXPECT_EQ(TMP.count_all(), 0U);
 	TMP = TE.D_1;
 	EXPECT_TRUE(TMP.clear().is_empty());
 	static_assert(noexcept(TMP.reset()));
@@ -647,8 +647,8 @@ TEST(Options, mfChangeAll)
 	ASSERT_EQ(TMP, TE.E_1) << "Reset test data failed";
 	TMP.reset();
 	EXPECT_FALSE(TMP.is_empty());
-	EXPECT_EQ(TMP.count(), 4u);
-	EXPECT_EQ(TMP.count_all(), 4u);
+	EXPECT_EQ(TMP.count(), 4U);
+	EXPECT_EQ(TMP.count_all(), 4U);
 	EXPECT_TRUE(is_option(TMP, Value{2}));
 	EXPECT_TRUE(TMP.all());
 	TMP = TE.D_1;
@@ -658,10 +658,10 @@ TEST(Options, mfChangeAll)
 	ASSERT_TRUE(TMP.all()) << "Reset test data failed";
 	TMP.flip();
 	EXPECT_FALSE(TMP.is_empty());
-	EXPECT_EQ(TMP.count_all(), 0u);
+	EXPECT_EQ(TMP.count_all(), 0U);
 	TMP.flip();
 	EXPECT_TRUE(TMP.all());
-	EXPECT_EQ(TMP.count_all(), 4u);
+	EXPECT_EQ(TMP.count_all(), 4U);
 }
 TEST(Options, mfRemoveOption)
 {

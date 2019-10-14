@@ -846,10 +846,10 @@ TEST(BoardIterator, dereference)
 		static_assert(std::is_same_v<int const&, decltype(*A.crbegin())>);
 		static_assert(std::is_same_v<Options<4>&, decltype(*Opt.begin())>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
-		static_assert(cBoard.size() == 16u);
+		static_assert(cBoard.size() == 16U);
 		static_assert(cBoard.front() == 5);
 		static_assert(cBoard.back() == 20);
 
@@ -1062,10 +1062,10 @@ TEST(BoardIterator, postIncrement)
 			EXPECT_DEBUG_DEATH((decltype(A.rbegin())())++, "nullptr");
 			EXPECT_DEBUG_DEATH((decltype(A.crbegin())())++, "nullptr");
 		}
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
-		static_assert(cBoard.size() == 16u);
+		static_assert(cBoard.size() == 16U);
 		// *i++
 		EXPECT_TRUE(A.begin()++ == A.begin());
 		EXPECT_TRUE(A.rbegin()++ == A.rbegin());
@@ -1463,8 +1463,8 @@ TEST(BoardIterator, preDecrement)
 		static_assert(std::is_same_v<int const&, decltype(*(--A.cend()))>);
 
 		// Sanity-check
-		ASSERT_EQ(A.size(), 16u);
-		static_assert(cB.size() == 16u);
+		ASSERT_EQ(A.size(), 16U);
+		static_assert(cB.size() == 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A[0][1], 1);
 		ASSERT_EQ(A.back(), 15);
@@ -1567,7 +1567,7 @@ TEST(BoardIterator, postDecrement)
 		static_assert(std::is_same_v<int const&, decltype(*A.crbegin()--)>);
 
 		// Sanity-check
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A[0][1], 1);
 		ASSERT_EQ(A.back(), 15);
@@ -1730,7 +1730,7 @@ TEST(BoardIterator, incrementByInteger)
 		static_assert(
 			std::is_same_v<int const&, decltype(*(A.crbegin() += 12))>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
@@ -1875,7 +1875,7 @@ TEST(BoardIterator, incrementByInteger2)
 			std::is_same_v<decltype(A.begin()), decltype(A.begin() + 12)>);
 		static_assert(std::is_same_v<int&, decltype(*(A.begin() + 12))>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
@@ -1971,7 +1971,7 @@ TEST(BoardIterator, incrementByInteger3)
 			std::is_same_v<decltype(A.begin()), decltype(11 + A.begin())>);
 		static_assert(std::is_same_v<int&, decltype(*(9 + A.begin()))>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
@@ -2067,7 +2067,7 @@ TEST(BoardIterator, decrementByInteger)
 		static_assert(std::is_same_v<int&, decltype(*(A.rend() -= 12))>);
 		static_assert(std::is_same_v<int const&, decltype(*(A.crend() -= 12))>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
@@ -2204,7 +2204,7 @@ TEST(BoardIterator, decrementByInteger2)
 			std::is_same_v<decltype(A.begin()), decltype(A.end() - 12)>);
 		static_assert(std::is_same_v<int&, decltype(*(A.end() - 12))>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
@@ -2309,7 +2309,7 @@ TEST(BoardIterator, difference)
 		static_assert(
 			std::is_same_v<std::ptrdiff_t, decltype(A.rbegin() - A.rend())>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		EXPECT_EQ(A.begin() - A.begin(), 0);
 		EXPECT_EQ(A.end() - A.end(), 0);
 		EXPECT_EQ(A.end() - A.begin(), 16);
@@ -2397,10 +2397,10 @@ TEST(BoardIterator, directAccess)
 		static_assert(std::is_same_v<int&, decltype(A.rbegin()[12])>);
 		static_assert(std::is_same_v<int const&, decltype(A.crbegin()[12])>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
-		static_assert(cB.size() == 16u);
+		static_assert(cB.size() == 16U);
 
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.begin()[-1], ">= 0");
 		EXPECT_EQ(A.begin()[-0], 9);

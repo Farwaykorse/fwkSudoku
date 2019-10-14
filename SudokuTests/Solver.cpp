@@ -1104,7 +1104,7 @@ TEST(Solver, multiOption2)
 		}
 	};
 	empty_base();
-	ASSERT_EQ(board[L{10}].count_all(), 0u);
+	ASSERT_EQ(board[L{10}].count_all(), 0U);
 
 	//====----------------------------------------------------------------====//
 	{ // influence on an isolated row
@@ -1119,11 +1119,11 @@ TEST(Solver, multiOption2)
 		EXPECT_EQ(multi_option(board, L{1}), 0);    // all set
 		EXPECT_EQ(multi_option(board, L{0}, 4), 0); // as if all set
 		EXPECT_EQ(multi_option(board, L{0}), 4);    // 0,1 -> ans 4
-		EXPECT_EQ(board[L{0}].count(), 3u);
+		EXPECT_EQ(board[L{0}].count(), 3U);
 		EXPECT_TRUE(is_answer(board.at(L{1})));
 		EXPECT_TRUE(is_answer(board.at(L{1}), V{4}));
-		EXPECT_EQ(board[L{2}].count(), 2u);
-		EXPECT_EQ(board[L{3}].count(), 1u);
+		EXPECT_EQ(board[L{2}].count(), 2U);
+		EXPECT_EQ(board[L{3}].count(), 1U);
 		EXPECT_EQ(multi_option(board, L{0}), 0); // repeated
 		EXPECT_EQ(multi_option(board, L{1}), 0);
 		// specialization: dual option
@@ -1133,13 +1133,13 @@ TEST(Solver, multiOption2)
 		EXPECT_EQ(multi_option(board, L{2}), 7);
 		EXPECT_TRUE(is_answer(board.at(L{0}), V{3}));
 		EXPECT_TRUE(is_answer(board.at(L{1}), V{4}));
-		EXPECT_EQ(board[L{2}].count(), 2u);
-		EXPECT_EQ(board[L{3}].count(), 2u);
+		EXPECT_EQ(board[L{2}].count(), 2U);
+		EXPECT_EQ(board[L{3}].count(), 2U);
 		// specialization: single option
 		reset_row();
 		EXPECT_EQ(multi_option(board, L{3}), 10);
 		EXPECT_TRUE(is_answer(board.at(L{2}), V{1}));
-		EXPECT_EQ(board[L{3}].count(), 0u);
+		EXPECT_EQ(board[L{3}].count(), 0U);
 
 		// combined
 		reset_row();
@@ -1181,11 +1181,11 @@ TEST(Solver, multiOption2)
 		EXPECT_EQ(multi_option(board, L{2, 1}), 0);    // all set
 		EXPECT_EQ(multi_option(board, L{2, 0}, 4), 0); // as if all set
 		EXPECT_EQ(multi_option(board, L{2, 0}), 4);    // 0,1 -> ans 4
-		EXPECT_EQ(board[L(2, 0)].count(), 3u);
+		EXPECT_EQ(board[L(2, 0)].count(), 3U);
 		EXPECT_TRUE(is_answer(board.at(L{2, 1})));
 		EXPECT_TRUE(is_answer(board.at(L{2, 1}), V{4}));
-		EXPECT_EQ(board[L(2, 2)].count(), 2u);
-		EXPECT_EQ(board[L(2, 3)].count(), 1u);
+		EXPECT_EQ(board[L(2, 2)].count(), 2U);
+		EXPECT_EQ(board[L(2, 3)].count(), 1U);
 		EXPECT_EQ(multi_option(board, L{2, 0}), 0); // repeated
 		EXPECT_EQ(multi_option(board, L{2, 1}), 0);
 		// specialization: dual option
@@ -1195,13 +1195,13 @@ TEST(Solver, multiOption2)
 		EXPECT_EQ(multi_option(board, L{2, 2}), 7);
 		EXPECT_TRUE(is_answer(board.at(L{2, 0}), V{3}));
 		EXPECT_TRUE(is_answer(board.at(L{2, 1}), V{4}));
-		EXPECT_EQ(board[L(2, 2)].count(), 2u);
-		EXPECT_EQ(board[L(2, 3)].count(), 2u);
+		EXPECT_EQ(board[L(2, 2)].count(), 2U);
+		EXPECT_EQ(board[L(2, 3)].count(), 2U);
 		// specialization: single option
 		reset_col();
 		EXPECT_EQ(multi_option(board, L{2, 3}), 10);
 		EXPECT_TRUE(is_answer(board.at(L{2, 2}), V{1}));
-		EXPECT_EQ(board[L(2, 3)].count(), 0u);
+		EXPECT_EQ(board[L(2, 3)].count(), 0U);
 	}
 	//====----------------------------------------------------------------====//
 	{ // influence on an isolated block
@@ -1218,11 +1218,11 @@ TEST(Solver, multiOption2)
 		EXPECT_EQ(multi_option(board, L{LB{2, 1}}), 0);    // all set
 		EXPECT_EQ(multi_option(board, L{LB{2, 0}}, 4), 0); // as if all set
 		EXPECT_EQ(multi_option(board, L{LB{2, 0}}), 4);    // 0,1 -> ans 4
-		EXPECT_EQ(board[LB(2, 0)].count(), 3u);
+		EXPECT_EQ(board[LB(2, 0)].count(), 3U);
 		EXPECT_TRUE(is_answer(board.at(LB{2, 1})));
 		EXPECT_TRUE(is_answer(board.at(LB{2, 1}), V{4}));
-		EXPECT_EQ(board[LB(2, 2)].count(), 2u);
-		EXPECT_EQ(board[LB(2, 3)].count(), 1u);
+		EXPECT_EQ(board[LB(2, 2)].count(), 2U);
+		EXPECT_EQ(board[LB(2, 3)].count(), 1U);
 		EXPECT_EQ(multi_option(board, L{LB{2, 0}}), 0); // repeated
 		EXPECT_EQ(multi_option(board, L{LB{2, 1}}), 0);
 		// specialization: dual option
@@ -1232,13 +1232,13 @@ TEST(Solver, multiOption2)
 		EXPECT_EQ(multi_option(board, L{LB{2, 2}}), 7);
 		EXPECT_TRUE(is_answer(board.at(LB{2, 0}), V{3}));
 		EXPECT_TRUE(is_answer(board.at(LB{2, 1}), V{4}));
-		EXPECT_EQ(board[LB(2, 2)].count(), 2u);
-		EXPECT_EQ(board[LB(2, 3)].count(), 2u);
+		EXPECT_EQ(board[LB(2, 2)].count(), 2U);
+		EXPECT_EQ(board[LB(2, 3)].count(), 2U);
 		// specialization: single option
 		reset_block();
 		EXPECT_EQ(multi_option(board, L{LB{2, 3}}), 10);
 		EXPECT_TRUE(is_answer(board.at(LB{2, 2}), V{1}));
-		EXPECT_EQ(board[LB(2, 3)].count(), 0u);
+		EXPECT_EQ(board[LB(2, 3)].count(), 0U);
 	}
 	//====----------------------------------------------------------------====//
 	{ // combined removes
