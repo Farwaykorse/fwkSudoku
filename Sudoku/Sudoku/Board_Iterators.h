@@ -177,7 +177,7 @@ constexpr Board_iterator<T, N, C, is_reverse>&
 	return (*this);
 }
 template<typename T, int N, bool C, bool R>
-constexpr Board_iterator<T, N, C, R>
+constexpr Board_iterator<T, N, C, R> // NOLINTNEXTLINE(readability/casting)
 	Board_iterator<T, N, C, R>::operator++(int) noexcept
 { // post-increment
 	const Board_iterator pre{*this};
@@ -202,7 +202,7 @@ constexpr Board_iterator<T, N, C, is_reverse>&
 	return (*this);
 }
 template<typename T, int N, bool C, bool R>
-constexpr Board_iterator<T, N, C, R>
+constexpr Board_iterator<T, N, C, R> // NOLINTNEXTLINE(readability/casting)
 	Board_iterator<T, N, C, R>::operator--(int) noexcept
 { // post-decrement
 	const Board_iterator pre{*this};

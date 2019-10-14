@@ -17,6 +17,7 @@ skip_commits:
   - .codecov.yml
   - .editorconfig
   - .git*
+  - .github/
   - .travis.yml
   - .yamllint
   - docs/
@@ -24,6 +25,7 @@ skip_commits:
   - '**/.clang-*'
   - '**/*.filters'
   - '**/*.md'
+  - '**/CPPLINT.cfg'
 
 ##====--------------------------------------------------------------------====##
 ## Build Matrix Configuration
@@ -141,6 +143,7 @@ for:
     - .codecov.yml
     - .editorconfig
     - .git*
+    - .github/
     - .travis.yml
     - .yamllint
     - docs/
@@ -151,6 +154,7 @@ for:
     - '**/*.sln'
     - '**/*.vcxproj'
     - '**/*.vcxitems'
+    - '**/CPPLINT.cfg'
 -
   matrix:
     only:
@@ -159,6 +163,7 @@ for:
     files:
     - .codecov.yml
     - .git*
+    - .github/
     - .editorconfig
     - .travis.yml
     - .yamllint
@@ -170,6 +175,7 @@ for:
     - '**/*.cmake'
     - '**/*.filters'
     - '**/*.md'
+    - '**/CPPLINT.cfg'
   before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
   build_script:

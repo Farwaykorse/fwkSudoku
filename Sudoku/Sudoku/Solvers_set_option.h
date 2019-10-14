@@ -16,6 +16,7 @@
 #include "traits.h"
 
 #include <gsl/gsl>
+#include <vector>
 #include <algorithm>   // find_if
 #include <iterator>    // next
 #include <stdexcept>   // logic_error
@@ -55,7 +56,9 @@ int set_section_locals(
 // IF a possible option, Make [value] the answer for [loc]
 template<int N, typename Options>
 inline int set_Value(
-	Board<Options, N>& board, const Location<N> loc, const Value value)
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const Location<N> loc,
+	const Value value)
 {
 	assert(is_valid(loc));
 	assert(is_valid<N>(value));
@@ -76,7 +79,10 @@ inline int set_Value(
 
 // set board_ using a transferable container of values
 template<int N, typename Options, typename ItrT>
-int set_Value(Board<Options, N>& board, const ItrT begin, const ItrT end)
+int set_Value(
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const ItrT begin,
+	const ItrT end)
 {
 	{
 		static_assert(traits::is_forward<ItrT>);
@@ -120,7 +126,9 @@ int set_Value(Board<Options, N>& board, const ItrT begin, const ItrT end)
 // Set unique values in section as answer
 template<int N, typename Options, typename SectionT>
 inline int set_uniques(
-	Board<Options, N>& board, const SectionT section, const Options worker)
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const SectionT section,
+	const Options worker)
 {
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
@@ -144,7 +152,9 @@ inline int set_uniques(
 // Set unique value in section as answer
 template<int N, typename Options, typename SectionT>
 inline int set_unique(
-	Board<Options, N>& board, const SectionT section, const Value value)
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const SectionT section,
+	const Value value)
 {
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
@@ -170,7 +180,7 @@ inline int set_unique(
 // for [row/col] per value: if all in same block, remove from rest block
 template<int N, typename Options, typename SectionT>
 inline int set_section_locals(
-	Board<Options, N>& board,
+	Board<Options, N>& board, // NOLINT(runtime/references)
 	const SectionT section,
 	const int rep_count,
 	const Options values)
@@ -209,7 +219,7 @@ inline int set_section_locals(
 // per value in [block]: if all in same row/col, remove from rest row/col
 template<int N, typename Options>
 inline int set_section_locals(
-	Board<Options, N>& board,
+	Board<Options, N>& board, // NOLINT(runtime/references)
 	const Board_Section::Block<Options, N> block,
 	const int rep_count,
 	const Options values)

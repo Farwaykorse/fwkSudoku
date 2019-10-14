@@ -64,7 +64,7 @@ stages:
 - "Build & Test Latest" # First: (4) builds to run first
 - name: "Validation"
 - name: "Build & Test"  # If all succeed build rest
-  if: NOT (branch =~ /^[Aa]pp[Vv]eyor.*/)
+  if: NOT (branch =~ /^([Aa]pp[Vv]eyor|cpplint).*/)
 
 jobs:
   include:

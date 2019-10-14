@@ -199,7 +199,7 @@ constexpr Section_iterator<T, N, S, C, is_reverse>&
 	return (*this);
 }
 template<typename T, int N, Section S, bool C, bool R>
-constexpr Section_iterator<T, N, S, C, R>
+constexpr Section_iterator<T, N, S, C, R> // NOLINTNEXTLINE(readability/casting)
 	Section_iterator<T, N, S, C, R>::operator++(int) noexcept
 { // post-increment
 	const Section_iterator pre{*this};
@@ -224,7 +224,7 @@ constexpr Section_iterator<T, N, S, C, is_reverse>&
 	return (*this);
 }
 template<typename T, int N, Section S, bool C, bool R>
-constexpr Section_iterator<T, N, S, C, R>
+constexpr Section_iterator<T, N, S, C, R> // NOLINTNEXTLINE(readability/casting)
 	Section_iterator<T, N, S, C, R>::operator--(int) noexcept
 { // post-decrement
 	const Section_iterator pre{*this};

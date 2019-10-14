@@ -14,6 +14,7 @@
 
 #include <gsl/gsl>
 #include <bitset>
+#include <string>
 #include <vector>
 #include <utility>
 #include <cassert>
@@ -31,7 +32,7 @@ class Options
 
 public:
 	Options() noexcept;
-	Options(int) = delete;                    // by bitset
+	Options(int) = delete; // NOLINT: implicit catch all that convert to bitset
 	explicit Options(const bitset&) noexcept; // 0th bit is last in input
 	explicit Options(bitset&&) noexcept;
 	explicit constexpr Options(Value) noexcept;
@@ -142,18 +143,19 @@ template<int E>
 [[nodiscard]] bool operator!=(Value const&, const Options<E>&) noexcept;
 
 template<int E>
-[[nodiscard]] Options<E> XOR(Options<E>& A, Options<E>& B) noexcept;
+[[nodiscard]] Options<E> XOR(Options<E> const& A, Options<E> const& B) noexcept;
 
 template<int E>
 [[nodiscard]] Options<E>
-	operator+(const Options<E>&, const Options<E>&) noexcept;
+	operator+(Options<E> const&, Options<E> const&) noexcept;
 template<int E>
 [[nodiscard]] Options<E>
-	operator-(const Options<E>&, const Options<E>&) noexcept;
+	operator-(Options<E> const&, Options<E> const&) noexcept;
 
 // return shared options
 template<int E>
-[[nodiscard]] Options<E> shared(Options<E>& A, Options<E>& B) noexcept;
+[[nodiscard]] Options<E>
+	shared(Options<E> const& A, Options<E> const& B) noexcept;
 
 //====--------------------------------------------------------------------====//
 

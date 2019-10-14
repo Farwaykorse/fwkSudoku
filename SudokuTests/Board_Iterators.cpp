@@ -561,7 +561,7 @@ struct test_elements
 };
 
 //====--------------------------------------------------------------------====//
-TEST(Board_Iterator, construction)
+TEST(BoardIterator, construction)
 { // All iterator categories
 	using ::Sudoku::Board_iterator;
 	using ::Sudoku::const_Board_iterator;
@@ -671,7 +671,7 @@ TEST(Board_Iterator, construction)
 	}
 }
 
-TEST(Board_Iterator, assign_Location)
+TEST(BoardIterator, assignLocation)
 {
 	using L = Location<2>;
 
@@ -716,7 +716,7 @@ TEST(Board_Iterator, assign_Location)
 	}
 }
 
-TEST(Board_Iterator, Location)
+TEST(BoardIterator, Location)
 {
 	using ::Sudoku::Board_iterator;
 	using ::Sudoku::reverse_Board_iterator;
@@ -797,7 +797,7 @@ TEST(Board_Iterator, Location)
 	}
 }
 
-TEST(Board_Iterator, dereference)
+TEST(BoardIterator, dereference)
 {
 	test_elements TE{};
 	auto& A        = TE.A;
@@ -846,10 +846,10 @@ TEST(Board_Iterator, dereference)
 		static_assert(std::is_same_v<int const&, decltype(*A.crbegin())>);
 		static_assert(std::is_same_v<Options<4>&, decltype(*Opt.begin())>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
-		static_assert(cBoard.size() == 16u);
+		static_assert(cBoard.size() == 16U);
 		static_assert(cBoard.front() == 5);
 		static_assert(cBoard.back() == 20);
 
@@ -880,7 +880,7 @@ TEST(Board_Iterator, dereference)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, pre_increment)
+TEST(BoardIterator, preIncrement)
 { // All iterator categories
 	test_elements TE{};
 	auto& A                        = TE.A;
@@ -1017,7 +1017,7 @@ TEST(Board_Iterator, pre_increment)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, post_increment)
+TEST(BoardIterator, postIncrement)
 {
 	test_elements TE{};
 	auto& A                         = TE.A;
@@ -1062,10 +1062,10 @@ TEST(Board_Iterator, post_increment)
 			EXPECT_DEBUG_DEATH((decltype(A.rbegin())())++, "nullptr");
 			EXPECT_DEBUG_DEATH((decltype(A.crbegin())())++, "nullptr");
 		}
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
-		static_assert(cBoard.size() == 16u);
+		static_assert(cBoard.size() == 16U);
 		// *i++
 		EXPECT_TRUE(A.begin()++ == A.begin());
 		EXPECT_TRUE(A.rbegin()++ == A.rbegin());
@@ -1093,7 +1093,7 @@ TEST(Board_Iterator, post_increment)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, equal)
+TEST(BoardIterator, equal)
 { // All iterator categories
 	test_elements TE{};
 	auto& A        = TE.A;
@@ -1183,7 +1183,7 @@ TEST(Board_Iterator, equal)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, not_equal)
+TEST(BoardIterator, notEqual)
 { // InputIterator
 	test_elements TE{};
 	auto& A                         = TE.A;
@@ -1245,7 +1245,7 @@ TEST(Board_Iterator, not_equal)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, member_access)
+TEST(BoardIterator, memberAccess)
 { // input iterator category
 	test_elements TE{};
 	auto& A = TE.A;
@@ -1280,7 +1280,7 @@ TEST(Board_Iterator, member_access)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, InputIterator)
+TEST(BoardIterator, InputIterator)
 {
 	test_elements TE{};
 	auto& A        = TE.A;
@@ -1312,7 +1312,7 @@ TEST(Board_Iterator, InputIterator)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, OutputIterator)
+TEST(BoardIterator, OutputIterator)
 {
 	Board<int, 2> tmp{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	EXPECT_EQ(tmp[0][0], 0) << "requires InBetween";
@@ -1369,7 +1369,7 @@ TEST(Board_Iterator, OutputIterator)
 	r = tmp.end();
 }
 
-TEST(Board_Iterator, ForwardIterator)
+TEST(BoardIterator, ForwardIterator)
 {
 	test_elements TE{};
 	auto& A                    = TE.A;
@@ -1427,7 +1427,7 @@ TEST(Board_Iterator, ForwardIterator)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, pre_decrement)
+TEST(BoardIterator, preDecrement)
 { // operator--()
 	test_elements TE{};
 	auto& A                         = TE.A;
@@ -1463,8 +1463,8 @@ TEST(Board_Iterator, pre_decrement)
 		static_assert(std::is_same_v<int const&, decltype(*(--A.cend()))>);
 
 		// Sanity-check
-		ASSERT_EQ(A.size(), 16u);
-		static_assert(cB.size() == 16u);
+		ASSERT_EQ(A.size(), 16U);
+		static_assert(cB.size() == 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A[0][1], 1);
 		ASSERT_EQ(A.back(), 15);
@@ -1529,7 +1529,7 @@ TEST(Board_Iterator, pre_decrement)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, post_decrement)
+TEST(BoardIterator, postDecrement)
 {
 	test_elements TE{};
 	auto& A                         = TE.A;
@@ -1567,7 +1567,7 @@ TEST(Board_Iterator, post_decrement)
 		static_assert(std::is_same_v<int const&, decltype(*A.crbegin()--)>);
 
 		// Sanity-check
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A[0][1], 1);
 		ASSERT_EQ(A.back(), 15);
@@ -1637,7 +1637,7 @@ TEST(Board_Iterator, post_decrement)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, BidirectionalIterator)
+TEST(BoardIterator, BidirectionalIterator)
 {
 	test_elements TE{};
 	auto& A                    = TE.A;
@@ -1692,7 +1692,7 @@ TEST(Board_Iterator, BidirectionalIterator)
 }
 
 // NOLINTNEXTLINE(readability-function-size)
-TEST(Board_Iterator, increment_by_integer)
+TEST(BoardIterator, incrementByInteger)
 { // operator+=(int)
 	test_elements TE{};
 	auto& A                         = TE.A;
@@ -1730,7 +1730,7 @@ TEST(Board_Iterator, increment_by_integer)
 		static_assert(
 			std::is_same_v<int const&, decltype(*(A.crbegin() += 12))>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
@@ -1848,7 +1848,7 @@ TEST(Board_Iterator, increment_by_integer)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, increment_by_integer2)
+TEST(BoardIterator, incrementByInteger2)
 { // operator+(int)
 	test_elements TE{};
 	auto& A                         = TE.A;
@@ -1875,7 +1875,7 @@ TEST(Board_Iterator, increment_by_integer2)
 			std::is_same_v<decltype(A.begin()), decltype(A.begin() + 12)>);
 		static_assert(std::is_same_v<int&, decltype(*(A.begin() + 12))>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
@@ -1944,7 +1944,7 @@ TEST(Board_Iterator, increment_by_integer2)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, increment_by_integer3)
+TEST(BoardIterator, incrementByInteger3)
 { // operator+(int, iterator)
 	test_elements TE{};
 	auto& A                         = TE.A;
@@ -1971,7 +1971,7 @@ TEST(Board_Iterator, increment_by_integer3)
 			std::is_same_v<decltype(A.begin()), decltype(11 + A.begin())>);
 		static_assert(std::is_same_v<int&, decltype(*(9 + A.begin()))>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
@@ -2041,7 +2041,7 @@ TEST(Board_Iterator, increment_by_integer3)
 }
 
 // NOLINTNEXTLINE(readability-function-size)
-TEST(Board_Iterator, decrement_by_integer)
+TEST(BoardIterator, decrementByInteger)
 { // operator-=(int)
 	test_elements TE{};
 	auto& A = TE.A;
@@ -2067,7 +2067,7 @@ TEST(Board_Iterator, decrement_by_integer)
 		static_assert(std::is_same_v<int&, decltype(*(A.rend() -= 12))>);
 		static_assert(std::is_same_v<int const&, decltype(*(A.crend() -= 12))>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
@@ -2177,7 +2177,7 @@ TEST(Board_Iterator, decrement_by_integer)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, decrement_by_integer2)
+TEST(BoardIterator, decrementByInteger2)
 { // operator-(int)
 	test_elements TE{};
 	auto& A                         = TE.A;
@@ -2204,7 +2204,7 @@ TEST(Board_Iterator, decrement_by_integer2)
 			std::is_same_v<decltype(A.begin()), decltype(A.end() - 12)>);
 		static_assert(std::is_same_v<int&, decltype(*(A.end() - 12))>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
 
@@ -2272,7 +2272,7 @@ TEST(Board_Iterator, decrement_by_integer2)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, difference)
+TEST(BoardIterator, difference)
 { // operator-(iterator)
 	test_elements TE{};
 	auto& A        = TE.A;
@@ -2309,7 +2309,7 @@ TEST(Board_Iterator, difference)
 		static_assert(
 			std::is_same_v<std::ptrdiff_t, decltype(A.rbegin() - A.rend())>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		EXPECT_EQ(A.begin() - A.begin(), 0);
 		EXPECT_EQ(A.end() - A.end(), 0);
 		EXPECT_EQ(A.end() - A.begin(), 16);
@@ -2371,7 +2371,7 @@ TEST(Board_Iterator, difference)
 }
 
 // NOLINTNEXTLINE(readability-function-size)
-TEST(Board_Iterator, direct_access)
+TEST(BoardIterator, directAccess)
 { // & operator[](int)
 	test_elements TE{};
 	auto& A                    = TE.A;
@@ -2397,10 +2397,10 @@ TEST(Board_Iterator, direct_access)
 		static_assert(std::is_same_v<int&, decltype(A.rbegin()[12])>);
 		static_assert(std::is_same_v<int const&, decltype(A.crbegin()[12])>);
 
-		ASSERT_EQ(A.size(), 16u);
+		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
-		static_assert(cB.size() == 16u);
+		static_assert(cB.size() == 16U);
 
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.begin()[-1], ">= 0");
 		EXPECT_EQ(A.begin()[-0], 9);
@@ -2521,7 +2521,7 @@ TEST(Board_Iterator, direct_access)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, comparison)
+TEST(BoardIterator, comparison)
 {
 	test_elements TE{};
 	auto& A        = TE.A;
@@ -2693,7 +2693,7 @@ TEST(Board_Iterator, comparison)
 		ADD_FAILURE();
 }
 
-TEST(Board_Iterator, RandomAccessIterator)
+TEST(BoardIterator, RandomAccessIterator)
 {
 	using typeT = Board<int, 2>;
 	using diff  = std::iterator_traits<typeT::iterator>::difference_type;
@@ -2736,7 +2736,7 @@ int range_for_sum(T structure)
 	return total;
 }
 
-TEST(Board_Iterator, IteratorLoop)
+TEST(BoardIterator, IteratorLoop)
 {
 	Board<int, 2> A{9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	const Board<int, 2> cA{

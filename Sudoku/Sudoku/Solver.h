@@ -30,7 +30,9 @@ namespace Sudoku
 //	Check if only one option remaining
 //	IF true: process answer
 template<int N, typename Options>
-inline int single_option(Board<Options, N>& board, const Location<N> loc)
+inline int single_option(
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const Location<N> loc)
 {
 	assert(is_valid(loc));
 
@@ -45,7 +47,9 @@ inline int single_option(Board<Options, N>& board, const Location<N> loc)
 //	Remove option from rest of row, col and block
 template<int N, typename Options>
 inline int single_option(
-	Board<Options, N>& board, const Location<N> loc, const Value value)
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const Location<N> loc,
+	const Value value)
 {
 	{
 		assert(is_valid(loc));
@@ -64,7 +68,9 @@ inline int single_option(
 // find exact pair in section:
 // remove form other elements in section
 template<int N, typename Options>
-inline int dual_option(Board<Options, N>& board, const Location<N> loc)
+inline int dual_option(
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const Location<N> loc)
 {
 	using Location = Location<N>;
 	{
@@ -113,7 +119,9 @@ inline int dual_option(Board<Options, N>& board, const Location<N> loc)
 // Find subsets in any related sections,
 // and remove the values from rest of these sections.
 template<int N, typename Options>
-inline int multi_option(Board<Options, N>& board, const Location<N> loc)
+inline int multi_option(
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const Location<N> loc)
 {
 	assert(is_valid(loc));
 
@@ -124,7 +132,9 @@ inline int multi_option(Board<Options, N>& board, const Location<N> loc)
 // and remove the values from rest of these sections.
 template<int N, typename Options>
 constexpr int multi_option(
-	Board<Options, N>& board, const Location<N> loc, const size_t count)
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const Location<N> loc,
+	const size_t count)
 {
 	assert(is_valid(loc));
 
@@ -171,7 +181,9 @@ constexpr int multi_option(
 
 // Solver: Find options appearing only once in a section and set as answer
 template<int N, typename Options, typename SectionT>
-inline int unique_in_section(Board<Options, N>& board, const SectionT section)
+inline int unique_in_section(
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const SectionT section)
 {
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
@@ -184,7 +196,9 @@ inline int unique_in_section(Board<Options, N>& board, const SectionT section)
 //	[row/col] IF all in same block -> remove from rest of block
 //	[block] IF all in same row/col -> remove from rest of row/col
 template<int N, typename Options, typename SectionT>
-inline int section_exclusive(Board<Options, N>& board, const SectionT section)
+inline int section_exclusive(
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const SectionT section)
 {
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
