@@ -281,7 +281,7 @@ TEST(Location, Construction)
 	EXPECT_NO_THROW([[maybe_unused]] Location<3> c3(c1));
 }
 
-TEST(Location, Construction_result)
+TEST(Location, ConstructionResult)
 { // depends on Location::element()
 	static_assert(noexcept(Location<3>(12).element()));
 	static_assert(Location<3>(12).element() == 12);
@@ -318,7 +318,7 @@ TEST(Location, Construction_result)
 	static_assert(Location<3>{c3}.element() == 6);
 }
 
-TEST(Location, Construction_Block)
+TEST(Location, ConstructionBlock)
 { // depends on Location
 	static_assert(noexcept(Location_Block<3>()));
 	static_assert(noexcept(Location_Block<3>{}));
@@ -373,7 +373,7 @@ TEST(Location, Construction_Block)
 	ASSERT_NO_THROW([[maybe_unused]] Location<3> X(Location_Block<3>(1, 3)));
 }
 
-TEST(Location, Construction_result_Block)
+TEST(Location, ConstructionResultBlock)
 { // check if initialized to correct value
 	static_assert(noexcept(Location_Block<3>(1, 4)));
 	static_assert(noexcept(Location_Block<3>(1, 4).element()));
@@ -601,7 +601,7 @@ TEST(Location, Properties)
 	}
 }
 
-TEST(Location, Properties_Block)
+TEST(Location, PropertiesBlock)
 {
 	using LB = Location_Block<3>;
 
@@ -815,7 +815,7 @@ TEST(Location, Comparisson)
 	EXPECT_FALSE(Loc(8) > Loc(19));
 }
 
-TEST(Location, Comparisson_Block)
+TEST(Location, ComparissonBlock)
 {
 	using LB = Location_Block<3>;
 
@@ -902,7 +902,7 @@ TEST(Location, Comparisson_Block)
 	static_assert(LB(5, 4) > LB(2, 4));
 }
 
-TEST(Location, Comparisson_Location_and_Block)
+TEST(Location, ComparissonLocationAndBlock)
 { // Compare Location with Location_Block
 	using LB = Location_Block<3>;
 
@@ -932,7 +932,7 @@ TEST(Location, Comparisson_Location_and_Block)
 }
 
 //===----------------------------------------------------------------------===//
-TEST(Location_Utilities, Size_definitions)
+TEST(LocationUtilities, SizeDefinitions)
 {
 	using ::Sudoku::base_size;
 	using ::Sudoku::elem_size;
@@ -974,7 +974,7 @@ TEST(Location_Utilities, Size_definitions)
 	::Sudoku::valid_dimensions<4>();
 }
 
-TEST(Location_Utilities, is_valid)
+TEST(LocationUtilities, isValid)
 {
 	using ::Sudoku::is_valid;
 
@@ -1023,7 +1023,7 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_FALSE(is_valid(list2{L(-6)}));
 }
 
-TEST(Location_Utilities, is_valid_size)
+TEST(LocationUtilities, isValidSize)
 {
 	using ::Sudoku::is_valid_size;
 
@@ -1062,7 +1062,7 @@ TEST(Location_Utilities, is_valid_size)
 	EXPECT_FALSE(is_valid_size<2>(2, 4));
 }
 
-TEST(Location_Utilities, is_same_section)
+TEST(LocationUtilities, isSameSection)
 {
 	using ::Sudoku::is_same_row;
 	using ::Sudoku::is_same_col;
@@ -1242,7 +1242,7 @@ TEST(Location_Utilities, is_same_section)
 	EXPECT_FALSE(intersect_block(B1.col(8), L(2)));
 }
 
-TEST(Location_Utilities, get_same_section)
+TEST(LocationUtilities, getSameSection)
 {
 	std::vector<Location<3>> list1{};
 	// std::vector<Location<3>> list2{};

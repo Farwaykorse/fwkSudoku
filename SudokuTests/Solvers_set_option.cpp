@@ -40,7 +40,7 @@ using ::Sudoku::Location;
 using ::Sudoku::Options;
 using ::Sudoku::Value;
 
-TEST(Solver, set_Value)
+TEST(Solver, setValue)
 {
 	using ::Sudoku::set_Value;
 	using L = Location<2>;
@@ -107,7 +107,7 @@ TEST(Solver, set_Value)
 	EXPECT_EQ(board[1][2].count_all(), 1U);
 }
 
-TEST(Solver, set_Value_vector)
+TEST(Solver, setValueVector)
 {
 	using ::Sudoku::set_Value;
 	{
@@ -154,10 +154,10 @@ TEST(Solver, set_Value_vector)
 		// clang-format off
 		constexpr std::array<Value, 16> v1
 		{
-			V{0},V{2}, V{0},V{0},
-			V{4},V{0}, V{0},V{0},
-			V{0},V{1}, V{4},V{0},
-			V{0},V{0}, V{0},V{0}
+			V{0}, V{2},  V{0}, V{0},
+			V{4}, V{0},  V{0}, V{0},
+			V{0}, V{1},  V{4}, V{0},
+			V{0}, V{0},  V{0}, V{0}
 		}; // clang-format on
 		Board<Options<4>, 2> B2;
 		EXPECT_EQ(set_Value(B2, v1.cbegin(), v1.cend()), 49);
@@ -177,11 +177,11 @@ TEST(Solver, set_Value_vector)
 	{      // using int as input
 		// clang-format off
 		constexpr std::array<char, 16> v1
-		{	// start	// after set_Value
-			0,2, 0,0,	// 1	2	3	4
-			4,0, 0,0,	// 4	3	1,2	1,2
-			0,1, 4,0,	// 2,3	1	4	2,3
-			0,0, 0,0	// 2,3	4	1,2	1,2,3
+		{	// start     // after set_Value
+			0, 2,  0, 0, // 1  2 3  4
+			4, 0,  0, 0, // 4  3 12 12
+			0, 1,  4, 0, // 23 1 4  23
+			0, 0,  0, 0  // 23 4 12 123
 		}; // clang-format on
 		// Copy data from the array
 		Board<Options<4>, 2> B2;
@@ -208,7 +208,7 @@ TEST(Solver, set_Value_vector)
 }
 
 // NOLINTNEXTLINE(readability-function-size)
-TEST(Solver, set_section_locals)
+TEST(Solver, setSectionLocals)
 {
 	using ::Sudoku::set_section_locals;
 	// called by: section_exclusive
@@ -509,7 +509,7 @@ TEST(Solver, set_section_locals)
 	EXPECT_TRUE(B3[8][1].all());
 }
 
-TEST(Solver, set_unique)
+TEST(Solver, setUnique)
 {
 	using ::Sudoku::set_unique;
 	using L = Location<2>;
@@ -552,7 +552,7 @@ TEST(Solver, set_unique)
 		set_unique(board, board.row(2), Value{4}), "std::find_if");
 }
 
-TEST(Solver, set_uniques)
+TEST(Solver, setUniques)
 {
 	using ::Sudoku::appearance_once;
 	using ::Sudoku::set_uniques;
@@ -638,7 +638,7 @@ TEST(Solver, set_uniques)
 	EXPECT_FALSE(is_option(B2[3][0], Value{1}));
 }
 
-TEST(Solver, deathtest_set_option)
+TEST(Solver, deathtestSetOption)
 {
 	Board<Options<4>, 2> B{};
 

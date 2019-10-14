@@ -14,9 +14,10 @@ cache:
 skip_branch_with_pr: true
 skip_commits:
   files:
-  - .git*
   - .codecov.yml
   - .editorconfig
+  - .git*
+  - .github/
   - .travis.yml
   - .yamllint
   - docs/
@@ -24,6 +25,7 @@ skip_commits:
   - '**/.clang-*'
   - '**/*.filters'
   - '**/*.md'
+  - '**/CPPLINT.cfg'
 
 ##====--------------------------------------------------------------------====##
 ## Build Matrix Configuration
@@ -131,26 +133,42 @@ for:
     - BUILDSYSTEM: MSBuild_Solution
   skip_commits:
     files:
+    - .codecov.yml
+    - .editorconfig
     - .git*
+    - .github/
+    - .travis.yml
+    - .yamllint
     - docs/
+    - LICENSE
+    - '**/.clang-*'
     - '**/*.filters'
     - '**/*.md'
     - '**/*.sln'
     - '**/*.vcxproj'
     - '**/*.vcxitems'
+    - '**/CPPLINT.cfg'
 -
   matrix:
     only:
     - BUILDSYSTEM: MSBuild_Solution
   skip_commits:
     files:
+    - .codecov.yml
     - .git*
+    - .github/
+    - .editorconfig
+    - .travis.yml
+    - .yamllint
     - cmake/
     - docs/
+    - LICENSE
+    - '**/.clang-*'
     - '**/CMakeLists.txt'
     - '**/*.cmake'
     - '**/*.filters'
     - '**/*.md'
+    - '**/CPPLINT.cfg'
   before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
   build_script:
@@ -208,9 +226,9 @@ init:
 - ps: |
     New-Item -ItemType Directory -Force ~\tools | pushd
     git clone https://github.com/Farwaykorse/AppVeyorHelpers.git --quiet
-    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.12.1
+    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.13.1
     popd
-- ps: Show-SystemInfo -LLVM -CMake -Curl
+- ps: Show-SystemInfo -LLVM -CMake -Curl -Path
 - ps: |
     if ("$env:BUILDSYSTEM" -eq "MSBuild_Solution") {
       $out += 'Build configuration: MSBuild projects'

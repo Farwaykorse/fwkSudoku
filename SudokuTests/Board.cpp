@@ -51,7 +51,8 @@ namespace compiletime
 	// will trigger compile-time errors
 
 	// Type properties
-	using typeT = Board<int, 3>;
+	using typeT  = Board<int, 3>;
+	using arrayT = std::array<int, 81>;
 
 	// Composite Type Categories
 	static_assert(not std::is_fundamental_v<typeT>);
@@ -116,9 +117,14 @@ namespace compiletime
 	static_assert(not std::has_virtual_destructor_v<typeT>); // --
 
 #if not(defined(__ICL) && __ICL <= 1900)
-	static_assert(std::is_swappable_v<typeT>);         // C++17
-	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
-#endif                                                 // __ICL
+	static_assert(std::is_swappable_v<typeT>);                          // C++17
+	static_assert(std::is_nothrow_swappable_v<typeT>);                  // C++17
+	static_assert(not std::is_swappable_with_v<typeT, arrayT>);         // C++17
+	static_assert(not std::is_nothrow_swappable_with_v<typeT, arrayT>); // C++17
+	static_assert(not std::is_swappable_with_v<typeT, Options<9>>);     // C++17
+	static_assert(
+		not std::is_nothrow_swappable_with_v<typeT, Options<9>>); // C++17
+#endif
 
 	// is_constructible from different types
 	// set to non-default value at initialization
@@ -131,6 +137,8 @@ namespace compiletime
 	static_assert(std::is_constructible_v<Board<Options<9>, 3>, Options<9>>);
 	static_assert(
 		not std::is_nothrow_constructible_v<Board<Options<9>, 3>, Options<9>>);
+	static_assert(std::is_constructible_v<typeT, arrayT>);
+	static_assert(not std::is_nothrow_constructible_v<typeT, arrayT>);
 	static_assert(std::is_constructible_v<
 				  Board<Options<9>, 3>,
 				  std::array<Options<9>, 81>>);
@@ -153,20 +161,35 @@ namespace compiletime
 				  Board<Options<3>, 3>,
 				  std::initializer_list<Options<3>>>);
 
+	// Assign to Board:
 	static_assert(std::is_assignable_v<Board<int, 3>, Board<int, 3>>);
+	static_assert(std::is_assignable_v<typeT, arrayT>);
+	static_assert(std::is_assignable_v<typeT, std::array<int, 81>>);
+	static_assert(std::is_assignable_v<Board<int, 2>, std::array<int, 16>>);
+	static_assert(not std::is_assignable_v<typeT, std::array<int, 12>>);
+	// Assign from Board:
+	static_assert(not std::is_assignable_v<arrayT, typeT>);
 	static_assert(not std::is_assignable_v<Board<int, 3>, int>);
 	static_assert(not std::is_assignable_v<typeT, Location_Block<3>>);
 	static_assert(not std::is_assignable_v<typeT, int>);
+	static_assert(not std::is_assignable_v<int, typeT>);
 	// shouldn't be assignable from int, prevent with explicit!!
+	static_assert(std::is_assignable_v<typeT, arrayT>);
 	static_assert(std::is_assignable_v<typeT, std::initializer_list<int>>);
 	static_assert(std::is_assignable_v<
 				  Board<Options<3>, 3>,
 				  std::initializer_list<Options<3>>>);
-#if not(defined(__ICL) && __ICL <= 1900)
-	static_assert(not std::is_swappable_with_v<typeT, Options<9>>); // C++17
-	static_assert(
-		not std::is_nothrow_swappable_with_v<typeT, Options<9>>); // C++17
-#endif                                                            // __ICL
+
+	// Implicit conversion to Board: (prefer all negative)
+	static_assert(std::is_convertible_v<arrayT, typeT>);
+	static_assert(std::is_convertible_v<std::array<int, 81>, typeT>);
+	static_assert(std::is_convertible_v<std::initializer_list<int>, typeT>);
+	static_assert(not std::is_convertible_v<std::array<int, 12>, typeT>);
+	static_assert(not std::is_convertible_v<std::array<Options<9>, 81>, typeT>);
+	static_assert(not std::is_convertible_v<typeT, std::initializer_list<int>>);
+	// Implicit conversion from Board:
+	static_assert(not std::is_convertible_v<typeT, arrayT>);
+	static_assert(not std::is_convertible_v<typeT, std::array<Options<9>, 81>>);
 
 	//====----------------------------------------------------------------====//
 	// Member types
@@ -269,7 +292,7 @@ TEST(Board, Construction)
 	}
 }
 
-TEST(Board, default_values)
+TEST(Board, defaultValues)
 {
 	// for int, all 0
 	Board<int, 2> B_int{};
@@ -295,7 +318,7 @@ TEST(Board, size)
 	EXPECT_EQ(Board<int>::size(), size_t{81});
 	EXPECT_EQ((Board<int, 2>::size()), size_t{16});
 
-	// max_size
+	// Max_size
 	static_assert(noexcept(Board<int>::max_size()));
 	static_assert(noexcept(Board<int, 2>::max_size()));
 	static_assert(noexcept(Board<int, 3>::max_size()));
@@ -315,7 +338,7 @@ TEST(Board, empty)
 	static_assert(!(Board<int, 2>::empty()));
 }
 
-TEST(Board, operator_equal)
+TEST(Board, operatorEqual)
 {
 	static_assert(not noexcept(Board<int>() == Board<int>(3)));
 	// assuming the used algorithms only throw `std::bad_alloc`
@@ -342,7 +365,7 @@ TEST(Board, operator_equal)
 		(Board<Options<4>, 2>()));
 }
 
-TEST(Board_Utilities, operator_not_equal)
+TEST(BoardUtilities, operatorNotEqual)
 {
 	static_assert(not noexcept(Board<int>() != Board<int>(3)));
 	// Board == Board => ...
@@ -362,7 +385,7 @@ TEST(Board_Utilities, operator_not_equal)
 	EXPECT_FALSE((Board<Options<4>, 2>()) != (Board<Options<4>, 2>()));
 }
 
-TEST(Board, access_front_back)
+TEST(Board, accessFrontBack)
 {
 	constexpr std::array<int, 16> list{
 		5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 7};
@@ -397,7 +420,7 @@ TEST(Board, access_front_back)
 	EXPECT_EQ(B.back(), 89);
 }
 
-TEST(Board, access_checked)
+TEST(Board, accessChecked)
 {
 	using ::Sudoku::error::invalid_Location;
 
@@ -504,7 +527,7 @@ TEST(Board, access_checked)
 	EXPECT_EQ(cB.at(3, 1), 13);
 }
 
-TEST(Board, access_unchecked)
+TEST(Board, accessUnchecked)
 {
 	Board<int, 2> B{};
 	constexpr Board<int, 2> cB = std::array<int, 16>{

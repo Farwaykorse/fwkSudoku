@@ -56,12 +56,14 @@ public:
 	// Constructors
 	constexpr Board_iterator() noexcept
 	{ // defaults to [r]begin()
-		if constexpr (is_reverse) elem_ = full_size<N> - 1;
+		if constexpr (is_reverse)
+			elem_ = full_size<N> - 1;
 	}
 	explicit constexpr Board_iterator(gsl::not_null<owner_type*> owner) noexcept
 		: board_(owner)
 	{ // defaults to [r]begin()
-		if constexpr (is_reverse) elem_ = (full_size<N> - 1);
+		if constexpr (is_reverse)
+			elem_ = (full_size<N> - 1);
 	}
 	explicit constexpr Board_iterator(
 		gsl::not_null<owner_type*> owner, Location loc) noexcept
@@ -175,8 +177,8 @@ constexpr Board_iterator<T, N, C, is_reverse>&
 	return (*this);
 }
 template<typename T, int N, bool C, bool R>
-constexpr Board_iterator<T, N, C, R> Board_iterator<T, N, C, R>::
-	operator++(int) noexcept
+constexpr Board_iterator<T, N, C, R> // NOLINTNEXTLINE(readability/casting)
+	Board_iterator<T, N, C, R>::operator++(int) noexcept
 { // post-increment
 	const Board_iterator pre{*this};
 	operator++();
@@ -200,8 +202,8 @@ constexpr Board_iterator<T, N, C, is_reverse>&
 	return (*this);
 }
 template<typename T, int N, bool C, bool R>
-constexpr Board_iterator<T, N, C, R> Board_iterator<T, N, C, R>::
-	operator--(int) noexcept
+constexpr Board_iterator<T, N, C, R> // NOLINTNEXTLINE(readability/casting)
+	Board_iterator<T, N, C, R>::operator--(int) noexcept
 { // post-decrement
 	const Board_iterator pre{*this};
 	operator--();
@@ -209,8 +211,8 @@ constexpr Board_iterator<T, N, C, R> Board_iterator<T, N, C, R>::
 }
 template<typename T, int N, bool C, bool is_reverse>
 constexpr Board_iterator<T, N, C, is_reverse>&
-	Board_iterator<T, N, C, is_reverse>::
-		operator+=(const difference_type offset) noexcept
+	Board_iterator<T, N, C, is_reverse>::operator+=(
+		const difference_type offset) noexcept
 {
 	assert(offset == 0 || board_ != nullptr);
 	if constexpr (is_reverse)
@@ -229,8 +231,8 @@ constexpr Board_iterator<T, N, C, is_reverse>&
 }
 template<typename T, int N, bool C, bool is_reverse>
 constexpr Board_iterator<T, N, C, is_reverse>&
-	Board_iterator<T, N, C, is_reverse>::
-		operator-=(const difference_type offset) noexcept
+	Board_iterator<T, N, C, is_reverse>::operator-=(
+		const difference_type offset) noexcept
 {
 	return operator+=(-offset);
 }

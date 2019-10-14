@@ -123,6 +123,7 @@ constexpr Value& Value::operator++() noexcept
 	++value_;
 	return *this;
 }
+// NOLINTNEXTLINE(readability/casting) false-positive cpplint
 constexpr Value Value::operator++(int) noexcept
 { // post-increment
 	const Value pre{*this};

@@ -30,7 +30,7 @@
 
 namespace SudokuTests::errorTests
 {
-TEST(Error, invalid_Board)
+TEST(Error, invalidBoard)
 {
 	using ::Sudoku::error::invalid_Board;
 	{ // Type properties
@@ -117,7 +117,7 @@ TEST(Error, invalid_Board)
 	}
 }
 
-TEST(Error, invalid_Location)
+TEST(Error, invalidLocation)
 {
 	using ::Sudoku::error::invalid_Location;
 	{ // Type properties

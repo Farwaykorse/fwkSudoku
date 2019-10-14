@@ -50,6 +50,7 @@ Checks: '*,
   -ziron-*,
   -cert-err58-cpp,
   -cppcoreguidelines-avoid-goto,
+  -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -cppcoreguidelines-pro-type-vararg,
@@ -63,7 +64,8 @@ Checks: '*,
   -hicpp-special-member-functions,
   -hicpp-use-equals-delete,
   -hicpp-vararg,
-  -modernize-use-equals-delete'
+  -modernize-use-equals-delete,
+  -readability-magic-numbers'
 
 CheckOptions:
 - key:   bugprone-argument-comment.StrictMode

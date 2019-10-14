@@ -15,6 +15,7 @@
 *.bat           eol=crlf
 *.[ch]          cpp
 *.[ch]pp        cpp
+*.cfg           eol=lf whitespace=trailing-space,tab-in-indent,tabwidth=4
 *.cmake         cmake
 *.markdown      markdown
 *.md            markdown

@@ -28,6 +28,8 @@
 ## - Penalties
 ## - Languages
 ##
+##    Updated for Clang-Format v9.0.0
+##
 
 ---
 # For starters use defaults from the LLVM style
@@ -42,6 +44,7 @@ ColumnLimit:             80
 MaxEmptyLinesToKeep:     2
 ContinuationIndentWidth: 4
 IndentCaseLabels: false
+# IndentGotoLabels: false # Clang 10
 IndentPPDirectives: None
 AccessModifierOffset: -4
 # public: or private: etc.
@@ -96,13 +99,22 @@ IncludeCategories:
 - Regex:    '.*'
   Priority: 10
 
+## macros
+AlignConsecutiveMacros: false # Clang 9
+# ForEachMacros: ['RANGES_FOR', 'FOREACH']
+# MacroBlockBegin: ""
+# MacroBlockEnd: ""
+# NamespaceMacros: ['NAMESPACE'] # Clang 9
+# StatementMacros: ['CALCULATION'] # Clang 8 # statement, no ";" needed
+
 ## Namespace
 NamespaceIndentation: Inner
 CompactNamespaces: true
 FixNamespaceComments: true
 
 ## Template
-AlwaysBreakTemplateDeclarations: true
+# yamllint disable-line rule:truthy
+AlwaysBreakTemplateDeclarations: Yes # Modified Clang 7
 SpaceAfterTemplateKeyword: false
 
 ## Using
@@ -123,21 +135,22 @@ BraceWrapping:
   AfterFunction:         true
   SplitEmptyFunction:    true
   AfterExternBlock:      true # Clang 6
-  AfterControlStatement: true
+  AfterControlStatement: true # Always # Modified Clang 10
   BeforeCatch:           true
   BeforeElse:            true
+  AfterCaseLabel:        true # Clang 9
   IndentBraces:          false
 
 ### Single-Line Statements
-AllowShortBlocksOnASingleLine: false
+AllowShortBlocksOnASingleLine: false # Never # Modified Clang 10
 AllowShortFunctionsOnASingleLine: Inline
-AllowShortIfStatementsOnASingleLine: true
+# AllowShortLamdasOnASingleLine: Inline # Clang 10
+AllowShortIfStatementsOnASingleLine: Never # Modified Clang 9
 AllowShortLoopsOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: true
 
 ## Braces
 SpacesInAngles:                false
-SpaceAfterCStyleCast:          false
 SpacesInCStyleCastParentheses: false
 SpacesInContainerLiterals:     false
 SpaceBeforeParens:             ControlStatements
@@ -146,6 +159,11 @@ SpaceInEmptyParentheses:       false
 SpacesInSquareBrackets:        false
 Cpp11BracedListStyle:          true
 # if false always spaces in { dd }
+SpaceBeforeCpp11BracedList:    false # Clang 7
+
+## Classes
+BreakInheritanceList: BeforeColon # Clang 7
+SpaceBeforeInheritanceColon: true # Clang 7
 
 ## Declarations
 AlignConsecutiveDeclarations: false
@@ -154,16 +172,19 @@ AlignConsecutiveDeclarations: false
 IndentWrappedFunctionNames: true
 # BinPack: if false, all on same line, or one line each
 BinPackArguments: false
+AllowAllArgumentsOnNextLine: true # Clang 9
 BinPackParameters: false
-AlignAfterOpenBracket: AlwaysBreak
 AllowAllParametersOfDeclarationOnNextLine: true
+AlignAfterOpenBracket: AlwaysBreak
 AlwaysBreakAfterReturnType: None
 # None= uses PenaltyReturnTypeOnItsOwnLine
 
 ## Constructors
 ConstructorInitializerIndentWidth: 4
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
+AllowAllConstructorInitializersOnNextLine: false # no effect # Clang 9
 BreakConstructorInitializers: BeforeColon
+SpaceBeforeCtorInitializerColon: true # Clang 7
 
 ## Operators
 AlignOperands: true
@@ -176,11 +197,15 @@ BreakBeforeTernaryOperators: true
 
 DerivePointerAlignment: false
 PointerAlignment: Left
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false # Clang 9
+SpaceBeforeRangeBasedForLoopColon: true # Clang 7
 
 ## Strings
 BreakStringLiterals: true
 AlignEscapedNewlines: Right
 AlwaysBreakBeforeMultilineStrings: true
+# RawStringFormats: # Clang 6
 
 ## Penalties:
 PenaltyExcessCharacter: 1000000
@@ -189,14 +214,16 @@ PenaltyBreakBeforeFirstCallParameter: 19
 PenaltyBreakComment: 30
 PenaltyBreakFirstLessLess: 120
 PenaltyBreakString: 1000
+# PenaltyBreakTemplateDeclaration: # Clang 7
 PenaltyReturnTypeOnItsOwnLine: 60
 
 ---
 Language:      Cpp
+Standard:      Cpp11 # c++17 # Clang 10
 DisableFormat: false
-
-# Language standard, using LLVM setting, it might get updated
-#Standard:      Cpp11
+---
+Language:      CSharp # Clang 9
+DisableFormat: false
 ---
 Language:      Java
 DisableFormat: false
@@ -205,6 +232,15 @@ Language:      JavaScript
 DisableFormat: false
 ---
 Language:      ObjC
+DisableFormat: false
+---
+Language:      Proto
+DisableFormat: false
+---
+Language:      TableGen
+DisableFormat: false
+---
+Language:      TextProto # Clang 6
 DisableFormat: false
 
 ...

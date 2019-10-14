@@ -64,7 +64,7 @@ stages:
 - "Build & Test Latest" # First: (4) builds to run first
 - name: "Validation"
 - name: "Build & Test"  # If all succeed build rest
-  if: NOT (branch =~ /^[Aa]pp[Vv]eyor.*/)
+  if: NOT (branch =~ /^([Aa]pp[Vv]eyor|cpplint).*/)
 
 jobs:
   include:
@@ -311,10 +311,19 @@ jobs:
         packages:
         - clang-4.0
 
-  - name: AppleClang Xcode-11.0
+  - name: AppleClang Xcode-11.2
     stage: "Build & Test Latest"
     os: osx
-    osx_image: xcode11 # AppleClang 11.0.0
+    osx_image: xcode11.2 # AppleClang 11.0.0 linker update
+    env:
+    - Coverage: grcov
+    workspaces:
+      use: OSX
+
+  - name: AppleClang Xcode-11.1
+    stage: "Build & Test"
+    os: osx
+    osx_image: xcode11.1 # AppleClang 11.0.0 same compiler and linker as Xcode11
     env:
     - Coverage: grcov
     workspaces:
@@ -421,10 +430,10 @@ before_install:
 - |
   # OSX: set Homebrew gcc to gcc@<version>, to prevent version upgrades
   if [[ "${TRAVIS_OSX_IMAGE:-}" &&
-    ${TRAVIS_OSX_IMAGE} =~ ^xcode(11|10\.[12])$
+    ${TRAVIS_OSX_IMAGE} =~ ^xcode(11(\.[12])?|10\.[12])$
   ]]; then
     brew unlink gcc
-    if [[ ${TRAVIS_OSX_IMAGE} == "xcode11" ]]; then
+    if [[ ${TRAVIS_OSX_IMAGE} == xcode11* ]]; then
       brew link gcc@9
     else
       brew link gcc@8
@@ -509,11 +518,11 @@ install:
   if [[ ${Coverage:-} && ${Coverage} == "grcov" ]]; then
   ( set -euo pipefail
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-      GRCOV_TAG="v0.5.3"
-      GRCOV_SHA512="3d7f1fbfa11949d7ba57a507eeee4a1ed24580d2ac7aea8b6928324345d4fb4fc41856598169f9dbd860897537ec97e4587c65127d428bd91461f4815c8c2193"
+      GRCOV_TAG="v0.5.5"
+      GRCOV_SHA512="92caaac4d1dc4fd97055fd9043c26e70dc7bd347b9c3ee7961cad145874502e14e31227e4650f667c7ede34cf2bf640bb9093f3d91bb64b41366900d885c5549"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
-      GRCOV_TAG="v0.5.3"
-      GRCOV_SHA512="9a674bc6f134d15e46803ec4983d3b087e59b7b784a455b74b63d841c4b8056d6f5ceaae414a28c65c6da8a5ccf401cfd5c85ce3acfd9ba70311128d9cf2e753"
+      GRCOV_TAG="v0.5.5"
+      GRCOV_SHA512="48b5a88af62c03cc102f52357bc648c5ffdfa227709378799a1aa121bb08ce690343f4188a4a98d2aa8d8fbcd3553e94c6ea76548b5f852e75ba61a9d49c87e9"
     fi
     echo "-- Install grcov..."
     file_name="grcov-${TRAVIS_OS_NAME}-x86_64.tar.bz2"

@@ -48,9 +48,9 @@ static_assert(
 
 // use with primitive types
 static_assert(is_int_v<int>);
-static_assert(is_int_v<short int>);
-static_assert(is_int_v<long int>);
-static_assert(is_int_v<long long int>);
+static_assert(is_int_v<short int>);     // NOLINT
+static_assert(is_int_v<long int>);      // NOLINT
+static_assert(is_int_v<long long int>); // NOLINT
 static_assert(is_int_v<char>);
 static_assert(is_int_v<unsigned char>);
 static_assert(is_int_v<unsigned int>);

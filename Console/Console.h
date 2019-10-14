@@ -247,7 +247,7 @@ std::stringstream Console::print_row(
 
 //====--------------------------------------------------------------------====//
 // Solver function applications:
-template<int N>
+template<int N> // NOLINTNEXTLINE(runtime/references)
 void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
 {
 	int found{1};
@@ -269,7 +269,7 @@ void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
 	}
 }
 
-template<int N>
+template<int N> // NOLINTNEXTLINE(runtime/references)
 void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
 {
 	int found{1};

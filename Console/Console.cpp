@@ -539,4 +539,4 @@ int main()
 	};
 #endif // unused boards
 // clang-format off
-}
+} // NOLINT(readability/fn_size)

@@ -63,7 +63,9 @@ int remove_option_outside_block(
 //	remove option from element, make answer if last option
 template<int N, typename Options>
 int remove_option(
-	Board<Options, N>& board, const Location<N> loc, const Value value)
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const Location<N> loc,
+	const Value value)
 {
 	assert(is_valid<N>(value));
 
@@ -72,7 +74,8 @@ int remove_option(
 
 	if (item.test(value))
 	{ // repeated answer in section (faster here)
-		if (!is_option(item, value)) throw error::invalid_Board();
+		if (!is_option(item, value))
+			throw error::invalid_Board();
 
 		++changes;
 		const auto count = item.remove_option(value).count();
@@ -102,7 +105,9 @@ int remove_option(
 // remove all options given by the mask
 template<int N, typename Options>
 int remove_option(
-	Board<Options, N>& board, const Location<N> loc, const Options mask)
+	Board<Options, N>& board, // NOLINT(runtime/references)
+	const Location<N> loc,
+	const Options mask)
 {
 	assert(is_answer_fast(mask)); // don't remove answer-bit
 	assert(!mask.is_empty());     // useless
@@ -134,7 +139,7 @@ int remove_option(
 //	remove [value] in [ignore] from other elements in set
 template<int N, typename Options, typename SectionT>
 int remove_option_section(
-	Board<Options, N>& board,
+	Board<Options, N>& board, // NOLINT(runtime/references)
 	const SectionT section,
 	const Location<N> ignore,
 	const Value value)
@@ -164,7 +169,7 @@ int remove_option_section(
 //	remove [value] from set if not part of [loc]s
 template<int N, typename Options, typename SectionT>
 inline int remove_option_section(
-	Board<Options, N>& board,
+	Board<Options, N>& board, // NOLINT(runtime/references)
 	const SectionT section,
 	const std::vector<Location<N>>& ignore,
 	const Value value)
@@ -202,7 +207,7 @@ inline int remove_option_section(
 // the ignore Location vector must be sorted
 template<int N, typename Options, typename SectionT>
 int remove_option_section(
-	Board<Options, N>& board,
+	Board<Options, N>& board, // NOLINT(runtime/references)
 	const SectionT section,
 	const std::vector<Location<N>>& ignore,
 	const Options& values)
@@ -236,7 +241,7 @@ int remove_option_section(
 //	remove [value] from elements not in same block as [block_loc]
 template<int N, typename Options, typename SectionT>
 int remove_option_outside_block(
-	Board<Options, N>& board,
+	Board<Options, N>& board, // NOLINT(runtime/references)
 	const SectionT section,
 	const Location<N> block_loc,
 	const Value value)
