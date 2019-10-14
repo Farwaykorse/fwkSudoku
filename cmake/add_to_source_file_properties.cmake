@@ -55,7 +55,7 @@ include_guard()
 
 
 function(set_source_files_compile_definitions)
-  cmake_minimum_required(VERSION 3.12...3.15) # list(SUBLIST ...
+  cmake_minimum_required(VERSION 3.12...3.16) # list(SUBLIST ...
   list(FIND ARGN DEFINITIONS prop_loc)
   if(${prop_loc} EQUAL -1)
     message(SEND_ERROR "Missing keyword DEFINITIONS.")
