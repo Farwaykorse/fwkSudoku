@@ -17,6 +17,7 @@ skip_commits:
   - .codecov.yml
   - .editorconfig
   - .git*
+  - .github/
   - .travis.yml
   - .yamllint
   - docs/
@@ -142,6 +143,7 @@ for:
     - .codecov.yml
     - .editorconfig
     - .git*
+    - .github/
     - .travis.yml
     - .yamllint
     - docs/
@@ -161,6 +163,7 @@ for:
     files:
     - .codecov.yml
     - .git*
+    - .github/
     - .editorconfig
     - .travis.yml
     - .yamllint
