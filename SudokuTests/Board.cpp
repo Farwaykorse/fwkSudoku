@@ -269,7 +269,7 @@ TEST(Board, Construction)
 	}
 }
 
-TEST(Board, default_values)
+TEST(Board, defaultValues)
 {
 	// for int, all 0
 	Board<int, 2> B_int{};
@@ -315,7 +315,7 @@ TEST(Board, empty)
 	static_assert(!(Board<int, 2>::empty()));
 }
 
-TEST(Board, operator_equal)
+TEST(Board, operatorEqual)
 {
 	static_assert(not noexcept(Board<int>() == Board<int>(3)));
 	// assuming the used algorithms only throw `std::bad_alloc`
@@ -342,7 +342,7 @@ TEST(Board, operator_equal)
 		(Board<Options<4>, 2>()));
 }
 
-TEST(Board_Utilities, operator_not_equal)
+TEST(BoardUtilities, operatorNotEqual)
 {
 	static_assert(not noexcept(Board<int>() != Board<int>(3)));
 	// Board == Board => ...
@@ -362,7 +362,7 @@ TEST(Board_Utilities, operator_not_equal)
 	EXPECT_FALSE((Board<Options<4>, 2>()) != (Board<Options<4>, 2>()));
 }
 
-TEST(Board, access_front_back)
+TEST(Board, accessFrontBack)
 {
 	constexpr std::array<int, 16> list{
 		5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 7};
@@ -397,7 +397,7 @@ TEST(Board, access_front_back)
 	EXPECT_EQ(B.back(), 89);
 }
 
-TEST(Board, access_checked)
+TEST(Board, accessChecked)
 {
 	using ::Sudoku::error::invalid_Location;
 
@@ -504,7 +504,7 @@ TEST(Board, access_checked)
 	EXPECT_EQ(cB.at(3, 1), 13);
 }
 
-TEST(Board, access_unchecked)
+TEST(Board, accessUnchecked)
 {
 	Board<int, 2> B{};
 	constexpr Board<int, 2> cB = std::array<int, 16>{

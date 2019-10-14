@@ -46,7 +46,7 @@ using ::Sudoku::Location;
 using ::Sudoku::Options;
 using ::Sudoku::Value;
 
-TEST(Solver, unique_in_section)
+TEST(Solver, uniqueInSection)
 {
 	// clang-format off
 	const std::array<char, 16> v1
@@ -132,7 +132,7 @@ TEST(Solver, unique_in_section)
 }
 
 // NOLINTNEXTLINE(readability-function-size)
-TEST(Solver, section_exclusive)
+TEST(Solver, sectionExclusive)
 {
 	// section_exclusive(SectionT)
 	// section_exclusive(Block)
@@ -604,7 +604,7 @@ TEST(Solver, section_exclusive)
 	}
 }
 
-TEST(Solver, single_option)
+TEST(Solver, singleOption)
 {
 	using Sudoku::error::invalid_Location;
 	using Sudoku::error::invalid_Board;
@@ -738,7 +738,7 @@ TEST(Solver, single_option)
 	}
 }
 
-TEST(Solver, dual_option)
+TEST(Solver, dualOption)
 {
 	using ::Sudoku::error::invalid_Board;
 	using ::Sudoku::error::invalid_Location;
@@ -870,7 +870,7 @@ TEST(Solver, dual_option)
 	EXPECT_EQ(B1[8][0].count(), 6U) << "dual_option 12"; // unchanged
 }
 
-TEST(Solver, multi_option)
+TEST(Solver, multiOption)
 {
 	/*	start board
 	 *	 _ _ _ _ _ _ _ _ _ _ _ _
@@ -1003,7 +1003,7 @@ TEST(Solver, multi_option)
 }
 
 // NOLINTNEXTLINE(readability-function-size)
-TEST(Solver, multi_option_2)
+TEST(Solver, multiOption2)
 {
 	using L = Location<2>;
 	using V = Value;
@@ -1262,7 +1262,7 @@ TEST(Solver, multi_option_2)
 	}
 }
 
-TEST(Solver, solve_board)
+TEST(Solver, solveBoard)
 {
 	/*	start board					answer board
 	 *	 _ _ _ _ _ _ _ _ _ _ _ _	 _ _ _ _ _ _ _ _ _ _ _ _

@@ -334,7 +334,7 @@ struct TestElements
 };
 static TestElements TE;
 
-TEST(Options, mf_counting)
+TEST(Options, mfCounting)
 {
 	static_assert(noexcept(TE.D_0.size()));
 	EXPECT_EQ(TE.D_0.size(), size_t{10});
@@ -378,7 +378,7 @@ TEST(Options, mf_counting)
 	EXPECT_FALSE(TE.X_1.is_empty());
 }
 
-TEST(Options, test_Value)
+TEST(Options, testValue)
 {
 	[[maybe_unused]] bool set{};
 	static_assert(not noexcept(TE.O_1.test(Value{2})));
@@ -397,7 +397,7 @@ TEST(Options, test_Value)
 	set = false; // suppress warning: assigned only once
 }
 
-TEST(Options, is_answer)
+TEST(Options, isAnswer)
 {
 	[[maybe_unused]] bool U{};
 	{ // member-function
@@ -477,7 +477,7 @@ TEST(Options, is_answer)
 	U = false; // suppress warning: assigned only once
 }
 
-TEST(Options, is_option)
+TEST(Options, isOption)
 {
 	static_assert(not noexcept(is_option(TE.O_1, Value{2})));
 	[[maybe_unused]] bool U{};
@@ -501,7 +501,7 @@ TEST(Options, is_option)
 	EXPECT_FALSE(is_option(TE.X_0, Value{2})); // incorrect answer flag
 }
 
-TEST(Options, read_next)
+TEST(Options, readNext)
 {
 	// must work on const objects
 	static_assert(std::is_const_v<decltype(TE.O_1)>);
@@ -585,7 +585,7 @@ TEST(Options, available)
 	EXPECT_EQ(result[2], Value{4});
 }
 
-TEST(Options, get_answer)
+TEST(Options, getAnswer)
 {
 	static_assert(noexcept(get_answer(TE.O_1)));
 	EXPECT_EQ(get_answer(TE.A_1), Value{1});
@@ -597,7 +597,7 @@ TEST(Options, get_answer)
 	EXPECT_EQ(get_answer(TE.X_1), Value{0});
 }
 
-TEST(Options, to_Value)
+TEST(Options, toValue)
 {
 	// specialization for to_Value(..)
 	using ::Sudoku::to_Value;
@@ -622,7 +622,7 @@ TEST(Options, to_Value)
 	EXPECT_EQ(to_Value<2>(TE.X_1), Value{0});
 }
 
-TEST(Options, mf_changeAll)
+TEST(Options, mfChangeAll)
 {
 	// Set-up
 	Options<4> TMP{};
@@ -663,7 +663,7 @@ TEST(Options, mf_changeAll)
 	EXPECT_TRUE(TMP.all());
 	EXPECT_EQ(TMP.count_all(), 4u);
 }
-TEST(Options, mf_remove_option)
+TEST(Options, mfRemoveOption)
 {
 	Options<4> TMP{};
 	ASSERT_TRUE(TMP.all());
@@ -691,7 +691,7 @@ TEST(Options, mf_remove_option)
 	ASSERT_TRUE(TMP.reset().all()) << "Reset test data failed";
 	EXPECT_EQ(TMP.remove_option(Value{3}).DebugString(), "10111");
 }
-TEST(Options, mf_add)
+TEST(Options, mfAdd)
 {
 	Options<4> Opt{std::bitset<5>{"00000"}};
 	ASSERT_TRUE(Opt.is_empty());
@@ -710,7 +710,7 @@ TEST(Options, mf_add)
 	EXPECT_DEBUG_DEATH(Opt.add(Value{5}), "is_valid_option");
 #endif // NDEBUG
 }
-TEST(Options, mf_add_nocheck)
+TEST(Options, mfAddNocheck)
 {
 	Options<4> Opt{std::bitset<5>{"00000"}};
 	// return type
@@ -729,7 +729,7 @@ TEST(Options, mf_add_nocheck)
 	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{5}), "is_valid_option");
 #endif // NDEBUG
 }
-TEST(Options, mf_set)
+TEST(Options, mfSet)
 {
 	Options<4> TMP{};
 	// return type
@@ -748,7 +748,7 @@ TEST(Options, mf_set)
 	EXPECT_DEBUG_DEATH(TMP.set(Value{5}), "is_valid_option");
 #endif // NDEBUG
 }
-TEST(Options, mf_set_nocheck)
+TEST(Options, mfSetNocheck)
 {
 	Options<4> TMP{};
 	ASSERT_TRUE(TMP.all());
@@ -770,7 +770,7 @@ TEST(Options, mf_set_nocheck)
 #endif // NDEBUG
 }
 
-TEST(Options, mf_booleanComparison)
+TEST(Options, mfBooleanComparison)
 {
 	[[maybe_unused]] bool U{};
 
@@ -860,7 +860,7 @@ TEST(Options, mf_booleanComparison)
 	EXPECT_FALSE(TE.X_0 < TE.O_3);
 }
 
-TEST(Options, mf_constOperators)
+TEST(Options, mfConstOperators)
 {
 	// Options operator&(Options&) const		shared options
 	static_assert(noexcept(TE.O_1 & TE.O_2));
@@ -983,7 +983,7 @@ TEST(Options, External)
 	EXPECT_EQ(shared(E_3, A_2), E_2);
 }
 
-TEST(Options, operator_min)
+TEST(Options, operatorMin)
 {
 	const Options<9> all{};
 	const Options<9> empty{std::bitset<10>{"0000000000"}};

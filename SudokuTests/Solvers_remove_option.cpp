@@ -44,7 +44,7 @@ using ::Sudoku::Value;
 using ::Sudoku::error::invalid_Location;
 using ::Sudoku::error::invalid_Board;
 
-TEST(Solver, remove_option)
+TEST(Solver, removeOption)
 {
 	using L2 = Location<2>;
 
@@ -111,7 +111,7 @@ TEST(Solver, remove_option)
 	EXPECT_EQ(board[2][1].count_all(), 1U);
 }
 
-TEST(Solver, remove_option_mask)
+TEST(Solver, removeOptionMask)
 {
 	using L2 = Location<2>;
 	using O2 = Options<4>;
@@ -159,7 +159,7 @@ TEST(Solver, remove_option_mask)
 	EXPECT_EQ(remove_option(board, L2{1, 1}, mask), 15);
 }
 
-TEST(Solver, remove_option_section)
+TEST(Solver, removeOptionSection)
 {
 	using L = Location<2>;
 	// remove_option_section(SectionT, Location ignore, int value)
@@ -235,7 +235,7 @@ TEST(Solver, remove_option_section)
 	EXPECT_TRUE(is_answer(B1[0][0], Value{2}));
 	EXPECT_TRUE(is_answer(B1[0][1], Value{2}));
 }
-TEST(Solver, remove_option_section_1)
+TEST(Solver, removeOptionSection1)
 {
 	using L  = Location<2>;
 	using vL = std::vector<L>;
@@ -279,7 +279,7 @@ TEST(Solver, remove_option_section_1)
 		remove_option_section(B1, B1.row(3), vL{L(3, 0)}, Value{3}));
 	EXPECT_EQ(B1[3][1].count(), 3u);
 }
-TEST(Solver, remove_option_section_2)
+TEST(Solver, removeOptionSection2)
 {
 	using L  = Location<2>;
 	using vL = std::vector<L>;
@@ -341,7 +341,7 @@ TEST(Solver, remove_option_section_2)
 	ASSERT_NO_THROW(remove_option_section(B, B.row(3), vL{L(3, 0)}, vV{v{3}}));
 	EXPECT_EQ(B[3][1].count(), 3u);
 }
-TEST(Solver, remove_option_outside_block)
+TEST(Solver, removeOptionOutsideBlock)
 {
 	using L = Location<2>;
 
@@ -374,7 +374,7 @@ TEST(Solver, remove_option_outside_block)
 }
 
 //===----------------------------------------------------------------------===//
-TEST(Solver, deathtests_remove_option)
+TEST(Solver, deathtestsRemoveOption)
 {
 	using L  = Location<2>;
 	using vL = std::vector<L>;

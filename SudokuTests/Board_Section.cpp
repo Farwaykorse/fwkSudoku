@@ -183,7 +183,7 @@ namespace constructors
 	static_assert(not std::is_constructible_v<typeT, Board&, double>);
 	static_assert(not std::is_constructible_v<typeT, Board&, long double>);
 
-	TEST(Board_Section, constructor_int)
+	TEST(BoardSection, constructorInt)
 	{
 		Board board{};
 
@@ -207,7 +207,7 @@ namespace constructors
 	static_assert(not std::is_constructible_v<typeT, Board&, Loc*>);
 	static_assert(std::is_constructible_v<typeT, Board&, L_B>);
 	static_assert(std::is_nothrow_constructible_v<typeT, Board&, L_B>);
-	TEST(Board_Section, constructor_Loc)
+	TEST(BoardSection, constructorLoc)
 	{
 		Board board{};
 
@@ -230,7 +230,7 @@ namespace constructors
 	static_assert(std::is_convertible_v<Row, const_Row>);
 	static_assert(std::is_convertible_v<Col, const_Col>);
 	static_assert(std::is_convertible_v<Block, const_Block>);
-	TEST(Board_Section, conversion_to_const)
+	TEST(BoardSection, conversionToConst)
 	{
 		Board board{};
 		Row row(board, 3);
@@ -295,7 +295,7 @@ namespace constructors
 	static_assert(std::is_constructible_v<Row, Row, int>);
 	static_assert(std::is_constructible_v<const_Col, const_Col, int>);
 	static_assert(std::is_constructible_v<Block, Block, int>);
-	TEST(Board_Section, conversion)
+	TEST(BoardSection, conversion)
 	{
 		using ::Sudoku::elem_size;
 
@@ -355,7 +355,7 @@ namespace constructors
 	static_assert(std::is_nothrow_constructible_v<const_Row, Block, int>);
 	static_assert(std::is_nothrow_constructible_v<const_Col, Row, int>);
 	static_assert(std::is_nothrow_constructible_v<const_Col, Block, int>);
-	TEST(Board_Section, conversion_and_const)
+	TEST(BoardSection, conversionAndConst)
 	{
 		Board board{};
 		constexpr int last = ::Sudoku::elem_size<size> - 1;
@@ -488,7 +488,7 @@ using ::Sudoku::Board_Section::const_Block;
 using ::Sudoku::Location;
 using ::Sudoku::Location_Block;
 
-TEST(Board_Section, size)
+TEST(BoardSection, size)
 {
 	static_assert(noexcept(Row<int, 3>::size()));
 	// return type
@@ -498,7 +498,7 @@ TEST(Board_Section, size)
 	static_assert(Row<int, 3>::size() == 9);
 }
 
-TEST(Board_Section, id)
+TEST(BoardSection, id)
 {
 	using Row   = Row<int, 3>;
 	using Col   = Col<int, 3>;
@@ -523,7 +523,7 @@ TEST(Board_Section, id)
 	static_assert(Block(board, 7).id() == 7);
 }
 
-TEST(Board_Section, location)
+TEST(BoardSection, location)
 {
 	constexpr int size{3};
 	using L     = Location<size>;
@@ -565,7 +565,7 @@ TEST(Board_Section, location)
 	static_assert(Block(board, 1).location(8) == B(1, 8));
 }
 
-TEST(Board_Section, unchecked_access)
+TEST(BoardSection, uncheckedAccess)
 {
 	using Row         = Row<int, 2>;
 	using Col         = Col<int, 2>;
@@ -608,7 +608,7 @@ TEST(Board_Section, unchecked_access)
 	EXPECT_EQ((Block(board, 2)[3]), 6);
 }
 
-TEST(Board_Section, front_back)
+TEST(BoardSection, frontBack)
 {
 	using Row         = Row<int, 2>;
 	using Col         = Col<int, 2>;
@@ -685,7 +685,7 @@ TEST(Board_Section, front_back)
 	static_assert(const_Block(cboard, 3).back() == const_Block(cboard, 3)[3]);
 }
 
-TEST(Board_Section, checked_access)
+TEST(BoardSection, checkedAccess)
 {
 	const Board<int, 2> cboard{
 		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
