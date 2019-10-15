@@ -411,6 +411,21 @@ jobs:
 ## Install tools and dependencies
 before_install:
 - |
+  # Helper functions
+  # usage: if [[ $(check_url '<url>') ]]; then ...
+  function check_url {( set +e
+    if [[ "$1" =~ 'github.com' ]]; then # check for first byte
+      if curl --fail --silent --output /dev/null --connect-timeout 12 \
+        --range 0-0 "$1"
+      then echo true; fi
+    else # request head
+      if curl --fail --silent --output /dev/null --connect-timeout 12 \
+        --head "$1"
+      then echo true; fi
+    fi
+    return
+  )}
+- |
   # Setup
   mkdir -p ~/tools && cd ~/tools
   if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
@@ -563,18 +578,21 @@ install:
     fi
     for VERSION in ${CMake_version:-}; do
       CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${VERSION}/cmake-${VERSION}-${OS}-x86_64.${EXT}"
-      curl -sSL ${CMAKE_URL} -o ${CMAKE_INSTALLER}
-      CMAKE_DIR="${CMAKE_DEFAULT_DIR:-"${HOME}/tools/cmake-${VERSION}"}"
-      mkdir -p ${CMAKE_DIR}
-      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-        chmod +x ${CMAKE_INSTALLER}
-        sudo ./${CMAKE_INSTALLER} --prefix=${CMAKE_DIR} --skip-license
-      else # OSX
-        mkdir -p ./CMake_tmp
-        tar --extract --gzip --file=${CMAKE_INSTALLER} --directory=./CMake_tmp
-        mv ./CMake_tmp/*/CMake.app/Contents/* ${CMAKE_DIR}
+      if [[ $(check_url "$CMAKE_URL") ]]; then
+        curl -sSL ${CMAKE_URL} -o ${CMAKE_INSTALLER}
+        CMAKE_DIR="${CMAKE_DEFAULT_DIR:-"${HOME}/tools/cmake-${VERSION}"}"
+        mkdir -p ${CMAKE_DIR}
+        if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+          chmod +x ${CMAKE_INSTALLER}
+          sudo ./${CMAKE_INSTALLER} --prefix=${CMAKE_DIR} --skip-license
+        else # OSX
+          mkdir -p ./CMake_tmp
+          tar --extract --gzip --file=${CMAKE_INSTALLER} --directory=./CMake_tmp
+          mv ./CMake_tmp/*/CMake.app/Contents/* ${CMAKE_DIR}
+        fi
+        rm --recursive --force ./CMake_tmp ${CMAKE_INSTALLER}
+      else echo 'Invalid url!'; echo "Version: ${VERSION}"
       fi
-      rm --recursive --force ./CMake_tmp ${CMAKE_INSTALLER}
     done
   )
   if [[ "${TRAVIS_OS_NAME}" == "osx" && ! ("${CMake_version:-}" =~ .+[' '].+) ]]
