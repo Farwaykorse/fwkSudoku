@@ -306,7 +306,11 @@ endif(CODE_COVERAGE)
 
 ##====--------------------------------------------------------------------====##
 # custom settings for precompiled headers
-set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+  target_precompile_headers(SudokuTests PRIVATE precompiled.h)
+elseif(NOT DISABLE_PRECOMPILE_HEADERS)
+  set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
+endif()
 
 ##====--------------------------------------------------------------------====##
 gtest_discover_tests(SudokuTests)
