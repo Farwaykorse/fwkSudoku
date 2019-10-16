@@ -37,7 +37,7 @@
 #include <type_traits>
 
 
-namespace SudokuTests::SolversTest
+namespace SudokuTests::Solvers_find
 {
 using ::Sudoku::Board;
 using ::Sudoku::Location;

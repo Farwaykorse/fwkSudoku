@@ -33,7 +33,7 @@
 #include <type_traits>
 
 
-namespace SudokuTests::SolversTest
+namespace SudokuTests::Solvers_set_option
 {
 using ::Sudoku::Board;
 using ::Sudoku::Location;

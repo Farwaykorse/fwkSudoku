@@ -26,7 +26,7 @@
 #include <cstdint>
 
 
-namespace SudokuTests::Type
+namespace SudokuTests::Section::Type
 {
 namespace properties_Section
 {
@@ -476,7 +476,7 @@ namespace assignment
 } // namespace assignment
 } // namespace SudokuTests::Type
 
-namespace SudokuTests::Members
+namespace SudokuTests::Section::Members
 {
 using ::Sudoku::Board;
 using ::Sudoku::Board_Section::Row;
@@ -734,7 +734,7 @@ TEST(BoardSection, checkedAccess)
 
 } // namespace SudokuTests::Members
 
-namespace SudokuTests::Iterators
+namespace SudokuTests::Section::Iterators
 {
 using Board       = ::Sudoku::Board<int, 3>;
 using Row         = ::Sudoku::Board_Section::Row<int, 3>;

@@ -21,7 +21,7 @@
 #include <cstddef> // std::size_t
 
 
-namespace SudokuTests::workerBoard
+namespace SudokuTests::Decision::workerBoard
 {
 constexpr int N = 3;
 using typeT     = ::Sudoku::impl::worker_Board<N>;
@@ -111,9 +111,9 @@ namespace assignment
 	static_assert(std::is_nothrow_move_assignable_v<typeT>);
 	static_assert(not std::is_trivially_move_assignable_v<typeT>);
 } // namespace assignment
-} // namespace SudokuTests::workerBoard
+} // namespace SudokuTests::Decision::workerBoard
 
-namespace SudokuTests::Type
+namespace SudokuTests::Decision::Type
 {
 using ::Sudoku::Board;
 using ::Sudoku::Location;
@@ -398,9 +398,9 @@ namespace assignment
 		EXPECT_THROW(base = B1, ::Sudoku::error::invalid_Board);
 	}
 } // namespace assignment
-} // namespace SudokuTests::Type
+} // namespace SudokuTests::Decision::Type
 
-namespace SudokuTests::members
+namespace SudokuTests::Decision::members
 {
 using ::Sudoku::Board;
 using ::Sudoku::Options;
@@ -541,9 +541,9 @@ TEST(Multipass, mfGetFromQueue)
 	EXPECT_TRUE(returned.has_value());
 	EXPECT_TRUE(base.finished());
 }
-} // namespace SudokuTests::members
+} // namespace SudokuTests::Decision::members
 
-namespace SudokuTests::helpers
+namespace SudokuTests::Decision::helpers
 {
 using ::Sudoku::Board;
 using ::Sudoku::Options;
@@ -1015,4 +1015,4 @@ TEST(Multipass, guess)
 	//
 }
 
-} // namespace SudokuTests::helpers
+} // namespace SudokuTests::Decision::helpers

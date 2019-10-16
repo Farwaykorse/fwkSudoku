@@ -39,7 +39,7 @@
 #include <type_traits>
 
 
-namespace SudokuTests::BoardTest
+namespace SudokuTests::BoardIterator
 {
 using ::Sudoku::Board;
 using ::Sudoku::Location;
