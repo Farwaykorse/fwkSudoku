@@ -125,6 +125,14 @@ jobs:
         - clang-9
         - clang-tidy-9
 
+  - name: Unity-Build
+    stage: "Validation"
+    env:
+    - CMake_version: 3.16.0-rc1 # CMAKE_UNITY_BUILD requires at least v3.16.0
+    - UNITY_BUILD: on
+    workspaces:
+      use: Linux
+
   - name: GCC-9
     stage: "Build & Test Latest"
     env:
@@ -663,6 +671,7 @@ before_script:
   if [[ ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
     SharedGenFlags+=("-DCMAKE_CXX_CLANG_TIDY=${CMAKE_CXX_CLANG_TIDY}")
   fi
+  if [[ ${UNITY_BUILD:-} ]]; then SharedGenFlags+=("-DCMAKE_UNITY_BUILD=ON"); fi
   SharedGenFlags+=(-Wdev -Werror=dev --warn-uninitialized)
   CMakeGenFlags1+=(${SharedGenFlags[@]})
   echo ${CMakeGenFlags1[@]}
