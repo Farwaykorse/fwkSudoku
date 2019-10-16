@@ -30,7 +30,7 @@
 #include <type_traits>
 #include <cstdint>
 
-namespace SudokuTests
+namespace SudokuTests::Section_Iterator
 {
 using ::Sudoku::Board;
 using ::Sudoku::Location;
@@ -57,7 +57,7 @@ using ::Sudoku::Board_Section::const_reverse_Col_iterator;
 using ::Sudoku::Board_Section::const_reverse_Block_iterator;
 } // namespace SudokuTests
 
-namespace SudokuTests::Type
+namespace SudokuTests::Section_Iterator::Type
 {
 using dataT             = int;
 constexpr int size      = 3;
@@ -301,7 +301,7 @@ namespace assignment
 
 } // namespace SudokuTests::Type
 
-namespace SudokuTests::Members
+namespace SudokuTests::Section_Iterator::Members
 {
 using ::Sudoku::traits::is_input;
 using ::Sudoku::traits::is_forward;
