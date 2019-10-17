@@ -2792,4 +2792,4 @@ TEST(BoardIterator, IteratorLoop)
 	EXPECT_EQ(total, 129);
 }
 
-} // namespace SudokuTests::BoardTest
+} // namespace SudokuTests::BoardIterator
