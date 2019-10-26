@@ -125,6 +125,14 @@ jobs:
         - clang-9
         - clang-tidy-9
 
+  - name: Unity-Build
+    stage: "Validation"
+    env:
+    - CMake_version: 3.16.0-rc1 # CMAKE_UNITY_BUILD requires at least v3.16.0
+    - UNITY_BUILD: on
+    workspaces:
+      use: Linux
+
   - name: GCC-9
     stage: "Build & Test Latest"
     env:
@@ -321,6 +329,7 @@ jobs:
       use: OSX
 
   - name: AppleClang Xcode-11.1
+    if: branch =~ /^(master|[Tt]ravis.*)$/
     stage: "Build & Test"
     os: osx
     osx_image: xcode11.1 # AppleClang 11.0.0 same compiler and linker as Xcode11
@@ -409,6 +418,21 @@ jobs:
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
 before_install:
+- |
+  # Helper functions
+  # usage: if [[ $(check_url '<url>') ]]; then ...
+  function check_url {( set +e
+    if [[ "$1" =~ 'github.com' ]]; then # check for first byte
+      if curl --fail --silent --output /dev/null --connect-timeout 12 \
+        --range 0-0 "$1"
+      then echo true; fi
+    else # request head
+      if curl --fail --silent --output /dev/null --connect-timeout 12 \
+        --head "$1"
+      then echo true; fi
+    fi
+    return
+  )}
 - |
   # Setup
   mkdir -p ~/tools && cd ~/tools
@@ -562,18 +586,21 @@ install:
     fi
     for VERSION in ${CMake_version:-}; do
       CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${VERSION}/cmake-${VERSION}-${OS}-x86_64.${EXT}"
-      curl -sSL ${CMAKE_URL} -o ${CMAKE_INSTALLER}
-      CMAKE_DIR="${CMAKE_DEFAULT_DIR:-"${HOME}/tools/cmake-${VERSION}"}"
-      mkdir -p ${CMAKE_DIR}
-      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-        chmod +x ${CMAKE_INSTALLER}
-        sudo ./${CMAKE_INSTALLER} --prefix=${CMAKE_DIR} --skip-license
-      else # OSX
-        mkdir -p ./CMake_tmp
-        tar --extract --gzip --file=${CMAKE_INSTALLER} --directory=./CMake_tmp
-        mv ./CMake_tmp/*/CMake.app/Contents/* ${CMAKE_DIR}
+      if [[ $(check_url "$CMAKE_URL") ]]; then
+        curl -sSL ${CMAKE_URL} -o ${CMAKE_INSTALLER}
+        CMAKE_DIR="${CMAKE_DEFAULT_DIR:-"${HOME}/tools/cmake-${VERSION}"}"
+        mkdir -p ${CMAKE_DIR}
+        if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+          chmod +x ${CMAKE_INSTALLER}
+          sudo ./${CMAKE_INSTALLER} --prefix=${CMAKE_DIR} --skip-license
+        else # OSX
+          mkdir -p ./CMake_tmp
+          tar --extract --gzip --file=${CMAKE_INSTALLER} --directory=./CMake_tmp
+          mv ./CMake_tmp/*/CMake.app/Contents/* ${CMAKE_DIR}
+        fi
+        rm --recursive --force ./CMake_tmp ${CMAKE_INSTALLER}
+      else echo 'Invalid url!'; echo "Version: ${VERSION}"
       fi
-      rm --recursive --force ./CMake_tmp ${CMAKE_INSTALLER}
     done
   )
   if [[ "${TRAVIS_OS_NAME}" == "osx" && ! ("${CMake_version:-}" =~ .+[' '].+) ]]
@@ -644,6 +671,7 @@ before_script:
   if [[ ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
     SharedGenFlags+=("-DCMAKE_CXX_CLANG_TIDY=${CMAKE_CXX_CLANG_TIDY}")
   fi
+  if [[ ${UNITY_BUILD:-} ]]; then SharedGenFlags+=("-DCMAKE_UNITY_BUILD=ON"); fi
   SharedGenFlags+=(-Wdev -Werror=dev --warn-uninitialized)
   CMakeGenFlags1+=(${SharedGenFlags[@]})
   echo ${CMakeGenFlags1[@]}
