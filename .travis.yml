@@ -2,6 +2,8 @@
 # TravisCI build configuration.
 # Continuous integration testing on Linux and OSX. Using GCC, LLVM/Clang and
 # AppleClang. Debug and Release builds, unit tests and codecoverage.
+version: ~> 1.0
+
 language: cpp
 
 git:
