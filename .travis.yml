@@ -71,7 +71,7 @@ jobs:
   - name: CMake versions
     stage: "Validation"
     env:
-    - CMake_version: '"3.15.4 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.15.5 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: Linux
     addons:
@@ -96,7 +96,7 @@ jobs:
     os: osx
     osx_image: xcode10.3 # AppleClang 10.0.1
     env:
-    - CMake_version: '"3.15.4 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.15.5 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: OSX
     script:
@@ -130,7 +130,7 @@ jobs:
     env:
     - CC:  gcc-9
     - CXX: g++-9
-    - CMake_version: 3.15.4
+    - CMake_version: 3.15.5
     - Coverage: gcov-9
     workspaces:
       use: Linux
