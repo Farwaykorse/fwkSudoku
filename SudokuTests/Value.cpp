@@ -325,12 +325,12 @@ TEST(Value, toValue)
 	EXPECT_THROW(to_Value<3>(size_t{10}), std::domain_error);
 
 	// Input: unsigned int
-	static_assert(to_Value<3>(0u) == Value{0});
-	static_assert(to_Value<3>(1u) == Value{1});
-	static_assert(to_Value<3>(9u) == Value{9});
-	// static_assert(noexcept(to_Value<3>(2u))); // fails with Clang
-	static_assert(not(noexcept(to_Value<3>(10u))));
-	static_assert(not(noexcept(to_Value<3>(21u))));
+	static_assert(to_Value<3>(0U) == Value{0});
+	static_assert(to_Value<3>(1U) == Value{1});
+	static_assert(to_Value<3>(9U) == Value{9});
+	// static_assert(noexcept(to_Value<3>(2U))); // fails with Clang
+	static_assert(not(noexcept(to_Value<3>(10U))));
+	static_assert(not(noexcept(to_Value<3>(21U))));
 
 	// Input: long int
 	static_assert(to_Value<3>(0L) == Value{0});
