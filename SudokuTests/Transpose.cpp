@@ -49,7 +49,7 @@ TEST(Transpose, Instantiate)
 #endif // __ICL
 }
 
-TEST(Transpose, row_col)
+TEST(Transpose, RowCol)
 {
 	using L = Location<2>;
 
@@ -78,7 +78,7 @@ TEST(Transpose, row_col)
 	EXPECT_EQ(undo, row);
 }
 
-TEST(Transpose, row_col3)
+TEST(Transpose, RowCol3)
 {
 	using L = Location<3>;
 
@@ -114,7 +114,7 @@ TEST(Transpose, row_col3)
 	}
 }
 
-TEST(Transpose, row_block2)
+TEST(Transpose, RowBlock2)
 {
 	using L = Location<2>;
 	using B = Location_Block<2>;
@@ -139,7 +139,7 @@ TEST(Transpose, row_block2)
 	EXPECT_EQ(undo, row);
 }
 
-TEST(Transpose, row_block3)
+TEST(Transpose, RowBlock3)
 {
 	using L = Location<3>;
 	using B = Location_Block<3>;
@@ -177,7 +177,7 @@ TEST(Transpose, row_block3)
 	}
 }
 
-TEST(Transpose, wrong_order)
+TEST(Transpose, wrongOrder)
 {
 	using L = Location<3>;
 	using B = Location_Block<3>;
@@ -214,7 +214,7 @@ TEST(Transpose, wrong_order)
 	EXPECT_EQ(row, row3);
 }
 
-TEST(Transpose, swap_row_col)
+TEST(Transpose, swapRowCol)
 {
 	using L = Location<3>;
 
@@ -246,7 +246,7 @@ TEST(Transpose, swap_row_col)
 	}
 }
 
-TEST(Transpose, swap_row_block)
+TEST(Transpose, swapRowBlock)
 {
 	using L = Location<3>;
 
@@ -306,7 +306,7 @@ namespace test_class
 #endif // __ICL
 } // namespace test_class
 
-TEST(Transpose, throwing_move)
+TEST(Transpose, throwingMove)
 {
 	using L = Location<3>;
 

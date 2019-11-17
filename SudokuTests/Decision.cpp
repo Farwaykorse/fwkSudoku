@@ -220,7 +220,7 @@ namespace constructors
 		"Prevent accidental construction when something else was intended.");
 	// worker_Board objects are inputs for add_to_queue() and add_answer().
 
-	TEST(Multipass, constructor_Value_Board)
+	TEST(Multipass, constructorValueBoard)
 	{
 		// clang-format off
 		constexpr std::array<char, 16> v1
@@ -250,7 +250,7 @@ namespace constructors
 			v2.cbegin(), v2.cend(), B1.begin(), ::Sudoku::to_Value<2, int>);
 		EXPECT_THROW(Multipass_Base<2>{B1}, ::Sudoku::error::invalid_Board);
 	}
-	TEST(Multipass, constructor_Options_Board)
+	TEST(Multipass, constructorOptionsBoard)
 	{
 		// clang-format off
 		constexpr std::array<char, 16> v1
@@ -310,7 +310,7 @@ namespace assignment
 		"Prevent accidental resetting when something else was intended.");
 	// worker_Board objects are inputs for add_to_queue() and add_answer().
 
-	TEST(Multipass, assignment_Options_Board)
+	TEST(Multipass, assignmentOptionsBoard)
 	{
 		using ::Sudoku::impl::worker_Board;
 
@@ -341,7 +341,7 @@ namespace assignment
 		[[maybe_unused]] auto dump = base.get_from_queue(); // queue size = 0
 		EXPECT_TRUE(base.finished());
 	}
-	TEST(Multipass, assignment_Value_Board)
+	TEST(Multipass, assignmentValueBoard)
 	{
 		// clang-format off
 		constexpr std::array<char, 16> v1
@@ -390,7 +390,7 @@ using ::Sudoku::Board;
 using ::Sudoku::Options;
 using ::Sudoku::Multipass_Base;
 
-TEST(Multipass, mf_finished)
+TEST(Multipass, mfFinished)
 {
 	// clang-format off
 	constexpr std::array<char, 16> v1
@@ -434,7 +434,7 @@ TEST(Multipass, mf_finished)
 	EXPECT_FALSE(base.finished());
 }
 
-TEST(Multipass, mf_answer_count)
+TEST(Multipass, mfAnswerCount)
 {
 	// clang-format off
 	constexpr std::array<char, 16> v1
@@ -453,7 +453,7 @@ TEST(Multipass, mf_answer_count)
 	static_assert(std::is_same_v<int, decltype(base.answer_count())>);
 	EXPECT_EQ(base.answer_count(), 0);
 }
-TEST(Multipass, mf_add_answer)
+TEST(Multipass, mfAddAnswer)
 {
 	using ::Sudoku::impl::worker_Board;
 	using ::Sudoku::config::MAX_ANSWERS;
@@ -481,7 +481,7 @@ TEST(Multipass, mf_add_answer)
 	}
 	EXPECT_EQ(base.finished(), false);
 }
-TEST(Multipass, mf_add_to_queue)
+TEST(Multipass, mfAddToQueue)
 {
 	using ::Sudoku::impl::worker_Board;
 
@@ -496,7 +496,7 @@ TEST(Multipass, mf_add_to_queue)
 	base.add_to_queue(std::move(item));
 	EXPECT_FALSE(base.finished());
 }
-TEST(Multipass, mf_get_from_queue)
+TEST(Multipass, mfGetFromQueue)
 {
 	// depending on add_to_queue() and finished()
 	using ::Sudoku::impl::worker_Board;
@@ -536,7 +536,7 @@ using ::Sudoku::Location;
 using ::Sudoku::elem_size;
 using ::Sudoku::full_size;
 
-TEST(Multipass, fill_begin_empty_board)
+TEST(Multipass, fillBeginEmptyBoard)
 {
 	using ::Sudoku::fill_begin_empty_board;
 
@@ -582,7 +582,7 @@ TEST(Multipass, fill_begin_empty_board)
 	EXPECT_EQ(vB_2.at(Location<2>{3, 2}).DebugString(), "10111");
 }
 
-TEST(Multipass, count_options)
+TEST(Multipass, countOptions)
 {
 	using ::Sudoku::count_options;
 
@@ -661,7 +661,7 @@ TEST(Multipass, execution)
 	EXPECT_EQ(answers.at(2)->at(Location<2>{3, 3}), Value{1});
 }
 
-TEST(Multipass, execution_Options_Board)
+TEST(Multipass, executionOptionsBoard)
 {
 	// clang-format off
 	constexpr std::array<char, 16> v1
@@ -893,7 +893,7 @@ TEST(Multipass, solve3)
 	EXPECT_EQ(::Sudoku::count_options(*answers.at(0)), 0);
 }
 
-TEST(Multipass, empty_base_2)
+TEST(Multipass, emptyBase2)
 {
 	Board<Value, 2> empty{};
 	::Sudoku::Multipass_Base<2> base{empty};
@@ -910,7 +910,7 @@ TEST(Multipass, empty_base_2)
 //	EXPECT_EQ(answers.size(), 12u);
 //}
 
-TEST(Multipass, almost_empty)
+TEST(Multipass, almostEmpty)
 {
 	Board<Value, 2> one{};
 	one.at(Location<2>{0}) = Value{1};
@@ -920,7 +920,7 @@ TEST(Multipass, almost_empty)
 	EXPECT_EQ(answers.size(), size_t{::Sudoku::config::MAX_ANSWERS});
 }
 
-TEST(Multipass, pick_location)
+TEST(Multipass, pickLocation)
 {
 	using ::Sudoku::pick_location;
 

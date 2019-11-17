@@ -23,7 +23,7 @@ using ::Sudoku::Options;
 using ::Sudoku::Value;
 using ::Sudoku::elem_size;
 
-TEST(translate, switch_Options_Board)
+TEST(translate, switchOptionsBoard)
 {
 	using ::Sudoku::switch_options;
 
@@ -84,7 +84,7 @@ TEST(translate, switch_Options_Board)
 	EXPECT_EQ(get_answer(B1[0][8]), Value{2});
 }
 
-TEST(translate, normalize_board)
+TEST(translate, normalizeBoard)
 {
 	using ::Sudoku::normalize;
 
@@ -133,7 +133,7 @@ TEST(translate, normalize_board)
 	EXPECT_EQ(get_answer(B1[7][6]), Value{8});
 }
 
-TEST(translate, normalize_board2)
+TEST(translate, normalizeBoard2)
 {
 	using ::Sudoku::normalize;
 

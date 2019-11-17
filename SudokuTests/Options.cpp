@@ -1036,7 +1036,7 @@ TEST(Options, operatorMin)
 	EXPECT_EQ(empty - O_2, empty);
 }
 
-TEST(Options, switch_Options)
+TEST(Options, switchOptions)
 {
 	Options<4> opt{};
 	static_assert(not noexcept(opt.switch_options(Value{1}, Value{2})));
