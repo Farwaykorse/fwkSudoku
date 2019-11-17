@@ -7,7 +7,7 @@
 // Class under test
 #include <Sudoku/Normalize.h>
 // Helpers
-#include <Sudoku/Solvers_set_option.h>
+#include <Sudoku/Solver.h>
 
 // additional
 #include <array>
