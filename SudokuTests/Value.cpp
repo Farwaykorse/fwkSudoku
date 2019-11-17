@@ -1,4 +1,8 @@
-﻿//====---- SudokuTests/Value.cpp                                      ----====//
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+//
+//====---- SudokuTests/Value.cpp                                      ----====//
 //
 //	Unit tests for the template class Sudoku::Value
 //====--------------------------------------------------------------------====//
@@ -43,16 +47,21 @@ namespace compiletime
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) && not(defined(__clang__) && __clang_major__ < 6)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif // __ICL
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -83,7 +92,7 @@ namespace compiletime
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-#if not(defined(__ICL))
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
 #endif
@@ -118,7 +127,7 @@ namespace compiletime
 	static_assert(not std::is_assignable_v<typeT, bool>);
 	static_assert(not std::is_assignable_v<bool, typeT>);
 
-#if not(defined(__ICL))
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
@@ -345,9 +354,10 @@ TEST(Value, to_Value)
 	EXPECT_THROW(to_Value<3>(char{10}), std::domain_error);
 
 	// Will not compile when elements cannot be represented.
-	[[maybe_unused]] Value U =
-		to_Value<15>(static_cast<unsigned char>(0));  // N < 16
-	[[maybe_unused]] Value V = to_Value<11>(char{0}); // N < 12
+	using u_char = unsigned char;
+
+	[[maybe_unused]] const Value U = to_Value<15>(u_char{0}); // N < 16
+	[[maybe_unused]] const Value V = to_Value<11>(char{0});   // N < 12
 }
 
 } // namespace SudokuTests::ValueTest

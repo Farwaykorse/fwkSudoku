@@ -1,4 +1,4 @@
-﻿//====---- Sudoku/Board_Section.h                                     ----====//
+//====---- Sudoku/Board_Section.h                                     ----====//
 //
 // Internal in-between object for provide access to a section of Board.
 //====--------------------------------------------------------------------====//
@@ -77,34 +77,43 @@ public:
 	}
 
 	[[nodiscard]] static constexpr int size() noexcept { return elem_size<N>; }
-	[[nodiscard]] index id() const noexcept { return id_; }
+	[[nodiscard]] constexpr index id() const noexcept { return id_; }
 	[[nodiscard]] constexpr Location location(index elem) const noexcept;
 
-	[[nodiscard]] reference front() noexcept { return (*this)[0]; }
-	[[nodiscard]] reference back() noexcept { return (*this)[size() - 1]; }
-	[[nodiscard]] reference operator[](const index elem) noexcept
+	[[nodiscard]] constexpr reference front() noexcept { return (*this)[0]; }
+	[[nodiscard]] constexpr reference back() noexcept
+	{
+		return (*this)[static_cast<index>(size()) - 1];
+	}
+	[[nodiscard]] constexpr reference operator[](const index elem) noexcept
 	{
 		return board_[location(elem)];
 	}
-	[[nodiscard]] T const& operator[](const index elem) const noexcept
+	[[nodiscard]] constexpr T const& operator[](const index elem) const noexcept
 	{
 		return board_[location(elem)];
 	}
 	// Checked access
-	[[nodiscard]] reference at(const index elem);
+	[[nodiscard]] constexpr reference at(const index elem);
 
 	constexpr iterator begin() noexcept { return iterator(&board_, id_, 0); }
 	constexpr iterator end() noexcept { return iterator(&board_, id_, size()); }
-	constexpr const_iterator cbegin() const noexcept
+	[[nodiscard]] constexpr const_iterator cbegin() const noexcept
 	{
 		return const_iterator(&board_, id_, 0);
 	}
-	constexpr const_iterator cend() const noexcept
+	[[nodiscard]] constexpr const_iterator cend() const noexcept
 	{
 		return const_iterator(&board_, id_, size());
 	}
-	constexpr const_iterator begin() const noexcept { return cbegin(); }
-	constexpr const_iterator end() const noexcept { return cend(); }
+	[[nodiscard]] constexpr const_iterator begin() const noexcept
+	{
+		return cbegin();
+	}
+	[[nodiscard]] constexpr const_iterator end() const noexcept
+	{
+		return cend();
+	}
 	constexpr reverse_iterator rbegin() noexcept
 	{
 		return reverse_iterator(&board_, id_, size() - 1);
@@ -113,19 +122,22 @@ public:
 	{
 		return reverse_iterator(&board_, id_, -1);
 	}
-	constexpr const_reverse_iterator crbegin() const noexcept
+	[[nodiscard]] constexpr const_reverse_iterator crbegin() const noexcept
 	{
 		return const_reverse_iterator(&board_, id_, size() - 1);
 	}
-	constexpr const_reverse_iterator crend() const noexcept
+	[[nodiscard]] constexpr const_reverse_iterator crend() const noexcept
 	{
 		return const_reverse_iterator(&board_, id_, -1);
 	}
-	constexpr const_reverse_iterator rbegin() const noexcept
+	[[nodiscard]] constexpr const_reverse_iterator rbegin() const noexcept
 	{
 		return crbegin();
 	}
-	constexpr const_reverse_iterator rend() const noexcept { return crend(); }
+	[[nodiscard]] constexpr const_reverse_iterator rend() const noexcept
+	{
+		return crend();
+	}
 
 private:
 	OwnerT board_;
@@ -140,7 +152,8 @@ private:
 
 // Checked access
 template<typename T, int N, Section S, bool is_const>
-[[nodiscard]] inline typename Board_Section_<T, N, S, is_const>::reference
+[[nodiscard]] inline constexpr
+	typename Board_Section_<T, N, S, is_const>::reference
 	Board_Section_<T, N, S, is_const>::at(const index elem)
 {
 	if (!is_valid_size<N>(elem))

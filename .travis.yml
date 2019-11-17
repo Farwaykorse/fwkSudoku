@@ -1,4 +1,7 @@
 ##====---- .travis.yml                                                ----====##
+# TravisCI build configuration.
+# Continuous integration testing on Linux and OSX. Using GCC, LLVM/Clang and
+# AppleClang. Debug and Release builds, unit tests and codecoverage.
 language: cpp
 
 git:
@@ -7,184 +10,496 @@ git:
 
 env:
   global:
-  # Ninja-build
-  - NINJA_VER: v1.8.2
-  - NINJA_SHA512: 38fcb68e745c1f15b4b50f20069ffe686b1ef5baf93b74958e132ea5d30d155cf6970d6dc1b095aafd421ebd8bcc63acf4f64e305c496266b5182f99b815cca5
   # vcpkg
+  - VCPKG_DIR:       $HOME/tools/vcpkg
   - TOOLCHAIN_FILE: "$HOME/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 ##====--------------------------------------------------------------------====##
 ## Define Build Configurations
-# No build matrix, each item in matrix:include is single build configuration.
+# No build matrix, each item in jobs:include is a single build configuration.
 #
-# Building vcpkg requires at least g++-7
+# Environment variables:
+# - CXX_lib: library selection.
+#   - libc++  (Linux only, default on OSX.)
+# - CC/CXX_vcpkg: build vcpkg with a different compiler.
+#   Linux minimum: `g++-7`; OSX minimum: `g++-6`; Or clang-8 (with libc++-8).
+# - CONFIGURATION: specifies the build configuration.
+#   When not set both a Debug and a Release configurations are build in single
+#   job session.
+# - Coverage:
+#   Send code coverage data to codecov.io.
+#   When no CONFIGURATION defined, only Debug build runs coverage.
+#   - grcov: currently the only option supporting LLVM/clang and AppleClang.
+#   - lcov:  GNU tool, mostly redundant by Codecov's bash script.
+#   - *: if an executable on the PATH, like: gcov-6, run by the bash script.
+#   - any other value runs the bash script in default mode. (I.e. true)
+# - CMAKE_CXX_CLANG_TIDY: command to execute clang-tidy. Disables unit-tests.
 #
+## Toolchain installation information:
+# https://docs.travis-ci.com/user/installing-dependencies/
+# Finding apt packages:
+# https://packages.ubuntu.com/search
+# Ubuntu Toolchain test builds:
+# https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
+# LLVM apt resources:
+# https://apt.llvm.org
+# Kitware apt repository (CMake):
+# https://apt.kitware.com
+# TravisCI apt safelist:
+# https://github.com/travis-ci/apt-source-safelist/blob/master/ubuntu.json
+# libc++ documentation:
+# https://libcxx.llvm.org/docs/UsingLibcxx.html
+# Homebrew OSX packages:
+# https://formulae.brew.sh/formula/
+# Xcode compiler list and relation to LLVM:
+# https://en.wikipedia.org/wiki/Xcode#Toolchain_versions
+
 # Defaults
 os: linux
-dist: xenial
+dist: bionic
 
-matrix:
+# Specify Stage Order and Conditions
+stages:
+- "Build Dependencies"
+- "Build & Test Latest" # First: (4) builds to run first
+- name: "Validation"
+- name: "Build & Test"  # If all succeed build rest
+  if: NOT (branch =~ /^([Aa]pp[Vv]eyor|cpplint).*/)
+
+jobs:
   include:
-  - name: GCC-8 Debug
+  - name: CMake versions
+    stage: "Validation"
     env:
-    - C_compiler:   gcc-8
-    - CXX_compiler: g++-8
-    - CONFIGURATION: Debug
-    addons: &GCC8
+    - CMake_version: '"3.15.5 3.14.7 3.13.5 3.12.4 3.12.0"'
+    workspaces:
+      use: Linux
+    addons:
       apt:
         sources:
-        - ubuntu-toolchain-r-test
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ bionic main'
+          key_url: 'https://apt.kitware.com/keys/kitware-archive-latest.asc'
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ bionic-rc main'
+        packages:
+        - cmake
+    script:
+    - |
+      cd ./build
+      ( set -eu
+        for CMAKE in ${CMAKE_path[@]}; do test_CMake_generate $CMAKE; done
+        export CXX=clang++
+        for CMAKE in ${CMAKE_path[@]}; do test_CMake_generate $CMAKE; done
+      )
+
+  - name: CMake versions
+    stage: "Validation"
+    os: osx
+    osx_image: xcode10.3 # AppleClang 10.0.1
+    env:
+    - CMake_version: '"3.15.5 3.14.7 3.13.5 3.12.4 3.12.0"'
+    workspaces:
+      use: OSX
+    script:
+    - |
+      cd ./build
+      ( set -eu
+        for CMAKE in ${CMAKE_path[@]}; do test_CMake_generate $CMAKE; done
+      )
+
+  - name: Clang-Tidy
+    stage: "Validation"
+    env:
+    - CC: clang-9
+    - CXX: clang++-9
+    - CMAKE_CXX_CLANG_TIDY: '"clang-tidy-9;--warnings-as-errors=*"'
+    - CONFIGURATION: Debug
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        sources:
+        - sourceline:
+            'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
+        packages:
+        - clang-9
+        - clang-tidy-9
+
+  - name: GCC-9
+    stage: "Build & Test Latest"
+    env:
+    - CC:  gcc-9
+    - CXX: g++-9
+    - CMake_version: 3.15.5
+    - Coverage: gcov-9
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        sources:
+        - sourceline: ppa:ubuntu-toolchain-r/test
+        packages:
+        - g++-9
+
+  - name: GCC-8
+    stage: "Build & Test"
+    env:
+    - CC:  gcc-8
+    - CXX: g++-8
+    - Coverage: gcov-8
+    workspaces:
+      use: Linux
+    addons:
+      apt:
         packages:
         - g++-8
 
-  - name: GCC-8 Release
+  - name: GCC-7 # default on Bionic image
+    stage: "Build & Test"
     env:
-    - C_compiler:   gcc-8
-    - CXX_compiler: g++-8
-    - CONFIGURATION: Release
-    addons: *GCC8
+    - CC:  gcc-7
+    - CXX: g++-7
+    - Coverage: gcov-7
+    workspaces:
+      use: Linux
 
-  - name: GCC-7 Debug
+  - name: Clang-9
+    stage: "Build & Test Latest"
     env:
-    - C_compiler:   gcc-7
-    - CXX_compiler: g++-7
-    - CONFIGURATION: Debug
-    addons: &GCC7
+    - CC: clang-9
+    - CXX: clang++-9
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
       apt:
         sources:
-        - ubuntu-toolchain-r-test
+        - sourceline:
+            'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
         packages:
-        - g++-7
+        - clang-9
 
-  - name: GCC-7 Release
+  - name: Clang-9 libc++
+    stage: "Build & Test Latest"
     env:
-    - C_compiler:   gcc-7
-    - CXX_compiler: g++-7
-    - CONFIGURATION: Release
-    addons: *GCC7
-
-  - name: Clang-7 Debug
-    dist: xenial
-    env:
-    - C_compiler:   clang
-    - CXX_compiler: clang++
-    - CONFIGURATION: Debug
-    addons: &clang7
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - g++-7
-
-  - name: Clang-7 Release
-    dist: xenial
-    env:
-    - C_compiler:   clang
-    - CXX_compiler: clang++
-    - CONFIGURATION: Release
-    addons: *clang7
-
-  - name: Clang-7 libc++ Debug
-    dist: xenial
-    env:
-    - C_compiler:   clang
-    - CXX_compiler: clang++
+    - CC: clang-9
+    - CXX: clang++-9
     - CXX_lib: libc++
-    - CONFIGURATION: Debug
-    addons: &clang7lib
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
       apt:
         sources:
-        - llvm-toolchain-xenial-7
-        - ubuntu-toolchain-r-test
+        - sourceline:
+            'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
         packages:
-        - g++-7
+        - clang-9
+        - libc++-9-dev
+        - libc++abi-9-dev
+
+  - name: Clang-8
+    stage: "Build & Test"
+    env:
+    - CC: clang-8
+    - CXX: clang++-8
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        sources:
+        - sourceline:
+            'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
+        packages:
+        - clang-8
+
+  - name: Clang-8 libc++
+    stage: "Build & Test"
+    env:
+    - CC: clang-8
+    - CXX: clang++-8
+    - CXX_lib: libc++
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        sources:
+        - sourceline:
+            'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
+        packages:
+        - clang-8
+        - libc++-8-dev
+        - libc++abi-8-dev
+
+  - name: Clang-7 # default on Xenial and Bionic images
+    stage: "Build & Test"
+    compiler: clang
+    env:
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+
+  - name: Clang-7 libc++
+    env:
+    - CC:  clang
+    - CXX: clang++
+    - CXX_lib: libc++
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        packages:
         - libc++-7-dev
         - libc++abi-7-dev
 
-  - name: Clang-7 libc++ Release
-    dist: xenial
+  - name: Clang-6.0
     env:
-    - C_compiler:   clang
-    - CXX_compiler: clang++
-    - CXX_lib: libc++
-    - CONFIGURATION: Release
-    addons: *clang7lib
-
-  - name: Clang-6.0 Debug
-    dist: xenial
-    env:
-    - C_compiler: clang-6.0
-    - CXX_compiler: clang++-6.0
-    - CONFIGURATION: Debug
-    addons: &clang6
+    - CC: clang-6.0
+    - CXX: clang++-6.0
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
       apt:
-        sources:
-        - llvm-toolchain-xenial-6.0
-        - ubuntu-toolchain-r-test
         packages:
         - clang-6.0
-        - g++-7
 
-  - name: Clang-6.0 Release
-    dist: xenial
+  - name: Clang-6.0 libc++
     env:
-    - C_compiler: clang-6.0
-    - CXX_compiler: clang++-6.0
-    - CONFIGURATION: Release
-    addons: *clang6
-
-  - name: Clang-5.0 Debug
-    dist: xenial
-    env:
-    - C_compiler: clang-5.0
-    - CXX_compiler: clang++-5.0
-    - CONFIGURATION: Debug
-    addons: &clang5
+    - CC: clang-6.0
+    - CXX: clang++-6.0
+    - CXX_lib: libc++
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
       apt:
-        sources:
-        - ubuntu-toolchain-r-test
+        packages:
+        - clang-6.0
+        - libc++-dev # 6.0 on Bionic
+        - libc++abi-dev
+
+  - name: Clang-5.0
+    env:
+    - CC: clang-5.0
+    - CXX: clang++-5.0
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
+      apt:
         packages:
         - clang-5.0
-        - g++-7
 
   - name: Clang-4.0 Debug
-    dist: xenial
+    if: branch =~ /^[Tt]ravis.*$/
     env:
-    - C_compiler: clang-4.0
-    - CXX_compiler: clang++-4.0
+    - CC: clang-4.0
+    - CXX: clang++-4.0
     - CONFIGURATION: Debug
-    addons: &clang4
+    workspaces:
+      use: Linux
+    addons:
       apt:
-        sources:
-        - ubuntu-toolchain-r-test
         packages:
         - clang-4.0
-        - g++-7
+
+  - name: AppleClang Xcode-11.2
+    stage: "Build & Test Latest"
+    os: osx
+    osx_image: xcode11.2 # AppleClang 11.0.0 linker update
+    env:
+    - Coverage: grcov
+    workspaces:
+      use: OSX
+
+  - name: AppleClang Xcode-11.1
+    stage: "Build & Test"
+    os: osx
+    osx_image: xcode11.1 # AppleClang 11.0.0 same compiler and linker as Xcode11
+    env:
+    - Coverage: grcov
+    workspaces:
+      use: OSX
+
+  - name: AppleClang Xcode-10.3
+    stage: "Build & Test"
+    os: osx
+    osx_image: xcode10.3 # AppleClang 10.0.1 same compiler as Xcode10.2
+    env:
+    - CXX_vcpkg: g++-9 # present on xcode10.3
+    - Coverage: grcov
+    workspaces:
+      use: OSX
+
+  - name: AppleClang Xcode-10.1
+    if: branch =~ /^(master|[Tt]ravis.*)$/
+    os: osx
+    osx_image: xcode10.1 # AppleClang 10.0.0 same compiler as Xcode 10.0
+    env:
+    - Coverage: grcov
+    workspaces:
+      use: OSX
+
+  # Note: can not build vcpkg on Xcode-9.3/4, missing OSX update on Travis.
+  - name: AppleClang Xcode-9.4
+    if: branch =~ /^(master|[Tt]ravis.*)$/
+    os: osx
+    osx_image: xcode9.4 # AppleClang 9.1.0 same compiler as Xcode 9.3
+    env:
+    - Coverage: grcov
+    - CMake_version: '3.12.4' # Xcode 9.4 comes with CMake 3.11.4
+    workspaces:
+      use: OSX
+
+  # Earliest available with C++17 support
+  - name: AppleClang Xcode-9
+    if: branch =~ /^(master|[Tt]ravis.*)$/
+    os: osx
+    osx_image: xcode9 # AppleClang 9.1.0 same compiler in Xcode 9.0, 9.1 and 9.2
+    env:
+    - Coverage: grcov
+    - CMake_version: '3.12.4'
+    workspaces:
+      use: OSX
+
+  - name: vcpkg for Linux
+    stage: "Build Dependencies"
+    workspaces:
+      create:
+        name: Linux
+        paths:
+        - ~/tools/.cache/vcpkg
+    install: skip
+    before_script: skip
+    script: skip
+    after_script: skip
+    after_success: skip
+
+  - name: vcpkg for OSX
+    stage: "Build Dependencies"
+    workspaces:
+      create:
+        name: OSX
+        paths:
+        - ~/tools/.cache/vcpkg
+    os: osx
+    osx_image: xcode10.3
+    env:
+    - CC:  gcc-9
+    - CXX: g++-9
+    - MACOSX_DEPLOYMENT_TARGET: '10.12' # minimum supported: xcode9 image
+    install: skip
+    before_script: skip
+    script: skip
+    after_script: skip
+    after_success: skip
 
   allow_failures:
-  - name: Clang-7 libc++ Debug
-  - name: Clang-7 libc++ Release
   - name: Clang-4.0 Debug
+  - name: Clang-Tidy
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
 before_install:
 - |
   # Setup
-  set -e # stop Bash execution on error
-  mkdir -p ~/tools
-  eval "CC=${C_compiler:?} && CXX=${CXX_compiler:?}"
+  mkdir -p ~/tools && cd ~/tools
+  if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
+    export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+  fi
+  if [[ ${TRAVIS_EVENT_TYPE} == "cron" ]]; then
+    Coverage=""
+  fi
 - |
-  # Install Ninja-build
-  (
-    os=${TRAVIS_OS_NAME}
-    file_name="ninja-${os}.zip"
+  # Temporary fix for image: xcode11 to use GCC.
+  if [[ ${TRAVIS_OSX_IMAGE} == "xcode11" &&
+    ( "${CXX_vcpkg:-}" || ${CXX} == g++-* )
+  ]]; then
+    sudo installer -pkg \
+    /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg\
+    -target /
+  fi
+- |
+  # OSX: set Homebrew gcc to gcc@<version>, to prevent version upgrades
+  if [[ "${TRAVIS_OSX_IMAGE:-}" &&
+    ${TRAVIS_OSX_IMAGE} =~ ^xcode(11(\.[12])?)$
+  ]]; then
+    brew unlink gcc
+    brew link gcc@9
+  fi
+- |
+  # Download vcpkg
+  ( set -euo pipefail
+    # Full history clone for rebuild detection.
+    git clone --quiet https://github.com/Microsoft/vcpkg.git ${VCPKG_DIR}
+    mv -f -t ${VCPKG_DIR} ~/tools/.cache/vcpkg/* || echo "No cached files."
+  )
+  export PATH=$PATH:${VCPKG_DIR}
+- |
+  # Install/Update vcpkg
+  if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
+    cd ${VCPKG_DIR}
+  ( set -euo pipefail
+    VCPKG_SRC_HASH="${VCPKG_DIR}/vcpkg_src_hash" && touch ${VCPKG_SRC_HASH}
+    GENERATE_SRC_HASH="(
+      git log --format=format:\"%H\" --max-count=1 -- toolsrc
+    )"
+    if [[ ! -x "$(command -v vcpkg)" ||
+      ( $(vcpkg update) == 'Warning: Different source'*'for vcpkg'* ) ||
+      ( $(eval ${GENERATE_SRC_HASH}) != $(< ${VCPKG_SRC_HASH}) ) ]]
+    then
+      if [[ ${CC_vcpkg:-} ]];  then eval "CC=${CC_vcpkg}"; fi
+      if [[ ${CXX_vcpkg:-} ]]; then eval "CXX=${CXX_vcpkg}"; fi
+      if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
+        export CXXFLAGS="${CXXFLAGS:-} -stdlib=${CXX_lib}"
+      fi
+      if [[ ${TRAVIS_OS_NAME} == "osx" && ${CXX} == g++-* ]]; then
+        export LDFLAGS="${LDFLAGS:-} -static-libstdc++ -static-libgcc"
+      fi
+      bootstrap-vcpkg.sh
+      eval ${GENERATE_SRC_HASH} > ${VCPKG_SRC_HASH}
+    fi
+  ); fi
+- |
+  # Using libc++
+  if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
+    FLAGS="-stdlib=${CXX_lib}"
+    #if [[ ${CXX_lib} == libc++ ]]; then
+    #  FLAGS="${FLAGS} -lc++fs"
+    #  FLAGS="${FLAGS} -lc++experimental"
+    #fi
+    export CXXFLAGS="${CXXFLAGS:-} ${FLAGS}"
+  fi
+
+install:
+- |
+  # Install Ninja-build (if not installed)
+  if [[ ! -x "$(command -v ninja)" ]]; then
+  ( set -euo pipefail
+    NINJA_VER="v1.9.0"
+    if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
+      file_name="ninja-linux.zip"
+      NINJA_SHA512="751fd86520a1a38fb47baadf4a46ab49f9ebb11d6ff9c01e71326564ebf10f141ca2627620e315fcab82db1493a30123f11194f41226241d80413d5008acfc59"
+    elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
+      file_name="ninja-mac.zip"
+      NINJA_SHA512="ec2294b430b89134f54f3388bafd760697c7eb33792bc094416b918371619e79592629973a60fcc35335a92eaa9ed84a41f2bc53c846eb8abf3422d4322cd3e5"
+    fi
+    echo "-- Install Ninja-build..."
     NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
-    cd ~/tools
-    wget -q "${NINJA_URL}" --tries=3 -nc
+    wget -q "${NINJA_URL}" --tries=3 --timeout 90 -nc
     sum=$(sha512sum ${file_name})
     if [[ ${sum:0:128} = ${NINJA_SHA512} ]]; then
       unzip -q ${file_name} -d ninja
+      chmod -c +x ninja/ninja
+      echo "-- Install Ninja-build... done"
     else
       echo "Ninja hash has changed!"  >&2
       echo "Expecting: $NINJA_SHA512" >&2
@@ -192,38 +507,117 @@ before_install:
       exit 1
     fi
   )
-  export PATH=$PATH:$HOME/tools/ninja/
+  export PATH=$HOME/tools/ninja:$PATH
+  fi
 - |
-  # Install vcpkg
-  (
-    cd ~/tools
-    if [[ -x ./vcpkg/vcpkg ]]; then
-      cd ./vcpkg
-      git pull --quiet
+  # Install Mozilla/grcov
+  if [[ ${Coverage:-} && ${Coverage} == "grcov" ]]; then
+  ( set -euo pipefail
+    if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
+      GRCOV_TAG="v0.5.5"
+      GRCOV_SHA512="92caaac4d1dc4fd97055fd9043c26e70dc7bd347b9c3ee7961cad145874502e14e31227e4650f667c7ede34cf2bf640bb9093f3d91bb64b41366900d885c5549"
+    elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
+      GRCOV_TAG="v0.5.5"
+      GRCOV_SHA512="48b5a88af62c03cc102f52357bc648c5ffdfa227709378799a1aa121bb08ce690343f4188a4a98d2aa8d8fbcd3553e94c6ea76548b5f852e75ba61a9d49c87e9"
+    fi
+    echo "-- Install grcov..."
+    file_name="grcov-${TRAVIS_OS_NAME}-x86_64.tar.bz2"
+    GRCOV_URL="https://github.com/mozilla/grcov/releases/download/${GRCOV_TAG}/${file_name}"
+    wget "${GRCOV_URL}" --tries=3 --timeout 90 -nc
+    sum=$(sha512sum ${file_name})
+    sum=${sum:0:128}
+    if [[ ${sum} == ${GRCOV_SHA512} ]]; then
+      mkdir -p ~/tools/grcov
+      tar --extract --bzip2 --file=${file_name} --directory=grcov
+      chmod -c +x grcov/grcov
+      rm ${file_name}
+      echo "-- Install grcov... done"
     else
-      git clone --depth=1 --branch=master --quiet https://github.com/Microsoft/vcpkg.git
-      if [[ ${TRAVIS_OS_NAME} == linux && ${CXX_compiler} != g++* || ${CXX_compiler%g++-} < 7 ]]
-      then
-        eval "CC=gcc-7 && CXX=g++-7"
-      fi
-      ./vcpkg/bootstrap-vcpkg.sh
+      echo "grcov hash has changed!"    >&2
+      echo "Expecting: ${GRCOV_SHA512}" >&2
+      echo "Actual:    ${sum}"          >&2
+      exit 1
     fi
   )
+  export PATH=$HOME/tools/grcov:$PATH
+  fi
 - |
-  # Using libc++
-  if [[ ${CXX_compiler} == clang* && ${CXX_lib} ]]; then
-    FLAGS="-stdlib=${CXX_lib}"
-    #if [[ ${CXX_lib} == libc++ ]]; then
-    #  FLAGS="${FLAGS} -lc++fs"
-    #  FLAGS="${FLAGS} -lc++experimental"
-    #fi
-    export CXXFLAGS="${CXXFLAGS} ${FLAGS}"
+  # Install CMake versions
+  ( set -euo pipefail
+    if [[ ${CMake_version:-} ]]; then
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        OS="Linux"; EXT="sh"
+        if [[ ! ("${CMake_version:-}" =~ .+[' '].+) ]]; then
+          # Single entry -> default CMake version
+          CMAKE_DEFAULT_DIR="/usr/local"
+        fi
+      elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then OS="Darwin"; EXT="tar.gz"
+      else echo "CMake install not supported for this OS."; exit 1
+      fi
+      CMAKE_INSTALLER="install-cmake.${EXT}"
+    fi
+    for VERSION in ${CMake_version:-}; do
+      CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${VERSION}/cmake-${VERSION}-${OS}-x86_64.${EXT}"
+      curl -sSL ${CMAKE_URL} -o ${CMAKE_INSTALLER}
+      CMAKE_DIR="${CMAKE_DEFAULT_DIR:-"${HOME}/tools/cmake-${VERSION}"}"
+      mkdir -p ${CMAKE_DIR}
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        chmod +x ${CMAKE_INSTALLER}
+        sudo ./${CMAKE_INSTALLER} --prefix=${CMAKE_DIR} --skip-license
+      else # OSX
+        mkdir -p ./CMake_tmp
+        tar --extract --gzip --file=${CMAKE_INSTALLER} --directory=./CMake_tmp
+        mv ./CMake_tmp/*/CMake.app/Contents/* ${CMAKE_DIR}
+      fi
+      rm --recursive --force ./CMake_tmp ${CMAKE_INSTALLER}
+    done
+  )
+  if [[ "${TRAVIS_OS_NAME}" == "osx" && ! ("${CMake_version:-}" =~ .+[' '].+) ]]
+  then # Single entry -> default CMake version
+    export PATH=${HOME}/tools/cmake-${CMake_version}/bin:$PATH
+  fi
+  CMAKE_path=("cmake") # installed CMake version
+  for VERSION in ${CMake_version:-}; do
+    tmp_path="$HOME/tools/cmake-${VERSION}/bin/cmake"
+    if [[ -x "$(command -v $tmp_path)" ]]; then CMAKE_path+=("$tmp_path"); fi
+  done
+  function test_CMake_generate {
+    # $1: cmake or full path to cmake
+    if [[ "$1" == "cmake" || -x "$(command -v $1)" && "$1" =~ .*cmake$ ]]; then
+      echo "----------------"
+      echo "Configuration = ${CONFIGURATION:-Debug}"
+      $1 ${CMakeGenFlags1[@]:?} ..
+      rm ./* -rf
+      if [[ ${B_REL:-} ]]; then echo "Configuration = Release"
+        $1 ${CMakeGenFlags2[@]:?} ..
+        rm ./* -rf
+      fi
+    else echo "Non existing command: $1"
+    fi
+  }
+- |
+  # CMake wrapper (Trusty, Xenial & Bionic); restore default behaviour.
+  if [[ "${TRAVIS_OS_NAME}" == "linux" &&
+        "$(lsb_release --codename)" =~ (trusty|xenial|bionic)$ ]]
+  then
+    if [[ -x $(command -v /usr/local/bin/cmake) ]]; then
+      function cmake { command /usr/local/bin/cmake $@; }
+    elif [[ -x $(command -v /usr/bin/cmake) ]]; then
+      function cmake { command /usr/bin/cmake $@; }
+    fi
   fi
 
-install:
-- cd ~/tools/vcpkg
-- ./vcpkg install ms-gsl
-- ./vcpkg install gtest
+- vcpkg install ms-gsl
+- vcpkg install gtest
+- |
+  # Update installed packages
+  ( set -euo pipefail
+    vcpkg update # print potential updates
+    if [[ $(vcpkg upgrade) != *'installed packages are up-to-date'* ]]
+    then
+      vcpkg upgrade --no-dry-run
+    fi
+  )
 
 ##====--------------------------------------------------------------------====##
 before_script:
@@ -231,35 +625,116 @@ before_script:
   # Configuration
   cd "${TRAVIS_BUILD_DIR}"
   mkdir -p build
-  cd build
+  mkdir -p build2
   GeneratorFlags='-k 10' # Ninja
+  if [[ ${Coverage} ]]; then coverage_bool="ON"
+  else coverage_bool="OFF"
+  fi
   export CFLAGS="${CFLAGS} -Werror"
   export CXXFLAGS="${CXXFLAGS} -Werror"
-- >
-  CMakeGenFlags="-G Ninja
-    -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}
-    -Wdev
-    -Werror=dev
-    --warn-uninitialized
-  " && echo $CMakeGenFlags
 - |
-  CMakeBuildFlags="--config ${CONFIGURATION:?} -- ${GeneratorFlags=}"
-  echo $CMakeBuildFlags
+  # CMake parameters
+  CMakeGenFlags1=("-G Ninja -DCMAKE_BUILD_TYPE=${CONFIGURATION:-Debug}")
+  CMakeGenFlags1+=("-DCODE_COVERAGE=${coverage_bool:?}")
+  SharedGenFlags+=("-DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE:?}")
+  if [[ ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
+    SharedGenFlags+=("-DCMAKE_CXX_CLANG_TIDY=${CMAKE_CXX_CLANG_TIDY}")
+  fi
+  SharedGenFlags+=(-Wdev -Werror=dev --warn-uninitialized)
+  CMakeGenFlags1+=(${SharedGenFlags[@]})
+  echo ${CMakeGenFlags1[@]}
+  if [[ ! ${CONFIGURATION:-} ]]; then
+    B_REL="Build both Debug and Release configurations"
+    CMakeGenFlags2=("-G Ninja -DCMAKE_BUILD_TYPE=Release")
+    CMakeGenFlags2+=(${SharedGenFlags[@]})
+  fi
 
 script:
-- cmake ${CMakeGenFlags:?} ..
-- cmake --build . ${CMakeBuildFlags:?}
+- cd ./build
+- cmake ${CMakeGenFlags1[@]:?} ..
+- cmake --build . --config ${CONFIGURATION:-Debug} -- ${GeneratorFlags}
+- |
+  if [[ ! ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
+    ctest -j $(nproc) --output-on-failure
+  fi
+- |
+  if [[ ${B_REL:-} ]]; then
+    cd ../build2
+    echo ${CMakeGenFlags2[@]:?}
+  fi
+- if [[ ${B_REL:-} ]]; then cmake ${CMakeGenFlags2[@]:?} ..; fi
+- |
+  if [[ ${B_REL:-} ]]; then
+    cmake --build . --config Release -- ${GeneratorFlags}
+  fi
+- |
+  if [[ ${B_REL:-} && ! ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
+    ctest -j $(nproc) --output-on-failure
+  fi
 
 ##====--------------------------------------------------------------------====##
 before_cache:
 - |
-  # Cleaning build cache
-  rm -rf ~/tools/vcpkg/buildtrees
-  rm -rf ~/tools/vcpkg/downloads
+  # Select files for caching
+  mkdir -p ~/tools/.cache/vcpkg
+  if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
+    mv -u -t ~/tools/.cache/vcpkg ${VCPKG_DIR}/vcpkg ${VCPKG_DIR}/vcpkg_src_hash
+  fi
+  mv -u -t ~/tools/.cache/vcpkg ${VCPKG_DIR}/installed
 
 cache:
   directories:
-  - ~/tools/vcpkg
+  - ~/tools/.cache
 
 ##====--------------------------------------------------------------------====##
-after_script: true
+after_success:
+- |
+  # Code coverage
+  cd "${TRAVIS_BUILD_DIR}/build"
+  if [[ ${Coverage:-} ]]; then
+  ( set -euo pipefail
+    Source_Dir="${TRAVIS_BUILD_DIR}"
+    Build_Dir="${TRAVIS_BUILD_DIR}/build"
+    bash_flags=("-n ${TRAVIS_JOB_NAME/ /_}") # Replace space with '_'
+    if [[ ${Coverage} == "grcov" ]]; then
+      bash_flags+=("-X gcov") # Disable gcov
+      coverage_report="coverage.json"
+      flags=("--branch")
+      if [[ ${CXX} == clang* ]]; then flags+=("--llvm"); fi
+      options=("-s ${Source_Dir:?}")
+      options+=("-t coveralls+" "--token unused")
+      options+=("--commit-sha ${TRAVIS_COMMIT}")
+      options+=("--prefix-dir ../") # suppress warning grcov v0.5.1
+      grcov ${Build_Dir:?} ${flags[@]} ${options[@]} > ${coverage_report:?}
+    elif [[ ${Coverage} == "lcov" ]]; then
+      bash_flags+=("-X gcov") # Disable gcov
+      coverage_report="coverage.info"
+      lcov --capture --directory ${Build_Dir:?} --output-file coverage.info
+      lcov --remove coverage.info '/usr/*' --output-file coverage.info
+      lcov --list coverage.info
+    elif [[ -x "$(command -v ${Coverage})" ]]; then
+      bash_flags+=("-x ${Coverage}")
+    fi
+    if [[ ${coverage_report:-} && -f "${coverage_report}" ]]; then
+      bash_flags+=("-f ${coverage_report}")
+    fi
+    if [[ "${Coverage}" == "gcov-8" ]]; then
+      # Filter-out messages: Prevent exceeding log length.
+      bash <(curl -s https://codecov.io/bash) ${bash_flags[@]} 2>&1 |
+        grep -v "has arcs" ||
+        echo "Codecov did not collect coverage reports"
+    else
+      bash <(curl -s https://codecov.io/bash) ${bash_flags[@]} ||
+        echo "Codecov did not collect coverage reports"
+    fi
+  )
+  fi
+
+##====--------------------------------------------------------------------====##
+after_script:
+- |
+  # Binary sizes:
+  ls -l "${TRAVIS_BUILD_DIR}/build/Console/console" 2>/dev/null || echo
+  ls -l "${TRAVIS_BUILD_DIR}/build/SudokuTests/SudokuTests" 2>/dev/null || echo
+  ls -l "${TRAVIS_BUILD_DIR}/build2/Console/console" 2>/dev/null || echo
+  ls -l "${TRAVIS_BUILD_DIR}/build2/SudokuTests/SudokuTests" 2>/dev/null || echo

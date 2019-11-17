@@ -1,4 +1,4 @@
-﻿//====---- Sudoku/Normalize.h                                         ----====//
+//====---- Sudoku/Normalize.h                                         ----====//
 //
 // Normalize Board, by switching option values, so the first/top row is always
 // the same. I.e. 1, 2, ... elem_size<N>

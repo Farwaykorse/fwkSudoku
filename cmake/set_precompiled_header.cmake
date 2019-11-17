@@ -11,9 +11,11 @@
 ## ````
 ##====--------------------------------------------------------------------====##
 include_guard()
+include(add_to_source_file_properties)
 
 function(set_precompiled_header Target HeaderFile SourceFile)
 if(MSVC)
+  cmake_minimum_required(VERSION 3.12...3.15) # add_to_source_file_properties()
   set(PCH_FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pch")
 
   target_sources(${Target}
@@ -26,9 +28,10 @@ if(MSVC)
 
   # Workaround Clang's /\-mixing and resulting warning (-Wmicrosoft-include).
   # Lets CMake set the full path.
-  # Confirmed for clang 7.0
+  # Confirmed for clang 7.0 and 8.0.0
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND
-      ${CMAKE_CXX_COMPILER_VERSION} EQUAL 7
+      ${CMAKE_CXX_COMPILER_VERSION} EQUAL 7 OR
+      ${CMAKE_CXX_COMPILER_VERSION} EQUAL 8
   )
     set(HeaderFile "${CMAKE_CURRENT_SOURCE_DIR}/${HeaderFile}")
   endif()

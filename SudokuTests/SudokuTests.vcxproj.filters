@@ -77,7 +77,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Coverage\coverage.ps1" />
     <None Include=".clang-tidy" />
     <None Include="$(MSBuildThisFileDirectory)README.md" />
   </ItemGroup>
@@ -91,5 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.md" />
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
 </Project>

@@ -2,12 +2,19 @@
 # Configuration #
 <!----------------------------------------------------------------------------->
 <!-- Description -->
-This document tries to document the used compiler and project configuration
-settings.
-To give an overview and keep track of any exceptions.
-While supplying motivation and discussion.
-No historic data is kept, since it is part of the git log.
-Unless a setting is considered a temporary fix.
+This document tries to document the compiler and project configuration settings.
+To document the motivation and to keep track of any exceptions.
+No historic data is kept (since it is part of the git log), unless a setting is
+considered a temporary fix.
+
+This document reflects the MSBuild project configurations, supporting only the
+most recent version of the used toolchain at the time of commit.
+
+The CMake configurations are kept in sync and contain additional toolchains as
+used on the CI environments.  
+See:
+[AppVeyor][AppVeyor-link] _(master branch)_ for the Windows builds and
+[TravisCI][Travis-link] for Linux and Apple OSX builds.
 
 Project specific settings are documented in their individual README files.
 Any other deviations should be considered configuration errors.
@@ -22,18 +29,19 @@ Any other deviations should be considered configuration errors.
 - [Static Analysers](#analysers)
   - [MSVC static analyser]
   - [Clang-Tidy](#tidy)
-  - [PVS-Studio]
+  - [PVS-Studio](#pvs)
   - [Cppcheck]
 
 <!---------------------------------------------------------><a id="general"></a>
 ## General Information ##
 <!----------------------------------------------------------------------------->
 Targets:
-- Cross-platform (currently: Windows, Linux, ... / x86/x64, ...)
 - Standard conforming (currently: C++17)
-- Compiling with any conforming compiler (currently: MSVC, Clang, GCC, ...)
+- Cross-platform (currently: Windows, Linux and OSX)
+- Compiling with any conforming compiler
+  (currently: MSVC, LLVM/clang, Intel C++, GCC and AppleClang)
 - Being warning free, while enabling as many warnings as possible
-- Increase execution performance (with a preference for x64 with MSVC)
+- Increase execution performance (with a preference for x64 and MSVC)
 
 
 <!----------------------------------------------------------><a id="format"></a>
@@ -58,10 +66,8 @@ project.
 ### MSVC ###
 <!----------------------------------------------------------------------------->
 MS Build configurations:
-- Debug x64
-- Release x64
-- Debug x86
-- Release x86
+- Debug x64/x86
+- Release x64/x86
 
 #### Basic Settings ####
 <!----------------------------------------------------------------------------->
@@ -71,27 +77,51 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 ##### All configurations
 ```
 /std:c++17         ISO C++ 17 standard
-/sdl               Enable SDL checks, additional warnings focused on security
+/sdl               Recommended Security Development Life-cycle checks & codegen
 /MP                Multiprocessor compilation (Do not use /Gm)
 /permissive-       Disable non-conforming constructs in Visual C++:
                    Enables: /Zc:rvaluecast /Zc:strictStrings and more.
                    (Updated compiler conformance.)
 /GR-               Disable rtti (run-time type information) smaller image.
                    Turn on to use dynamic_cast or typeid.
+/utf-8             Source files are UTF-8 encoded.
 /Yu"precompiled.h" Use precompiled headers
 /FI"precompiled.h" Force include, add precompiled to all files
 
 ---- implicitly set flags:
-/GS                Buffer Security Check. (default)
-/FC                Full-path of source code file in diagnostics (default)
-/Gm-               Prefer /MP (default)
+/EHsc               Exception handling configuration (default)
+/Gd                 Function calling convention (default)
+/GS                 Buffer Security Check. (default)
+/FC                 Full-path of source code file in diagnostics (default)
+/Gm-                Prefer /MP (default)
+/diagnostics:carret 
+/source-charset:utf-8 Source files are UTF-8 encoded without a BOM. Without this
+                   the compiler interprets it as ASCII and re-encodes to UTF-8
+                   before processing. (Set by /utf-8)
+/execution-charset:utf-8 Internal representation of string and character
+                   literals. (Set by /utf-8)
+/validate-charset  Validates that source files contain only UTF-8 characters.
+                   (Set by /utf-8)
+/Zc:forScope        Conformence in for loop scope
+/Zc:inline          Remove unreferenced code and data
+/Zc:wchar_t         Tread wchar_t as a buildin type
+
+Linker:
+/SUBSYSTEM:CONSOLE
+/DYNAMICBASE        Random base address
+/NXCOMPAT           Mark compatible with Data Execution Prevention (DEP)
+/MANIFEST
+/MANIFESTUAC
 ```
 ##### Debug configurations
 `````
 ---- implicitly set flags:
-/ZI              Program database for edit-and-continue (sets /Gy and /FC)
-                 (default for Debug)
-/Gy              Function-level linking. (set by /ZI)
+/JMC             Support Just My Code debugging (default) available since v15.8
+/ZI              PDB for edit-and-continue (sets /Gy and /FC) (default)
+/Gy              Function-level linking, function as COMDAT. (set by /ZI)
+/RTC1            Enable run-time checks
+
+Linker:
 /INCREMENTAL     Enable incremental linking (default for Debug in linker)
 /DEBUG:FASTLINK  Debug information format, allowing for faster linking.
                  Enable generation of full-program database is needed for
@@ -109,6 +139,11 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 ---- implicitly set flags:
 /O2        Maximize Speed (default Release)
 /GL        Whole program optimization (default Release)
+/Zi        Separate PDB
+
+Linker:
+/GUARD:CF  Control Flow Guard
+/LTCG      Link-time code generation, with /GL
 ```
 #### Useful settings for incidental use ####
 <!----------------------------------------------------------------------------->
@@ -271,10 +306,8 @@ Flags not set for all translation units are marked with a `*`.
 ### Clang-cl ###
 <!----------------------------------------------------------------------------->
 MS Build configurations:
-- ClangDebug x64
-- ClangRelease x64
-- ClangDebug x86
-- ClangRelease x86
+- LLVM_Debug x64/x86
+- LLVM_Release x64/x86
 
 [The latest user manual](https://clang.llvm.org/docs/UsersManual.html)
 Lists all options supported by Clang-cl.  
@@ -297,6 +330,10 @@ Use `-Xclang ` before a command to actually force it to the compiler.
   // toolset for actual version see macro `_MSC_FULL_VER`
   -fms-compatibility Excepting enough invalid C++ to parse most MS headers
   -fno-ms-compatibility
+
+---- implicitly set flags:
+/utf-8                Source files are UTF-8 encoded. Set source and runtime
+                      encoding to UTF-8.
 `````
 ##### Debug configurations
 `````
@@ -313,13 +350,13 @@ Linker:    Generate debug info:      no
 
 #### Enable Warnings
 <!----------------------------------------------------------------------------->
-[lefiticus/cppbestpractices](https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#gcc--clang)  
+[lefticus/cppbestpractices](https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#gcc--clang)  
 Some warnings are explicitly set so they stay active when an encompassing
 setting is disabled.  
 [Clang diagnostics reference](https://clang.llvm.org/docs/DiagnosticsReference.html)
 ````
 /Wall                Enables -Weverything
--Weverything         All warnings enabled
+  -Weverything       All warnings enabled
   -Wall              
   -Wextra            
   -Wpedantic         ISO C/C++ conformance (warn on extensions)
@@ -344,10 +381,8 @@ setting is disabled.
 ### Intel C++ ###
 <!----------------------------------------------------------------------------->
 MS Build configurations:
-- IntelDebug x64
-- IntelRelease x64
-- IntelDebug x86
-- IntelRelease x86
+- Intel_Debug x64/x86
+- Intel_Release x64/x86
 
 #### Basic Settings ####
 <!----------------------------------------------------------------------------->
@@ -391,7 +426,7 @@ MS Build configurations:
 <!----------------------------------------------------------------------------->
 - [MSVC static analyser]
 - [Clang-Tidy](#tidy)
-- [PVS-Studio]
+- [PVS-Studio](#pvs)
 - [Cppcheck]
 
 <!------------------------------------------------------------><a id="tidy"></a>
@@ -406,12 +441,29 @@ Notes on the motivation behind the disabling of some of the checks.
 - `-cert-dcl21-cpp`
   Advice: run this check incidentally.
   Useful to warn on use of a reference type, but with value types following this
-  advice to return const object breaks repeated use of the postfix increment and
-  decrement operators.
+  advice, to return a const object, breaks repeated use of the postfix increment
+  and decrement operators.
   (See discussion: 
   [Matt Godbolt on Twitter](https://twitter.com/mattgodbolt/status/981269382092468226))  
   Documentation:
   [cert-dcl21-cpp](https://clang.llvm.org/extra/clang-tidy/checks/cert-dcl21-cpp.html)
 
+<!-------------------------------------------------------------><a id="pvs"></a>
+### PVS-Studio ###
+<!----------------------------------------------------------------------------->
+The [PVS-Studio Analyser][PVS-Studio-link] is used with the free license.
+Requiring the first two lines of any analysed `.cpp` file to be match the type
+of [license][PVS-free-license].
+For this project all options would be valid but the most general was chosen:
+> This is an open source non-commercial project. Dear PVS-Studio, please check
+> it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+> http://www.viva64.com
+
+[PVS-Studio-link]:  https://www.viva64.com/en/pvs-studio/
+[PVS-free-license]: https://www.viva64.com/en/b/0457/
+
 ----
 [top](#top)
+
+[AppVeyor-link]:  https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master
+[Travis-link]:    https://travis-ci.com/Farwaykorse/fwkSudoku/branches

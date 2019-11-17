@@ -14,6 +14,7 @@
 
 #include <gsl/gsl>
 #include <bitset>
+#include <string>
 #include <vector>
 #include <utility>
 #include <cassert>
@@ -26,11 +27,12 @@ namespace Sudoku
 template<int E>
 class Options
 {
+	static_assert(E >= 1);
 	using bitset = std::bitset<E + 1>;
 
 public:
 	Options() noexcept;
-	Options(int) = delete;                    // by bitset
+	Options(int) = delete; // NOLINT: implicit catch all that convert to bitset
 	explicit Options(const bitset&) noexcept; // 0th bit is last in input
 	explicit Options(bitset&&) noexcept;
 	explicit constexpr Options(Value) noexcept;
@@ -68,7 +70,7 @@ public:
 	}
 	[[nodiscard]] friend bool
 		operator<(const Options<E>& left, const Options<E>& right)
-#if defined(__ICL) // Intel C++ 19.0
+#if defined(__ICL) && __ICL <= 1900
 			noexcept(false)
 #else
 			noexcept(sizeof(Options<E>) <= sizeof(std::uint64_t))
@@ -108,7 +110,6 @@ private:
 	// 0th bit is "need to solve":
 	// false if answer has been set = inverse of answer
 	bitset data_{};
-
 }; // class Options
 
 //====---- free-functions ------------------------------------------------====//
@@ -143,18 +144,19 @@ template<int E>
 [[nodiscard]] bool operator!=(Value const&, const Options<E>&) noexcept;
 
 template<int E>
-[[nodiscard]] Options<E> XOR(Options<E>& A, Options<E>& B) noexcept;
+[[nodiscard]] Options<E> XOR(Options<E> const& A, Options<E> const& B) noexcept;
 
 template<int E>
 [[nodiscard]] Options<E>
-	operator+(const Options<E>&, const Options<E>&) noexcept;
+	operator+(Options<E> const&, Options<E> const&) noexcept;
 template<int E>
 [[nodiscard]] Options<E>
-	operator-(const Options<E>&, const Options<E>&) noexcept;
+	operator-(Options<E> const&, Options<E> const&) noexcept;
 
 // return shared options
 template<int E>
-[[nodiscard]] Options<E> shared(Options<E>& A, Options<E>& B) noexcept;
+[[nodiscard]] Options<E>
+	shared(Options<E> const& A, Options<E> const& B) noexcept;
 
 //====--------------------------------------------------------------------====//
 
@@ -547,7 +549,7 @@ template<int E>
 inline Options<E>& Options<E>::operator-=(const Options& other) noexcept
 {
 	assert(is_answer_fast(other)); // do not remove the answer-bit
-	Options tmp = ::Sudoku::XOR(*this, other);
+	const Options tmp = ::Sudoku::XOR(*this, other);
 	data_ &= tmp.data_;
 	return *this;
 }

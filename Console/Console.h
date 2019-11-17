@@ -62,8 +62,8 @@ public:
 	delimiter d;
 
 private:
-	int charsize(int value) const;
-	int charsize(int, int length) const; // recursion
+	[[nodiscard]] int charsize(int value) const;
+	[[nodiscard]] int charsize(int, int length) const; // recursion
 	//	bool Format::find_option(const Board<std::set<int>>&, Location, int
 	// value);
 	// format elem
@@ -187,7 +187,6 @@ std::stringstream Console::print_board(const Board<Options<E>, N>& input) const
 	n4 << std::setfill(' ') << std::setw(block_size) << d.col_block;
 
 	stream << std::setfill(d.empty) << std::setw(base_size<N>);
-	const std::string empty = stream.str();
 
 	stream << '\n' << n0.str();
 
@@ -248,7 +247,7 @@ std::stringstream Console::print_row(
 
 //====--------------------------------------------------------------------====//
 // Solver function applications:
-template<int N>
+template<int N> // NOLINTNEXTLINE(runtime/references)
 void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
 {
 	int found{1};
@@ -270,7 +269,7 @@ void test_solver_unique(Board<Options<elem_size<N>>, N>& board)
 	}
 }
 
-template<int N>
+template<int N> // NOLINTNEXTLINE(runtime/references)
 void test_solver_exclusive(Board<Options<elem_size<N>>, N>& board)
 {
 	int found{1};

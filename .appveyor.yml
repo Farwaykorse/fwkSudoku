@@ -1,0 +1,345 @@
+##====---- appveyor.yml                                               ----====##
+version: "{build}"
+# fetch repository as a zip archive
+shallow_clone: true
+
+branches:
+  except:
+  - /^[Tt]ravis.*/
+
+cache:
+- C:\Users\appveyor\Tools\cache\vcpkg
+- C:\Tools\vcpkg\installed
+
+skip_branch_with_pr: true
+skip_commits:
+  files:
+  - .codecov.yml
+  - .editorconfig
+  - .git*
+  - .github/
+  - .travis.yml
+  - .yamllint
+  - docs/
+  - LICENSE
+  - '**/.clang-*'
+  - '**/*.filters'
+  - '**/*.md'
+  - '**/CPPLINT.cfg'
+
+##====--------------------------------------------------------------------====##
+## Build Matrix Configuration
+# Dimensions: 4 (image; platform; configuration; environment:matrix)
+#
+##====-----------------
+# Options:         Values (supported for this script):
+# ------------------------------------------------------------------------------
+# image            Visual Studio 2017 (default), Visual Studio 2015
+# platform         x64 (default), x86
+# configuration    Debug, Release        - use the MSVC compiler
+#                  LLVM_(Debug, Release) - use the LLVM/clang compiler
+# BUILDSYSTEM      MSBuild - (default) requires CMake generator
+#                  Ninja - requires CMake generator
+#                  MSBuild_Solution - use Visual Studio project configurations
+# TOOLSET          (default empty) - set to image default or by configuration
+#                  MSBuild only.
+#                  When installed: ClangCL, v142, llvm, v141, v140, v140_xp
+##====-----------------
+## Create_Matrix
+image:
+- Visual Studio 2017
+- Visual Studio 2019
+
+platform:
+- x86
+- x64
+
+configuration:
+- Debug
+- Release
+- LLVM_Debug
+- LLVM_Release
+
+environment:
+  matrix:
+  - BUILDSYSTEM: Ninja
+  - BUILDSYSTEM: MSBuild
+  - BUILDSYSTEM: MSBuild_Solution
+  global:
+    # yamllint disable rule:line-length
+    APPVEYOR_SAVE_CACHE_ON_ERROR: true
+    VCVAR2015: 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat'
+    VCVAR2017: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
+    VCVAR2019: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat'
+    # vcpkg
+    TOOLCHAIN_FILE: 'C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake'
+    # yamllint enable rule:line-length
+## /Create_Matrix
+##====-----------------
+matrix:
+  ## Remove_from_Matrix
+  exclude:
+  # Not supported by script / invalid combination:
+  - image: Visual Studio 2015
+    configuration: LLVM_Debug
+    BUILDSYSTEM: MSBuild
+  - image: Visual Studio 2015
+    configuration: LLVM_Release
+    BUILDSYSTEM: MSBuild
+  - image: Visual Studio 2015
+    BUILDSYSTEM: MSBuild_Solution
+  # Reduce build count testing CMake generators for MSBuild.
+  - BUILDSYSTEM: MSBuild
+    platform: x86
+  # Reduce builds failing due to CMake generator limitations for MSVC. GitHub #2
+  - BUILDSYSTEM: MSBuild
+    Configuration: Release
+  # Reduce VS2019 build to: Ninja - x64 - Release & LLVM_Release
+  - image: Visual Studio 2019
+    platform: x86
+  - image: Visual Studio 2019
+    configuration: Debug
+  - image: Visual Studio 2019
+    configuration: LLVM_Debug
+  - image: Visual Studio 2019
+    BUILDSYSTEM: MSBuild_Solution
+    configuration: LLVM_Release
+  ## /Remove_from_Matrix
+  allow_failures:
+  # CMake generator limitations: MSBuild Failing error suppression. GitHub #2.
+  - configuration: Debug
+    BUILDSYSTEM: MSBuild
+  - configuration: Release
+    BUILDSYSTEM: MSBuild
+  # Try VS2019:
+  - image: Visual Studio 2019
+##====-----------------
+## Modify_Matrix
+# Specializing matrix job configuration
+# Note: overwrites existing, only new variables and notifications are merged.
+for:
+-
+  branches:
+    only:
+    - master
+  notifications:
+  - provider: Email
+    to: '{{committerEmail}}'
+    on_build_success: false
+-
+  matrix:
+    only:
+    - BUILDSYSTEM: MSBuild
+  # Only build for [master] to reduce AppVeyor test-load
+  branches:
+    only:
+    - master
+-
+  matrix:
+    except:
+    - BUILDSYSTEM: MSBuild_Solution
+  skip_commits:
+    files:
+    - .codecov.yml
+    - .editorconfig
+    - .git*
+    - .github/
+    - .travis.yml
+    - .yamllint
+    - docs/
+    - LICENSE
+    - '**/.clang-*'
+    - '**/*.filters'
+    - '**/*.md'
+    - '**/*.sln'
+    - '**/*.vcxproj'
+    - '**/*.vcxitems'
+    - '**/CPPLINT.cfg'
+-
+  matrix:
+    only:
+    - BUILDSYSTEM: MSBuild_Solution
+  skip_commits:
+    files:
+    - .codecov.yml
+    - .git*
+    - .github/
+    - .editorconfig
+    - .travis.yml
+    - .yamllint
+    - cmake/
+    - docs/
+    - LICENSE
+    - '**/.clang-*'
+    - '**/CMakeLists.txt'
+    - '**/*.cmake'
+    - '**/*.filters'
+    - '**/*.md'
+    - '**/CPPLINT.cfg'
+  before_build:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  build_script:
+  - >-
+    MSBuild
+    -nologo
+    -maxcpucount
+    -verbosity:normal
+    -property:Configuration="%CONFIGURATION%"
+    -property:Platform="%PLATFORM%"
+    -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+    -validate
+  test_script:
+  - ps: |
+      $env:TEST_EXE_PATH = "$pwd\$env:CONFIGURATION\SudokuTests.exe"
+      if (![IO.File]::Exists("$env:TEST_EXE_PATH")) {
+        $env:TEST_EXE_PATH = "$pwd\x64\$env:CONFIGURATION\SudokuTests.exe"
+        if (![IO.File]::Exists("$env:TEST_EXE_PATH")) {
+          Write-Error "Invalid test executable path."
+        }
+      }
+  - >-
+    VSTest.Console
+    %TEST_EXE_PATH%
+    /UseVsixExtensions:true
+    /Settings:msvc\TestAdapter.runsettings
+    /logger:Appveyor
+## /Modify_Matrix
+
+##====--------------------------------------------------------------------====##
+init:
+- ps: |
+    New-Item -ItemType Directory -Force ~\tools | pushd
+    git clone https://github.com/Farwaykorse/AppVeyorHelpers.git --quiet
+    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.13.1
+    popd
+- ps: Show-SystemInfo -LLVM -CMake -Curl -Path
+- ps: |
+    if ("$env:BUILDSYSTEM" -eq "MSBuild_Solution") {
+      $out += 'Build configuration: MSBuild projects'
+    } else {
+      $out += 'Build configuration: CMake // '
+      $out += "$(cmake --version | Select-Object -First 1)`n"
+      $out += "Build system:        $env:BUILDSYSTEM"
+      if ($env:NINJA_TAG) { $out +=": $env:NINJA_TAG" }
+    }; Write-Output "$out"
+
+##====--------------------------------------------------------------------====##
+## Install tools and dependencies
+install:
+- ps: |
+    if("$env:BUILDSYSTEM" -eq "Ninja") {
+      New-Item -Path C:\Tools\ninja -ItemType Directory 1>$null
+      $null = Install-Ninja -InstallDir C:\Tools\ninja -AddToPath `
+        -Tag 'v1.9.0' -SHA512 `
+          '1C050E602EC63D4DCF44D9AB3D2D02AC731B4B2977BC0B420A21E85604487F58EC8D3045941D4153EF06AB00C175CA7CF9D57B8E20A757528290E135639962AC'
+    }
+- ps: Update-Vcpkg
+- vcpkg install ms-gsl:%PLATFORM%-windows
+- vcpkg install gtest:%PLATFORM%-windows
+
+##====--------------------------------------------------------------------====##
+before_build:
+- ps: |
+    if (! $env:TOOLSET -and $env:CONFIGURATION -match "^LLVM_.*") {
+      if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2017") {
+        $env:TOOLSET = "llvm"
+      } else {
+        $env:TOOLSET = "ClangCL"
+      }
+      $env:CONFIGURATION = $env:CONFIGURATION -replace "^LLVM_",""
+    }
+- ps: |
+    if ("$env:BUILDSYSTEM" -eq "Ninja") {
+      $GeneratorFlags = '-k 10'
+      $Architecture = $env:PLATFORM
+      if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2015") {
+        $env:VCVARSALL = "`"$env:VCVAR2015`" $Architecture"
+      } elseif ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2017"){
+        $env:VCVARSALL = "`"$env:VCVAR2017`" $Architecture"
+      } else {
+        $env:VCVARSALL = "`"$env:VCVAR2019`" $Architecture"
+      }
+      $CMakeGenFlags = "-G Ninja"
+    } else {
+      $GeneratorFlags = '/m /v:normal'
+      if ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2015") {
+        $Generator = 'Visual Studio 14 2015'
+      } elseif ("$env:APPVEYOR_BUILD_WORKER_IMAGE" -match "Visual Studio 2017"){
+        $Generator = 'Visual Studio 15 2017'
+      } else {
+        $Generator = 'Visual Studio 16 2019'
+      }
+      if ("$env:PLATFORM" -eq "x86") { $Architecture = "Win32"}
+      else { $Architecture = "x64" }
+      if ($env:TOOLSET) {
+        $CMakeGenFlags = `
+          "-G `"$Generator`" -A $Architecture -T $env:TOOLSET"
+      } else {
+        $CMakeGenFlags = "-G `"$Generator`" -A $Architecture"
+      }
+    }
+    if ("$env:TOOLSET" -match "llvm|ClangCL") {
+      $env:CC  = "clang-cl"
+      $env:CXX = "clang-cl"
+      $env:CFLAGS   = "$env:CFLAGS -Werror"
+      $env:CXXFLAGS = "$env:CXXFLAGS -Werror"
+      if ("$env:PLATFORM" -eq "x86") { # Cross-compile to x86
+        $env:CFLAGS   = "$env:CFLAGS -m32";
+        $env:CXXFLAGS = "$env:CXXFLAGS -m32";
+      }
+    } else {
+      $env:CFLAGS   = "$env:CFLAGS /WX"
+      $env:CXXFLAGS = "$env:CXXFLAGS /WX"
+    }
+    $env:CMakeGenFlags = "$CMakeGenFlags"            `
+      +" -DCMAKE_BUILD_TYPE=$env:CONFIGURATION"      `
+      +" -DCMAKE_TOOLCHAIN_FILE=$env:TOOLCHAIN_FILE" `
+      +' -Wdev -Werror=dev --warn-uninitialized'
+    $env:CMakeBuildFlags = "--config $env:CONFIGURATION -- $GeneratorFlags"
+- cd %APPVEYOR_BUILD_FOLDER%
+- mkdir build && cd build
+- if %BUILDSYSTEM%==Ninja (call %VCVARSALL%)
+- echo %CMakeGenFlags%
+- cmake .. %CMakeGenFlags%
+
+##====--------------------------------------------------------------------====##
+build_script:
+- echo %CMakeBuildFlags%
+- cmake --build . %CMakeBuildFlags%
+
+after_build:
+- ps: |
+    Get-ChildItem -Recurse -Include *.exe, *.dll | Select-Object Length, Name
+
+##====--------------------------------------------------------------------====##
+test_script:
+- >-
+  ctest -j %NUMBER_OF_PROCESSORS%
+  --test-action test --no-compress-output
+  --quiet
+- ps: $null = Assert-ValidCodecovYML
+
+##====--------------------------------------------------------------------====##
+deploy: off
+
+##====--------------------------------------------------------------------====##
+on_finish:
+- ps: |
+    # Process test results
+    if (Test-Path ".\Testing\TAG") {
+      $tag_name = "$(Get-Content .\Testing\TAG -TotalCount 1)"
+      Copy-Item .\Testing\$tag_name\Test.xml .\Test.xml
+      $template = `
+        "https://raw.githubusercontent.com/rpavlik/jenkins-ctest-plugin/master/ctest-to-junit.xsl"
+      $XSLInputElement = New-Object System.Xml.Xsl.XslCompiledTransform
+      $XSLInputElement.Load("$template")
+      $XSLInputElement.Transform(
+        (Resolve-Path .\Test.xml),
+        (Join-Path (Resolve-Path .) "ctest-to-junit-results.xml")
+      )
+      $wc = New-Object 'System.Net.WebClient'
+      $wc.UploadFile(
+        "https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)",
+        (Resolve-Path .\ctest-to-junit-results.xml)
+      )
+    }

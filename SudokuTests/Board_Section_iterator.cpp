@@ -1,4 +1,8 @@
-﻿//====---- SudokuTests/Board_Section_iterator.cpp                    ----====//
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+//
+//====---- SudokuTests/Board_Section_iterator.cpp                    ----====//
 //
 // Unit tests for the template class Sudoku::Board_Section
 //====--------------------------------------------------------------------====//
@@ -98,16 +102,21 @@ namespace type_properties
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) && not(defined(__clang__) && __clang_major__ < 6)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 } // namespace type_properties
 
 namespace constructors
@@ -122,7 +131,7 @@ namespace constructors
 	static_assert(std::is_nothrow_default_constructible_v<const_Col_Itr>);
 	static_assert(std::is_nothrow_default_constructible_v<const_Block_Itr>);
 	static_assert(not std::is_trivially_default_constructible_v<typeT>);
-	TEST(Section_Itr, constr_default)
+	TEST(SectionItr, constrDefault)
 	{
 		EXPECT_EQ((Row_iterator<dataT, 3>().location()), L(0, 0));
 		EXPECT_EQ((Col_iterator<dataT, 3>().location()), L(0, 0));
@@ -182,7 +191,7 @@ namespace constructors
 		std::is_nothrow_constructible_v<const_Block_Itr, Board*, int, int>);
 	static_assert(
 		std::is_nothrow_constructible_v<const_Row_Itr, Board const*, int, int>);
-	TEST(Section_Itr, constr_id_elem)
+	TEST(SectionItr, constrIdElem)
 	{
 		Board board{};
 		EXPECT_EQ((Row_iterator<dataT, 3>(&board, 0, 0).location()), L(0, 0));
@@ -234,7 +243,7 @@ namespace constructors
 	static_assert(not std::is_convertible_v<Block_Itr, L>);
 	static_assert(std::is_constructible_v<L, typeT>);
 	static_assert(std::is_nothrow_constructible_v<L, typeT>);
-	TEST(Section_Itr, Location)
+	TEST(SectionItr, Location)
 	{
 		Board board{};
 		const Board cboard{};
@@ -308,7 +317,7 @@ struct test_elements
 };
 
 //====--------------------------------------------------------------------====//
-TEST(Section_Itr, begin_end)
+TEST(SectionItr, beginEnd)
 { // All iterator categories
 	test_elements TE{};
 	auto& board        = TE.A;
@@ -418,7 +427,7 @@ TEST(Section_Itr, begin_end)
 	}
 }
 
-TEST(Section_Itr, Location_conversion)
+TEST(SectionItr, LocationConversion)
 {
 	using L = Location<2>;
 
@@ -465,7 +474,7 @@ TEST(Section_Itr, Location_conversion)
 	}
 }
 
-TEST(Section_Itr, dereference)
+TEST(SectionItr, dereference)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 3);
@@ -530,7 +539,7 @@ TEST(Section_Itr, dereference)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, pre_increment)
+TEST(SectionItr, preIncrement)
 { // All iterator categories
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -642,7 +651,7 @@ TEST(Section_Itr, pre_increment)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, post_increment)
+TEST(SectionItr, postIncrement)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -711,7 +720,7 @@ TEST(Section_Itr, post_increment)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, equal)
+TEST(SectionItr, equal)
 { // All iterator categories
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -773,7 +782,7 @@ TEST(Section_Itr, equal)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, not_equal)
+TEST(SectionItr, notEqual)
 { // InputIterator
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -832,7 +841,7 @@ TEST(Section_Itr, not_equal)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, member_access)
+TEST(SectionItr, memberAccess)
 { // input iterator category
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -867,7 +876,7 @@ TEST(Section_Itr, member_access)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, InputIterator)
+TEST(SectionItr, InputIterator)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -899,7 +908,7 @@ TEST(Section_Itr, InputIterator)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, OutputIterator)
+TEST(SectionItr, OutputIterator)
 {
 	Board<int, 2> board{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	Row<int, 2> tmp(board, 1);
@@ -963,7 +972,7 @@ TEST(Section_Itr, OutputIterator)
 	r = tmp.end();
 }
 
-TEST(Section_Itr, ForwardIterator)
+TEST(SectionItr, ForwardIterator)
 {
 	test_elements TE{};
 	auto& B = TE.A;
@@ -1016,7 +1025,7 @@ TEST(Section_Itr, ForwardIterator)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, pre_decrement)
+TEST(SectionItr, preDecrement)
 { // operator--()
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1047,7 +1056,6 @@ TEST(Section_Itr, pre_decrement)
 		static_assert(std::is_same_v<int&, decltype(*(--A.end()))>);
 		static_assert(
 			std::is_same_v<decltype(A.cend())&, decltype(--A.cend())>);
-		static_assert(std::is_same_v<int&, decltype(*(--A.end()))>);
 		static_assert(std::is_same_v<int const&, decltype(*(--A.cend()))>);
 
 		// Sanity-check
@@ -1096,7 +1104,7 @@ TEST(Section_Itr, pre_decrement)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, post_decrement)
+TEST(SectionItr, postDecrement)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1190,7 +1198,7 @@ TEST(Section_Itr, post_decrement)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, BidirectionalIterator)
+TEST(SectionItr, BidirectionalIterator)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1243,7 +1251,7 @@ TEST(Section_Itr, BidirectionalIterator)
 }
 
 // NOLINTNEXTLINE(readability-function-size)
-TEST(Section_Itr, increment_by_integer)
+TEST(SectionItr, incrementByInteger)
 { // operator+=(int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1378,7 +1386,7 @@ TEST(Section_Itr, increment_by_integer)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, increment_by_integer2)
+TEST(SectionItr, incrementByInteger2)
 { // operator+(int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1473,7 +1481,7 @@ TEST(Section_Itr, increment_by_integer2)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, increment_by_integer3)
+TEST(SectionItr, incrementByInteger3)
 { // operator+(int, iterator)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1569,7 +1577,7 @@ TEST(Section_Itr, increment_by_integer3)
 }
 
 // NOLINTNEXTLINE(readability-function-size)
-TEST(Section_Itr, decrement_by_integer)
+TEST(SectionItr, decrementByInteger)
 { // operator-=(int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1690,7 +1698,7 @@ TEST(Section_Itr, decrement_by_integer)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, decrement_by_integer2)
+TEST(SectionItr, decrementByInteger2)
 { // operator-(int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1784,7 +1792,7 @@ TEST(Section_Itr, decrement_by_integer2)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, difference)
+TEST(SectionItr, difference)
 { // operator-(iterator)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1880,7 +1888,7 @@ TEST(Section_Itr, difference)
 }
 
 // NOLINTNEXTLINE(readability-function-size)
-TEST(Section_Itr, direct_access)
+TEST(SectionItr, directAccess)
 { // & operator[](int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -2019,7 +2027,7 @@ TEST(Section_Itr, direct_access)
 		ADD_FAILURE();
 }
 
-TEST(Section_Itr, comparison)
+TEST(SectionItr, comparison)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -2173,7 +2181,7 @@ int range_for_sum(T structure)
 	return total;
 }
 
-TEST(Section_Itr, IteratorLoop)
+TEST(SectionItr, IteratorLoop)
 {
 	Board<int, 2> A{9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	const Board<int, 2> cA{

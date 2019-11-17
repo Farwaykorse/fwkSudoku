@@ -1,4 +1,8 @@
-﻿//===--- SudokuTests/Solver_remove_option.cpp                           ---===//
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+//
+//===--- SudokuTests/Solver_remove_option.cpp                           ---===//
 //
 // Unit tests for the option removing functions in Sudoku::Solver
 //===----------------------------------------------------------------------===//
@@ -40,7 +44,7 @@ using ::Sudoku::Value;
 using ::Sudoku::error::invalid_Location;
 using ::Sudoku::error::invalid_Board;
 
-TEST(Solver, remove_option)
+TEST(Solver, removeOption)
 {
 	using L2 = Location<2>;
 
@@ -56,17 +60,19 @@ TEST(Solver, remove_option)
 	EXPECT_THROW(remove_option(board, L2{16}, Value{1}), invalid_Location);
 	// value out of bounds (2-sided)
 	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2(2), Value{0}), "Assertion failed: is_valid");
+		remove_option(board, L2(2), Value{0}),
+		"Assertion .*is_valid<N>\\(value\\)");
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2(2), Value{9}), "Assertion failed: is_valid");
+		remove_option(board, L2(2), Value{9}),
+		"Assertion .*is_valid<N>\\(value\\)");
 #else
 	EXPECT_THROW(remove_option(board, L2{2}, Value{9}), std::out_of_range);
 #endif // NDEBUG
 	// last option (not answer)
 	board[0][2] = std::bitset<5>{"01001"}; // 3
 	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2(2), Value{3}), "Assertion failed: count > 0");
+		remove_option(board, L2(2), Value{3}), "Assertion .*count > 0");
 	// TODO throw from single_option?
 
 	// return type
@@ -105,7 +111,7 @@ TEST(Solver, remove_option)
 	EXPECT_EQ(board[2][1].count_all(), 1U);
 }
 
-TEST(Solver, remove_option_mask)
+TEST(Solver, removeOptionMask)
 {
 	using L2 = Location<2>;
 	using O2 = Options<4>;
@@ -115,18 +121,17 @@ TEST(Solver, remove_option_mask)
 	// answer-bit in mask
 	auto mask = Options<4>{Value{0}};
 	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2{0}, mask),
-		"Assertion failed: is_answer_fast.mask.");
+		remove_option(board, L2{0}, mask), "Assertion .*is_answer_fast.mask.");
 	mask = Options<4>{};
 #ifdef NDEBUG
 	EXPECT_THROW(remove_option(board, L2{0}, mask), invalid_Board);
 #else
 	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2{0}, mask), "Assertion failed: is_answer_fast");
+		remove_option(board, L2{0}, mask), "Assertion .*is_answer_fast");
 #endif
 	mask.clear();
 	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2{0}, mask), "Assertion failed: .*is_empty");
+		remove_option(board, L2{0}, mask), "Assertion .*is_empty");
 	// throw from Board::at(loc)
 	mask = Options<4>{Value{1}};
 	EXPECT_NO_THROW(remove_option(board, L2{0}, mask));
@@ -154,7 +159,7 @@ TEST(Solver, remove_option_mask)
 	EXPECT_EQ(remove_option(board, L2{1, 1}, mask), 15);
 }
 
-TEST(Solver, remove_option_section)
+TEST(Solver, removeOptionSection)
 {
 	using L = Location<2>;
 	// remove_option_section(SectionT, Location ignore, int value)
@@ -230,7 +235,7 @@ TEST(Solver, remove_option_section)
 	EXPECT_TRUE(is_answer(B1[0][0], Value{2}));
 	EXPECT_TRUE(is_answer(B1[0][1], Value{2}));
 }
-TEST(Solver, remove_option_section_1)
+TEST(Solver, removeOptionSection1)
 {
 	using L  = Location<2>;
 	using vL = std::vector<L>;
@@ -272,9 +277,9 @@ TEST(Solver, remove_option_section_1)
 	ASSERT_EQ(B1[3][1].count(), 4U);
 	ASSERT_NO_THROW(
 		remove_option_section(B1, B1.row(3), vL{L(3, 0)}, Value{3}));
-	EXPECT_EQ(B1[3][1].count(), 3u);
+	EXPECT_EQ(B1[3][1].count(), 3U);
 }
-TEST(Solver, remove_option_section_2)
+TEST(Solver, removeOptionSection2)
 {
 	using L  = Location<2>;
 	using vL = std::vector<L>;
@@ -288,30 +293,30 @@ TEST(Solver, remove_option_section_2)
 	// row
 	ASSERT_NO_THROW(
 		remove_option_section(B, B.row(0), vL{L(0), L(1)}, vV{b{"00110"}}));
-	EXPECT_EQ(B[0][3].count(), 2u);
+	EXPECT_EQ(B[0][3].count(), 2U);
 	EXPECT_EQ(
 		remove_option_section(
 			B, B.row(1), vL{L(1, 0), L(1, 1)}, vV{b{"11000"}}),
 		4);
-	EXPECT_EQ(B[0][0].count(), 4u);
-	EXPECT_EQ(B[0][1].count(), 4u);
-	EXPECT_EQ(B[1][1].count(), 4u);
-	EXPECT_EQ(B[0][2].count(), 2u);
-	EXPECT_EQ(B[0][3].count(), 2u);
+	EXPECT_EQ(B[0][0].count(), 4U);
+	EXPECT_EQ(B[0][1].count(), 4U);
+	EXPECT_EQ(B[1][1].count(), 4U);
+	EXPECT_EQ(B[0][2].count(), 2U);
+	EXPECT_EQ(B[0][3].count(), 2U);
 	// col
 	B = cB; // reset
 	ASSERT_NO_THROW(
 		remove_option_section(B, B.col(0), vL{L(0), L(1, 0)}, vV{b{"01010"}}));
-	EXPECT_EQ(B[3][0].count(), 2u);
+	EXPECT_EQ(B[3][0].count(), 2U);
 	B = cB; // reset
 	EXPECT_EQ(
 		remove_option_section(
 			B, B.col(3), vL{L(0, 3), L(1, 3)}, vV{b{"01100"}}),
 		4);
-	EXPECT_EQ(B[0][3].count(), 4u);
-	EXPECT_EQ(B[1][3].count(), 4u);
-	EXPECT_EQ(B[2][3].count(), 2u);
-	EXPECT_EQ(B[3][3].count(), 2u);
+	EXPECT_EQ(B[0][3].count(), 4U);
+	EXPECT_EQ(B[1][3].count(), 4U);
+	EXPECT_EQ(B[2][3].count(), 2U);
+	EXPECT_EQ(B[3][3].count(), 2U);
 	B = cB; // reset
 	EXPECT_THROW(
 		remove_option_section(
@@ -321,22 +326,22 @@ TEST(Solver, remove_option_section_2)
 	B = cB; // reset
 	ASSERT_NO_THROW(
 		remove_option_section(B, B.block(0), vL{L(0), L(1)}, vV{b{"01010"}}));
-	EXPECT_EQ(B[1][0].count(), 2u);
+	EXPECT_EQ(B[1][0].count(), 2U);
 	EXPECT_EQ(
 		remove_option_section(
 			B, B.block(3), vL{L(2, 2), L(3, 1)}, vV{b{"10100"}}),
 		6);
-	EXPECT_EQ(B[0][0].count(), 4u);
-	EXPECT_EQ(B[0][1].count(), 4u);
-	EXPECT_EQ(B[1][0].count(), 2u);
-	EXPECT_EQ(B[1][1].count(), 2u);
+	EXPECT_EQ(B[0][0].count(), 4U);
+	EXPECT_EQ(B[0][1].count(), 4U);
+	EXPECT_EQ(B[1][0].count(), 2U);
+	EXPECT_EQ(B[1][1].count(), 2U);
 	// single ignore value
 	B = cB; // reset
-	ASSERT_EQ(B[3][1].count(), 4u);
+	ASSERT_EQ(B[3][1].count(), 4U);
 	ASSERT_NO_THROW(remove_option_section(B, B.row(3), vL{L(3, 0)}, vV{v{3}}));
-	EXPECT_EQ(B[3][1].count(), 3u);
+	EXPECT_EQ(B[3][1].count(), 3U);
 }
-TEST(Solver, remove_option_outside_block)
+TEST(Solver, removeOptionOutsideBlock)
 {
 	using L = Location<2>;
 
@@ -344,17 +349,17 @@ TEST(Solver, remove_option_outside_block)
 	Board<Options<4>, 2> B1;
 
 	// row
-	ASSERT_EQ(B1[0][1].count(), 4u);
+	ASSERT_EQ(B1[0][1].count(), 4U);
 	ASSERT_NO_THROW(remove_option_outside_block(B1, B1.row(0), L(0), Value{1}));
 	EXPECT_EQ(remove_option_outside_block(B1, B1.row(1), L(1, 0), Value{3}), 2);
 	// col
 	ASSERT_NO_THROW(remove_option_outside_block(B1, B1.col(0), L(0), Value{1}));
 	EXPECT_EQ(remove_option_outside_block(B1, B1.col(1), L(0, 1), Value{2}), 2);
-	EXPECT_EQ(B1[0][2].count(), 3u);
-	EXPECT_EQ(B1[0][3].count(), 3u);
-	EXPECT_EQ(B1[2][0].count(), 3u);
-	EXPECT_EQ(B1[2][1].count(), 3u);
-	EXPECT_EQ(B1[0][1].count(), 4u);
+	EXPECT_EQ(B1[0][2].count(), 3U);
+	EXPECT_EQ(B1[0][3].count(), 3U);
+	EXPECT_EQ(B1[2][0].count(), 3U);
+	EXPECT_EQ(B1[2][1].count(), 3U);
+	EXPECT_EQ(B1[0][1].count(), 4U);
 	// block (no effect) disabled: static_assert
 	// ASSERT_NO_THROW(remove_option_outside_block(B1, B1.block(0),
 	// L(0), 1));
@@ -369,7 +374,7 @@ TEST(Solver, remove_option_outside_block)
 }
 
 //===----------------------------------------------------------------------===//
-TEST(Solver, deathtests_remove_option)
+TEST(Solver, deathtestsRemoveOption)
 {
 	using L  = Location<2>;
 	using vL = std::vector<L>;
@@ -384,21 +389,21 @@ TEST(Solver, deathtests_remove_option)
 	ASSERT_FALSE(B[0][0].is_answer());
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), L(0), Value{2}),
-		"Assertion failed: .*is_answer.*");
+		"Assertion .*is_answer.*");
 	// ignore is part of section
 	B[0][0] = Value{2};
 	ASSERT_TRUE(is_answer(B[0][0], Value{2}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(1), L(0), Value{2}),
-		"Assertion failed: is_same_section.*");
+		"Assertion .*is_same_section.*");
 	ASSERT_TRUE(is_answer(B[0][0], Value{2}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.col(1), L(0), Value{2}),
-		"Assertion failed: is_same_section.*");
+		"Assertion .*is_same_section.*");
 	ASSERT_TRUE(is_answer(B[0][0], Value{2}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.block(1), L(0), Value{2}),
-		"Assertion failed: is_same_section.*");
+		"Assertion .*is_same_section.*");
 
 	//===------------------------------------------------------------------===//
 	// remove_option_section(SectionT, const std::vector<Location>& ignore, int)
@@ -408,14 +413,14 @@ TEST(Solver, deathtests_remove_option)
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{}, Value{3}),
-		"Assertion failed: is_valid.ignore.");
+		"Assertion .*is_valid\\(ignore\\)");
 	// ignore-location out of bounds (1-sided, assume check tested earlier)
 #ifndef NDEBUG
 	B[0][0] = Value{3};
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{L(0), L(1), L(16)}, Value{3}),
-		"Assertion failed: is_valid.ignore.");
+		"Assertion .*is_valid\\(ignore\\)");
 #endif // NDEBUG
 	B       = cB;
 	B[0][0] = Value{3};
@@ -423,19 +428,19 @@ TEST(Solver, deathtests_remove_option)
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{L(0), L(7), L(6)}, Value{3}),
-		"Assertion failed: is_valid.ignore.");
+		"Assertion .*is_valid\\(ignore\\)");
 	// invalid value
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{L(1), L(3)}, Value{0}),
-		"Assertion failed: is_valid<N>.value.");
+		"Assertion .*is_valid<N>\\(value\\)");
 #endif // NDEBUG
 	B = cB;
 	// assert at least one ignore-location inside section
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(
 			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, Value{1}),
-		"Assertion failed: is_same_section.*");
+		"Assertion .*is_same_section.*");
 	B = cB; // reset
 
 	//===------------------------------------------------------------------===//
@@ -448,7 +453,7 @@ TEST(Solver, deathtests_remove_option)
 #else
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{}, vV{b{"11010"}}),
-		"Assertion failed: is_valid.ignore.");
+		"Assertion .*is_valid\\(ignore\\)");
 #endif // NDEBUG
 	   // values is all
 #ifdef NDEBUG
@@ -458,19 +463,19 @@ TEST(Solver, deathtests_remove_option)
 #else
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{L(0), L(1), L(11)}, vV{}),
-		"Assertion failed: .*all");
+		"Assertion .*all");
 #endif // NDEBUG
 
 	// values is empty
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(B, B.row(0), vL{L(0), L(1), L(11)}, vV{}.clear()),
-		"Assertion failed: .*is_empty");
+		"Assertion .*is_empty");
 
 	// assert at least one ignore-location inside section
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(
 			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, vV{b{"00110"}}),
-		"Assertion failed: is_same_section.*");
+		"Assertion .*is_same_section.*");
 	B = cB; // reset
 
 	//===------------------------------------------------------------------===//
@@ -486,7 +491,7 @@ TEST(Solver, deathtests_remove_option)
 #else
 	EXPECT_DEBUG_DEATH(
 		remove_option_outside_block(B, B.row(0), L(21), Value{3}),
-		"Assertion failed: is_valid.block_loc.");
+		"Assertion .*is_valid\\(block_loc\\)");
 #endif
 
 	// invalid value
@@ -495,18 +500,18 @@ TEST(Solver, deathtests_remove_option)
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_outside_block(B, B.row(0), L(0), Value{23}),
-		"Assertion failed: is_valid<N>.value.");
+		"Assertion .*is_valid<N>\\(value\\)");
 #endif // NDEBUG
 	// Locations block and section don't intersect
 	ASSERT_TRUE(is_answer(B[0][0], Value{3}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_outside_block(B, B.row(2), L(0), Value{3}),
-		"Assertion failed: intersect_block.*");
+		"Assertion .*intersect_block.*");
 	B[3][2] = Value{4};
 	ASSERT_TRUE(is_answer(B[3][2], Value{4}));
 	EXPECT_DEBUG_DEATH(
 		remove_option_outside_block(B, B.col(1), L(3, 2), Value{4}),
-		"Assertion failed: intersect_block.*");
+		"Assertion .*intersect_block.*");
 }
 
 } // namespace SudokuTests::SolversTest

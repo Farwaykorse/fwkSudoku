@@ -2,7 +2,12 @@
 ## Tests for library Sudoku.
 ##
 ##====--------------------------------------------------------------------====##
-cmake_minimum_required(VERSION 3.10.3...3.13)
+include(add_to_source_file_properties)
+include(msvc_warnings_list)
+include(set_precompiled_header)
+include(subproject_functions)
+
+subproject_cmake_minimum_required(3.12)
 
 project(fwkSudokuTests LANGUAGES CXX)
 
@@ -20,10 +25,13 @@ target_sources(SudokuTests
   PRIVATE
     Board.cpp
     Board_Iterators.cpp
+    Board_Section.cpp
     Board_Section_iterator.cpp
     Board_Section_traits.cpp
+    Decision.cpp
     exceptions.cpp
     Location.cpp
+    Normalize.cpp
     Options.cpp
     Size.cpp
     Solver.cpp
@@ -54,26 +62,67 @@ set_target_properties(SudokuTests
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
+    VS_JUST_MY_CODE_DEBUGGING $<IF:$<CONFIG:Debug>,ON,OFF> # v3.15+
 )
 
 ##====--------------------------------------------------------------------====##
 # Compiler Specific Configuration
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(SudokuTests PRIVATE
-    /EHsc
+    /EHsc        # exception handling configuration
     /GR-         # disable RTTI (smaller image)
     /GS          # buffer security check
     /permissive- # disable non-conforming constructs in VC++
+    /utf-8       # source files are UTF-8 encoded
+    $<$<CONFIG:Release>:
+      /guard:cf  # control flow guard
+    >
     $<$<CXX_COMPILER_ID:MSVC>:
       /Gm-       # prefer /MP
       /MP        # multiprocessor compilation (requires /Gm-)
-      /sdl
+      /sdl       # SDL checks and code generation
+      $<$<CONFIG:Debug>:
+        /ZI       # PDB for edit-and-continue
+      >
+      $<$<CONFIG:Release>:
+        /GL       # whole program optimization
+        /Zi       # separate PDB
+      >
+    >
+    $<$<CXX_COMPILER_ID:Clang>:
+      $<$<CONFIG:Debug>:
+        /Z7       # enable debug information
+      >
     >
   )
+  # Ninja-build only,
   # Remove conflicting flags set by CMake (MSVC warning D9025)
-  string(REGEX REPLACE "(/GR|/W[0-4]) ?" ""
+  string(REGEX REPLACE "(/GR|/EHsc) ?" ""
     CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}"
   )
+  string(REGEX REPLACE "/Z[7iI] ?" ""
+    CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}"
+  )
+  if(CMAKE_VERSION VERSION_LESS 3.15) 
+    string(REGEX REPLACE "/W[0-4] ?" ""
+      CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}"
+    )
+  endif()
+
+  # Linker Configuration
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13) 
+    target_link_options(SudokuTests PRIVATE
+      $<$<CXX_COMPILER_ID:MSVC>:
+        $<$<CONFIG:Release>:
+          /LTCG     # link-time code generation (goes with /GL)
+        >
+      >
+    )
+  else()
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+      string(APPEND LINK_FLAGS_RELEASE " /LTCG")
+    endif()
+  endif()
 endif()
 
 ##====--------------------------------------------------------------------====##
@@ -97,7 +146,6 @@ if(MSVC) # MSVC or simulating MSVC
       -Wno-c++98-compat-pedantic
       -Wno-covered-switch-default
       -Wno-global-constructors
-      -Wno-unused-comparison
       -Wno-used-but-marked-unused
       -Wno-zero-as-null-pointer-constant
     >
@@ -120,11 +168,12 @@ if(MSVC) # MSVC or simulating MSVC
         /wd4275 # gtest (non dll-interface class used as base for dll-interface)
       >
       $<$<CXX_COMPILER_ID:Clang>:
-        -Wno-deprecated-declarations  # gtest: fopen, strncpy, chdir, ...
+        -Wno-deprecated # gtest
         -Wno-language-extension-token
         -Wno-missing-noreturn
         -Wno-shift-sign-overflow
         -Wno-undef
+        -Wno-unused-parameter # gtest
       >
   )
 else()
@@ -142,22 +191,30 @@ else()
       -Wno-weak-vtables           # exceptions.h
     >
     $<$<CXX_COMPILER_ID:Clang>:
-      $<$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>:
+      $<$<OR:$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>,$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0.1>>:
         -Wno-missing-braces
-        -Wno-zero-as-null-pointer-constant
+      >
+    >
+    $<$<CXX_COMPILER_ID:AppleClang>:
+      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10>:
+        -Wno-missing-braces
       >
     >
     $<$<CXX_COMPILER_ID:GNU>:
       -Wall
       -Wcast-align        # potential performance issue
       $<$<NOT:$<VERSION_LESS:$<CXX_COMPILER_VERSION>,8>>:
-        -Wconversion      # potential data-loss
+        -Wcast-align=strict # since 8.0; increase alignment (i.e. char* to int*)
+        -Wconversion      # since 8.0; potential data-loss
       >
       -Wdouble-promotion  # since 4.6; float implicit to double
       -Wduplicated-branches # since 7.0; identical if-else branches
       -Wduplicated-cond   # since 6.0; duplicated if-else conditions
       -Wextra
       -Wformat=2
+      -Wformat-overflow=2 # since 7.0
+      -Wformat-signedness # since 5.0; sign change on input of format functions
+      -Wformat-truncation=2 # since 7.0
       -Wlogical-op        # suspicious uses of logical operators
       -Wmisleading-indentation # since 6.0
       -Wnull-dereference  # since 6.0; detected paths with erroneous or undefined behaviour
@@ -171,9 +228,83 @@ else()
     Board.cpp
     Board_Iterators.cpp
     OPTIONS
-      $<$<CXX_COMPILER_ID:Clang>:-Wno-unevaluated-expression>
+      $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
+        -Wno-unevaluated-expression
+      >
   )
 endif()
+
+##====--------------------------------------------------------------------====##
+if(CODE_COVERAGE)
+  if(MSVC AND CMAKE_CXX_COMPILER_ID STREQUAL Clang)
+    if(CMAKE_CXX_FLAGS MATCHES "-m(32|64)")
+      # Changed target architecture. Assuming cross-compilation.
+      # No matching profile-rt library provided with the official pre-build
+      # binaries for Windows.
+      message(WARNING "No coverage support for cross-compilation.")
+    elseif(DEFINED CMAKE_CXX_COMPILER AND CMAKE_CXX_COMPILER)
+      string(REPLACE "/bin/clang-cl.exe" "" LLVM_ROOT "${CMAKE_CXX_COMPILER}")
+      set(LLVM_COMPILER-RT_PATH
+        # Assumed path relative to the compiler (valid for v7.0.1)
+        "${LLVM_ROOT}/lib/clang/${CMAKE_CXX_COMPILER_VERSION}/lib/windows"
+      )
+      find_library(PROFILE_RT 
+        NAMES
+          clang_rt.profile-x86_64
+          clang_rt.profile-i386
+        HINTS ${LLVM_COMPILER-RT_PATH}
+      )
+    endif()
+    if(DEFINED PROFILE_RT AND PROFILE_RT)
+      message(STATUS "Found the llvm compiler-rt profile library:\n"
+        "${PROFILE_RT}")
+      message(STATUS "Compile with code coverage information.")
+      target_compile_options(SudokuTests PRIVATE
+        /O0
+        --coverage
+      )
+      if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+        target_link_options(SudokuTests PRIVATE
+          /nodefaultlib:libcmt.lib # Warning LNK4098: conflict
+        )
+      else()
+        target_link_libraries(SudokuTests PRIVATE -nodefaultlib:libcmt.lib)
+      endif()
+      target_link_libraries(SudokuTests PRIVATE
+        ${PROFILE_RT}
+      )
+    else()
+      message(WARNING "Could not find the llvm compiler-rt profile library.")
+    endif()
+  elseif(NOT MSVC AND
+    CMAKE_CXX_COMPILER_ID STREQUAL GNU OR
+    CMAKE_CXX_COMPILER_ID STREQUAL Clang OR
+    CMAKE_CXX_COMPILER_ID STREQUAL AppleClang
+  )
+    message(STATUS "Compile with code coverage information.")
+    target_compile_options(SudokuTests PRIVATE
+      -O0        # no optimization
+      -g         # add debug info
+      --coverage
+      $<$<CXX_COMPILER_ID:GNU>:
+        $<$<NOT:$<VERSION_LESS:$<CXX_COMPILER_VERSION>,8>>:
+          -fprofile-abs-path # absolute path names in the `.gcno` files
+        >
+      >
+    )
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+      target_link_options(SudokuTests PRIVATE
+        --coverage
+      )
+    else()
+      target_link_libraries(SudokuTests PRIVATE
+        --coverage
+      )
+    endif()
+  else()
+    message(WARNING "CODE_COVERAGE, not configured for current compiler.")
+  endif()
+endif(CODE_COVERAGE)
 
 ##====--------------------------------------------------------------------====##
 # custom settings for precompiled headers

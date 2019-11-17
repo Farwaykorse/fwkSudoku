@@ -1,4 +1,4 @@
-﻿//====---- SudokuTests/Normalize.cpp                                  ----====//
+//====---- SudokuTests/Normalize.cpp                                  ----====//
 //
 // Unit-tests for the Options switching functionality.
 //====--------------------------------------------------------------------====//

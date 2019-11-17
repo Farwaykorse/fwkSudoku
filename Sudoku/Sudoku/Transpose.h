@@ -1,4 +1,4 @@
-﻿//===--- Sudoku/Transpose.h                                             ---===//
+//===--- Sudoku/Transpose.h                                             ---===//
 //
 // Exchange/reorder Board by section types
 //===----------------------------------------------------------------------===//
@@ -18,7 +18,7 @@ namespace Sudoku
 // Reorder Board elements so columns are rows.
 template<typename T, int N>
 Board<T, N> transpose_row_col(const Board<T, N>& input) noexcept(
-#if defined(__ICL) // Intel C++ 19.0
+#if defined(__ICL) && __ICL <= 1900
 	false)
 #else
 	std::is_nothrow_move_constructible_v<Board<T, N>>&&
@@ -26,7 +26,7 @@ Board<T, N> transpose_row_col(const Board<T, N>& input) noexcept(
 #endif // __ICL
 {
 	if constexpr (
-#if defined(__ICL) // Intel C++ 19.0
+#if defined(__ICL) && __ICL <= 1900
 		false)
 #else
 		std::is_nothrow_move_constructible_v<Board<T, N>> &&
@@ -53,7 +53,7 @@ Board<T, N> transpose_row_col(const Board<T, N>& input) noexcept(
 // Reorder Board elements so blocks are rows.
 template<typename T, int N>
 Board<T, N> transpose_row_block(const Board<T, N>& input) noexcept(
-#if defined(__ICL) // Intel C++ 19.0
+#if defined(__ICL) && __ICL <= 1900
 	false)
 #else
 	std::is_nothrow_move_constructible_v<Board<T, N>>&&
@@ -61,7 +61,7 @@ Board<T, N> transpose_row_block(const Board<T, N>& input) noexcept(
 #endif // __ICL
 {
 	if constexpr (
-#if defined(__ICL) // Intel C++ 19.0
+#if defined(__ICL) && __ICL <= 1900
 		false)
 #else
 		std::is_nothrow_move_constructible_v<Board<T, N>> &&
@@ -89,13 +89,13 @@ Board<T, N> transpose_row_block(const Board<T, N>& input) noexcept(
 // Reorder Board elements so columns are rows.
 template<typename T, int N>
 Board<T, N> transpose_row_col(Board<T, N>&& board) noexcept(
-#if defined(__ICL) // Intel C++ 19.0
+#if defined(__ICL) && __ICL <= 1900
 	false)
 #else
 	std::is_nothrow_swappable_v<T>)
 #endif // __ICL
 {
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<T>);
 #endif // __ICL
 
@@ -112,7 +112,7 @@ Board<T, N> transpose_row_col(Board<T, N>&& board) noexcept(
 // Reorder Board elements so blocks are rows.
 template<typename T, int N>
 Board<T, N> transpose_row_block(Board<T, N>&& board) noexcept(
-#if defined(__ICL) // Intel C++ 19.0
+#if defined(__ICL) && __ICL <= 1900
 	false)
 #else
 	std::is_nothrow_swappable_v<T>)
@@ -120,7 +120,7 @@ Board<T, N> transpose_row_block(Board<T, N>&& board) noexcept(
 {
 	for (int i{0}; i < elem_size<N>; ++i)
 	{
-		auto start = [](int x) constexpr
+		const auto start = [](int x) constexpr
 		{
 			return (x % base_size<N> + 1) * base_size<N>;
 		};

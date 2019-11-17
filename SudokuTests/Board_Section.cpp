@@ -1,4 +1,8 @@
-﻿//====---- SudokuTests/Board_Section.cpp                              ----====//
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+//
+//====---- SudokuTests/Board_Section.cpp                              ----====//
 //
 // Unit tests for the template class Sudoku::Board_Section
 //====--------------------------------------------------------------------====//
@@ -48,16 +52,21 @@ namespace properties_Section
 	static_assert(std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif // __ICL
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 } // namespace properties_Section
 
 // Board_Section
@@ -97,11 +106,18 @@ namespace type_properties
 	static_assert(not std::is_const_v<constT>);
 	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-	// static_assert(not std::is_trivially_copyable_v<typeT>); //! Clang Debug
+#if defined(__clang__) || defined(__GNUC__)
+	static_assert(std::is_trivially_copyable_v<typeT>);
+#else
+	static_assert(not std::is_trivially_copyable_v<typeT>);
+#endif // __clang__
 	static_assert(not std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
@@ -140,7 +156,7 @@ namespace constructors
 	static_assert(std::is_nothrow_constructible_v<constT, Board const&, int>);
 	static_assert(not std::is_constructible_v<typeT, Board const&, int>);
 	// (copy) construction of Board
-#if defined(__ICL) // Intel C++ 19.0
+#if defined(__ICL) && __ICL <= 1900
 	static_assert(std::is_constructible_v<typeT, Board, int>);
 #else
 	static_assert(not std::is_constructible_v<typeT, Board, int>);
@@ -167,7 +183,7 @@ namespace constructors
 	static_assert(not std::is_constructible_v<typeT, Board&, double>);
 	static_assert(not std::is_constructible_v<typeT, Board&, long double>);
 
-	TEST(Board_Section, constructor_int)
+	TEST(BoardSection, constructorInt)
 	{
 		Board board{};
 
@@ -191,7 +207,7 @@ namespace constructors
 	static_assert(not std::is_constructible_v<typeT, Board&, Loc*>);
 	static_assert(std::is_constructible_v<typeT, Board&, L_B>);
 	static_assert(std::is_nothrow_constructible_v<typeT, Board&, L_B>);
-	TEST(Board_Section, constructor_Loc)
+	TEST(BoardSection, constructorLoc)
 	{
 		Board board{};
 
@@ -214,7 +230,7 @@ namespace constructors
 	static_assert(std::is_convertible_v<Row, const_Row>);
 	static_assert(std::is_convertible_v<Col, const_Col>);
 	static_assert(std::is_convertible_v<Block, const_Block>);
-	TEST(Board_Section, conversion_to_const)
+	TEST(BoardSection, conversionToConst)
 	{
 		Board board{};
 		Row row(board, 3);
@@ -279,7 +295,7 @@ namespace constructors
 	static_assert(std::is_constructible_v<Row, Row, int>);
 	static_assert(std::is_constructible_v<const_Col, const_Col, int>);
 	static_assert(std::is_constructible_v<Block, Block, int>);
-	TEST(Board_Section, conversion)
+	TEST(BoardSection, conversion)
 	{
 		using ::Sudoku::elem_size;
 
@@ -339,7 +355,7 @@ namespace constructors
 	static_assert(std::is_nothrow_constructible_v<const_Row, Block, int>);
 	static_assert(std::is_nothrow_constructible_v<const_Col, Row, int>);
 	static_assert(std::is_nothrow_constructible_v<const_Col, Block, int>);
-	TEST(Board_Section, conversion_and_const)
+	TEST(BoardSection, conversionAndConst)
 	{
 		Board board{};
 		constexpr int last = ::Sudoku::elem_size<size> - 1;
@@ -420,7 +436,7 @@ namespace destructors
 
 namespace swapping
 {
-#if not(defined(__ICL)) // Intel C++ 19.0
+#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_v<typeT>);         // C++17
 	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
 
@@ -428,7 +444,7 @@ namespace swapping
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
-#endif // __ICL
+#endif                                                                // __ICL
 } // namespace swapping
 
 namespace assignment
@@ -472,7 +488,7 @@ using ::Sudoku::Board_Section::const_Block;
 using ::Sudoku::Location;
 using ::Sudoku::Location_Block;
 
-TEST(Board_Section, size)
+TEST(BoardSection, size)
 {
 	static_assert(noexcept(Row<int, 3>::size()));
 	// return type
@@ -482,7 +498,7 @@ TEST(Board_Section, size)
 	static_assert(Row<int, 3>::size() == 9);
 }
 
-TEST(Board_Section, id)
+TEST(BoardSection, id)
 {
 	using Row   = Row<int, 3>;
 	using Col   = Col<int, 3>;
@@ -499,9 +515,15 @@ TEST(Board_Section, id)
 	EXPECT_EQ(Row(board, 8).id(), 8);
 	EXPECT_EQ(Col(board, 3).id(), Row(board, 3).id());
 	EXPECT_EQ(Col(board, 5).id(), Block(board, 5).id());
+
+	static_assert(Row(board, 0).id() == 0);
+	static_assert(Row(board, 1).id() == 1);
+	static_assert(Row(board, 8).id() == 8);
+	static_assert(Col(board, 2).id() == 2);
+	static_assert(Block(board, 7).id() == 7);
 }
 
-TEST(Board_Section, location)
+TEST(BoardSection, location)
 {
 	constexpr int size{3};
 	using L     = Location<size>;
@@ -531,15 +553,32 @@ TEST(Board_Section, location)
 	EXPECT_EQ(Block(board, 0).location(0), L(0, 0));
 	EXPECT_EQ(Block(board, 5).location(0), B(5, 0));
 	EXPECT_EQ(Block(board, 1).location(8), B(1, 8));
+
+	static_assert(Row(board, 0).location(0) == L(0, 0));
+	static_assert(Row(board, 1).location(0) == L(1, 0));
+	static_assert(Row(board, 3).location(6) == L(3, 6));
+	static_assert(Col(board, 0).location(0) == L(0, 0));
+	static_assert(Col(board, 1).location(0) == L(0, 1));
+	static_assert(Col(board, 3).location(6) == L(6, 3));
+	static_assert(Block(board, 0).location(0) == L(0, 0));
+	static_assert(Block(board, 5).location(0) == B(5, 0));
+	static_assert(Block(board, 1).location(8) == B(1, 8));
 }
 
-TEST(Board_Section, unchecked_access)
+TEST(BoardSection, uncheckedAccess)
 {
-	const Board<int, 2> cboard{
+	using Row         = Row<int, 2>;
+	using Col         = Col<int, 2>;
+	using Block       = Block<int, 2>;
+	using const_Row   = const_Row<int, 2>;
+	using const_Col   = const_Col<int, 2>;
+	using const_Block = const_Block<int, 2>;
+
+	constexpr Board<int, 2> cboard = std::array<int, 16>{
 		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-	const_Row<int, 2> crow(cboard, 0);
+	const_Row crow(cboard, 0);
 	Board<int, 2> board{};
-	Row<int, 2> row(board, 0);
+	Row row(board, 0);
 
 	static_assert(noexcept(row[3]));
 	static_assert(noexcept(crow[1]));
@@ -551,25 +590,38 @@ TEST(Board_Section, unchecked_access)
 	EXPECT_EQ(crow[0], 9);
 	EXPECT_EQ(crow[1], 1);
 	EXPECT_EQ(crow[2], 2);
+	static_assert(const_Row(cboard, 0)[0] == 9);
+	static_assert(const_Row(cboard, 1)[1] == 5);
+	static_assert(const_Col(cboard, 0)[0] == 9);
+	static_assert(const_Col(cboard, 3)[3] == 15);
+	static_assert(const_Block(cboard, 1)[3] == 7);
+	static_assert(const_Block(cboard, 2)[0] == 8);
 
 	// Edit element
 	EXPECT_EQ(row[2], 0);
 	row[2] = 8;
 	EXPECT_EQ(row[2], 8);
-	EXPECT_EQ((Col<int, 2>(board, 2)[0]), 8);
-	EXPECT_EQ((Block<int, 2>(board, 1)[0]), 8);
-	Col<int, 2>(board, 1)[3] = 6;
-	EXPECT_EQ((Row<int, 2>(board, 3)[1]), 6);
-	EXPECT_EQ((Block<int, 2>(board, 2)[3]), 6);
+	EXPECT_EQ((Col(board, 2)[0]), 8);
+	EXPECT_EQ((Block(board, 1)[0]), 8);
+	Col(board, 1)[3] = 6;
+	EXPECT_EQ((Row(board, 3)[1]), 6);
+	EXPECT_EQ((Block(board, 2)[3]), 6);
 }
 
-TEST(Board_Section, front_back)
+TEST(BoardSection, frontBack)
 {
-	const Board<int, 2> cboard{
+	using Row         = Row<int, 2>;
+	using Col         = Col<int, 2>;
+	using Block       = Block<int, 2>;
+	using const_Row   = const_Row<int, 2>;
+	using const_Col   = const_Col<int, 2>;
+	using const_Block = const_Block<int, 2>;
+
+	constexpr Board<int, 2> cboard = std::array<int, 16>{
 		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-	const_Row<int, 2> crow(cboard, 0);
+	const_Row crow(cboard, 0);
 	Board<int, 2> board{};
-	Row<int, 2> row(board, 1);
+	Row row(board, 1);
 
 	static_assert(noexcept(row.front()));
 	static_assert(noexcept(crow.front()));
@@ -591,9 +643,13 @@ TEST(Board_Section, front_back)
 	EXPECT_EQ(board.at(Location<2>(1, 3)), 52);
 	EXPECT_EQ(row.back(), 52);
 	EXPECT_EQ(row[3], 52);
+	static_assert(const_Row(cboard, 0).front() == const_Row(cboard, 0)[0]);
+	static_assert(const_Row(cboard, 0).back() == const_Row(cboard, 0)[3]);
+	static_assert(const_Row(cboard, 3).front() == const_Row(cboard, 3)[0]);
+	static_assert(const_Row(cboard, 3).back() == const_Row(cboard, 3)[3]);
 
-	const_Col<int, 2> ccol(cboard, 0);
-	Col<int, 2> col(board, 1);
+	const_Col ccol(cboard, 0);
+	Col col(board, 1);
 	EXPECT_EQ(ccol.front(), ccol[0]);
 	EXPECT_EQ(ccol.back(), ccol[3]);
 	col.front() = 21;
@@ -605,9 +661,13 @@ TEST(Board_Section, front_back)
 	EXPECT_EQ(board.at(Location<2>(3, 1)), 37);
 	EXPECT_EQ(col.back(), 37);
 	EXPECT_EQ(col[3], 37);
+	static_assert(const_Col(cboard, 0).front() == const_Col(cboard, 0)[0]);
+	static_assert(const_Col(cboard, 0).back() == const_Col(cboard, 0)[3]);
+	static_assert(const_Col(cboard, 3).front() == const_Col(cboard, 3)[0]);
+	static_assert(const_Col(cboard, 3).back() == const_Col(cboard, 3)[3]);
 
-	const_Block<int, 2> cblock(cboard, 0);
-	Block<int, 2> block(board, 3);
+	const_Block cblock(cboard, 0);
+	Block block(board, 3);
 	EXPECT_EQ(cblock.front(), cblock[0]);
 	EXPECT_EQ(cblock.back(), cblock[3]);
 	block.front() = 14;
@@ -619,11 +679,17 @@ TEST(Board_Section, front_back)
 	EXPECT_EQ(board.at(Location_Block<2>(3, 3)), 99);
 	EXPECT_EQ(block.back(), 99);
 	EXPECT_EQ(block[3], 99);
+	static_assert(const_Block(cboard, 0).front() == const_Block(cboard, 0)[0]);
+	static_assert(const_Block(cboard, 0).back() == const_Block(cboard, 0)[3]);
+	static_assert(const_Block(cboard, 3).front() == const_Block(cboard, 3)[0]);
+	static_assert(const_Block(cboard, 3).back() == const_Block(cboard, 3)[3]);
 }
 
-TEST(Board_Section, checked_access)
+TEST(BoardSection, checkedAccess)
 {
 	const Board<int, 2> cboard{
+		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	constexpr Board<int, 2> cexprboard = std::array<int, 16>{
 		9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	const_Row<int, 2> crow(cboard, 0);
 	Board<int, 2> board{};
@@ -639,6 +705,11 @@ TEST(Board_Section, checked_access)
 	EXPECT_EQ(crow.at(0), 9);
 	EXPECT_EQ(crow.at(1), 1);
 	EXPECT_EQ(crow.at(2), 2);
+	static_assert(const_Row<int, 2>(cexprboard, 0).at(0) == 9);
+	static_assert(const_Row<int, 2>(cexprboard, 0).at(1) == 1);
+	static_assert(const_Row<int, 2>(cexprboard, 0).at(2) == 2);
+	static_assert(const_Col<int, 2>(cexprboard, 0).at(2) == 8);
+	static_assert(const_Block<int, 2>(cexprboard, 0).at(2) == 4);
 
 	// Edit element
 	EXPECT_EQ(row.at(2), 0);
@@ -652,6 +723,13 @@ TEST(Board_Section, checked_access)
 	Block<int, 2>(board, 3).at(1) = 31;
 	EXPECT_EQ((Row<int, 2>(board, 2).at(3)), 31);
 	EXPECT_EQ((Col<int, 2>(board, 3).at(2)), 31);
+
+	// Out of range
+	[[maybe_unused]] int tmp{};
+	EXPECT_THROW(tmp = row.at(4), Sudoku::error::invalid_Location);
+	EXPECT_THROW(tmp = row.at(4), std::out_of_range);
+	EXPECT_THROW(tmp = row.at(-1), Sudoku::error::invalid_Location);
+	EXPECT_THROW(tmp = row.at(-1), std::out_of_range);
 }
 
 } // namespace SudokuTests::Members

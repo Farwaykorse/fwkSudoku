@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <GoogleTestAdapterSettings>
+    <SolutionSettings>
+      <Settings>
+        <DebugMode>false</DebugMode>
+        <WorkingDir>$(ExecutableDir)</WorkingDir>
+        <TestDiscoveryRegex>.*[Tt]est[s]?\.exe</TestDiscoveryRegex>
+        <CatchExceptions>true</CatchExceptions>
+        <BreakOnFailure>false</BreakOnFailure>
+        <PrintTestOutput>false</PrintTestOutput>
+        <UseNewTestExecutionFramework>true</UseNewTestExecutionFramework>
+      </Settings>
+    </SolutionSettings>
+  </GoogleTestAdapterSettings>
+</RunSettings>

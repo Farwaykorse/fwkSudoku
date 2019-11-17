@@ -1,4 +1,4 @@
-﻿//====---- Sudoku/Board_Section_traits.h                              ----====//
+//====---- Sudoku/Board_Section_traits.h                              ----====//
 //
 // Type traits for Board_Section classes.
 //====--------------------------------------------------------------------====//

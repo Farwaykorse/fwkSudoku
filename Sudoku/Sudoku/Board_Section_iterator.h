@@ -1,4 +1,4 @@
-﻿//====---- Sudoku/Board_Section_iterator.h                            ----====//
+//====---- Sudoku/Board_Section_iterator.h                            ----====//
 //
 // Location aware iterator implementation for Sections
 //====--------------------------------------------------------------------====//
@@ -79,7 +79,8 @@ public:
 	// Constructors
 	constexpr Section_iterator() noexcept
 	{ // defaults to [r]begin()
-		if constexpr (is_reverse) elem_ = elem_size<N> - 1;
+		if constexpr (is_reverse)
+			elem_ = elem_size<N> - 1;
 	}
 	template<
 		typename idT,
@@ -198,8 +199,8 @@ constexpr Section_iterator<T, N, S, C, is_reverse>&
 	return (*this);
 }
 template<typename T, int N, Section S, bool C, bool R>
-constexpr Section_iterator<T, N, S, C, R> Section_iterator<T, N, S, C, R>::
-	operator++(int) noexcept
+constexpr Section_iterator<T, N, S, C, R> // NOLINTNEXTLINE(readability/casting)
+	Section_iterator<T, N, S, C, R>::operator++(int) noexcept
 { // post-increment
 	const Section_iterator pre{*this};
 	operator++();
@@ -223,8 +224,8 @@ constexpr Section_iterator<T, N, S, C, is_reverse>&
 	return (*this);
 }
 template<typename T, int N, Section S, bool C, bool R>
-constexpr Section_iterator<T, N, S, C, R> Section_iterator<T, N, S, C, R>::
-	operator--(int) noexcept
+constexpr Section_iterator<T, N, S, C, R> // NOLINTNEXTLINE(readability/casting)
+	Section_iterator<T, N, S, C, R>::operator--(int) noexcept
 { // post-decrement
 	const Section_iterator pre{*this};
 	operator--();
@@ -232,8 +233,8 @@ constexpr Section_iterator<T, N, S, C, R> Section_iterator<T, N, S, C, R>::
 }
 template<typename T, int N, Section S, bool C, bool is_reverse>
 constexpr Section_iterator<T, N, S, C, is_reverse>&
-	Section_iterator<T, N, S, C, is_reverse>::
-		operator+=(const difference_type offset) noexcept
+	Section_iterator<T, N, S, C, is_reverse>::operator+=(
+		const difference_type offset) noexcept
 {
 	assert(offset == 0 || board_ != nullptr);
 	if constexpr (is_reverse)
@@ -252,8 +253,8 @@ constexpr Section_iterator<T, N, S, C, is_reverse>&
 }
 template<typename T, int N, Section S, bool C, bool is_reverse>
 constexpr Section_iterator<T, N, S, C, is_reverse>&
-	Section_iterator<T, N, S, C, is_reverse>::
-		operator-=(const difference_type offset) noexcept
+	Section_iterator<T, N, S, C, is_reverse>::operator-=(
+		const difference_type offset) noexcept
 {
 	return operator+=(-offset);
 }

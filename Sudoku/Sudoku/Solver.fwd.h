@@ -1,4 +1,4 @@
-﻿//===--- Sudoku/Solver.fwd.h                                            ---===//
+//===--- Sudoku/Solver.fwd.h                                            ---===//
 //
 //	Forward declaration header for Solver.h
 //===----------------------------------------------------------------------===//

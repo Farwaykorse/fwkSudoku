@@ -1,62 +1,65 @@
-##===--	./.clang-format - Clang-Format configuration					--===##
+##====---- ./.clang-format - Clang-Format configuration               ----====##
 ##
-##	For the Sudoku project, learning cpp
-##===---------------------------------------------------------------------===##
-##	Documentation:
-##		https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+##    For the Sudoku project, learning cpp
+##====--------------------------------------------------------------------====##
+##    Documentation:
+##        https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 ##
-##	Disable locally:
-##		// clang-format off
-##		...
-##		// clang-format on
-##===---------------------------------------------------------------------===##
+##    Disable locally:
+##        // clang-format off
+##        ...
+##        // clang-format on
+##====--------------------------------------------------------------------====##
 ##
-##	TOC
-##	- Sizes
-##	- Comments
-##	- Include
-##	- Namespace
-##	- Template
-##	- Using
-##	- Blocks
-##		-Single-Line Statements
-##	- Braces
-##	- Functions
-##	- Constructors
-##	- Operators
-##	- Strings
-##	- Penalties
-##	Languages
+## TOC
+## - Sizes
+## - Comments
+## - Include
+## - Namespace
+## - Template
+## - Using
+## - Blocks
+##   -Single-Line Statements
+## - Braces
+## - Functions
+## - Constructors
+## - Operators
+## - Strings
+## - Penalties
+## - Languages
+##
+##    Updated for Clang-Format v9.0.0
 ##
 
 ---
-#	For starters use defaults from the LLVM style
-#	(required since the complete rule set is needed)
-BasedOnStyle:					LLVM
+# For starters use defaults from the LLVM style
+# (required since the complete rule set is needed)
+BasedOnStyle: LLVM
 
-##	Sizes
-UseTab:							ForContinuationAndIndentation
-TabWidth:						4
-IndentWidth:					4
-ColumnLimit:					80
-MaxEmptyLinesToKeep:			2
-ContinuationIndentWidth:		4
-IndentCaseLabels:				false
-IndentPPDirectives:				None
-AccessModifierOffset:			-4
+## Sizes
+UseTab: ForContinuationAndIndentation
+TabWidth:                4
+IndentWidth:             4
+ColumnLimit:             80
+MaxEmptyLinesToKeep:     2
+ContinuationIndentWidth: 4
+IndentCaseLabels: false
+# IndentGotoLabels: false # Clang 10
+IndentPPDirectives: None
+AccessModifierOffset: -4
 # public: or private: etc.
 
-##	Comments
-ReflowComments:					true
-SpacesBeforeTrailingComments:	1
-AlignTrailingComments:			true
-#CommentPragmas:				
+## Comments
+ReflowComments:               true
+SpacesBeforeTrailingComments: 1
+AlignTrailingComments:        true
+#CommentPragmas:
 
-##	Include
-# #include <xxx>		STL includes
-# #include <xxx.h>	library includes
-# #include "xxx.h"	local project includes
-# 
+## Include
+# #include <xxx>      STL includes
+# #include <xxx.h>    library includes
+# #include "xxx.h"    local project includes
+#
 # Order: (alphabetic within each)
 # Headers should not depend upon other headers being included first.
 #
@@ -67,144 +70,177 @@ AlignTrailingComments:			true
 #   2. Local components     // if used "..."
 #   3. External components  // <../*.h>
 #   4. libraries            //
-#   5. STL data-structures  // ! 
+#   5. STL data-structures  // !
 #   6. STL other            // ! add all used!
 #   7. Forward declaration  // *.fwd.h for recursive external definitions
 #   8. macros files         // like cassert
-IncludeBlocks:      Preserve
-SortIncludes:       true
+IncludeBlocks: Preserve
+SortIncludes: true
 IncludeIsMainRegex: '(_test)?'
 IncludeCategories:
-  - Regex:    '^"((P|p)recompiled|stdafx)'
-    Priority: -1
-  - Regex:    '^<(gtest|gmock|catch)'
-    Priority: 1
-  - Regex:    '.*\.fwd\.h"$'
-    Priority: 7
-  - Regex:    '^"'
-    Priority: 2
-  - Regex:    '^<(abseil|boost|gsl)'
-    Priority: 4
-  - Regex:    '.+(/|\\).+\.h(pp)?>$'
-    Priority: 3
-  - Regex:    '^<(array|vector|deque|stack|queue|string(_view)?|(.+_)?list|(unordered_)?(set|map)|bitset|tuple|optional|variant|any)>'
-    Priority: 5
-  - Regex:    '^<c(assert|errno|std(lib|int|def)|limits|float|fenv|inttypes|signal)>'
-    Priority: 8
-  - Regex:    '^<[a-z/\\_]+>'
-    Priority: 6
-  - Regex:    '.*'
-    Priority: 10
+- Regex:    '^"((P|p)recompiled|stdafx)'
+  Priority: -1
+- Regex:    '^<(gtest|gmock|catch)'
+  Priority: 1
+- Regex:    '.*\.fwd\.h"$'
+  Priority: 7
+- Regex:    '^"'
+  Priority: 2
+- Regex:    '^<(abseil|boost|gsl)'
+  Priority: 4
+- Regex:    '.+(/|\\).+\.h(pp)?>$'
+  Priority: 3
+- Regex:    '^<(array|vector|deque|stack|queue|string(_view)?|(.+_)?list|(unordered_)?(set|map)|bitset|tuple|optional|variant|any)>'
+  Priority: 5
+- Regex:    '^<c(assert|errno|std(lib|int|def)|limits|float|fenv|inttypes|signal)>'
+  Priority: 8
+- Regex:    '^<[a-z/\\_]+>'
+  Priority: 6
+- Regex:    '.*'
+  Priority: 10
 
-##	Namespace
-NamespaceIndentation:			Inner
-CompactNamespaces:				true
-FixNamespaceComments:			true
+## macros
+AlignConsecutiveMacros: false # Clang 9
+# ForEachMacros: ['RANGES_FOR', 'FOREACH']
+# MacroBlockBegin: ""
+# MacroBlockEnd: ""
+# NamespaceMacros: ['NAMESPACE'] # Clang 9
+# StatementMacros: ['CALCULATION'] # Clang 8 # statement, no ";" needed
 
-##	Template
-AlwaysBreakTemplateDeclarations:	true
-SpaceAfterTemplateKeyword:			false
+## Namespace
+NamespaceIndentation: Inner
+CompactNamespaces: true
+FixNamespaceComments: true
 
-##	Using
-SortUsingDeclarations:			false
+## Template
+# yamllint disable-line rule:truthy
+AlwaysBreakTemplateDeclarations: Yes # Modified Clang 7
+SpaceAfterTemplateKeyword: false
+
+## Using
+SortUsingDeclarations: false
 
 ## Blocks
-KeepEmptyLinesAtTheStartOfBlocks:	false
-#BreakBeforeBraces:				Allman
-BreakBeforeBraces:				Custom
+KeepEmptyLinesAtTheStartOfBlocks: false
+#BreakBeforeBraces: Allman
+BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterNamespace:				true
-  SplitEmptyNamespace:			true
-  AfterClass:					true
-  AfterStruct:					true
-  AfterUnion:					true
-  SplitEmptyRecord:				true
-  AfterEnum:					false
-  AfterFunction:				true
-  SplitEmptyFunction:			true
-#Clang 6  AfterExternBlock:		true
-  AfterControlStatement:		true
-  BeforeCatch:					true
-  BeforeElse:					true
-  IndentBraces:					false
+  AfterNamespace:        true
+  SplitEmptyNamespace:   true
+  AfterClass:            true
+  AfterStruct:           true
+  AfterUnion:            true
+  SplitEmptyRecord:      true
+  AfterEnum:             false
+  AfterFunction:         true
+  SplitEmptyFunction:    true
+  AfterExternBlock:      true # Clang 6
+  AfterControlStatement: true # Always # Modified Clang 10
+  BeforeCatch:           true
+  BeforeElse:            true
+  AfterCaseLabel:        true # Clang 9
+  IndentBraces:          false
 
-###	Single-Line Statements
-AllowShortBlocksOnASingleLine:			false
-AllowShortFunctionsOnASingleLine:		Inline
-AllowShortIfStatementsOnASingleLine:	true
-AllowShortLoopsOnASingleLine:			false
-AllowShortCaseLabelsOnASingleLine:		true
+### Single-Line Statements
+AllowShortBlocksOnASingleLine: false # Never # Modified Clang 10
+AllowShortFunctionsOnASingleLine: Inline
+# AllowShortLamdasOnASingleLine: Inline # Clang 10
+AllowShortIfStatementsOnASingleLine: Never # Modified Clang 9
+AllowShortLoopsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: true
 
-##	Braces
-SpacesInAngles:					false
-SpaceAfterCStyleCast:			false
-SpacesInCStyleCastParentheses:	false
-SpacesInContainerLiterals:		false
-SpaceBeforeParens:				ControlStatements
-SpacesInParentheses:			false
-SpaceInEmptyParentheses:		false
-SpacesInSquareBrackets:			false
-Cpp11BracedListStyle:			true
-#	if false always spaces in { dd }
+## Braces
+SpacesInAngles:                false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals:     false
+SpaceBeforeParens:             ControlStatements
+SpacesInParentheses:           false
+SpaceInEmptyParentheses:       false
+SpacesInSquareBrackets:        false
+Cpp11BracedListStyle:          true
+# if false always spaces in { dd }
+SpaceBeforeCpp11BracedList:    false # Clang 7
+
+## Classes
+BreakInheritanceList: BeforeColon # Clang 7
+SpaceBeforeInheritanceColon: true # Clang 7
 
 ## Declarations
-AlignConsecutiveDeclarations:	false
+AlignConsecutiveDeclarations: false
 
-##	Functions
-IndentWrappedFunctionNames:		true
-#	BinPack: if false, all on same line, or one line each
-BinPackArguments:				false
-BinPackParameters:				false
-AlignAfterOpenBracket:			AlwaysBreak
-AllowAllParametersOfDeclarationOnNextLine:	true
-AlwaysBreakAfterReturnType:		None
-#	None= uses PenaltyReturnTypeOnItsOwnLine
+## Functions
+IndentWrappedFunctionNames: true
+# BinPack: if false, all on same line, or one line each
+BinPackArguments: false
+AllowAllArgumentsOnNextLine: true # Clang 9
+BinPackParameters: false
+AllowAllParametersOfDeclarationOnNextLine: true
+AlignAfterOpenBracket: AlwaysBreak
+AlwaysBreakAfterReturnType: None
+# None= uses PenaltyReturnTypeOnItsOwnLine
 
-##	Constructors
-ConstructorInitializerIndentWidth:	4
-ConstructorInitializerAllOnOneLineOrOnePerLine:	false
-BreakConstructorInitializers:	BeforeColon
+## Constructors
+ConstructorInitializerIndentWidth: 4
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+AllowAllConstructorInitializersOnNextLine: false # no effect # Clang 9
+BreakConstructorInitializers: BeforeColon
+SpaceBeforeCtorInitializerColon: true # Clang 7
 
-##	Operators
-AlignOperands:					true
-AlignConsecutiveAssignments:	true
-SpaceBeforeAssignmentOperators:	true
+## Operators
+AlignOperands: true
+AlignConsecutiveAssignments: true
+SpaceBeforeAssignmentOperators: true
 
-BreakBeforeBinaryOperators:		None
-BreakBeforeInheritanceComma:	false
-BreakBeforeTernaryOperators:	true
+BreakBeforeBinaryOperators: None
+BreakBeforeInheritanceComma: false
+BreakBeforeTernaryOperators: true
 
-DerivePointerAlignment:			false
-PointerAlignment:				Left
+DerivePointerAlignment: false
+PointerAlignment: Left
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false # Clang 9
+SpaceBeforeRangeBasedForLoopColon: true # Clang 7
 
-##	Strings
-BreakStringLiterals:				true
-AlignEscapedNewlines:				Right
-AlwaysBreakBeforeMultilineStrings:	true
+## Strings
+BreakStringLiterals: true
+AlignEscapedNewlines: Right
+AlwaysBreakBeforeMultilineStrings: true
+# RawStringFormats: # Clang 6
 
-##	Penalties:
-PenaltyExcessCharacter:			1000000
-PenaltyBreakAssignment:			2
-PenaltyBreakBeforeFirstCallParameter:	19
-PenaltyBreakComment:			30
-PenaltyBreakFirstLessLess:		120
-PenaltyBreakString:				1000
-PenaltyReturnTypeOnItsOwnLine:	60
+## Penalties:
+PenaltyExcessCharacter: 1000000
+PenaltyBreakAssignment: 2
+PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakComment: 30
+PenaltyBreakFirstLessLess: 120
+PenaltyBreakString: 1000
+# PenaltyBreakTemplateDeclaration: # Clang 7
+PenaltyReturnTypeOnItsOwnLine: 60
 
 ---
-Language:						Cpp
-DisableFormat:					false
-
-# Language standard, using LLVM setting, it might get updated
-#Standard:						Cpp11
+Language:      Cpp
+Standard:      Cpp11 # c++17 # Clang 10
+DisableFormat: false
 ---
-Language:						Java
-DisableFormat:					false
+Language:      CSharp # Clang 9
+DisableFormat: false
 ---
-Language:						JavaScript
-DisableFormat:					false
+Language:      Java
+DisableFormat: false
 ---
-Language:						ObjC
-DisableFormat:					false
+Language:      JavaScript
+DisableFormat: false
+---
+Language:      ObjC
+DisableFormat: false
+---
+Language:      Proto
+DisableFormat: false
+---
+Language:      TableGen
+DisableFormat: false
+---
+Language:      TextProto # Clang 6
+DisableFormat: false
 
 ...

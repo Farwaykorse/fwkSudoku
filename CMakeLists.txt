@@ -2,23 +2,20 @@
 ## Base configuration.
 ##
 ##====--------------------------------------------------------------------====##
-cmake_minimum_required(VERSION 3.10...3.13)
+cmake_minimum_required(VERSION 3.12...3.15)
+message(STATUS "CMake version: ${CMAKE_VERSION}")
 
 project(fwk_Sudoku LANGUAGES CXX)
 
 ##====--------------------------------------------------------------------====##
 # Configuration
 ##====--------------------------------------------------------------------====##
-# options()
+option(CODE_COVERAGE "Enable coverage reporting" OFF)
 
 ##====--------------------------------------------------------------------====##
 # External CMake definitions
 ##====--------------------------------------------------------------------====##
-# Functions
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/add_to_source_file_properties.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/set_precompiled_header.cmake)
-# Properties
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/msvc_warnings_list.cmake)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 ##====--------------------------------------------------------------------====##
 # The library: Sudoku
@@ -39,10 +36,10 @@ target_compile_features(Sudoku
 # Dependencies Sudoku
 ##====--------------------------------------------------------------------====##
 find_path(GSL_INCLUDE_DIR gsl/gsl)
-if(GSL_INCLUDE_DIR STREQUAL "GSL_INCLUDE_DIR-NOTFOUND")
-  message(FATAL_ERROR "Could not find Guidelines Support Library.")
-else()
+if(GSL_INCLUDE_DIR)
   message(STATUS "Found the Guidelines Support Library: ${GSL_INCLUDE_DIR}")
+else()
+  message(FATAL_ERROR "Could not find Guidelines Support Library.")
 endif()
 target_include_directories(Sudoku
   SYSTEM

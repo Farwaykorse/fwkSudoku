@@ -1,4 +1,8 @@
-﻿//===--- SudokuTests/Solver.cpp                                         ---===//
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+//
+//===--- SudokuTests/Solver.cpp                                         ---===//
 //
 //	Unit tests for the template class Sudoku::Solver
 //===----------------------------------------------------------------------===//
@@ -30,6 +34,7 @@
 #include <array>
 #include <bitset>
 #include <vector>
+#include <algorithm> // std::copy
 #include <stdexcept>
 #include <type_traits>
 
@@ -41,16 +46,16 @@ using ::Sudoku::Location;
 using ::Sudoku::Options;
 using ::Sudoku::Value;
 
-TEST(Solver, unique_in_section)
+TEST(Solver, uniqueInSection)
 {
 	// clang-format off
 	const std::array<char, 16> v1
 	{
-		// start	// after set_Value
-		0,2, 0,0,	// 1	2	3	4
-		4,0, 0,0,	// 4	3	1,2	1,2
-		0,1, 4,0,	// 2,3	1	4	2,3
-		0,0, 0,0	// 2,3	4	1,2	1,2,3
+		// start     // after set_Value
+		0, 2,  0, 0, // 1   2   3   4
+		4, 0,  0, 0, // 4   3   1,2 1,2
+		0, 1,  4, 0, // 2,3 1   4   2,3
+		0, 0,  0, 0  // 2,3 4   1,2 1,2,3
 	}; // clang-format on
 	Board<Options<4>, 2> B1;
 	ASSERT_EQ(B1[0][0], Options<4>{}) << "incorrect instantiation";
@@ -67,11 +72,11 @@ TEST(Solver, unique_in_section)
 	// clang-format off
 	const std::array<char, 16> v2
 	{
-		//start		// after set_Value
-		3,2, 0,0,	// 3	2	14	14		3	2	14	14
-		0,0, 0,0,	// 14	14	3	2		14	14	3	2
-		0,0, 2,0,	// 14	134	2	134		14	134	2	134
-		0,0, 0,0	// 12.4	134	134	134		2	134	14	134
+		//start   // after set_Value
+		3, 2,  0, 0, // 3    2   14  14  | 3  2   14 14
+		0, 0,  0, 0, // 14   14  3   2   | 14 14  3  2
+		0, 0,  2, 0, // 14   134 2   134 | 14 134 2  134
+		0, 0,  0, 0  // 12.4 134 134 134 | 2  134 14 134
 	}; // clang-format on
 
 	Board<Options<4>, 2> B2{}; // working copy
@@ -97,11 +102,11 @@ TEST(Solver, unique_in_section)
 	// clang-format off
 	const std::array<char, 16> v3
 	{
-		// start	// after set_Value
-		0,0, 1,0,	// 
-		1,0, 0,0,	// 
-		0,1, 0,0,	// 
-		0,0, 0,0	//					//	0	0	0	1
+		// start     // after set_Value
+		0, 0,  1, 0, //
+		1, 0,  0, 0, //
+		0, 1,  0, 0, //
+		0, 0,  0, 0  // 0 0 0 1
 	}; // clang-format on
 	Board<Options<4>, 2> B3;
 	// reset
@@ -127,7 +132,7 @@ TEST(Solver, unique_in_section)
 }
 
 // NOLINTNEXTLINE(readability-function-size)
-TEST(Solver, section_exclusive)
+TEST(Solver, sectionExclusive)
 {
 	// section_exclusive(SectionT)
 	// section_exclusive(Block)
@@ -137,11 +142,11 @@ TEST(Solver, section_exclusive)
 		// clang-format off
 		const std::array<char, 16> v3
 		{
-			// start	// after set_Value
-			0,0, 1,0,	// 
-			1,0, 0,0,	// 
-			0,1, 0,0,	// 
-			0,0, 0,0	//					//	0	0	0	1
+			// start     // after set_Value
+			0, 0,  1, 0, //
+			1, 0,  0, 0, //
+			0, 1,  0, 0, //
+			0, 0,  0, 0  // 0 0 0 1
 		}; // clang-format on
 		Board<Options<4>, 2> B3;
 		// reset
@@ -510,11 +515,11 @@ TEST(Solver, section_exclusive)
 	// clang-format off
 	constexpr std::array<char, 16> V1
 	{
-		// start	// after set_Value	// unique_block
-		0,0, 1,0,	// 
-		1,0, 0,0,	// 
-		0,1, 0,0,	// 
-		0,0, 0,0	//					//	0	0	0	1
+		// start     // after set_Value // unique_block
+		0, 0,  1, 0, //
+		1, 0,  0, 0, //
+		0, 1,  0, 0, //
+		0, 0,  0, 0  //                 // 0 0 0 1
 	}; // clang-format on
 	Board<Options<4>, 2> B1{};
 	set_Value(B1, V1.cbegin(), V1.cend());
@@ -566,7 +571,7 @@ TEST(Solver, section_exclusive)
 	*	|	8	|		|	4	|	| 2 8 7	| 3 5 6	| 1 4 9	|
 	*	|_ _5_ _|_ _ _ _|_6_ _ _|	|_3_5_1_|_9_4_7_|_6_2_8_|
 	*/
-		0, 0, 0,	0, 0, 0,	0, 1, 2,	//	
+		0, 0, 0,	0, 0, 0,	0, 1, 2,	//
 		0, 0, 0,	0, 3, 5,	0, 0, 0,	//	. . .	2 . .
 		0, 0, 0,	6, 0, 0,	0, 7, 0,	//	. . .	. 1 12	0 . [3]
 
@@ -575,8 +580,8 @@ TEST(Solver, section_exclusive)
 		1, 0, 0,	0, 0, 0,	0, 0, 0,	//
 
 		0, 0, 0,	1, 2, 0,	0, 0, 0,
-		0, 8, 0,	0, 0, 0,	0, 4, 0,	//	
-		0, 5, 0,	0, 0, 0,	6, 0, 0		//	. 5 [1] |	
+		0, 8, 0,	0, 0, 0,	0, 4, 0,	//
+		0, 5, 0,	0, 0, 0,	6, 0, 0		//	. 5 [1] |
 	};
 	// clang-format on
 	Sudoku::Board<Options<9>, 3> B2{};
@@ -599,7 +604,7 @@ TEST(Solver, section_exclusive)
 	}
 }
 
-TEST(Solver, single_option)
+TEST(Solver, singleOption)
 {
 	using Sudoku::error::invalid_Location;
 	using Sudoku::error::invalid_Board;
@@ -612,14 +617,15 @@ TEST(Solver, single_option)
 	static_assert(not noexcept(single_option(B1, L(), Value{1})));
 	// set_Value: throws for invalid Location
 #ifndef NDEBUG
-	EXPECT_DEATH(single_option(B1, L{-1}, Value{1}), ".*: is_valid.loc.");
-	EXPECT_DEATH(single_option(B1, L{16}, Value{1}), ".*: is_valid.loc.");
+	EXPECT_DEATH(single_option(B1, L{-1}, Value{1}), "is_valid\\(loc\\)");
+	EXPECT_DEATH(single_option(B1, L{16}, Value{1}), "is_valid\\(loc\\)");
 #else
 	EXPECT_THROW(single_option(B1, L{-1}, Value{1}), invalid_Location);
 	EXPECT_THROW(single_option(B1, L{16}, Value{1}), invalid_Location);
 #endif // NDEBUG
 	// invalid Value:
-	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{0}), ".* is_valid.*value");
+	EXPECT_DEBUG_DEATH(
+		single_option(B1, L{0}, Value{0}), "is_valid<N>\\(value\\)");
 #ifdef NDEBUG
 	EXPECT_THROW(single_option(B1, L(1), Value{1}), invalid_Board);
 	EXPECT_THROW(single_option(B1, L(2), Value{4}), invalid_Board);
@@ -628,12 +634,13 @@ TEST(Solver, single_option)
 #else
 	EXPECT_NO_THROW(single_option(B1, L(1), Value{1}));
 	EXPECT_NO_THROW(single_option(B1, L(2), Value{4}));
-	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{5}), ".* is_valid.*value");
+	EXPECT_DEBUG_DEATH(
+		single_option(B1, L{0}, Value{5}), "is_valid<N>\\(value\\)");
 #endif // NDEBUG
 	// not an option:
 	B1[0][0] = Options<4>{Value{2}};
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{1}), ".*: .*test.value.");
+	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{1}), "test\\(value\\)");
 	EXPECT_NO_THROW(single_option(B1, L(0), Value{2}));
 #else
 	EXPECT_THROW(single_option(B1, L{0}, Value{1}), invalid_Board);
@@ -715,11 +722,11 @@ TEST(Solver, single_option)
 	// clang-format off
 	constexpr std::array<char, 16> v1
 	{
-		// start	// after set_Value
-		0,2, 0,0,	// 1	2	34	34
-		4,0, 0,0,	// 4	3	12	12
-		0,1, 0,0,	// 23	1	234	234
-		0,0, 0,0	// 23	4	123	123
+		// start     // after set_Value
+		0, 2,  0, 0, // 1  2 34  34
+		4, 0,  0, 0, // 4  3 12  12
+		0, 1,  0, 0, // 23 1 234 234
+		0, 0,  0, 0  // 23 4 123 123
 	}; // clang-format on
 	ASSERT_EQ(B3[1][0], Options<4>{}) << "incorrect instantiation";
 	EXPECT_NO_THROW(set_Value(B3, v1.cbegin(), v1.cend()));
@@ -731,7 +738,7 @@ TEST(Solver, single_option)
 	}
 }
 
-TEST(Solver, dual_option)
+TEST(Solver, dualOption)
 {
 	using ::Sudoku::error::invalid_Board;
 	using ::Sudoku::error::invalid_Location;
@@ -741,8 +748,10 @@ TEST(Solver, dual_option)
 
 	// invalid Loc
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{-1}), ".*is_valid.loc.");
-	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{16}), ".*is_valid.loc.");
+	EXPECT_DEBUG_DEATH(
+		dual_option(board, Location<2>{-1}), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(
+		dual_option(board, Location<2>{16}), "is_valid\\(loc\\)");
 #else
 	EXPECT_THROW(dual_option(board, Location<2>{-1}), invalid_Location);
 	EXPECT_THROW(dual_option(board, Location<2>{16}), invalid_Location);
@@ -754,7 +763,7 @@ TEST(Solver, dual_option)
 	// count != 2
 	board[0][1] = Options<4>{};
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{1}), ".*count.. == 2");
+	EXPECT_DEBUG_DEATH(dual_option(board, Location<2>{1}), "count\\(\\) == 2");
 #else
 	EXPECT_THROW(dual_option(board, Location<2>{1}), invalid_Board);
 #endif
@@ -861,7 +870,7 @@ TEST(Solver, dual_option)
 	EXPECT_EQ(B1[8][0].count(), 6U) << "dual_option 12"; // unchanged
 }
 
-TEST(Solver, multi_option)
+TEST(Solver, multiOption)
 {
 	/*	start board
 	 *	 _ _ _ _ _ _ _ _ _ _ _ _
@@ -957,7 +966,7 @@ TEST(Solver, multi_option)
 	// 9*9 partials forming a set: 3 cells containing (123,12,13)
 	constexpr std::array<char, 81> b3
 	{ //							 //  _ _ _ _ _ _ _ _ _ _ _ _
-		0, 0, 0,  0, 0, 0,  0, 0, 0, // |       |       |       | row: 1,2; 1,2,3; 1,2,3
+		0, 0, 0,  0, 0, 0,  0, 0, 0, // |       |       |       |1,2;1,2,3;1,2,3
 		4, 5, 6,  0, 0, 0,  0, 0, 0, // | 4 5 6 |       |       |
 		7, 8, 9,  0, 0, 0,  0, 0, 0, // |_7_8_9_|_ _ _ _|_ _ _ _|
 		0, 0, 0,  0, 2, 3,  0, 0, 0, // | 3     |   2 3 |       |
@@ -994,7 +1003,7 @@ TEST(Solver, multi_option)
 }
 
 // NOLINTNEXTLINE(readability-function-size)
-TEST(Solver, multi_option_2)
+TEST(Solver, multiOption2)
 {
 	using L = Location<2>;
 	using V = Value;
@@ -1030,10 +1039,10 @@ TEST(Solver, multi_option_2)
 	EXPECT_NO_THROW(multi_option(board, L{15}));
 	EXPECT_NO_THROW(multi_option(board, L{15}, 3));
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(multi_option(board, L{-1}), ".*: is_valid.loc.");
-	EXPECT_DEBUG_DEATH(multi_option(board, L{16}), ".*: is_valid.loc.");
-	EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 3), ".*: is_valid.loc.");
-	EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 3), ".*: is_valid.loc.");
+	EXPECT_DEBUG_DEATH(multi_option(board, L{-1}), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(multi_option(board, L{16}), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 3), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 3), "is_valid\\(loc\\)");
 #else
 	using ::Sudoku::error::invalid_Location;
 	EXPECT_THROW(multi_option(board, L{-1}), invalid_Location);
@@ -1042,7 +1051,7 @@ TEST(Solver, multi_option_2)
 	EXPECT_THROW(multi_option(board, L{16}, 3), invalid_Location);
 #endif // NDEBUG
 	// count > elem_size
-	EXPECT_DEBUG_DEATH(multi_option(board, L{}, 5), ".*: count < elem_size<N>");
+	EXPECT_DEBUG_DEATH(multi_option(board, L{}, 5), "count < elem_size<N>");
 	{ // single_option specialization (count = 1)
 		board[0][0] = Options<4>{B{"01001"}};
 		EXPECT_NO_THROW(multi_option(board, L{0}));
@@ -1051,8 +1060,8 @@ TEST(Solver, multi_option_2)
 		EXPECT_NO_THROW(multi_option(board, L{15}, 1));
 		EXPECT_NO_THROW(multi_option(board, L{15}));
 #ifndef NDEBUG
-		EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 1), ".*: is_valid.loc.");
-		EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 1), ".*: is_valid.loc.");
+		EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 1), "is_valid\\(loc\\)");
+		EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 1), "is_valid\\(loc\\)");
 #else
 		// thrown by Board::at(Location)
 		EXPECT_THROW(multi_option(board, L{-1}, 1), invalid_Location);
@@ -1068,8 +1077,8 @@ TEST(Solver, multi_option_2)
 		EXPECT_NO_THROW(multi_option(board, L{15}, 2));
 		EXPECT_NO_THROW(multi_option(board, L{15}));
 #ifndef NDEBUG
-		EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 2), ".*: is_valid.loc.");
-		EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 2), ".*: is_valid.loc.");
+		EXPECT_DEBUG_DEATH(multi_option(board, L{-1}, 2), "is_valid\\(loc\\)");
+		EXPECT_DEBUG_DEATH(multi_option(board, L{16}, 2), "is_valid\\(loc\\)");
 #else
 		EXPECT_THROW(multi_option(board, L{-1}, 2), invalid_Location);
 		EXPECT_THROW(multi_option(board, L{16}, 2), invalid_Location);
@@ -1078,11 +1087,11 @@ TEST(Solver, multi_option_2)
 	// count too small
 	board[0][0] = Options<4>{B{"11111"}};
 	EXPECT_DEBUG_DEATH(
-		multi_option(board, L{0}, 3), ".*: item.count.. == count");
+		multi_option(board, L{0}, 3), "item.count\\(\\) == count");
 	// count too large
 	board[0][0] = Options<4>{B{"11001"}};
 	EXPECT_DEBUG_DEATH(
-		multi_option(board, L{0}, 3), ".*: item.count.. == count");
+		multi_option(board, L{0}, 3), "item.count\\(\\) == count");
 
 	//====----------------------------------------------------------------====//
 	// Operational testing
@@ -1095,7 +1104,7 @@ TEST(Solver, multi_option_2)
 		}
 	};
 	empty_base();
-	ASSERT_EQ(board[L{10}].count_all(), 0u);
+	ASSERT_EQ(board[L{10}].count_all(), 0U);
 
 	//====----------------------------------------------------------------====//
 	{ // influence on an isolated row
@@ -1110,11 +1119,11 @@ TEST(Solver, multi_option_2)
 		EXPECT_EQ(multi_option(board, L{1}), 0);    // all set
 		EXPECT_EQ(multi_option(board, L{0}, 4), 0); // as if all set
 		EXPECT_EQ(multi_option(board, L{0}), 4);    // 0,1 -> ans 4
-		EXPECT_EQ(board[L{0}].count(), 3u);
+		EXPECT_EQ(board[L{0}].count(), 3U);
 		EXPECT_TRUE(is_answer(board.at(L{1})));
 		EXPECT_TRUE(is_answer(board.at(L{1}), V{4}));
-		EXPECT_EQ(board[L{2}].count(), 2u);
-		EXPECT_EQ(board[L{3}].count(), 1u);
+		EXPECT_EQ(board[L{2}].count(), 2U);
+		EXPECT_EQ(board[L{3}].count(), 1U);
 		EXPECT_EQ(multi_option(board, L{0}), 0); // repeated
 		EXPECT_EQ(multi_option(board, L{1}), 0);
 		// specialization: dual option
@@ -1124,13 +1133,13 @@ TEST(Solver, multi_option_2)
 		EXPECT_EQ(multi_option(board, L{2}), 7);
 		EXPECT_TRUE(is_answer(board.at(L{0}), V{3}));
 		EXPECT_TRUE(is_answer(board.at(L{1}), V{4}));
-		EXPECT_EQ(board[L{2}].count(), 2u);
-		EXPECT_EQ(board[L{3}].count(), 2u);
+		EXPECT_EQ(board[L{2}].count(), 2U);
+		EXPECT_EQ(board[L{3}].count(), 2U);
 		// specialization: single option
 		reset_row();
 		EXPECT_EQ(multi_option(board, L{3}), 10);
 		EXPECT_TRUE(is_answer(board.at(L{2}), V{1}));
-		EXPECT_EQ(board[L{3}].count(), 0u);
+		EXPECT_EQ(board[L{3}].count(), 0U);
 
 		// combined
 		reset_row();
@@ -1172,11 +1181,11 @@ TEST(Solver, multi_option_2)
 		EXPECT_EQ(multi_option(board, L{2, 1}), 0);    // all set
 		EXPECT_EQ(multi_option(board, L{2, 0}, 4), 0); // as if all set
 		EXPECT_EQ(multi_option(board, L{2, 0}), 4);    // 0,1 -> ans 4
-		EXPECT_EQ(board[L(2, 0)].count(), 3u);
+		EXPECT_EQ(board[L(2, 0)].count(), 3U);
 		EXPECT_TRUE(is_answer(board.at(L{2, 1})));
 		EXPECT_TRUE(is_answer(board.at(L{2, 1}), V{4}));
-		EXPECT_EQ(board[L(2, 2)].count(), 2u);
-		EXPECT_EQ(board[L(2, 3)].count(), 1u);
+		EXPECT_EQ(board[L(2, 2)].count(), 2U);
+		EXPECT_EQ(board[L(2, 3)].count(), 1U);
 		EXPECT_EQ(multi_option(board, L{2, 0}), 0); // repeated
 		EXPECT_EQ(multi_option(board, L{2, 1}), 0);
 		// specialization: dual option
@@ -1186,13 +1195,13 @@ TEST(Solver, multi_option_2)
 		EXPECT_EQ(multi_option(board, L{2, 2}), 7);
 		EXPECT_TRUE(is_answer(board.at(L{2, 0}), V{3}));
 		EXPECT_TRUE(is_answer(board.at(L{2, 1}), V{4}));
-		EXPECT_EQ(board[L(2, 2)].count(), 2u);
-		EXPECT_EQ(board[L(2, 3)].count(), 2u);
+		EXPECT_EQ(board[L(2, 2)].count(), 2U);
+		EXPECT_EQ(board[L(2, 3)].count(), 2U);
 		// specialization: single option
 		reset_col();
 		EXPECT_EQ(multi_option(board, L{2, 3}), 10);
 		EXPECT_TRUE(is_answer(board.at(L{2, 2}), V{1}));
-		EXPECT_EQ(board[L(2, 3)].count(), 0u);
+		EXPECT_EQ(board[L(2, 3)].count(), 0U);
 	}
 	//====----------------------------------------------------------------====//
 	{ // influence on an isolated block
@@ -1209,11 +1218,11 @@ TEST(Solver, multi_option_2)
 		EXPECT_EQ(multi_option(board, L{LB{2, 1}}), 0);    // all set
 		EXPECT_EQ(multi_option(board, L{LB{2, 0}}, 4), 0); // as if all set
 		EXPECT_EQ(multi_option(board, L{LB{2, 0}}), 4);    // 0,1 -> ans 4
-		EXPECT_EQ(board[LB(2, 0)].count(), 3u);
+		EXPECT_EQ(board[LB(2, 0)].count(), 3U);
 		EXPECT_TRUE(is_answer(board.at(LB{2, 1})));
 		EXPECT_TRUE(is_answer(board.at(LB{2, 1}), V{4}));
-		EXPECT_EQ(board[LB(2, 2)].count(), 2u);
-		EXPECT_EQ(board[LB(2, 3)].count(), 1u);
+		EXPECT_EQ(board[LB(2, 2)].count(), 2U);
+		EXPECT_EQ(board[LB(2, 3)].count(), 1U);
 		EXPECT_EQ(multi_option(board, L{LB{2, 0}}), 0); // repeated
 		EXPECT_EQ(multi_option(board, L{LB{2, 1}}), 0);
 		// specialization: dual option
@@ -1223,13 +1232,13 @@ TEST(Solver, multi_option_2)
 		EXPECT_EQ(multi_option(board, L{LB{2, 2}}), 7);
 		EXPECT_TRUE(is_answer(board.at(LB{2, 0}), V{3}));
 		EXPECT_TRUE(is_answer(board.at(LB{2, 1}), V{4}));
-		EXPECT_EQ(board[LB(2, 2)].count(), 2u);
-		EXPECT_EQ(board[LB(2, 3)].count(), 2u);
+		EXPECT_EQ(board[LB(2, 2)].count(), 2U);
+		EXPECT_EQ(board[LB(2, 3)].count(), 2U);
 		// specialization: single option
 		reset_block();
 		EXPECT_EQ(multi_option(board, L{LB{2, 3}}), 10);
 		EXPECT_TRUE(is_answer(board.at(LB{2, 2}), V{1}));
-		EXPECT_EQ(board[LB(2, 3)].count(), 0u);
+		EXPECT_EQ(board[LB(2, 3)].count(), 0U);
 	}
 	//====----------------------------------------------------------------====//
 	{ // combined removes
@@ -1253,7 +1262,7 @@ TEST(Solver, multi_option_2)
 	}
 }
 
-TEST(Solver, solve_board)
+TEST(Solver, solveBoard)
 {
 	/*	start board					answer board
 	 *	 _ _ _ _ _ _ _ _ _ _ _ _	 _ _ _ _ _ _ _ _ _ _ _ _
@@ -1314,8 +1323,7 @@ TEST(Solver, deathtest)
 	// when wrong value
 	B[1][2] = std::bitset<5>{"00011"}; // 1, not answer
 	EXPECT_DEBUG_DEATH(
-		single_option(B, Location<2>(1, 2), Value{4}),
-		"Assertion failed: .*test.*");
+		single_option(B, Location<2>(1, 2), Value{4}), "Assertion .*test.*");
 #endif // NDEBUG
 }
 

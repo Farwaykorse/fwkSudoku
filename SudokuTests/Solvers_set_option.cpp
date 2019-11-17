@@ -1,4 +1,8 @@
-﻿//===--- SudokuTests/Solver_set_option.cpp                              ---===//
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+//
+//===--- SudokuTests/Solver_set_option.cpp                              ---===//
 //
 //===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
@@ -36,7 +40,7 @@ using ::Sudoku::Location;
 using ::Sudoku::Options;
 using ::Sudoku::Value;
 
-TEST(Solver, set_Value)
+TEST(Solver, setValue)
 {
 	using ::Sudoku::set_Value;
 	using L = Location<2>;
@@ -57,13 +61,13 @@ TEST(Solver, set_Value)
 	EXPECT_NO_THROW(set_Value(board, L{1}, Value{4}));
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
-		set_Value(board, Location<2>{-1}, Value{1}), ".*: is_valid.loc.");
+		set_Value(board, Location<2>{-1}, Value{1}), "is_valid\\(loc\\)");
 	EXPECT_DEBUG_DEATH(
-		set_Value(board, Location<2>{16}, Value{1}), ".*: is_valid.loc.");
+		set_Value(board, Location<2>{16}, Value{1}), "is_valid\\(loc\\)");
 	EXPECT_DEBUG_DEATH(
-		set_Value(board, Location<2>{1}, Value{0}), ".*: is_valid<N>.value.");
+		set_Value(board, Location<2>{1}, Value{0}), "is_valid<N>\\(value\\)");
 	EXPECT_DEBUG_DEATH(
-		set_Value(board, Location<2>{1}, Value{5}), ".*: is_valid<N>.value.");
+		set_Value(board, Location<2>{1}, Value{5}), "is_valid<N>\\(value\\)");
 #else
 	// thrown by Board::at(Location)
 	EXPECT_THROW(
@@ -103,7 +107,7 @@ TEST(Solver, set_Value)
 	EXPECT_EQ(board[1][2].count_all(), 1U);
 }
 
-TEST(Solver, set_Value_vector)
+TEST(Solver, setValueVector)
 {
 	using ::Sudoku::set_Value;
 	{
@@ -162,10 +166,10 @@ TEST(Solver, set_Value_vector)
 		// clang-format off
 		constexpr std::array<Value, 16> v1
 		{
-			V{0},V{2}, V{0},V{0},
-			V{4},V{0}, V{0},V{0},
-			V{0},V{1}, V{4},V{0},
-			V{0},V{0}, V{0},V{0}
+			V{0}, V{2},  V{0}, V{0},
+			V{4}, V{0},  V{0}, V{0},
+			V{0}, V{1},  V{4}, V{0},
+			V{0}, V{0},  V{0}, V{0}
 		}; // clang-format on
 		Board<Options<4>, 2> B2;
 		EXPECT_EQ(set_Value(B2, v1.cbegin(), v1.cend()), 49);
@@ -185,11 +189,11 @@ TEST(Solver, set_Value_vector)
 	{      // using int as input
 		// clang-format off
 		constexpr std::array<char, 16> v1
-		{	// start	// after set_Value
-			0,2, 0,0,	// 1	2	3	4
-			4,0, 0,0,	// 4	3	1,2	1,2
-			0,1, 4,0,	// 2,3	1	4	2,3
-			0,0, 0,0	// 2,3	4	1,2	1,2,3
+		{	// start     // after set_Value
+			0, 2,  0, 0, // 1  2 3  4
+			4, 0,  0, 0, // 4  3 12 12
+			0, 1,  4, 0, // 23 1 4  23
+			0, 0,  0, 0  // 23 4 12 123
 		}; // clang-format on
 		// Copy data from the array
 		Board<Options<4>, 2> B2;
@@ -208,13 +212,15 @@ TEST(Solver, set_Value_vector)
 		EXPECT_EQ(B2[3][1], Value{4});
 
 		// using Options as input:
+#if not(defined(__ICL) && __ICL <= 1900 && defined(_DEBUG))
 		Board<Options<4>, 2> B3;
 		EXPECT_EQ(set_Value(B3, B2.cbegin(), B2.cend()), 49);
+#endif // __ICL
 	}
 }
 
 // NOLINTNEXTLINE(readability-function-size)
-TEST(Solver, set_section_locals)
+TEST(Solver, setSectionLocals)
 {
 	using ::Sudoku::set_section_locals;
 	// called by: section_exclusive
@@ -223,7 +229,6 @@ TEST(Solver, set_section_locals)
 	// int set_section_locals(section, rep_count, worker)
 	using set = std::bitset<5>;
 	Board<Options<4>, 2> B{};
-	Board<Options<4>, 2> cB{B};
 
 	B[0][0] = Value{3};
 	B.clear();
@@ -245,7 +250,7 @@ TEST(Solver, set_section_locals)
 	EXPECT_DEBUG_DEATH(
 		set_section_locals(B, B.row(2), 4, worker), "rep_count <= N");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.row(2), 3, worker), ".*rep_count <= N");
+		set_section_locals(B, B.row(2), 3, worker), "rep_count <= N");
 #ifdef NDEBUG
 	EXPECT_EQ(set_section_locals(B, B.row(2), 0, worker), 0);
 	EXPECT_EQ(set_section_locals(B, B.row(2), 1, worker), 1);
@@ -262,23 +267,23 @@ TEST(Solver, set_section_locals)
 	worker  = Value{2};
 	ASSERT_TRUE(worker[Value{2}]);
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.row(0), 2, worker), "Assertion failed: .*");
+		set_section_locals(B, B.row(0), 2, worker), "Assertion .*");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.col(0), 2, worker), "Assertion failed: .*");
+		set_section_locals(B, B.col(0), 2, worker), "Assertion .*");
 	B[1][0] = set{"11011"};
 	B[1][1] = set{"11011"};
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.block(0), 2, worker), "Assertion failed: .*");
+		set_section_locals(B, B.block(0), 2, worker), "Assertion .*");
 	// worker empty
 	worker = set{"00000"};
 	ASSERT_TRUE(worker.is_empty());
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.row(0), 2, worker), "count_all.. > 0");
+		set_section_locals(B, B.row(0), 2, worker), "count_all\\(\\) > 0");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.col(0), 2, worker), "count_all.. > 0");
+		set_section_locals(B, B.col(0), 2, worker), "count_all\\(\\) > 0");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.block(0), 2, worker), "count_all.. > 0");
+		set_section_locals(B, B.block(0), 2, worker), "count_all\\(\\) > 0");
 #else
 	EXPECT_EQ(set_section_locals(B, B.row(0), 2, worker), 0);
 	EXPECT_EQ(set_section_locals(B, B.col(0), 2, worker), 0);
@@ -287,11 +292,11 @@ TEST(Solver, set_section_locals)
 	// worker empty (with answer-bit)
 	worker = set{"00001"};
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.row(0), 2, worker), "count_all.. > 0");
+		set_section_locals(B, B.row(0), 2, worker), "count_all\\(\\) > 0");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.col(0), 2, worker), "count_all.. > 0");
+		set_section_locals(B, B.col(0), 2, worker), "count_all\\(\\) > 0");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.block(0), 2, worker), "count_all.. > 0");
+		set_section_locals(B, B.block(0), 2, worker), "count_all\\(\\) > 0");
 	// worker all set
 	worker = set{"11111"};
 	EXPECT_DEBUG_DEATH(
@@ -325,9 +330,9 @@ TEST(Solver, set_section_locals)
 	worker  = Value{2};
 	ASSERT_TRUE(worker[Value{2}]);
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.block(0), 2, worker), "Assertion failed: .*");
+		set_section_locals(B, B.block(0), 2, worker), "Assertion .*");
 	EXPECT_DEBUG_DEATH(
-		set_section_locals(B, B.row(0), 2, worker), "Assertion failed: .*");
+		set_section_locals(B, B.row(0), 2, worker), "Assertion .*");
 
 
 	//====----------------------------------------------------------------====//
@@ -516,7 +521,7 @@ TEST(Solver, set_section_locals)
 	EXPECT_TRUE(B3[8][1].all());
 }
 
-TEST(Solver, set_unique)
+TEST(Solver, setUnique)
 {
 	using ::Sudoku::set_unique;
 	using L = Location<2>;
@@ -539,7 +544,7 @@ TEST(Solver, set_unique)
 	// Death tests
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
-		set_unique(board, board.row(2), Value{12}), ".*is_valid<N>.value");
+		set_unique(board, board.row(2), Value{12}), "is_valid<N>\\(value\\)");
 #else
 	EXPECT_THROW(set_unique(board, board.row(2), Value{12}), std::out_of_range);
 #endif // NDEBUG
@@ -553,13 +558,13 @@ TEST(Solver, set_unique)
 		::Sudoku::error::invalid_Board);
 	board = cB1; // reset
 	// Section is not a part of board
-	EXPECT_DEBUG_DEATH(set_unique(board, cB1.row(0), Value{1}), ".*board");
+	EXPECT_DEBUG_DEATH(set_unique(board, cB1.row(0), Value{1}), "board");
 	// Value is not unique
 	EXPECT_DEBUG_DEATH(
-		set_unique(board, board.row(2), Value{4}), ".*std::find_if");
+		set_unique(board, board.row(2), Value{4}), "std::find_if");
 }
 
-TEST(Solver, set_uniques)
+TEST(Solver, setUniques)
 {
 	using ::Sudoku::appearance_once;
 	using ::Sudoku::set_uniques;
@@ -645,7 +650,7 @@ TEST(Solver, set_uniques)
 	EXPECT_FALSE(is_option(B2[3][0], Value{1}));
 }
 
-TEST(Solver, deathtest_set_option)
+TEST(Solver, deathtestSetOption)
 {
 	Board<Options<4>, 2> B{};
 
@@ -654,9 +659,9 @@ TEST(Solver, deathtest_set_option)
 		constexpr std::array<char, 18> v2{};
 		// input too short / too long
 		EXPECT_DEBUG_DEATH(
-			set_Value(B, v1.cbegin(), v1.cend()), "Assertion failed:");
+			set_Value(B, v1.cbegin(), v1.cend()), "Assertion .*");
 		EXPECT_DEBUG_DEATH(
-			set_Value(B, v2.cbegin(), v2.cend()), "Assertion failed:");
+			set_Value(B, v2.cbegin(), v2.cend()), "Assertion .*");
 	}
 	// set_uniques
 	//{

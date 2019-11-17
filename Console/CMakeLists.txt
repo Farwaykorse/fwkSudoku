@@ -1,7 +1,12 @@
 ##====---- fwkSudoku/Console/CMakeLists.txt                           ----====##
 ##
 ##====--------------------------------------------------------------------====##
-cmake_minimum_required(VERSION 3.11.4...3.13)
+include(add_to_source_file_properties)
+include(msvc_warnings_list)
+include(set_precompiled_header)
+include(subproject_functions)
+
+subproject_cmake_minimum_required(3.12)
 
 project(SudokuConsole LANGUAGES CXX)
 
@@ -20,26 +25,71 @@ set_target_properties(console
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS OFF
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:DebugDLL>" # v3.15+
+    VS_JUST_MY_CODE_DEBUGGING $<IF:$<CONFIG:Debug>,ON,OFF> # v3.15+
 )
 
 ##====--------------------------------------------------------------------====##
 # Compiler Specific Configuration
 if(MSVC) # MSVC or simulating MSVC
   target_compile_options(console PRIVATE
-    /EHsc
+    /EHsc        # exception handling configuration
     /GR-         # disable RTTI (smaller image)
     /GS          # buffer security check
     /permissive- # disable non-conforming constructs in VC++
+    /utf-8       # source files are UTF-8 encoded
+    $<$<CONFIG:Release>:
+      /guard:cf  # control flow guard
+    >
     $<$<CXX_COMPILER_ID:MSVC>:
       /Gm-       # prefer /MP
       /MP        # multiprocessor compilation (requires /Gm-)
-      /sdl
+      /sdl       # SDL checks and code generation
+      $<$<CONFIG:Debug>:
+        /ZI       # PDB for edit-and-continue
+      >
+      $<$<CONFIG:Release>:
+        /GL       # whole program optimization
+        /Zi       # separate PDB
+      >
+    >
+    $<$<CXX_COMPILER_ID:Clang>:
+      $<$<CONFIG:Debug>:
+        /Z7       # enable debug information
+      >
     >
   )
+  # Ninja-build only,
   # Remove conflicting flags set by CMake (MSVC warning D9025)
-  string(REGEX REPLACE "(/GR|/W[0-4]) ?" ""
+  string(REGEX REPLACE "(/GR|/EHsc) ?" ""
     CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}"
   )
+  string(REGEX REPLACE "/Z[7iI] ?" ""
+    CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}"
+  )
+  if(CMAKE_VERSION VERSION_LESS 3.15) 
+    string(REGEX REPLACE "/W[0-4] ?" ""
+      CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}"
+    )
+    string(REGEX REPLACE "/MD" "/MT"
+      CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}"
+    )
+  endif()
+
+  # Linker Configuration
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13) 
+    target_link_options(console PRIVATE
+      $<$<CXX_COMPILER_ID:MSVC>:
+        $<$<CONFIG:Release>:
+          /LTCG     # link-time code generation (goes with /GL)
+        >
+      >
+    )
+  else()
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+      string(APPEND LINK_FLAGS_RELEASE " /LTCG")
+    endif()
+  endif()
 endif()
 
 ##====--------------------------------------------------------------------====##
@@ -66,12 +116,12 @@ if(MSVC) # MSVC or simulating MSVC
     precompiled.cpp
     OPTIONS
       $<$<CXX_COMPILER_ID:MSVC>:
+        $<$<CONFIG:Debug>:
+          /wd4365 # stl
+        >
         /wd4668 # gsl_byte
         /wd4774 # stl
         /wd5026 # system_error
-      >
-      $<$<CXX_COMPILER_ID:Clang>:
-        -Wno-undef        # ms-gsl (PR created)
       >
   )
 else()
@@ -85,7 +135,12 @@ else()
       -Wno-weak-vtables   # exceptions
     >
     $<$<CXX_COMPILER_ID:Clang>:
-      $<$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>:
+      $<$<OR:$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>,$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0.1>>:
+        -Wno-missing-braces
+      >
+    >
+    $<$<CXX_COMPILER_ID:AppleClang>:
+      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10>:
         -Wno-missing-braces
       >
     >
@@ -93,13 +148,17 @@ else()
       -Wall
       -Wcast-align        # potential performance issue
       $<$<NOT:$<VERSION_LESS:$<CXX_COMPILER_VERSION>,8>>:
-        -Wconversion      # potential data-loss
+        -Wcast-align=strict # since 8.0; increase alignment (i.e. char* to int*)
+        -Wconversion      # since 8.0; potential data-loss
       >
       -Wdouble-promotion  # since 4.6; float implicit to double
       -Wduplicated-branches # since 7.0; identical if-else branches
       -Wduplicated-cond   # since 6.0; duplicated if-else conditions
       -Wextra
       -Wformat=2
+      -Wformat-overflow=2 # since 7.0
+      -Wformat-signedness # since 5.0; sign change on input of format functions
+      -Wformat-truncation=2 # since 7.0
       -Wlogical-op        # suspicious uses of logical operators
       -Wmisleading-indentation # since 6.0
       -Wnull-dereference  # since 6.0; detected paths with erroneous or undefined behaviour
@@ -112,7 +171,7 @@ else()
   set_source_files_compile_options(
     Console.cpp
     OPTIONS
-      $<$<CXX_COMPILER_ID:Clang>:
+      $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
         -Wno-padded
       >
   )

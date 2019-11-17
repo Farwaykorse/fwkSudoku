@@ -1,3 +1,7 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+//
 //===--- SudokuTests/Board.cpp                                          ---===//
 //
 // Unit tests for the template class Sudoku::Board
@@ -24,6 +28,7 @@
 // Debug Output
 #include "print_Options.h"
 // library
+#include <array>
 #include <bitset>
 #include <initializer_list>
 #include <set>
@@ -46,7 +51,8 @@ namespace compiletime
 	// will trigger compile-time errors
 
 	// Type properties
-	using typeT = Board<int, 3>;
+	using typeT  = Board<int, 3>;
+	using arrayT = std::array<int, 81>;
 
 	// Composite Type Categories
 	static_assert(not std::is_fundamental_v<typeT>);
@@ -62,7 +68,7 @@ namespace compiletime
 	// Type Properties
 	static_assert(not std::is_const_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-	static_assert(not std::is_trivially_copyable_v<typeT>);
+	static_assert(std::is_trivially_copyable_v<typeT>);
 #ifdef _DEBUG
 	//? WHY different behaviour between debug/release mode? (MSVC & Clang, !GCC)
 	// static_assert(not std::is_standard_layout_v<typeT>, "standard layout");
@@ -74,9 +80,12 @@ namespace compiletime
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);               // ++
@@ -85,32 +94,37 @@ namespace compiletime
 
 	// copy constructor: typeT(const typeT&)
 	static_assert(std::is_copy_constructible_v<typeT>);
-	static_assert(not std::is_nothrow_copy_constructible_v<typeT>);
-	static_assert(not std::is_trivially_copy_constructible_v<typeT>);
+	static_assert(std::is_nothrow_copy_constructible_v<typeT>);
+	static_assert(std::is_trivially_copy_constructible_v<typeT>);
 
 	// move constructor: typeT(typeT&&)
 	static_assert(std::is_move_constructible_v<typeT>);
 	static_assert(std::is_nothrow_move_constructible_v<typeT>);
-	static_assert(not std::is_trivially_move_constructible_v<typeT>);
+	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
 	// copy assignment
-	static_assert(std::is_copy_assignable_v<typeT>);               // ++
-	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);   // ++
-	static_assert(not std::is_trivially_copy_assignable_v<typeT>); // ++
+	static_assert(std::is_copy_assignable_v<typeT>);           // ++
+	static_assert(std::is_nothrow_copy_assignable_v<typeT>);   // ++
+	static_assert(std::is_trivially_copy_assignable_v<typeT>); // ++
 
-	static_assert(std::is_move_assignable_v<typeT>);               // ++
-	static_assert(std::is_nothrow_move_assignable_v<typeT>);       // ++
-	static_assert(not std::is_trivially_move_assignable_v<typeT>); // ++
+	static_assert(std::is_move_assignable_v<typeT>);           // ++
+	static_assert(std::is_nothrow_move_assignable_v<typeT>);   // ++
+	static_assert(std::is_trivially_move_assignable_v<typeT>); // ++
 
-	static_assert(std::is_destructible_v<typeT>);               // ++
-	static_assert(std::is_nothrow_destructible_v<typeT>);       // ++
-	static_assert(not std::is_trivially_destructible_v<typeT>); // ++
-	static_assert(not std::has_virtual_destructor_v<typeT>);    // --
+	static_assert(std::is_destructible_v<typeT>);            // ++
+	static_assert(std::is_nothrow_destructible_v<typeT>);    // ++
+	static_assert(std::is_trivially_destructible_v<typeT>);  // ++
+	static_assert(not std::has_virtual_destructor_v<typeT>); // --
 
 #if not(defined(__ICL) && __ICL <= 1900)
-	static_assert(std::is_swappable_v<typeT>);         // C++17
-	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
-#endif                                                 // __ICL
+	static_assert(std::is_swappable_v<typeT>);                          // C++17
+	static_assert(std::is_nothrow_swappable_v<typeT>);                  // C++17
+	static_assert(not std::is_swappable_with_v<typeT, arrayT>);         // C++17
+	static_assert(not std::is_nothrow_swappable_with_v<typeT, arrayT>); // C++17
+	static_assert(not std::is_swappable_with_v<typeT, Options<9>>);     // C++17
+	static_assert(
+		not std::is_nothrow_swappable_with_v<typeT, Options<9>>); // C++17
+#endif
 
 	// is_constructible from different types
 	// set to non-default value at initialization
@@ -123,6 +137,20 @@ namespace compiletime
 	static_assert(std::is_constructible_v<Board<Options<9>, 3>, Options<9>>);
 	static_assert(
 		not std::is_nothrow_constructible_v<Board<Options<9>, 3>, Options<9>>);
+	static_assert(std::is_constructible_v<typeT, arrayT>);
+	static_assert(not std::is_nothrow_constructible_v<typeT, arrayT>);
+	static_assert(std::is_constructible_v<
+				  Board<Options<9>, 3>,
+				  std::array<Options<9>, 81>>);
+	static_assert(not std::is_nothrow_constructible_v<
+				  Board<Options<9>, 3>,
+				  std::array<Options<9>, 81>>);
+	static_assert(not std::is_constructible_v<
+				  Board<Options<9>, 3>,
+				  std::array<Options<4>, 81>>);
+	static_assert(not std::is_constructible_v<
+				  Board<Options<9>, 3>,
+				  std::array<Options<4>, 16>>);
 	static_assert(std::is_constructible_v<typeT, std::initializer_list<int>>);
 	static_assert(
 		not std::is_nothrow_constructible_v<typeT, std::initializer_list<int>>);
@@ -133,20 +161,35 @@ namespace compiletime
 				  Board<Options<3>, 3>,
 				  std::initializer_list<Options<3>>>);
 
+	// Assign to Board:
 	static_assert(std::is_assignable_v<Board<int, 3>, Board<int, 3>>);
+	static_assert(std::is_assignable_v<typeT, arrayT>);
+	static_assert(std::is_assignable_v<typeT, std::array<int, 81>>);
+	static_assert(std::is_assignable_v<Board<int, 2>, std::array<int, 16>>);
+	static_assert(not std::is_assignable_v<typeT, std::array<int, 12>>);
+	// Assign from Board:
+	static_assert(not std::is_assignable_v<arrayT, typeT>);
 	static_assert(not std::is_assignable_v<Board<int, 3>, int>);
 	static_assert(not std::is_assignable_v<typeT, Location_Block<3>>);
 	static_assert(not std::is_assignable_v<typeT, int>);
+	static_assert(not std::is_assignable_v<int, typeT>);
 	// shouldn't be assignable from int, prevent with explicit!!
+	static_assert(std::is_assignable_v<typeT, arrayT>);
 	static_assert(std::is_assignable_v<typeT, std::initializer_list<int>>);
 	static_assert(std::is_assignable_v<
 				  Board<Options<3>, 3>,
 				  std::initializer_list<Options<3>>>);
-#if not(defined(__ICL) && __ICL <= 1900)
-	static_assert(not std::is_swappable_with_v<typeT, Options<9>>); // C++17
-	static_assert(
-		not std::is_nothrow_swappable_with_v<typeT, Options<9>>); // C++17
-#endif                                                            // __ICL
+
+	// Implicit conversion to Board: (prefer all negative)
+	static_assert(std::is_convertible_v<arrayT, typeT>);
+	static_assert(std::is_convertible_v<std::array<int, 81>, typeT>);
+	static_assert(std::is_convertible_v<std::initializer_list<int>, typeT>);
+	static_assert(not std::is_convertible_v<std::array<int, 12>, typeT>);
+	static_assert(not std::is_convertible_v<std::array<Options<9>, 81>, typeT>);
+	static_assert(not std::is_convertible_v<typeT, std::initializer_list<int>>);
+	// Implicit conversion from Board:
+	static_assert(not std::is_convertible_v<typeT, arrayT>);
+	static_assert(not std::is_convertible_v<typeT, std::array<Options<9>, 81>>);
 
 	//====----------------------------------------------------------------====//
 	// Member types
@@ -188,12 +231,12 @@ TEST(Board, Construction)
 		SCOPED_TRACE("Copy Constructor : Board(const Board&)");
 		const Board<int, 2> D_2{};
 		// NOLINTNEXTLINE(performance-unnecessary-copy-initialization)
-		const Board<int, 2> Opt{D_2};          // copy construct
-		EXPECT_NO_THROW((Board<int, 2>(D_2))); // copy construct
+		[[maybe_unused]] const Board<int, 2> Opt{D_2}; // copy construct
+		EXPECT_NO_THROW((Board<int, 2>(D_2)));         // copy construct
 		EXPECT_EQ((Board<int, 2>(D_2)), D_2);
 		const Board<int, 3> D_3;
 		// NOLINTNEXTLINE(performance-unnecessary-copy-initialization)
-		EXPECT_NO_THROW(Board<int> Opt2 = D_3);
+		EXPECT_NO_THROW([[maybe_unused]] Board<int> Opt2 = D_3);
 	}
 	{
 		SCOPED_TRACE("Copy Assignment : Board& operator=(const Board&)");
@@ -204,13 +247,20 @@ TEST(Board, Construction)
 	}
 	{
 		SCOPED_TRACE("Move Constructor : Board(Board&&)");
-		EXPECT_NO_THROW(Board<int> Opt = (Board<int, 3>()));
-		EXPECT_NO_THROW(auto Opt = (Board<int, 2>())); // move construct
+		EXPECT_NO_THROW([[maybe_unused]] Board<int> Opt = (Board<int, 3>()));
+		EXPECT_NO_THROW(
+			[[maybe_unused]] auto Opt = (Board<int, 2>())); // move construct
 	}
 	{
 		SCOPED_TRACE("Move Assign : Board& operator=(Board&&)");
-		Board<int, 2> Opt{};
+		[[maybe_unused]] Board<int, 2> Opt{};
 		EXPECT_NO_THROW(Opt = (Board<int, 2>()));
+	}
+	{
+		SCOPED_TRACE("Construct from array");
+		constexpr std::array<int, 16> list{
+			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+		ASSERT_NO_THROW((Board<int, 2>{list}));
 	}
 	{
 		SCOPED_TRACE("Construct from Initializer_list");
@@ -237,18 +287,12 @@ TEST(Board, Construction)
 		const std::initializer_list<int> short_list{0, 1, 2, 3};
 		const std::initializer_list<int> long_list{
 			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-		EXPECT_DEBUG_DEATH({ (Board<int, 2>{short_list}); }, "");
-		EXPECT_DEBUG_DEATH({ (Board<int, 2>{long_list}); }, "");
-#ifdef NDEBUG
-		// exceptions not implemented yet
-		// TODO implement exceptions
-		EXPECT_NO_THROW((Board<int, 2>{short_list}));
-		EXPECT_NO_THROW((Board<int, 2>{long_list}));
-#endif // NDEBUG
+		EXPECT_THROW((Board<int, 2>{short_list}), std::length_error);
+		EXPECT_THROW((Board<int, 2>{long_list}), std::length_error);
 	}
 }
 
-TEST(Board, default_values)
+TEST(Board, defaultValues)
 {
 	// for int, all 0
 	Board<int, 2> B_int{};
@@ -274,7 +318,7 @@ TEST(Board, size)
 	EXPECT_EQ(Board<int>::size(), size_t{81});
 	EXPECT_EQ((Board<int, 2>::size()), size_t{16});
 
-	// max_size
+	// Max_size
 	static_assert(noexcept(Board<int>::max_size()));
 	static_assert(noexcept(Board<int, 2>::max_size()));
 	static_assert(noexcept(Board<int, 3>::max_size()));
@@ -294,7 +338,7 @@ TEST(Board, empty)
 	static_assert(!(Board<int, 2>::empty()));
 }
 
-TEST(Board, operator_equal)
+TEST(Board, operatorEqual)
 {
 	static_assert(not noexcept(Board<int>() == Board<int>(3)));
 	// assuming the used algorithms only throw `std::bad_alloc`
@@ -321,7 +365,7 @@ TEST(Board, operator_equal)
 		(Board<Options<4>, 2>()));
 }
 
-TEST(Board_Utilities, operator_not_equal)
+TEST(BoardUtilities, operatorNotEqual)
 {
 	static_assert(not noexcept(Board<int>() != Board<int>(3)));
 	// Board == Board => ...
@@ -341,10 +385,14 @@ TEST(Board_Utilities, operator_not_equal)
 	EXPECT_FALSE((Board<Options<4>, 2>()) != (Board<Options<4>, 2>()));
 }
 
-TEST(Board, access_front_back)
+TEST(Board, accessFrontBack)
 {
-	Board<int, 2> B{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-	const Board<int, 2> cB{5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 7};
+	constexpr std::array<int, 16> list{
+		5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 7};
+	Board<int, 2> B = std::array<int, 16>{
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	constexpr Board<int, 2> cB = list;
+	constexpr Board<int, 2> empty{};
 	// Read
 	static_assert(noexcept(B.front() == 9));
 	static_assert(noexcept(B.back() == 9));
@@ -357,6 +405,11 @@ TEST(Board, access_front_back)
 	EXPECT_EQ(B.back(), 15);
 	EXPECT_EQ(cB.front(), 5);
 	EXPECT_EQ(cB.back(), 7);
+	// constexpr use
+	static_assert(cB.front() == 5);
+	static_assert(cB.back() == 7);
+	static_assert(empty.front() == 0);
+	static_assert(empty.back() == 0);
 
 	// Write
 	static_assert(noexcept(B.front() = 9));
@@ -367,14 +420,21 @@ TEST(Board, access_front_back)
 	EXPECT_EQ(B.back(), 89);
 }
 
-TEST(Board, access_checked)
+TEST(Board, accessChecked)
 {
 	using ::Sudoku::error::invalid_Location;
 
 	// at(Location)
 	Board<int, 2> B1{};
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
+							   defined(__GNUC__) && __GNUC__ < 9)
+	static_assert(noexcept(B1.at(Location<2>(0)) = 2));
+	static_assert(noexcept(B1.at(Location<2>(0)) == 2));
+#else // newer compilers
 	static_assert(not noexcept(B1.at(Location<2>(0)) = 2));
 	static_assert(not noexcept(B1.at(Location<2>(0)) == 2));
+#endif
+	static_assert(not noexcept(B1.at(Location<2>(20)) == 2));
 	static_assert(std::is_same_v<int&, decltype(B1.at(Location<2>(2)))>);
 	EXPECT_THROW({ B1.at(Location<2>{17}) = 3; }, invalid_Location);
 	EXPECT_THROW({ B1.at(Location<2>{4, 0}) = 2; }, invalid_Location);
@@ -395,21 +455,44 @@ TEST(Board, access_checked)
 	EXPECT_THROW(B1.at(Location<2>(-1)), std::out_of_range);
 	EXPECT_THROW(B1.at(Location<2>(-1)), invalid_Location);
 
-	// at(Location) const
-	const Board<int, 2> cB{
+	// at(Location) const(expr)
+	const Board<int, 2> cB = std::array<int, 16>{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	constexpr Board<int, 2> cexprB = std::array<int, 16>{
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
+							   defined(__GNUC__) && __GNUC__ < 9)
+	static_assert(noexcept(cB.at(Location<2>(0)) == 1));
+#else
 	static_assert(not noexcept(cB.at(Location<2>(0)) == 1));
+#endif
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
+							   defined(__GNUC__) && __GNUC__ < 9) ||           \
+	defined(__ICL)
+	static_assert(noexcept(cexprB.at(Location<2>(0)) == 1));
+#else
+	static_assert(not noexcept(cexprB.at(Location<2>(0)) == 1));
+#endif
+	static_assert(not noexcept(cB.at(Location<2>(20)) == 1));
+	static_assert(not noexcept(cexprB.at(Location<2>(20)) == 1));
 	static_assert(std::is_same_v<int const&, decltype(cB.at(Location<2>(2)))>);
+	[[maybe_unused]] int tmp;
 	EXPECT_EQ(cB.at(Location<2>(2)), 2) << "at(Location) const";
-	EXPECT_THROW(cB.at(Location<2>(16)), invalid_Location);
-	EXPECT_THROW(cB.at(Location<2>(-1)), invalid_Location);
-	EXPECT_THROW(cB.at(Location<2>(16)), std::out_of_range);
-	EXPECT_THROW(cB.at(Location<2>(-1)), std::out_of_range);
-	EXPECT_THROW(cB.at(Location<2>{4, 0}), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(Location<2>(16)), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(Location<2>(-1)), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(Location<2>(16)), std::out_of_range);
+	EXPECT_THROW(tmp = cB.at(Location<2>(-1)), std::out_of_range);
+	EXPECT_THROW(tmp = cB.at(Location<2>{4, 0}), invalid_Location);
 
 	// at(row, col)
 	// at(row, col)
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
+							   defined(__GNUC__) && __GNUC__ < 9)
+	static_assert(noexcept(B1.at(0, 1) == 1));
+#else
 	static_assert(not noexcept(B1.at(0, 1) == 1));
+#endif
+	static_assert(not noexcept(B1.at(5, 1) == 1));
 	EXPECT_THROW(B1.at(1, 4), invalid_Location);
 	EXPECT_THROW(B1.at(1, 4), std::out_of_range);
 	EXPECT_THROW(B1.at(4, 0), invalid_Location);
@@ -427,21 +510,27 @@ TEST(Board, access_checked)
 	EXPECT_THROW(B1.at(-1, 0), invalid_Location);
 	EXPECT_THROW(B1.at(1, -2), invalid_Location);
 	// at(Location) const
-	EXPECT_NO_THROW(cB.at(2, 1));
+	EXPECT_NO_THROW(tmp = cB.at(2, 1));
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
+							   defined(__GNUC__) && __GNUC__ < 9)
+	static_assert(noexcept(cB.at(0, 1) == 1));
+#else
 	static_assert(not noexcept(cB.at(0, 1) == 1));
-	EXPECT_THROW(cB.at(1, 4), invalid_Location);
-	EXPECT_THROW(cB.at(4, 0), invalid_Location);
-	EXPECT_THROW(cB.at(-1, 0), invalid_Location);
-	EXPECT_THROW(cB.at(1, -2), invalid_Location);
+#endif
+	static_assert(not noexcept(cB.at(0, 9) == 1));
+	EXPECT_THROW(tmp = cB.at(1, 4), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(4, 0), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(-1, 0), invalid_Location);
+	EXPECT_THROW(tmp = cB.at(1, -2), invalid_Location);
 	static_assert(std::is_same_v<int const&, decltype(cB.at(2, 2))>);
 	EXPECT_EQ(cB.at(0, 0), 0);
 	EXPECT_EQ(cB.at(3, 1), 13);
 }
 
-TEST(Board, access_unchecked)
+TEST(Board, accessUnchecked)
 {
 	Board<int, 2> B{};
-	const Board<int, 2> cB{
+	constexpr Board<int, 2> cB = std::array<int, 16>{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	// operator[](Location)
 	static_assert(noexcept(B[Location<2>(0)]));
@@ -461,6 +550,10 @@ TEST(Board, access_unchecked)
 	EXPECT_EQ(B[Location<2>(1)], 1);
 	static_assert(noexcept(cB[Location<2>(0)] == 1));
 	EXPECT_EQ(cB[Location<2>(5)], 5);
+
+	static_assert(cB[Location<2>(0)] == 0);
+	static_assert(cB[Location<2>(5)] == 5);
+	static_assert(cB[Location<2>(2, 1)] == 9);
 }
 
 TEST(Board, clear)
@@ -482,8 +575,10 @@ TEST(Board, clear)
 }
 
 TEST(Board, InBetween)
-{
-	Board<int, 2> board{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+{ // Implemented in terms of Board_Section::Row()
+	constexpr Board<int, 2> cboard = std::array<int, 16>{
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	Board<int, 2> board{cboard};
 	static_assert(noexcept(board[0][0]));
 	static_assert(noexcept(board[4][5]));
 	static_assert(noexcept(board[-4][-5]));
@@ -502,14 +597,14 @@ TEST(Board, InBetween)
 	EXPECT_NE(board2[2][0], Value{1});
 
 	// const_InBetween
-	const Board<int, 2> cboard{
-		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	static_assert(noexcept(cboard[0][0]));
 	static_assert(noexcept(cboard[4][5]));
 	EXPECT_EQ(cboard[0][0], 0);
 	EXPECT_EQ(cboard[2][0], 8);
 	EXPECT_EQ(cboard[3][3], 15);
 	EXPECT_NE(cboard[3][3], 10);
+	static_assert(cboard[0][0] == 0);
+	static_assert(cboard[2][0] == 8);
+	static_assert(cboard[3][3] == 15);
 }
-
 } // namespace SudokuTests::BoardTest

@@ -1,0 +1,16 @@
+##====---- .github/workflow/cpplint.yml                               ----====##
+name: cpplint
+on: push
+jobs:
+  gitHubActionForCpplint:
+    name: Run cpplint
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+    - name: GitHub Action for cpplint
+      uses: cpplint/GitHub-Action-for-cpplint@master
+      with:
+        args: cpplint --verbose=0 --counting=detailed --recursive .

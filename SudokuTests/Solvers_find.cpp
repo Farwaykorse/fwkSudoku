@@ -1,5 +1,10 @@
-﻿//===--- SudokuTests/Solver_find.cpp                                    ---===//
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
 //
+//===--- SudokuTests/Solver_find.cpp                                    ---===//
+//
+// Unit tests for solvers on Sudoku::Board.
 //===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
 //
@@ -39,7 +44,7 @@ using ::Sudoku::Location;
 using ::Sudoku::Options;
 using ::Sudoku::Value;
 
-TEST(Solver, list_where_option__Section)
+TEST(Solver, listWhereOptionSection)
 {
 	using ::Sudoku::list_where_option;
 	using set = std::bitset<5>;
@@ -135,7 +140,7 @@ TEST(Solver, list_where_option__Section)
 	EXPECT_EQ(list[1], loc(1, 0));
 }
 
-TEST(Solver, list_where_option__itr)
+TEST(Solver, listWhereOptionItr)
 {
 	using ::Sudoku::list_where_option;
 	using set = std::bitset<5>;
@@ -154,8 +159,10 @@ TEST(Solver, list_where_option__itr)
 	// 2 begin, end, Value, rep_count
 	static_assert(not noexcept(
 		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1}, 3)));
+#if not(defined(__ICL) && __ICL <= 1900 && defined(_DEBUG))
 	static_assert(not noexcept(
 		list_where_option<2>(B.row(0).begin(), B.row(0).end(), Value{1}, 3)));
+#endif // __ICL
 	// return type
 	static_assert(std::is_same_v<
 				  std::vector<loc>,
@@ -252,7 +259,7 @@ TEST(Solver, list_where_option__itr)
 	EXPECT_EQ(list[1], loc(1, 0));
 }
 
-TEST(Solver, list_where_option__no_rep_count)
+TEST(Solver, listWhereOptionNoRepCount)
 {
 	using ::Sudoku::list_where_option;
 	using set = std::bitset<5>;
@@ -290,7 +297,7 @@ TEST(Solver, list_where_option__no_rep_count)
 	EXPECT_EQ(list[1], loc(1, 0));
 }
 
-TEST(Solver, list_where_option__partial)
+TEST(Solver, listWhereOptionPartial)
 {
 	using set = std::bitset<5>;
 	using loc = Location<2>;
@@ -313,7 +320,7 @@ TEST(Solver, list_where_option__partial)
 	EXPECT_EQ(list[1], loc(3));
 }
 
-TEST(Solver, list_where_option__Value)
+TEST(Solver, listWhereOptionValue)
 { // list_where_option(SectionT, Value)
 	using ::Sudoku::list_where_option;
 	using set     = std::bitset<5>;
@@ -390,7 +397,7 @@ TEST(Solver, list_where_option__Value)
 	EXPECT_EQ(list[1], loc(1, 0));
 }
 
-TEST(Solver, list_where_option_pOptions)
+TEST(Solver, listWhereOptions)
 { // list_where_option(Section, Options)
 	using ::Sudoku::list_where_option;
 	using set     = std::bitset<5>;
@@ -446,7 +453,7 @@ TEST(Solver, list_where_option_pOptions)
 	EXPECT_EQ(list.size(), size_t{2}); // even when marked wrong
 }
 
-TEST(Solver, list_where_equal)
+TEST(Solver, listWhereEqual)
 {
 	using ::Sudoku::list_where_equal;
 	using set = std::bitset<5>;
@@ -487,7 +494,7 @@ TEST(Solver, list_where_equal)
 	EXPECT_EQ(list[1], Location<2>(0, 3));
 }
 
-TEST(Solver, list_where_subset)
+TEST(Solver, listWhereSubset)
 {
 	using ::Sudoku::list_where_subset;
 	using L       = Location<2>;
@@ -530,64 +537,64 @@ TEST(Solver, list_where_subset)
 	// normal sample
 	Options item{B{"00111"}};
 	auto result = list_where_subset(board, item);
-	ASSERT_EQ(result.size(), 2u);
+	ASSERT_EQ(result.size(), 2U);
 	EXPECT_EQ(result[0], L{2});
 	EXPECT_EQ(result[1], L{3});
 	result = list_where_subset(board, board[L{0}]);
-	ASSERT_EQ(result.size(), 3u);
+	ASSERT_EQ(result.size(), 3U);
 	EXPECT_EQ(result[0], L{0});
 	EXPECT_EQ(result[2], L{3});
 	result = list_where_subset(board, Options{B{"00101"}});
-	EXPECT_EQ(result.size(), 1u);
+	EXPECT_EQ(result.size(), 1U);
 	// answer sample
 	result = list_where_subset(board, Options{Value{2}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 	// full sample
 	result = list_where_subset(board, Options());
-	ASSERT_EQ(result.size(), 14u); // 2 marked as answer
+	ASSERT_EQ(result.size(), 14U); // 2 marked as answer
 	EXPECT_EQ(result[0], L(0));
 	EXPECT_EQ(result[13], L(15));
 	// empty sample
 	result = list_where_subset(board, Options{B{"00000"}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 	result = list_where_subset(board, Options{B{"00001"}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 	// invalid sample (answer-bit set)
 	result = list_where_subset(board, Options{B{"11110"}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 
 	// only on the row:
 	item               = B{"00111"};
 	const auto section = board.row(L{0});
 	result             = list_where_subset<2>(section, item);
-	ASSERT_EQ(result.size(), 2u);
+	ASSERT_EQ(result.size(), 2U);
 	EXPECT_EQ(result[0], L{2});
 	EXPECT_EQ(result[1], L{3});
 	result = list_where_subset<2>(section, board[L{0}]);
-	ASSERT_EQ(result.size(), 3u);
+	ASSERT_EQ(result.size(), 3U);
 	EXPECT_EQ(result[0], L{0});
 	EXPECT_EQ(result[2], L{3});
 	result = list_where_subset<2>(section, Options{B{"00101"}});
-	EXPECT_EQ(result.size(), 1u);
+	EXPECT_EQ(result.size(), 1U);
 	// answer sample
 	result = list_where_subset<2>(section, Options{Value{2}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 	// full sample
 	result = list_where_subset<2>(section, Options());
-	ASSERT_EQ(result.size(), 4u); // 2 marked as answer
+	ASSERT_EQ(result.size(), 4U); // 2 marked as answer
 	EXPECT_EQ(result[0], L(0));
 	EXPECT_EQ(result[3], L(3));
 	// empty sample
 	result = list_where_subset<2>(section, Options{B{"00000"}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 	result = list_where_subset<2>(section, Options{B{"00001"}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 	// invalid sample (answer-bit set)
 	result = list_where_subset<2>(section, Options{B{"11110"}});
-	ASSERT_EQ(result.size(), 0u);
+	ASSERT_EQ(result.size(), 0U);
 }
 
-TEST(Solver, list_where_any_option)
+TEST(Solver, listWhereAnyOption)
 {
 	using ::Sudoku::list_where_any_option;
 	using set     = std::bitset<5>;
@@ -674,17 +681,17 @@ TEST(Solver, list_where_any_option)
 	}
 }
 
-TEST(Solver, appearance_once)
+TEST(Solver, appearanceOnce)
 {
 	using ::Sudoku::appearance_once;
 	// clang-format off
 	constexpr std::array<char, 16> v1
 	{
-		// start	// after set_Value
-		0,0, 1,0,	// 
-		1,0, 0,0,	// 
-		0,1, 0,0,	// 
-		0,0, 0,0	//					//	0	0	0	1
+		// start     // after set_Value
+		0, 0,  1, 0, //
+		1, 0,  0, 0, //
+		0, 1,  0, 0, //
+		0, 0,  0, 0  // 0 0 0 1
 	}; // clang-format on
 	Board<Options<4>, 2> B1;
 	Options<4> result{};
@@ -833,7 +840,7 @@ TEST(Solver, appearance_once)
 	}
 }
 
-TEST(Solver, appearance_sets)
+TEST(Solver, appearanceSets)
 {
 	using ::Sudoku::appearance_sets;
 	// Example as shown in implementation

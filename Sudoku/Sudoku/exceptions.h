@@ -1,4 +1,4 @@
-﻿//===--- Sudoku/Solver_exception.h                                      ---===//
+//===--- Sudoku/Solver_exception.h                                      ---===//
 //
 //===----------------------------------------------------------------------===//
 #pragma once
@@ -29,7 +29,7 @@ struct invalid_Location : public std::out_of_range
 	{
 	}
 
-	virtual const char* where() const noexcept { return where_; }
+	[[nodiscard]] virtual const char* where() const noexcept { return where_; }
 
 private:
 	const char* where_{std::nullptr_t{}};

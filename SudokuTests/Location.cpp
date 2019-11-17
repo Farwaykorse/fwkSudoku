@@ -1,3 +1,7 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check
+// it. PVS-Studio Static Code Analyzer for C, C++, C#, and Java:
+// http://www.viva64.com
+//
 //===--- SudokuTests/Location.cpp                                       ---===//
 //
 // Unit tests for the template class Sudoku::Location
@@ -42,7 +46,8 @@ namespace compiletime
 	static_assert(not std::is_trivial_v<typeT>);
 #if defined(__clang__) || defined(__GNUC__)
 	static_assert(std::is_trivially_copyable_v<typeT>);
-#if not(defined(__clang__) && __clang_major__ < 6)
+#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
+	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif
 #else
@@ -56,9 +61,12 @@ namespace compiletime
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -155,7 +163,8 @@ namespace Location_Block_compiletime
 #else
 	static_assert(not std::is_trivially_copyable_v<typeT>);
 #if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__clang__) && __clang_major__ < 6)
+	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(not std::has_unique_object_representations_v<typeT>);
 #endif // __ICL && ! clang before 6.0
 #endif // __GNUC__
@@ -164,10 +173,12 @@ namespace Location_Block_compiletime
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900)
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-	static_assert(not std::is_aggregate_v<typeT>);
-#endif // __ICL
+#endif
 
 	// default constructor: typeT()
 	static_assert(std::is_default_constructible_v<typeT>);
@@ -270,7 +281,7 @@ TEST(Location, Construction)
 	EXPECT_NO_THROW([[maybe_unused]] Location<3> c3(c1));
 }
 
-TEST(Location, Construction_result)
+TEST(Location, ConstructionResult)
 { // depends on Location::element()
 	static_assert(noexcept(Location<3>(12).element()));
 	static_assert(Location<3>(12).element() == 12);
@@ -307,7 +318,7 @@ TEST(Location, Construction_result)
 	static_assert(Location<3>{c3}.element() == 6);
 }
 
-TEST(Location, Construction_Block)
+TEST(Location, ConstructionBlock)
 { // depends on Location
 	static_assert(noexcept(Location_Block<3>()));
 	static_assert(noexcept(Location_Block<3>{}));
@@ -362,7 +373,7 @@ TEST(Location, Construction_Block)
 	ASSERT_NO_THROW([[maybe_unused]] Location<3> X(Location_Block<3>(1, 3)));
 }
 
-TEST(Location, Construction_result_Block)
+TEST(Location, ConstructionResultBlock)
 { // check if initialized to correct value
 	static_assert(noexcept(Location_Block<3>(1, 4)));
 	static_assert(noexcept(Location_Block<3>(1, 4).element()));
@@ -590,7 +601,7 @@ TEST(Location, Properties)
 	}
 }
 
-TEST(Location, Properties_Block)
+TEST(Location, PropertiesBlock)
 {
 	using LB = Location_Block<3>;
 
@@ -804,7 +815,7 @@ TEST(Location, Comparisson)
 	EXPECT_FALSE(Loc(8) > Loc(19));
 }
 
-TEST(Location, Comparisson_Block)
+TEST(Location, ComparissonBlock)
 {
 	using LB = Location_Block<3>;
 
@@ -891,7 +902,7 @@ TEST(Location, Comparisson_Block)
 	static_assert(LB(5, 4) > LB(2, 4));
 }
 
-TEST(Location, Comparisson_Location_and_Block)
+TEST(Location, ComparissonLocationAndBlock)
 { // Compare Location with Location_Block
 	using LB = Location_Block<3>;
 
@@ -921,7 +932,7 @@ TEST(Location, Comparisson_Location_and_Block)
 }
 
 //===----------------------------------------------------------------------===//
-TEST(Location_Utilities, Size_definitions)
+TEST(LocationUtilities, SizeDefinitions)
 {
 	using ::Sudoku::base_size;
 	using ::Sudoku::elem_size;
@@ -930,15 +941,27 @@ TEST(Location_Utilities, Size_definitions)
 	static_assert(base_size<2> == 2);
 	static_assert(elem_size<2> == 4);
 	static_assert(full_size<2> == 16);
+#if defined(__ICL) && __ICL <= 1900
+	EXPECT_TRUE(base_size<2> == 2);
+	EXPECT_TRUE(elem_size<2> == 4);
+	EXPECT_TRUE(full_size<2> == 16);
+#else
 	EXPECT_EQ(base_size<2>, 2);
 	EXPECT_EQ(elem_size<2>, 4);
 	EXPECT_EQ(full_size<2>, 16);
+#endif // __ICL
 	static_assert(base_size<3> == 3);
 	static_assert(elem_size<3> == 9);
 	static_assert(full_size<3> == 81);
+#if defined(__ICL) && __ICL <= 1900
+	EXPECT_TRUE(base_size<3> == 3);
+	EXPECT_TRUE(elem_size<3> == 9);
+	EXPECT_TRUE(full_size<3> == 81);
+#else
 	EXPECT_EQ(base_size<3>, 3);
 	EXPECT_EQ(elem_size<3>, 9);
 	EXPECT_EQ(full_size<3>, 81);
+#endif // __ICL
 	static_assert(base_size<4> == 4);
 	static_assert(elem_size<4> == 16);
 	static_assert(full_size<4> == 256);
@@ -951,7 +974,7 @@ TEST(Location_Utilities, Size_definitions)
 	::Sudoku::valid_dimensions<4>();
 }
 
-TEST(Location_Utilities, is_valid)
+TEST(LocationUtilities, isValid)
 {
 	using ::Sudoku::is_valid;
 
@@ -1000,7 +1023,7 @@ TEST(Location_Utilities, is_valid)
 	EXPECT_FALSE(is_valid(list2{L(-6)}));
 }
 
-TEST(Location_Utilities, is_valid_size)
+TEST(LocationUtilities, isValidSize)
 {
 	using ::Sudoku::is_valid_size;
 
@@ -1039,7 +1062,7 @@ TEST(Location_Utilities, is_valid_size)
 	EXPECT_FALSE(is_valid_size<2>(2, 4));
 }
 
-TEST(Location_Utilities, is_same_section)
+TEST(LocationUtilities, isSameSection)
 {
 	using ::Sudoku::is_same_row;
 	using ::Sudoku::is_same_col;
@@ -1161,11 +1184,12 @@ TEST(Location_Utilities, is_same_section)
 	EXPECT_FALSE(is_same_block<3>(row.cbegin(), row.cend()));
 
 	// is_same_section (taking a section)
+	[[maybe_unused]] bool tmp{};
 	const ::Sudoku::Board<int, 3> B1;
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.row(0), L()))>);
 	static_assert(noexcept(is_same_section(B1.row(0), L(12))));
-	EXPECT_NO_THROW(is_same_section(B1.row(0), L(12)));
+	EXPECT_NO_THROW(tmp = is_same_section(B1.row(0), L(12)));
 	EXPECT_TRUE(is_same_section(B1.row(0), L(8)));
 	EXPECT_TRUE(is_same_section(B1.row(1), L(12)));
 	EXPECT_TRUE(is_same_section(B1.row(7), L(70)));
@@ -1173,14 +1197,14 @@ TEST(Location_Utilities, is_same_section)
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.col(0), L()))>);
 	static_assert(noexcept(is_same_section(B1.col(0), L(12))));
-	EXPECT_NO_THROW(is_same_section(B1.col(0), L(12)));
+	EXPECT_NO_THROW(tmp = is_same_section(B1.col(0), L(12)));
 	EXPECT_TRUE(is_same_section(B1.col(0), L(0)));
 	EXPECT_TRUE(is_same_section(B1.col(0), L(72)));
 	EXPECT_FALSE(is_same_section(B1.col(1), L(9)));
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.block(0), L()))>);
 	static_assert(noexcept(is_same_section(B1.block(0), L(12))));
-	EXPECT_NO_THROW(is_same_section(B1.block(0), L(12)));
+	EXPECT_NO_THROW(tmp = is_same_section(B1.block(0), L(12)));
 	EXPECT_TRUE(is_same_section(B1.block(0), L(10)));
 	EXPECT_FALSE(is_same_section(B1.block(1), L(16)));
 
@@ -1188,14 +1212,14 @@ TEST(Location_Utilities, is_same_section)
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.row(0), row))>);
 	// static_assert(noexcept(is_same_section(B1.row(0), row)));
-	EXPECT_NO_THROW(is_same_section(B1.row(0), row));
+	EXPECT_NO_THROW(tmp = is_same_section(B1.row(0), row));
 	EXPECT_TRUE(is_same_section(B1.row(0), row));
 	EXPECT_TRUE(is_same_section(B1.row(0), col));
 	EXPECT_FALSE(is_same_section(B1.row(0), blo));
 	EXPECT_FALSE(is_same_section(B1.row(1), row));
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.col(0), col))>);
-	EXPECT_NO_THROW(is_same_section(B1.col(0), row));
+	EXPECT_NO_THROW(tmp = is_same_section(B1.col(0), row));
 	EXPECT_TRUE(is_same_section(B1.col(0), row));
 	EXPECT_TRUE(is_same_section(B1.col(6), col));
 	EXPECT_FALSE(is_same_section(B1.col(0), col));
@@ -1203,14 +1227,14 @@ TEST(Location_Utilities, is_same_section)
 	EXPECT_TRUE(is_same_section(B1.col(5), blo));
 	static_assert(
 		std::is_same_v<bool, decltype(is_same_section(B1.col(0), col))>);
-	EXPECT_NO_THROW(is_same_section(B1.block(0), row));
+	EXPECT_NO_THROW(tmp = is_same_section(B1.block(0), row));
 	EXPECT_TRUE(is_same_section(B1.block(4), blo));
 	EXPECT_FALSE(is_same_section(B1.block(5), blo));
 
 	// intersect_block
 	static_assert(noexcept(intersect_block(B1.row(0), L(12))));
-	EXPECT_NO_THROW(intersect_block(B1.row(0), L(55)));
-	EXPECT_NO_THROW(intersect_block(B1.col(0), L(55)));
+	EXPECT_NO_THROW(tmp = intersect_block(B1.row(0), L(55)));
+	EXPECT_NO_THROW(tmp = intersect_block(B1.col(0), L(55)));
 	EXPECT_TRUE(intersect_block(B1.row(0), L(8)));
 	EXPECT_TRUE(intersect_block(B1.row(6), L(54)));
 	EXPECT_FALSE(intersect_block(B1.row(5), L(59)));
@@ -1218,12 +1242,12 @@ TEST(Location_Utilities, is_same_section)
 	EXPECT_FALSE(intersect_block(B1.col(8), L(2)));
 }
 
-TEST(Location_Utilities, get_same_section)
+TEST(LocationUtilities, getSameSection)
 {
 	std::vector<Location<3>> list1{};
 	// std::vector<Location<3>> list2{};
 	std::vector<Location<3>> list3{};
-	for (int i{}; i < 9; ++i)
+	for (gsl::index i{}; i < 9; ++i)
 	{
 		list1.emplace_back(Location<3>{i});
 		// list2.emplace_back(Location<3>{i*3});
