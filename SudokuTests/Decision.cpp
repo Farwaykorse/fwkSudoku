@@ -898,7 +898,7 @@ TEST(Multipass, emptyBase2)
 	Board<Value, 2> empty{};
 	::Sudoku::Multipass_Base<2> base{empty};
 	auto& answers = base();
-	EXPECT_EQ(answers.size(), 12u);
+	EXPECT_EQ(answers.size(), 12U);
 }
 
 //! NOTE: way to much options to run.
