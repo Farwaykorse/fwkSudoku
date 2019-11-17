@@ -1,4 +1,4 @@
-﻿//====---- Sudoku/Decision.h                                          ----====//
+//====---- Sudoku/Decision.h                                          ----====//
 //
 // Automated solving.
 //====--------------------------------------------------------------------====//
@@ -65,8 +65,8 @@ public:
 	Multipass_Base& operator=(Board<Options, N> const&) noexcept(true);
 	Multipass_Base& operator=(Board<Value, N> const&);
 
-	bool finished() const noexcept { return queue.empty(); }
-	int answer_count() const noexcept
+	[[nodiscard]] bool finished() const noexcept { return queue.empty(); }
+	[[nodiscard]] int answer_count() const noexcept
 	{
 		return gsl::narrow_cast<int>(answers.size());
 	}
@@ -82,7 +82,7 @@ public:
 	{
 		queue.emplace(std::forward<worker_Board>(board));
 	}
-	std::optional<worker_Board> get_from_queue() noexcept
+	[[nodiscard]] std::optional<worker_Board> get_from_queue() noexcept
 	{
 		if (!finished())
 		{
@@ -93,7 +93,7 @@ public:
 		return {};
 	}
 
-	auto& operator()()
+	[[nodiscard]] auto& operator()()
 	{
 		if (!finished())
 		{
