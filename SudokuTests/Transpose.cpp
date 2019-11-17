@@ -231,12 +231,14 @@ TEST(Transpose, SwapRowCol)
 			63, 64, 65, 66, 67, 68, 69, 70, 71, //
 			72, 73, 74, 75, 76, 77, 78, 79, 80  //
 		};
+		// NOLINTNEXTLINE(performance-move-const-arg)
 		board = transpose_row_col(std::move(board));
 		EXPECT_EQ((board[L{1, 1}]), 10);
 		EXPECT_EQ((board[L{1, 2}]), 19);
 		EXPECT_EQ((board[L{1, 3}]), 28);
 		EXPECT_EQ((board[L{7, 8}]), 79);
 		EXPECT_EQ((board[L{7, 7}]), 70);
+		// NOLINTNEXTLINE(performance-move-const-arg)
 		board = transpose_row_col(std::move(board));
 		EXPECT_EQ((board[L{1, 1}]), 10);
 		EXPECT_EQ((board[L{2, 1}]), 19);
@@ -263,6 +265,7 @@ TEST(Transpose, SwapRowBlock)
 			63, 64, 65, 66, 67, 68, 69, 70, 71, //
 			72, 73, 74, 75, 76, 77, 78, 79, 80  //
 		};
+		// NOLINTNEXTLINE(performance-move-const-arg)
 		board = transpose_row_block(std::move(board));
 		EXPECT_EQ((board[L{0, 1}]), 1);
 		EXPECT_EQ((board[L{1, 1}]), 4);
@@ -270,6 +273,7 @@ TEST(Transpose, SwapRowBlock)
 		EXPECT_EQ((board[L{4, 8}]), 50);
 		EXPECT_EQ((board[L{5, 7}]), 52);
 		EXPECT_EQ((board[L{8, 8}]), 80);
+		// NOLINTNEXTLINE(performance-move-const-arg)
 		board = transpose_row_block(std::move(board));
 		EXPECT_EQ((board[L{0, 1}]), 1);
 		EXPECT_EQ((board[L{1, 1}]), 10);
