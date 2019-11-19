@@ -88,7 +88,7 @@ public:
 		{
 			auto item = std::move(queue.top());
 			queue.pop();
-			return std::move(item);
+			return item;
 		}
 		return {};
 	}
