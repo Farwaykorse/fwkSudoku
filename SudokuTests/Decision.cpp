@@ -161,7 +161,11 @@ namespace constructors
 	// default constructor: typeT()
 	// NOTE: not, to prevent accidental processing of an empty board
 	static_assert(std::is_default_constructible_v<typeT>);
+#if defined(__GNUC__) && not(defined(__clang__) && defined(_LIBCPP_VERSION))
+	static_assert(not std::is_nothrow_default_constructible_v<typeT>);
+#else
 	static_assert(std::is_nothrow_default_constructible_v<typeT>);
+#endif
 	static_assert(not std::is_trivially_default_constructible_v<typeT>);
 
 	// copy constructor: typeT(const typeT&)
