@@ -377,8 +377,15 @@ inline int count_options(Board<Options<elem_size<N>>, N> const& board) noexcept
 	const auto size = [](size_t x, Options y) noexcept {
 		return x + y.count();
 	};
+	// NOTE std::reduce is not implemented in libstdc++
+#if defined(__GNUC__) && (__GNUC__ <= 9) &&                                    \
+	not(defined(__clang__) && defined(_LIBCPP_VERSION))
+	auto count = gsl::narrow_cast<int>(
+		std::accumulate(std::begin(board), std::end(board), size_t{0}, size));
+#else
 	auto count = gsl::narrow_cast<int>(
 		std::reduce(std::begin(board), std::end(board), size_t{0}, size));
+#endif
 	return count;
 }
 
