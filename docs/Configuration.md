@@ -375,6 +375,7 @@ setting is disabled.
 ``````
 -Wno-c++98-compat    (Weverything) Compatibility with C++98 is not needed
 -Wno-c++98-compat-pedantic
+-Wno-return-std-move-in-c++11   fixed in newer compilers
 ``````
 
 <!-----------------------------------------------------------><a id="intel"></a>

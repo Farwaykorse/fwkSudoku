@@ -106,6 +106,9 @@ if(MSVC) # MSVC or simulating MSVC
       # disabled warnings
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
+      $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,7.0>:
+        -Wno-return-std-move-in-c++11
+      >
     >
     $<$<CXX_COMPILER_ID:Intel>:
       /W5
@@ -135,11 +138,17 @@ else()
       -Wno-weak-vtables   # exceptions
     >
     $<$<CXX_COMPILER_ID:Clang>:
+      $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,7.0>:
+        -Wno-return-std-move-in-c++11
+      >
       $<$<OR:$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>,$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0.1>>:
         -Wno-missing-braces
       >
     >
     $<$<CXX_COMPILER_ID:AppleClang>:
+      $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,10.0.1>:
+        -Wno-return-std-move-in-c++11
+      >
       $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10>:
         -Wno-missing-braces
       >

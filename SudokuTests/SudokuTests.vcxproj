@@ -398,7 +398,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>WIN32;fwkUnitTest;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-covered-switch-default -Wno-global-constructors -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-covered-switch-default -Wno-global-constructors -Wno-return-std-move-in-c++11 -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <MinimalRebuild />
@@ -419,7 +419,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Verbose>true</Verbose>
       <PreprocessorDefinitions>fwkUnitTest;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-covered-switch-default -Wno-global-constructors -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-covered-switch-default -Wno-global-constructors -Wno-return-std-move-in-c++11 -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <MinimalRebuild />
@@ -441,7 +441,7 @@
     </Link>
     <ClCompile />
     <ClCompile>
-      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-covered-switch-default -Wno-global-constructors -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-covered-switch-default -Wno-global-constructors -Wno-return-std-move-in-c++11 -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant %(AdditionalOptions)</AdditionalOptions>
       <MinimalRebuild />
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
@@ -460,7 +460,7 @@
     </Link>
     <ClCompile />
     <ClCompile>
-      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-covered-switch-default -Wno-global-constructors -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Werror=return-type -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-covered-switch-default -Wno-global-constructors -Wno-return-std-move-in-c++11 -Wno-used-but-marked-unused -Wno-zero-as-null-pointer-constant %(AdditionalOptions)</AdditionalOptions>
       <MinimalRebuild />
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
