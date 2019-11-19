@@ -128,7 +128,7 @@ jobs:
   - name: Unity-Build
     stage: "Validation"
     env:
-    - CMake_version: 3.16.0-rc3 # CMAKE_UNITY_BUILD requires at least v3.16.0
+    - CMake_version: 3.16.0-rc4 # CMAKE_UNITY_BUILD requires at least v3.16.0
     - UNITY_BUILD: on
     workspaces:
       use: Linux
