@@ -59,10 +59,10 @@ TEST(translate, switchOptionsBoard)
 	EXPECT_THROW(switch_options(B1, Value{0}, Value{10}), std::out_of_range);
 #else
 	EXPECT_DEBUG_DEATH(
-		switch_options(B1, Value{10}, Value{1}), "Assertion failed: is_valid");
-	EXPECT_DEBUG_DEATH(switch_options(B1, Value{1}, Value{10}), ".* is_valid");
-	EXPECT_DEBUG_DEATH(switch_options(B1, Value{0}, Value{1}), ".* is_valid");
-	EXPECT_DEBUG_DEATH(switch_options(B1, Value{1}, Value{0}), ".* is_valid");
+		switch_options(B1, Value{10}, Value{1}), "Assertion .*is_valid");
+	EXPECT_DEBUG_DEATH(switch_options(B1, Value{1}, Value{10}), "is_valid");
+	EXPECT_DEBUG_DEATH(switch_options(B1, Value{0}, Value{1}), "is_valid");
+	EXPECT_DEBUG_DEATH(switch_options(B1, Value{1}, Value{0}), "is_valid");
 #endif
 	// return type:
 	static_assert(std::is_same_v<

@@ -1053,13 +1053,13 @@ TEST(Options, switchOptions)
 	EXPECT_THROW(opt.switch_options(Value{2}, Value{5}), std::out_of_range);
 #else
 	EXPECT_DEBUG_DEATH(
-		opt.switch_options(Value{0}, Value{2}), "Assertion failed: *is_valid");
+		opt.switch_options(Value{0}, Value{2}), "Assertion .*is_valid_option");
 	EXPECT_DEBUG_DEATH(
-		opt.switch_options(Value{1}, Value{0}), "Assertion failed: *is_valid");
+		opt.switch_options(Value{1}, Value{0}), "Assertion .*is_valid_option");
 	EXPECT_DEBUG_DEATH(
-		opt.switch_options(Value{5}, Value{2}), "Assertion failed: *is_valid");
+		opt.switch_options(Value{5}, Value{2}), "Assertion .*is_valid_option");
 	EXPECT_DEBUG_DEATH(
-		opt.switch_options(Value{2}, Value{5}), "Assertion failed: *is_valid");
+		opt.switch_options(Value{2}, Value{5}), "Assertion .*is_valid_option");
 #endif // NDEBUG
 
 	EXPECT_EQ(opt.switch_options(Value{1}, Value{4}), Options<4>{});

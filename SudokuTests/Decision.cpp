@@ -952,7 +952,8 @@ TEST(Multipass, pickLocation)
 	EXPECT_EQ(pick_location(board), Location<2>(0, 0));
 #else
 	EXPECT_DEBUG_DEATH(
-		[[maybe_unused]] auto x = pick_location(board), "Assertion failed:");
+		[[maybe_unused]] auto x = pick_location(board),
+		"Assertion .*is_answer_fast");
 #endif // NDEBUG
 	// empty board
 	board.clear();
