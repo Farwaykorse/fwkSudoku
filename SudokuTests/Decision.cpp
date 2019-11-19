@@ -555,7 +555,7 @@ TEST(Multipass, fillBeginEmptyBoard)
 
 	Board<Options<4>, 2> not_empty{};
 	not_empty.at(Location<2>{10}) = Value{1};
-	[[maybe_unused]] int x {};
+	[[maybe_unused]] int x{};
 	EXPECT_DEBUG_DEATH(x = fill_begin_empty_board(not_empty), "count_options");
 	not_empty.at(Location<2>{10}) = std::bitset<5>{"00001"};
 	EXPECT_DEBUG_DEATH(x = fill_begin_empty_board(not_empty), "count_options");

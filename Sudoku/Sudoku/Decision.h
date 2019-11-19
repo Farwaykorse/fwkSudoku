@@ -158,8 +158,8 @@ Multipass_Base<N>::Multipass_Base(Board<Value, N> const& start)
 	shared_setup(changes, local);
 }
 template<int N>
-inline Multipass_Base<N>& Multipass_Base<N>::
-	operator=(Board<Options, N> const& input) noexcept(true)
+inline Multipass_Base<N>&
+	Multipass_Base<N>::operator=(Board<Options, N> const& input) noexcept(true)
 {
 	clear();
 
@@ -169,8 +169,8 @@ inline Multipass_Base<N>& Multipass_Base<N>::
 	return *this;
 }
 template<int N>
-inline Multipass_Base<N>& Multipass_Base<N>::
-	operator=(Board<Value, N> const& input)
+inline Multipass_Base<N>&
+	Multipass_Base<N>::operator=(Board<Value, N> const& input)
 {
 	clear();
 
@@ -285,7 +285,8 @@ auto choose_solver(impl::worker_Board<N>& input)
 			}
 			input.changes += changes;
 		}
-		if (input.changes == all_options<N>) return std::move(input);
+		if (input.changes == all_options<N>)
+			return std::move(input);
 		// unique in col
 		{
 			int changes_{};
@@ -298,7 +299,8 @@ auto choose_solver(impl::worker_Board<N>& input)
 			changes += changes_;
 		}
 		// if (changes > elem_size<N>) continue;
-		if (input.changes == all_options<N>) return std::move(input);
+		if (input.changes == all_options<N>)
+			return std::move(input);
 		// unique in block
 		{
 			int changes_{};
@@ -315,9 +317,11 @@ auto choose_solver(impl::worker_Board<N>& input)
 		// input.changes += changes;
 
 		// finished
-		if (input.changes == all_options<N>) return std::move(input);
+		if (input.changes == all_options<N>)
+			return std::move(input);
 		// can't find the answer
-		if (changes == 0) return std::move(input);
+		if (changes == 0)
+			return std::move(input);
 	}
 	// how to recognize guessing might be the only option?
 	// how many changes before guessing becomes a reasonable option?
@@ -370,8 +374,7 @@ template<int N>
 inline int count_options(Board<Options<elem_size<N>>, N> const& board) noexcept
 {
 	using Options   = Options<elem_size<N>>;
-	const auto size = [](size_t x, Options y) noexcept
-	{
+	const auto size = [](size_t x, Options y) noexcept {
 		return x + y.count();
 	};
 	auto count = gsl::narrow_cast<int>(
@@ -387,7 +390,8 @@ void scheduler(Multipass_Base<N>& base)
 	// if anything in queue
 	while (std::optional<impl::worker_Board<N>> item{base.get_from_queue()})
 	{
-		if (answered(base, item.value())) continue;
+		if (answered(base, item.value()))
+			continue;
 
 		try
 		{
