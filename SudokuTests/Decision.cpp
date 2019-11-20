@@ -240,11 +240,11 @@ namespace constructors
 	{
 		// clang-format off
 		constexpr std::array<char, 16> v1
-		{   // start	// after set_Value
-			0,2, 0,0,	// 1	2	3	4
-			4,0, 0,0,	// 4	3	1,2	1,2
-			0,1, 4,0,	// 2,3	1	4	2,3
-			0,0, 0,0	// 2,3	4	1,2	1,2,3
+		{   // start     // after set_Value
+			0, 2,  0, 0, // 1   2   3   4
+			4, 0,  0, 0, // 4   3   1,2 1,2
+			0, 1,  4, 0, // 2,3 1   4   2,3
+			0, 0,  0, 0  // 2,3 4   1,2 1,2,3
 		}; // clang-format on
 		Board<Value, 2> B1;
 		std::transform(
@@ -256,10 +256,10 @@ namespace constructors
 		// clang-format off
 		constexpr std::array<char, 16> v2
 		{
-			1,2, 3,4,
-			4,3, 2,1,
-			0,2, 0,0, // (2,1):2 error
-			0,0, 0,0
+			1, 2,  3, 4,
+			4, 3,  2, 1,
+			0, 2,  0, 0, // (2,1):2 error
+			0, 0,  0, 0
 		}; // clang-format on
 		B1.clear();
 		std::transform(
@@ -271,10 +271,10 @@ namespace constructors
 		// clang-format off
 		constexpr std::array<char, 16> v1
 		{
-			0,2, 0,0,
-			4,0, 0,0,
-			0,1, 4,0,
-			0,0, 0,0
+			0, 2,  0, 0,
+			4, 0,  0, 0,
+			0, 1,  4, 0,
+			0, 0,  0, 0
 		}; // clang-format on
 		Board<Options<4>, 2> B1{};
 		::Sudoku::set_Value(B1, std::begin(v1), std::end(v1));
@@ -335,10 +335,10 @@ namespace assignment
 		// clang-format off
 		constexpr std::array<char, 16> v1
 		{
-			0,2, 0,0,
-			4,0, 0,0,
-			0,1, 4,0,
-			0,0, 0,0
+			0, 2,  0, 0,
+			4, 0,  0, 0,
+			0, 1,  4, 0,
+			0, 0,  0, 0
 		}; // clang-format on
 		Board<Options<4>, 2> B1{};
 		::Sudoku::set_Value(B1, std::begin(v1), std::end(v1));
@@ -361,11 +361,11 @@ namespace assignment
 	{
 		// clang-format off
 		constexpr std::array<char, 16> v1
-		{   // start	// after set_Value
-			0,2, 0,0,	// 1	2	3	4
-			4,0, 0,0,	// 4	3	1,2	1,2
-			0,1, 4,0,	// 2,3	1	4	2,3
-			0,0, 0,0	// 2,3	4	1,2	1,2,3
+		{   // start     // after set_Value
+			0, 2,  0, 0, // 1   2   3   4
+			4, 0,  0, 0, // 4   3   1,2 1,2
+			0, 1,  4, 0, // 2,3 1   4   2,3
+			0, 0,  0, 0  // 2,3 4   1,2 1,2,3
 		}; // clang-format on
 		Board<Value, 2> B1;
 		std::transform(
@@ -387,10 +387,10 @@ namespace assignment
 		// clang-format off
 		constexpr std::array<char, 16> v2
 		{
-			1,2, 3,4,
-			4,3, 2,1,
-			0,2, 0,0, // (2,1):2 error
-			0,0, 0,0
+			1, 2,  3, 4,
+			4, 3,  2, 1,
+			0, 2,  0, 0, // (2,1):2 error
+			0, 0,  0, 0
 		}; // clang-format on
 		B1.clear();
 		std::transform(
@@ -411,10 +411,10 @@ TEST(Multipass, mfFinished)
 	// clang-format off
 	constexpr std::array<char, 16> v1
 	{
-		0,2, 0,0,
-		4,0, 0,0,
-		0,1, 4,0,
-		0,0, 0,0
+		0, 2,  0, 0,
+		4, 0,  0, 0,
+		0, 1,  4, 0,
+		0, 0,  0, 0
 	}; // clang-format on
 	Board<Options<4>, 2> B1{};
 	::Sudoku::set_Value(B1, std::begin(v1), std::end(v1));
@@ -439,10 +439,10 @@ TEST(Multipass, mfFinished)
 	// clang-format off
 	constexpr std::array<char, 16> vfinished
 	{
-		1,2, 3,4,
-		4,3, 2,1,
-		2,1, 4,3,
-		3,4, 1,2
+		1, 2,  3, 4,
+		4, 3,  2, 1,
+		2, 1,  4, 3,
+		3, 4,  1, 2
 	}; // clang-format on
 	B1.clear();
 	::Sudoku::set_Value(B1, std::begin(vfinished), std::end(vfinished));
@@ -455,10 +455,10 @@ TEST(Multipass, mfAnswerCount)
 	// clang-format off
 	constexpr std::array<char, 16> v1
 	{
-		1,2, 3,4,
-		4,3, 2,1,
-		2,1, 4,3,
-		3,4, 1,2
+		1, 2, 3, 4,
+		4, 3, 2, 1,
+		2, 1, 4, 3,
+		3, 4, 1, 2
 	}; // clang-format on
 	Board<Options<4>, 2> B1{};
 	::Sudoku::set_Value(B1, std::begin(v1), std::end(v1));
@@ -628,11 +628,11 @@ TEST(Multipass, execution)
 	// clang-format off
 	constexpr std::array<char, 16> v1
 	{
-		// start	// after set_Value
-		0,2, 0,0,	// 1	2	3	4
-		4,0, 0,0,	// 4	3	1,2	1,2
-		0,1, 4,0,	// 2,3	1	4	2,3
-		0,0, 0,0	// 2,3	4	1,2	1,2,3
+		// start     // after set_Value
+		0, 2,  0, 0, // 1	2	3	4
+		4, 0,  0, 0, // 4	3	1,2	1,2
+		0, 1,  4, 0, // 2,3	1	4	2,3
+		0, 0,  0, 0  // 2,3	4	1,2	1,2,3
 	}; // clang-format on
 	Board<Value, 2> B1;
 	std::transform(
@@ -682,11 +682,11 @@ TEST(Multipass, executionOptionsBoard)
 	// clang-format off
 	constexpr std::array<char, 16> v1
 	{
-		// start	// after set_Value
-		0,2, 0,0,	// 1	2	3	4
-		4,0, 0,0,	// 4	3	1,2	1,2
-		0,1, 4,0,	// 2,3	1	4	2,3
-		0,0, 0,0	// 2,3	4	1,2	1,2,3
+		// start     // after set_Value
+		0, 2,  0, 0, // 1	2	3	4
+		4, 0,  0, 0, // 4	3	1,2	1,2
+		0, 1,  4, 0, // 2,3	1	4	2,3
+		0, 0,  0, 0  // 2,3	4	1,2	1,2,3
 	}; // clang-format on
 	Board<Options<4>, 2> B1{};
 	::Sudoku::set_Value(B1, std::begin(v1), std::end(v1));
@@ -943,10 +943,10 @@ TEST(Multipass, pickLocation)
 	// clang-format off
 	constexpr std::array<char, 16> v1
 	{
-		1,2, 3,4,
-		4,3, 2,1,
-		2,1, 4,3,
-		3,4, 1,2
+		1, 2,  3, 4,
+		4, 3,  2, 1,
+		2, 1,  4, 3,
+		3, 4,  1, 2
 	}; // clang-format on
 	Board<Options<4>, 2> board{};
 	::Sudoku::set_Value(board, v1.begin(), v1.end());

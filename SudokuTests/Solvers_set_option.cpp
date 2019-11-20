@@ -145,10 +145,10 @@ TEST(Solver, setValueVector)
 		// clang-format off
 		constexpr std::array<char, 16> conflict
 		{
-			0,2, 3,4,
-			4,0, 0,0,
-			1,0, 4,0, // (2,0):1 conflict with (0,0)
-			0,0, 0,0
+			0, 2,  3, 4,
+			4, 0,  0, 0,
+			1, 0,  4, 0, // (2,0):1 conflict with (0,0)
+			0, 0,  0, 0
 		}; // clang-format on
 		B2.clear();
 		EXPECT_THROW(
