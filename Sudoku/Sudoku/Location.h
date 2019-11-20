@@ -148,6 +148,7 @@ public:
 	}
 
 	// [[implicit]]
+	// NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
 	constexpr operator Location() const noexcept { return loc_; }
 
 private:

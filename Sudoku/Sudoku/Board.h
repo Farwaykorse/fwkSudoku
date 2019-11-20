@@ -59,8 +59,11 @@ public:
 
 	constexpr Board() noexcept;
 	explicit constexpr Board(const T& default_value);
-	// NOLINTNEXTLINE(runtime/explicit)
-	constexpr Board(std::array<T, Size> const& list) : board_(list) {}
+	// NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
+	constexpr Board(std::array<T, Size> const& list) // NOLINT(runtime/explicit)
+		: board_(list)
+	{
+	}
 	Board(std::initializer_list<T>); // construct from initializer_list
 
 	void clear();

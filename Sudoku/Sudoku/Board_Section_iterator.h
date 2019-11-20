@@ -92,6 +92,7 @@ public:
 		assert(is_valid_size<N>(id));
 	}
 	// [[implicit]] Type Conversion to const_(reverse_)iterator
+	// NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
 	constexpr operator Section_iterator<T, N, S, true, is_reverse>() const
 		noexcept
 	{
