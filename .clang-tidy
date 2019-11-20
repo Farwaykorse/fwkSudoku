@@ -71,6 +71,8 @@ CheckOptions:
   value: '0'
 - key:   bugprone-suspicious-enum-usage.StrictMode
   value: '1'
+- key:   cppcoreguidelines-macro-usage.AllowedRegexp
+  value: '^(DEBUG_*|_set(argv|envp))'
 - key:   portability-simd-intrinsics.Suggest
   value: '1'
 - key:   readability-braces-around-statements.ShortStatementLines
