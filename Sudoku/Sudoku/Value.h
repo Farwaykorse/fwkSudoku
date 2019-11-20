@@ -147,11 +147,14 @@ inline constexpr bool operator>=(const Value& left, const Value& right) noexcept
 {
 	return !(left < right);
 }
-static_assert(Value{7} == Value{7});
+static_assert(Value{4} == Value{4});
 static_assert(Value{1} != Value{0});
-static_assert(Value{8} > Value{2});
-static_assert(Value{10} >= Value{4});
-static_assert(Value{3} <= Value{9});
-static_assert(Value{5} < Value{6});
+static_assert(Value{3} > Value{2});
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+static_assert(Value{10} >= Value{7}); // NOLINT(readability-magic-numbers)
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+static_assert(Value{8} <= Value{9}); // NOLINT(readability-magic-numbers)
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+static_assert(Value{5} < Value{6}); // NOLINT(readability-magic-numbers)
 
 } // namespace Sudoku

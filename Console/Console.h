@@ -92,7 +92,8 @@ namespace impl
 
 	[[nodiscard]] constexpr int charsize(int value, int length)
 	{
-		if (value < pow(10, length))
+		constexpr int decimal{10};
+		if (value < pow(decimal, length))
 		{
 			return length;
 		}
@@ -102,7 +103,8 @@ namespace impl
 
 	[[nodiscard]] constexpr int charsize(int value)
 	{
-		if (value < 10)
+		constexpr int decimal{10};
+		if (value < decimal)
 		{
 			return 1;
 		}
@@ -170,7 +172,6 @@ template<int N, int E>
 std::stringstream Console::print_board(const Board<Options<E>, N>& input) const
 {
 	static_assert(E == N * N);
-	static_assert(elem_size<N> == 9); // no support for different sizes yet
 	constexpr gsl::index block_size = elem_size<N> + base_size<N> + 2;
 	constexpr gsl::index row_length = base_size<N> * block_size;
 	/*
@@ -200,13 +201,18 @@ std::stringstream Console::print_board(const Board<Options<E>, N>& input) const
 	{
 		stream << print_row(input, row).str();
 
-		if ((row + 1) % 3 == 0)
+		if ((row + 1) % base_size<N> == 0)
 		{
 			stream << n0.str();
 		}
 		else
 		{
-			stream << '|' << n4.str() << n4.str() << n4.str() << std::endl;
+			stream << '|';
+			for (gsl::index index{}; index < base_size<N>; ++index)
+			{
+				stream << n4.str();
+			}
+			stream << '\n';
 		}
 	}
 	return stream;
