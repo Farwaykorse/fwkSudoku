@@ -26,10 +26,8 @@ Board<Value, N> getResult(Board<Options<elem_size<N>>, N> const&) noexcept;
 
 
 //====--------------------------------------------------------------------====//
-
 class Console
 {
-public:
 	struct delimiter
 	{
 		char space;
@@ -39,12 +37,14 @@ public:
 		std::string newl;
 		std::string block_cross;
 	};
+
 	const delimiter space{' ', ' ', "", "", "", ""};
 	const delimiter space2{' ', ' ', "", "", "\n", ""};
 	const delimiter display{' ', ' ', "-", "|", "\n", "o"};
-	// static const Format::delimiter csv;
-	// static const Format::delimiter xml;
+	// const delimiter csv;
+	// const delimiter xml;
 
+public:
 	Console() noexcept;
 	explicit Console(delimiter);
 	//~Console() = default;
@@ -59,9 +59,8 @@ public:
 	template<int N, int E>
 	std::stringstream print_board(const Board<Options<E>, N>&) const;
 
-	delimiter d;
-
 private:
+	delimiter d;
 	[[nodiscard]] int charsize(int value) const;
 	[[nodiscard]] int charsize(int, int length) const; // recursion
 	//	bool Format::find_option(const Board<std::set<int>>&, Location, int
