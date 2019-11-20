@@ -86,11 +86,11 @@ public:
 	{
 		if (!finished())
 		{
-			auto item = std::move(queue.top());
+			std::optional<worker_Board> item = std::move(queue.top());
 			queue.pop();
 			return item;
 		}
-		return {};
+		return std::nullopt;
 	}
 
 	[[nodiscard]] auto& operator()()
