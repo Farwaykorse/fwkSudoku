@@ -71,6 +71,7 @@ public:
 		return gsl::narrow_cast<int>(answers.size());
 	}
 
+	// NOLINTNEXTLINE(runtime/references)
 	void add_answer(worker_Board& item) noexcept(config::MAX_ANSWERS >= 0)
 	{
 		if (config::MAX_ANSWERS && answer_count() < config::MAX_ANSWERS)
@@ -194,7 +195,7 @@ inline void Multipass_Base<N>::clear() noexcept
 //====--------------------------------------------------------------------====//
 // free-function definitions
 
-template<int N>
+template<int N> // NOLINTNEXTLINE(runtime/references)
 inline bool answered(Multipass_Base<N>& base, impl::worker_Board<N>& item)
 {
 	if (item.changes == all_options<N>)
@@ -209,7 +210,8 @@ inline bool answered(Multipass_Base<N>& base, impl::worker_Board<N>& item)
 // For an unanswered location, add new boards to the queue for each possibility
 template<int N>
 inline void guess(
-	Multipass_Base<N>& base, impl::worker_Board<N> const& input) noexcept(true)
+	Multipass_Base<N>& base, // NOLINT(runtime/references)
+	impl::worker_Board<N> const& input) noexcept(true)
 {
 	using Board = Board<Options<elem_size<N>>, N>;
 
@@ -266,7 +268,7 @@ inline Location<N>
 	return Location<N>{itr};
 }
 
-template<int N>
+template<int N> // NOLINTNEXTLINE(runtime/references)
 auto choose_solver(impl::worker_Board<N>& input)
 {
 	assert(input.changes > 0);              // start guessing
@@ -328,7 +330,7 @@ auto choose_solver(impl::worker_Board<N>& input)
 }
 
 // Temporary solver for use during design
-template<int N>
+template<int N> // NOLINTNEXTLINE(runtime/references)
 int test_unique(Board<Options<elem_size<N>>, N>& board)
 {
 	int changes{};
@@ -349,7 +351,7 @@ int test_unique(Board<Options<elem_size<N>>, N>& board)
 
 // Set the first row to answers: [1, elem_size<N>], ordered.
 // Note: always same result depending only on template<int N>.
-template<int N>
+template<int N> // NOLINTNEXTLINE(runtime/references)
 int fill_begin_empty_board(Board<Options<elem_size<N>>, N>& board)
 {
 	assert(count_options(board) == full_size<N> * elem_size<N>);
@@ -389,7 +391,7 @@ inline int count_options(Board<Options<elem_size<N>>, N> const& board) noexcept
 	return count;
 }
 
-template<int N>
+template<int N> // NOLINTNEXTLINE(runtime/references)
 void scheduler(Multipass_Base<N>& base)
 {
 	impl::worker_Board<N> worker;

@@ -16,7 +16,9 @@ namespace Sudoku
 {
 template<int N>
 inline Board<Options<elem_size<N>>, N>& switch_options(
-	Board<Options<elem_size<N>>, N>& board, Value const a, Value const b)
+	Board<Options<elem_size<N>>, N>& board, // NOLINT(runtime/references)
+	Value const a,
+	Value const b)
 {
 	assert(is_valid<N>(a));
 	assert(is_valid<N>(b));
@@ -30,7 +32,7 @@ inline Board<Options<elem_size<N>>, N>& switch_options(
 
 // sort answers in first/top row
 template<int N>
-Board<Options<elem_size<N>>, N>&
+Board<Options<elem_size<N>>, N>& // NOLINTNEXTLINE(runtime/references)
 	normalize(Board<Options<elem_size<N>>, N>& board) noexcept(true)
 { // switch_options can throw std::out_of_range: programming error
 	for (int i{0}; i < elem_size<N>; ++i)
