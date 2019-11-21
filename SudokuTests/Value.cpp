@@ -179,7 +179,7 @@ TEST(Value, comparisons)
 	EXPECT_FALSE(Value{2} > Value{5});
 }
 
-TEST(Value, is_valid)
+TEST(Value, isValid)
 {
 	using ::Sudoku::is_valid;
 	using ::Sudoku::is_valid_option;
@@ -221,7 +221,7 @@ TEST(Value, is_valid)
 	static_assert(!is_valid_option<9>(Value{10}));
 }
 
-TEST(Value, operator_bool)
+TEST(Value, operatorBool)
 {
 	static_assert(noexcept(Value{0}));
 	static_assert(noexcept(Value{1}));
@@ -234,7 +234,7 @@ TEST(Value, operator_bool)
 	EXPECT_EQ(bool{Value{1}}, true);
 }
 
-TEST(Value, operator_increment)
+TEST(Value, operatorIncrement)
 { // pre- and post-incrementing
 	static_assert(noexcept(++Value{0}));
 	static_assert(noexcept((Value{0})++));
@@ -251,7 +251,7 @@ TEST(Value, operator_increment)
 	EXPECT_EQ(val, Value{3});
 }
 
-TEST(Value, is_valid_vector)
+TEST(Value, isValidVector)
 {
 	using ::Sudoku::is_valid;
 	// vector input
@@ -276,7 +276,7 @@ TEST(Value, is_valid_vector)
 	static_assert(noexcept(is_valid<2>(List)));
 }
 
-TEST(Value, to_Value)
+TEST(Value, toValue)
 {
 	using ::Sudoku::to_Value;
 	// Input: Value
