@@ -60,7 +60,6 @@ Checks: '*,
   readability-*,
   -readability-avoid-const-params-in-decls,
   -readability-braces-around-statements,
-  -readability-else-after-return,
   -readability-named-parameter,
   -ziron-*'
 
