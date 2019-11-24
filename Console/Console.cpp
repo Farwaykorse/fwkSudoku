@@ -180,7 +180,7 @@ static void test(const T& B_in, const T& A_in)
 }
 
 
-int main()
+int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 {
 	// clang-format off
 	constexpr std::array<char, 81> b1
