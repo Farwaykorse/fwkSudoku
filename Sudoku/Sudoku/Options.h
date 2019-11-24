@@ -167,7 +167,7 @@ namespace impl
 	}
 	static_assert(exp2_(0U) == 0x1U);
 	static_assert(exp2_(1U) == 0x2U);
-	static_assert(exp2_(2U) == 0x4U);
+	static_assert(exp2_(2U) == 0x4U); //-V112
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
 	static_assert(exp2_(3U) == 0x8U); // NOLINT(readability-magic-numbers)
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)

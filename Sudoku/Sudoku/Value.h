@@ -148,7 +148,7 @@ inline constexpr bool operator>=(const Value& left, const Value& right) noexcept
 {
 	return !(left < right);
 }
-static_assert(Value{4} == Value{4}); //-V501
+static_assert(Value{4} == Value{4}); //-V501 //-V112
 static_assert(Value{1} != Value{0});
 static_assert(Value{3} > Value{2});
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
