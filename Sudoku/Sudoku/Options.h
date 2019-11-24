@@ -125,7 +125,7 @@ template<int E>
 [[nodiscard]] Value get_answer(Options<E> const&) noexcept;
 template<int N>
 [[nodiscard]] Value to_Value(Options<elem_size<N>> const&) noexcept;
-template<int E>
+template<int E> // NOLINTNEXTLINE(bugprone-exception-escape)
 [[nodiscard]] std::vector<Value> available(const Options<E>&) noexcept(true);
 template<int E>
 [[nodiscard]] Value read_next(const Options<E>&, Value = Value{0}) noexcept;
@@ -433,7 +433,7 @@ inline Value to_Value(Options<elem_size<N>> const& options) noexcept
 }
 
 // all available options
-template<int E>
+template<int E> // NOLINTNEXTLINE(bugprone-exception-escape)
 inline std::vector<Value> available(Options<E> const& options) noexcept(true)
 { // noexcept: only allocation can throw. Terminate, all is lost anyway.
 	const size_t count = options.count();

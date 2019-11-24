@@ -158,7 +158,7 @@ template<int N, typename ItrT>
 }
 
 // return all in same row
-template<int N>
+template<int N> // NOLINTNEXTLINE(bugprone-exception-escape)
 [[nodiscard]] std::vector<Location<N>> get_same_row(
 	const Location<N> left,
 	const std::vector<Location<N>>& right) noexcept(true)
@@ -198,7 +198,7 @@ template<int N, typename ItrT>
 }
 
 // return all in same col
-template<int N>
+template<int N> // NOLINTNEXTLINE(bugprone-exception-escape)
 [[nodiscard]] std::vector<Location<N>> get_same_col(
 	const Location<N> left,
 	const std::vector<Location<N>>& right) noexcept(true)
@@ -239,7 +239,7 @@ template<int N, typename ItrT>
 }
 
 // return all in same block
-template<int N>
+template<int N> // NOLINTNEXTLINE(bugprone-exception-escape)
 [[nodiscard]] std::vector<Location<N>> get_same_block(
 	const Location<N> left,
 	const std::vector<Location<N>>& right) noexcept(true)
