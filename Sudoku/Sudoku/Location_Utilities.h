@@ -264,8 +264,11 @@ template<int N, typename S>
 		return is_same_row(loc, section.cbegin().location());
 	else if constexpr (Board_Section::traits::is_Col_v<S>)
 		return is_same_col(loc, section.cbegin().location());
-	else if constexpr (Board_Section::traits::is_Block_v<S>)
+	else
+	{
+		static_assert(Board_Section::traits::is_Block_v<S>);
 		return is_same_block(loc, section.cbegin().location());
+	}
 }
 
 // check: [section] intersects block containing [loc]
