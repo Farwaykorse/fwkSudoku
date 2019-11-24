@@ -30,27 +30,27 @@ inline namespace traits
 
 	// random iterator
 	template<typename Itr>
-	constexpr bool is_random =
+	inline constexpr bool is_random =
 		std::is_same_v<Itr_Category_<Itr>, std::random_access_iterator_tag>;
 	// bidirectional iterator or better
 	template<typename Itr>
-	constexpr bool is_bidir =
+	inline constexpr bool is_bidir =
 		std::is_same_v<Itr_Category_<Itr>, std::bidirectional_iterator_tag> ||
 		is_random<Itr>;
 	// forward iterator or better
 	template<typename Itr>
-	constexpr bool is_forward =
+	inline constexpr bool is_forward =
 		std::is_same_v<Itr_Category_<Itr>, std::forward_iterator_tag> ||
 		is_bidir<Itr>;
 	// input iterator or better
 	template<typename Itr>
-	constexpr bool is_input =
+	inline constexpr bool is_input =
 		std::is_same_v<Itr_Category_<Itr>, std::input_iterator_tag> ||
 		is_forward<Itr>;
 
 	// iterator pointing to type
 	template<typename ItrT, typename TargetT>
-	constexpr bool iterator_to = std::
+	inline constexpr bool iterator_to = std::
 		is_same_v<typename std::iterator_traits<ItrT>::value_type, TargetT>;
 } // namespace traits
 } // namespace Sudoku

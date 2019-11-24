@@ -49,7 +49,7 @@ TEST(Transpose, Instantiate)
 #endif // __ICL
 }
 
-TEST(Transpose, row_col)
+TEST(Transpose, RowCol)
 {
 	using L = Location<2>;
 
@@ -78,7 +78,7 @@ TEST(Transpose, row_col)
 	EXPECT_EQ(undo, row);
 }
 
-TEST(Transpose, row_col3)
+TEST(Transpose, RowCol3)
 {
 	using L = Location<3>;
 
@@ -114,7 +114,7 @@ TEST(Transpose, row_col3)
 	}
 }
 
-TEST(Transpose, row_block2)
+TEST(Transpose, RowBlock2)
 {
 	using L = Location<2>;
 	using B = Location_Block<2>;
@@ -139,7 +139,7 @@ TEST(Transpose, row_block2)
 	EXPECT_EQ(undo, row);
 }
 
-TEST(Transpose, row_block3)
+TEST(Transpose, RowBlock3)
 {
 	using L = Location<3>;
 	using B = Location_Block<3>;
@@ -177,7 +177,7 @@ TEST(Transpose, row_block3)
 	}
 }
 
-TEST(Transpose, wrong_order)
+TEST(Transpose, wrongOrder)
 {
 	using L = Location<3>;
 	using B = Location_Block<3>;
@@ -214,7 +214,7 @@ TEST(Transpose, wrong_order)
 	EXPECT_EQ(row, row3);
 }
 
-TEST(Transpose, swap_row_col)
+TEST(Transpose, SwapRowCol)
 {
 	using L = Location<3>;
 
@@ -231,12 +231,14 @@ TEST(Transpose, swap_row_col)
 			63, 64, 65, 66, 67, 68, 69, 70, 71, //
 			72, 73, 74, 75, 76, 77, 78, 79, 80  //
 		};
+		// NOLINTNEXTLINE(performance-move-const-arg)
 		board = transpose_row_col(std::move(board));
 		EXPECT_EQ((board[L{1, 1}]), 10);
 		EXPECT_EQ((board[L{1, 2}]), 19);
 		EXPECT_EQ((board[L{1, 3}]), 28);
 		EXPECT_EQ((board[L{7, 8}]), 79);
 		EXPECT_EQ((board[L{7, 7}]), 70);
+		// NOLINTNEXTLINE(performance-move-const-arg)
 		board = transpose_row_col(std::move(board));
 		EXPECT_EQ((board[L{1, 1}]), 10);
 		EXPECT_EQ((board[L{2, 1}]), 19);
@@ -246,7 +248,7 @@ TEST(Transpose, swap_row_col)
 	}
 }
 
-TEST(Transpose, swap_row_block)
+TEST(Transpose, SwapRowBlock)
 {
 	using L = Location<3>;
 
@@ -263,6 +265,7 @@ TEST(Transpose, swap_row_block)
 			63, 64, 65, 66, 67, 68, 69, 70, 71, //
 			72, 73, 74, 75, 76, 77, 78, 79, 80  //
 		};
+		// NOLINTNEXTLINE(performance-move-const-arg)
 		board = transpose_row_block(std::move(board));
 		EXPECT_EQ((board[L{0, 1}]), 1);
 		EXPECT_EQ((board[L{1, 1}]), 4);
@@ -270,6 +273,7 @@ TEST(Transpose, swap_row_block)
 		EXPECT_EQ((board[L{4, 8}]), 50);
 		EXPECT_EQ((board[L{5, 7}]), 52);
 		EXPECT_EQ((board[L{8, 8}]), 80);
+		// NOLINTNEXTLINE(performance-move-const-arg)
 		board = transpose_row_block(std::move(board));
 		EXPECT_EQ((board[L{0, 1}]), 1);
 		EXPECT_EQ((board[L{1, 1}]), 10);
@@ -306,7 +310,7 @@ namespace test_class
 #endif // __ICL
 } // namespace test_class
 
-TEST(Transpose, throwing_move)
+TEST(Transpose, ThrowingMove)
 {
 	using L = Location<3>;
 

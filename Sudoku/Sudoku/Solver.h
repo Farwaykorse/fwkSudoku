@@ -141,10 +141,10 @@ constexpr int multi_option(
 	// set execution domain & specializations
 	switch (count)
 	{
-	case 0: return 0; // already answered
+	case 0: [[fallthrough]];     // already answered
+	case elem_size<N>: return 0; // no result anyway
 	case 1: return single_option(board, loc);
 	case 2: return dual_option(board, loc);
-	case elem_size<N>: return 0; // no result anyway
 	default: assert(count < elem_size<N>); break;
 	}
 
