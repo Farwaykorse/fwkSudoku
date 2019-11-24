@@ -79,6 +79,7 @@ public:
 	}
 
 	// [[implicit]] Type Conversion to const_(reverse_)iterator
+	// NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
 	constexpr operator Board_iterator<T, N, true, is_reverse>() const noexcept
 	{
 		static_assert(!is_const);

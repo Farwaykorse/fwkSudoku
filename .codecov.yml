@@ -9,7 +9,10 @@ coverage:
 
   status:
     project:
-      default: true # entire project
+      default: # entire project
+        base: auto
+        target: auto
+        threshold: 0.5%
       sudoku:
         paths:
         - "Sudoku/Sudoku/"
@@ -20,8 +23,18 @@ coverage:
         paths:
         - "SudokuTests/"
         base: auto
-        target: 0
-    patch: true
+        target: auto
+        threshold: 100% # report but never fail
+    patch:
+      default:
+        base: auto
+        target: auto
+        threshold: 100% # report but never fail
+      sudoku:
+        paths:
+        - "Sudoku/Sudoku/"
+        target: auto
+        only_pulls: true
     changes: false
 
 parsers:

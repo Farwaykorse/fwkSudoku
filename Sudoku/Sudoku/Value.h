@@ -106,8 +106,9 @@ inline constexpr Value to_Value(T val)
 		static_assert(elem_size<N> < std::numeric_limits<T>::max());
 		return to_Value<N>(static_cast<Value>(val));
 	}
-	else if constexpr (std::is_integral_v<T>)
+	else
 	{
+		static_assert(std::is_integral_v<T>);
 		static_assert(std::numeric_limits<T>::max() > elem_size<N>);
 		if (val < 0)
 		{
@@ -147,11 +148,14 @@ inline constexpr bool operator>=(const Value& left, const Value& right) noexcept
 {
 	return !(left < right);
 }
-static_assert(Value{7} == Value{7});
+static_assert(Value{4} == Value{4}); //-V501 //-V112
 static_assert(Value{1} != Value{0});
-static_assert(Value{8} > Value{2});
-static_assert(Value{10} >= Value{4});
-static_assert(Value{3} <= Value{9});
-static_assert(Value{5} < Value{6});
+static_assert(Value{3} > Value{2});
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+static_assert(Value{10} >= Value{7}); // NOLINT(readability-magic-numbers)
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+static_assert(Value{8} <= Value{9}); // NOLINT(readability-magic-numbers)
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+static_assert(Value{5} < Value{6}); // NOLINT(readability-magic-numbers)
 
 } // namespace Sudoku

@@ -65,11 +65,10 @@ inline int set_Value(
 
 	int changes{0};
 	auto& elem = board.at(loc);
-	if (not elem.test(value))
-	{ // value is option nor answer
+	if (not elem.test(value)) // value is option nor answer
 		throw error::invalid_Board();
-	}
-	else if (not is_answer(elem))
+
+	if (not is_answer(elem))
 	{
 		changes = gsl::narrow_cast<int>(elem.count_all());
 		elem.set_nocheck(value);

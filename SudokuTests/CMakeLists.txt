@@ -151,6 +151,9 @@ if(MSVC) # MSVC or simulating MSVC
       $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,7.0>:
         -Wno-return-std-move-in-c++11
       >
+      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,7>:
+        -Wno-missing-variable-declarations # warns on inline variables
+      >
     >
     $<$<CXX_COMPILER_ID:Intel>:
       /W5
@@ -197,6 +200,9 @@ else()
       $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,7.0>:
         -Wno-return-std-move-in-c++11
       >
+      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,7>:
+        -Wno-missing-variable-declarations # warns on inline variables
+      >
       $<$<OR:$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>,$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0.1>>:
         -Wno-missing-braces
       >
@@ -204,6 +210,9 @@ else()
     $<$<CXX_COMPILER_ID:AppleClang>:
       $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,10.0.1>:
         -Wno-return-std-move-in-c++11
+      >
+      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10.0.1>:
+        -Wno-missing-variable-declarations # warns on inline variables
       >
       $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10>:
         -Wno-missing-braces

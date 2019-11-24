@@ -404,7 +404,6 @@ jobs:
 
   allow_failures:
   - name: Clang-4.0 Debug
-  - name: Clang-Tidy
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies

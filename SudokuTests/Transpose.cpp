@@ -214,7 +214,7 @@ TEST(Transpose, wrongOrder)
 	EXPECT_EQ(row, row3);
 }
 
-TEST(Transpose, swapRowCol)
+TEST(Transpose, SwapRowCol)
 {
 	using L = Location<3>;
 
@@ -248,7 +248,7 @@ TEST(Transpose, swapRowCol)
 	}
 }
 
-TEST(Transpose, swapRowBlock)
+TEST(Transpose, SwapRowBlock)
 {
 	using L = Location<3>;
 
@@ -310,7 +310,7 @@ namespace test_class
 #endif // __ICL
 } // namespace test_class
 
-TEST(Transpose, throwingMove)
+TEST(Transpose, ThrowingMove)
 {
 	using L = Location<3>;
 

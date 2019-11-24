@@ -6,6 +6,7 @@
 //
 
 #include "Console.h"
+#include <Sudoku/Size.h>
 #include <Sudoku/Solver.h>
 #include <Sudoku/Value.h>
 
@@ -14,17 +15,18 @@
 #include <chrono>
 #include <iostream>
 
-static void
-	test(const std::array<char, 81>& B_in, const std::array<char, 81>& A_in)
+template<int N = 3, typename T = std::array<char, Sudoku::full_size<N>>>
+static void test(const T& B_in, const T& A_in)
 {
-	using Value = Sudoku::Value;
+	using Value              = Sudoku::Value;
+	constexpr auto elem_size = Sudoku::elem_size<N>;
 
-	Sudoku::Board<Value, 3> start;
-	Sudoku::Board<Value, 3> answer;
+	Sudoku::Board<Value, N> start;
+	Sudoku::Board<Value, N> answer;
 	std::transform(
-		B_in.cbegin(), B_in.cend(), start.begin(), Sudoku::to_Value<3, char>);
+		B_in.cbegin(), B_in.cend(), start.begin(), Sudoku::to_Value<N, char>);
 	std::transform(
-		A_in.cbegin(), A_in.cend(), answer.begin(), Sudoku::to_Value<3, char>);
+		A_in.cbegin(), A_in.cend(), answer.begin(), Sudoku::to_Value<N, char>);
 
 #ifdef _DEBUG
 	constexpr int repeat{1}; // runs (only keep fastest)
@@ -36,7 +38,7 @@ static void
 	using time     = std::chrono::time_point<std::chrono::steady_clock>;
 	using duration = std::chrono::duration<int64_t, std::nano>;
 
-	Sudoku::Board<Sudoku::Options<9>, 3> options{};
+	Sudoku::Board<Sudoku::Options<elem_size>, N> options{};
 	{
 		time t0{};
 		time t1{};
@@ -52,12 +54,12 @@ static void
 		static duration tdiff{0};
 		static bool last{};
 
-		for (auto j{0}; j < reruns; ++j)
+		for (auto j{0}; j < reruns; ++j) //-V1008
 		{
-			for (auto i{0}; i < repeat; ++i)
+			for (auto i{0}; i < repeat; ++i) //-V1008
 			{
 				t0 = std::chrono::steady_clock::now();
-				Sudoku::Board<Sudoku::Options<9>, 3> local{};
+				Sudoku::Board<Sudoku::Options<elem_size>, N> local{};
 				set_Value(local, start.cbegin(), start.cend());
 				t1 = std::chrono::steady_clock::now();
 				Sudoku::test_solver_unique(local);
@@ -121,12 +123,12 @@ static void
 		static duration tdiff{0};
 		static bool last{};
 
-		for (auto j{0}; j < reruns; ++j)
+		for (auto j{0}; j < reruns; ++j) //-V1008
 		{
-			for (auto i{0}; i < repeat; ++i)
+			for (auto i{0}; i < repeat; ++i) //-V1008
 			{
 				t0 = std::chrono::steady_clock::now();
-				Sudoku::Board<Sudoku::Options<9>, 3> local{};
+				Sudoku::Board<Sudoku::Options<elem_size>, N> local{};
 				set_Value(local, start.cbegin(), start.cend());
 				t1 = std::chrono::steady_clock::now();
 				Sudoku::test_solver_exclusive(local);
@@ -178,7 +180,7 @@ static void
 }
 
 
-int main()
+int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 {
 	// clang-format off
 	constexpr std::array<char, 81> b1

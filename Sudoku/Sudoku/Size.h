@@ -31,11 +31,11 @@ struct Size
 };
 
 template<int N>
-constexpr gsl::index base_size = Size<N>::base; // default 3
+inline constexpr gsl::index base_size = Size<N>::base; // default 3
 template<int N>
-constexpr gsl::index elem_size = Size<N>::elem; // default 9
+inline constexpr gsl::index elem_size = Size<N>::elem; // default 9
 template<int N>
-constexpr gsl::index full_size = Size<N>::full; // default 81
+inline constexpr gsl::index full_size = Size<N>::full; // default 81
 
 template<int N>
 static constexpr int all_options = full_size<N>* elem_size<N>;
