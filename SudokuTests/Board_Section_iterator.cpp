@@ -55,7 +55,7 @@ using ::Sudoku::Board_Section::reverse_Block_iterator;
 using ::Sudoku::Board_Section::const_reverse_Row_iterator;
 using ::Sudoku::Board_Section::const_reverse_Col_iterator;
 using ::Sudoku::Board_Section::const_reverse_Block_iterator;
-} // namespace SudokuTests
+} // namespace SudokuTests::Section_Iterator
 
 namespace SudokuTests::Section_Iterator::Type
 {
@@ -299,7 +299,7 @@ namespace assignment
 	static_assert(not std::is_assignable_v<L, typeT>);
 } // namespace assignment
 
-} // namespace SudokuTests::Type
+} // namespace SudokuTests::Section_Iterator::Type
 
 namespace SudokuTests::Section_Iterator::Members
 {
@@ -2238,4 +2238,4 @@ TEST(SectionItr, IteratorLoop)
 	}
 	EXPECT_EQ(total, 129);
 }
-} // namespace SudokuTests::Members
+} // namespace SudokuTests::Section_Iterator::Members

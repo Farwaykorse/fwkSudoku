@@ -474,7 +474,7 @@ namespace assignment
 	static_assert(not std::is_assignable_v<Col, Block>);
 	// ...
 } // namespace assignment
-} // namespace SudokuTests::Type
+} // namespace SudokuTests::Section::Type
 
 namespace SudokuTests::Section::Members
 {
@@ -732,7 +732,7 @@ TEST(BoardSection, checkedAccess)
 	EXPECT_THROW(tmp = row.at(-1), std::out_of_range);
 }
 
-} // namespace SudokuTests::Members
+} // namespace SudokuTests::Section::Members
 
 namespace SudokuTests::Section::Iterators
 {
@@ -755,4 +755,4 @@ static_assert(noexcept(const_Row(std::declval<Board&>(), 0).cbegin()));
 static_assert(noexcept(const_Row(std::declval<Board&>(), 0).rbegin()));
 static_assert(noexcept(const_Row(std::declval<Board&>(), 0).crbegin()));
 static_assert(noexcept(Row(std::declval<Board&>(), 0).end()));
-} // namespace SudokuTests::Iterators
+} // namespace SudokuTests::Section::Iterators

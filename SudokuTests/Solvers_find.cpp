@@ -1048,4 +1048,4 @@ TEST(Solver, appearanceSets)
 	}
 }
 
-} // namespace SudokuTests::SolversTest
+} // namespace SudokuTests::Solvers_find

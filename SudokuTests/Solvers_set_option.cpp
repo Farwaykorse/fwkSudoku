@@ -679,4 +679,4 @@ TEST(Solver, deathtestSetOption)
 	//}
 }
 
-} // namespace SudokuTests::SolversTest
+} // namespace SudokuTests::Solvers_set_option
