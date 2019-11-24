@@ -54,9 +54,9 @@ static void test(const T& B_in, const T& A_in)
 		static duration tdiff{0};
 		static bool last{};
 
-		for (auto j{0}; j < reruns; ++j)
+		for (auto j{0}; j < reruns; ++j) //-V1008
 		{
-			for (auto i{0}; i < repeat; ++i)
+			for (auto i{0}; i < repeat; ++i) //-V1008
 			{
 				t0 = std::chrono::steady_clock::now();
 				Sudoku::Board<Sudoku::Options<elem_size>, N> local{};
@@ -123,9 +123,9 @@ static void test(const T& B_in, const T& A_in)
 		static duration tdiff{0};
 		static bool last{};
 
-		for (auto j{0}; j < reruns; ++j)
+		for (auto j{0}; j < reruns; ++j) //-V1008
 		{
-			for (auto i{0}; i < repeat; ++i)
+			for (auto i{0}; i < repeat; ++i) //-V1008
 			{
 				t0 = std::chrono::steady_clock::now();
 				Sudoku::Board<Sudoku::Options<elem_size>, N> local{};
