@@ -125,7 +125,7 @@ template<int E>
 [[nodiscard]] Value get_answer(Options<E> const&) noexcept;
 template<int N>
 [[nodiscard]] Value to_Value(Options<elem_size<N>> const&) noexcept;
-template<int E>
+template<int E> // NOLINTNEXTLINE(bugprone-exception-escape)
 [[nodiscard]] std::vector<Value> available(const Options<E>&) noexcept(true);
 template<int E>
 [[nodiscard]] Value read_next(const Options<E>&, Value = Value{0}) noexcept;
@@ -167,14 +167,21 @@ namespace impl
 	}
 	static_assert(exp2_(0U) == 0x1U);
 	static_assert(exp2_(1U) == 0x2U);
-	static_assert(exp2_(2U) == 0x4U);
-	static_assert(exp2_(3U) == 0x8U);
-	static_assert(exp2_(4U) == 0x10U);
-	static_assert(exp2_(5U) == 0x20U);
-	static_assert(exp2_(6U) == 0x40U);
-	static_assert(exp2_(7U) == 0x80U);
-	static_assert(exp2_(8U) == 0x100U);
-	static_assert(exp2_(9U) == 0x200U);
+	static_assert(exp2_(2U) == 0x4U); //-V112
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+	static_assert(exp2_(3U) == 0x8U); // NOLINT(readability-magic-numbers)
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+	static_assert(exp2_(4U) == 0x10U); // NOLINT(readability-magic-numbers)
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+	static_assert(exp2_(5U) == 0x20U); // NOLINT(readability-magic-numbers)
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+	static_assert(exp2_(6U) == 0x40U); // NOLINT(readability-magic-numbers)
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+	static_assert(exp2_(7U) == 0x80U); // NOLINT(readability-magic-numbers)
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+	static_assert(exp2_(8U) == 0x100U); // NOLINT(readability-magic-numbers)
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+	static_assert(exp2_(9U) == 0x200U); // NOLINT(readability-magic-numbers)
 
 	// generate a bit-mask to use a unique bit per value
 	//   empty for Value outside domain.
@@ -426,7 +433,7 @@ inline Value to_Value(Options<elem_size<N>> const& options) noexcept
 }
 
 // all available options
-template<int E>
+template<int E> // NOLINTNEXTLINE(bugprone-exception-escape)
 inline std::vector<Value> available(Options<E> const& options) noexcept(true)
 { // noexcept: only allocation can throw. Terminate, all is lost anyway.
 	const size_t count = options.count();

@@ -28,10 +28,11 @@ if(MSVC)
 
   # Workaround Clang's /\-mixing and resulting warning (-Wmicrosoft-include).
   # Lets CMake set the full path.
-  # Confirmed for clang 7.0 and 8.0.0
+  # Confirmed for clang 7.0 - 9.0.0
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND
       ${CMAKE_CXX_COMPILER_VERSION} EQUAL 7 OR
-      ${CMAKE_CXX_COMPILER_VERSION} EQUAL 8
+      ${CMAKE_CXX_COMPILER_VERSION} EQUAL 8 OR
+      ${CMAKE_CXX_COMPILER_VERSION} EQUAL 9
   )
     set(HeaderFile "${CMAKE_CURRENT_SOURCE_DIR}/${HeaderFile}")
   endif()

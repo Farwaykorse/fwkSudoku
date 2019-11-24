@@ -59,8 +59,11 @@ public:
 
 	constexpr Board() noexcept;
 	explicit constexpr Board(const T& default_value);
-	// NOLINTNEXTLINE(runtime/explicit)
-	constexpr Board(std::array<T, Size> const& list) : board_(list) {}
+	// NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
+	constexpr Board(std::array<T, Size> const& list) // NOLINT(runtime/explicit)
+		: board_(list)
+	{
+	}
 	Board(std::initializer_list<T>); // construct from initializer_list
 
 	void clear();
@@ -212,6 +215,7 @@ constexpr T& Board<T, N>::at(const Location loc)
 	{
 		throw error::invalid_Location{"Board::at(Location)"};
 	}
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
 
@@ -222,6 +226,7 @@ constexpr T const& Board<T, N>::at(const Location loc) const
 	{
 		throw error::invalid_Location{"Board::at(Location) const"};
 	}
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
 
@@ -232,6 +237,7 @@ constexpr T& Board<T, N>::at(const index row, const index col)
 	{
 		throw error::invalid_Location{"Board::at(int row, col)"}; // <stdexcept>
 	}
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
 	return board_[gsl::narrow_cast<size_t>(Location(row, col).element())];
 }
 
@@ -242,6 +248,7 @@ constexpr T const& Board<T, N>::at(const index row, const index col) const
 	{
 		throw error::invalid_Location{"Board::at(row, col) const"};
 	}
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
 	return board_[gsl::narrow_cast<size_t>(Location(row, col).element())];
 }
 
@@ -270,12 +277,14 @@ const T& Board<T, N>::at(const index elem) const
 template<typename T, int N>
 constexpr T& Board<T, N>::operator[](const Location loc) noexcept
 {
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
 
 template<typename T, int N>
 constexpr T const& Board<T, N>::operator[](const Location loc) const noexcept
 {
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
 	return board_[gsl::narrow_cast<size_t>(loc.element())];
 }
 

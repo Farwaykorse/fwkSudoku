@@ -53,7 +53,7 @@ AccessModifierOffset: -4
 ReflowComments:               true
 SpacesBeforeTrailingComments: 1
 AlignTrailingComments:        true
-#CommentPragmas:
+CommentPragmas: '^ NOLINT'
 
 ## Include
 # #include <xxx>      STL includes

@@ -849,6 +849,8 @@ TEST(BoardIterator, dereference)
 		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
+		static_assert(Board<Options<4>, 2>::size() == 16U);
+		// NOLINTNEXTLINE(readability-static-accessed-through-instance)
 		static_assert(cBoard.size() == 16U);
 		static_assert(cBoard.front() == 5);
 		static_assert(cBoard.back() == 20);
@@ -1065,6 +1067,7 @@ TEST(BoardIterator, postIncrement)
 		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
+		// NOLINTNEXTLINE(readability-static-accessed-through-instance)
 		static_assert(cBoard.size() == 16U);
 		// *i++
 		EXPECT_TRUE(A.begin()++ == A.begin());
@@ -1464,6 +1467,7 @@ TEST(BoardIterator, preDecrement)
 
 		// Sanity-check
 		ASSERT_EQ(A.size(), 16U);
+		// NOLINTNEXTLINE(readability-static-accessed-through-instance)
 		static_assert(cB.size() == 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A[0][1], 1);
@@ -2400,6 +2404,7 @@ TEST(BoardIterator, directAccess)
 		ASSERT_EQ(A.size(), 16U);
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 15);
+		// NOLINTNEXTLINE(readability-static-accessed-through-instance)
 		static_assert(cB.size() == 16U);
 
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.begin()[-1], ">= 0");

@@ -8,7 +8,6 @@
 
 #include <gsl/gsl>
 #include <string>
-#include <cmath>   // pow
 #include <iomanip> // setw(), setfill()
 #include <sstream>
 #include <utility>
@@ -26,10 +25,8 @@ Board<Value, N> getResult(Board<Options<elem_size<N>>, N> const&) noexcept;
 
 
 //====--------------------------------------------------------------------====//
-
 class Console
 {
-public:
 	struct delimiter
 	{
 		char space;
@@ -39,12 +36,14 @@ public:
 		std::string newl;
 		std::string block_cross;
 	};
+
 	const delimiter space{' ', ' ', "", "", "", ""};
 	const delimiter space2{' ', ' ', "", "", "\n", ""};
 	const delimiter display{' ', ' ', "-", "|", "\n", "o"};
-	// static const Format::delimiter csv;
-	// static const Format::delimiter xml;
+	// const delimiter csv;
+	// const delimiter xml;
 
+public:
 	Console() noexcept;
 	explicit Console(delimiter);
 	//~Console() = default;
@@ -59,13 +58,9 @@ public:
 	template<int N, int E>
 	std::stringstream print_board(const Board<Options<E>, N>&) const;
 
-	delimiter d;
-
 private:
-	[[nodiscard]] int charsize(int value) const;
-	[[nodiscard]] int charsize(int, int length) const; // recursion
-	//	bool Format::find_option(const Board<std::set<int>>&, Location, int
-	// value);
+	const delimiter d;
+	// bool Format::find_option(const Board<std::set<int>>&,Location,int value);
 	// format elem
 	// format col-block section
 	// format row-block = separator line
@@ -84,32 +79,45 @@ inline Console::Console(delimiter del) : d(std::move(del))
 	// empty constructor
 }
 
-inline int Console::charsize(int value, int length) const
+namespace impl
 {
-	if (value < std::pow(10, length))
+	[[nodiscard]] constexpr int pow(int const base, int exp)
 	{
-		return length;
+		if (exp == 0)
+		{
+			return 1;
+		}
+		return base * pow(base, --exp);
 	}
-	++length;
-	return charsize(value, length);
-}
 
-inline int Console::charsize(int value) const
-{
-	assert(value >= 0);
-	if (value < 10)
+	[[nodiscard]] constexpr int charsize(int value, int length)
 	{
-		return 1;
+		constexpr int decimal{10};
+		if (value < pow(decimal, length))
+		{
+			return length;
+		}
+		++length;
+		return charsize(value, length);
 	}
-	return charsize(value, 2);
-}
+
+	[[nodiscard]] constexpr int charsize(int value)
+	{
+		constexpr int decimal{10};
+		if (value < decimal)
+		{
+			return 1;
+		}
+		return charsize(value, 2);
+	}
+} // namespace impl
 
 template<int N>
 std::stringstream
 	Console::print_row(const Board<int, N>& input, gsl::index row_id) const
 {
 	std::stringstream stream;
-	const int chars = charsize(elem_size<N>) + 1;
+	constexpr int chars = impl::charsize(elem_size<N>) + 1;
 
 	stream << d.col_block << std::setfill(d.space);
 	for (gsl::index i = 0; i < elem_size<N>; ++i)
@@ -135,7 +143,7 @@ std::stringstream Console::print_board(const Board<int, N>& input) const
 {
 	std::stringstream stream;
 	std::stringstream temp;
-	const int chars = charsize(elem_size<N>) + 1;
+	constexpr int chars = impl::charsize(elem_size<N>) + 1;
 
 	// opening bar
 	temp << d.block_cross;
@@ -164,9 +172,8 @@ template<int N, int E>
 std::stringstream Console::print_board(const Board<Options<E>, N>& input) const
 {
 	static_assert(E == N * N);
-	static_assert(elem_size<N> == 9); // no support for different sizes yet
-	const gsl::index block_size = elem_size<N> + base_size<N> + 2;
-	const gsl::index row_length = base_size<N> * block_size;
+	constexpr gsl::index block_size = elem_size<N> + base_size<N> + 2;
+	constexpr gsl::index row_length = base_size<N> * block_size;
 	/*
 	9   9   9
 	o-----------------------------------------o
@@ -194,13 +201,18 @@ std::stringstream Console::print_board(const Board<Options<E>, N>& input) const
 	{
 		stream << print_row(input, row).str();
 
-		if ((row + 1) % 3 == 0)
+		if ((row + 1) % base_size<N> == 0)
 		{
 			stream << n0.str();
 		}
 		else
 		{
-			stream << '|' << n4.str() << n4.str() << n4.str() << std::endl;
+			stream << '|';
+			for (gsl::index index{}; index < base_size<N>; ++index)
+			{
+				stream << n4.str();
+			}
+			stream << '\n';
 		}
 	}
 	return stream;
