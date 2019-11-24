@@ -179,7 +179,7 @@ TEST(Value, comparisons)
 	EXPECT_FALSE(Value{2} > Value{5});
 }
 
-TEST(Value, is_valid)
+TEST(Value, isValid)
 {
 	using ::Sudoku::is_valid;
 	using ::Sudoku::is_valid_option;
@@ -221,7 +221,7 @@ TEST(Value, is_valid)
 	static_assert(!is_valid_option<9>(Value{10}));
 }
 
-TEST(Value, operator_bool)
+TEST(Value, operatorBool)
 {
 	static_assert(noexcept(Value{0}));
 	static_assert(noexcept(Value{1}));
@@ -234,7 +234,7 @@ TEST(Value, operator_bool)
 	EXPECT_EQ(bool{Value{1}}, true);
 }
 
-TEST(Value, operator_increment)
+TEST(Value, operatorIncrement)
 { // pre- and post-incrementing
 	static_assert(noexcept(++Value{0}));
 	static_assert(noexcept((Value{0})++));
@@ -251,7 +251,7 @@ TEST(Value, operator_increment)
 	EXPECT_EQ(val, Value{3});
 }
 
-TEST(Value, is_valid_vector)
+TEST(Value, isValidVector)
 {
 	using ::Sudoku::is_valid;
 	// vector input
@@ -276,7 +276,7 @@ TEST(Value, is_valid_vector)
 	static_assert(noexcept(is_valid<2>(List)));
 }
 
-TEST(Value, to_Value)
+TEST(Value, toValue)
 {
 	using ::Sudoku::to_Value;
 	// Input: Value
@@ -325,12 +325,12 @@ TEST(Value, to_Value)
 	EXPECT_THROW(to_Value<3>(size_t{10}), std::domain_error);
 
 	// Input: unsigned int
-	static_assert(to_Value<3>(0u) == Value{0});
-	static_assert(to_Value<3>(1u) == Value{1});
-	static_assert(to_Value<3>(9u) == Value{9});
-	// static_assert(noexcept(to_Value<3>(2u))); // fails with Clang
-	static_assert(not(noexcept(to_Value<3>(10u))));
-	static_assert(not(noexcept(to_Value<3>(21u))));
+	static_assert(to_Value<3>(0U) == Value{0});
+	static_assert(to_Value<3>(1U) == Value{1});
+	static_assert(to_Value<3>(9U) == Value{9});
+	// static_assert(noexcept(to_Value<3>(2U))); // fails with Clang
+	static_assert(not(noexcept(to_Value<3>(10U))));
+	static_assert(not(noexcept(to_Value<3>(21U))));
 
 	// Input: long int
 	static_assert(to_Value<3>(0L) == Value{0});

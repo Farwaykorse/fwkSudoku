@@ -15,6 +15,8 @@ Checks: '*,
   -android-*,
   boost-*,
   bugprone-*,
+  -bugprone-branch-clone,
+  -bugprone-suspicious-semicolon,
   cert-*,
   -cert-dcl21-cpp,
   clang-analyzer-*,
@@ -23,43 +25,41 @@ Checks: '*,
   -clang-analyzer-osx*,
   -clang-analyzer-unix*,
   cppcoreguidelines-*,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -fuchsia-*,
   google-*,
   -google-objc-*,
   -google-readability-braces-around-statements,
-  -google-readability-namespace-comments,
   -google-readability-todo,
   hicpp-*,
   -hicpp-braces-around-statements,
+  -hicpp-no-array-decay,
   llvm-*,
   -llvm-header-guard,
   -llvm-include-order,
-  -llvm-namespace-comment,
   misc-*,
   modernize-*,
   -modernize-use-trailing-return-type,
   -mpi-*,
   -objc-*,
+  openmp-*,
   performance-*,
   portability-*,
   readability-*,
   -readability-avoid-const-params-in-decls,
   -readability-braces-around-statements,
-  -readability-else-after-return,
   -readability-named-parameter,
   -ziron-*,
   -cert-err58-cpp,
   -cppcoreguidelines-avoid-goto,
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-owning-memory,
-  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -cppcoreguidelines-pro-type-vararg,
   -cppcoreguidelines-special-member-functions,
   -google-readability-function-size,
   -hicpp-avoid-goto,
   -hicpp-function-size,
   -hicpp-move-const-arg,
-  -hicpp-no-array-decay,
   -hicpp-readability-function-size,
   -hicpp-special-member-functions,
   -hicpp-use-equals-delete,
@@ -72,21 +72,35 @@ CheckOptions:
   value: '1'
 - key:   bugprone-assert-side-effect.CheckFunctionCalls
   value: '0'
+- key:   bugprone-sizeof-expression.WarnOnSizeOfIntegerExpression
+  value: '1'
 - key:   bugprone-suspicious-enum-usage.StrictMode
+  value: '1'
+- key:   bugprone-suspicious-string-compare.WarnOnLogicalNotComparison
   value: '1'
 - key:   portability-simd-intrinsics.Suggest
   value: '1'
+- key:   cppcoreguidelines-narrowing-conversions.PedanticMode
+  value: '1'
+- key:   misc-unused-parameters.StrictMode
+  value: '1'
+- key:   performance-for-range-copy.WarnOnAllAutoCopies
+  value: '1'
+- key:   performance-inefficient-string-concatenation.StrictMode
+  value: '1'
 - key:   readability-braces-around-statements.ShortStatementLines
   value: '3'
-- key:   readability-function-size.BranchThreshold
-  value: '-1'
 - key:   readability-function-size.LineThreshold
-  value: '-1'
-- key:   readability-function-size.NestingThreshold
-  value: '-1'
-- key:   readability-function-size.ParameterThreshold
   value: '-1'
 - key:   readability-function-size.StatementThreshold
   value: '800'
+- key:   readability-function-size.BranchThreshold
+  value: '-1'
+- key:   readability-function-size.ParameterThreshold
+  value: '-1'
+- key:   readability-function-size.NestingThreshold
+  value: '-1'
+- key:   readability-function-size.VariableThreshold
+  value: '-1'
 
 ...

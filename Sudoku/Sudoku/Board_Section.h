@@ -71,6 +71,7 @@ public:
 	{
 	}
 	// [[implicit]] conversion to const
+	// NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
 	constexpr operator Board_Section_<T, N, S, true>() const noexcept
 	{
 		return Board_Section_<T, N, S, true>(board_, id_);

@@ -25,8 +25,8 @@
 /* experiment flags */
 //! DO #undef at end of file!
 // activate algorithms on removing option
-#define DUAL_ON_REMOVE false
-#define MULTIPLE_ON_REMOVE false
+#define DUAL_ON_REMOVE false     // NOLINT(cppcoreguidelines-macro-usage)
+#define MULTIPLE_ON_REMOVE false // NOLINT(cppcoreguidelines-macro-usage)
 
 
 namespace Sudoku

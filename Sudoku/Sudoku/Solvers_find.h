@@ -149,8 +149,9 @@ auto list_where_option(
 
 // List locations in [section] containing [sample]
 template<int N, typename SectionT, typename Options>
-auto list_where_option(const SectionT section, const Options sample) noexcept(
-	true)
+auto list_where_option( // NOLINT(bugprone-exception-escape)
+	const SectionT section,
+	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
@@ -178,8 +179,9 @@ auto list_where_option(const SectionT section, const Options sample) noexcept(
 
 // List locations in [section] equal to [sample]
 template<int N, typename SectionT, typename Options>
-auto list_where_equal(const SectionT section, const Options sample) noexcept(
-	true)
+auto list_where_equal( // NOLINT(bugprone-exception-escape)
+	const SectionT section,
+	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
@@ -201,8 +203,9 @@ auto list_where_equal(const SectionT section, const Options sample) noexcept(
 
 // All locations where available options are a subset of the sample.
 template<int N, typename Options>
-auto list_where_subset(
-	const Board<Options, N>& board, const Options sample) noexcept(true)
+auto list_where_subset( // NOLINT(bugprone-exception-escape)
+	const Board<Options, N>& board,
+	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	using Location = Location<N>;
 	std::vector<Location> list{};
@@ -222,8 +225,9 @@ auto list_where_subset(
 
 // All locations where available options are a subset of the sample.
 template<int N, typename SectionT, typename Options>
-auto list_where_subset(const SectionT section, const Options sample) noexcept(
-	true)
+auto list_where_subset( // NOLINT(bugprone-exception-escape)
+	const SectionT section,
+	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
@@ -247,8 +251,9 @@ auto list_where_subset(const SectionT section, const Options sample) noexcept(
 
 // All locations containing an option present in [sample]
 template<int N, typename SectionT, typename Options>
-auto list_where_any_option(
-	const SectionT section, const Options sample) noexcept(true)
+auto list_where_any_option( // NOLINT(bugprone-exception-escape)
+	const SectionT section,
+	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
