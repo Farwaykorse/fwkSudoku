@@ -60,8 +60,10 @@ public:
 	Multipass_Base(Multipass_Base&&) noexcept = default;
 	Multipass_Base& operator=(Multipass_Base&&) noexcept = default;
 
+	// NOLINTNEXTLINE(bugprone-exception-escape)
 	explicit Multipass_Base(Board<Options, N> const&) noexcept(true);
 	explicit Multipass_Base(Board<Value, N> const&);
+	// NOLINTNEXTLINE(bugprone-exception-escape)
 	Multipass_Base& operator=(Board<Options, N> const&) noexcept(true);
 	Multipass_Base& operator=(Board<Value, N> const&);
 
@@ -72,13 +74,15 @@ public:
 	}
 
 	// NOLINTNEXTLINE(runtime/references)
-	void add_answer(worker_Board& item) noexcept(config::MAX_ANSWERS >= 0)
+	void add_answer( // NOLINT(bugprone-exception-escape)
+		worker_Board& item) noexcept(config::MAX_ANSWERS >= 0)
 	{
 		if (config::MAX_ANSWERS && answer_count() < config::MAX_ANSWERS)
 		{
 			answers.push_back(std::move(item.board));
 		}
 	}
+	// NOLINTNEXTLINE(bugprone-exception-escape)
 	void add_to_queue(worker_Board&& board) noexcept(true)
 	{
 		queue.emplace(std::forward<worker_Board>(board));
@@ -104,6 +108,7 @@ public:
 	}
 
 private:
+	// NOLINTNEXTLINE(bugprone-exception-escape)
 	void shared_setup(int changes, Board<Options, N>) noexcept(true);
 	void clear() noexcept;
 };
@@ -159,7 +164,7 @@ Multipass_Base<N>::Multipass_Base(Board<Value, N> const& start)
 	shared_setup(changes, local);
 }
 template<int N>
-inline Multipass_Base<N>&
+inline Multipass_Base<N>& // NOLINTNEXTLINE(bugprone-exception-escape)
 	Multipass_Base<N>::operator=(Board<Options, N> const& input) noexcept(true)
 {
 	clear();
@@ -208,7 +213,7 @@ inline bool answered(Multipass_Base<N>& base, impl::worker_Board<N>& item)
 }
 
 // For an unanswered location, add new boards to the queue for each possibility
-template<int N>
+template<int N> // NOLINTNEXTLINE(bugprone-exception-escape)
 inline void guess(
 	Multipass_Base<N>& base, // NOLINT(runtime/references)
 	impl::worker_Board<N> const& input) noexcept(true)
