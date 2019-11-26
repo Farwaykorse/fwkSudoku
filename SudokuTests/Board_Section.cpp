@@ -26,7 +26,7 @@
 #include <cstdint>
 
 
-namespace SudokuTests::Type
+namespace SudokuTests::Section::Type
 {
 namespace properties_Section
 {
@@ -474,9 +474,9 @@ namespace assignment
 	static_assert(not std::is_assignable_v<Col, Block>);
 	// ...
 } // namespace assignment
-} // namespace SudokuTests::Type
+} // namespace SudokuTests::Section::Type
 
-namespace SudokuTests::Members
+namespace SudokuTests::Section::Members
 {
 using ::Sudoku::Board;
 using ::Sudoku::Board_Section::Row;
@@ -732,9 +732,9 @@ TEST(BoardSection, checkedAccess)
 	EXPECT_THROW(tmp = row.at(-1), std::out_of_range);
 }
 
-} // namespace SudokuTests::Members
+} // namespace SudokuTests::Section::Members
 
-namespace SudokuTests::Iterators
+namespace SudokuTests::Section::Iterators
 {
 using Board       = ::Sudoku::Board<int, 3>;
 using Row         = ::Sudoku::Board_Section::Row<int, 3>;
@@ -755,4 +755,4 @@ static_assert(noexcept(const_Row(std::declval<Board&>(), 0).cbegin()));
 static_assert(noexcept(const_Row(std::declval<Board&>(), 0).rbegin()));
 static_assert(noexcept(const_Row(std::declval<Board&>(), 0).crbegin()));
 static_assert(noexcept(Row(std::declval<Board&>(), 0).end()));
-} // namespace SudokuTests::Iterators
+} // namespace SudokuTests::Section::Iterators

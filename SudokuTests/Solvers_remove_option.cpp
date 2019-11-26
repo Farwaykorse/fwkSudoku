@@ -35,7 +35,7 @@
 #include <type_traits>
 
 
-namespace SudokuTests::SolversTest
+namespace SudokuTests::Solvers_remove_option
 {
 using ::Sudoku::Board;
 using ::Sudoku::Location;
@@ -514,4 +514,4 @@ TEST(Solver, deathtestsRemoveOption)
 		"Assertion .*intersect_block.*");
 }
 
-} // namespace SudokuTests::SolversTest
+} // namespace SudokuTests::Solvers_remove_option
