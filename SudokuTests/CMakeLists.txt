@@ -43,7 +43,7 @@ target_sources(SudokuTests
 
 target_link_libraries(SudokuTests
   PRIVATE
-    Sudoku
+    fwk::Sudoku
     GTest::GTest
     GTest::Main
 )
