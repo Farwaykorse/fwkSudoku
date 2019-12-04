@@ -138,6 +138,21 @@ for:
 -
   matrix:
     only:
+    - configuration: CMakeValidation
+  build_script:
+  - ps: |
+      $CMakePaths.Values.ForEach({
+        . "$_" .. $env:CMakeGenFlags
+      })
+  after_build:
+  - echo ""
+  test_script:
+  - echo ""
+  on_finish:
+  - echo ""
+-
+  matrix:
+    only:
     - BUILDSYSTEM: MSBuild
   # Only build for [master] to reduce AppVeyor test-load
   branches:
@@ -212,21 +227,6 @@ for:
     /UseVsixExtensions:true
     /Settings:msvc\TestAdapter.runsettings
     /logger:Appveyor
--
-  matrix:
-    only:
-    - configuration: CMakeValidation
-  build_script:
-  - ps: |
-      $CMakePaths.Values.ForEach({
-        . "$_" .. $env:CMakeGenFlags
-      })
-  after_build:
-  - echo ""
-  test_script:
-  - echo ""
-  on_finish:
-  - echo ""
 ## /Modify_Matrix
 
 ##====--------------------------------------------------------------------====##
