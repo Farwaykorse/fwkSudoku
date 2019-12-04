@@ -38,6 +38,7 @@ skip_commits:
 # platform         x64 (default), x86
 # configuration    Debug, Release        - use the MSVC compiler
 #                  LLVM_(Debug, Release) - use the LLVM/clang compiler
+#                  CMakeValidation       - try different CMake releases
 # BUILDSYSTEM      MSBuild - (default) requires CMake generator
 #                  Ninja - requires CMake generator
 #                  MSBuild_Solution - use Visual Studio project configurations
@@ -55,6 +56,7 @@ platform:
 - x64
 
 configuration:
+- CMakeValidation
 - Debug
 - Release
 - LLVM_Debug
@@ -88,6 +90,13 @@ matrix:
     BUILDSYSTEM: MSBuild
   - image: Visual Studio 2015
     BUILDSYSTEM: MSBuild_Solution
+  # Selected builds validating CMake cache generation.
+  - configuration: CMakeValidation
+    BUILDSYSTEM: MSBuild_Solution
+  - configuration: CMakeValidation
+    BUILDSYSTEM: MSBuild
+  - configuration: CMakeValidation
+    platform: x86
   # Reduce build count testing CMake generators for MSBuild.
   - BUILDSYSTEM: MSBuild
     platform: x86
@@ -203,6 +212,21 @@ for:
     /UseVsixExtensions:true
     /Settings:msvc\TestAdapter.runsettings
     /logger:Appveyor
+-
+  matrix:
+    only:
+    - configuration: CMakeValidation
+  build_script:
+  - ps: |
+      $CMakePaths.Values.ForEach({
+        . "$_" .. $env:CMakeGenFlags
+      })
+  after_build:
+  - echo ""
+  test_script:
+  - echo ""
+  on_finish:
+  - echo ""
 ## /Modify_Matrix
 
 ##====--------------------------------------------------------------------====##
@@ -210,7 +234,7 @@ init:
 - ps: |
     New-Item -ItemType Directory -Force ~\tools | pushd
     git clone https://github.com/Farwaykorse/AppVeyorHelpers.git --quiet
-    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.13.1
+    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.14.0
     popd
 - ps: Show-SystemInfo -LLVM -CMake -Curl -Path
 - ps: |
@@ -233,6 +257,20 @@ install:
         -Tag 'v1.9.0' -SHA512 `
           '1C050E602EC63D4DCF44D9AB3D2D02AC731B4B2977BC0B420A21E85604487F58EC8D3045941D4153EF06AB00C175CA7CF9D57B8E20A757528290E135639962AC'
     }
+- ps: |
+    if ($env:CONFIGURATION -eq 'CMakeValidation') {
+      $env:CMakeVersion = '3.16.0 3.15.5 3.14.7 3.13.5 3.12.4 3.12.0'
+    }
+    if ($env:CMakeVersion) {
+      $CMakePaths = [ordered]@{}
+      $env:CMakeVersion.Trim() -replace '[,; ]',' ' -split ' ' |
+      ForEach-Object {
+        $CMakePaths[$_] = Install-CMake -Version:$_
+      }
+      if ($CMakePaths.Count -eq 1) {
+        $env:CMAKE = $CMakePaths[$env:CMakeVersion].Path
+      } elseif ($CMakePaths.Count -eq 0) { $env:CMAKE = 'cmake' }
+    } else { $env:CMAKE = 'cmake' }
 - ps: Update-Vcpkg
 - vcpkg install ms-gsl:%PLATFORM%-windows
 - vcpkg install gtest:%PLATFORM%-windows
@@ -300,7 +338,7 @@ before_build:
 - mkdir build && cd build
 - if %BUILDSYSTEM%==Ninja (call %VCVARSALL%)
 - echo %CMakeGenFlags%
-- cmake .. %CMakeGenFlags%
+- if defined CMAKE call %CMAKE% .. %CMakeGenFlags%
 
 ##====--------------------------------------------------------------------====##
 build_script:
