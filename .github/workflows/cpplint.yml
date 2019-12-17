@@ -1,8 +1,17 @@
-##====---- .github/workflow/cpplint.yml                               ----====##
+##====---- GitHub Actions - cpplint                                   ----====##
 # Based on github.com/cpplint/GitHub-Action-for-cpplint
 #
 name: cpplint
-on: [push, pull_request]
+on:
+  push:
+    paths:
+    - '**.[CcHh]'
+    - '**.[CcHh]\+\+'
+    - '**.[Cc][Cc]'
+    - '**.[CcHh][Pp][Pp]'
+    - '**.[CcHh][Xx][Xx]'
+  pull_request:
+    branches: '**'
 jobs:
   cpplint:
     name: Run cpplint
