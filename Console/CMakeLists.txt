@@ -17,7 +17,7 @@ add_executable(console
 
 target_link_libraries(console
   PRIVATE
-    Sudoku
+    fwk::Sudoku
 )
 
 set_target_properties(console
