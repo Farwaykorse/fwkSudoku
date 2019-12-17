@@ -19,7 +19,7 @@ skip_commits:
   - .git*
   - .github/
   - .travis.yml
-  - .yamllint
+  - .yamllint.yml
   - docs/
   - LICENSE
   - '**/.clang-*'
@@ -145,7 +145,7 @@ for:
     - .git*
     - .github/
     - .travis.yml
-    - .yamllint
+    - .yamllint.yml
     - docs/
     - LICENSE
     - '**/.clang-*'
@@ -166,7 +166,7 @@ for:
     - .github/
     - .editorconfig
     - .travis.yml
-    - .yamllint
+    - .yamllint.yml
     - cmake/
     - docs/
     - LICENSE
