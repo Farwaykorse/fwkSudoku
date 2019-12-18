@@ -58,22 +58,6 @@ TEST(Solver, removeOption)
 	EXPECT_NO_THROW(remove_option(board, L2{15}, Value{1}));
 	EXPECT_THROW(remove_option(board, L2{-1}, Value{1}), invalid_Location);
 	EXPECT_THROW(remove_option(board, L2{16}, Value{1}), invalid_Location);
-	// value out of bounds (2-sided)
-	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2(2), Value{0}),
-		"Assertion .*is_valid<N>\\(value\\)");
-#ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2(2), Value{9}),
-		"Assertion .*is_valid<N>\\(value\\)");
-#else
-	EXPECT_THROW(remove_option(board, L2{2}, Value{9}), std::out_of_range);
-#endif // NDEBUG
-	// last option (not answer)
-	board[0][2] = std::bitset<5>{"01001"}; // 3
-	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2(2), Value{3}), "Assertion .*count > 0");
-	// TODO throw from single_option?
 
 	// return type
 	static_assert(
@@ -111,6 +95,32 @@ TEST(Solver, removeOption)
 	EXPECT_EQ(board[2][1].count_all(), 1U);
 }
 
+TEST(SolverDeathTest, removeOption)
+{
+	using L2 = Location<2>;
+
+	// remove_option(location, int value)
+	Board<Options<4>, 2> board{};
+	ASSERT_EQ(board[1][0], Options<4>{}) << "incorrect instantiation";
+
+	// value out of bounds (2-sided)
+	EXPECT_DEBUG_DEATH(
+		remove_option(board, L2(2), Value{0}),
+		"Assertion .*is_valid<N>\\(value\\)");
+#ifndef NDEBUG
+	EXPECT_DEBUG_DEATH(
+		remove_option(board, L2(2), Value{9}),
+		"Assertion .*is_valid<N>\\(value\\)");
+#else
+	EXPECT_THROW(remove_option(board, L2{2}, Value{9}), std::out_of_range);
+#endif // NDEBUG
+	// last option (not answer)
+	board[0][2] = std::bitset<5>{"01001"}; // 3
+	EXPECT_DEBUG_DEATH(
+		remove_option(board, L2(2), Value{3}), "Assertion .*count > 0");
+	// TODO throw from single_option?
+}
+
 TEST(Solver, removeOptionMask)
 {
 	using L2 = Location<2>;
@@ -119,21 +129,8 @@ TEST(Solver, removeOptionMask)
 
 	static_assert(not noexcept(remove_option(board, L2{2}, Options<4>{})));
 	// answer-bit in mask
-	auto mask = Options<4>{Value{0}};
-	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2{0}, mask), "Assertion .*is_answer_fast.mask.");
-	mask = Options<4>{};
-#ifdef NDEBUG
-	EXPECT_THROW(remove_option(board, L2{0}, mask), invalid_Board);
-#else
-	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2{0}, mask), "Assertion .*is_answer_fast");
-#endif
-	mask.clear();
-	EXPECT_DEBUG_DEATH(
-		remove_option(board, L2{0}, mask), "Assertion .*is_empty");
+	auto mask = Options<4>{Value{1}};
 	// throw from Board::at(loc)
-	mask = Options<4>{Value{1}};
 	EXPECT_NO_THROW(remove_option(board, L2{0}, mask));
 	EXPECT_NO_THROW(remove_option(board, L2{15}, mask));
 	EXPECT_THROW(remove_option(board, L2{-1}, mask), invalid_Location);
@@ -157,6 +154,27 @@ TEST(Solver, removeOptionMask)
 	// trigger single_option
 	board[1][1] = O2{std::bitset<5>{"11101"}};
 	EXPECT_EQ(remove_option(board, L2{1, 1}, mask), 15);
+}
+
+TEST(SolverDeathTest, removeOptionMask)
+{
+	using L2 = Location<2>;
+	Board<Options<4>, 2> board{};
+
+	// answer-bit in mask
+	auto mask = Options<4>{Value{0}};
+	EXPECT_DEBUG_DEATH(
+		remove_option(board, L2{0}, mask), "Assertion .*is_answer_fast.mask.");
+	mask = Options<4>{};
+#ifdef NDEBUG
+	EXPECT_THROW(remove_option(board, L2{0}, mask), invalid_Board);
+#else
+	EXPECT_DEBUG_DEATH(
+		remove_option(board, L2{0}, mask), "Assertion .*is_answer_fast");
+#endif
+	mask.clear();
+	EXPECT_DEBUG_DEATH(
+		remove_option(board, L2{0}, mask), "Assertion .*is_empty");
 }
 
 TEST(Solver, removeOptionSection)
@@ -374,7 +392,7 @@ TEST(Solver, removeOptionOutsideBlock)
 }
 
 //===----------------------------------------------------------------------===//
-TEST(Solver, deathtestsRemoveOption)
+TEST(SolverDeathTest, removeOption2)
 {
 	using L  = Location<2>;
 	using vL = std::vector<L>;

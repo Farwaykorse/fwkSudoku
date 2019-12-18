@@ -474,7 +474,7 @@ TEST(SectionItr, LocationConversion)
 	}
 }
 
-TEST(SectionItr, dereference)
+TEST(SectionItr, operatorIndirection)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 3);
@@ -490,24 +490,6 @@ TEST(SectionItr, dereference)
 		static_assert(noexcept(*A.crbegin()));
 		static_assert(noexcept(*cA.begin()));
 
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.end(), "");
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.cend(), "");
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.rend(), "");
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.crend(), "");
-		{ // Dereferencing is an error when de container is deleted
-			const Board_iterator<int, 3> X;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *X, "");
-			const const_Board_iterator<int, 3> Y;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *Y, "");
-			const decltype(A.begin()) I;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *I, "");
-			const decltype(A.cbegin()) cI;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *cI, "");
-			const decltype(A.rbegin()) rI;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *rI, "");
-			const decltype(A.crbegin()) crI;
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *crI, "");
-		}
 		// result type
 		static_assert(std::is_same_v<int&, decltype(*A.begin())>);
 		static_assert(std::is_same_v<int const&, decltype(*A.cbegin())>);
@@ -539,7 +521,39 @@ TEST(SectionItr, dereference)
 		ADD_FAILURE();
 }
 
-TEST(SectionItr, preIncrement)
+TEST(SectionItrDeathTest, operatorIndirection)
+{
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 3);
+
+	if constexpr (
+		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
+		is_input<decltype(A.rbegin())> && is_input<decltype(A.crbegin())>)
+	{
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.end(), "");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.cend(), "");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.rend(), "");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *A.crend(), "");
+		{ // Dereferencing is an error when de container is deleted
+			const Board_iterator<int, 3> X;
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *X, "");
+			const const_Board_iterator<int, 3> Y;
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *Y, "");
+			const decltype(A.begin()) I;
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *I, "");
+			const decltype(A.cbegin()) cI;
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *cI, "");
+			const decltype(A.rbegin()) rI;
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *rI, "");
+			const decltype(A.crbegin()) crI;
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = *crI, "");
+		}
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItr, operatorPreIncrement)
 { // All iterator categories
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -559,17 +573,6 @@ TEST(SectionItr, preIncrement)
 	EXPECT_NO_THROW(++cA.begin());
 	EXPECT_NO_THROW(++cA.rbegin());
 
-	EXPECT_DEBUG_DEATH(++A.end(), "< elem_size");
-	EXPECT_DEBUG_DEATH(++A.cend(), "< elem_size");
-	EXPECT_DEBUG_DEATH(++A.rend(), ">= 0");
-	EXPECT_DEBUG_DEATH(++A.crend(), ">= 0");
-	{ // Advancing is an error when de container is deleted
-		EXPECT_DEBUG_DEATH(++(Board_iterator<int, 3>()), "nullptr");
-		EXPECT_DEBUG_DEATH(++(decltype(A.begin())()), "nullptr");
-		EXPECT_DEBUG_DEATH(++(decltype(A.cbegin())()), "nullptr");
-		EXPECT_DEBUG_DEATH(++(decltype(A.rbegin())()), "nullptr");
-		EXPECT_DEBUG_DEATH(++(decltype(A.crbegin())()), "nullptr");
-	}
 	{ // iterators have value semantics
 		const auto x = A.begin();
 		auto y       = x; // copy
@@ -651,7 +654,25 @@ TEST(SectionItr, preIncrement)
 		ADD_FAILURE();
 }
 
-TEST(SectionItr, postIncrement)
+TEST(SectionItrDeathTest, operatorPreIncrement)
+{ // All iterator categories
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+
+	EXPECT_DEBUG_DEATH(++A.end(), "< elem_size");
+	EXPECT_DEBUG_DEATH(++A.cend(), "< elem_size");
+	EXPECT_DEBUG_DEATH(++A.rend(), ">= 0");
+	EXPECT_DEBUG_DEATH(++A.crend(), ">= 0");
+	{ // Advancing is an error when de container is deleted
+		EXPECT_DEBUG_DEATH(++(Board_iterator<int, 3>()), "nullptr");
+		EXPECT_DEBUG_DEATH(++(decltype(A.begin())()), "nullptr");
+		EXPECT_DEBUG_DEATH(++(decltype(A.cbegin())()), "nullptr");
+		EXPECT_DEBUG_DEATH(++(decltype(A.rbegin())()), "nullptr");
+		EXPECT_DEBUG_DEATH(++(decltype(A.crbegin())()), "nullptr");
+	}
+}
+
+TEST(SectionItr, operatorPostIncrement)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -683,6 +704,32 @@ TEST(SectionItr, postIncrement)
 		EXPECT_NO_THROW([[maybe_unused]] auto x = A.rbegin()++);
 		EXPECT_NO_THROW([[maybe_unused]] auto x = A.crbegin()++);
 
+		ASSERT_EQ(A.size(), 4);
+		ASSERT_EQ(A.front(), 9);
+		ASSERT_EQ(A.back(), 3);
+		// *i++
+		EXPECT_TRUE(A.begin()++ == A.begin());
+		EXPECT_TRUE(A.rbegin()++ == A.rbegin());
+		EXPECT_TRUE(A.cbegin()++ == A.cbegin());
+		EXPECT_TRUE(A.crbegin()++ == A.crbegin());
+		EXPECT_EQ(*A.begin()++, 9);
+		EXPECT_EQ(*A.cbegin()++, 9);
+		EXPECT_EQ(*A.rbegin()++, 3);
+		EXPECT_EQ(*A.crbegin()++, 3);
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItrDeathTest, operatorPostIncrement)
+{
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+
+	if constexpr (
+		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
+		is_input<decltype(A.rbegin())> && is_input<decltype(A.crbegin())>)
+	{
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto x = A.end()++, "< elem_size");
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto x = A.cend()++, "< elem_size");
 		EXPECT_DEBUG_DEATH([[maybe_unused]] auto x = A.rend()++, ">= 0");
@@ -703,24 +750,12 @@ TEST(SectionItr, postIncrement)
 				[[maybe_unused]] auto x = (decltype(A.crbegin())())++,
 				"nullptr");
 		}
-		ASSERT_EQ(A.size(), 4);
-		ASSERT_EQ(A.front(), 9);
-		ASSERT_EQ(A.back(), 3);
-		// *i++
-		EXPECT_TRUE(A.begin()++ == A.begin());
-		EXPECT_TRUE(A.rbegin()++ == A.rbegin());
-		EXPECT_TRUE(A.cbegin()++ == A.cbegin());
-		EXPECT_TRUE(A.crbegin()++ == A.crbegin());
-		EXPECT_EQ(*A.begin()++, 9);
-		EXPECT_EQ(*A.cbegin()++, 9);
-		EXPECT_EQ(*A.rbegin()++, 3);
-		EXPECT_EQ(*A.crbegin()++, 3);
 	}
 	else
 		ADD_FAILURE();
 }
 
-TEST(SectionItr, equal)
+TEST(SectionItr, operatorEqual)
 { // All iterator categories
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -744,14 +779,7 @@ TEST(SectionItr, equal)
 	EXPECT_NO_THROW(U = (A.cbegin() == A.cend()));
 	EXPECT_NO_THROW(U = (A.rbegin() == A.rend()));
 	EXPECT_NO_THROW(U = (A.crbegin() == A.crend()));
-	{
-		Board<int, 2> board{TE.A};
-		Row<int, 2> B(board, 0);
-		EXPECT_DEBUG_DEATH(U = A.begin() == B.begin(), "is_same_Section");
-#ifdef NDEBUG
-		EXPECT_FALSE(A.begin() == B.begin());
-#endif // !_DEBUG
-	}
+
 	U = false; // suppress warning: assigned only once
 	EXPECT_TRUE(A.begin() == A.begin());
 	EXPECT_TRUE(A.cbegin() == A.cbegin());
@@ -775,6 +803,30 @@ TEST(SectionItr, equal)
 	{
 		const Row_iterator<int, 2> Default;
 		EXPECT_TRUE((Default == Row_iterator<int, 2>{}));
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItrDeathTest, operatorEqual)
+{ // All iterator categories
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+
+	Board<int, 2> board{TE.A};
+	Row<int, 2> B(board, 0);
+	[[maybe_unused]] bool U{};
+	EXPECT_DEBUG_DEATH(U = A.begin() == B.begin(), "is_same_Section");
+#ifdef NDEBUG
+	EXPECT_FALSE(A.begin() == B.begin());
+#endif // !_DEBUG
+
+	// default constructor
+	if constexpr (
+		is_forward<decltype(A.begin())> && is_forward<decltype(A.cbegin())> &&
+		is_forward<decltype(A.rbegin())> && is_forward<decltype(A.crbegin())>)
+	{
+		const Row_iterator<int, 2> Default;
 		EXPECT_DEBUG_DEATH(U = Default == A.begin(), "is_same_Section");
 		EXPECT_DEBUG_DEATH(U = Default == A.end(), "is_same_Section");
 	}
@@ -782,7 +834,7 @@ TEST(SectionItr, equal)
 		ADD_FAILURE();
 }
 
-TEST(SectionItr, notEqual)
+TEST(SectionItr, operatorNotEqual)
 { // InputIterator
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -812,19 +864,7 @@ TEST(SectionItr, notEqual)
 		EXPECT_NO_THROW(U = (A.cbegin() != A.cend()));
 		EXPECT_NO_THROW(U = (A.rbegin() != A.rend()));
 		EXPECT_NO_THROW(U = (A.crbegin() != A.crend()));
-		{
-			Board<int, 2> board = TE.A;
-			Row<int, 2> B(board, 0);
-			Board<int, 2> board_c{};
-			Row<int, 2> C(board_c, 0);
-			EXPECT_DEBUG_DEATH(U = A.begin() != B.begin(), "is_same_Section");
-			EXPECT_DEBUG_DEATH(U = A.begin() != C.begin(), "is_same_Section");
-#ifdef NDEBUG
-			EXPECT_TRUE(A.begin() != B.begin());
-			EXPECT_TRUE(A.begin() != B.end());
-			EXPECT_TRUE(A.begin() != C.begin());
-#endif // NDEBUG
-		}
+
 		U = false; // suppress warning: assigned only once
 		EXPECT_TRUE(A.begin() != A.end());
 		EXPECT_FALSE(A.begin() != A.begin());
@@ -841,7 +881,33 @@ TEST(SectionItr, notEqual)
 		ADD_FAILURE();
 }
 
-TEST(SectionItr, memberAccess)
+TEST(SectionItrDeathTest, operatorNotEqual)
+{ // InputIterator
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+
+	if constexpr (
+		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
+		is_input<decltype(A.rbegin())> && is_input<decltype(A.crbegin())>)
+	{
+		[[maybe_unused]] bool U{};
+		Board<int, 2> board = TE.A;
+		Row<int, 2> B(board, 0);
+		Board<int, 2> board_c{};
+		Row<int, 2> C(board_c, 0);
+		EXPECT_DEBUG_DEATH(U = A.begin() != B.begin(), "is_same_Section");
+		EXPECT_DEBUG_DEATH(U = A.begin() != C.begin(), "is_same_Section");
+#ifdef NDEBUG
+		EXPECT_TRUE(A.begin() != B.begin());
+		EXPECT_TRUE(A.begin() != B.end());
+		EXPECT_TRUE(A.begin() != C.begin());
+#endif // NDEBUG
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItr, operatorMemberOfPointerAccess)
 { // input iterator category
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1025,7 +1091,7 @@ TEST(SectionItr, ForwardIterator)
 		ADD_FAILURE();
 }
 
-TEST(SectionItr, preDecrement)
+TEST(SectionItr, operatorPreDecrement)
 { // operator--()
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1041,15 +1107,6 @@ TEST(SectionItr, preDecrement)
 		static_assert(noexcept(--A.cend()));
 		static_assert(noexcept(--cA.end()));
 		static_assert(noexcept(--cA.rend()));
-
-		EXPECT_DEBUG_DEATH(--A.begin(), "> 0");
-		EXPECT_DEBUG_DEATH(--A.cbegin(), "> 0");
-		EXPECT_DEBUG_DEATH(--A.rbegin(), "< elem_size");
-		EXPECT_DEBUG_DEATH(--A.crbegin(), "< elem_size");
-		--A.end();
-		--A.cend();
-		--A.rend();
-		--A.crend();
 
 		// return type
 		static_assert(std::is_same_v<decltype(A.end())&, decltype(--A.end())>);
@@ -1104,7 +1161,29 @@ TEST(SectionItr, preDecrement)
 		ADD_FAILURE();
 }
 
-TEST(SectionItr, postDecrement)
+TEST(SectionItrDeathTest, operatorPreDecrement)
+{ // operator--()
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+
+	if constexpr (
+		is_bidir<decltype(A.begin())> && is_bidir<decltype(A.cbegin())> &&
+		is_bidir<decltype(A.rbegin())> && is_bidir<decltype(A.crbegin())>)
+	{
+		EXPECT_DEBUG_DEATH(--A.begin(), "> 0");
+		EXPECT_DEBUG_DEATH(--A.cbegin(), "> 0");
+		EXPECT_DEBUG_DEATH(--A.rbegin(), "< elem_size");
+		EXPECT_DEBUG_DEATH(--A.crbegin(), "< elem_size");
+		--A.end();
+		--A.cend();
+		--A.rend();
+		--A.crend();
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItr, operatorPostDecrement)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1120,16 +1199,6 @@ TEST(SectionItr, postDecrement)
 		static_assert(noexcept(A.crbegin()--));
 		static_assert(noexcept(cA.begin()--));
 		static_assert(noexcept(cA.rbegin()--));
-
-		// (void)i-- equivalent to(void)-- i
-		EXPECT_DEBUG_DEATH(A.begin()--, "> 0");
-		EXPECT_DEBUG_DEATH(--A.cbegin(), "> 0");
-		EXPECT_DEBUG_DEATH(A.rbegin()--, "< elem_size");
-		EXPECT_DEBUG_DEATH(--A.crbegin(), "< elem_size");
-		A.end()--;
-		A.cend()--;
-		A.rend()--;
-		A.crend()--;
 
 		// return type
 		static_assert(std::is_same_v<decltype(A.end()), decltype(A.end()--)>);
@@ -1198,6 +1267,29 @@ TEST(SectionItr, postDecrement)
 		ADD_FAILURE();
 }
 
+TEST(SectionItrDeathTest, operatorPostDecrement)
+{
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+
+	if constexpr (
+		is_bidir<decltype(A.begin())> && is_bidir<decltype(A.cbegin())> &&
+		is_bidir<decltype(A.rbegin())> && is_bidir<decltype(A.crbegin())>)
+	{
+		// (void)i-- equivalent to(void)-- i
+		EXPECT_DEBUG_DEATH(A.begin()--, "> 0");
+		EXPECT_DEBUG_DEATH(--A.cbegin(), "> 0");
+		EXPECT_DEBUG_DEATH(A.rbegin()--, "< elem_size");
+		EXPECT_DEBUG_DEATH(--A.crbegin(), "< elem_size");
+		A.end()--;
+		A.cend()--;
+		A.rend()--;
+		A.crend()--;
+	}
+	else
+		ADD_FAILURE();
+}
+
 TEST(SectionItr, BidirectionalIterator)
 {
 	test_elements TE{};
@@ -1250,8 +1342,7 @@ TEST(SectionItr, BidirectionalIterator)
 		ADD_FAILURE();
 }
 
-// NOLINTNEXTLINE(readability-function-size)
-TEST(SectionItr, incrementByInteger)
+TEST(SectionItr, operatorIntegerAdditionAssignment)
 { // operator+=(int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1288,24 +1379,18 @@ TEST(SectionItr, incrementByInteger)
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 3);
 
-		EXPECT_DEBUG_DEATH(A.begin() += -1, ">= 0");
 		EXPECT_TRUE((A.begin() += -0) == A.begin());
 		EXPECT_EQ(*(A.begin() += -0), 9);
 		EXPECT_TRUE((A.begin() += 0) == A.begin());
 		EXPECT_EQ(*(A.begin() += 0), 9);
 		EXPECT_TRUE((A.begin() += 1) == ++A.begin());
 		EXPECT_TRUE((A.begin() += 4) == A.end());
-		EXPECT_DEBUG_DEATH(A.begin() += 5, "<= elem_size");
-		EXPECT_DEBUG_DEATH(A.begin() += 50, "<= elem_size");
-		EXPECT_DEBUG_DEATH(A.end() += 1, "<= elem_size");
 		EXPECT_TRUE((A.end() += 0) == A.end());
 		EXPECT_TRUE((A.end() += -0) == A.end());
 		EXPECT_TRUE((A.end() += -1) == --A.end());
 		EXPECT_EQ(*(A.end() += -1), 3);
 		EXPECT_TRUE((A.end() += -4) == A.begin());
 		EXPECT_EQ(*(A.end() += -4), 9);
-		EXPECT_DEBUG_DEATH(A.end() += -5, ">= 0");
-		EXPECT_DEBUG_DEATH(A.end() += -50, ">= 0");
 		EXPECT_EQ(*(A.begin() += 3), 3);
 		{ // return reference to iterator
 			auto I = A.begin();
@@ -1316,19 +1401,15 @@ TEST(SectionItr, incrementByInteger)
 			I = A.end(); // suppress warning: assigned only once
 		}
 		// const_iterator
-		EXPECT_DEBUG_DEATH(A.cbegin() += -1, ">= 0");
 		EXPECT_TRUE((A.cbegin() += -0) == A.cbegin());
 		EXPECT_TRUE((A.cbegin() += 0) == A.cbegin());
 		EXPECT_TRUE((A.cbegin() += 1) == ++A.cbegin());
 		EXPECT_TRUE((A.cbegin() += 4) == A.cend());
-		EXPECT_DEBUG_DEATH(A.cbegin() += 5, "<= elem_size");
 
-		EXPECT_DEBUG_DEATH(A.cend() += 1, "<= elem_size");
 		EXPECT_TRUE((A.cend() += 0) == A.cend());
 		EXPECT_TRUE((A.cend() += -0) == A.cend());
 		EXPECT_TRUE((A.cend() += -1) == --A.cend());
 		EXPECT_TRUE((A.cend() += -4) == A.cbegin());
-		EXPECT_DEBUG_DEATH(A.cend() += -5, ">= 0");
 		{ // return reference to iterator
 			auto I = A.cbegin();
 			EXPECT_TRUE((I += 1) == ++A.cbegin());
@@ -1338,19 +1419,15 @@ TEST(SectionItr, incrementByInteger)
 			I = A.cend(); // suppress warning: assigned only once
 		}
 		// reverse_iterator
-		EXPECT_DEBUG_DEATH(A.rbegin() += -1, "< elem_size");
 		EXPECT_TRUE((A.rbegin() += -0) == A.rbegin());
 		EXPECT_TRUE((A.rbegin() += 0) == A.rbegin());
 		EXPECT_TRUE((A.rbegin() += 1) == ++A.rbegin());
 		EXPECT_TRUE((A.rbegin() += 4) == A.rend());
-		EXPECT_DEBUG_DEATH(A.rbegin() += 5, ">= -1");
 
-		EXPECT_DEBUG_DEATH(A.rend() += 1, ">= -1");
 		EXPECT_TRUE((A.rend() += 0) == A.rend());
 		EXPECT_TRUE((A.rend() += -0) == A.rend());
 		EXPECT_TRUE((A.rend() += -1) == --A.rend());
 		EXPECT_TRUE((A.rend() += -4) == A.rbegin());
-		EXPECT_DEBUG_DEATH(A.rend() += -5, "< elem_size");
 		{ // return reference to iterator
 			auto I = A.rbegin();
 			EXPECT_TRUE((I += 1) == ++A.rbegin());
@@ -1360,19 +1437,15 @@ TEST(SectionItr, incrementByInteger)
 			I = A.rend(); // suppress warning: assigned only once
 		}
 		// const_reverse_iterator
-		EXPECT_DEBUG_DEATH(A.crbegin() += -1, "< elem_size");
 		EXPECT_TRUE((A.crbegin() += -0) == A.crbegin());
 		EXPECT_TRUE((A.crbegin() += 0) == A.crbegin());
 		EXPECT_TRUE((A.crbegin() += 1) == ++A.crbegin());
 		EXPECT_TRUE((A.crbegin() += 4) == A.crend());
-		EXPECT_DEBUG_DEATH(A.crbegin() += 5, ">= -1");
 
-		EXPECT_DEBUG_DEATH(A.crend() += 1, ">= -1");
 		EXPECT_TRUE((A.crend() += 0) == A.crend());
 		EXPECT_TRUE((A.crend() += -0) == A.crend());
 		EXPECT_TRUE((A.crend() += -1) == --A.crend());
 		EXPECT_TRUE((A.crend() += -4) == A.crbegin());
-		EXPECT_DEBUG_DEATH(A.crend() += -5, "< elem_size");
 		{ // return reference to iterator
 			auto I = A.crbegin();
 			EXPECT_TRUE((I += 1) == ++A.crbegin());
@@ -1386,7 +1459,48 @@ TEST(SectionItr, incrementByInteger)
 		ADD_FAILURE();
 }
 
-TEST(SectionItr, incrementByInteger2)
+TEST(SectionItrDeathTest, operatorIntegerAdditionAssignment)
+{ // operator+=(int)
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+
+	if constexpr (
+		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
+		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
+	{
+		EXPECT_DEBUG_DEATH(A.begin() += -1, ">= 0");
+		EXPECT_DEBUG_DEATH(A.begin() += 5, "<= elem_size");
+		EXPECT_DEBUG_DEATH(A.begin() += 50, "<= elem_size");
+		EXPECT_DEBUG_DEATH(A.end() += 1, "<= elem_size");
+		EXPECT_DEBUG_DEATH(A.end() += -5, ">= 0");
+		EXPECT_DEBUG_DEATH(A.end() += -50, ">= 0");
+
+		// const_iterator
+		EXPECT_DEBUG_DEATH(A.cbegin() += -1, ">= 0");
+		EXPECT_DEBUG_DEATH(A.cbegin() += 5, "<= elem_size");
+
+		EXPECT_DEBUG_DEATH(A.cend() += 1, "<= elem_size");
+		EXPECT_DEBUG_DEATH(A.cend() += -5, ">= 0");
+
+		// reverse_iterator
+		EXPECT_DEBUG_DEATH(A.rbegin() += -1, "< elem_size");
+		EXPECT_DEBUG_DEATH(A.rbegin() += 5, ">= -1");
+
+		EXPECT_DEBUG_DEATH(A.rend() += -5, "< elem_size");
+		EXPECT_DEBUG_DEATH(A.rend() += 1, ">= -1");
+
+		// const_reverse_iterator
+		EXPECT_DEBUG_DEATH(A.crbegin() += -1, "< elem_size");
+		EXPECT_DEBUG_DEATH(A.crbegin() += 5, ">= -1");
+
+		EXPECT_DEBUG_DEATH(A.crend() += 1, ">= -1");
+		EXPECT_DEBUG_DEATH(A.crend() += -5, "< elem_size");
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItr, operatorIntegerAddition)
 { // operator+(int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1437,11 +1551,46 @@ TEST(SectionItr, incrementByInteger2)
 		}
 		{
 			[[maybe_unused]] const auto I = A.begin();
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = I + -1, ">= 0");
 			EXPECT_TRUE((I + -0) == A.begin());
 			EXPECT_TRUE((I + 0) == A.begin());
 			EXPECT_TRUE((I + 1) == ++A.begin());
 			EXPECT_TRUE((I + 4) == A.end());
+		}
+		{ // const_iterator
+			EXPECT_TRUE((A.cbegin() + -0) == A.cbegin());
+			EXPECT_TRUE((A.cbegin() + 0) == A.cbegin());
+			EXPECT_TRUE((A.cbegin() + 1) == ++A.cbegin());
+			EXPECT_TRUE((A.cbegin() + 4) == A.cend());
+		}
+		{ // reverse_iterator
+			EXPECT_TRUE((A.rbegin() + -0) == A.rbegin());
+			EXPECT_TRUE((A.rbegin() + 0) == A.rbegin());
+			EXPECT_TRUE((A.rbegin() + 1) == ++A.rbegin());
+			EXPECT_TRUE((A.rbegin() + 4) == A.rend());
+		}
+		{ // const_reverse_iterator
+			EXPECT_TRUE((A.crbegin() + -0) == A.crbegin());
+			EXPECT_TRUE((A.crbegin() + 0) == A.crbegin());
+			EXPECT_TRUE((A.crbegin() + 1) == ++A.crbegin());
+			EXPECT_TRUE((A.crbegin() + 4) == A.crend());
+		}
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItrDeathTest, operatorIntegerAddition)
+{ // operator+(int)
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+
+	if constexpr (
+		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
+		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
+	{
+		{
+			[[maybe_unused]] const auto I = A.begin();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = I + -1, ">= 0");
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = I + 5, "<= elem_size");
 			EXPECT_DEBUG_DEATH(
 				[[maybe_unused]] auto U = I + 50, "<= elem_size");
@@ -1449,10 +1598,6 @@ TEST(SectionItr, incrementByInteger2)
 		{ // const_iterator
 			[[maybe_unused]] const auto cI = A.cbegin();
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = cI + -1, ">= 0");
-			EXPECT_TRUE((A.cbegin() + -0) == A.cbegin());
-			EXPECT_TRUE((A.cbegin() + 0) == A.cbegin());
-			EXPECT_TRUE((A.cbegin() + 1) == ++A.cbegin());
-			EXPECT_TRUE((A.cbegin() + 4) == A.cend());
 			EXPECT_DEBUG_DEATH(
 				[[maybe_unused]] const auto U = cI + 5, "<= elem_size");
 		}
@@ -1460,20 +1605,12 @@ TEST(SectionItr, incrementByInteger2)
 			[[maybe_unused]] const auto rI = A.rbegin();
 			EXPECT_DEBUG_DEATH(
 				[[maybe_unused]] auto U = rI + -1, "< elem_size");
-			EXPECT_TRUE((A.rbegin() + -0) == A.rbegin());
-			EXPECT_TRUE((A.rbegin() + 0) == A.rbegin());
-			EXPECT_TRUE((A.rbegin() + 1) == ++A.rbegin());
-			EXPECT_TRUE((A.rbegin() + 4) == A.rend());
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = rI + 5, ">= -1");
 		}
 		{ // const_reverse_iterator
 			[[maybe_unused]] const auto crI = A.crbegin();
 			EXPECT_DEBUG_DEATH(
 				[[maybe_unused]] auto U = crI + -1, "< elem_size");
-			EXPECT_TRUE((A.crbegin() + -0) == A.crbegin());
-			EXPECT_TRUE((A.crbegin() + 0) == A.crbegin());
-			EXPECT_TRUE((A.crbegin() + 1) == ++A.crbegin());
-			EXPECT_TRUE((A.crbegin() + 4) == A.crend());
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = crI + 5, ">= -1");
 		}
 	}
@@ -1481,7 +1618,7 @@ TEST(SectionItr, incrementByInteger2)
 		ADD_FAILURE();
 }
 
-TEST(SectionItr, incrementByInteger3)
+TEST(SectionItr, operatorAddition)
 { // operator+(int, iterator)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1532,11 +1669,47 @@ TEST(SectionItr, incrementByInteger3)
 		}
 		{
 			[[maybe_unused]] const auto I = A.begin();
-			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = -1 + I, ">= 0");
 			EXPECT_TRUE((-0 + I) == A.begin());
 			EXPECT_TRUE((0 + I) == A.begin());
 			EXPECT_TRUE((1 + I) == ++A.begin());
 			EXPECT_TRUE((4 + I) == A.end());
+		}
+		{ // const_iterator
+			EXPECT_TRUE((-0 + A.cbegin()) == A.cbegin());
+			EXPECT_TRUE((0 + A.cbegin()) == A.cbegin());
+			EXPECT_TRUE((1 + A.cbegin()) == ++A.cbegin());
+			EXPECT_TRUE((4 + A.cbegin()) == A.cend());
+		}
+		{ // reverse_iterator
+			EXPECT_TRUE((-0 + A.rbegin()) == A.rbegin());
+			EXPECT_TRUE((0 + A.rbegin()) == A.rbegin());
+			EXPECT_TRUE((1 + A.rbegin()) == ++A.rbegin());
+			EXPECT_TRUE((4 + A.rbegin()) == A.rend());
+		}
+		{ // const_reverse_iterator
+			EXPECT_TRUE((-0 + A.crbegin()) == A.crbegin());
+			EXPECT_TRUE((0 + A.crbegin()) == A.crbegin());
+			EXPECT_TRUE((1 + A.crbegin()) == ++A.crbegin());
+			EXPECT_TRUE((4 + A.crbegin()) == A.crend());
+		}
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItrDeathTest, operatorAddition)
+{ // operator+(int, iterator)
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
+
+	if constexpr (
+		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
+		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
+	{
+		{
+			[[maybe_unused]] const auto I = A.begin();
+			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = -1 + I, ">= 0");
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = 5 + I, "<= elem_size");
 			EXPECT_DEBUG_DEATH(
 				[[maybe_unused]] auto U = 50 + I, "<= elem_size");
@@ -1544,10 +1717,6 @@ TEST(SectionItr, incrementByInteger3)
 		{ // const_iterator
 			[[maybe_unused]] const auto cI = A.cbegin();
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = -1 + cI, ">= 0");
-			EXPECT_TRUE((-0 + A.cbegin()) == A.cbegin());
-			EXPECT_TRUE((0 + A.cbegin()) == A.cbegin());
-			EXPECT_TRUE((1 + A.cbegin()) == ++A.cbegin());
-			EXPECT_TRUE((4 + A.cbegin()) == A.cend());
 			EXPECT_DEBUG_DEATH(
 				[[maybe_unused]] auto U = 5 + cI, "<= elem_size");
 		}
@@ -1555,20 +1724,12 @@ TEST(SectionItr, incrementByInteger3)
 			[[maybe_unused]] const auto rI = A.rbegin();
 			EXPECT_DEBUG_DEATH(
 				[[maybe_unused]] auto U = -1 + rI, "< elem_size");
-			EXPECT_TRUE((-0 + A.rbegin()) == A.rbegin());
-			EXPECT_TRUE((0 + A.rbegin()) == A.rbegin());
-			EXPECT_TRUE((1 + A.rbegin()) == ++A.rbegin());
-			EXPECT_TRUE((4 + A.rbegin()) == A.rend());
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = 5 + rI, ">= -1");
 		}
 		{ // const_reverse_iterator
 			[[maybe_unused]] const auto crI = A.crbegin();
 			EXPECT_DEBUG_DEATH(
 				[[maybe_unused]] auto U = -1 + crI, "< elem_size");
-			EXPECT_TRUE((-0 + A.crbegin()) == A.crbegin());
-			EXPECT_TRUE((0 + A.crbegin()) == A.crbegin());
-			EXPECT_TRUE((1 + A.crbegin()) == ++A.crbegin());
-			EXPECT_TRUE((4 + A.crbegin()) == A.crend());
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = 5 + crI, ">= -1");
 		}
 	}
@@ -1576,8 +1737,7 @@ TEST(SectionItr, incrementByInteger3)
 		ADD_FAILURE();
 }
 
-// NOLINTNEXTLINE(readability-function-size)
-TEST(SectionItr, decrementByInteger)
+TEST(SectionItr, operatorIntegerSubtractionAssignment)
 { // operator-=(int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1604,21 +1764,17 @@ TEST(SectionItr, decrementByInteger)
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 3);
 
-		EXPECT_DEBUG_DEATH(A.end() -= -1, "<= elem_size");
 		EXPECT_TRUE((A.end() -= -0) == A.end());
 		EXPECT_TRUE((A.end() -= 0) == A.end());
 		EXPECT_TRUE((A.end() -= 1) == --A.end());
 		EXPECT_TRUE((A.end() -= 4) == A.begin());
-		EXPECT_DEBUG_DEATH(A.end() -= 5, ">= 0");
 
-		EXPECT_DEBUG_DEATH(A.begin() -= 1, ">= 0");
 		EXPECT_TRUE((A.begin() -= 0) == A.begin());
 		EXPECT_TRUE((A.begin() -= -0) == A.begin());
 		EXPECT_TRUE((A.begin() -= -1) == ++A.begin());
 		EXPECT_EQ(*(A.begin() -= -1), 1);
 		EXPECT_TRUE((A.begin() -= -4) == A.end());
 		EXPECT_EQ(*(A.end() -= 4), 9);
-		EXPECT_DEBUG_DEATH(A.begin() -= -5, "<= elem_size");
 		{ // return reference to iterator
 			auto I = A.end();
 			EXPECT_TRUE((I -= 1) == --A.end());
@@ -1628,19 +1784,15 @@ TEST(SectionItr, decrementByInteger)
 			I = A.begin(); // suppress warning: assigned only once
 		}
 		// const_iterator
-		EXPECT_DEBUG_DEATH(A.cbegin() -= 1, ">= 0");
 		EXPECT_TRUE((A.cbegin() -= 0) == A.cbegin());
 		EXPECT_TRUE((A.cbegin() -= -0) == A.cbegin());
 		EXPECT_TRUE((A.cbegin() -= -1) == ++A.cbegin());
 		EXPECT_TRUE((A.cbegin() -= -4) == A.cend());
-		EXPECT_DEBUG_DEATH(A.cbegin() -= -5, "<= elem_size");
 
-		EXPECT_DEBUG_DEATH(A.cend() -= -1, "<= elem_size");
 		EXPECT_TRUE((A.cend() -= -0) == A.cend());
 		EXPECT_TRUE((A.cend() -= 0) == A.cend());
 		EXPECT_TRUE((A.cend() -= 1) == --A.cend());
 		EXPECT_TRUE((A.cend() -= 4) == A.cbegin());
-		EXPECT_DEBUG_DEATH(A.cend() -= 5, ">= 0");
 		{ // return reference to iterator
 			auto I = A.cend();
 			EXPECT_TRUE((I -= 1) == --A.cend());
@@ -1650,19 +1802,15 @@ TEST(SectionItr, decrementByInteger)
 			I = A.cbegin(); // suppress warning: assigned only once
 		}
 		// reverse_iterator
-		EXPECT_DEBUG_DEATH(A.rbegin() -= 1, "< elem_size");
 		EXPECT_TRUE((A.rbegin() -= 0) == A.rbegin());
 		EXPECT_TRUE((A.rbegin() -= -0) == A.rbegin());
 		EXPECT_TRUE((A.rbegin() -= -1) == ++A.rbegin());
 		EXPECT_TRUE((A.rbegin() -= -4) == A.rend());
-		EXPECT_DEBUG_DEATH(A.rbegin() -= -5, ">= -1");
 
-		EXPECT_DEBUG_DEATH(A.rend() -= -1, ">= -1");
 		EXPECT_TRUE((A.rend() -= -0) == A.rend());
 		EXPECT_TRUE((A.rend() -= 0) == A.rend());
 		EXPECT_TRUE((A.rend() -= 1) == --A.rend());
 		EXPECT_TRUE((A.rend() -= 4) == A.rbegin());
-		EXPECT_DEBUG_DEATH(A.rend() -= 5, "< elem_size");
 		{ // return reference to iterator
 			auto I = A.rend();
 			EXPECT_TRUE((I -= 1) == --A.rend());
@@ -1672,19 +1820,15 @@ TEST(SectionItr, decrementByInteger)
 			I = A.rbegin(); // suppress warning: assigned only once
 		}
 		// const_reverse_iterator
-		EXPECT_DEBUG_DEATH(A.crbegin() -= 1, "< elem_size");
 		EXPECT_TRUE((A.crbegin() -= 0) == A.crbegin());
 		EXPECT_TRUE((A.crbegin() -= -0) == A.crbegin());
 		EXPECT_TRUE((A.crbegin() -= -1) == ++A.crbegin());
 		EXPECT_TRUE((A.crbegin() -= -4) == A.crend());
-		EXPECT_DEBUG_DEATH(A.crbegin() -= -5, ">= -1");
 
-		EXPECT_DEBUG_DEATH(A.crend() -= -1, ">= -1");
 		EXPECT_TRUE((A.crend() -= -0) == A.crend());
 		EXPECT_TRUE((A.crend() -= 0) == A.crend());
 		EXPECT_TRUE((A.crend() -= 1) == --A.crend());
 		EXPECT_TRUE((A.crend() -= 4) == A.crbegin());
-		EXPECT_DEBUG_DEATH(A.crend() -= 5, "< elem_size");
 		{ // return reference to iterator
 			auto I = A.crend();
 			EXPECT_TRUE((I -= 1) == --A.crend());
@@ -1698,7 +1842,47 @@ TEST(SectionItr, decrementByInteger)
 		ADD_FAILURE();
 }
 
-TEST(SectionItr, decrementByInteger2)
+TEST(SectionItrDeathTest, operatorIntegerSubtractionAssignment)
+{ // operator-=(int)
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+
+	if constexpr (
+		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
+		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
+	{
+		EXPECT_DEBUG_DEATH(A.end() -= -1, "<= elem_size");
+		EXPECT_DEBUG_DEATH(A.end() -= 5, ">= 0");
+
+		EXPECT_DEBUG_DEATH(A.begin() -= 1, ">= 0");
+		EXPECT_DEBUG_DEATH(A.begin() -= -5, "<= elem_size");
+
+		// const_iterator
+		EXPECT_DEBUG_DEATH(A.cbegin() -= 1, ">= 0");
+		EXPECT_DEBUG_DEATH(A.cbegin() -= -5, "<= elem_size");
+
+		EXPECT_DEBUG_DEATH(A.cend() -= -1, "<= elem_size");
+		EXPECT_DEBUG_DEATH(A.cend() -= 5, ">= 0");
+
+		// reverse_iterator
+		EXPECT_DEBUG_DEATH(A.rbegin() -= 1, "< elem_size");
+		EXPECT_DEBUG_DEATH(A.rbegin() -= -5, ">= -1");
+
+		EXPECT_DEBUG_DEATH(A.rend() -= -1, ">= -1");
+		EXPECT_DEBUG_DEATH(A.rend() -= 5, "< elem_size");
+
+		// const_reverse_iterator
+		EXPECT_DEBUG_DEATH(A.crbegin() -= 1, "< elem_size");
+		EXPECT_DEBUG_DEATH(A.crbegin() -= -5, ">= -1");
+
+		EXPECT_DEBUG_DEATH(A.crend() -= -1, ">= -1");
+		EXPECT_DEBUG_DEATH(A.crend() -= 5, "< elem_size");
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItr, operatorIntegerUnaryMinus)
 { // operator-(int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1749,12 +1933,47 @@ TEST(SectionItr, decrementByInteger2)
 		}
 		{
 			[[maybe_unused]] const auto I = A.end();
-			EXPECT_DEBUG_DEATH(
-				[[maybe_unused]] auto U = I - -1, "<= elem_size");
 			EXPECT_TRUE((I - -0) == A.end());
 			EXPECT_TRUE((I - 0) == A.end());
 			EXPECT_TRUE((I - 1) == --A.end());
 			EXPECT_TRUE((I - 4) == A.begin());
+		}
+		{ // const_iterator
+			EXPECT_TRUE((A.cend() - -0) == A.cend());
+			EXPECT_TRUE((A.cend() - 0) == A.cend());
+			EXPECT_TRUE((A.cend() - 1) == --A.cend());
+			EXPECT_TRUE((A.cend() - 4) == A.cbegin());
+		}
+		{ // reverse_iterator
+			EXPECT_TRUE((A.rend() - -0) == A.rend());
+			EXPECT_TRUE((A.rend() - 0) == A.rend());
+			EXPECT_TRUE((A.rend() - 1) == --A.rend());
+			EXPECT_TRUE((A.rend() - 4) == A.rbegin());
+		}
+		{ // const_reverse_iterator
+			EXPECT_TRUE((A.crend() - -0) == A.crend());
+			EXPECT_TRUE((A.crend() - 0) == A.crend());
+			EXPECT_TRUE((A.crend() - 1) == --A.crend());
+			EXPECT_TRUE((A.crend() - 4) == A.crbegin());
+		}
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItrDeathTest, operatorIntegerUnaryMinus)
+{ // operator-(int)
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+
+	if constexpr (
+		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
+		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
+	{
+		{
+			[[maybe_unused]] const auto I = A.end();
+			EXPECT_DEBUG_DEATH(
+				[[maybe_unused]] auto U = I - -1, "<= elem_size");
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = I - 5, ">= 0");
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = I - 50, ">= 0");
 		}
@@ -1762,28 +1981,16 @@ TEST(SectionItr, decrementByInteger2)
 			[[maybe_unused]] const auto cI = A.cend();
 			EXPECT_DEBUG_DEATH(
 				[[maybe_unused]] auto U = cI - -1, "<= elem_size");
-			EXPECT_TRUE((A.cend() - -0) == A.cend());
-			EXPECT_TRUE((A.cend() - 0) == A.cend());
-			EXPECT_TRUE((A.cend() - 1) == --A.cend());
-			EXPECT_TRUE((A.cend() - 4) == A.cbegin());
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = cI - 5, ">= 0");
 		}
 		{ // reverse_iterator
 			[[maybe_unused]] const auto rI = A.rend();
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = rI - -1, ">= -1");
-			EXPECT_TRUE((A.rend() - -0) == A.rend());
-			EXPECT_TRUE((A.rend() - 0) == A.rend());
-			EXPECT_TRUE((A.rend() - 1) == --A.rend());
-			EXPECT_TRUE((A.rend() - 4) == A.rbegin());
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = rI - 5, "< elem_size");
 		}
 		{ // const_reverse_iterator
 			[[maybe_unused]] const auto crI = A.crend();
 			EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = crI - -1, ">= -1");
-			EXPECT_TRUE((A.crend() - -0) == A.crend());
-			EXPECT_TRUE((A.crend() - 0) == A.crend());
-			EXPECT_TRUE((A.crend() - 1) == --A.crend());
-			EXPECT_TRUE((A.crend() - 4) == A.crbegin());
 			EXPECT_DEBUG_DEATH(
 				[[maybe_unused]] auto U = crI - 5, "< elem_size");
 		}
@@ -1792,7 +1999,7 @@ TEST(SectionItr, decrementByInteger2)
 		ADD_FAILURE();
 }
 
-TEST(SectionItr, difference)
+TEST(SectionItr, operatorUnaryMinus)
 { // operator-(iterator)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1807,21 +2014,6 @@ TEST(SectionItr, difference)
 		static_assert(noexcept(A.cend() - A.cbegin()));
 		static_assert(noexcept(A.rend() - A.rbegin()));
 		static_assert(noexcept(A.crend() - A.crbegin()));
-
-		auto board = TE.A;
-		Row<int, 2> B(board, 0);
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.end() - B.begin(), "is_same_Section");
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.cend() - B.cbegin(), "is_same_Section");
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.rend() - B.rbegin(), "is_same_Section");
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.crend() - B.crbegin(),
-			"is_same_Section");
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.cend() - cA.cbegin(),
-			"is_same_Section");
 
 		// Return type:
 		static_assert(
@@ -1887,8 +2079,36 @@ TEST(SectionItr, difference)
 		ADD_FAILURE();
 }
 
-// NOLINTNEXTLINE(readability-function-size)
-TEST(SectionItr, directAccess)
+TEST(SectionItrDeathTest, operatorUnaryMinus)
+{ // operator-(iterator)
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
+
+	if constexpr (
+		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
+		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
+	{
+		auto board = TE.A;
+		Row<int, 2> B(board, 0);
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.end() - B.begin(), "is_same_Section");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.cend() - B.cbegin(), "is_same_Section");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.rend() - B.rbegin(), "is_same_Section");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.crend() - B.crbegin(),
+			"is_same_Section");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.cend() - cA.cbegin(),
+			"is_same_Section");
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItr, operatorSubscriptMemberAccess)
 { // & operator[](int)
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -1916,37 +2136,24 @@ TEST(SectionItr, directAccess)
 		ASSERT_EQ(A.front(), 9);
 		ASSERT_EQ(A.back(), 3);
 
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.begin()[-1], ">= 0");
 		EXPECT_EQ(A.begin()[-0], 9);
 		EXPECT_EQ(A.begin()[0], 9);
 		EXPECT_EQ(A.begin()[1], 1);
 		EXPECT_EQ(A.begin()[3], 3);
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.begin()[4], "is_valid");
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.begin()[5], "<= elem_size");
 		{ // return dereferenced iterator
 			const auto I = A.begin();
 			EXPECT_TRUE(I[1] == *(++A.begin()));
 			EXPECT_TRUE(I[1] == *(++A.begin()));
 			EXPECT_TRUE(I[2] == *(A.begin() + 2));
 		}
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.end()[1], "<= elem_size");
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.end()[0], "is_valid");
 		EXPECT_EQ(A.end()[-1], 3);
 		EXPECT_EQ(A.end()[-4], 9);
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.end()[5], "<= elem_size");
 
 		// const_iterator
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.cbegin()[-1], ">= 0");
 		EXPECT_EQ(A.cbegin()[-0], 9);
 		EXPECT_EQ(A.cbegin()[0], 9);
 		EXPECT_EQ(A.cbegin()[1], 1);
 		EXPECT_EQ(A.cbegin()[3], 3);
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.cbegin()[4], "is_valid");
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.cbegin()[5], "<= elem_size");
 		{ // return dereferenced iterator
 			const auto I = A.cbegin();
 			EXPECT_TRUE(I[1] == *(++A.cbegin()));
@@ -1955,56 +2162,36 @@ TEST(SectionItr, directAccess)
 		}
 		EXPECT_DEBUG_DEATH(
 			[[maybe_unused]] auto U = A.cend()[1], "<= elem_size");
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.cend()[0], "is_valid");
 		EXPECT_EQ(A.cend()[-1], 3);
 		EXPECT_EQ(A.cend()[-4], 9);
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.cend()[5], "<= elem_size");
 
 		// reverse_iterator
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.rbegin()[-1], "< elem_size");
 		EXPECT_EQ(A.rbegin()[-0], 3);
 		EXPECT_EQ(A.rbegin()[0], 3);
 		EXPECT_EQ(A.rbegin()[1], 2);
 		EXPECT_EQ(A.rbegin()[3], 9);
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rbegin()[4], "is_valid");
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rbegin()[5], ">= -1");
 		{ // return dereferenced iterator
 			const auto I = A.rbegin();
 			EXPECT_TRUE(I[1] == *(++A.rbegin()));
 			EXPECT_TRUE(I[1] == *(++A.rbegin()));
 			EXPECT_TRUE(I[2] == *(A.rbegin() + 2));
 		}
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rend()[1], ">= -1");
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rend()[0], "is_valid");
 		EXPECT_EQ(A.rend()[-1], 9);
 		EXPECT_EQ(A.rend()[-4], 3);
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.rend()[-5], "< elem_size");
 
 		// const_reverse_iterator
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.crbegin()[-1], "< elem_size");
 		EXPECT_EQ(A.crbegin()[-0], 3);
 		EXPECT_EQ(A.crbegin()[0], 3);
 		EXPECT_EQ(A.crbegin()[1], 2);
 		EXPECT_EQ(A.crbegin()[3], 9);
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.crbegin()[4], "is_valid");
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.crbegin()[5], ">= -1");
 		{ // return dereferenced iterator
 			const auto I = A.crbegin();
 			EXPECT_TRUE(I[1] == *(++A.crbegin()));
 			EXPECT_TRUE(I[1] == *(++A.crbegin()));
 			EXPECT_TRUE(I[2] == *(A.crbegin() + 2));
 		}
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.crend()[1], ">= -1");
-		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.crend()[0], "is_valid");
 		EXPECT_EQ(A.crend()[-1], 9);
 		EXPECT_EQ(A.crend()[-4], 3);
-		EXPECT_DEBUG_DEATH(
-			[[maybe_unused]] auto U = A.crend()[-5], "< elem_size");
 
 		//====------------------------------------------------------------====//
 		// Output
@@ -2027,7 +2214,60 @@ TEST(SectionItr, directAccess)
 		ADD_FAILURE();
 }
 
-TEST(SectionItr, comparison)
+TEST(SectionItrDeathTest, operatorSubscriptMemberAccess)
+{ // & operator[](int)
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+
+	if constexpr (
+		is_random<decltype(A.begin())> && is_random<decltype(A.rbegin())> &&
+		is_random<decltype(A.cbegin())> && is_random<decltype(A.crbegin())>)
+	{
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.begin()[-1], ">= 0");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.begin()[4], "is_valid");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.begin()[5], "<= elem_size");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.end()[1], "<= elem_size");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.end()[0], "is_valid");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.end()[5], "<= elem_size");
+
+		// const_iterator
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.cbegin()[-1], ">= 0");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.cbegin()[4], "is_valid");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.cbegin()[5], "<= elem_size");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.cend()[0], "is_valid");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.cend()[5], "<= elem_size");
+
+		// reverse_iterator
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.rbegin()[-1], "< elem_size");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rbegin()[4], "is_valid");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rbegin()[5], ">= -1");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rend()[1], ">= -1");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.rend()[0], "is_valid");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.rend()[-5], "< elem_size");
+
+		// const_reverse_iterator
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.crbegin()[-1], "< elem_size");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.crbegin()[4], "is_valid");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.crbegin()[5], ">= -1");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.crend()[1], ">= -1");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] auto U = A.crend()[0], "is_valid");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] auto U = A.crend()[-5], "< elem_size");
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItr, operatorComparison)
 {
 	test_elements TE{};
 	Row<int, 2> A(TE.A, 0);
@@ -2131,6 +2371,21 @@ TEST(SectionItr, comparison)
 		EXPECT_FALSE(cA.cbegin() > cA.begin());
 		EXPECT_FALSE(cA.cbegin() > cA.end());
 		EXPECT_TRUE(cA.cend() > cA.begin());
+	}
+	else
+		ADD_FAILURE();
+}
+
+TEST(SectionItrDeathTest, operatorComparison)
+{
+	test_elements TE{};
+	Row<int, 2> A(TE.A, 0);
+	const const_Row<int, 2> cA(TE.cA, 0);
+
+	if constexpr (
+		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
+		is_random<decltype(A.rbegin())> && is_random<decltype(A.crbegin())>)
+	{
 		// different boards
 		Board<int, 2> boardB(TE.A);
 		Row<int, 2> B(boardB, 0);
