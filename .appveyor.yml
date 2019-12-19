@@ -81,32 +81,24 @@ environment:
 matrix:
   exclude:
   # Not supported by script / invalid combination:
-  - image: Visual Studio 2013
-  - image: Visual Studio 2015
-    configuration: LLVM_Debug
-    BUILDSYSTEM: MSBuild
-  - image: Visual Studio 2015
-    configuration: LLVM_Release
-    BUILDSYSTEM: MSBuild
+  - { image: Visual Studio 2013 }
+  - { image: Visual Studio 2015, BUILDSYSTEM: MSBuild,
+      configuration: LLVM_Debug }
+  - { image: Visual Studio 2015, BUILDSYSTEM: MSBuild,
+      configuration: LLVM_Release }
   # Not supported by provided MSBuild Solution/project files:
-  - BUILDSYSTEM: MSBuild_Solution
-    image: Visual Studio 2017
+  - { BUILDSYSTEM: MSBuild_Solution, image: Visual Studio 2013 }
+  - { BUILDSYSTEM: MSBuild_Solution, image: Visual Studio 2015 }
+  - { BUILDSYSTEM: MSBuild_Solution, image: Visual Studio 2017 }
   # Reduce job count: Only have CMake generate MSBuild files for VS2019.
-  - BUILDSYSTEM: MSBuild
-    image: Visual Studio 2017
+  - { BUILDSYSTEM: MSBuild, image: Visual Studio 2017 }
   # Reduce job count: Testing CMake generators for MSBuild.
-  - BUILDSYSTEM: MSBuild
-    platform: x86
+  - { BUILDSYSTEM: MSBuild, platform: x86 }
 
   allow_failures:
   # CMake generator limitations: MSBuild Failing error suppression. GitHub #2.
-  - BUILDSYSTEM: MSBuild
-    configuration: Debug
-  - BUILDSYSTEM: MSBuild
-    configuration: Release
-  # Try VS2019:
-  - image: Visual Studio 2019
-    BUILDSYSTEM: MSBuild
+  - { BUILDSYSTEM: MSBuild, configuration: Debug }
+  - { BUILDSYSTEM: MSBuild, configuration: Release }
 
 # Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
