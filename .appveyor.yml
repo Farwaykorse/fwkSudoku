@@ -44,6 +44,9 @@ skip_commits:
 # TOOLSET          (default empty) - set to image default or by configuration
 #                  MSBuild only.
 #                  When installed: ClangCL, v142, llvm, v141, v140, v140_xp
+# CONDITION        main_branch_only, other_branch
+#                  Helper variable to implement multiple job conditions for the
+#                  MSBuild_Solution configuration.
 ##====-----------------
 ## Create_Matrix
 image:
@@ -64,6 +67,9 @@ environment:
   matrix:
   - BUILDSYSTEM: Ninja
   - BUILDSYSTEM: MSBuild_Solution
+    CONDITION: main_branch_only
+  - BUILDSYSTEM: MSBuild_Solution
+    CONDITION: other_branch
   - BUILDSYSTEM: MSBuild
   global:
     # yamllint disable rule:line-length
@@ -144,6 +150,10 @@ for:
   matrix:
     only:
     - BUILDSYSTEM: MSBuild_Solution
+      CONDITION: main_branch_only
+  branches:
+    only:
+    - master
   skip_commits:
     files:
     - .codecov.yml
@@ -161,9 +171,9 @@ for:
     - '**/*.filters'
     - '**/*.md'
     - '**/CPPLINT.cfg'
-  before_build:
+  before_build: &MSBuild_before_build
   - cd %APPVEYOR_BUILD_FOLDER%
-  build_script:
+  build_script: &MSBuild_build_script
   - >-
     MSBuild
     -nologo
@@ -173,7 +183,7 @@ for:
     -property:Platform="%PLATFORM%"
     -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
     -validate
-  test_script:
+  test_script: &MSBuild_test_script
   - ps: |
       $env:TEST_EXE_PATH = "$pwd\$env:CONFIGURATION\SudokuTests.exe"
       if (![IO.File]::Exists("$env:TEST_EXE_PATH")) {
@@ -211,6 +221,25 @@ for:
     /Parallel
     %TESTADAPTER%
     /logger:Appveyor
+-
+  matrix:
+    only:
+    - BUILDSYSTEM: MSBuild_Solution
+      CONDITION: other_branch
+  branches:
+    except:
+    - master
+  only_commits:
+    files:
+    - .appveyor.yml
+    - '**/*.filters'
+    - '**/*.sln'
+    - '**/*.vcxproj'
+    - '**/*.vcxitems'
+  before_build: *MSBuild_before_build
+  build_script: *MSBuild_build_script
+  test_script: *MSBuild_test_script
+
 ## /Modify_Matrix
 
 ##====--------------------------------------------------------------------====##
