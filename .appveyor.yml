@@ -250,14 +250,19 @@ init:
     popd
 - ps: Show-SystemInfo -LLVM -CMake -Curl -Path
 - ps: |
-    if ("$env:BUILDSYSTEM" -eq "MSBuild_Solution") {
-      $out += 'Build configuration: MSBuild projects'
+    if ('Ninja','MSBuild','MSBuild_Solution' -ccontains "$env:BUILDSYSTEM") {
+      Write-Output ('Build configuration: ' + $env:BUILDSYSTEM)
     } else {
-      $out += 'Build configuration: CMake // '
-      $out += "$(cmake --version | Select-Object -First 1)`n"
-      $out += "Build system:        $env:BUILDSYSTEM"
-      if ($env:NINJA_TAG) { $out +=": $env:NINJA_TAG" }
-    }; Write-Output "$out"
+      Send-Message -Error 'Unexpected or missing value for variable BUILDSYSTEM'
+    }
+    if (-not ('x64','x86' -ccontains "$env:PLATFORM") ) {
+      Send-Message -Error 'Unexpected or missing value for variable PLATFORM'
+    }
+    if (-not ('Debug','Release','LLVM_Debug','LLVM_Release' -ccontains `
+      "$env:CONFIGURATION")
+    ) {
+      Send-Message -Error 'Unexpected or missing value for CONFIGURATION'
+    }
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
