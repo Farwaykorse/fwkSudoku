@@ -98,8 +98,9 @@ matrix:
   - { BUILDSYSTEM: *Build_Solution, image: Visual Studio 2017 }
   # Reduce job count: Only have CMake generate MSBuild files for VS2019.
   - { BUILDSYSTEM: *Build_MSBuild, image: Visual Studio 2017 }
-  # Reduce job count: Testing CMake generators for MSBuild.
-  - { BUILDSYSTEM: *Build_MSBuild, platform: x86 }
+  # Reduce job count: Limit x86 jobs.
+  - { platform: x86, image: Visual Studio 2017 }
+  - { platform: x86, BUILDSYSTEM: *Build_MSBuild }
 
   allow_failures:
   # CMake generator limitations: MSBuild Failing error suppression. GitHub #2.
