@@ -101,6 +101,8 @@ matrix:
   # Reduce job count: Limit x86 jobs.
   - { platform: x86, image: Visual Studio 2017 }
   - { platform: x86, BUILDSYSTEM: *Build_MSBuild }
+  - { platform: x86, BUILDSYSTEM: *Build_Ninja, configuration: Release }
+  - { platform: x86, BUILDSYSTEM: *Build_Ninja, configuration: LLVM_Release }
 
   allow_failures:
   # CMake generator limitations: MSBuild Failing error suppression. GitHub #2.
