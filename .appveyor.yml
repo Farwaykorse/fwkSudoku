@@ -44,6 +44,9 @@ skip_commits:
 # TOOLSET          (default empty) - set to image default or by configuration
 #                  MSBuild only.
 #                  When installed: ClangCL, v142, llvm, v141, v140, v140_xp
+# CONDITION        main_branch_only, other_branch
+#                  Helper variable to implement multiple job conditions for the
+#                  MSBuild_Solution configuration.
 ##====-----------------
 ## Create_Matrix
 image:
@@ -62,9 +65,12 @@ configuration:
 
 environment:
   matrix:
-  - BUILDSYSTEM: Ninja
-  - BUILDSYSTEM: MSBuild_Solution
-  - BUILDSYSTEM: MSBuild
+  - BUILDSYSTEM: &Build_Ninja Ninja
+  - BUILDSYSTEM: &Build_Solution MSBuild_Solution
+    CONDITION: &MSBuild_cond_main main_branch_only
+  - BUILDSYSTEM: *Build_Solution
+    CONDITION: &MSBuild_cond_other other_branch
+  - BUILDSYSTEM: &Build_MSBuild MSBuild
   global:
     # yamllint disable rule:line-length
     APPVEYOR_SAVE_CACHE_ON_ERROR: true
@@ -81,32 +87,27 @@ environment:
 matrix:
   exclude:
   # Not supported by script / invalid combination:
-  - image: Visual Studio 2013
-  - image: Visual Studio 2015
-    configuration: LLVM_Debug
-    BUILDSYSTEM: MSBuild
-  - image: Visual Studio 2015
-    configuration: LLVM_Release
-    BUILDSYSTEM: MSBuild
+  - { image: Visual Studio 2013 }
+  - { image: Visual Studio 2015, BUILDSYSTEM: *Build_MSBuild,
+      configuration: LLVM_Debug }
+  - { image: Visual Studio 2015, BUILDSYSTEM: *Build_MSBuild,
+      configuration: LLVM_Release }
   # Not supported by provided MSBuild Solution/project files:
-  - BUILDSYSTEM: MSBuild_Solution
-    image: Visual Studio 2017
+  - { BUILDSYSTEM: *Build_Solution, image: Visual Studio 2013 }
+  - { BUILDSYSTEM: *Build_Solution, image: Visual Studio 2015 }
+  - { BUILDSYSTEM: *Build_Solution, image: Visual Studio 2017 }
   # Reduce job count: Only have CMake generate MSBuild files for VS2019.
-  - BUILDSYSTEM: MSBuild
-    image: Visual Studio 2017
-  # Reduce job count: Testing CMake generators for MSBuild.
-  - BUILDSYSTEM: MSBuild
-    platform: x86
+  - { BUILDSYSTEM: *Build_MSBuild, image: Visual Studio 2017 }
+  # Reduce job count: Limit x86 jobs.
+  - { platform: x86, image: Visual Studio 2017 }
+  - { platform: x86, BUILDSYSTEM: *Build_MSBuild }
+  - { platform: x86, BUILDSYSTEM: *Build_Ninja, configuration: Release }
+  - { platform: x86, BUILDSYSTEM: *Build_Ninja, configuration: LLVM_Release }
 
   allow_failures:
   # CMake generator limitations: MSBuild Failing error suppression. GitHub #2.
-  - BUILDSYSTEM: MSBuild
-    configuration: Debug
-  - BUILDSYSTEM: MSBuild
-    configuration: Release
-  # Try VS2019:
-  - image: Visual Studio 2019
-    BUILDSYSTEM: MSBuild
+  - { BUILDSYSTEM: *Build_MSBuild, configuration: Debug }
+  - { BUILDSYSTEM: *Build_MSBuild, configuration: Release }
 
 # Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
@@ -122,7 +123,7 @@ for:
 -
   matrix:
     only:
-    - BUILDSYSTEM: MSBuild
+    - BUILDSYSTEM: *Build_MSBuild
   # Only build for [master] to reduce AppVeyor test-load
   branches:
     only:
@@ -130,7 +131,7 @@ for:
 -
   matrix:
     except:
-    - BUILDSYSTEM: MSBuild_Solution
+    - BUILDSYSTEM: *Build_Solution
   skip_commits:
     files:
     - .codecov.yml
@@ -151,7 +152,11 @@ for:
 -
   matrix:
     only:
-    - BUILDSYSTEM: MSBuild_Solution
+    - BUILDSYSTEM: *Build_Solution
+      CONDITION: *MSBuild_cond_main
+  branches:
+    only: &MSBuild_branches
+    - master
   skip_commits:
     files:
     - .codecov.yml
@@ -169,9 +174,9 @@ for:
     - '**/*.filters'
     - '**/*.md'
     - '**/CPPLINT.cfg'
-  before_build:
+  before_build: &MSBuild_before_build
   - cd %APPVEYOR_BUILD_FOLDER%
-  build_script:
+  build_script: &MSBuild_build_script
   - >-
     MSBuild
     -nologo
@@ -181,7 +186,7 @@ for:
     -property:Platform="%PLATFORM%"
     -logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
     -validate
-  test_script:
+  test_script: &MSBuild_test_script
   - ps: |
       $env:TEST_EXE_PATH = "$pwd\$env:CONFIGURATION\SudokuTests.exe"
       if (![IO.File]::Exists("$env:TEST_EXE_PATH")) {
@@ -219,6 +224,24 @@ for:
     /Parallel
     %TESTADAPTER%
     /logger:Appveyor
+-
+  matrix:
+    only:
+    - BUILDSYSTEM: *Build_Solution
+      CONDITION: *MSBuild_cond_other
+  branches:
+    except: *MSBuild_branches
+  only_commits:
+    files:
+    - .appveyor.yml
+    - '**/*.filters'
+    - '**/*.sln'
+    - '**/*.vcxproj'
+    - '**/*.vcxitems'
+  before_build: *MSBuild_before_build
+  build_script: *MSBuild_build_script
+  test_script: *MSBuild_test_script
+
 ## /Modify_Matrix
 
 ##====--------------------------------------------------------------------====##
@@ -230,14 +253,19 @@ init:
     popd
 - ps: Show-SystemInfo -LLVM -CMake -Curl -Path
 - ps: |
-    if ("$env:BUILDSYSTEM" -eq "MSBuild_Solution") {
-      $out += 'Build configuration: MSBuild projects'
+    if ('Ninja','MSBuild','MSBuild_Solution' -ccontains "$env:BUILDSYSTEM") {
+      Write-Output ('Build configuration: ' + $env:BUILDSYSTEM)
     } else {
-      $out += 'Build configuration: CMake // '
-      $out += "$(cmake --version | Select-Object -First 1)`n"
-      $out += "Build system:        $env:BUILDSYSTEM"
-      if ($env:NINJA_TAG) { $out +=": $env:NINJA_TAG" }
-    }; Write-Output "$out"
+      Send-Message -Error 'Unexpected or missing value for variable BUILDSYSTEM'
+    }
+    if (-not ('x64','x86' -ccontains "$env:PLATFORM") ) {
+      Send-Message -Error 'Unexpected or missing value for variable PLATFORM'
+    }
+    if (-not ('Debug','Release','LLVM_Debug','LLVM_Release' -ccontains `
+      "$env:CONFIGURATION")
+    ) {
+      Send-Message -Error 'Unexpected or missing value for CONFIGURATION'
+    }
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
