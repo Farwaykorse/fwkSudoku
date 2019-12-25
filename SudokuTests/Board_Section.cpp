@@ -187,15 +187,17 @@ namespace constructors
 	{
 		Board board{};
 
-		EXPECT_DEBUG_DEATH((Row(board, -1)), "is_valid_size");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] Row A(board, -1), "is_valid_size");
 		[[maybe_unused]] Row row0(board, 0);
 		[[maybe_unused]] Row row8(board, 8);
-		EXPECT_DEBUG_DEATH((Row(board, 9)), "is_valid_size");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] Row A(board, 9), "is_valid_size");
 
-		EXPECT_DEBUG_DEATH((const_Row(board, -1)), "is_valid_size");
-		[[maybe_unused]] const_Row crow0(board, 0);
-		[[maybe_unused]] const_Row crow8(board, 8);
-		EXPECT_DEBUG_DEATH((const_Row(board, 9)), "is_valid_size");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] const_Row A(board, -1), "is_valid_size");
+		[[maybe_unused]] const const_Row crow0(board, 0);
+		[[maybe_unused]] const const_Row crow8(board, 8);
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] const_Row A(board, 9), "is_valid_size");
 	}
 
 	//====----------------------------------------------------------------====//
@@ -211,12 +213,12 @@ namespace constructors
 	{
 		Board board{};
 
-		EXPECT_DEBUG_DEATH((Row(board, Loc{-1})), "is_valid");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] Row A(board, Loc{-1}), "is_valid");
 		[[maybe_unused]] Row row0(board, Loc{0});
 		[[maybe_unused]] Row row1(board, Loc{9});
 		[[maybe_unused]] Row row1_again(board, Loc{10});
 		[[maybe_unused]] Row row8(board, Loc{8, 0});
-		EXPECT_DEBUG_DEATH((Row(board, Loc{81})), "is_valid");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] Row A(board, Loc{81}), "is_valid");
 	}
 	// is_constructible between Board_Section types
 	// To const:

@@ -52,7 +52,7 @@ More on the project and compiler configurations in:
 #### Requirements:
 Compiler with C++17 support.
 A recent CMake release (see [cmake_minimum_required][CMake_version]).
-Or Visual Studio 2017.
+Or Visual Studio 2019 to use the supplied solution.
 
 #### Dependencies:
 No external dependencies have been included in the repository.

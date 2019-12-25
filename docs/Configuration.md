@@ -9,6 +9,10 @@ considered a temporary fix.
 
 This document reflects the MSBuild project configurations, supporting only the
 most recent version of the used toolchain at the time of commit.
+The Visual Studio solution contains configurations for:
+- VC++ v142 (Visual Studio 2019)
+- LLVM/Clang (v6.0 or later) [link][LLVM-Extension-link]
+- Intel C++ Compiler 19.0 [link][Intel-cpp-link] (partial)
 
 The CMake configurations are kept in sync and contain additional toolchains as
 used on the CI environments.  
@@ -87,6 +91,7 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 /utf-8             Source files are UTF-8 encoded.
 /Yu"precompiled.h" Use precompiled headers
 /FI"precompiled.h" Force include, add precompiled to all files
+/Gy                Function-level linking, function as COMDAT. (set by /ZI)
 
 ---- implicitly set flags:
 /EHsc               Exception handling configuration (default)
@@ -135,6 +140,11 @@ Linker:
            During runtime Windows checks before every indirect call and raises
            an exception if any check fails at runtime.
            Can't be used with /ZI (edit and continue).
+/Oi        Enable intrinsic functions.
+
+Linker:
+/OPT:REF   Eliminate unused functions and data (disables incremental linking)
+/OPT:ICF   Enable identical COMDAT folding
 
 ---- implicitly set flags:
 /O2        Maximize Speed (default Release)
@@ -155,7 +165,7 @@ Linker:
 ```
 #### Links ####
 <!----------------------------------------------------------------------------->
-- [Visual C++ compiler options (documentation)](https://docs.microsoft.com/en-gb/cpp/build/reference/compiler-options-listed-by-category)
+- [Visual C++ compiler options (documentation)](https://docs.microsoft.com/cpp/build/reference/compiler-options-listed-by-category)
 - [Visual C++ conformance mode, using the permissive- switch](https://blogs.msdn.microsoft.com/vcblog/2016/11/16/permissive-switch/)
   - Adds [two-phase name lookup](https://blogs.msdn.microsoft.com/vcblog/2017/09/11/two-phase-name-lookup-support-comes-to-msvc/)
 - [Security features](https://blogs.msdn.microsoft.com/vcblog/2017/06/28/security-features-in-microsoft-visual-c/)
@@ -323,7 +333,7 @@ Use `-Xclang ` before a command to actually force it to the compiler.
   -Xclang -std=c++17  Set language version to C++17
 /GR-                  sets: -fno-rtti
 /GS                   Buffer Security Check. (default)
--fno-strict-aliasing
+  -fno-strict-aliasing
   -Xclang -fms-compatibility-version=19.12
   // Since v6.0.0: the full version number is inherited from VC.
   // Upgrade to actual VS version, override `-fmsc-version=1912` as set in the
@@ -345,7 +355,11 @@ Support Just My Code = false
 Compiler:  Debug information format: none; drastically reduce binary size.  
 Linker:    Generate debug info:      no
 ```
+/guard:cf  Control flow guard (v7.0.0+)
+/Oi        Enable intrinsic functions.
 /MT        Use static run-time
+/guard:cf  Control flow guard (v7.0.0+)
+/Oi        Enable intrinsic functions.
 ```
 
 #### Enable Warnings
@@ -470,5 +484,7 @@ For this project all options would be valid but the most general was chosen:
 ----
 [top](#top)
 
-[AppVeyor-link]:  https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master
-[Travis-link]:    https://travis-ci.com/Farwaykorse/fwkSudoku/branches
+[AppVeyor-link]:       https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master
+[Travis-link]:         https://travis-ci.com/Farwaykorse/fwkSudoku/branches
+[LLVM-extension-link]: https://marketplace.visualstudio.com/items?itemName=LLVMExtensions.llvm-toolchain
+[Intel-cpp-link]:      https://software.intel.com/c-compilers/
