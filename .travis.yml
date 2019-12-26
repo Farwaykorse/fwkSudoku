@@ -319,10 +319,10 @@ jobs:
         packages:
         - clang-4.0
 
-  - name: AppleClang Xcode-11.2
+  - name: AppleClang Xcode-11.3
     stage: "Build & Test Latest"
     os: osx
-    osx_image: xcode11.2 # AppleClang 11.0.0 linker update
+    osx_image: xcode11.3 # AppleClang 11.0.0 linker update / same as Xcode11.2
     env:
     - Coverage: grcov
     workspaces:
