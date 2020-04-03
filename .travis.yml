@@ -30,6 +30,7 @@ env:
 #   job session.
 # - Coverage:
 #   Send code coverage data to codecov.io.
+#   Note: no coverage disabled for cron-jobs.
 #   When no CONFIGURATION defined, only Debug build runs coverage.
 #   - grcov: currently the only option supporting LLVM/clang and AppleClang.
 #   - lcov:  GNU tool, mostly redundant by Codecov's bash script.
