@@ -249,9 +249,9 @@ init:
 - ps: |
     New-Item -ItemType Directory -Force ~\tools | pushd
     git clone https://github.com/Farwaykorse/AppVeyorHelpers.git --quiet
-    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.13.1
+    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.14.1
     popd
-- ps: Show-SystemInfo -LLVM -CMake -Curl -Path
+- ps: Show-SystemInfo -LLVM -CMake -Curl -Ninja -Path
 - ps: |
     if ('Ninja','MSBuild','MSBuild_Solution' -ccontains "$env:BUILDSYSTEM") {
       Write-Output ('Build configuration: ' + $env:BUILDSYSTEM)
