@@ -476,7 +476,7 @@ TEST(Board, accessChecked)
 	static_assert(not noexcept(cB.at(Location<2>(20)) == 1));
 	static_assert(not noexcept(cexprB.at(Location<2>(20)) == 1));
 	static_assert(std::is_same_v<int const&, decltype(cB.at(Location<2>(2)))>);
-	[[maybe_unused]] int tmp;
+	[[maybe_unused]] int tmp{};
 	EXPECT_EQ(cB.at(Location<2>(2)), 2) << "at(Location) const";
 	EXPECT_THROW(tmp = cB.at(Location<2>(16)), invalid_Location);
 	EXPECT_THROW(tmp = cB.at(Location<2>(-1)), invalid_Location);
