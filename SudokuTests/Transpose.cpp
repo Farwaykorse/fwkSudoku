@@ -6,15 +6,12 @@
 //
 // Unit tests for the transpose functions.
 //====--------------------------------------------------------------------====//
-#include <gtest/gtest.h>
+#include <Sudoku/Transpose.h> // Class under test
 
-// Class under test
-#include <Sudoku/Transpose.h>
-// Helpers
-
-// additional
 #include <type_traits>
 #include <utility>
+
+#include <gtest/gtest.h>
 
 
 namespace SudokuTests::Transpose

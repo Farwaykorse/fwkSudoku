@@ -10,14 +10,16 @@
 #pragma once
 
 #include "Location.h"
+
 #include <gsl/gsl>
+
 #include <iterator>
 #include <limits>
 #include <type_traits>
-#include <cassert>
 
-// Forward declarations
-#include "Board.fwd.h"
+#include "Board.fwd.h" // Forward declarations
+
+#include <cassert>
 
 
 namespace Sudoku

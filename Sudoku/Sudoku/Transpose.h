@@ -9,6 +9,7 @@
 #include "Board.h"
 #include "Location.h"
 #include "Size.h"
+
 #include <type_traits>
 #include <utility> // std::move // std::swap
 

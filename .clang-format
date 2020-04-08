@@ -72,41 +72,45 @@ CommentPragmas: '^ NOLINT'
 # Order: (alphabetic within each)
 # Headers should not depend upon other headers being included first.
 #
-#   #pragma once            // if header file
-#   -1. Precompiled header  // if cpp and using a precompiled header
-#   0. Main Module Header   // if cpp
-#   1. Main framework       // e.g. gTest to show intent
-#   2. Local components     // if used "..."
-#   3. External components  // <../*.h>
-#   4. libraries            //
-#   5. STL data-structures  // !
-#   6. STL other            // ! add all used!
-#   7. Forward declaration  // *.fwd.h for recursive external definitions
-#   8. macros files         // like cassert
-IncludeBlocks: Preserve
+#   #pragma once          // if header file
+#  -1 Precompiled header  // if cpp and using a precompiled header
+#   0 Main Module Header  // if cpp
+#   0 Local components    // if used "..."
+#   1 External components // <Sudoku/*.h>
+#   2 Other libraries     // ! add all used! like abseil or the gsl
+#   3 Other includes      // <.*>
+#   4 STL data-structures // ! add all known
+#   5 STL other
+#   6 Forward declaration // *.fwd.h for recursive external definitions
+#   7 Testing framework   // macro-heavy
+#   8 C standard headers  // like <cassert>
+IncludeBlocks: Regroup
 SortIncludes: true
-IncludeIsMainRegex: '(_test)?'
+IncludeIsMainRegex: '(_test)?$'
+#IncludeIsMainSourceRegex: '(Impl\.h(pp)?)$' # Clang 10
 IncludeCategories:
-- Regex:    '^"((P|p)recompiled|stdafx)'
+- Regex:    '^"([Pp]recompiled|stdafx)'
   Priority: -1
-- Regex:    '^<(gtest|gmock|catch)'
-  Priority: 1
-- Regex:    '.*\.fwd\.h"$'
-  Priority: 7
-- Regex:    '^"'
-  Priority: 2
-- Regex:    '^<(abseil|boost|gsl)'
-  Priority: 4
-- Regex:    '.+(/|\\).+\.h(pp)?>$'
-  Priority: 3
-- Regex:    '^<(array|vector|deque|stack|queue|string(_view)?|(.+_)?list|(unordered_)?(set|map)|bitset|tuple|optional|variant|any)>'
-  Priority: 5
-- Regex:    '^<c(assert|errno|std(lib|int|def)|limits|float|fenv|inttypes|signal)>'
-  Priority: 8
-- Regex:    '^<[a-z/\\_]+>'
+- Regex:    '\.fwd\.h(pp)?"$'
   Priority: 6
-- Regex:    '.*'
-  Priority: 10
+- Regex:    '^[\"<]Sudoku[/\\]'
+  Priority: 1
+- Regex:    '^<(absl|boost|gsl)[\/\\>]'
+  Priority: 1
+  SortPriority: 2
+- Regex:    '^<(array|vector|deque|stack|queue|string(_view)?|span|((initializer|forward)_)?list|(unordered_)?(set|map)|bitset|tuple|optional|variant|any)>'
+  Priority: 4
+- Regex:    '^<(gtest|gmock|catch)'
+  Priority: 7
+- Regex:    '^<c(assert|errno|std(lib|int|def|arg|io)|limits|float|fenv|inttypes|signal|setjmp|math|w?ctype|string|[wu]char|time|locale)>'
+  Priority: 8
+- Regex:    '^<(co(mplex|mpare|ncepts|routine|ndition_variable)|valarray|random|num(eric|bers)|ratio|bit|version|source_location|type(info|index|_traits)|functional|utility|chrono|new|memory(_resource)?|scoped_allocator|limits|ex(ecu|cep)tion|stdexcept|system_error|charconv|format|iterator|ranges|algorithm|ios(fwd)?|(i|o|io|f|s|sync)stream|iomanip|streambuf|locale|regex|atomic|thread|stop_token|(shared_)?mutex|future|semaphore|latch|barrier|filesystem)'
+  Priority: 5
+- Regex:    '^<'
+  Priority: 1
+  SortPriority: 3
+- Regex:    '^"'
+  Priority: 0
 
 ## macros
 AlignConsecutiveMacros: false # Clang 9

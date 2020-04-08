@@ -14,7 +14,9 @@
 #pragma once
 
 #include "Size.h"
-#include <gsl/gsl>     // index
+
+#include <gsl/gsl> // index
+
 #include <type_traits> // is_signed
 
 

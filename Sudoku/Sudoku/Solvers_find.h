@@ -15,15 +15,17 @@
 #include "traits.h"
 
 #include <gsl/gsl>
+
 #include <array>
 #include <vector>
+
 #include <algorithm> // find, find_if
 #include <iterator>
 #include <type_traits> // is_base_of
-#include <cassert>
 
-// Forward declarations
-#include "Board.fwd.h"
+#include "Board.fwd.h" // Forward declarations
+
+#include <cassert>
 
 
 namespace Sudoku

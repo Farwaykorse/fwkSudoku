@@ -18,21 +18,20 @@
 //   use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //===----------------------------------------------------------------------===//
-#include <gtest/gtest.h>
+#include "print_Options.h" // Debug Output
 
-// Class under test
-#include <Sudoku/Solver.h>
-// helpers
 #include <Sudoku/Board.h>
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
+#include <Sudoku/Solver.h> // Class under test
 #include <Sudoku/exceptions.h>
-// Debug Output
-#include "print_Options.h"
-// library
+
 #include <bitset>
 #include <vector>
+
 #include <type_traits>
+
+#include <gtest/gtest.h>
 
 
 namespace SudokuTests::Solvers_remove_option

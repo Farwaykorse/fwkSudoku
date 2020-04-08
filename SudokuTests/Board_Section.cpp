@@ -13,16 +13,15 @@
 // These expressions need to be implemented between extra parentheses.
 //
 //====--------------------------------------------------------------------====//
-#include <gtest/gtest.h>
-
-// Class under test
-#include <Sudoku/Board_Section.h>
-// helpers
 #include <Sudoku/Board.h>
+#include <Sudoku/Board_Section.h> // Class under test
 #include <Sudoku/Value.h>
-// library
+
 #include <type_traits>
 #include <utility>
+
+#include <gtest/gtest.h>
+
 #include <cstdint>
 
 

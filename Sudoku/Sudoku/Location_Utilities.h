@@ -8,15 +8,16 @@
 #include "Location.h"
 #include "Size.h"
 #include "traits.h"
+
 #include <gsl/gsl> // index
 
 #include <vector>
+
 #include <algorithm> // minmax_element, is_sorted, all_of
 #include <iterator>  // back_inserter
 #include <limits>    // numeric_limits
 
-// Forward declarations
-#include "Board.fwd.h"
+#include "Board.fwd.h" // Forward declarations
 
 
 namespace Sudoku

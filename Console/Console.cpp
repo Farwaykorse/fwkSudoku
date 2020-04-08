@@ -6,14 +6,17 @@
 //
 
 #include "Console.h"
+
 #include <Sudoku/Size.h>
 #include <Sudoku/Solver.h>
 #include <Sudoku/Value.h>
 
 #include <array>
+
 #include <algorithm> // min
 #include <chrono>
 #include <iostream>
+
 
 template<int N = 3, typename T = std::array<char, Sudoku::full_size<N>>>
 static void test(const T& B_in, const T& A_in)

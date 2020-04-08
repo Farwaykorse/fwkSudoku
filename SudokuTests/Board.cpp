@@ -16,25 +16,24 @@
 //   if used in *_EQ/NE etc. use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //===----------------------------------------------------------------------===//
-#include <gtest/gtest.h>
+#include "print_Options.h" // Debug Output
 
-// Class under test
-#include <Sudoku/Board.h>
-// helpers
+#include <Sudoku/Board.h> // Class under test
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
 #include <Sudoku/Value.h>
 #include <Sudoku/exceptions.h>
-// Debug Output
-#include "print_Options.h"
-// library
+
 #include <array>
 #include <bitset>
 #include <initializer_list>
 #include <set>
+
 #include <numeric> // accumulate
 #include <random>  // random-access tests
 #include <type_traits>
+
+#include <gtest/gtest.h>
 
 
 namespace SudokuTests::BoardTest

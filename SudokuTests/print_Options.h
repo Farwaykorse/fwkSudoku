@@ -4,9 +4,12 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
-#include <gtest/gtest.h>
 #include <Sudoku/Options.h>
+
 #include <ostream>
+
+#include <gtest/gtest.h>
+
 
 namespace Sudoku
 {

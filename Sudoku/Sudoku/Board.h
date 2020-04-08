@@ -18,13 +18,15 @@
 #include "exceptions.h"
 
 #include <gsl/gsl>
+
 #include <array>
 #include <initializer_list>
-#include <algorithm>
-#include <cassert>
 
-// Forward declarations
-#include "Board.fwd.h"
+#include <algorithm>
+
+#include "Board.fwd.h" // Forward declarations
+
+#include <cassert>
 
 
 namespace Sudoku
