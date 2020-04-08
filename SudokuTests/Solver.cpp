@@ -1116,6 +1116,7 @@ TEST(Solver, multiOption2)
 	static_assert(multi_option(board, L(), 0) == 0);
 	static_assert(multi_option(board, L(), Sudoku::elem_size<2>) == 0);
 #endif // __GNUC__
+
 	{ // sanity check:
 		board_3[0][0] = Options<9>{std::bitset<10>{"1111000001"}};
 		board_3[0][1] = Options<9>{std::bitset<10>{"1111000001"}};

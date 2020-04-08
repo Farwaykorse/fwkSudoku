@@ -302,14 +302,14 @@ constexpr typename Board<T, N>::iterator Board<T, N>::end() noexcept
 		gsl::not_null<Board*>{this}, Location{full_size<N>});
 }
 template<typename T, int N>
-constexpr typename Board<T, N>::const_iterator Board<T, N>::cbegin() const
-	noexcept
+constexpr typename Board<T, N>::const_iterator
+	Board<T, N>::cbegin() const noexcept
 {
 	return const_Board_iterator<T, N>(gsl::not_null<Board const*>{this});
 }
 template<typename T, int N>
-constexpr typename Board<T, N>::const_iterator Board<T, N>::cend() const
-	noexcept
+constexpr typename Board<T, N>::const_iterator
+	Board<T, N>::cend() const noexcept
 {
 	return const_Board_iterator<T, N>(
 		gsl::not_null<Board const*>{this}, Location{full_size<N>});

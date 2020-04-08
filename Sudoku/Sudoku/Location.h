@@ -103,10 +103,10 @@ class Location_Block
 	static constexpr Location
 		block_loc(gsl::index id, gsl::index element) noexcept
 	{
-		const gsl::index row{(id / Size::base) * Size::base +
-							 element / Size::base};
-		const gsl::index col{(id % Size::base) * Size::base +
-							 element % Size::base};
+		const gsl::index row{
+			(id / Size::base) * Size::base + element / Size::base};
+		const gsl::index col{
+			(id % Size::base) * Size::base + element % Size::base};
 		return Location(row, col);
 	}
 	static constexpr Location

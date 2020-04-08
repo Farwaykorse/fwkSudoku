@@ -96,10 +96,8 @@ TEST(SolverDeathTest, setValue)
 
 	Board<Options<4>, 2> board;
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(
-		set_Value(board, L{-1}, Value{1}), "is_valid\\(loc\\)");
-	EXPECT_DEBUG_DEATH(
-		set_Value(board, L{16}, Value{1}), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(set_Value(board, L{-1}, Value{1}), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(set_Value(board, L{16}, Value{1}), "is_valid\\(loc\\)");
 	EXPECT_DEBUG_DEATH(
 		set_Value(board, L{1}, Value{0}), "is_valid<N>\\(value\\)");
 	EXPECT_DEBUG_DEATH(

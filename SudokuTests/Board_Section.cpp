@@ -589,8 +589,8 @@ TEST(BoardSection, location)
 TEST(BoardSectionDeathTest, location)
 {
 	constexpr int size{3};
-	using L     = Location<size>;
-	using Row   = Row<int, size>;
+	using L   = Location<size>;
+	using Row = Row<int, size>;
 
 	Board<int, size> board{};
 	Row row(board, 0);
