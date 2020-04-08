@@ -9,6 +9,12 @@
 ##        // clang-format off
 ##        ...
 ##        // clang-format on
+##
+##    Report formatting errors: # Clang 10
+##        > clang-format --style=file --dry-run --Werror ./**/*.h ./**/*.cpp
+##    Apply formatting on project:
+##        > clang-format --i --dry-run --Werror ./**/*.h ./**/*.cpp
+##
 ##====--------------------------------------------------------------------====##
 ##
 ## TOC
@@ -28,7 +34,7 @@
 ## - Penalties
 ## - Languages
 ##
-##    Updated for Clang-Format v9.0.0
+##    Updated for Clang-Format v10.0.0
 ##
 
 ---
@@ -36,15 +42,18 @@
 # (required since the complete rule set is needed)
 BasedOnStyle: LLVM
 
+DeriveLineEnding: false # Clang 10
+UseCRLF:          false # Clang 10
+UseTab:           ForContinuationAndIndentation
+
 ## Sizes
-UseTab: ForContinuationAndIndentation
 TabWidth:                4
 IndentWidth:             4
 ColumnLimit:             80
 MaxEmptyLinesToKeep:     2
 ContinuationIndentWidth: 4
 IndentCaseLabels: false
-# IndentGotoLabels: false # Clang 10
+IndentGotoLabels: false # Clang 10
 IndentPPDirectives: None
 AccessModifierOffset: -4
 # public: or private: etc.
@@ -106,6 +115,7 @@ AlignConsecutiveMacros: false # Clang 9
 # MacroBlockEnd: ""
 # NamespaceMacros: ['NAMESPACE'] # Clang 9
 # StatementMacros: ['CALCULATION'] # Clang 8 # statement, no ";" needed
+# TypenameMacros: ['STACK_OF', 'LIST'] # Clang 9
 
 ## Namespace
 NamespaceIndentation: Inner
@@ -135,16 +145,16 @@ BraceWrapping:
   AfterFunction:         true
   SplitEmptyFunction:    true
   AfterExternBlock:      true # Clang 6
-  AfterControlStatement: true # Always # Modified Clang 10
+  AfterControlStatement: Always # Modified Clang 10
   BeforeCatch:           true
   BeforeElse:            true
   AfterCaseLabel:        true # Clang 9
   IndentBraces:          false
 
 ### Single-Line Statements
-AllowShortBlocksOnASingleLine: false # Never # Modified Clang 10
+AllowShortBlocksOnASingleLine: Never # Modified Clang 10
 AllowShortFunctionsOnASingleLine: Inline
-# AllowShortLamdasOnASingleLine: Inline # Clang 10
+AllowShortLambdasOnASingleLine: Inline # Clang 10
 AllowShortIfStatementsOnASingleLine: Never # Modified Clang 9
 AllowShortLoopsOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: true
@@ -156,7 +166,10 @@ SpacesInContainerLiterals:     false
 SpaceBeforeParens:             ControlStatements
 SpacesInParentheses:           false
 SpaceInEmptyParentheses:       false
+SpacesInConditionalStatement:  false # Clang 10
 SpacesInSquareBrackets:        false
+SpaceBeforeSquareBrackets:     false # Clang 10
+SpaceInEmptyBlock:             false # Clang 10
 Cpp11BracedListStyle:          true
 # if false always spaces in { dd }
 SpaceBeforeCpp11BracedList:    false # Clang 7
@@ -219,7 +232,7 @@ PenaltyReturnTypeOnItsOwnLine: 60
 
 ---
 Language:      Cpp
-Standard:      Cpp11 # c++17 # Clang 10
+Standard:      c++17 # Clang 10
 DisableFormat: false
 ---
 Language:      CSharp # Clang 9
