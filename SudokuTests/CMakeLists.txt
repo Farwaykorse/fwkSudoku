@@ -139,9 +139,7 @@ if(MSVC) # MSVC or simulating MSVC
     $<$<CXX_COMPILER_ID:MSVC>:
       /W4
       ${MSVC_Extra_Warnings}
-      /wd4365 # stl
       /wd4623 # gtest
-      /wd4668 # gsl_byte & gtest
       /wd4774 # stl
       /wd5026 # system_error & gtest
     >
@@ -170,12 +168,22 @@ if(MSVC) # MSVC or simulating MSVC
     OPTIONS 
       $<$<CXX_COMPILER_ID:Clang>:-Wno-unevaluated-expression>
   )
-  set_source_files_compile_options(
-    precompiled.cpp
-    OPTIONS
+  if(DISABLE_PRECOMPILE_HEADERS OR CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+    target_compile_options(SudokuTests PRIVATE
       $<$<CXX_COMPILER_ID:MSVC>:
-        /wd4251 # gtest (needs to have dll-interface to be used by clients)
-        /wd4275 # gtest (non dll-interface class used as base for dll-interface)
+        $<$<CONFIG:Debug>:
+          /wd4365 # stl xmemory
+        >
+        /wd4668 # gtest undefined macros
+      >
+    )
+  else()
+    set_source_files_compile_options(precompiled.cpp OPTIONS
+      $<$<CXX_COMPILER_ID:MSVC>:
+        $<$<CONFIG:Debug>:
+          /wd4365 # stl
+        >
+        /wd4668 # gtest undefined macros
       >
       $<$<CXX_COMPILER_ID:Clang>:
         -Wno-deprecated # gtest
@@ -185,7 +193,8 @@ if(MSVC) # MSVC or simulating MSVC
         -Wno-undef
         -Wno-unused-parameter # gtest
       >
-  )
+    )
+  endif()
 else()
   target_compile_options(SudokuTests PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
