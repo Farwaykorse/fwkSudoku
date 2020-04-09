@@ -166,7 +166,7 @@ if(MSVC) # MSVC or simulating MSVC
     Board.cpp
     Board_Iterators.cpp
     OPTIONS 
-      $<$<CXX_COMPILER_ID:Clang>:-Wno-unevaluated-expression>
+      $<$<CXX_COMPILER_ID:Clang>:-Wno-unevaluated-expression >
   )
   if(DISABLE_PRECOMPILE_HEADERS OR CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
     target_compile_options(SudokuTests PRIVATE
