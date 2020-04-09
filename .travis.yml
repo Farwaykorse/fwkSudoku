@@ -2,6 +2,8 @@
 # TravisCI build configuration.
 # Continuous integration testing on Linux and OSX. Using GCC, LLVM/Clang and
 # AppleClang. Debug and Release builds, unit tests and codecoverage.
+version: ~> 1.0
+
 language: cpp
 
 git:
@@ -28,6 +30,7 @@ env:
 #   job session.
 # - Coverage:
 #   Send code coverage data to codecov.io.
+#   Note: no coverage disabled for cron-jobs.
 #   When no CONFIGURATION defined, only Debug build runs coverage.
 #   - grcov: currently the only option supporting LLVM/clang and AppleClang.
 #   - lcov:  GNU tool, mostly redundant by Codecov's bash script.
@@ -71,7 +74,7 @@ jobs:
   - name: CMake versions
     stage: "Validation"
     env:
-    - CMake_version: '"3.15.5 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.17.0 3.16.5 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: Linux
     addons:
@@ -96,7 +99,7 @@ jobs:
     os: osx
     osx_image: xcode10.3 # AppleClang 10.0.1
     env:
-    - CMake_version: '"3.15.5 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.17.0 3.16.5 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: OSX
     script:
@@ -125,12 +128,20 @@ jobs:
         - clang-9
         - clang-tidy-9
 
+  - name: Unity-Build
+    stage: "Validation"
+    env:
+    - CMake_version: 3.17.0 # CMAKE_UNITY_BUILD requires at least v3.16.0
+    - UNITY_BUILD: on
+    workspaces:
+      use: Linux
+
   - name: GCC-9
     stage: "Build & Test Latest"
     env:
     - CC:  gcc-9
     - CXX: g++-9
-    - CMake_version: 3.15.5
+    - CMake_version: 3.17.0
     - Coverage: gcov-9
     workspaces:
       use: Linux
@@ -311,16 +322,17 @@ jobs:
         packages:
         - clang-4.0
 
-  - name: AppleClang Xcode-11.2
+  - name: AppleClang Xcode-11.3
     stage: "Build & Test Latest"
     os: osx
-    osx_image: xcode11.2 # AppleClang 11.0.0 linker update
+    osx_image: xcode11.3 # AppleClang 11.0.0 linker update / same as Xcode11.2
     env:
     - Coverage: grcov
     workspaces:
       use: OSX
 
   - name: AppleClang Xcode-11.1
+    if: branch =~ /^(master|[Tt]ravis.*)$/
     stage: "Build & Test"
     os: osx
     osx_image: xcode11.1 # AppleClang 11.0.0 same compiler and linker as Xcode11
@@ -408,6 +420,21 @@ jobs:
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
 before_install:
+- |
+  # Helper functions
+  # usage: if [[ $(check_url '<url>') ]]; then ...
+  function check_url {( set +e
+    if [[ "$1" =~ 'github.com' ]]; then # check for first byte
+      if curl --fail --silent --output /dev/null --connect-timeout 12 \
+        --range 0-0 "$1"
+      then echo true; fi
+    else # request head
+      if curl --fail --silent --output /dev/null --connect-timeout 12 \
+        --head "$1"
+      then echo true; fi
+    fi
+    return
+  )}
 - |
   # Setup
   mkdir -p ~/tools && cd ~/tools
@@ -513,11 +540,11 @@ install:
   if [[ ${Coverage:-} && ${Coverage} == "grcov" ]]; then
   ( set -euo pipefail
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-      GRCOV_TAG="v0.5.5"
-      GRCOV_SHA512="92caaac4d1dc4fd97055fd9043c26e70dc7bd347b9c3ee7961cad145874502e14e31227e4650f667c7ede34cf2bf640bb9093f3d91bb64b41366900d885c5549"
+      GRCOV_TAG="v0.5.13"
+      GRCOV_SHA512="42d7e047be6b0ffcad3de8fab33e304dcb3a5db4ce018bf3625929df4b17b2d71bc61754fb46aac163bcc63128992c9b6543fdd4618db7e6c260b825dac3c758"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
-      GRCOV_TAG="v0.5.5"
-      GRCOV_SHA512="48b5a88af62c03cc102f52357bc648c5ffdfa227709378799a1aa121bb08ce690343f4188a4a98d2aa8d8fbcd3553e94c6ea76548b5f852e75ba61a9d49c87e9"
+      GRCOV_TAG="v0.5.13"
+      GRCOV_SHA512="2df9d783c9a18f2e029e6c8d38fc243e31b49bf35f11ef2373f7160ab07f2b6d67453a318ac0d821b3b6ad75484e93c56f6132e85b65de1f1f908a2d170d4723"
     fi
     echo "-- Install grcov..."
     file_name="grcov-${TRAVIS_OS_NAME}-x86_64.tar.bz2"
@@ -557,18 +584,21 @@ install:
     fi
     for VERSION in ${CMake_version:-}; do
       CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${VERSION}/cmake-${VERSION}-${OS}-x86_64.${EXT}"
-      curl -sSL ${CMAKE_URL} -o ${CMAKE_INSTALLER}
-      CMAKE_DIR="${CMAKE_DEFAULT_DIR:-"${HOME}/tools/cmake-${VERSION}"}"
-      mkdir -p ${CMAKE_DIR}
-      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-        chmod +x ${CMAKE_INSTALLER}
-        sudo ./${CMAKE_INSTALLER} --prefix=${CMAKE_DIR} --skip-license
-      else # OSX
-        mkdir -p ./CMake_tmp
-        tar --extract --gzip --file=${CMAKE_INSTALLER} --directory=./CMake_tmp
-        mv ./CMake_tmp/*/CMake.app/Contents/* ${CMAKE_DIR}
+      if [[ $(check_url "$CMAKE_URL") ]]; then
+        curl -sSL ${CMAKE_URL} -o ${CMAKE_INSTALLER}
+        CMAKE_DIR="${CMAKE_DEFAULT_DIR:-"${HOME}/tools/cmake-${VERSION}"}"
+        mkdir -p ${CMAKE_DIR}
+        if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+          chmod +x ${CMAKE_INSTALLER}
+          sudo ./${CMAKE_INSTALLER} --prefix=${CMAKE_DIR} --skip-license
+        else # OSX
+          mkdir -p ./CMake_tmp
+          tar --extract --gzip --file=${CMAKE_INSTALLER} --directory=./CMake_tmp
+          mv ./CMake_tmp/*/CMake.app/Contents/* ${CMAKE_DIR}
+        fi
+        rm --recursive --force ./CMake_tmp ${CMAKE_INSTALLER}
+      else echo 'Invalid url!'; echo "Version: ${VERSION}"
       fi
-      rm --recursive --force ./CMake_tmp ${CMAKE_INSTALLER}
     done
   )
   if [[ "${TRAVIS_OS_NAME}" == "osx" && ! ("${CMake_version:-}" =~ .+[' '].+) ]]
@@ -639,6 +669,7 @@ before_script:
   if [[ ${CMAKE_CXX_CLANG_TIDY:-} ]]; then
     SharedGenFlags+=("-DCMAKE_CXX_CLANG_TIDY=${CMAKE_CXX_CLANG_TIDY}")
   fi
+  if [[ ${UNITY_BUILD:-} ]]; then SharedGenFlags+=("-DCMAKE_UNITY_BUILD=ON"); fi
   SharedGenFlags+=(-Wdev -Werror=dev --warn-uninitialized)
   CMakeGenFlags1+=(${SharedGenFlags[@]})
   echo ${CMakeGenFlags1[@]}

@@ -604,7 +604,7 @@ TEST(Solver, sectionExclusive)
 	}
 }
 
-TEST(Solver, singleOption)
+TEST(SolverDeathTest, singleOption)
 {
 	using Sudoku::error::invalid_Location;
 	using Sudoku::error::invalid_Board;
@@ -613,7 +613,6 @@ TEST(Solver, singleOption)
 	Board<Options<4>, 2> B1;
 	ASSERT_EQ(B1[1][0], Options<4>{}) << "incorrect instantiation";
 
-	//====----------------------------------------------------------------====//
 	static_assert(not noexcept(single_option(B1, L(), Value{1})));
 	// set_Value: throws for invalid Location
 #ifndef NDEBUG
@@ -646,6 +645,16 @@ TEST(Solver, singleOption)
 	EXPECT_THROW(single_option(B1, L{0}, Value{1}), invalid_Board);
 	EXPECT_THROW(single_option(B1, L(0), Value{2}), invalid_Board);
 #endif // NDEBUG
+}
+
+TEST(Solver, singleOption)
+{
+	using Sudoku::error::invalid_Location;
+	using Sudoku::error::invalid_Board;
+	using L = Location<2>;
+
+	Board<Options<4>, 2> B1;
+	ASSERT_EQ(B1[1][0], Options<4>{}) << "incorrect instantiation";
 
 	//====----------------------------------------------------------------====//
 	// is single option (loc, value)
@@ -738,14 +747,13 @@ TEST(Solver, singleOption)
 	}
 }
 
-TEST(Solver, dualOption)
+TEST(SolverDeathTest, dualOption)
 {
 	using ::Sudoku::error::invalid_Board;
 	using ::Sudoku::error::invalid_Location;
 
 	Board<Options<4>, 2> board{};
 	static_assert(not noexcept(dual_option(board, Location<2>())));
-
 	// invalid Loc
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
@@ -767,8 +775,17 @@ TEST(Solver, dualOption)
 #else
 	EXPECT_THROW(dual_option(board, Location<2>{1}), invalid_Board);
 #endif
+}
+
+TEST(Solver, dualOption)
+{
+	using ::Sudoku::error::invalid_Board;
+	using ::Sudoku::error::invalid_Location;
+
+	Board<Options<4>, 2> board{};
+	static_assert(not noexcept(dual_option(board, Location<2>())));
+
 	// invalid board
-	board.clear();
 	board[0][0] = Options<4>{std::bitset<5>{"10101"}};
 	board[0][2] = Options<4>{std::bitset<5>{"10101"}};
 	board[0][3] = Options<4>{std::bitset<5>{"10101"}};
@@ -1002,34 +1019,12 @@ TEST(Solver, multiOption)
 	EXPECT_EQ(B3[0][3].DebugString(), "1101100001") << "after 48";
 }
 
-// NOLINTNEXTLINE(readability-function-size)
-TEST(Solver, multiOption2)
+TEST(SolverDeathTest, multiOption2)
 {
 	using L = Location<2>;
-	using V = Value;
 	using B = std::bitset<5>;
 	Board<Options<4>, 2> board{}; // reused object for full test
 	Board<Options<9>, 3> board_3{};
-
-	// return type
-	static_assert(std::is_same_v<int, decltype(multi_option(board, L{}))>);
-	static_assert(
-		std::is_same_v<int, decltype(multi_option(board, L(), size_t{}))>);
-
-	// error handling
-	static_assert(not noexcept(multi_option(board, L())));
-	static_assert(not noexcept(multi_option(board, L(), size_t{})));
-	// defaults when count is 0 or all:
-	// TODO not working in GCC 7.3
-	// static_assert(multi_option(board, L(), 0) == 0);
-	// static_assert(multi_option(board, L(), elem_size<2>) == 0);
-	{ // sanity check:
-		board_3[0][0] = Options<9>{std::bitset<10>{"1111000001"}};
-		board_3[0][1] = Options<9>{std::bitset<10>{"1111000001"}};
-		board_3[0][2] = Options<9>{std::bitset<10>{"1111000001"}};
-		board_3[0][3] = Options<9>{std::bitset<10>{"1111000001"}};
-		EXPECT_EQ(multi_option(board_3, Location<3>{0}, 4), 20);
-	}
 
 	// invalid loc
 	board[0][0] = Options<4>{B{"11101"}};
@@ -1092,6 +1087,42 @@ TEST(Solver, multiOption2)
 	board[0][0] = Options<4>{B{"11001"}};
 	EXPECT_DEBUG_DEATH(
 		multi_option(board, L{0}, 3), "item.count\\(\\) == count");
+}
+
+TEST(Solver, multiOption2)
+{
+	using L = Location<2>;
+	using V = Value;
+	using B = std::bitset<5>;
+	Board<Options<4>, 2> board{}; // reused object for full test
+	Board<Options<9>, 3> board_3{};
+
+	// return type
+	static_assert(std::is_same_v<int, decltype(multi_option(board, L{}))>);
+	static_assert(
+		std::is_same_v<int, decltype(multi_option(board, L(), size_t{}))>);
+
+	// error handling
+	static_assert(not noexcept(multi_option(board, L())));
+#if not defined(__clang__) && defined(_MSC_VER) &&                             \
+	_MSC_VER < 1920 // constexpr only in VS2017
+	static_assert(noexcept(multi_option(board, L(), size_t{})));
+#else
+	static_assert(not noexcept(multi_option(board, L(), size_t{})));
+#endif
+
+#if not(defined(__GNUC__) && __GNUC__ <= 9) // constexpr switch not implemented
+	// defaults when count is 0 or all:
+	static_assert(multi_option(board, L(), 0) == 0);
+	static_assert(multi_option(board, L(), Sudoku::elem_size<2>) == 0);
+#endif // __GNUC__
+	{ // sanity check:
+		board_3[0][0] = Options<9>{std::bitset<10>{"1111000001"}};
+		board_3[0][1] = Options<9>{std::bitset<10>{"1111000001"}};
+		board_3[0][2] = Options<9>{std::bitset<10>{"1111000001"}};
+		board_3[0][3] = Options<9>{std::bitset<10>{"1111000001"}};
+		EXPECT_EQ(multi_option(board_3, Location<3>{0}, 4), 20);
+	}
 
 	//====----------------------------------------------------------------====//
 	// Operational testing
@@ -1312,19 +1343,6 @@ TEST(Solver, solveBoard)
 	{
 		unique_in_section(options, options.row(i));
 	}
-}
-
-TEST(Solver, deathtest)
-{
-	Board<Options<4>, 2> B{};
-
-	// single_option()
-#ifndef NDEBUG // note: release triggers normal exception
-	// when wrong value
-	B[1][2] = std::bitset<5>{"00011"}; // 1, not answer
-	EXPECT_DEBUG_DEATH(
-		single_option(B, Location<2>(1, 2), Value{4}), "Assertion .*test.*");
-#endif // NDEBUG
 }
 
 } // namespace SudokuTests::SolversTest

@@ -1,8 +1,19 @@
-##====---- .github/workflow/cpplint.yml                               ----====##
+##====---- GitHub Actions - cpplint                                   ----====##
+# Based on github.com/cpplint/GitHub-Action-for-cpplint
+#
 name: cpplint
-on: push
+on:
+  push:
+    paths:
+    - '**.[CcHh]'
+    - '**.[CcHh]\+\+'
+    - '**.[Cc][Cc]'
+    - '**.[CcHh][Pp][Pp]'
+    - '**.[CcHh][Xx][Xx]'
+  pull_request:
+    branches: '**'
 jobs:
-  gitHubActionForCpplint:
+  cpplint:
     name: Run cpplint
     runs-on: ubuntu-latest
     steps:
@@ -10,7 +21,6 @@ jobs:
       uses: actions/checkout@v1
       with:
         fetch-depth: 1
-    - name: GitHub Action for cpplint
-      uses: cpplint/GitHub-Action-for-cpplint@master
-      with:
-        args: cpplint --verbose=0 --counting=detailed --recursive .
+    - uses: actions/setup-python@v1
+    - run: pip install cpplint
+    - run: cpplint --verbose=0 --counting=detailed --recursive .

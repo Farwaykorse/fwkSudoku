@@ -59,24 +59,6 @@ TEST(Solver, setValue)
 	EXPECT_NO_THROW(set_Value(board, L{0}, Value{1}));
 	EXPECT_NO_THROW(set_Value(board, L{15}, Value{1}));
 	EXPECT_NO_THROW(set_Value(board, L{1}, Value{4}));
-#ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(
-		set_Value(board, Location<2>{-1}, Value{1}), "is_valid\\(loc\\)");
-	EXPECT_DEBUG_DEATH(
-		set_Value(board, Location<2>{16}, Value{1}), "is_valid\\(loc\\)");
-	EXPECT_DEBUG_DEATH(
-		set_Value(board, Location<2>{1}, Value{0}), "is_valid<N>\\(value\\)");
-	EXPECT_DEBUG_DEATH(
-		set_Value(board, Location<2>{1}, Value{5}), "is_valid<N>\\(value\\)");
-#else
-	// thrown by Board::at(Location)
-	EXPECT_THROW(
-		set_Value(board, L{-1}, Value{1}), Sudoku::error::invalid_Location);
-	EXPECT_THROW(
-		set_Value(board, L{16}, Value{1}), Sudoku::error::invalid_Location);
-	// thrown by Options::test(Value)->std::bitset::test()
-	EXPECT_THROW(set_Value(board, L{1}, Value{5}), std::out_of_range);
-#endif // NDEBUG
 
 	// test: value is not an option
 	board[1][1] = std::bitset<5>{"11011"}; // options: 1,3,4
@@ -107,18 +89,39 @@ TEST(Solver, setValue)
 	EXPECT_EQ(board[1][2].count_all(), 1U);
 }
 
+TEST(SolverDeathTest, setValue)
+{
+	using ::Sudoku::set_Value;
+	using L = Location<2>;
+
+	Board<Options<4>, 2> board;
+#ifndef NDEBUG
+	EXPECT_DEBUG_DEATH(
+		set_Value(board, L{-1}, Value{1}), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(
+		set_Value(board, L{16}, Value{1}), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(
+		set_Value(board, L{1}, Value{0}), "is_valid<N>\\(value\\)");
+	EXPECT_DEBUG_DEATH(
+		set_Value(board, L{1}, Value{5}), "is_valid<N>\\(value\\)");
+#else
+	// thrown by Board::at(Location)
+	EXPECT_THROW(
+		set_Value(board, L{-1}, Value{1}), Sudoku::error::invalid_Location);
+	EXPECT_THROW(
+		set_Value(board, L{16}, Value{1}), Sudoku::error::invalid_Location);
+	// thrown by Options::test(Value)->std::bitset::test()
+	EXPECT_THROW(set_Value(board, L{1}, Value{5}), std::out_of_range);
+#endif // NDEBUG}
+}
+
 TEST(Solver, setValueVector)
 {
 	using ::Sudoku::set_Value;
 	{
 		Board<Options<4>, 2> B1;
 		// precondition checks
-		constexpr std::array<Value, 15> too_short{};
 		constexpr std::array<Value, 17> too_long{};
-		EXPECT_DEBUG_DEATH(
-			set_Value(B1, too_short.cbegin(), too_short.cend()), "full_size");
-		EXPECT_DEBUG_DEATH(
-			set_Value(B1, too_long.cbegin(), too_long.cend()), "full_size");
 
 		// exceptions
 		static_assert(
@@ -219,8 +222,22 @@ TEST(Solver, setValueVector)
 	}
 }
 
-// NOLINTNEXTLINE(readability-function-size)
-TEST(Solver, setSectionLocals)
+TEST(SolverDeathTest, setValueVector)
+{
+	using ::Sudoku::set_Value;
+	{
+		Board<Options<4>, 2> B1;
+		// precondition checks
+		constexpr std::array<Value, 15> too_short{};
+		constexpr std::array<Value, 17> too_long{};
+		EXPECT_DEBUG_DEATH(
+			set_Value(B1, too_short.cbegin(), too_short.cend()), "full_size");
+		EXPECT_DEBUG_DEATH(
+			set_Value(B1, too_long.cbegin(), too_long.cend()), "full_size");
+	}
+}
+
+TEST(SolverDeathTest, setSectionLocals)
 {
 	using ::Sudoku::set_section_locals;
 	// called by: section_exclusive
@@ -333,11 +350,24 @@ TEST(Solver, setSectionLocals)
 		set_section_locals(B, B.block(0), 2, worker), "Assertion .*");
 	EXPECT_DEBUG_DEATH(
 		set_section_locals(B, B.row(0), 2, worker), "Assertion .*");
+}
 
+TEST(Solver, setSectionLocals)
+{
+	using ::Sudoku::set_section_locals;
+	// called by: section_exclusive
+	//	find and process values appearing 2 or 3x in row/col
+
+	// int set_section_locals(section, rep_count, worker)
+	using set = std::bitset<5>;
+	Board<Options<4>, 2> B{};
+
+	B[0][0] = Value{3};
+	B.clear();
+	ASSERT_TRUE(B[0][0].all()); // works
 
 	//====----------------------------------------------------------------====//
 	// Row
-	B.clear();
 	//
 	//	12		1234	12		1234
 	//	1234	1234	1234	1234
@@ -347,7 +377,7 @@ TEST(Solver, setSectionLocals)
 	//	2 values in row, not in same block
 	B[0][0] = set{"00111"};
 	B[0][2] = set{"00111"};
-	worker  = set{"11001"};
+	Options<4> worker{set{"11001"}};
 	ASSERT_TRUE(B[0][1].all());
 	ASSERT_TRUE(B[0][3].all());
 	EXPECT_EQ(set_section_locals(B, B.row(0), 2, worker), 0);
@@ -540,14 +570,6 @@ TEST(Solver, setUnique)
 	EXPECT_EQ(set_unique(board, board.row(2), Value{1}), 0);
 
 	board = cB1; // reset
-
-	// Death tests
-#ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(
-		set_unique(board, board.row(2), Value{12}), "is_valid<N>\\(value\\)");
-#else
-	EXPECT_THROW(set_unique(board, board.row(2), Value{12}), std::out_of_range);
-#endif // NDEBUG
 	// Value is not an option
 	remove_option(board, L{5}, Value{3});
 	remove_option(board, L{6}, Value{3});
@@ -556,6 +578,24 @@ TEST(Solver, setUnique)
 	EXPECT_THROW(
 		set_unique(board, board.row(1), Value{3}),
 		::Sudoku::error::invalid_Board);
+}
+
+TEST(SolverDeathTest, setUnique)
+{
+	using ::Sudoku::set_unique;
+	Board<Options<4>, 2> board{};
+	constexpr std::array<char, 16> v1{
+		0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
+	set_Value(board, v1.cbegin(), v1.cend());
+	const Board<Options<4>, 2> cB1{board}; // to reset board
+
+#ifndef NDEBUG
+	EXPECT_DEBUG_DEATH(
+		set_unique(board, board.row(2), Value{12}), "is_valid<N>\\(value\\)");
+#else
+	EXPECT_THROW(set_unique(board, board.row(2), Value{12}), std::out_of_range);
+#endif // NDEBUG
+
 	board = cB1; // reset
 	// Section is not a part of board
 	EXPECT_DEBUG_DEATH(set_unique(board, cB1.row(0), Value{1}), "board");

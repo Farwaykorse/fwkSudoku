@@ -295,6 +295,12 @@ TEST(Options, Construction)
 		EXPECT_EQ(TMP.DebugString(), "00010");
 		EXPECT_EQ((TMP = Value{3}).DebugString(), "01000");
 	}
+}
+
+TEST(OptionsDeathTest, Construction)
+{
+	const Options<4> D_0{};
+
 	{ // assert serves to catch E+1 case
 		EXPECT_DEBUG_DEATH({ Options<3>{Value{4}}; }, "Assertion .*");
 		EXPECT_DEBUG_DEATH({ Options<3>{Value{5}}; }, "Assertion .*");
@@ -421,9 +427,6 @@ TEST(Options, isAnswer)
 		EXPECT_FALSE(is_answer(TE.X_0));
 		EXPECT_FALSE(is_answer(TE.X_1));
 		static_assert(noexcept(is_answer(TE.O_1, Value{1})));
-		EXPECT_DEBUG_DEATH(
-			{ U = is_answer(TE.A_1, Value{15}); },
-			"Assertion .*value <= Value.E."); // constructor
 	}
 	{ // test for specific answer
 		static_assert(noexcept(is_answer(TE.O_1, Value{1})));
@@ -457,11 +460,6 @@ TEST(Options, isAnswer)
 		static_assert(!is_answer_fast(Options<9>{Value{0}}));
 		static_assert(is_answer_fast(Options<9>{Value{1}}));
 		static_assert(is_answer_fast(Options<9>{Value{9}}));
-#ifndef NDEBUG
-		EXPECT_DEATH(
-			{ U = is_answer_fast(Options<9>{Value{10}}); },
-			"Assertion .*value <= Value.E.");
-#endif // NDEBUG
 
 		EXPECT_TRUE(is_answer_fast(TE.A_1));
 		EXPECT_TRUE(is_answer_fast(TE.A_2));
@@ -476,9 +474,27 @@ TEST(Options, isAnswer)
 	U = false; // suppress warning: assigned only once
 }
 
-TEST(Options, isOption)
+TEST(OptionsDeathTest, isAnswer)
 {
-	static_assert(not noexcept(is_option(TE.O_1, Value{2})));
+	[[maybe_unused]] bool U{};
+
+	{ // convenience function: exactly the same
+		EXPECT_DEBUG_DEATH(
+			{ U = is_answer(TE.A_1, Value{15}); },
+			"Assertion .*value <= Value.E."); // constructor
+	}
+	{ // test if answer flag set
+#ifndef NDEBUG
+		EXPECT_DEATH(
+			{ U = is_answer_fast(Options<9>{Value{10}}); },
+			"Assertion .*value <= Value.E.");
+#endif // NDEBUG
+	}
+	U = false; // suppress warning: assigned only once
+}
+
+TEST(OptionsDeathTest, isOption)
+{
 	[[maybe_unused]] bool U{};
 	EXPECT_DEBUG_DEATH({ U = is_option(TE.O_1, Value{0}); }, "Assertion .*");
 #ifndef NDEBUG
@@ -488,10 +504,13 @@ TEST(Options, isOption)
 	EXPECT_THROW(U = is_option(TE.O_1, Value{15}), std::out_of_range);
 	EXPECT_TRUE(is_option(TE.O_1, Value{0}));
 	EXPECT_FALSE(is_option(TE.A_1, Value{0}));
-#endif // NDEBUG
-
+#endif         // NDEBUG
 	U = false; // suppress warning: assigned only once
+}
 
+TEST(Options, isOption)
+{
+	static_assert(not noexcept(is_option(TE.O_1, Value{2})));
 	EXPECT_TRUE(is_option(TE.D_1, Value{4}));
 	EXPECT_TRUE(is_option(TE.O_1, Value{2}));
 	EXPECT_FALSE(is_option(TE.A_2, Value{2}));
@@ -662,7 +681,7 @@ TEST(Options, mfChangeAll)
 	EXPECT_TRUE(TMP.all());
 	EXPECT_EQ(TMP.count_all(), 4U);
 }
-TEST(Options, mfRemoveOption)
+TEST(OptionsDeathTest, mfRemoveOption)
 {
 	Options<4> TMP{};
 	ASSERT_TRUE(TMP.all());
@@ -690,7 +709,7 @@ TEST(Options, mfRemoveOption)
 	ASSERT_TRUE(TMP.reset().all()) << "Reset test data failed";
 	EXPECT_EQ(TMP.remove_option(Value{3}).DebugString(), "10111");
 }
-TEST(Options, mfAdd)
+TEST(OptionsDeathTest, mfAdd)
 {
 	Options<4> Opt{std::bitset<5>{"00000"}};
 	ASSERT_TRUE(Opt.is_empty());
@@ -769,13 +788,11 @@ TEST(Options, mfSetNocheck)
 #endif // NDEBUG
 }
 
-TEST(Options, mfBooleanComparison)
+TEST(OptionsDeathTest, mfBooleanComparison)
 {
 	[[maybe_unused]] bool U{};
 
 	// operator==(Value) const
-	static_assert(noexcept(TE.A_1 == Value{1}));
-	static_assert(noexcept(Value{1} == TE.A_1));
 	EXPECT_DEBUG_DEATH(
 		{ U = operator==(TE.A_1, Value{15}); },
 		"Assertion .*Value"); // constructor
@@ -785,13 +802,8 @@ TEST(Options, mfBooleanComparison)
 	EXPECT_FALSE(operator==(Value{15}, TE.A_1));
 	EXPECT_TRUE(operator==(Value{15}, TE.E_1));
 #endif // NDEBUG
-	EXPECT_EQ(TE.A_1, Value{1});
-	EXPECT_EQ(Value{1}, TE.A_1);
-	EXPECT_EQ(TE.A_2, Value{2});
 
 	// operator!=(Value) const
-	static_assert(noexcept(TE.A_1 != Value{1}));
-	static_assert(noexcept(Value{1} != TE.A_1));
 	EXPECT_DEBUG_DEATH({ U = operator!=(TE.A_1, Value{15}); }, "Assertion .*");
 	EXPECT_DEBUG_DEATH({ U = operator!=(Value{15}, TE.A_1); }, "Assertion .*");
 	U = false; // suppress warning: assigned only once
@@ -800,6 +812,25 @@ TEST(Options, mfBooleanComparison)
 	EXPECT_TRUE(operator!=(Value{15}, TE.A_1));
 	EXPECT_FALSE(operator!=(Value{15}, TE.E_1));
 #endif // NDEBUG
+}
+TEST(Options, mfBooleanComparison)
+{
+	// operator==(Value) const
+	static_assert(noexcept(TE.A_1 == Value{1}));
+	static_assert(noexcept(Value{1} == TE.A_1));
+	EXPECT_EQ(TE.A_1, Value{1});
+	EXPECT_EQ(Value{1}, TE.A_1);
+	EXPECT_EQ(TE.A_2, Value{2});
+
+	// operator!=(Value) const
+	static_assert(noexcept(TE.A_1 != Value{1}));
+	static_assert(noexcept(Value{1} != TE.A_1));
+
+	// operator==(Value) const
+	static_assert(noexcept(TE.A_1 == Value{1}));
+	static_assert(noexcept(Value{1} == TE.A_1));
+
+
 	EXPECT_NE(TE.A_1, Value{2});
 	EXPECT_NE(Value{2}, TE.A_1);
 	EXPECT_NE(TE.A_2, Value{1});
@@ -880,6 +911,12 @@ TEST(Options, mfConstOperators)
 	constexpr Options<9> y9{Value{1}};
 	static_assert(y9[Value{1}]);
 
+	EXPECT_TRUE(TE.O_1[Value{2}]);
+	EXPECT_TRUE(TE.A_2[Value{2}]);
+	EXPECT_TRUE(TE.A_2[Value{1}] == false);
+}
+TEST(OptionsDeathTest, mfConstOperators)
+{
 #ifndef NDEBUG
 	EXPECT_DEATH(
 		{ [[maybe_unused]] bool val = TE.O_3[Value{5}]; }, "Assertion .*");
@@ -889,15 +926,12 @@ TEST(Options, mfConstOperators)
 	[[maybe_unused]] bool val{};
 	EXPECT_NO_THROW(val = TE.O_3[Value{9}]);
 #endif // NDEBUG
-	EXPECT_TRUE(TE.O_1[Value{2}]);
-	EXPECT_TRUE(TE.A_2[Value{2}]);
-	EXPECT_TRUE(TE.A_2[Value{1}] == false);
 }
 
-TEST(Options, Operators)
+TEST(OptionsDeathTest, Operators)
 {
 	// _test-data
-	Options<4> TMP{}; // per test, reset this option
+	Options<4> TMP{};
 
 	///// non-const operators /////
 	static_assert(noexcept(TMP.operator[](Value{0}) = true));
@@ -909,7 +943,16 @@ TEST(Options, Operators)
 	// ASSERT_GT(sizeof(TMP), size_t{1});
 	// EXPECT_NO_THROW(TMP[Value{7}] = true);
 #endif // NDEBUG
-	TMP.clear();
+}
+
+TEST(Options, Operators)
+{
+	// _test-data
+	Options<4> TMP{}; // per test, reset this option
+
+	///// non-const operators /////
+	static_assert(noexcept(TMP.operator[](Value{0}) = true));
+
 	EXPECT_TRUE(TMP[Value{0}] = true);
 	EXPECT_TRUE(TMP[Value{0}] == true);
 	// std::bitset<N>::reference::flip()
@@ -982,7 +1025,7 @@ TEST(Options, External)
 	EXPECT_EQ(shared(E_3, A_2), E_2);
 }
 
-TEST(Options, operatorMin)
+TEST(Options, operatorMinus)
 {
 	const Options<9> all{};
 	const Options<9> empty{std::bitset<10>{"0000000000"}};
@@ -1001,12 +1044,6 @@ TEST(Options, operatorMin)
 	static_assert(std::is_same_v<Options<9>, decltype(B_1 - O_2)>);
 	static_assert(std::is_same_v<Options<9>, decltype(O_0 - O_1)>);
 
-	EXPECT_DEBUG_DEATH(B_1 -= all, "is_answer");
-	EXPECT_DEBUG_DEATH([[maybe_unused]] auto X = O_1 - all, "is_answer");
-#ifdef NDEBUG
-	EXPECT_EQ(B_1, empty);
-	EXPECT_EQ(O_1 - all, empty);
-#endif // NDEBUG
 	auto B_0 = O_0;
 	EXPECT_EQ(B_0 -= O_1, E_1);
 	EXPECT_EQ(O_0 - O_1, E_1);
@@ -1070,6 +1107,21 @@ TEST(Options, switchOptions)
 	EXPECT_EQ(
 		opt1.switch_options(Value{1}, Value{1}),
 		Options<4>{std::bitset<5>{"01011"}}); // self
+}
+
+TEST(OptionsDeathTest, operatorMinus)
+{
+	const Options<9> all{};
+	const Options<9> empty{std::bitset<10>{"0000000000"}};
+	const Options<9> O_1{std::bitset<10>{"0111011010"}};
+	auto B_1 = O_1;
+
+	EXPECT_DEBUG_DEATH(B_1 -= all, "is_answer");
+	EXPECT_DEBUG_DEATH([[maybe_unused]] auto X = O_1 - all, "is_answer");
+#ifdef NDEBUG
+	EXPECT_EQ(B_1, empty);
+	EXPECT_EQ(O_1 - all, empty);
+#endif // NDEBUG
 }
 
 } // namespace SudokuTests::OptionsTest

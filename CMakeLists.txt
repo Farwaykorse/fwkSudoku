@@ -2,7 +2,7 @@
 ## Base configuration.
 ##
 ##====--------------------------------------------------------------------====##
-cmake_minimum_required(VERSION 3.12...3.15)
+cmake_minimum_required(VERSION 3.12...3.16)
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
 project(fwk_Sudoku LANGUAGES CXX)
@@ -22,6 +22,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 ##====--------------------------------------------------------------------====##
 # (INTERFACE libraries: header-only)
 add_library(Sudoku INTERFACE)
+add_library(fwk::Sudoku ALIAS Sudoku)
 
 target_include_directories(Sudoku
   INTERFACE

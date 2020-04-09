@@ -45,7 +45,7 @@ target_sources(SudokuTests
 
 target_link_libraries(SudokuTests
   PRIVATE
-    Sudoku
+    fwk::Sudoku
     GTest::GTest
     GTest::Main
 )
@@ -74,8 +74,9 @@ if(MSVC) # MSVC or simulating MSVC
     /GS          # buffer security check
     /permissive- # disable non-conforming constructs in VC++
     /utf-8       # source files are UTF-8 encoded
+    /Gy          # function level linking
     $<$<CONFIG:Release>:
-      /guard:cf  # control flow guard
+      /Oi        # use intrinsics
     >
     $<$<CXX_COMPILER_ID:MSVC>:
       /Gm-       # prefer /MP
@@ -85,6 +86,7 @@ if(MSVC) # MSVC or simulating MSVC
         /ZI       # PDB for edit-and-continue
       >
       $<$<CONFIG:Release>:
+        /guard:cf # control flow guard
         /GL       # whole program optimization
         /Zi       # separate PDB
       >
@@ -92,6 +94,11 @@ if(MSVC) # MSVC or simulating MSVC
     $<$<CXX_COMPILER_ID:Clang>:
       $<$<CONFIG:Debug>:
         /Z7       # enable debug information
+      >
+      $<$<CONFIG:Release>:
+        $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,7.0>:
+          /guard:cf # control flow guard
+        >
       >
     >
   )
@@ -115,12 +122,14 @@ if(MSVC) # MSVC or simulating MSVC
       $<$<CXX_COMPILER_ID:MSVC>:
         $<$<CONFIG:Release>:
           /LTCG     # link-time code generation (goes with /GL)
+          /OPT:REF  # eliminate unreferenced COMDATs
+          /OPT:ICF  # identical COMDAT folding
         >
       >
     )
   else()
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-      string(APPEND LINK_FLAGS_RELEASE " /LTCG")
+      string(APPEND LINK_FLAGS_RELEASE " /LTCG /OPT:REF /OPT:ICF")
     endif()
   endif()
 endif()
@@ -326,7 +335,11 @@ endif(CODE_COVERAGE)
 
 ##====--------------------------------------------------------------------====##
 # custom settings for precompiled headers
-set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+  target_precompile_headers(SudokuTests PRIVATE precompiled.h)
+elseif(NOT DISABLE_PRECOMPILE_HEADERS)
+  set_precompiled_header(SudokuTests "precompiled.h" "precompiled.cpp")
+endif()
 
 ##====--------------------------------------------------------------------====##
 gtest_discover_tests(SudokuTests)

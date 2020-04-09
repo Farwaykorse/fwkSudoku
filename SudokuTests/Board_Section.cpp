@@ -183,19 +183,21 @@ namespace constructors
 	static_assert(not std::is_constructible_v<typeT, Board&, double>);
 	static_assert(not std::is_constructible_v<typeT, Board&, long double>);
 
-	TEST(BoardSection, constructorInt)
+	TEST(BoardSectionDeathTest, constructorInt)
 	{
 		Board board{};
 
-		EXPECT_DEBUG_DEATH((Row(board, -1)), "is_valid_size");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] Row A(board, -1), "is_valid_size");
 		[[maybe_unused]] Row row0(board, 0);
 		[[maybe_unused]] Row row8(board, 8);
-		EXPECT_DEBUG_DEATH((Row(board, 9)), "is_valid_size");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] Row A(board, 9), "is_valid_size");
 
-		EXPECT_DEBUG_DEATH((const_Row(board, -1)), "is_valid_size");
-		[[maybe_unused]] const_Row crow0(board, 0);
-		[[maybe_unused]] const_Row crow8(board, 8);
-		EXPECT_DEBUG_DEATH((const_Row(board, 9)), "is_valid_size");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] const_Row A(board, -1), "is_valid_size");
+		[[maybe_unused]] const const_Row crow0(board, 0);
+		[[maybe_unused]] const const_Row crow8(board, 8);
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] const_Row A(board, 9), "is_valid_size");
 	}
 
 	//====----------------------------------------------------------------====//
@@ -207,16 +209,16 @@ namespace constructors
 	static_assert(not std::is_constructible_v<typeT, Board&, Loc*>);
 	static_assert(std::is_constructible_v<typeT, Board&, L_B>);
 	static_assert(std::is_nothrow_constructible_v<typeT, Board&, L_B>);
-	TEST(BoardSection, constructorLoc)
+	TEST(BoardSectionDeathTest, constructorLoc)
 	{
 		Board board{};
 
-		EXPECT_DEBUG_DEATH((Row(board, Loc{-1})), "is_valid");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] Row A(board, Loc{-1}), "is_valid");
 		[[maybe_unused]] Row row0(board, Loc{0});
 		[[maybe_unused]] Row row1(board, Loc{9});
 		[[maybe_unused]] Row row1_again(board, Loc{10});
 		[[maybe_unused]] Row row8(board, Loc{8, 0});
-		EXPECT_DEBUG_DEATH((Row(board, Loc{81})), "is_valid");
+		EXPECT_DEBUG_DEATH([[maybe_unused]] Row A(board, Loc{81}), "is_valid");
 	}
 	// is_constructible between Board_Section types
 	// To const:
@@ -303,15 +305,11 @@ namespace constructors
 		constexpr int last = elem_size<size> - 1;
 		Row row(board, 2);
 
-		EXPECT_DEBUG_DEATH(Col(row, -1), "is_valid_size"); // in location(elem)
 		EXPECT_EQ(Col(row, 0).id(), 0);
 		EXPECT_EQ(Col(row, 1).id(), 1);
 		EXPECT_EQ(Col(row, 3).id(), 3);
 		EXPECT_EQ(Col(row, last).id(), last);
-		EXPECT_DEBUG_DEATH(Col(row, elem_size<size>), "is_valid_size");
 
-		EXPECT_DEBUG_DEATH(Block(row, -1), "is_valid_size"); // location(elem)
-		EXPECT_DEBUG_DEATH(Block(row, elem_size<size>), "is_valid_size");
 		if constexpr (size == 2)
 		{
 			EXPECT_EQ(Block(row, 0).id(), 2);
@@ -346,6 +344,21 @@ namespace constructors
 			EXPECT_EQ(Col(Block(board, 7), 6).id(), 3);
 		}
 	}
+	TEST(BoardSectionDeathTest, conversion)
+	{
+		using ::Sudoku::elem_size;
+
+		Board board{};
+		Row row(board, 2);
+
+		EXPECT_DEBUG_DEATH([[maybe_unused]] Col A(row, -1), "is_valid_size");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] Col A(row, elem_size<size>), "is_valid_size");
+
+		EXPECT_DEBUG_DEATH([[maybe_unused]] Block A(row, -1), "is_valid_size");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] Block A(row, elem_size<size>), "is_valid_size");
+	}
 	// To other type (gaining const)
 	static_assert(std::is_constructible_v<const_Row, Col, int>);
 	static_assert(std::is_constructible_v<const_Row, Block, int>);
@@ -360,16 +373,11 @@ namespace constructors
 		Board board{};
 		constexpr int last = ::Sudoku::elem_size<size> - 1;
 
-		EXPECT_DEBUG_DEATH(const_Col(Row(board, 1), -1), "is_valid_size");
 		EXPECT_EQ(const_Col(Row(board, 1), 0).id(), 0);
 		EXPECT_EQ(const_Col(Row(board, 1), 1).id(), 1);
 		EXPECT_EQ(const_Col(Row(board, 1), 3).id(), 3);
 		EXPECT_EQ(const_Col(Row(board, 1), last).id(), last);
-		EXPECT_DEBUG_DEATH(const_Col(Row(board, 1), last + 1), "is_valid_size");
 
-		EXPECT_DEBUG_DEATH(const_Block(Row(board, 1), -1), "is_valid_size");
-		EXPECT_DEBUG_DEATH(
-			const_Block(Row(board, 1), last + 1), "is_valid_size");
 		if constexpr (size == 2)
 		{
 			EXPECT_EQ(const_Block(Row(board, 1), 0).id(), 2);
@@ -403,6 +411,23 @@ namespace constructors
 			EXPECT_EQ(const_Row(Block(board, 7), 6).id(), 8);
 			EXPECT_EQ(const_Col(Block(board, 7), 6).id(), 3);
 		}
+	}
+	TEST(BoardSectionDeathTest, conversionAndConst)
+	{
+		Board board{};
+		constexpr int last = ::Sudoku::elem_size<size> - 1;
+
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] const_Col A(Row(board, 1), -1), "is_valid_size");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] const_Col A(Row(board, 1), last + 1),
+			"is_valid_size");
+
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] const_Block A(Row(board, 1), -1), "is_valid_size");
+		EXPECT_DEBUG_DEATH(
+			[[maybe_unused]] const_Block A(Row(board, 1), last + 1),
+			"is_valid_size");
 	}
 	// To other type (losing const):
 	static_assert(not std::is_constructible_v<Row, const_Col>);
@@ -538,11 +563,8 @@ TEST(BoardSection, location)
 	// return type
 	static_assert(std::is_same_v<L, decltype(Row(board, 4).location(2))>);
 
-	EXPECT_DEBUG_DEATH(
-		[[maybe_unused]] L U = row.location(-1), "is_valid_size");
 	EXPECT_EQ(Row(board, 0).location(0), L(0, 0));
 	EXPECT_EQ(Row(board, 0).location(8), L(0, 8));
-	EXPECT_DEBUG_DEATH([[maybe_unused]] L U = row.location(9), "is_valid_size");
 
 	EXPECT_EQ(Row(board, 0).location(0), L(0, 0));
 	EXPECT_EQ(Row(board, 1).location(0), L(1, 0));
@@ -563,6 +585,18 @@ TEST(BoardSection, location)
 	static_assert(Block(board, 0).location(0) == L(0, 0));
 	static_assert(Block(board, 5).location(0) == B(5, 0));
 	static_assert(Block(board, 1).location(8) == B(1, 8));
+}
+TEST(BoardSectionDeathTest, location)
+{
+	constexpr int size{3};
+	using L     = Location<size>;
+	using Row   = Row<int, size>;
+
+	Board<int, size> board{};
+	Row row(board, 0);
+	EXPECT_DEBUG_DEATH(
+		[[maybe_unused]] L U = row.location(-1), "is_valid_size");
+	EXPECT_DEBUG_DEATH([[maybe_unused]] L U = row.location(9), "is_valid_size");
 }
 
 TEST(BoardSection, uncheckedAccess)

@@ -69,26 +69,6 @@ TEST(Solver, listWhereOptionSection)
 	static_assert(not noexcept(list_where_option<2>(B.col(0), Value{1}, 3)));
 	static_assert(not noexcept(list_where_option<2>(B.block(0), Value{1}, 3)));
 
-	// invalid value
-	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(0), Value{0}, 1), ".*is_valid");
-#ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(0), Value{5}, 1), ".*is_valid");
-#else
-	EXPECT_ANY_THROW(list = list_where_option<2>(B.row(0), Value{5}, 1));
-#endif // NDEBUG
-	// invalid row id // board_sections.h
-	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(-1), Value{1}, 1), ".*is_valid_size");
-	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(4), Value{1}, 1), ".*is_valid_size");
-	// invalid rep_count
-	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(0), Value{1}, 0), ".*rep_count");
-	list = list_where_option<2>(B.row(1), Value{3}, 4);
-	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(1), Value{3}, 5), ".*rep_count");
 	// no result
 	// - no result: explicit
 	B[2][0] = set{"11011"};
@@ -109,10 +89,7 @@ TEST(Solver, listWhereOptionSection)
 	B[0][1] = set{"11011"};
 	B[0][2] = set{"10011"};
 	B[0][3] = set{"11011"};
-	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(0), Value{1}, 2), ".*");
-	// incorrect rep_count: too high
-	// no assert: allow for use without setting a rep_count
+
 	list = list_where_option<2>(B.block(0), Value{1}, 3);
 	// normal operation
 	B.clear();
@@ -138,6 +115,49 @@ TEST(Solver, listWhereOptionSection)
 	EXPECT_EQ(list.size(), size_t{2});
 	EXPECT_EQ(list[0], loc(0, 1));
 	EXPECT_EQ(list[1], loc(1, 0));
+}
+
+TEST(SolverDeathTest, listWhereOptionSection)
+{
+	using ::Sudoku::list_where_option;
+	using set = std::bitset<5>;
+	using loc = Location<2>;
+	Board<Options<4>, 2> B{};
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[3][0] = set{"10011"};
+	std::vector<loc> list{};
+
+	// invalid value
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(0), Value{0}, 1), ".*is_valid");
+#ifndef NDEBUG
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(0), Value{5}, 1), ".*is_valid");
+#else
+	EXPECT_ANY_THROW(list = list_where_option<2>(B.row(0), Value{5}, 1));
+#endif // NDEBUG
+	// invalid row id // board_sections.h
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(-1), Value{1}, 1), ".*is_valid_size");
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(4), Value{1}, 1), ".*is_valid_size");
+	// invalid rep_count
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(0), Value{1}, 0), ".*rep_count");
+	list = list_where_option<2>(B.row(1), Value{3}, 4);
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(1), Value{3}, 5), ".*rep_count");
+
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(0), Value{1}, 2), ".*");
+	// incorrect rep_count: too high
+	// no assert: allow for use without setting a rep_count
 }
 
 TEST(Solver, listWhereOptionItr)
@@ -168,6 +188,66 @@ TEST(Solver, listWhereOptionItr)
 				  std::vector<loc>,
 				  decltype(list_where_option<2>(
 					  B.row(0).cbegin(), B.row(0).cend(), Value{1}, 3))>);
+
+	// no result
+	// - no result: explicit
+	B[2][0] = set{"11011"};
+	B[2][1] = set{"11011"};
+	B[2][2] = set{"11011"};
+	B[2][3] = set{"11011"};
+	list =
+		list_where_option<2>(B.row(2).cbegin(), B.row(2).cend(), Value{2}, 4);
+	EXPECT_EQ(list.size(), size_t{0});
+	// - no result: because value is answer
+	list = list_where_option<2>(B.row(0), Value{2}, 4);
+	EXPECT_EQ(list.size(), size_t{0});
+
+	list = list_where_option<2>(B.block(0), Value{1}, 3);
+	// normal operation
+	B.clear();
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[3][0] = set{"10011"};
+	list =
+		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1}, 3);
+	EXPECT_EQ(list.size(), size_t{3});
+	EXPECT_EQ(list[0], loc(1));
+	EXPECT_EQ(list[1], loc(2));
+	EXPECT_EQ(list[2], loc(3));
+	list =
+		list_where_option<2>(B.col(0).cbegin(), B.col(0).cend(), Value{1}, 3);
+	EXPECT_EQ(list.size(), size_t{3});
+	EXPECT_EQ(list[0], loc(1, 0));
+	EXPECT_EQ(list[1], loc(2, 0));
+	EXPECT_EQ(list[2], loc(3, 0));
+	list = list_where_option<2>(
+		B.block(0).cbegin(), B.block(0).cend(), Value{1}, 2);
+	EXPECT_EQ(list.size(), size_t{2});
+	EXPECT_EQ(list[0], loc(0, 1));
+	EXPECT_EQ(list[1], loc(1, 0));
+}
+
+TEST(SolverDeathTest, listWhereOptionItr)
+{
+	using ::Sudoku::list_where_option;
+	using set = std::bitset<5>;
+	using loc = Location<2>;
+	Board<Options<4>, 2> B{};
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[3][0] = set{"10011"};
+	std::vector<loc> list{};
+
 	// invalid Value
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(
@@ -206,18 +286,7 @@ TEST(Solver, listWhereOptionItr)
 		list = list_where_option<2>(
 			B.row(1).cbegin(), B.row(1).cbegin() + 2, Value{3}, 3),
 		".*rep_count");
-	// no result
-	// - no result: explicit
-	B[2][0] = set{"11011"};
-	B[2][1] = set{"11011"};
-	B[2][2] = set{"11011"};
-	B[2][3] = set{"11011"};
-	list =
-		list_where_option<2>(B.row(2).cbegin(), B.row(2).cend(), Value{2}, 4);
-	EXPECT_EQ(list.size(), size_t{0});
-	// - no result: because value is answer
-	list = list_where_option<2>(B.row(0), Value{2}, 4);
-	EXPECT_EQ(list.size(), size_t{0});
+
 	// incorrect rep_count: too low
 	B[0][0] = set{"00100"}; // ans 2
 	B[0][1] = set{"11011"};
@@ -229,34 +298,6 @@ TEST(Solver, listWhereOptionItr)
 		".*");
 	// incorrect rep_count: too high
 	// no assert: allow for use without setting a rep_count
-	list = list_where_option<2>(B.block(0), Value{1}, 3);
-	// normal operation
-	B.clear();
-	B[0][0] = set{"00100"}; // ans 2
-	B[0][1] = set{"11011"};
-	B[0][2] = set{"10011"};
-	B[0][3] = set{"11011"};
-	B[1][0] = set{"01011"};
-	B[1][1] = set{"11001"};
-	B[2][0] = set{"11011"};
-	B[3][0] = set{"10011"};
-	list =
-		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1}, 3);
-	EXPECT_EQ(list.size(), size_t{3});
-	EXPECT_EQ(list[0], loc(1));
-	EXPECT_EQ(list[1], loc(2));
-	EXPECT_EQ(list[2], loc(3));
-	list =
-		list_where_option<2>(B.col(0).cbegin(), B.col(0).cend(), Value{1}, 3);
-	EXPECT_EQ(list.size(), size_t{3});
-	EXPECT_EQ(list[0], loc(1, 0));
-	EXPECT_EQ(list[1], loc(2, 0));
-	EXPECT_EQ(list[2], loc(3, 0));
-	list = list_where_option<2>(
-		B.block(0).cbegin(), B.block(0).cend(), Value{1}, 2);
-	EXPECT_EQ(list.size(), size_t{2});
-	EXPECT_EQ(list[0], loc(0, 1));
-	EXPECT_EQ(list[1], loc(1, 0));
 }
 
 TEST(Solver, listWhereOptionNoRepCount)
@@ -320,6 +361,42 @@ TEST(Solver, listWhereOptionPartial)
 	EXPECT_EQ(list[1], loc(3));
 }
 
+TEST(SolverDeathTest, listWhereOptionValue)
+{ // list_where_option(SectionT, Value)
+	using ::Sudoku::list_where_option;
+	using set     = std::bitset<5>;
+	using loc     = Location<2>;
+	using Options = Options<4>;
+	Board<Options, 2> B{};
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[2][1] = set{"11110"}; // incorrect marked as answer
+	B[3][0] = set{"10011"};
+	std::vector<loc> list{};
+
+	// exceptions
+	// - vector out-of-memory
+	// - push_back: strong exception guarantee
+	//	 Location is nothrow move constructible
+
+	// valid_value
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(0), Value{0}), ".*is_valid");
+#ifndef NDEBUG
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(0), Value{5}), ".*is_valid");
+#else
+	// - Options::is_option() - std::bitset::test() std::out_of_range
+	EXPECT_THROW(
+		list = list_where_option<2>(B.row(0), Value{5}), std::out_of_range);
+#endif // NDEBUG
+}
+
 TEST(Solver, listWhereOptionValue)
 { // list_where_option(SectionT, Value)
 	using ::Sudoku::list_where_option;
@@ -354,18 +431,9 @@ TEST(Solver, listWhereOptionValue)
 	// valid_value
 	static_assert(not noexcept(list_where_option<2>(B.row(1), Value{1})));
 	static_assert(not noexcept(list_where_option<2>(B.row(0), Value{2})));
-	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(0), Value{0}), ".*is_valid");
 	list = list_where_option<2>(B.row(0), Value{1});
 	list = list_where_option<2>(B.row(0), Value{4});
-#ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(0), Value{5}), ".*is_valid");
-#else
-	// - Options::is_option() - std::bitset::test() std::out_of_range
-	EXPECT_THROW(
-		list = list_where_option<2>(B.row(0), Value{5}), std::out_of_range);
-#endif // NDEBUG
+
 	// Do not return answered
 	list = list_where_option<2>(B.row(0), Value{2});
 	EXPECT_EQ(list.size(), size_t{0});
@@ -423,9 +491,6 @@ TEST(Solver, listWhereOptions)
 	static_assert(noexcept(list_where_option<2>(B.row(0), B[0][2])));
 	list = list_where_option<2>(B.row(0), Options{Value{0}});
 	list = list_where_option<2>(B.row(0), Options{Value{4}});
-	// caught in Options constructor
-	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(0), Options{Value{5}}), ".*<= Value");
 	// return type
 	static_assert(std::is_same_v<
 				  std::vector<loc>,
@@ -451,6 +516,29 @@ TEST(Solver, listWhereOptions)
 	EXPECT_EQ(list.size(), size_t{0});
 	list = list_where_option<2>(B.row(2), Options{set{"00100"}});
 	EXPECT_EQ(list.size(), size_t{2}); // even when marked wrong
+}
+
+TEST(SolverDeathTest, listWhereOptions)
+{ // list_where_option(Section, Options)
+	using ::Sudoku::list_where_option;
+	using set     = std::bitset<5>;
+	using loc     = Location<2>;
+	using Options = Options<4>;
+	Board<Options, 2> B{};
+	B[0][0] = set{"00100"}; // ans 2
+	B[0][1] = set{"11011"};
+	B[0][2] = set{"10011"};
+	B[0][3] = set{"11011"};
+	B[1][0] = set{"01011"};
+	B[1][1] = set{"11001"};
+	B[2][0] = set{"11011"};
+	B[2][1] = set{"11110"}; // incorrect marked as answer
+	B[3][0] = set{"10011"};
+	std::vector<loc> list{};
+
+	// caught in Options constructor
+	EXPECT_DEBUG_DEATH(
+		list = list_where_option<2>(B.row(0), Options{Value{5}}), ".*<= Value");
 }
 
 TEST(Solver, listWhereEqual)
@@ -594,6 +682,20 @@ TEST(Solver, listWhereSubset)
 	ASSERT_EQ(result.size(), 0U);
 }
 
+TEST(SolverDeathTest, listWhereAnyOption)
+{
+	using ::Sudoku::list_where_any_option;
+	using loc     = Location<2>;
+	using Options = Options<4>;
+	Board<Options, 2> B{};
+	std::vector<loc> list{};
+
+	// caught in Options constructor
+	EXPECT_DEBUG_DEATH(
+		list = list_where_any_option<2>(B.row(0), Options{Value{5}}),
+		".*<= Value");
+}
+
 TEST(Solver, listWhereAnyOption)
 {
 	using ::Sudoku::list_where_any_option;
@@ -617,10 +719,6 @@ TEST(Solver, listWhereAnyOption)
 	static_assert(noexcept(list_where_any_option<2>(B.row(0), B[0][2])));
 	list = list_where_any_option<2>(B.row(0), Options{Value{0}});
 	list = list_where_any_option<2>(B.row(0), Options{Value{4}});
-	// caught in Options constructor
-	EXPECT_DEBUG_DEATH(
-		list = list_where_any_option<2>(B.row(0), Options{Value{5}}),
-		".*<= Value");
 
 	// return type
 	static_assert(
