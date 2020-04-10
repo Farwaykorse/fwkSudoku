@@ -358,8 +358,6 @@ Linker:    Generate debug info:      no
 /guard:cf  Control flow guard (v7.0.0+)
 /Oi        Enable intrinsic functions.
 /MT        Use static run-time
-/guard:cf  Control flow guard (v7.0.0+)
-/Oi        Enable intrinsic functions.
 ```
 
 #### Enable Warnings
@@ -370,16 +368,6 @@ setting is disabled.
 [Clang diagnostics reference](https://clang.llvm.org/docs/DiagnosticsReference.html)
 ````
 /Wall                Enables -Weverything
-  -Weverything       All warnings enabled
-  -Wall              
-  -Wextra            
-  -Wpedantic         ISO C/C++ conformance (warn on extensions)
-  -Wconversion       Enable warnings for unexpected conversions losing data on
-                     fundamental types, enums and strings.
-  -Wshadow-all       Uncaptured locals; Variable declaration overshadows one
-                     from the parent context. (Same name.)
-  -Wold-style-cast   Warn for c-style casts
-  -Wdouble-promotion `float` implicit promoted to `double`
 ````
 ##### Promote to errors
 ````````
@@ -394,6 +382,14 @@ setting is disabled.
   In LLVM/Clang pre v7.0.0 and AppleClang pre v10.0.1
 -Wno-missing-braces
   In LLVM/Clang release v5.0.(0|1)  False positive
+-Wno-weak-vtables (linux/osx)
+
+SudokuTests
+  -Wno-covered-switch-default
+  -Wno-global-constructors
+  -Wno-padded (linux)
+  -Wno-used-but-marked-unused
+  -Wno-zero-as-null-pointer-constant (win only)
 ``````
 
 <!-----------------------------------------------------------><a id="intel"></a>

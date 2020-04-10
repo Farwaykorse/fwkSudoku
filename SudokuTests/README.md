@@ -31,11 +31,16 @@ The preprocessor macro `fwkUnitTest` needs to be defined to disable the
 <!------------------------------------------------------------><a id="msvc"></a>
 ### VC++
 <!----------------------------------------------------------------------------->
+Disabled warnings:
+````
+/wd4623
+/wd4774
+/wd5026
+````
 #### Custom settings for precompiled.cpp
 ```
-/wd4619   pragma warning: there is no warning number 'number'
-          gTest, warning 4800 was removed in VS2007
-          not working ... preprocessor macros...
+/wd4365   Debug only, stl xmemory
+/wd4668   gtest undefined macros
 ```
 
 <!-----------------------------------------------------------><a id="clang"></a>
@@ -50,6 +55,7 @@ Disabled warnings:
 -Wno-c++98-compat-pedantic
 -Wno-covered-switch-default  gTest macro debug-death on: Board.cpp
 -Wno-global-constructors     gTest macro
+-Wno-padded
 -Wno-used-but-marked-unused  gTest macros
 -Wno-zero-as-null-pointer-constant  Board_Section_iterator.cpp
 ``````
