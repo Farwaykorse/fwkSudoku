@@ -3,8 +3,8 @@
 # Documentation: yamllint.readthedocs.io
 # Run: yamllint .
 #
-# Last updated for: v1.19.0
-# Requires yamllint version: 1.18.0
+# Last updated for: v1.21.0
+# Minimum required: v1.21.0
 ##====--------------------------------------------------------------------====##
 ---
 
@@ -68,7 +68,9 @@ rules:
     type: unix
   octal-values: # requires yamllint v1.11.0
     forbid-implicit-octal: true
-  quoted-strings: disable
+  quoted-strings:
+    quote-type: any
+    required: false # yamllint v1.21.0
   trailing-spaces: enable
   truthy:
     allowed-values: ['true', 'false', 'on', 'off'] # requires yamllint v1.16.0
