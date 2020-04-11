@@ -670,7 +670,7 @@ before_script:
     SharedGenFlags+=("-DCMAKE_CXX_CLANG_TIDY=${CMAKE_CXX_CLANG_TIDY}")
   fi
   if [[ ${UNITY_BUILD:-} ]]; then SharedGenFlags+=("-DCMAKE_UNITY_BUILD=ON"); fi
-  SharedGenFlags+=(-Wdev -Werror=dev --warn-uninitialized)
+  SharedGenFlags+=(-Wdev -Werror=dev --warn-uninitialized --log-context)
   CMakeGenFlags1+=(${SharedGenFlags[@]})
   echo ${CMakeGenFlags1[@]}
   if [[ ! ${CONFIGURATION:-} ]]; then

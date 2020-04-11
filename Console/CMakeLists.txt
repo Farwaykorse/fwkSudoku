@@ -6,6 +6,10 @@ include(msvc_warnings_list)
 include(set_precompiled_header)
 include(subproject_functions)
 
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
+  list(APPEND CMAKE_MESSAGE_CONTEXT "console")
+endif()
+
 subproject_cmake_minimum_required(3.12)
 
 project(SudokuConsole LANGUAGES CXX)
@@ -201,5 +205,9 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
   target_precompile_headers(console PRIVATE precompiled.h)
 elseif(NOT DISABLE_PRECOMPILE_HEADERS)
   set_precompiled_header(console "precompiled.h" "precompiled.cpp")
+endif()
+
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
+  list(POP_BACK CMAKE_MESSAGE_CONTEXT)
 endif()
 

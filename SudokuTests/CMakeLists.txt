@@ -7,6 +7,10 @@ include(msvc_warnings_list)
 include(set_precompiled_header)
 include(subproject_functions)
 
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
+  list(APPEND CMAKE_MESSAGE_CONTEXT "SudokuTests")
+endif()
+
 subproject_cmake_minimum_required(3.12)
 
 project(fwkSudokuTests LANGUAGES CXX)
@@ -332,4 +336,8 @@ endif()
 
 ##====--------------------------------------------------------------------====##
 gtest_discover_tests(SudokuTests)
+
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
+  list(POP_BACK CMAKE_MESSAGE_CONTEXT)
+endif()
 

@@ -56,6 +56,9 @@ include_guard()
 
 function(set_source_files_compile_definitions)
   cmake_minimum_required(VERSION 3.12...3.17) # list(SUBLIST ...
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
+    list(APPEND CMAKE_MESSAGE_CONTEXT "set_source_files_compile_definitions")
+  endif()
   list(FIND ARGN DEFINITIONS prop_loc)
   if(${prop_loc} EQUAL -1)
     message(SEND_ERROR "Missing keyword DEFINITIONS.")
@@ -88,6 +91,9 @@ endfunction(set_source_files_compile_definitions)
 ##====--------------------------------------------------------------------====##
 function(set_source_files_compile_options)
   cmake_minimum_required(VERSION 3.0...3.17)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
+    list(APPEND CMAKE_MESSAGE_CONTEXT "set_source_files_compile_options")
+  endif()
   list(FIND ARGN OPTIONS prop_loc)
   if(${prop_loc} EQUAL -1)
     message(SEND_ERROR "Missing keyword OPTIONS.")
@@ -107,6 +113,9 @@ endfunction(set_source_files_compile_options)
 # Add any property to a source file.
 function(add_to_source_file_properties)
   cmake_minimum_required(VERSION 3.12...3.17) # list(SUBLIST ...
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
+    list(APPEND CMAKE_MESSAGE_CONTEXT "set_source_file_properties")
+  endif()
   list(FIND ARGN PROPERTIES prop_loc)
   if(${prop_loc} EQUAL -1)
     message(SEND_ERROR "Missing keyword PROPERTIES.")
@@ -138,6 +147,9 @@ endfunction(add_to_source_file_properties)
 # Internal shared implementation.
 function(__internal_add_source_file_properties property_name num_files)
   cmake_minimum_required(VERSION 3.12...3.17) # list(SUBLIST ...
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
+    list(APPEND CMAKE_MESSAGE_CONTEXT "__internal")
+  endif()
   list(SUBLIST ARGN 0 ${num_files} list_files)
   list(SUBLIST ARGN ${num_files} -1 list_items)
 
