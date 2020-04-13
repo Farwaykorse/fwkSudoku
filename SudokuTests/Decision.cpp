@@ -431,7 +431,7 @@ TEST(Multipass, mfFinished)
 	EXPECT_TRUE(base_def.finished());
 
 	// input: empty board
-	Board<Options<4>, 2> empty{};
+	const Board<Options<4>, 2> empty{};
 	Multipass_Base<2> empty_base(empty);
 	EXPECT_FALSE(base.finished());
 
@@ -832,7 +832,7 @@ TEST(Multipass, solve2)
 
 	::Sudoku::Multipass_Base<3> base(B1);
 
-	auto& answers = base();
+	auto const& answers = base();
 	EXPECT_EQ(answers.size(), size_t{1});
 	for (int i{}; i < ::Sudoku::full_size<3>; ++i)
 	{
@@ -898,7 +898,7 @@ TEST(Multipass, solve3)
 		v1a.cbegin(), v1a.cend(), ans.begin(), ::Sudoku::to_Value<3, int>);
 
 	::Sudoku::Multipass_Base<3> base(B1);
-	auto& answers = base();
+	auto const& answers = base();
 	EXPECT_EQ(answers.size(), size_t{1});
 	for (int i{}; i < ::Sudoku::full_size<3>; ++i)
 	{
@@ -911,9 +911,9 @@ TEST(Multipass, solve3)
 
 TEST(Multipass, emptyBase2)
 {
-	Board<Value, 2> empty{};
+	const Board<Value, 2> empty{};
 	::Sudoku::Multipass_Base<2> base{empty};
-	auto& answers = base();
+	const auto& answers = base();
 	EXPECT_EQ(answers.size(), 12U);
 }
 
