@@ -18,9 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: checkout
-      uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
+      uses: actions/checkout@v2
     - uses: actions/setup-python@v1
     - run: pip install cpplint
     - run: cpplint --verbose=0 --counting=detailed --recursive .
