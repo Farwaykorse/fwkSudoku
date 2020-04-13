@@ -77,8 +77,8 @@ public:
 	}
 
 	// NOLINTNEXTLINE(runtime/references)
-	void add_answer( // NOLINT(bugprone-exception-escape)
-		worker_Board& item) noexcept(config::MAX_ANSWERS >= 0)
+	void add_answer(worker_Board& item) // NOLINT(bugprone-exception-escape)
+		noexcept(config::MAX_ANSWERS >= 0)
 	{
 		if (config::MAX_ANSWERS && answer_count() < config::MAX_ANSWERS)
 		{
@@ -389,7 +389,7 @@ inline int count_options(Board<Options<elem_size<N>>, N> const& board) noexcept
 	};
 	// NOTE std::reduce is not implemented in libstdc++
 #if defined(__GNUC__) && (__GNUC__ <= 9) &&                                    \
-	not(defined(__clang__) && defined(_LIBCPP_VERSION))
+	!(defined(__clang__) && defined(_LIBCPP_VERSION))
 	auto count = gsl::narrow_cast<int>(
 		std::accumulate(std::begin(board), std::end(board), size_t{0}, size));
 #else
