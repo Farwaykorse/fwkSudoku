@@ -6,15 +6,14 @@
 //
 //	Unit tests for the template class Sudoku::Value
 //====--------------------------------------------------------------------====//
+#include <Sudoku/Value.h> // Class under test
+
+#include <vector>
+
+#include <type_traits>
+
 #include <gtest/gtest.h>
 
-// Class under test
-#include <Sudoku/Value.h>
-// Helpers
-
-// additional
-#include <vector>
-#include <type_traits>
 #include <cstdint>
 
 

@@ -6,19 +6,17 @@
 //
 // Unit tests for type traits defined in Sudoku/traits.h.
 //====--------------------------------------------------------------------====//
-#include <gtest/gtest.h>
+#include <Sudoku/traits.h> // Class under test
 
-// Class under test
-#include <Sudoku/traits.h>
+#include <bitset>
 
-// Helpers
 #include <type_traits>
 
-// additional
-#include <bitset>
-#include <cwchar>
+#include <gtest/gtest.h>
+
 #include <cstddef>
 #include <cstdint>
+#include <cwchar>
 
 
 namespace SudokuTests::Traits

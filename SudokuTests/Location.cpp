@@ -8,16 +8,15 @@
 //===----------------------------------------------------------------------===//
 // Implemented with GoogleTest
 //===----------------------------------------------------------------------===//
-#include <gtest/gtest.h>
-
-// Class under test
-#include <Sudoku/Location.h>
-#include <Sudoku/Location_Utilities.h>
-// Helpers
 #include <Sudoku/Board.h>
-// additional
+#include <Sudoku/Location.h>           // Class under test
+#include <Sudoku/Location_Utilities.h> // Class under test
+
 #include <vector>
+
 #include <type_traits>
+
+#include <gtest/gtest.h>
 
 
 namespace SudokuTests::LocationTest

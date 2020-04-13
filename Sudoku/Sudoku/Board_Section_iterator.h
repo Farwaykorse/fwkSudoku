@@ -12,14 +12,15 @@
 #include "Location.h"
 #include "Location_Utilities.h"
 #include "traits.h"
+
 #include <gsl/gsl> // index
 
 #include <iterator>
 #include <type_traits>
-#include <cassert>
 
-// Forward declarations
-#include "Board.fwd.h"
+#include "Board.fwd.h" // Forward declarations
+
+#include <cassert>
 
 
 namespace Sudoku::Board_Section
@@ -93,8 +94,8 @@ public:
 	}
 	// [[implicit]] Type Conversion to const_(reverse_)iterator
 	// NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-	constexpr operator Section_iterator<T, N, S, true, is_reverse>() const
-		noexcept
+	constexpr operator Section_iterator<T, N, S, true, is_reverse>()
+		const noexcept // (guide format)
 	{
 		return Section_iterator<T, N, S, true, is_reverse>(board_, id_, elem_);
 	}

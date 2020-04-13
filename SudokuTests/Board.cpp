@@ -16,25 +16,24 @@
 //   if used in *_EQ/NE etc. use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //===----------------------------------------------------------------------===//
-#include <gtest/gtest.h>
+#include "print_Options.h" // Debug Output
 
-// Class under test
-#include <Sudoku/Board.h>
-// helpers
+#include <Sudoku/Board.h> // Class under test
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
 #include <Sudoku/Value.h>
 #include <Sudoku/exceptions.h>
-// Debug Output
-#include "print_Options.h"
-// library
+
 #include <array>
 #include <bitset>
 #include <initializer_list>
 #include <set>
+
 #include <numeric> // accumulate
 #include <random>  // random-access tests
 #include <type_traits>
+
+#include <gtest/gtest.h>
 
 
 namespace SudokuTests::BoardTest
@@ -476,7 +475,7 @@ TEST(Board, accessChecked)
 	static_assert(not noexcept(cB.at(Location<2>(20)) == 1));
 	static_assert(not noexcept(cexprB.at(Location<2>(20)) == 1));
 	static_assert(std::is_same_v<int const&, decltype(cB.at(Location<2>(2)))>);
-	[[maybe_unused]] int tmp;
+	[[maybe_unused]] int tmp{};
 	EXPECT_EQ(cB.at(Location<2>(2)), 2) << "at(Location) const";
 	EXPECT_THROW(tmp = cB.at(Location<2>(16)), invalid_Location);
 	EXPECT_THROW(tmp = cB.at(Location<2>(-1)), invalid_Location);

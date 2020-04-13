@@ -13,10 +13,13 @@
 #include "Value.h"
 
 #include <gsl/gsl>
+
 #include <bitset>
 #include <string>
 #include <vector>
+
 #include <utility>
+
 #include <cassert>
 #include <cstddef> // size_t
 #include <cstdint> // int64_t, uint32

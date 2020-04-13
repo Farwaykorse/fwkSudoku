@@ -5,20 +5,19 @@
 #pragma once
 
 #include "Board_Section_iterator.h"
+#include "Board_Section_traits.h" // Convenience include
 #include "Location.h"
 #include "Location_Utilities.h"
 #include "exceptions.h"
 #include "traits.h"
+
 #include <gsl/gsl> // index
 
 #include <type_traits>
+
+#include "Board.fwd.h" // Forward declarations
+
 #include <cassert>
-
-// Convenience include
-#include "Board_Section_traits.h"
-
-// Forward declarations
-#include "Board.fwd.h"
 
 
 namespace Sudoku::Board_Section

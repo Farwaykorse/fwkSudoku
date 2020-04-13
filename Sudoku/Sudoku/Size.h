@@ -5,6 +5,7 @@
 #pragma once
 
 #include <gsl/gsl>
+
 #include <limits>
 
 namespace Sudoku

@@ -18,20 +18,18 @@
 //   use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //===----------------------------------------------------------------------===//
-#include <gtest/gtest.h>
+#include "print_Options.h" // Debug Output
 
-// Class under test
-#include <Sudoku/Options.h>
-// Helpers
-#include <Sudoku/Value.h>
-// Debug Output
-#include "print_Options.h"
+#include <Sudoku/Options.h> // Class under test
+#include <Sudoku/Value.h>   // Helpers
 
-// additional
 #include <bitset>
 #include <string>
 #include <vector>
+
 #include <type_traits>
+
+#include <gtest/gtest.h>
 
 
 namespace SudokuTests::OptionsTest

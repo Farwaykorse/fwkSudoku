@@ -6,6 +6,10 @@ include(msvc_warnings_list)
 include(set_precompiled_header)
 include(subproject_functions)
 
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
+  list(APPEND CMAKE_MESSAGE_CONTEXT "console")
+endif()
+
 subproject_cmake_minimum_required(3.12)
 
 project(SudokuConsole LANGUAGES CXX)
@@ -127,18 +131,35 @@ if(MSVC) # MSVC or simulating MSVC
       /Qdiag-disable:304,981
     >
   )
-  set_source_files_compile_options(
-    precompiled.cpp
-    OPTIONS
-      $<$<CXX_COMPILER_ID:MSVC>:
-        $<$<CONFIG:Debug>:
-          /wd4365 # stl
+  if(NOT DISABLE_PRECOMPILE_HEADERS)
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+      target_compile_options(console PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:
+          $<$<CONFIG:Debug>:
+            /wd4365 # stl xmemory
+          >
+          /wd4668 # gsl: multi_span (fixed upstream 2020-04-09)
+          $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,1920>: # VS2017
+            /wd4774 # stl string
+            /wd5026 # system_error
+          >
         >
-        /wd4668 # gsl_byte
-        /wd4774 # stl
-        /wd5026 # system_error
-      >
-  )
+      )
+    else()
+      set_source_files_compile_options(precompiled.cpp OPTIONS
+        $<$<CXX_COMPILER_ID:MSVC>:
+          $<$<CONFIG:Debug>:
+            /wd4365 # stl
+          >
+          /wd4668 # gsl: multi_span (fixed upstream 2020-04-09)
+          $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,1920>: # VS2017
+            /wd4774 # stl string
+            /wd5026 # system_error
+          >
+        >
+      )
+    endif()
+  endif()
 else()
   target_compile_options(console PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
@@ -210,5 +231,9 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
   target_precompile_headers(console PRIVATE precompiled.h)
 elseif(NOT DISABLE_PRECOMPILE_HEADERS)
   set_precompiled_header(console "precompiled.h" "precompiled.cpp")
+endif()
+
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
+  list(POP_BACK CMAKE_MESSAGE_CONTEXT)
 endif()
 

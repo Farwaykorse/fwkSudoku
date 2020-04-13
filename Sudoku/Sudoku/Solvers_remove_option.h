@@ -14,13 +14,15 @@
 #include "traits.h"
 
 #include <gsl/gsl>
+
 #include <vector>
+
 #include <algorithm>   // none_of
 #include <type_traits> // is_base_of
-#include <cassert>
 
-// Forward declarations
-#include "Solver.fwd.h" // single_option
+#include "Solver.fwd.h" // Forward declaration - single_option
+
+#include <cassert>
 
 /* experiment flags */
 //! DO #undef at end of file!

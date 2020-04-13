@@ -3,10 +3,6 @@ version: "{build}"
 # fetch repository as a zip archive
 shallow_clone: true
 
-branches:
-  except:
-  - /^[Tt]ravis.*/
-
 cache:
 - C:\Users\appveyor\Tools\cache\vcpkg
 - C:\Tools\vcpkg\installed
@@ -249,9 +245,9 @@ init:
 - ps: |
     New-Item -ItemType Directory -Force ~\tools | pushd
     git clone https://github.com/Farwaykorse/AppVeyorHelpers.git --quiet
-    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.13.1
+    Import-Module -Name .\AppVeyorHelpers -MinimumVersion 0.14.1
     popd
-- ps: Show-SystemInfo -LLVM -CMake -Curl -Path
+- ps: Show-SystemInfo -LLVM -CMake -Curl -Ninja -Path
 - ps: |
     if ('Ninja','MSBuild','MSBuild_Solution' -ccontains "$env:BUILDSYSTEM") {
       Write-Output ('Build configuration: ' + $env:BUILDSYSTEM)
@@ -270,13 +266,6 @@ init:
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
 install:
-- ps: |
-    if("$env:BUILDSYSTEM" -eq "Ninja") {
-      New-Item -Path C:\Tools\ninja -ItemType Directory 1>$null
-      $null = Install-Ninja -InstallDir C:\Tools\ninja -AddToPath `
-        -Tag 'v1.9.0' -SHA512 `
-          '1C050E602EC63D4DCF44D9AB3D2D02AC731B4B2977BC0B420A21E85604487F58EC8D3045941D4153EF06AB00C175CA7CF9D57B8E20A757528290E135639962AC'
-    }
 - ps: Update-Vcpkg
 - vcpkg install ms-gsl:%PLATFORM%-windows
 - vcpkg install gtest:%PLATFORM%-windows
@@ -338,13 +327,13 @@ before_build:
     $env:CMakeGenFlags = "$CMakeGenFlags"            `
       +" -DCMAKE_BUILD_TYPE=$env:CONFIGURATION"      `
       +" -DCMAKE_TOOLCHAIN_FILE=$env:TOOLCHAIN_FILE" `
-      +' -Wdev -Werror=dev --warn-uninitialized'
+      +' -Wdev -Werror=dev --log-context --warn-uninitialized'
     $env:CMakeBuildFlags = "--config $env:CONFIGURATION -- $GeneratorFlags"
 - cd %APPVEYOR_BUILD_FOLDER%
 - mkdir build && cd build
 - if %BUILDSYSTEM%==Ninja (call %VCVARSALL%)
 - echo %CMakeGenFlags%
-- cmake .. %CMakeGenFlags%
+- cmake %CMakeGenFlags% ..
 
 ##====--------------------------------------------------------------------====##
 build_script:

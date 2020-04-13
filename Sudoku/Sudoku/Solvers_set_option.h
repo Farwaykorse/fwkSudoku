@@ -16,15 +16,17 @@
 #include "traits.h"
 
 #include <gsl/gsl>
+
 #include <vector>
+
 #include <algorithm>   // find_if
 #include <iterator>    // next
 #include <stdexcept>   // logic_error
 #include <type_traits> // is_base_of
-#include <cassert>
 
-// Forward declarations
-#include "Solver.fwd.h" // single_option
+#include "Solver.fwd.h" // Forward declaration - single_option
+
+#include <cassert>
 
 
 namespace Sudoku
@@ -160,7 +162,9 @@ inline int set_unique(
 		assert(is_valid<N>(value));
 	}
 	const auto end       = section.cend();
-	const auto condition = [value](const Options& O) { return O.test(value); };
+	const auto condition = [value](const Options& O) {
+		return O.test(value);
+	};
 
 	const auto itr = std::find_if(section.cbegin(), end, condition);
 

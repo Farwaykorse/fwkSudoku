@@ -5,9 +5,10 @@
 #include <Sudoku/Location_Utilities.h>
 #include <Sudoku/Options.h>
 #include <Sudoku/Solver.h>
-
 #include <gsl/gsl>
+
 #include <string>
+
 #include <iomanip> // setw(), setfill()
 #include <sstream>
 #include <utility>

@@ -11,18 +11,17 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
-// console requirements
-#include <cstdio>
-
-// Main library
-#include <gtest/gtest.h>
-
 // Common includes
 #include <bitset>
 #include <vector>
+
 #include <numeric>
 #include <random>
 #include <type_traits>
+
+#include <gtest/gtest.h> // Main library
+
+#include <cstdio> // console requirements
 
 // precompiled dependencies specified for Sudoku.lib
 #include <Sudoku/precompiled_basic.h>
