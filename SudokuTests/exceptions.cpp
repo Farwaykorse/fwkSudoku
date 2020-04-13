@@ -18,15 +18,16 @@
 //		use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //===----------------------------------------------------------------------===//
-#include <gtest/gtest.h>
+#include <Sudoku/exceptions.h> // Class under test
 
-// Class under test
-#include <Sudoku/exceptions.h>
-// library
 #include <string>
-#include <cstring>
+
 #include <stdexcept>
 #include <type_traits>
+
+#include <gtest/gtest.h>
+
+#include <cstring>
 
 namespace SudokuTests::errorTests
 {

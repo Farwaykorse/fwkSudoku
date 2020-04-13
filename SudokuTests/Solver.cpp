@@ -18,25 +18,24 @@
 //		use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //===----------------------------------------------------------------------===//
-#include <gtest/gtest.h>
+#include "print_Options.h" // Debug Output
 
-// Class under test
-#include <Sudoku/Solver.h>
-// helpers
 #include <Sudoku/Board.h>
 #include <Sudoku/Location.h>
 #include <Sudoku/Location_Utilities.h>
 #include <Sudoku/Options.h>
+#include <Sudoku/Solver.h> // Class under test
 #include <Sudoku/exceptions.h>
-// Debug Output
-#include "print_Options.h"
-// library
+
 #include <array>
 #include <bitset>
 #include <vector>
+
 #include <algorithm> // std::copy
 #include <stdexcept>
 #include <type_traits>
+
+#include <gtest/gtest.h>
 
 
 namespace SudokuTests::SolversTest
@@ -1116,6 +1115,7 @@ TEST(Solver, multiOption2)
 	static_assert(multi_option(board, L(), 0) == 0);
 	static_assert(multi_option(board, L(), Sudoku::elem_size<2>) == 0);
 #endif // __GNUC__
+
 	{ // sanity check:
 		board_3[0][0] = Options<9>{std::bitset<10>{"1111000001"}};
 		board_3[0][1] = Options<9>{std::bitset<10>{"1111000001"}};

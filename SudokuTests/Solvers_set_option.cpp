@@ -17,20 +17,19 @@
 //   use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //===----------------------------------------------------------------------===//
-#include <gtest/gtest.h>
+#include "print_Options.h" // Debug Output
 
-// Class under test
-#include <Sudoku/Solver.h>
-// helpers
 #include <Sudoku/Board.h>
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
-// Debug Output
-#include "print_Options.h"
-// library
+#include <Sudoku/Solver.h> // Class under test
+
 #include <array>
 #include <bitset>
+
 #include <type_traits>
+
+#include <gtest/gtest.h>
 
 
 namespace SudokuTests::Solvers_set_option
@@ -96,10 +95,8 @@ TEST(SolverDeathTest, setValue)
 
 	Board<Options<4>, 2> board;
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(
-		set_Value(board, L{-1}, Value{1}), "is_valid\\(loc\\)");
-	EXPECT_DEBUG_DEATH(
-		set_Value(board, L{16}, Value{1}), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(set_Value(board, L{-1}, Value{1}), "is_valid\\(loc\\)");
+	EXPECT_DEBUG_DEATH(set_Value(board, L{16}, Value{1}), "is_valid\\(loc\\)");
 	EXPECT_DEBUG_DEATH(
 		set_Value(board, L{1}, Value{0}), "is_valid<N>\\(value\\)");
 	EXPECT_DEBUG_DEATH(

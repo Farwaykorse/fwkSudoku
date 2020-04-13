@@ -16,13 +16,15 @@
 #include "Value.h"
 
 #include <gsl/gsl>
+
 #include <vector>
+
 #include <algorithm>   // minmax
 #include <type_traits> // is_base_of
-#include <cassert>
 
-// Forward declarations
-#include "Solver.fwd.h"
+#include "Solver.fwd.h" // Forward declarations
+
+#include <cassert>
 
 
 namespace Sudoku

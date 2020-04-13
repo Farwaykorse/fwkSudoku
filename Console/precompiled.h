@@ -24,11 +24,11 @@
 // reference additional headers your program requires here
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include <algorithm>
 #include <chrono>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 
 // dependencies used in Sudoku

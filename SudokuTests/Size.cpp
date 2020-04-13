@@ -6,10 +6,9 @@
 //
 //	Unit tests for the template class Sudoku::Size
 //=====--------------------------------------------------------------------====//
-#include <gtest/gtest.h>
+#include <Sudoku/Size.h> // Class under test
 
-// Class under test
-#include <Sudoku/Size.h>
+#include <gtest/gtest.h>
 
 
 namespace SudokuTests::SizeTest

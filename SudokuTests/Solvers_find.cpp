@@ -18,23 +18,22 @@
 //   use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //===----------------------------------------------------------------------===//
-#include <gtest/gtest.h>
+#include "print_Options.h" // Debug Output
 
-// Class under test
-#include <Sudoku/Solvers_find.h>
-// helpers
 #include <Sudoku/Board.h>
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
-#include <Sudoku/Solver.h> // setValue
-// Debug Output
-#include "print_Options.h"
-// library
+#include <Sudoku/Solver.h>       // setValue
+#include <Sudoku/Solvers_find.h> // Class under test
+
 #include <array>
 #include <bitset>
 #include <vector>
+
 #include <iterator>
 #include <type_traits>
+
+#include <gtest/gtest.h>
 
 
 namespace SudokuTests::Solvers_find

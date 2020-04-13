@@ -8,12 +8,15 @@
 #include "Size.h"
 
 #include <gsl/gsl>
+
 #include <vector>
+
 #include <algorithm> // all_of
 #include <limits>
 #include <stdexcept>
 #include <type_traits> // is_same
-#include <cstddef>     // size_t
+
+#include <cstddef> // size_t
 
 
 namespace Sudoku

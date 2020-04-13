@@ -18,25 +18,24 @@
 //   use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //====--------------------------------------------------------------------====//
-#include <gtest/gtest.h>
+#include "print_Options.h" // Debug Output
 
-// Class under test
-#include <Sudoku/Board.h>
-#include <Sudoku/Board_Iterators.h>
-// helpers
+#include <Sudoku/Board.h>           // Class under test
+#include <Sudoku/Board_Iterators.h> // Class under test
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
 #include <Sudoku/traits.h>
-// Debug Output
-#include "print_Options.h"
-// library
 #include <gsl/gsl>
+
 #include <bitset>
 #include <initializer_list>
 #include <set>
+
 #include <numeric> // accumulate
 #include <random>  // random-access tests
 #include <type_traits>
+
+#include <gtest/gtest.h>
 
 
 namespace SudokuTests::BoardIterator

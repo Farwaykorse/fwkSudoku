@@ -16,19 +16,19 @@
 //   use an explicit test like EXPECT_TRUE(.. == ..).
 //
 //====--------------------------------------------------------------------====//
-#include <gtest/gtest.h>
-
-// Class under test
-#include <Sudoku/Board_Section.h>
-#include <Sudoku/Board_Section_iterator.h>
-// helpers
 #include <Sudoku/Board.h>
+#include <Sudoku/Board_Section.h>          // Class under test
+#include <Sudoku/Board_Section_iterator.h> // Class under test
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
 #include <Sudoku/traits.h>
-// library
+
 #include <type_traits>
+
+#include <gtest/gtest.h>
+
 #include <cstdint>
+
 
 namespace SudokuTests::Section_Iterator
 {

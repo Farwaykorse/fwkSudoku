@@ -21,7 +21,7 @@
 ##====--------------------------------------------------------------------====##
 ## Please, keep sorted by name.
 ##
-## Updated for Clang-Tidy v9.0.0
+## Updated for Clang-Tidy v10.0.0
 #
 
 ---
@@ -43,6 +43,7 @@ Checks: '*,
   -clang-analyzer-unix*,
   cppcoreguidelines-*,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -darwin-*,
   -fuchsia-*,
   google-*,
   -google-objc-*,
@@ -51,9 +52,11 @@ Checks: '*,
   hicpp-*,
   -hicpp-braces-around-statements,
   -hicpp-no-array-decay,
+  -linuxkernel-*,
   llvm-*,
   -llvm-header-guard,
   -llvm-include-order,
+  -llvm-prefer-register-over-unsigned,
   misc-*,
   modernize-*,
   -modernize-use-trailing-return-type,
