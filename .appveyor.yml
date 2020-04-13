@@ -3,10 +3,6 @@ version: "{build}"
 # fetch repository as a zip archive
 shallow_clone: true
 
-branches:
-  except:
-  - /^[Tt]ravis.*/
-
 cache:
 - C:\Users\appveyor\Tools\cache\vcpkg
 - C:\Tools\vcpkg\installed
