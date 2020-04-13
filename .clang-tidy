@@ -69,7 +69,7 @@ Checks: '*,
   -readability-avoid-const-params-in-decls,
   -readability-braces-around-statements,
   -readability-named-parameter,
-  -ziron-*'
+  -zircon-*'
 
 CheckOptions:
 - key:   bugprone-argument-comment.StrictMode
