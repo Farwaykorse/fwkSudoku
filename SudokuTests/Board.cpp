@@ -412,9 +412,16 @@ TEST(Board, accessFrontBack)
 
 	// Write
 	static_assert(noexcept(B.front() = 9));
-	static_assert(noexcept(B.back() = 9));
+	static_assert(std::is_assignable_v<decltype(B.front()), int>);
+	static_assert(std::is_trivially_assignable_v<decltype(B.front()), int>);
+	static_assert(std::is_nothrow_assignable_v<decltype(B.front()), int>);
 	B.front() = 12;
 	EXPECT_EQ(B.front(), 12);
+
+	static_assert(noexcept(B.back() = 9));
+	static_assert(std::is_assignable_v<decltype(B.back()), int>);
+	static_assert(std::is_trivially_assignable_v<decltype(B.back()), int>);
+	static_assert(std::is_nothrow_assignable_v<decltype(B.back()), int>);
 	B.back() = 89;
 	EXPECT_EQ(B.back(), 89);
 }
@@ -425,6 +432,11 @@ TEST(Board, accessChecked)
 
 	// at(Location)
 	Board<int, 2> B1{};
+	static_assert(std::is_assignable_v<decltype(B1.at(Location<2>(0))), int>);
+	static_assert(
+		std::is_trivially_assignable_v<decltype(B1.at(Location<2>(0))), int>);
+	static_assert(
+		std::is_nothrow_assignable_v<decltype(B1.at(Location<2>(0))), int>);
 #if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
 							   defined(__GNUC__) && __GNUC__ < 9)
 	static_assert(noexcept(B1.at(Location<2>(0)) = 2));
@@ -536,6 +548,11 @@ TEST(Board, accessUnchecked)
 	static_assert(noexcept(B[Location<2>(16)]));
 	static_assert(noexcept(B[Location<2>(-1)]));
 	static_assert(noexcept(B[Location<2>(0)] = 0));
+	static_assert(std::is_assignable_v<decltype(B[Location<2>(0)]), int>);
+	static_assert(
+		std::is_trivially_assignable_v<decltype(B[Location<2>(0)]), int>);
+	static_assert(
+		std::is_nothrow_assignable_v<decltype(B[Location<2>(0)]), int>);
 	static_assert(noexcept(cB[Location<2>(0)]));
 	static_assert(noexcept(cB[Location<2>(0)]));
 	static_assert(noexcept(cB[Location<2>(0)] == 1));
@@ -582,6 +599,9 @@ TEST(Board, InBetween)
 	static_assert(noexcept(board[4][5]));
 	static_assert(noexcept(board[-4][-5]));
 	static_assert(noexcept(board[0][0] = 1));
+	static_assert(std::is_assignable_v<decltype(board[0][0]), int>);
+	static_assert(std::is_trivially_assignable_v<decltype(board[0][0]), int>);
+	static_assert(std::is_nothrow_assignable_v<decltype(board[0][0]), int>);
 	board[1][0] = 9;
 	EXPECT_EQ(board[1][0], 9);
 	EXPECT_EQ(board[0][3], 3);

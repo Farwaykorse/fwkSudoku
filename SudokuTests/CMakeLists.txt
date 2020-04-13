@@ -169,6 +169,7 @@ if(MSVC) # MSVC or simulating MSVC
   set_source_files_compile_options(
     Board.cpp
     Board_Iterators.cpp
+    Board_Section_iterator.cpp
     OPTIONS 
       $<$<CXX_COMPILER_ID:Clang>:-Wno-unevaluated-expression >
   )
@@ -256,6 +257,7 @@ else()
   set_source_files_compile_options(
     Board.cpp
     Board_Iterators.cpp
+    Board_Section_iterator.cpp
     OPTIONS
       $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
         -Wno-unevaluated-expression

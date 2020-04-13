@@ -73,6 +73,7 @@
   <ItemGroup>
     <None Include=".clang-tidy" />
     <None Include="$(MSBuildThisFileDirectory)README.md" />
+    <None Include="CPPLINT.cfg" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="precompiled.h">
