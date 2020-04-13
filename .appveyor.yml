@@ -344,7 +344,7 @@ before_build:
 - mkdir build && cd build
 - if %BUILDSYSTEM%==Ninja (call %VCVARSALL%)
 - echo %CMakeGenFlags%
-- cmake .. %CMakeGenFlags%
+- cmake %CMakeGenFlags% ..
 
 ##====--------------------------------------------------------------------====##
 build_script:
