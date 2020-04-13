@@ -338,13 +338,13 @@ before_build:
     $env:CMakeGenFlags = "$CMakeGenFlags"            `
       +" -DCMAKE_BUILD_TYPE=$env:CONFIGURATION"      `
       +" -DCMAKE_TOOLCHAIN_FILE=$env:TOOLCHAIN_FILE" `
-      +' -Wdev -Werror=dev --warn-uninitialized'
+      +' -Wdev -Werror=dev --log-context --warn-uninitialized'
     $env:CMakeBuildFlags = "--config $env:CONFIGURATION -- $GeneratorFlags"
 - cd %APPVEYOR_BUILD_FOLDER%
 - mkdir build && cd build
 - if %BUILDSYSTEM%==Ninja (call %VCVARSALL%)
 - echo %CMakeGenFlags%
-- cmake .. %CMakeGenFlags%
+- cmake %CMakeGenFlags% ..
 
 ##====--------------------------------------------------------------------====##
 build_script:
