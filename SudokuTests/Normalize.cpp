@@ -6,18 +6,16 @@
 //
 // Unit-tests for the Options switching functionality.
 //====--------------------------------------------------------------------====//
-#include <gtest/gtest.h>
-
-// Class under test
-#include <Sudoku/Normalize.h>
-// Helpers
+#include <Sudoku/Normalize.h> // Class under test
 #include <Sudoku/Solver.h>
 
-// additional
 #include <array>
+
 #include <algorithm>
 #include <stdexcept>
 #include <type_traits>
+
+#include <gtest/gtest.h>
 
 
 namespace SudokuTests::Translate

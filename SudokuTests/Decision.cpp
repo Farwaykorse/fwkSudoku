@@ -6,18 +6,18 @@
 //
 // Unit tests for ...
 //====--------------------------------------------------------------------====//
-#include <gtest/gtest.h>
-
-// Class under test
-#include <Sudoku/Decision.h>
-// helpers
+#include <Sudoku/Decision.h> // Class under test
 #include <Sudoku/Value.h>
 #include <Sudoku/exceptions.h>
-// library
+
 #include <array>
 #include <bitset>
 #include <vector>
+
 #include <type_traits>
+
+#include <gtest/gtest.h>
+
 #include <cstddef> // std::size_t
 
 

@@ -13,13 +13,16 @@
 #include "exceptions.h"
 
 #include <gsl/gsl>
+
 #include <optional>
 #include <stack>
 #include <vector>
+
 #include <algorithm> // find_if_not, min_element
 #include <memory>    // unique_ptr
 #include <numeric>   // iota, reduce
 #include <utility>   // forward, move
+
 #include <cassert>
 
 

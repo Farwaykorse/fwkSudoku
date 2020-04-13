@@ -108,7 +108,8 @@ int set_Value(
 
 		if (value != Value{0})
 		{
-			if (!is_valid<N>(value)) throw std::domain_error{"Invalid Value"};
+			if (!is_valid<N>(value))
+				throw std::domain_error{"Invalid Value"};
 
 			if (is_option(board.at(loc), value))
 			{ // update options on board
