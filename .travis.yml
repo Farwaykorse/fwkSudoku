@@ -434,7 +434,7 @@ jobs:
       create:
         name: Linux
         paths:
-        - ~/tools/.cache/vcpkg
+        - ${VCPKG_DIR}
     install: skip
     before_script: skip
     script: skip
@@ -447,7 +447,7 @@ jobs:
       create:
         name: OSX
         paths:
-        - ~/tools/.cache/vcpkg
+        - ${VCPKG_DIR}
     os: osx
     osx_image: xcode10.3
     env:
@@ -509,11 +509,12 @@ before_install:
   fi
 - |
   # Download vcpkg
+  if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
   ( set -euo pipefail
     # Full history clone for rebuild detection.
     git clone --quiet https://github.com/Microsoft/vcpkg.git ${VCPKG_DIR}
     mv -f -t ${VCPKG_DIR} ~/tools/.cache/vcpkg/* || echo "No cached files."
-  )
+  ); fi
   export PATH=$PATH:${VCPKG_DIR}
 - |
   # Install/Update vcpkg
