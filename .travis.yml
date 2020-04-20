@@ -754,7 +754,7 @@ before_cache:
   # Select files for caching
   mkdir -p ~/tools/.cache/vcpkg
   if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
-    mv -u -t ~/tools/.cache/vcpkg ${VCPKG_DIR}/vcpkg ${VCPKG_DIR}/vcpkg_src_hash
+    cp -u -t ~/tools/.cache/vcpkg ${VCPKG_DIR}/vcpkg ${VCPKG_DIR}/vcpkg_src_hash
   fi
   mv -u -t ~/tools/.cache/vcpkg ${VCPKG_DIR}/installed
 
