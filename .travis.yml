@@ -13,7 +13,7 @@ git:
 env:
   global:
   # vcpkg
-  - VCPKG_DIR:       $HOME/tools/vcpkg
+  - VCPKG_DIR:      "$HOME/tools/vcpkg"
   - TOOLCHAIN_FILE: "$HOME/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 ##====--------------------------------------------------------------------====##
@@ -519,7 +519,7 @@ before_install:
 - |
   # Install/Update vcpkg
   if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
-    cd ${VCPKG_DIR}
+    pushd ${VCPKG_DIR}
   ( set -euo pipefail
     VCPKG_SRC_HASH="${VCPKG_DIR}/vcpkg_src_hash" && touch ${VCPKG_SRC_HASH}
     GENERATE_SRC_HASH="(
@@ -537,10 +537,12 @@ before_install:
       if [[ ${TRAVIS_OS_NAME} == "osx" && ${CXX} == g++-* ]]; then
         export LDFLAGS="${LDFLAGS:-} -static-libstdc++ -static-libgcc"
       fi
-      bootstrap-vcpkg.sh
+      ./bootstrap-vcpkg.sh
       eval ${GENERATE_SRC_HASH} > ${VCPKG_SRC_HASH}
     fi
-  ); fi
+  )
+    popd
+  fi
 - |
   # Using libc++
   if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
@@ -682,18 +684,22 @@ install:
       function cmake { command /usr/bin/cmake $@; }
     fi
   fi
-
-- vcpkg install ms-gsl
-- vcpkg install gtest
 - |
-  # Update installed packages
+  # Build/install libraries
+  pushd ${VCPKG_DIR}
+  ./vcpkg install ms-gsl
+  ./vcpkg install gtest
+  popd
+- |
+  # Update installed libraries
+  pushd ${VCPKG_DIR}
   ( set -euo pipefail
-    vcpkg update # print potential updates
-    if [[ $(vcpkg upgrade) != *'installed packages are up-to-date'* ]]
+    ./vcpkg update # print potential updates
+    if [[ $(./vcpkg upgrade) != *'installed packages are up-to-date'* ]]
     then
-      vcpkg upgrade --no-dry-run
+      ./vcpkg upgrade --no-dry-run
     fi
-  )
+  ); popd
 
 ##====--------------------------------------------------------------------====##
 before_script:
