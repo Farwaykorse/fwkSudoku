@@ -559,13 +559,13 @@ install:
   # Install Ninja-build (if not installed)
   if [[ ! -x "$(command -v ninja)" ]]; then
   ( set -euo pipefail
-    NINJA_VER="v1.9.0"
+    NINJA_VER="v1.10.0"
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
       file_name="ninja-linux.zip"
-      NINJA_SHA512="751fd86520a1a38fb47baadf4a46ab49f9ebb11d6ff9c01e71326564ebf10f141ca2627620e315fcab82db1493a30123f11194f41226241d80413d5008acfc59"
+      NINJA_SHA512="ffb179ab8ea315167fcc99a8f13286e1363590185b18cf819cc73e09f2a7553790e9dc45fd1ccd0bd1d2dbf543aee3f6c0951cf9ce453a7168ffd2ac873cdd29"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
       file_name="ninja-mac.zip"
-      NINJA_SHA512="ec2294b430b89134f54f3388bafd760697c7eb33792bc094416b918371619e79592629973a60fcc35335a92eaa9ed84a41f2bc53c846eb8abf3422d4322cd3e5"
+      NINJA_SHA512="619a1924067a0b30fc5f8887f868d3ee5481838d2f0f158d031f7614a2a10b95a73d4a56b658d5d560283ebf809e2e536b968c6c01ff0108075c3f393f5780ba"
     fi
     echo "-- Install Ninja-build..."
     NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
