@@ -28,10 +28,8 @@ Checks: '*,
   -fuchsia-*,
   google-*,
   -google-objc-*,
-  -google-readability-braces-around-statements,
   -google-readability-todo,
   hicpp-*,
-  -hicpp-braces-around-statements,
   -hicpp-no-array-decay,
   -linuxkernel-*,
   llvm-*,
@@ -48,7 +46,6 @@ Checks: '*,
   portability-*,
   readability-*,
   -readability-avoid-const-params-in-decls,
-  -readability-braces-around-statements,
   -readability-named-parameter,
   -zircon-*,
   -cert-err58-cpp,
@@ -90,6 +87,10 @@ CheckOptions:
 - key:   performance-inefficient-string-concatenation.StrictMode
   value: '1'
 - key:   readability-braces-around-statements.ShortStatementLines
+  value: '3'
+- key:   google-readability-braces-around-statements.ShortStatementLines
+  value: '3'
+- key:   hicpp-braces-around-statements.ShortStatementLines
   value: '3'
 - key:   readability-function-size.LineThreshold
   value: '-1'
