@@ -19,7 +19,7 @@
 ##
 ##  No space before `(`, inside parenthesis white-space is ignored.
 ##====--------------------------------------------------------------------====##
-## Please, keep sorted by name.
+## Please, keep sorted by name. (First configuration then disabling of aliases.)
 ##
 ## Updated for Clang-Tidy v10.0.0
 #
@@ -47,7 +47,6 @@ Checks: '*,
   -google-objc-*,
   -google-readability-todo,
   hicpp-*,
-  -hicpp-no-array-decay,
   -linuxkernel-*,
   llvm-*,
   -llvm-header-guard,
@@ -64,7 +63,53 @@ Checks: '*,
   readability-*,
   -readability-avoid-const-params-in-decls,
   -readability-named-parameter,
-  -zircon-*'
+  -zircon-*,
+  -cert-dcl03-c,
+  -cert-dcl16-c,
+  -cert-dcl54-cpp,
+  -cert-err09-cpp,
+  -cert-err61-cpp,
+  -cert-fio38-c,
+  -cert-msc30-c,
+  -cert-msc32-c,
+  -cert-oop11-cpp,
+  -cert-oop54-cpp,
+  -cert-pos44-c,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-c-copy-assignment-signature,
+  -cppcoreguidelines-explicit-virtual-functions,
+  -cppcoreguidelines-non-private-member-variables-in-classes,
+  -fuchsia-header-anon-namespaces,
+  -google-readability-braces-around-statements,
+  -google-readability-function-size,
+  -google-readability-namespace-comments,
+  -hicpp-avoid-c-arrays,
+  -hicpp-braces-around-statements,
+  -hicpp-deprecated-headers,
+  -hicpp-explicit-conversions,
+  -hicpp-function-size,
+  -hicpp-invalid-access-moved,
+  -hicpp-member-init,
+  -hicpp-move-const-arg,
+  -hicpp-named-parameter,
+  -hicpp-new-delete-operators,
+  -hicpp-no-array-decay,
+  -hicpp-no-malloc,
+  -hicpp-noexcept-move,
+  -hicpp-special-member-functions,
+  -hicpp-static-assert,
+  -hicpp-undelegated-constructor,
+  -hicpp-uppercase-literal-suffix,
+  -hicpp-use-auto,
+  -hicpp-use-emplace,
+  -hicpp-use-equals-default,
+  -hicpp-use-equals-delete,
+  -hicpp-use-noexcept,
+  -hicpp-use-nullptr,
+  -hicpp-use-override,
+  -hicpp-vararg,
+  -llvm-qualified-auto'
 
 CheckOptions:
 - key:   bugprone-argument-comment.StrictMode
@@ -90,10 +135,6 @@ CheckOptions:
 - key:   portability-simd-intrinsics.Suggest
   value: '1'
 - key:   readability-braces-around-statements.ShortStatementLines
-  value: '3'
-- key:   google-readability-braces-around-statements.ShortStatementLines
-  value: '3'
-- key:   hicpp-braces-around-statements.ShortStatementLines
   value: '3'
 - key:   readability-function-size.LineThreshold
   value: '-1'
