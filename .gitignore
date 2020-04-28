@@ -249,3 +249,6 @@ ModelManifest.xml
 # PVS-Studio
 *.plog
 *.PVS-Studio.*
+
+# Clang Power Tools
+CPTCMakeBuild/
