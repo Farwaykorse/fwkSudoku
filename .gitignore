@@ -255,3 +255,6 @@ CPTCMakeBuild/
 
 # CppCheck
 *.cppcheck
+
+# Visual Studio CMake configuration
+/CMakeSettings.json
