@@ -10,6 +10,8 @@ on:
     - '**.[Cc][Cc]'
     - '**.[CcHh][Pp][Pp]'
     - '**.[CcHh][Xx][Xx]'
+    - '**CPPLINT.cfg'
+    - '**/cpplint.yml'
   pull_request:
     branches: '**'
 jobs:
