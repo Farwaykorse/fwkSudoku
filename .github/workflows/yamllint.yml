@@ -6,8 +6,8 @@ on:
     paths:
     - '**.yml'
     - '**.yaml'
-    - '.clang-format'
-    - '.clang-tidy'
+    - .clang-format
+    - .clang-tidy
   pull_request:
     branches: '**'
 jobs:

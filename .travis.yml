@@ -63,16 +63,16 @@ dist: bionic
 
 # Specify Stage Order and Conditions
 stages:
-- "Build Dependencies"
+- Build Dependencies
 - "Build & Test Latest" # First: (4) builds to run first
-- name: "Validation"
+- name: Validation
 - name: "Build & Test"  # If all succeed build rest
-  if: NOT (branch =~ /^([Aa]pp[Vv]eyor|cpplint).*/)
+  if: 'NOT (branch =~ /^([Aa]pp[Vv]eyor|cpplint).*/)'
 
 jobs:
   include:
   - name: CMake versions
-    stage: "Validation"
+    stage: Validation
     env:
     - CMake_version: '"3.17.2 3.16.6 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
@@ -95,7 +95,7 @@ jobs:
       )
 
   - name: CMake versions
-    stage: "Validation"
+    stage: Validation
     os: osx
     osx_image: xcode10.3 # AppleClang 10.0.1
     env:
@@ -110,7 +110,7 @@ jobs:
       )
 
   - name: Clang-Tidy
-    stage: "Validation"
+    stage: Validation
     env:
     - CC: clang-10
     - CXX: clang++-10
@@ -129,7 +129,7 @@ jobs:
         - clang-tidy-10
 
   - name: Unity-Build
-    stage: "Validation"
+    stage: Validation
     env:
     - CMake_version: 3.17.2 # CMAKE_UNITY_BUILD requires at least v3.16.0
     - UNITY_BUILD: on
@@ -347,7 +347,7 @@ jobs:
         - clang-5.0
 
   - name: Clang-4.0 Debug
-    if: branch =~ /^[Tt]ravis.*$/
+    if: 'branch =~ /^[Tt]ravis.*$/'
     env:
     - CC: clang-4.0
     - CXX: clang++-4.0
@@ -378,7 +378,7 @@ jobs:
       use: OSX
 
   - name: AppleClang Xcode-11.1
-    if: branch =~ /^(master|[Tt]ravis.*)$/
+    if: 'branch =~ /^(master|[Tt]ravis.*)$/'
     stage: "Build & Test"
     os: osx
     osx_image: xcode11.1 # AppleClang 11.0.0 same compiler and linker as Xcode11
@@ -398,7 +398,7 @@ jobs:
       use: OSX
 
   - name: AppleClang Xcode-10.1
-    if: branch =~ /^(master|[Tt]ravis.*)$/
+    if: 'branch =~ /^(master|[Tt]ravis.*)$/'
     os: osx
     osx_image: xcode10.1 # AppleClang 10.0.0 same compiler as Xcode 10.0
     env:
@@ -408,28 +408,28 @@ jobs:
 
   # Note: can not build vcpkg on Xcode-9.3/4, missing OSX update on Travis.
   - name: AppleClang Xcode-9.4
-    if: branch =~ /^(master|[Tt]ravis.*)$/
+    if: 'branch =~ /^(master|[Tt]ravis.*)$/'
     os: osx
     osx_image: xcode9.4 # AppleClang 9.1.0 same compiler as Xcode 9.3
     env:
     - Coverage: grcov
-    - CMake_version: '3.12.4' # Xcode 9.4 comes with CMake 3.11.4
+    - CMake_version: 3.12.4 # Xcode 9.4 comes with CMake 3.11.4
     workspaces:
       use: OSX
 
   # Earliest available with C++17 support
   - name: AppleClang Xcode-9
-    if: branch =~ /^(master|[Tt]ravis.*)$/
+    if: 'branch =~ /^(master|[Tt]ravis.*)$/'
     os: osx
     osx_image: xcode9 # AppleClang 9.1.0 same compiler in Xcode 9.0, 9.1 and 9.2
     env:
     - Coverage: grcov
-    - CMake_version: '3.12.4'
+    - CMake_version: 3.12.4
     workspaces:
       use: OSX
 
   - name: vcpkg for Linux
-    stage: "Build Dependencies"
+    stage: Build Dependencies
     workspaces:
       create:
         name: Linux
@@ -442,7 +442,7 @@ jobs:
     after_success: skip
 
   - name: vcpkg for OSX
-    stage: "Build Dependencies"
+    stage: Build Dependencies
     workspaces:
       create:
         name: OSX
