@@ -21,6 +21,8 @@ on:
     - '**.[CcHh][Xx][Xx]'
     - '**CPPLINT.cfg'
     - '**/cpplint.yml'
+  schedule: # Verify main branch weakly with latest release
+  - cron: 12 9 * * SAT # Run every Saturday at 09:12 UTC
 jobs:
   cpplint:
     name: Run cpplint
