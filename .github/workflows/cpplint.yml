@@ -13,7 +13,14 @@ on:
     - '**CPPLINT.cfg'
     - '**/cpplint.yml'
   pull_request:
-    branches: '**'
+    paths:
+    - '**.[CcHh]'
+    - '**.[CcHh]\+\+'
+    - '**.[Cc][Cc]'
+    - '**.[CcHh][Pp][Pp]'
+    - '**.[CcHh][Xx][Xx]'
+    - '**CPPLINT.cfg'
+    - '**/cpplint.yml'
 jobs:
   cpplint:
     name: Run cpplint
