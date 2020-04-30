@@ -5,7 +5,7 @@
 coverage:
   precision: 5
   round: down
-  range: "85...100"
+  range: 85...100
 
   status:
     project:
@@ -15,13 +15,13 @@ coverage:
         threshold: 0.5%
       sudoku:
         paths:
-        - "Sudoku/Sudoku/"
+        - Sudoku/Sudoku/
         base: auto
         target: auto
         threshold: 0.5%
       tests:
         paths:
-        - "SudokuTests/"
+        - SudokuTests/
         base: auto
         target: auto
         threshold: 100% # report but never fail
@@ -32,7 +32,7 @@ coverage:
         threshold: 100% # report but never fail
       sudoku:
         paths:
-        - "Sudoku/Sudoku/"
+        - Sudoku/Sudoku/
         target: auto
         only_pulls: true
     changes: false

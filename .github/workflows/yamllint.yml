@@ -6,10 +6,16 @@ on:
     paths:
     - '**.yml'
     - '**.yaml'
-    - '.clang-format'
-    - '.clang-tidy'
+    - .clang-format
+    - .clang-tidy
   pull_request:
-    branches: '**'
+    paths:
+    - '**.yml'
+    - '**.yaml'
+    - .clang-format
+    - .clang-tidy
+  schedule: # Verify main branch weakly with latest release
+  - cron: 18 9 * * SAT # Run every Saturday at 09:18 UTC
 jobs:
   yamllint:
     name: Run yamllint
