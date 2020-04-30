@@ -104,6 +104,9 @@ matrix:
   # CMake generator limitations: MSBuild Failing error suppression. GitHub #2.
   - { BUILDSYSTEM: *Build_MSBuild, configuration: Debug }
   - { BUILDSYSTEM: *Build_MSBuild, configuration: Release }
+  # C++20 MS-STL no support for LLVM/Clang (yet)
+  - { BUILDSYSTEM: *Build_Ninja, configuration: LLVM_Debug }
+  - { BUILDSYSTEM: *Build_Ninja, configuration: LLVM_Release }
 
 # Specializing matrix job configuration
 # Note: overwrites existing, only new variables and notifications are merged.
