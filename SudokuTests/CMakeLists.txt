@@ -61,8 +61,8 @@ target_compile_definitions(SudokuTests
 
 set_target_properties(SudokuTests
   PROPERTIES
-    CXX_STANDARD 17
-    CXX_STANDARD_REQUIRED YES
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED OFF # allow decay to C++17
     CXX_EXTENSIONS NO
     VS_JUST_MY_CODE_DEBUGGING $<IF:$<CONFIG:Debug>,ON,OFF> # v3.15+
 )
