@@ -10,8 +10,6 @@
 *.userprefs
 
 # Build results
-[Cc]lang[Rr]elease/
-[Cc]lang[Dd]ebug/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -23,6 +21,8 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Oo]ut/
+LLVM_*[Dd]ebug/
+LLVM_*[Rr]elease/
 
 # Visual Studio 2015 cache/options directory
 .vs/
