@@ -40,7 +40,7 @@ Any other deviations should be considered configuration errors.
 ## General Information ##
 <!----------------------------------------------------------------------------->
 Targets:
-- Standard conforming (currently: C++17)
+- Standard conforming (currently: C++17, compiling as C++20 where possible)
 - Cross-platform (currently: Windows, Linux and OSX)
 - Compiling with any conforming compiler
   (currently: MSVC, LLVM/clang, Intel C++, GCC and AppleClang)
@@ -80,7 +80,7 @@ Add the Sudoku project as a reference to each project for IntelliSense support.
 
 ##### All configurations
 ```
-/std:c++17         ISO C++ 17 standard
+/std:c++latest     ISO C++ 20 standard as far as implemented
 /sdl               Recommended Security Development Life-cycle checks & codegen
 /MP                Multiprocessor compilation (Do not use /Gm)
 /permissive-       Disable non-conforming constructs in Visual C++:
