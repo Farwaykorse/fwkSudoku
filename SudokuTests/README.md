@@ -75,9 +75,9 @@ Disabled warnings:
 ````
 #### Custom settings per file
 Disabled warnings:  
-Board.cpp & Board_Iterators.cpp
+Board.cpp, Board_Iterators.cpp & Board_Section_iterator.cpp
 ````
--Wno-unevaluated-expression  Assignment in constexpr
+-Wno-unevaluated-expression  Assignment in static_assert
 ````
 
 <!-----------------------------------------------------------><a id="intel"></a>

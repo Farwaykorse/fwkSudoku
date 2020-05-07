@@ -3,7 +3,25 @@
 # LLVM clang-format release 10.0.0 required for `--dry-run`.
 #
 name: clang-format
-on: push
+on:
+  push:
+    paths:
+    - '**.[CcHh]'
+    - '**.[CcHh]\+\+'
+    - '**.[Cc][Cc]'
+    - '**.[CcHh][Pp][Pp]'
+    - '**.[CcHh][Xx][Xx]'
+    - .clang-format
+    - '**/clang-format.yml'
+  pull_request:
+    paths:
+    - '**.[CcHh]'
+    - '**.[CcHh]\+\+'
+    - '**.[Cc][Cc]'
+    - '**.[CcHh][Pp][Pp]'
+    - '**.[CcHh][Xx][Xx]'
+    - .clang-format
+    - '**/clang-format.yml'
 jobs:
   dry-run:
     name: clang-format dry-run

@@ -986,12 +986,14 @@ TEST(SectionItr, OutputIterator)
 	static_assert(noexcept(*itrA));
 	EXPECT_EQ(*itrA, 0);
 	// operation:
+	static_assert(noexcept(*tmp.begin() = 1));
 	static_assert(std::is_assignable_v<decltype(*tmp.begin()), int>);
 	static_assert(std::is_trivially_assignable_v<decltype(*tmp.begin()), int>);
 	static_assert(std::is_nothrow_assignable_v<decltype(*tmp.begin()), int>);
 	*itrA = 2;
 	EXPECT_EQ(tmp[0], 2);
 	// post-condition: iterator is incrementable
+	static_assert(noexcept((*tmp.begin() = 1)++));
 	itrA++;
 	EXPECT_TRUE(itrA == ++tmp.begin());
 	if constexpr (is_forward<decltype(tmp.begin())>)
@@ -1002,8 +1004,10 @@ TEST(SectionItr, OutputIterator)
 
 	[[maybe_unused]] int U{};
 	EXPECT_NO_THROW(U = *tmp.begin()); // pre-condition
+	static_assert(noexcept(*tmp.begin() = 5));
 	EXPECT_NO_THROW(U = *tmp.begin() = 5);
 	EXPECT_EQ(tmp[0], 5);
+	static_assert(noexcept(*(++tmp.begin()) = 3));
 	static_assert(std::is_assignable_v<decltype(*(++tmp.begin())), int>);
 	static_assert(
 		std::is_trivially_assignable_v<decltype(*(++tmp.begin())), int>);
@@ -1013,6 +1017,7 @@ TEST(SectionItr, OutputIterator)
 	EXPECT_EQ(tmp[1], 4);
 	static_assert(noexcept(*tmp.rbegin()));
 	EXPECT_NO_THROW(U = *tmp.rbegin()); // pre-condition
+	static_assert(noexcept(*tmp.rbegin() = 2));
 	static_assert(std::is_assignable_v<decltype(*tmp.rbegin()), int>);
 	static_assert(std::is_trivially_assignable_v<decltype(*tmp.rbegin()), int>);
 	static_assert(std::is_nothrow_assignable_v<decltype(*tmp.rbegin()), int>);
@@ -2195,11 +2200,18 @@ TEST(SectionItr, operatorSubscriptMemberAccess)
 
 		//====------------------------------------------------------------====//
 		// Output
+		static_assert(noexcept(A.begin()[0] = 1));
 		static_assert(std::is_assignable_v<decltype(A.begin()[0]), int>);
 		static_assert(
 			std::is_trivially_assignable_v<decltype(A.begin()[0]), int>);
 		static_assert(
 			std::is_nothrow_assignable_v<decltype(A.begin()[0]), int>);
+		static_assert(noexcept(A.rbegin()[0] = 1));
+		static_assert(std::is_assignable_v<decltype(A.rbegin()[0]), int>);
+		static_assert(
+			std::is_trivially_assignable_v<decltype(A.rbegin()[0]), int>);
+		static_assert(
+			std::is_nothrow_assignable_v<decltype(A.rbegin()[0]), int>);
 
 		A.begin()[0] = 1;
 		EXPECT_EQ(A[0], 1);

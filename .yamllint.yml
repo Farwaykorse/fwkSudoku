@@ -3,8 +3,8 @@
 # Documentation: yamllint.readthedocs.io
 # Run: yamllint .
 #
-# Last updated for: v1.21.0
-# Minimum required: v1.21.0
+# Last updated for: v1.23.0
+# Minimum required: v1.23.0
 ##====--------------------------------------------------------------------====##
 ---
 
@@ -13,8 +13,8 @@ extends: default
 yaml-files: # v1.17.0
 - '*.yaml'
 - '*.yml'
-- '.clang-format'
-- '.clang-tidy'
+- .clang-format
+- .clang-tidy
 
 rules:
   braces:
@@ -70,10 +70,18 @@ rules:
     forbid-implicit-octal: true
   quoted-strings:
     quote-type: any
-    required: false # yamllint v1.21.0
+    required: only-when-needed # v1.21.0
+    extra-allowed: # v1.23.0
+    - '[\/\\]\w|\w[\/\\]' # path
+    - '^\^|\$\/?$|[\|]'   # regex
+    - '.+&.+'    # containing an ampersand (VS rendering)
+    - '\w,[ \w]' # containing a comma (VS rendering)
+    extra-required:
+    - '[\/\\].*\s.*[\/\\].*|[\/\\].*\s.*' # path with white-space
   trailing-spaces: enable
   truthy:
     allowed-values: ['true', 'false', 'on', 'off'] # requires yamllint v1.16.0
+    check-keys: on # v1.22.0
     level: warning
 
 ...

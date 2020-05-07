@@ -19,7 +19,7 @@
 ##
 ##  No space before `(`, inside parenthesis white-space is ignored.
 ##====--------------------------------------------------------------------====##
-## Please, keep sorted by name.
+## Please, keep sorted by name. (First configuration then disabling of aliases.)
 ##
 ## Updated for Clang-Tidy v10.0.0
 #
@@ -32,8 +32,6 @@ Checks: '*,
   -android-*,
   boost-*,
   bugprone-*,
-  -bugprone-branch-clone,
-  -bugprone-suspicious-semicolon,
   cert-*,
   -cert-dcl21-cpp,
   clang-analyzer-*,
@@ -47,11 +45,13 @@ Checks: '*,
   -fuchsia-*,
   google-*,
   -google-objc-*,
-  -google-readability-braces-around-statements,
   -google-readability-todo,
-  hicpp-*,
-  -hicpp-braces-around-statements,
-  -hicpp-no-array-decay,
+  -hicpp-*,
+  hicpp-avoid-goto,
+  hicpp-exception-baseclass,
+  hicpp-multiway-paths-covered,
+  hicpp-no-assembler,
+  hicpp-signed-bitwise,
   -linuxkernel-*,
   llvm-*,
   -llvm-header-guard,
@@ -67,9 +67,29 @@ Checks: '*,
   portability-*,
   readability-*,
   -readability-avoid-const-params-in-decls,
-  -readability-braces-around-statements,
   -readability-named-parameter,
-  -ziron-*'
+  -zircon-*,
+  -cert-dcl03-c,
+  -cert-dcl16-c,
+  -cert-dcl54-cpp,
+  -cert-err09-cpp,
+  -cert-err61-cpp,
+  -cert-fio38-c,
+  -cert-msc30-c,
+  -cert-msc32-c,
+  -cert-oop11-cpp,
+  -cert-oop54-cpp,
+  -cert-pos44-c,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-c-copy-assignment-signature,
+  -cppcoreguidelines-explicit-virtual-functions,
+  -cppcoreguidelines-non-private-member-variables-in-classes,
+  -fuchsia-header-anon-namespaces,
+  -google-readability-braces-around-statements,
+  -google-readability-function-size,
+  -google-readability-namespace-comments,
+  -llvm-qualified-auto'
 
 CheckOptions:
 - key:   bugprone-argument-comment.StrictMode

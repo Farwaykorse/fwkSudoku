@@ -13,7 +13,7 @@ git:
 env:
   global:
   # vcpkg
-  - VCPKG_DIR:       $HOME/tools/vcpkg
+  - VCPKG_DIR:      "$HOME/tools/vcpkg"
   - TOOLCHAIN_FILE: "$HOME/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 ##====--------------------------------------------------------------------====##
@@ -63,18 +63,18 @@ dist: bionic
 
 # Specify Stage Order and Conditions
 stages:
-- "Build Dependencies"
+- Build Dependencies
 - "Build & Test Latest" # First: (4) builds to run first
-- name: "Validation"
+- name: Validation
 - name: "Build & Test"  # If all succeed build rest
-  if: NOT (branch =~ /^([Aa]pp[Vv]eyor|cpplint).*/)
+  if: 'NOT (branch =~ /^([Aa]pp[Vv]eyor|cpplint).*/)'
 
 jobs:
   include:
   - name: CMake versions
-    stage: "Validation"
+    stage: Validation
     env:
-    - CMake_version: '"3.17.1 3.16.6 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.17.2 3.16.6 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: Linux
     addons:
@@ -95,11 +95,11 @@ jobs:
       )
 
   - name: CMake versions
-    stage: "Validation"
+    stage: Validation
     os: osx
     osx_image: xcode10.3 # AppleClang 10.0.1
     env:
-    - CMake_version: '"3.17.1 3.16.6 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.17.2 3.16.6 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: OSX
     script:
@@ -110,7 +110,7 @@ jobs:
       )
 
   - name: Clang-Tidy
-    stage: "Validation"
+    stage: Validation
     env:
     - CC: clang-10
     - CXX: clang++-10
@@ -129,9 +129,9 @@ jobs:
         - clang-tidy-10
 
   - name: Unity-Build
-    stage: "Validation"
+    stage: Validation
     env:
-    - CMake_version: 3.17.1 # CMAKE_UNITY_BUILD requires at least v3.16.0
+    - CMake_version: 3.17.2 # CMAKE_UNITY_BUILD requires at least v3.16.0
     - UNITY_BUILD: on
     workspaces:
       use: Linux
@@ -141,7 +141,7 @@ jobs:
     env:
     - CC:  gcc-9
     - CXX: g++-9
-    - CMake_version: 3.17.1
+    - CMake_version: 3.17.2
     - Coverage: gcov-9
     workspaces:
       use: Linux
@@ -347,7 +347,7 @@ jobs:
         - clang-5.0
 
   - name: Clang-4.0 Debug
-    if: branch =~ /^[Tt]ravis.*$/
+    if: 'branch =~ /^[Tt]ravis.*$/'
     env:
     - CC: clang-4.0
     - CXX: clang++-4.0
@@ -378,7 +378,7 @@ jobs:
       use: OSX
 
   - name: AppleClang Xcode-11.1
-    if: branch =~ /^(master|[Tt]ravis.*)$/
+    if: 'branch =~ /^(master|[Tt]ravis.*)$/'
     stage: "Build & Test"
     os: osx
     osx_image: xcode11.1 # AppleClang 11.0.0 same compiler and linker as Xcode11
@@ -398,7 +398,7 @@ jobs:
       use: OSX
 
   - name: AppleClang Xcode-10.1
-    if: branch =~ /^(master|[Tt]ravis.*)$/
+    if: 'branch =~ /^(master|[Tt]ravis.*)$/'
     os: osx
     osx_image: xcode10.1 # AppleClang 10.0.0 same compiler as Xcode 10.0
     env:
@@ -408,33 +408,33 @@ jobs:
 
   # Note: can not build vcpkg on Xcode-9.3/4, missing OSX update on Travis.
   - name: AppleClang Xcode-9.4
-    if: branch =~ /^(master|[Tt]ravis.*)$/
+    if: 'branch =~ /^(master|[Tt]ravis.*)$/'
     os: osx
     osx_image: xcode9.4 # AppleClang 9.1.0 same compiler as Xcode 9.3
     env:
     - Coverage: grcov
-    - CMake_version: '3.12.4' # Xcode 9.4 comes with CMake 3.11.4
+    - CMake_version: 3.12.4 # Xcode 9.4 comes with CMake 3.11.4
     workspaces:
       use: OSX
 
   # Earliest available with C++17 support
   - name: AppleClang Xcode-9
-    if: branch =~ /^(master|[Tt]ravis.*)$/
+    if: 'branch =~ /^(master|[Tt]ravis.*)$/'
     os: osx
     osx_image: xcode9 # AppleClang 9.1.0 same compiler in Xcode 9.0, 9.1 and 9.2
     env:
     - Coverage: grcov
-    - CMake_version: '3.12.4'
+    - CMake_version: 3.12.4
     workspaces:
       use: OSX
 
   - name: vcpkg for Linux
-    stage: "Build Dependencies"
+    stage: Build Dependencies
     workspaces:
       create:
         name: Linux
         paths:
-        - ~/tools/.cache/vcpkg
+        - ${VCPKG_DIR}
     install: skip
     before_script: skip
     script: skip
@@ -442,12 +442,12 @@ jobs:
     after_success: skip
 
   - name: vcpkg for OSX
-    stage: "Build Dependencies"
+    stage: Build Dependencies
     workspaces:
       create:
         name: OSX
         paths:
-        - ~/tools/.cache/vcpkg
+        - ${VCPKG_DIR}
     os: osx
     osx_image: xcode10.3
     env:
@@ -509,16 +509,17 @@ before_install:
   fi
 - |
   # Download vcpkg
+  if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
   ( set -euo pipefail
     # Full history clone for rebuild detection.
     git clone --quiet https://github.com/Microsoft/vcpkg.git ${VCPKG_DIR}
     mv -f -t ${VCPKG_DIR} ~/tools/.cache/vcpkg/* || echo "No cached files."
-  )
+  ); fi
   export PATH=$PATH:${VCPKG_DIR}
 - |
   # Install/Update vcpkg
   if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
-    cd ${VCPKG_DIR}
+    pushd ${VCPKG_DIR}
   ( set -euo pipefail
     VCPKG_SRC_HASH="${VCPKG_DIR}/vcpkg_src_hash" && touch ${VCPKG_SRC_HASH}
     GENERATE_SRC_HASH="(
@@ -536,10 +537,12 @@ before_install:
       if [[ ${TRAVIS_OS_NAME} == "osx" && ${CXX} == g++-* ]]; then
         export LDFLAGS="${LDFLAGS:-} -static-libstdc++ -static-libgcc"
       fi
-      bootstrap-vcpkg.sh
+      ./bootstrap-vcpkg.sh
       eval ${GENERATE_SRC_HASH} > ${VCPKG_SRC_HASH}
     fi
-  ); fi
+  )
+    popd
+  fi
 - |
   # Using libc++
   if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
@@ -681,18 +684,22 @@ install:
       function cmake { command /usr/bin/cmake $@; }
     fi
   fi
-
-- vcpkg install ms-gsl
-- vcpkg install gtest
 - |
-  # Update installed packages
+  # Build/install libraries
+  pushd ${VCPKG_DIR}
+  ./vcpkg install ms-gsl
+  ./vcpkg install gtest
+  popd
+- |
+  # Update installed libraries
+  pushd ${VCPKG_DIR}
   ( set -euo pipefail
-    vcpkg update # print potential updates
-    if [[ $(vcpkg upgrade) != *'installed packages are up-to-date'* ]]
+    ./vcpkg update # print potential updates
+    if [[ $(./vcpkg upgrade) != *'installed packages are up-to-date'* ]]
     then
-      vcpkg upgrade --no-dry-run
+      ./vcpkg upgrade --no-dry-run
     fi
-  )
+  ); popd
 
 ##====--------------------------------------------------------------------====##
 before_script:
@@ -754,7 +761,7 @@ before_cache:
   # Select files for caching
   mkdir -p ~/tools/.cache/vcpkg
   if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
-    mv -u -t ~/tools/.cache/vcpkg ${VCPKG_DIR}/vcpkg ${VCPKG_DIR}/vcpkg_src_hash
+    cp -u -t ~/tools/.cache/vcpkg ${VCPKG_DIR}/vcpkg ${VCPKG_DIR}/vcpkg_src_hash
   fi
   mv -u -t ~/tools/.cache/vcpkg ${VCPKG_DIR}/installed
 

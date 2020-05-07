@@ -13,7 +13,7 @@
 ##    Report formatting errors: # Clang 10
 ##        > clang-format --style=file --dry-run --Werror ./**/*.h ./**/*.cpp
 ##    Apply formatting on project:
-##        > clang-format --i --dry-run --Werror ./**/*.h ./**/*.cpp
+##        > clang-format --i --style=file ./**/*.h ./**/*.cpp
 ##
 ##====--------------------------------------------------------------------====##
 ##
@@ -236,7 +236,7 @@ PenaltyReturnTypeOnItsOwnLine: 60
 
 ---
 Language:      Cpp
-Standard:      c++17 # Clang 10
+Standard:      c++20 # Clang 10
 DisableFormat: false
 ---
 Language:      CSharp # Clang 9

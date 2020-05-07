@@ -2,10 +2,16 @@
 # fwkSudoku
 <!----------------------------------------------------------------------------->
 <!-- Badges -->
-[![Build Status][Travis-badge]][Travis-link]
-[![Build status][AppVeyor-badge]][AppVeyor-link]
-[![codecov][Codecov-badge]][Codecov-link]
-[![CodeFactor][CodeFactor-badge]][CodeFactor-link]
+[![TravisCI][Travis-logo] ![Status][Travis-badge]][Travis-link]<br />
+[![AppVeyor][AppVeyor-logo] ![Status][AppVeyor-badge] ![tests][AppVeyor-tests]
+][AppVeyor-link]<br />
+[![Clang-Format][Clang-Format-badge]][Clang-Format-link]
+[![cpplint][cpplint-badge]][cpplint-link]
+[![yamllint][yamllint-badge]][yamllint-link]<br />
+[![Codecov][Codecov-badge]][Codecov-link]
+[![CodeFactor][CodeFactor-badge]][CodeFactor-link]<br />
+<small>*Continuous Integration for branch [master][master-link]*</small>
+
 <!-- Description -->
 Originally this started as a one of many small experiments while starting to
 learn C++. With a mild interest in properties of sudokus. It was mainly focused
@@ -124,17 +130,27 @@ Code licensed under the [MIT License](./LICENSE).
 
 [top](#top)
 
+[AppVeyor-logo]: https://img.shields.io/static/v1?label=&message=AppVeyor&style=flat&logo=appveyor&color=grey
 [AppVeyor-badge]: https://ci.appveyor.com/api/projects/status/fuasqqstakl49tfb/branch/master?svg=true
+[AppVeyor-tests]: https://img.shields.io/appveyor/tests/Farwaykorse/fwksudoku/master?compact_message&logo=appveyor
 [AppVeyor-link]:  https://ci.appveyor.com/project/Farwaykorse/fwksudoku/branch/master
-[Codecov-badge]:  https://codecov.io/gh/Farwaykorse/fwkSudoku/branch/master/graph/badge.svg
-[Codecov-link]:   https://codecov.io/gh/Farwaykorse/fwkSudoku
+[Clang-Format-badge]: https://github.com/Farwaykorse/fwkSudoku/workflows/clang-format/badge.svg?branch=master
+[Clang-Format-link]:  https://github.com/Farwaykorse/fwkSudoku/actions?query=workflow%3Aclang-format+branch%3Amaster
+[Codecov-badge]: https://codecov.io/gh/Farwaykorse/fwkSudoku/branch/master/graph/badge.svg
+[Codecov-link]:  https://codecov.io/gh/Farwaykorse/fwkSudoku
 [CodeFactor-badge]: https://www.codefactor.io/repository/github/farwaykorse/fwksudoku/badge/master
 [CodeFactor-link]:  https://www.codefactor.io/repository/github/farwaykorse/fwksudoku/overview/master
-[Travis-badge]:   https://travis-ci.com/Farwaykorse/fwkSudoku.svg?branch=master
-[Travis-link]:    https://travis-ci.com/Farwaykorse/fwkSudoku/branches
+[cpplint-badge]: https://github.com/Farwaykorse/fwkSudoku/workflows/cpplint/badge.svg?branch=master
+[cpplint-link]:  https://github.com/Farwaykorse/fwkSudoku/actions?query=workflow%3Acpplint+branch%3Amaster
+[Travis-logo]:  https://img.shields.io/static/v1?label=&message=Travis%20CI&style=flat&logo=travis&color=grey
+[Travis-badge]: https://travis-ci.com/Farwaykorse/fwkSudoku.svg?branch=master
+[Travis-link]:  https://travis-ci.com/Farwaykorse/fwkSudoku/branches
+[yamllint-badge]: https://github.com/Farwaykorse/fwkSudoku/workflows/yamllint/badge.svg?branch=master
+[yamllint-link]:  https://github.com/Farwaykorse/fwkSudoku/actions?query=workflow%3Ayamllint+branch%3Amaster
 
 [github-GTest]:   https://github.com/google/googletest
 [github-ms-gsl]:  https://github.com/Microsoft/GSL
 [github-vcpkg]:   https://github.com/Microsoft/vcpk
 
 [CMake_version]:  https://github.com/Farwaykorse/fwkSudoku/CMakeLists.txt#L5
+[master-link]:    https://github.com/Farwaykorse/fwkSudoku/tree/master

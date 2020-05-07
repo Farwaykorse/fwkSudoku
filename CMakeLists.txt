@@ -36,16 +36,9 @@ target_compile_features(Sudoku
 
 # Dependencies Sudoku
 ##====--------------------------------------------------------------------====##
-find_path(GSL_INCLUDE_DIR gsl/gsl)
-if(GSL_INCLUDE_DIR)
-  message(STATUS "Found the Guidelines Support Library: ${GSL_INCLUDE_DIR}")
-else()
-  message(FATAL_ERROR "Could not find Guidelines Support Library.")
-endif()
-target_include_directories(Sudoku
-  SYSTEM
-    INTERFACE ${GSL_INCLUDE_DIR}
-)
+find_package(Microsoft.GSL CONFIG REQUIRED)
+message(STATUS "Found the Guidelines Support Library: ${Microsoft.GSL_DIR}")
+target_link_libraries(Sudoku INTERFACE Microsoft.GSL::GSL)
 
 ##====--------------------------------------------------------------------====##
 # Testing Sudoku
