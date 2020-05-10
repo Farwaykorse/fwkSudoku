@@ -20,11 +20,11 @@
 //===----------------------------------------------------------------------===//
 #include "print_Options.h" // Debug Output
 
+#include <Strategic/Solver.h> // Class under test
 #include <Sudoku/Board.h>
 #include <Sudoku/Location.h>
 #include <Sudoku/Location_Utilities.h>
 #include <Sudoku/Options.h>
-#include <Sudoku/Solver.h> // Class under test
 #include <Sudoku/exceptions.h>
 
 #include <array>

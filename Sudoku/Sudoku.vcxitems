@@ -26,11 +26,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Options.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\precompiled_basic.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Size.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solver.fwd.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solver.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solvers_find.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solvers_remove_option.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solvers_set_option.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Strategic\Solver.fwd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Strategic\Solver.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Strategic\Solvers_find.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Strategic\Solvers_remove_option.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Strategic\Solvers_set_option.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Transpose.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\traits.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Value.h" />

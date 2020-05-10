@@ -7,8 +7,8 @@
 
 #include "Console.h"
 
+#include <Strategic/Solver.h>
 #include <Sudoku/Size.h>
-#include <Sudoku/Solver.h>
 #include <Sudoku/Value.h>
 
 #include <array>

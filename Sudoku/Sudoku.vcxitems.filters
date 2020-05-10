@@ -27,28 +27,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Location_Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Options.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\precompiled_basic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Size.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solver.fwd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solvers_find.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solvers_remove_option.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Solvers_set_option.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Transpose.h">
@@ -57,22 +39,40 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\traits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Board.fwd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Iterators.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Section.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Section_iterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Section_traits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Options.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Value.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Sudoku\Board\Iterators.h">
+    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Strategic\Solver.fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Sudoku\Board\Board.fwd.h">
+    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Strategic\Solver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Sudoku\Board\Section.h">
+    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Strategic\Solvers_find.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Sudoku\Board\Section_iterator.h">
+    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Strategic\Solvers_remove_option.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Sudoku\Board\Section_traits.h">
+    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Strategic\Solvers_set_option.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

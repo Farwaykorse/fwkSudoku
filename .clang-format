@@ -93,7 +93,7 @@ IncludeCategories:
   Priority: -1
 - Regex:    '\.fwd\.h(pp)?"$'
   Priority: 6
-- Regex:    '^[\"<]Sudoku[/\\]'
+- Regex:    '^[\"<](Sudoku|Strategic)[/\\]'
   Priority: 1
 - Regex:    '^<(absl|boost|gsl)[\/\\>]'
   Priority: 1
