@@ -14,7 +14,7 @@
 //
 //====--------------------------------------------------------------------====//
 #include <Sudoku/Board.h>
-#include <Sudoku/Board_Section.h> // Class under test
+#include <Sudoku/Board/Section.h> // Class under test
 #include <Sudoku/Value.h>
 
 #include <type_traits>

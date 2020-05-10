@@ -14,12 +14,12 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board.fwd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Board.fwd.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board_Iterators.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board_Section.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board_Section_iterator.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board_Section_traits.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Iterators.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Section.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Section_iterator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Section_traits.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\exceptions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Location.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Location_Utilities.h" />

@@ -4,13 +4,13 @@
 //====--------------------------------------------------------------------====//
 #pragma once
 
-#include "Board_Section_iterator.h"
-#include "Board_Section_traits.h" // Convenience include
-#include "Location.h"
-#include "Location_Utilities.h"
-#include "exceptions.h"
-#include "traits.h"
+#include "Section_iterator.h"
+#include "Section_traits.h" // Convenience include
 
+#include "Sudoku/Location.h"
+#include "Sudoku/Location_Utilities.h"
+#include "Sudoku/exceptions.h"
+#include "Sudoku/traits.h"
 #include <gsl/gsl> // index
 
 #include <type_traits>

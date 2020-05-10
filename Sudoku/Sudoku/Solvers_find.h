@@ -7,7 +7,7 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
-#include "Board_Section_traits.h"
+#include "Board/Section_traits.h"
 #include "Location.h"
 #include "Options.h"
 #include "Size.h"
@@ -23,7 +23,7 @@
 #include <iterator>
 #include <type_traits> // is_base_of
 
-#include "Board.fwd.h" // Forward declarations
+#include "Board/Board.fwd.h" // Forward declarations
 
 #include <cassert>
 
