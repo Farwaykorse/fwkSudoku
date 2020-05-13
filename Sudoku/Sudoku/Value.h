@@ -75,7 +75,7 @@ inline constexpr bool is_valid(const Value& value) noexcept
 template<int E>
 inline constexpr bool is_valid_option(const Value& value) noexcept
 {
-	return value > Value{0} && value <= Value{E};
+	return (value <=> Value{0}) > 0 && value <= Value{E};
 }
 
 // Test input values
