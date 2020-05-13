@@ -160,6 +160,13 @@ TEST(Value, comparisons)
 	static_assert(not(Value{5} < Value{5}));
 	static_assert(not(Value{6} < Value{5}));
 
+	static_assert(
+		std::is_same_v<std::strong_ordering, decltype(Value{0} <=> Value{0})>);
+	static_assert(std::strong_ordering::equal == Value{0} <=> Value{0});
+	static_assert(std::strong_ordering::equivalent == Value{0} <=> Value{0});
+	static_assert(std::strong_ordering::less == Value{0} <=> Value{1});
+	static_assert(std::strong_ordering::greater == Value{1} <=> Value{0});
+
 	EXPECT_TRUE(Value{1} == Value{1});
 	EXPECT_FALSE(Value{1} == Value{3});
 	EXPECT_TRUE(Value{1} != Value{3});

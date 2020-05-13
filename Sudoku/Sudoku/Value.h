@@ -12,6 +12,7 @@
 #include <vector>
 
 #include <algorithm> // all_of
+#include <compare>
 #include <limits>
 #include <stdexcept>
 #include <type_traits> // is_same
@@ -31,13 +32,15 @@ public:
 	explicit constexpr operator bool() const noexcept { return value_ != 0; }
 	// note: static_assert performs an explicit conversion to bool
 
-	friend constexpr bool operator==(const Value& a, const Value& b) noexcept
+	friend constexpr bool
+		operator==(const Value left, const Value right) noexcept
 	{ // Friend definitions: https://abseil.io/tips/99
-		return a.value_ == b.value_;
+		return left.value_ == right.value_;
 	}
-	friend constexpr bool operator<(const Value& a, const Value& b) noexcept
+	friend constexpr std::strong_ordering
+		operator<=>(const Value left, const Value right) noexcept
 	{
-		return a.value_ < b.value_;
+		return left.value_ <=> right.value_;
 	}
 
 	constexpr Value& operator++() noexcept;
@@ -49,11 +52,6 @@ private:
 
 //====--------------------------------------------------------------------====//
 // Free-function declarations
-constexpr bool operator!=(const Value&, const Value&) noexcept;
-constexpr bool operator>(const Value&, const Value&) noexcept;
-constexpr bool operator<=(const Value&, const Value&) noexcept;
-constexpr bool operator>=(const Value&, const Value&) noexcept;
-
 template<typename T, int N>
 constexpr Value to_Value(T val);
 
@@ -135,22 +133,6 @@ constexpr Value Value::operator++(int) noexcept
 	return pre;
 }
 
-inline constexpr bool operator!=(const Value& left, const Value& right) noexcept
-{
-	return !(left == right);
-}
-inline constexpr bool operator<=(const Value& left, const Value& right) noexcept
-{
-	return !(right < left);
-}
-inline constexpr bool operator>(const Value& left, const Value& right) noexcept
-{
-	return right < left;
-}
-inline constexpr bool operator>=(const Value& left, const Value& right) noexcept
-{
-	return !(left < right);
-}
 static_assert(Value{4} == Value{4}); //-V501 //-V112
 static_assert(Value{1} != Value{0});
 static_assert(Value{3} > Value{2});
