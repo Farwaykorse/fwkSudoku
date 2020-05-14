@@ -17,6 +17,7 @@
 
 #include <gsl/gsl> // index
 
+#include <compare>
 #include <type_traits> // is_signed
 
 
@@ -169,31 +170,13 @@ template<int N>
 constexpr bool
 	operator==(const Location_Block<N>&, const Location<N>&) noexcept;
 
-template<int N, typename typeB>
-constexpr bool operator!=(const Location<N>&, const typeB&) noexcept;
-template<int N, typename typeB>
-constexpr bool operator!=(const Location_Block<N>&, const typeB&) noexcept;
+template<int N>
+constexpr std::strong_ordering
+	operator<=>(const Location<N>&, const Location<N>&) noexcept;
 
 template<int N>
-constexpr bool operator<(const Location<N>&, const Location<N>&) noexcept;
-template<int N>
-constexpr bool
-	operator<(const Location_Block<N>&, const Location_Block<N>&) noexcept;
-template<int N>
-constexpr bool operator<=(const Location<N>&, const Location<N>&) noexcept;
-template<int N>
-constexpr bool
-	operator<=(const Location_Block<N>&, const Location_Block<N>&) noexcept;
-template<int N>
-constexpr bool operator>=(const Location<N>&, const Location<N>&) noexcept;
-template<int N>
-constexpr bool
-	operator>=(const Location_Block<N>&, const Location_Block<N>&) noexcept;
-template<int N>
-constexpr bool operator>(const Location<N>&, const Location<N>&) noexcept;
-template<int N>
-constexpr bool
-	operator>(const Location_Block<N>&, const Location_Block<N>&) noexcept;
+constexpr std::strong_ordering
+	operator<=>(const Location_Block<N>&, const Location_Block<N>&) noexcept;
 
 
 //====--------------------------------------------------------------------====//
@@ -220,85 +203,20 @@ inline constexpr bool
 	return block == loc;
 }
 
-template<int N, typename typeB>
-inline constexpr bool
-	operator!=(const Location<N>& left, const typeB& right) noexcept
-{
-	static_assert(
-		std::is_same_v<Location<N>, typeB> ||
-		std::is_same_v<Location_Block<N>, typeB>);
-	return !(left == right);
-}
-
-template<int N, typename typeB>
-inline constexpr bool
-	operator!=(const Location_Block<N>& left, const typeB& right) noexcept
-{
-	static_assert(
-		std::is_same_v<Location<N>, typeB> ||
-		std::is_same_v<Location_Block<N>, typeB>);
-	return !(left == right);
-}
-
 template<int N>
-constexpr bool
-	operator<(const Location<N>& left, const Location<N>& right) noexcept
+constexpr std::strong_ordering
+	operator<=>(const Location<N>& left, const Location<N>& right) noexcept
 {
-	return left.element() < right.element();
-}
-
-template<int N>
-constexpr bool
-	operator<=(const Location<N>& left, const Location<N>& right) noexcept
-{
-	return left.element() <= right.element();
-}
-
-template<int N>
-constexpr bool
-	operator>=(const Location<N>& left, const Location<N>& right) noexcept
-{
-	return left.element() >= right.element();
-}
-
-template<int N>
-constexpr bool
-	operator>(const Location<N>& left, const Location<N>& right) noexcept
-{
-	return left.element() > right.element();
+	return left.element() <=> right.element();
 }
 
 // Sorted by block first.
 template<int N>
-constexpr bool operator<(
+constexpr std::strong_ordering operator<=>(
 	const Location_Block<N>& left, const Location_Block<N>& right) noexcept
 {
-	return (left.id() == right.id()) ? (left.element() < right.element())
-									 : left.id() < right.id();
-}
-
-template<int N>
-constexpr bool operator<=(
-	const Location_Block<N>& left, const Location_Block<N>& right) noexcept
-{
-	return (left.id() == right.id()) ? (left.element() <= right.element())
-									 : left.id() < right.id();
-}
-
-template<int N>
-constexpr bool operator>=(
-	const Location_Block<N>& left, const Location_Block<N>& right) noexcept
-{
-	return (left.id() == right.id()) ? (left.element() >= right.element())
-									 : left.id() > right.id();
-}
-
-template<int N>
-constexpr bool operator>(
-	const Location_Block<N>& left, const Location_Block<N>& right) noexcept
-{
-	return (left.id() == right.id()) ? (left.element() > right.element())
-									 : left.id() > right.id();
+	return (left.id() == right.id()) ? (left.element() <=> right.element())
+									 : left.id() <=> right.id();
 }
 
 } // namespace Sudoku

@@ -14,6 +14,7 @@
 
 #include <vector>
 
+#include <compare>
 #include <type_traits>
 
 #include <gtest/gtest.h>
@@ -812,6 +813,12 @@ TEST(Location, Comparisson)
 	static_assert(not(Loc(0) > Loc(8)));
 	EXPECT_GT(Loc(12), Loc(9)) << "verifies a > b";
 	EXPECT_FALSE(Loc(8) > Loc(19));
+
+	static_assert(std::weak_ordering::equivalent == Loc(4) <=> Loc(4));
+	static_assert(std::strong_ordering::equivalent == Loc(4) <=> Loc(4));
+	static_assert(std::strong_ordering::equal == Loc(4) <=> Loc(4));
+	static_assert(std::strong_ordering::less == Loc(1) <=> Loc(3));
+	static_assert(std::strong_ordering::greater == Loc(5) <=> Loc(3));
 }
 
 TEST(Location, ComparissonBlock)
