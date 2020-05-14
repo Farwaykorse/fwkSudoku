@@ -74,7 +74,7 @@ public:
 	[[nodiscard]] static constexpr size_t size() noexcept { return Size; }
 	[[nodiscard]] static constexpr size_t max_size() noexcept { return size(); }
 	[[nodiscard]] static constexpr bool empty() noexcept { return false; }
-	[[nodiscard]] bool operator==(const Board&) const;
+	[[nodiscard]] bool operator==(const Board&) const = default;
 
 	// Element access
 	[[nodiscard]] constexpr T& front() noexcept { return board_.front(); }
@@ -158,14 +158,6 @@ private:
 	std::array<T, Size> board_{};
 }; // class Board
 
-//===--- free-functions ---------------------------------------------------===//
-
-template<typename T, int N>
-constexpr bool operator!=(Board<T, N> const& left, Board<T, N> const& right)
-{
-	return !(left == right);
-}
-
 //===----------------------------------------------------------------------===//
 // Board - member-functions
 //===----------------------------------------------------------------------===//
@@ -190,14 +182,6 @@ Board<T, N>::Board(std::initializer_list<T> list)
 	if (list.size() != size_t{full_size<N>})
 		throw std::length_error{"Invalid length initializer_list"};
 	std::copy(std::begin(list), std::end(list), std::begin(board_));
-}
-
-//===----------------------------------------------------------------------===//
-// properties
-template<typename T, int N>
-bool Board<T, N>::operator==(const Board& other) const
-{
-	return board_ == other.board_;
 }
 
 //===----------------------------------------------------------------------===//
