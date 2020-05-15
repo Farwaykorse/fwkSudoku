@@ -209,7 +209,9 @@ else()
         -Wredundant-tags  # since 10; class- and enum-key can be eliminated
       >
       -Wshadow            # variable declaration shadows parent context
-      #-Wsign-conversion   # since 4.3
+      $<$<NOT:$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10>>:
+        -Wsign-conversion   # since 4.3
+      >
       -Wuseless-cast      # since 4.8; casting to its own type
     >
   )

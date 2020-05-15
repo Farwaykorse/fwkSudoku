@@ -31,7 +31,7 @@ template<int E>
 class Options
 {
 	static_assert(E >= 1);
-	using bitset = std::bitset<E + 1>;
+	using bitset = std::bitset<gsl::narrow_cast<size_t>(E + 1)>;
 
 public:
 	Options() noexcept;
