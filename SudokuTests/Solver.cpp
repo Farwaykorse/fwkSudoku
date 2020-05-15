@@ -1110,7 +1110,7 @@ TEST(Solver, multiOption2)
 	static_assert(not noexcept(multi_option(board, L(), size_t{})));
 #endif
 
-#if not(defined(__GNUC__) && __GNUC__ <= 9) // constexpr switch not implemented
+#if not(defined(__GNUC__) && __GNUC__ <= 10) // constexpr switch not implemented
 	// defaults when count is 0 or all:
 	static_assert(multi_option(board, L(), 0) == 0);
 	static_assert(multi_option(board, L(), Sudoku::elem_size<2>) == 0);
