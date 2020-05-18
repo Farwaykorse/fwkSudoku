@@ -27,6 +27,7 @@
 #include <string>
 #include <vector>
 
+#include <compare>
 #include <type_traits>
 
 #include <gtest/gtest.h>
@@ -803,13 +804,13 @@ TEST(OptionsDeathTest, mfBooleanComparison)
 #endif // NDEBUG
 
 	// operator!=(Value) const
-	EXPECT_DEBUG_DEATH({ U = operator!=(TE.A_1, Value{15}); }, "Assertion .*");
-	EXPECT_DEBUG_DEATH({ U = operator!=(Value{15}, TE.A_1); }, "Assertion .*");
+	EXPECT_DEBUG_DEATH({ U = (TE.A_1 != Value{15}); }, "Assertion .*");
+	EXPECT_DEBUG_DEATH({ U = (Value{15} != TE.A_1); }, "Assertion .*");
 	U = false; // suppress warning: assigned only once
 #ifdef NDEBUG
-	EXPECT_TRUE(operator!=(TE.A_1, Value{15}));
-	EXPECT_TRUE(operator!=(Value{15}, TE.A_1));
-	EXPECT_FALSE(operator!=(Value{15}, TE.E_1));
+	EXPECT_TRUE(TE.A_1 != Value{15});
+	EXPECT_TRUE(Value{15} != TE.A_1);
+	EXPECT_FALSE(Value{15} != TE.E_1);
 #endif // NDEBUG
 }
 TEST(Options, mfBooleanComparison)
@@ -887,6 +888,12 @@ TEST(Options, mfBooleanComparison)
 	EXPECT_FALSE(TE.O_2 < TE.A_2) << "answer vs unanswered";
 	EXPECT_LT(TE.O_3, TE.X_0);
 	EXPECT_FALSE(TE.X_0 < TE.O_3);
+
+	EXPECT_TRUE(std::weak_ordering::equivalent == TE.A_2 <=> TE.A_2);
+	EXPECT_TRUE(std::strong_ordering::equivalent == TE.A_2 <=> TE.A_2);
+	EXPECT_TRUE(std::strong_ordering::equal == TE.A_2 <=> TE.A_2);
+	EXPECT_TRUE(std::strong_ordering::less == TE.A_2 <=> TE.O_2);
+	EXPECT_TRUE(std::strong_ordering::greater == TE.O_2 <=> TE.A_2);
 }
 
 TEST(Options, mfConstOperators)

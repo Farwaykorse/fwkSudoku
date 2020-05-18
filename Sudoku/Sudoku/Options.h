@@ -18,6 +18,7 @@
 #include <string>
 #include <vector>
 
+#include <compare>
 #include <utility>
 
 #include <cassert>
@@ -70,8 +71,8 @@ public:
 		//? operator== what about the 0th 'is answer' bit?
 		return left.data_ == right.data_;
 	}
-	[[nodiscard]] friend bool
-		operator<(const Options<E>& left, const Options<E>& right)
+	[[nodiscard]] friend std::strong_ordering
+		operator<=>(const Options<E>& left, const Options<E>& right)
 #if defined(__ICL) && __ICL <= 1900
 			noexcept(false)
 #else
@@ -80,11 +81,11 @@ public:
 	{
 		if constexpr (sizeof(Options<E>) <= sizeof(std::uint32_t))
 		{
-			return left.data_.to_ulong() < right.data_.to_ulong();
+			return left.data_.to_ulong() <=> right.data_.to_ulong();
 		}
 		else
 		{
-			return left.data_.to_ullong() < right.data_.to_ullong();
+			return left.data_.to_ullong() <=> right.data_.to_ullong();
 		}
 	}
 
@@ -134,16 +135,9 @@ template<int E>
 [[nodiscard]] Value read_next(const Options<E>&, Value = Value{0}) noexcept;
 
 template<int E>
-[[nodiscard]] bool operator!=(Options<E> const&, Options<E> const&) noexcept;
-
-template<int E>
 [[nodiscard]] bool operator==(Options<E> const&, Value const&) noexcept;
 template<int E>
 [[nodiscard]] bool operator==(Value const&, Options<E> const&) noexcept;
-template<int E>
-[[nodiscard]] bool operator!=(Options<E> const&, Value const&) noexcept;
-template<int E>
-[[nodiscard]] bool operator!=(Value const&, const Options<E>&) noexcept;
 
 template<int E>
 [[nodiscard]] Options<E> XOR(Options<E> const& A, Options<E> const& B) noexcept;
@@ -471,12 +465,6 @@ inline auto Options<E>::operator[](Value const& value) noexcept
 	return data_[static_cast<size_t>(value)];
 }
 
-template<int E>
-inline bool operator!=(Options<E> const& left, Options<E> const& right) noexcept
-{
-	return !(left == right);
-}
-
 // short for is_answer(value)
 template<int E>
 inline bool operator==(Options<E> const& left, Value const& value) noexcept
@@ -487,16 +475,6 @@ template<int E>
 inline bool operator==(Value const& value, Options<E> const& right) noexcept
 {
 	return is_answer(right, value);
-}
-template<int E>
-inline bool operator!=(Options<E> const& left, Value const& value) noexcept
-{
-	return not(is_answer(left, value));
-}
-template<int E>
-inline bool operator!=(Value const& value, Options<E> const& right) noexcept
-{
-	return not(is_answer(right, value));
 }
 
 //	Combine available options (binary OR)
