@@ -219,66 +219,6 @@ jobs:
     workspaces:
       use: OSX
 
-  - name: AppleClang Xcode-11.3
-    stage: "Build & Test"
-    os: osx
-    osx_image: xcode11.3 # AppleClang 11.0.0 linker update / same as Xcode11.2
-    env:
-    - Coverage: grcov
-    workspaces:
-      use: OSX
-
-  - name: AppleClang Xcode-11.1
-    if: 'branch =~ /^(master|[Tt]ravis.*)$/'
-    stage: "Build & Test"
-    os: osx
-    osx_image: xcode11.1 # AppleClang 11.0.0 same compiler and linker as Xcode11
-    env:
-    - Coverage: grcov
-    workspaces:
-      use: OSX
-
-  - name: AppleClang Xcode-10.3
-    stage: "Build & Test"
-    os: osx
-    osx_image: xcode10.3 # AppleClang 10.0.1 same compiler as Xcode10.2
-    env:
-    - CXX_vcpkg: g++-9 # present on xcode10.3
-    - Coverage: grcov
-    workspaces:
-      use: OSX
-
-  - name: AppleClang Xcode-10.1
-    if: 'branch =~ /^(master|[Tt]ravis.*)$/'
-    os: osx
-    osx_image: xcode10.1 # AppleClang 10.0.0 same compiler as Xcode 10.0
-    env:
-    - Coverage: grcov
-    workspaces:
-      use: OSX
-
-  # Note: can not build vcpkg on Xcode-9.3/4, missing OSX update on Travis.
-  - name: AppleClang Xcode-9.4
-    if: 'branch =~ /^(master|[Tt]ravis.*)$/'
-    os: osx
-    osx_image: xcode9.4 # AppleClang 9.1.0 same compiler as Xcode 9.3
-    env:
-    - Coverage: grcov
-    - CMake_version: 3.12.4 # Xcode 9.4 comes with CMake 3.11.4
-    workspaces:
-      use: OSX
-
-  # Earliest available with C++17 support
-  - name: AppleClang Xcode-9
-    if: 'branch =~ /^(master|[Tt]ravis.*)$/'
-    os: osx
-    osx_image: xcode9 # AppleClang 9.1.0 same compiler in Xcode 9.0, 9.1 and 9.2
-    env:
-    - Coverage: grcov
-    - CMake_version: 3.12.4
-    workspaces:
-      use: OSX
-
   - name: vcpkg for Linux
     stage: Build Dependencies
     workspaces:
@@ -300,11 +240,11 @@ jobs:
         paths:
         - ${VCPKG_DIR}
     os: osx
-    osx_image: xcode10.3
+    osx_image: xcode11.4
     env:
     - CC:  gcc-9
     - CXX: g++-9
-    - MACOSX_DEPLOYMENT_TARGET: '10.12' # minimum supported: xcode9 image
+    - MACOSX_DEPLOYMENT_TARGET: '10.14' # minimum supported: xcode10.2 image
     install: skip
     before_script: skip
     script: skip
@@ -345,18 +285,9 @@ before_install:
     Coverage=""
   fi
 - |
-  # Temporary fix for image: xcode11 to use GCC.
-  if [[ ${TRAVIS_OSX_IMAGE} == "xcode11" &&
-    ( "${CXX_vcpkg:-}" || ${CXX} == g++-* )
-  ]]; then
-    sudo installer -pkg \
-    /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg\
-    -target /
-  fi
-- |
   # OSX: set Homebrew gcc to gcc@<version>, to prevent version upgrades
   if [[ "${TRAVIS_OSX_IMAGE:-}" &&
-    ${TRAVIS_OSX_IMAGE} =~ ^xcode(11(\.[12])?)$
+    ${TRAVIS_OSX_IMAGE} =~ ^xcode(11(\.[1-5])?)$
   ]]; then
     brew unlink gcc
     brew link gcc@9
