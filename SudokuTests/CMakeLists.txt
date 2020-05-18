@@ -209,14 +209,6 @@ else()
       -Wno-used-but-marked-unused
       -Wno-weak-vtables           # exceptions.h
     >
-    $<$<CXX_COMPILER_ID:AppleClang>:
-      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10.0.1>:
-        -Wno-missing-variable-declarations # warns on inline variables
-      >
-      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10>:
-        -Wno-missing-braces
-      >
-    >
     $<$<CXX_COMPILER_ID:GNU>:
       -Wall
       -Wcast-align        # potential performance issue

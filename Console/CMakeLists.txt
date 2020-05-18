@@ -154,14 +154,6 @@ else()
       -Wno-c++98-compat-pedantic
       -Wno-weak-vtables   # exceptions
     >
-    $<$<CXX_COMPILER_ID:AppleClang>:
-      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10.0.1>:
-        -Wno-missing-variable-declarations # warns on inline variables
-      >
-      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10>:
-        -Wno-missing-braces
-      >
-    >
     $<$<CXX_COMPILER_ID:GNU>:
       -Wall
       -Wcast-align        # potential performance issue
