@@ -31,7 +31,10 @@ target_include_directories(Sudoku
 
 target_compile_features(Sudoku
   INTERFACE
-    cxx_std_17
+    $<$<NOT:$<CXX_COMPILER_ID:AppleClang>>:cxx_std_20>
+    $<$<CXX_COMPILER_ID:AppleClang>:
+      $<IF:$<VERSION_LESS:${CMAKE_VERSION},3.15>,cxx_std_17,cxx_std_20>
+    >
 )
 
 # Dependencies Sudoku
