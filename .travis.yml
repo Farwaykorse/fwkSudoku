@@ -74,17 +74,21 @@ jobs:
   - name: CMake versions
     stage: Validation
     env:
+    - CC:  gcc-9 # C++20
+    - CXX: g++-9 # C++20
     - CMake_version: '"3.17.2 3.16.6 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: Linux
     addons:
       apt:
         sources:
+        - sourceline: ppa:ubuntu-toolchain-r/test # C++20
         - sourceline: 'deb https://apt.kitware.com/ubuntu/ bionic main'
           key_url: 'https://apt.kitware.com/keys/kitware-archive-latest.asc'
         - sourceline: 'deb https://apt.kitware.com/ubuntu/ bionic-rc main'
         packages:
         - cmake
+        - g++-9 # C++20
     script:
     - |
       cd ./build
@@ -131,10 +135,18 @@ jobs:
   - name: Unity-Build
     stage: Validation
     env:
+    - CC:  gcc-9 # C++20
+    - CXX: g++-9 # C++20
     - CMake_version: 3.17.2 # CMAKE_UNITY_BUILD requires at least v3.16.0
     - UNITY_BUILD: on
     workspaces:
       use: Linux
+    addons: # C++20
+      apt:
+        sources:
+        - sourceline: ppa:ubuntu-toolchain-r/test
+        packages:
+        - g++-9
 
   - name: GCC-9
     stage: "Build & Test Latest"
@@ -151,28 +163,6 @@ jobs:
         - sourceline: ppa:ubuntu-toolchain-r/test
         packages:
         - g++-9
-
-  - name: GCC-8
-    stage: "Build & Test"
-    env:
-    - CC:  gcc-8
-    - CXX: g++-8
-    - Coverage: gcov-8
-    workspaces:
-      use: Linux
-    addons:
-      apt:
-        packages:
-        - g++-8
-
-  - name: GCC-7 # default on Bionic image
-    stage: "Build & Test"
-    env:
-    - CC:  gcc-7
-    - CXX: g++-7
-    - Coverage: gcov-7
-    workspaces:
-      use: Linux
 
   - name: Clang-10
     stage: "Build & Test Latest"
