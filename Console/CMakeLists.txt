@@ -27,7 +27,7 @@ target_link_libraries(console
 set_target_properties(console
   PROPERTIES
     CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED OFF # allow decay to C++17
+    CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:DebugDLL>" # v3.15+
     VS_JUST_MY_CODE_DEBUGGING $<IF:$<CONFIG:Debug>,ON,OFF> # v3.15+
