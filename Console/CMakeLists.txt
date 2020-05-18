@@ -165,10 +165,8 @@ else()
     $<$<CXX_COMPILER_ID:GNU>:
       -Wall
       -Wcast-align        # potential performance issue
-      $<$<NOT:$<VERSION_LESS:$<CXX_COMPILER_VERSION>,8>>:
-        -Wcast-align=strict # since 8.0; increase alignment (i.e. char* to int*)
-        -Wconversion      # since 8.0; potential data-loss
-      >
+      -Wcast-align=strict # since 8.0; increase alignment (i.e. char* to int*)
+      -Wconversion        # since 8.0; potential data-loss
       -Wdouble-promotion  # since 4.6; float implicit to double
       -Wduplicated-branches # since 7.0; identical if-else branches
       -Wduplicated-cond   # since 6.0; duplicated if-else conditions
