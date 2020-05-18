@@ -30,7 +30,7 @@ skip_commits:
 ##====-----------------
 # Options:         Values (supported for this script):
 # ------------------------------------------------------------------------------
-# image            Visual Studio 2017 (default), Visual Studio 2015
+# image            Visual Studio 2019 (default)
 # platform         x64 (default), x86
 # configuration    Debug, Release        - use the MSVC compiler
 #                  LLVM_(Debug, Release) - use the LLVM/clang compiler
@@ -47,7 +47,6 @@ skip_commits:
 ## Create_Matrix
 image:
 - Visual Studio 2019
-- Visual Studio 2017
 
 platform:
 - x86
@@ -92,10 +91,7 @@ matrix:
   - { BUILDSYSTEM: *Build_Solution, image: Visual Studio 2013 }
   - { BUILDSYSTEM: *Build_Solution, image: Visual Studio 2015 }
   - { BUILDSYSTEM: *Build_Solution, image: Visual Studio 2017 }
-  # Reduce job count: Only have CMake generate MSBuild files for VS2019.
-  - { BUILDSYSTEM: *Build_MSBuild, image: Visual Studio 2017 }
   # Reduce job count: Limit x86 jobs.
-  - { platform: x86, image: Visual Studio 2017 }
   - { platform: x86, BUILDSYSTEM: *Build_MSBuild }
   - { platform: x86, BUILDSYSTEM: *Build_Ninja, configuration: Release }
   - { platform: x86, BUILDSYSTEM: *Build_Ninja, configuration: LLVM_Release }
