@@ -148,8 +148,24 @@ jobs:
         packages:
         - g++-9
 
-  - name: GCC-9
+  - name: GCC-10
     stage: "Build & Test Latest"
+    env:
+    - CC:  gcc-10
+    - CXX: g++-10
+    - CMake_version: 3.17.2
+    - Coverage: gcov-10
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        sources:
+        - sourceline: ppa:ubuntu-toolchain-r/test
+        packages:
+        - g++-10
+
+  - name: GCC-9
+    stage: "Build & Test"
     env:
     - CC:  gcc-9
     - CXX: g++-9
@@ -368,11 +384,11 @@ install:
   if [[ ${Coverage:-} && ${Coverage} == "grcov" ]]; then
   ( set -euo pipefail
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-      GRCOV_TAG="v0.5.13"
-      GRCOV_SHA512="42d7e047be6b0ffcad3de8fab33e304dcb3a5db4ce018bf3625929df4b17b2d71bc61754fb46aac163bcc63128992c9b6543fdd4618db7e6c260b825dac3c758"
+      GRCOV_TAG="v0.5.15"
+      GRCOV_SHA512="24b75e1a4c6d098f21d582fe15cc6cc6151bff4646fac345e02f2a496ba1eb560e9b0547b848ff895a52b7ffa2f67654f6555ab88ea109e5107d42df623feede"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
-      GRCOV_TAG="v0.5.13"
-      GRCOV_SHA512="2df9d783c9a18f2e029e6c8d38fc243e31b49bf35f11ef2373f7160ab07f2b6d67453a318ac0d821b3b6ad75484e93c56f6132e85b65de1f1f908a2d170d4723"
+      GRCOV_TAG="v0.5.15"
+      GRCOV_SHA512="61f4bd1bac347a2e515de53457625bd3f644631a1c8b6d24d6abc1b4377d8315f370ac886848ded017f24cd61342e72c718d4ed609b63d296eaccc9130861d6e"
     fi
     echo "-- Install grcov..."
     file_name="grcov-${TRAVIS_OS_NAME}-x86_64.tar.bz2"

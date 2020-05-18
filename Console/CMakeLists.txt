@@ -169,10 +169,18 @@ else()
       -Wformat-truncation=2 # since 7.0
       -Wlogical-op        # suspicious uses of logical operators
       -Wmisleading-indentation # since 6.0
+      $<$<NOT:$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10>>:
+        #-Wmismatched-tags # since 10; mixed usage of struct and class
+      >
       -Wnull-dereference  # since 6.0; detected paths with erroneous or undefined behaviour
       -Wpedantic          # non-standard C++
+      $<$<NOT:$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10>>:
+        -Wredundant-tags  # since 10; class- and enum-key can be eliminated
+      >
       -Wshadow            # variable declaration shadows parent context
-      #-Wsign-conversion   # since 4.3
+      $<$<NOT:$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10>>:
+        -Wsign-conversion   # since 4.3
+      >
       -Wuseless-cast      # since 4.8; casting to its own type
     >
   )
