@@ -24,6 +24,12 @@ target_link_libraries(console
     fwk::Sudoku
 )
 
+if(CMAKE_VERSION VERSION_LESS 3.15 AND
+   CMAKE_CXX_COMPILER_ID STREQUAL AppleClang)
+  target_compile_options(console PRIVATE
+    -std=c++2a
+  )
+else()
 set_target_properties(console
   PROPERTIES
     CXX_STANDARD 20
@@ -32,6 +38,7 @@ set_target_properties(console
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:DebugDLL>" # v3.15+
     VS_JUST_MY_CODE_DEBUGGING $<IF:$<CONFIG:Debug>,ON,OFF> # v3.15+
 )
+endif()
 
 ##====--------------------------------------------------------------------====##
 # Compiler Specific Configuration
