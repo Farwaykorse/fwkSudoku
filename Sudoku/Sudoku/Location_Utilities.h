@@ -4,7 +4,7 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
-#include "Board_Section_traits.h"
+#include "Board/Section_traits.h"
 #include "Location.h"
 #include "Size.h"
 #include "traits.h"
@@ -17,7 +17,7 @@
 #include <iterator>  // back_inserter
 #include <limits>    // numeric_limits
 
-#include "Board.fwd.h" // Forward declarations
+#include "Board/Board.fwd.h" // Forward declarations
 
 
 namespace Sudoku

@@ -9,8 +9,7 @@
 //====--------------------------------------------------------------------====//
 #pragma once
 
-#include "Location.h"
-
+#include "Sudoku/Location.h"
 #include <gsl/gsl>
 
 #include <iterator>

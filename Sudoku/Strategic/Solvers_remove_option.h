@@ -4,15 +4,14 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
-#include "Board.h"
-#include "Location.h"
-#include "Location_Utilities.h"
-#include "Options.h"
-#include "Size.h"
-#include "Value.h"
-#include "exceptions.h"
-#include "traits.h"
-
+#include "Sudoku/Board.h"
+#include "Sudoku/Location.h"
+#include "Sudoku/Location_Utilities.h"
+#include "Sudoku/Options.h"
+#include "Sudoku/Size.h"
+#include "Sudoku/Value.h"
+#include "Sudoku/exceptions.h"
+#include "Sudoku/traits.h"
 #include <gsl/gsl>
 
 #include <vector>

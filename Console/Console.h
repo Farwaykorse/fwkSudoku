@@ -1,10 +1,10 @@
 
 #pragma once
 
+#include <Strategic/Solver.h>
 #include <Sudoku/Board.h>
 #include <Sudoku/Location_Utilities.h>
 #include <Sudoku/Options.h>
-#include <Sudoku/Solver.h>
 #include <gsl/gsl>
 
 #include <string>

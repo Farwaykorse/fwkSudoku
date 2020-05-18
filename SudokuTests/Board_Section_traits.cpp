@@ -7,7 +7,7 @@
 // Unit tests for the traits defined for the Board_Section class.
 //====--------------------------------------------------------------------====//
 
-#include <Sudoku/Board_Section_traits.h> // Class under test
+#include <Sudoku/Board/Section_traits.h> // Class under test
 
 
 namespace SudokuTests::Section_traits

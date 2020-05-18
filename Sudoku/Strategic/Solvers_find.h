@@ -7,13 +7,12 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
-#include "Board_Section_traits.h"
-#include "Location.h"
-#include "Options.h"
-#include "Size.h"
-#include "Value.h"
-#include "traits.h"
-
+#include "Sudoku/Board/Section_traits.h"
+#include "Sudoku/Location.h"
+#include "Sudoku/Options.h"
+#include "Sudoku/Size.h"
+#include "Sudoku/Value.h"
+#include "Sudoku/traits.h"
 #include <gsl/gsl>
 
 #include <array>
@@ -23,7 +22,7 @@
 #include <iterator>
 #include <type_traits> // is_base_of
 
-#include "Board.fwd.h" // Forward declarations
+#include "Sudoku/Board/Board.fwd.h" // Forward declarations
 
 #include <cassert>
 

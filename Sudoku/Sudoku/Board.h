@@ -10,8 +10,8 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
-#include "Board_Iterators.h"
-#include "Board_Section.h"
+#include "Board/Iterators.h"
+#include "Board/Section.h"
 #include "Location.h"
 #include "Location_Utilities.h"
 #include "Size.h"
@@ -24,7 +24,7 @@
 
 #include <algorithm>
 
-#include "Board.fwd.h" // Forward declarations
+#include "Board/Board.fwd.h" // Forward declarations
 
 #include <cassert>
 

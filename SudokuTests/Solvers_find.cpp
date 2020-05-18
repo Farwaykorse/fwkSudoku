@@ -20,11 +20,11 @@
 //===----------------------------------------------------------------------===//
 #include "print_Options.h" // Debug Output
 
+#include <Strategic/Solver.h>       // setValue
+#include <Strategic/Solvers_find.h> // Class under test
 #include <Sudoku/Board.h>
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
-#include <Sudoku/Solver.h>       // setValue
-#include <Sudoku/Solvers_find.h> // Class under test
 
 #include <array>
 #include <bitset>

@@ -9,10 +9,9 @@
 //====--------------------------------------------------------------------====//
 #pragma once
 
-#include "Location.h"
-#include "Location_Utilities.h"
-#include "traits.h"
-
+#include "Sudoku/Location.h"
+#include "Sudoku/Location_Utilities.h"
+#include "Sudoku/traits.h"
 #include <gsl/gsl> // index
 
 #include <iterator>

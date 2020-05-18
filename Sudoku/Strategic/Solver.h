@@ -5,16 +5,16 @@
 //===----------------------------------------------------------------------===//
 #pragma once
 
-#include "Board.h"
-#include "Location.h"
-#include "Location_Utilities.h"
-#include "Options.h"
-#include "Size.h"
 #include "Solvers_find.h"
 #include "Solvers_remove_option.h"
 #include "Solvers_set_option.h"
-#include "Value.h"
 
+#include "Sudoku/Board.h"
+#include "Sudoku/Location.h"
+#include "Sudoku/Location_Utilities.h"
+#include "Sudoku/Options.h"
+#include "Sudoku/Size.h"
+#include "Sudoku/Value.h"
 #include <gsl/gsl>
 
 #include <vector>

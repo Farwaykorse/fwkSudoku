@@ -21,7 +21,7 @@
 #include "print_Options.h" // Debug Output
 
 #include <Sudoku/Board.h>           // Class under test
-#include <Sudoku/Board_Iterators.h> // Class under test
+#include <Sudoku/Board/Iterators.h> // Class under test
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
 #include <Sudoku/traits.h>

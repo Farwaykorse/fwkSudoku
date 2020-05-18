@@ -17,8 +17,8 @@
 //
 //====--------------------------------------------------------------------====//
 #include <Sudoku/Board.h>
-#include <Sudoku/Board_Section.h>          // Class under test
-#include <Sudoku/Board_Section_iterator.h> // Class under test
+#include <Sudoku/Board/Section.h>          // Class under test
+#include <Sudoku/Board/Section_iterator.h> // Class under test
 #include <Sudoku/Location.h>
 #include <Sudoku/Options.h>
 #include <Sudoku/traits.h>
