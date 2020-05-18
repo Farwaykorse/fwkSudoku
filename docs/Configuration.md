@@ -329,7 +329,6 @@ Use `-Xclang ` before a command to actually force it to the compiler.
 ##### All configurations
 `````
 /std:c++latest        sets: -std=c++2a
-  /std:c++17          sets: -std=c++17
   -Xclang -std=c++17  Set language version to C++17
 /GR-                  sets: -fno-rtti
 /GS                   Buffer Security Check. (default)
@@ -378,10 +377,6 @@ setting is disabled.
 -Wno-c++98-compat    (Weverything) Compatibility with C++98 is not needed
 -Wno-c++98-compat-pedantic
 
--Wno-missing-variable-declarations  Warns on inline variables
-  In LLVM/Clang pre v7.0.0 and AppleClang pre v10.0.1
--Wno-missing-braces
-  In LLVM/Clang release v5.0.(0|1)  False positive
 -Wno-weak-vtables (linux/osx)
 
 SudokuTests

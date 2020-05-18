@@ -64,9 +64,7 @@ if(MSVC) # MSVC or simulating MSVC
         /Z7       # enable debug information
       >
       $<$<CONFIG:Release>:
-        $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,7.0>:
-          /guard:cf # control flow guard
-        >
+        /guard:cf # LLVM/clang 7 control flow guard
       >
     >
   )
@@ -119,9 +117,6 @@ if(MSVC) # MSVC or simulating MSVC
       # disabled warnings
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
-      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,7>:
-        -Wno-missing-variable-declarations # warns on inline variables
-      >
     >
     $<$<CXX_COMPILER_ID:Intel>:
       /W5
@@ -136,10 +131,6 @@ if(MSVC) # MSVC or simulating MSVC
             /wd4365 # stl xmemory
           >
           /wd4668 # gsl: multi_span (fixed upstream 2020-04-09)
-          $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,1920>: # VS2017
-            /wd4774 # stl string
-            /wd5026 # system_error
-          >
         >
       )
     else()
@@ -149,10 +140,6 @@ if(MSVC) # MSVC or simulating MSVC
             /wd4365 # stl
           >
           /wd4668 # gsl: multi_span (fixed upstream 2020-04-09)
-          $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,1920>: # VS2017
-            /wd4774 # stl string
-            /wd5026 # system_error
-          >
         >
       )
     endif()
@@ -166,14 +153,6 @@ else()
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
       -Wno-weak-vtables   # exceptions
-    >
-    $<$<CXX_COMPILER_ID:Clang>:
-      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,7>:
-        -Wno-missing-variable-declarations # warns on inline variables
-      >
-      $<$<OR:$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>,$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0.1>>:
-        -Wno-missing-braces
-      >
     >
     $<$<CXX_COMPILER_ID:AppleClang>:
       $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10.0.1>:

@@ -98,9 +98,7 @@ if(MSVC) # MSVC or simulating MSVC
         /Z7       # enable debug information
       >
       $<$<CONFIG:Release>:
-        $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,7.0>:
-          /guard:cf # control flow guard
-        >
+        /guard:cf # control flow guard
       >
     >
   )
@@ -157,9 +155,6 @@ if(MSVC) # MSVC or simulating MSVC
       -Wno-global-constructors
       -Wno-used-but-marked-unused
       -Wno-zero-as-null-pointer-constant
-      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,7>:
-        -Wno-missing-variable-declarations # warns on inline variables
-      >
     >
     $<$<CXX_COMPILER_ID:Intel>:
       /W5
@@ -213,14 +208,6 @@ else()
       -Wno-padded
       -Wno-used-but-marked-unused
       -Wno-weak-vtables           # exceptions.h
-    >
-    $<$<CXX_COMPILER_ID:Clang>:
-      $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,7>:
-        -Wno-missing-variable-declarations # warns on inline variables
-      >
-      $<$<OR:$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0>,$<VERSION_EQUAL:$<CXX_COMPILER_VERSION>,5.0.1>>:
-        -Wno-missing-braces
-      >
     >
     $<$<CXX_COMPILER_ID:AppleClang>:
       $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,10.0.1>:
