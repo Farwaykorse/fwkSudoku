@@ -55,7 +55,7 @@ include_guard()
 
 
 function(set_source_files_compile_definitions)
-  cmake_minimum_required(VERSION 3.12...3.17) # list(SUBLIST ...
+  cmake_minimum_required(VERSION 3.12...3.18) # list(SUBLIST ...
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
     list(APPEND CMAKE_MESSAGE_CONTEXT "set_source_files_compile_definitions")
   endif()
@@ -90,7 +90,7 @@ endfunction(set_source_files_compile_definitions)
 
 ##====--------------------------------------------------------------------====##
 function(set_source_files_compile_options)
-  cmake_minimum_required(VERSION 3.0...3.17)
+  cmake_minimum_required(VERSION 3.0...3.18)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
     list(APPEND CMAKE_MESSAGE_CONTEXT "set_source_files_compile_options")
   endif()
@@ -112,7 +112,7 @@ endfunction(set_source_files_compile_options)
 ##====--------------------------------------------------------------------====##
 # Add any property to a source file.
 function(add_to_source_file_properties)
-  cmake_minimum_required(VERSION 3.12...3.17) # list(SUBLIST ...
+  cmake_minimum_required(VERSION 3.12...3.18) # list(SUBLIST ...
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
     list(APPEND CMAKE_MESSAGE_CONTEXT "set_source_file_properties")
   endif()
@@ -146,7 +146,7 @@ endfunction(add_to_source_file_properties)
 ##====--------------------------------------------------------------------====##
 # Internal shared implementation.
 function(__internal_add_source_file_properties property_name num_files)
-  cmake_minimum_required(VERSION 3.12...3.17) # list(SUBLIST ...
+  cmake_minimum_required(VERSION 3.12...3.18) # list(SUBLIST ...
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
     list(APPEND CMAKE_MESSAGE_CONTEXT "__internal")
   endif()
