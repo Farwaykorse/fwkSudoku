@@ -74,7 +74,7 @@ jobs:
   - name: CMake versions
     stage: Validation
     env:
-    - CMake_version: '"3.17.3 3.16.8 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.17.5 3.16.9 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: Linux
     addons:
@@ -99,7 +99,7 @@ jobs:
     os: osx
     osx_image: xcode10.3 # AppleClang 10.0.1
     env:
-    - CMake_version: '"3.17.3 3.16.8 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.17.5 3.16.9 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: OSX
     script:
@@ -131,7 +131,7 @@ jobs:
   - name: Unity-Build
     stage: Validation
     env:
-    - CMake_version: 3.17.3 # CMAKE_UNITY_BUILD requires at least v3.16.0
+    - CMake_version: 3.17.5 # CMAKE_UNITY_BUILD requires at least v3.16.0
     - UNITY_BUILD: on
     workspaces:
       use: Linux
@@ -141,7 +141,7 @@ jobs:
     env:
     - CC:  gcc-10
     - CXX: g++-10
-    - CMake_version: 3.17.3
+    - CMake_version: 3.17.5
     - Coverage: gcov-10
     workspaces:
       use: Linux
@@ -157,7 +157,7 @@ jobs:
     env:
     - CC:  gcc-9
     - CXX: g++-9
-    - CMake_version: 3.17.3
+    - CMake_version: 3.17.5
     - Coverage: gcov-9
     workspaces:
       use: Linux
