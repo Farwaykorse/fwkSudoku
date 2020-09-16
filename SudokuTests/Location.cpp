@@ -43,7 +43,7 @@ namespace compiletime
 	static_assert(not std::is_const_v<typeT>);
 	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-#if defined(_MSC_VER) && _MSC_VER < 1927
+#if defined(_MSC_VER) && _MSC_VER < 1927 && !defined(__clang__)
 	static_assert(not std::is_trivially_copyable_v<typeT>);
 #else
 	static_assert(std::is_trivially_copyable_v<typeT>);
