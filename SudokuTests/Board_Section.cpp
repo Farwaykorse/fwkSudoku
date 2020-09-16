@@ -105,11 +105,11 @@ namespace type_properties
 	static_assert(not std::is_const_v<constT>);
 	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-#if defined(__clang__) || defined(__GNUC__)
-	static_assert(std::is_trivially_copyable_v<typeT>);
-#else
+#if defined(_MSC_VER) && _MSC_VER < 1927 && !defined(__clang__)
 	static_assert(not std::is_trivially_copyable_v<typeT>);
-#endif // __clang__
+#else
+	static_assert(std::is_trivially_copyable_v<typeT>);
+#endif // Old MSVC
 	static_assert(not std::is_standard_layout_v<typeT>);
 #if not(defined(__ICL) && __ICL <= 1900) &&                                    \
 	not(defined(__APPLE__) && defined(__clang__) &&                            \

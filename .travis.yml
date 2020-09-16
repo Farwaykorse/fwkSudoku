@@ -76,7 +76,7 @@ jobs:
     env:
     - CC:  gcc-9 # C++20
     - CXX: g++-9 # C++20
-    - CMake_version: '"3.17.2 3.16.6 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.18.2 3.17.5 3.16.9 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: Linux
     addons:
@@ -103,7 +103,7 @@ jobs:
     os: osx
     osx_image: xcode10.3 # AppleClang 10.0.1
     env:
-    - CMake_version: '"3.17.2 3.16.6 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.18.2 3.17.5 3.16.9 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: OSX
     script:
@@ -137,7 +137,7 @@ jobs:
     env:
     - CC:  gcc-9 # C++20
     - CXX: g++-9 # C++20
-    - CMake_version: 3.17.2 # CMAKE_UNITY_BUILD requires at least v3.16.0
+    - CMake_version: 3.18.2 # CMAKE_UNITY_BUILD requires at least v3.16.0
     - UNITY_BUILD: on
     workspaces:
       use: Linux
@@ -153,7 +153,7 @@ jobs:
     env:
     - CC:  gcc-10
     - CXX: g++-10
-    - CMake_version: 3.17.2
+    - CMake_version: 3.18.2
     - Coverage: gcov-10
     workspaces:
       use: Linux
@@ -169,7 +169,7 @@ jobs:
     env:
     - CC:  gcc-9
     - CXX: g++-9
-    - CMake_version: 3.17.2
+    - CMake_version: 3.18.2
     - Coverage: gcov-9
     workspaces:
       use: Linux
@@ -354,13 +354,13 @@ install:
   # Install Ninja-build (if not installed)
   if [[ ! -x "$(command -v ninja)" ]]; then
   ( set -euo pipefail
-    NINJA_VER="v1.10.0"
+    NINJA_VER="v1.10.1"
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
       file_name="ninja-linux.zip"
-      NINJA_SHA512="ffb179ab8ea315167fcc99a8f13286e1363590185b18cf819cc73e09f2a7553790e9dc45fd1ccd0bd1d2dbf543aee3f6c0951cf9ce453a7168ffd2ac873cdd29"
+      NINJA_SHA512="9820c76fde6fac398743766e7ea0fe8a7d6e4191a77512a2d2f51c2ddcc947fcd91ac08522742281a285418c114e760b0158a968305f8dc854bb9693883b7f1e"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
       file_name="ninja-mac.zip"
-      NINJA_SHA512="619a1924067a0b30fc5f8887f868d3ee5481838d2f0f158d031f7614a2a10b95a73d4a56b658d5d560283ebf809e2e536b968c6c01ff0108075c3f393f5780ba"
+      NINJA_SHA512="99f5ccca2461a4d340f4528a8eef6d81180757da78313f1f9412ed13a7bbaf6df537a342536fd053db00524bcb734d205af5f6fde419a1eb2e6f77ee8b7860fe"
     fi
     echo "-- Install Ninja-build..."
     NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
