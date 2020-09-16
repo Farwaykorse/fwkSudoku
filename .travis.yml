@@ -74,7 +74,7 @@ jobs:
   - name: CMake versions
     stage: Validation
     env:
-    - CMake_version: '"3.17.3 3.16.8 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.18.2 3.17.5 3.16.9 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: Linux
     addons:
@@ -99,7 +99,7 @@ jobs:
     os: osx
     osx_image: xcode10.3 # AppleClang 10.0.1
     env:
-    - CMake_version: '"3.17.3 3.16.8 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.18.2 3.17.5 3.16.9 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: OSX
     script:
@@ -131,7 +131,7 @@ jobs:
   - name: Unity-Build
     stage: Validation
     env:
-    - CMake_version: 3.17.3 # CMAKE_UNITY_BUILD requires at least v3.16.0
+    - CMake_version: 3.18.2 # CMAKE_UNITY_BUILD requires at least v3.16.0
     - UNITY_BUILD: on
     workspaces:
       use: Linux
@@ -141,7 +141,7 @@ jobs:
     env:
     - CC:  gcc-10
     - CXX: g++-10
-    - CMake_version: 3.17.3
+    - CMake_version: 3.18.2
     - Coverage: gcov-10
     workspaces:
       use: Linux
@@ -157,7 +157,7 @@ jobs:
     env:
     - CC:  gcc-9
     - CXX: g++-9
-    - CMake_version: 3.17.3
+    - CMake_version: 3.18.2
     - Coverage: gcov-9
     workspaces:
       use: Linux
@@ -487,10 +487,6 @@ jobs:
 
   allow_failures:
   - name: Clang-4.0 Debug
-  # Issues with Ninja 10.0 in vcpkg (not building on MacOS 10.12 & 10.13)
-  - osx_image: xcode9
-  - osx_image: xcode9.4
-  - osx_image: xcode10.1
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
@@ -588,13 +584,13 @@ install:
   # Install Ninja-build (if not installed)
   if [[ ! -x "$(command -v ninja)" ]]; then
   ( set -euo pipefail
-    NINJA_VER="v1.9.0"
+    NINJA_VER="v1.10.1"
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
       file_name="ninja-linux.zip"
-      NINJA_SHA512="751fd86520a1a38fb47baadf4a46ab49f9ebb11d6ff9c01e71326564ebf10f141ca2627620e315fcab82db1493a30123f11194f41226241d80413d5008acfc59"
+      NINJA_SHA512="9820c76fde6fac398743766e7ea0fe8a7d6e4191a77512a2d2f51c2ddcc947fcd91ac08522742281a285418c114e760b0158a968305f8dc854bb9693883b7f1e"
     elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
       file_name="ninja-mac.zip"
-      NINJA_SHA512="ec2294b430b89134f54f3388bafd760697c7eb33792bc094416b918371619e79592629973a60fcc35335a92eaa9ed84a41f2bc53c846eb8abf3422d4322cd3e5"
+      NINJA_SHA512="99f5ccca2461a4d340f4528a8eef6d81180757da78313f1f9412ed13a7bbaf6df537a342536fd053db00524bcb734d205af5f6fde419a1eb2e6f77ee8b7860fe"
     fi
     echo "-- Install Ninja-build..."
     NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
