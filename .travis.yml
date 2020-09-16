@@ -467,6 +467,20 @@ jobs:
     after_script: skip
     after_success: skip
 
+  - name: vcpkg for Linux
+    stage: Build Dependencies
+    dist: bionic
+    workspaces:
+      create:
+        name: Linux
+        paths:
+        - ${VCPKG_DIR}
+    install: skip
+    before_script: skip
+    script: skip
+    after_script: skip
+    after_success: skip
+
   - name: vcpkg for OSX
     stage: Build Dependencies
     workspaces:
