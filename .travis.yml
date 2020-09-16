@@ -181,7 +181,7 @@ jobs:
     - CXX: g++-7
     - Coverage: gcov-7
     workspaces:
-      use: Linux
+      use: Linux_Bionic
 
   - name: Clang-10
     stage: "Build & Test Latest"
@@ -265,7 +265,7 @@ jobs:
     - CXX: clang++-8
     - Coverage: grcov
     workspaces:
-      use: Linux
+      use: Linux_Bionic
     addons:
       apt:
         sources:
@@ -284,7 +284,7 @@ jobs:
     - CXX_lib: libc++
     - Coverage: grcov
     workspaces:
-      use: Linux
+      use: Linux_Bionic
     addons:
       apt:
         sources:
@@ -303,7 +303,7 @@ jobs:
     env:
     - Coverage: grcov
     workspaces:
-      use: Linux
+      use: Linux_Bionic
 
   - name: Clang-7 libc++
     dist: bionic
@@ -313,7 +313,7 @@ jobs:
     - CXX_lib: libc++
     - Coverage: grcov
     workspaces:
-      use: Linux
+      use: Linux_Bionic
     addons:
       apt:
         packages:
@@ -327,7 +327,7 @@ jobs:
     - CXX: clang++-6.0
     - Coverage: grcov
     workspaces:
-      use: Linux
+      use: Linux_Bionic
     addons:
       apt:
         packages:
@@ -341,7 +341,7 @@ jobs:
     - CXX_lib: libc++
     - Coverage: grcov
     workspaces:
-      use: Linux
+      use: Linux_Bionic
     addons:
       apt:
         packages:
@@ -356,7 +356,7 @@ jobs:
     - CXX: clang++-5.0
     - Coverage: grcov
     workspaces:
-      use: Linux
+      use: Linux_Bionic
     addons:
       apt:
         packages:
@@ -472,7 +472,7 @@ jobs:
     dist: bionic
     workspaces:
       create:
-        name: Linux
+        name: Linux_Bionic
         paths:
         - ${VCPKG_DIR}
     install: skip
