@@ -487,6 +487,10 @@ jobs:
 
   allow_failures:
   - name: Clang-4.0 Debug
+  # Issues with Ninja 10.0 in vcpkg (not building on MacOS 10.12 & 10.13)
+  - osx_image: xcode9
+  - osx_image: xcode9.4
+  - osx_image: xcode10.1
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
