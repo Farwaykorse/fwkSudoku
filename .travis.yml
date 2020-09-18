@@ -101,7 +101,7 @@ jobs:
   - name: CMake versions
     stage: Validation
     os: osx
-    osx_image: xcode10.3 # AppleClang 10.0.1
+    osx_image: xcode12 # AppleClang 12.0.0
     env:
     - CMake_version: '"3.18.2 3.17.5 3.16.9 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
@@ -218,15 +218,6 @@ jobs:
     workspaces:
       use: OSX
 
-  - name: AppleClang Xcode-11.7 # based on LLVM 9
-    stage: "Build & Test"
-    os: osx
-    osx_image: xcode11.7 # AppleClang 11.0.3 / same as Xcode11.4/5/6
-    env:
-    - Coverage: grcov
-    workspaces:
-      use: OSX
-
   - name: vcpkg for Linux
     stage: Build Dependencies
     workspaces:
@@ -248,11 +239,9 @@ jobs:
         paths:
         - ${VCPKG_DIR}
     os: osx
-    osx_image: xcode11.4
+    osx_image: xcode12
     env:
-    - CC:  gcc-9
-    - CXX: g++-9
-    - MACOSX_DEPLOYMENT_TARGET: '10.14' # minimum supported: xcode10.2 image
+    - MACOSX_DEPLOYMENT_TARGET: '10.15' # minimum supported: xcode11.4 image
     install: skip
     before_script: skip
     script: skip
