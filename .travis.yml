@@ -133,18 +133,16 @@ jobs:
   - name: Unity-Build
     stage: Validation
     env:
-    - CC:  gcc-9 # C++20
-    - CXX: g++-9 # C++20
+    - CC:  gcc-10
+    - CXX: g++-10
     - CMake_version: 3.18.2 # CMAKE_UNITY_BUILD requires at least v3.16.0
     - UNITY_BUILD: on
     workspaces:
       use: Linux
-    addons: # C++20
+    addons:
       apt:
-        sources:
-        - sourceline: ppa:ubuntu-toolchain-r/test
         packages:
-        - g++-9
+        - g++-10
 
   - name: GCC-10
     stage: "Build & Test Latest"
