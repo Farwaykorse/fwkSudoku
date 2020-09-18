@@ -59,7 +59,7 @@ env:
 
 # Defaults
 os: linux
-dist: bionic
+dist: focal
 
 # Specify Stage Order and Conditions
 stages:
@@ -83,9 +83,9 @@ jobs:
       apt:
         sources:
         - sourceline: ppa:ubuntu-toolchain-r/test # C++20
-        - sourceline: 'deb https://apt.kitware.com/ubuntu/ bionic main'
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ focal main'
           key_url: 'https://apt.kitware.com/keys/kitware-archive-latest.asc'
-        - sourceline: 'deb https://apt.kitware.com/ubuntu/ bionic-rc main'
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ focal-rc main'
         packages:
         - cmake
         - g++-9 # C++20
@@ -126,7 +126,7 @@ jobs:
       apt:
         sources:
         - sourceline:
-            'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main'
+            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-10 main'
           key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
         packages:
         - clang-10
@@ -159,12 +159,10 @@ jobs:
       use: Linux
     addons:
       apt:
-        sources:
-        - sourceline: ppa:ubuntu-toolchain-r/test
         packages:
         - g++-10
 
-  - name: GCC-9
+  - name: GCC-9 # default on Focal Fossa image
     stage: "Build & Test"
     env:
     - CC:  gcc-9
@@ -173,12 +171,6 @@ jobs:
     - Coverage: gcov-9
     workspaces:
       use: Linux
-    addons:
-      apt:
-        sources:
-        - sourceline: ppa:ubuntu-toolchain-r/test
-        packages:
-        - g++-9
 
   - name: Clang-10
     stage: "Build & Test Latest"
@@ -192,7 +184,7 @@ jobs:
       apt:
         sources:
         - sourceline:
-            'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main'
+            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-10 main'
           key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
         packages:
         - clang-10
@@ -210,26 +202,26 @@ jobs:
       apt:
         sources:
         - sourceline:
-            'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main'
+            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-10 main'
           key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
         packages:
         - clang-10
         - libc++-10-dev
         - libc++abi-10-dev
 
-  - name: AppleClang Xcode-11.5 # based on LLVM 10?
+  - name: AppleClang Xcode-12.0 # based on LLVM 10
     stage: "Build & Test Latest"
     os: osx
-    osx_image: xcode11.5 # AppleClang ?
+    osx_image: xcode12 # AppleClang 12.0.0
     env:
     - Coverage: grcov
     workspaces:
       use: OSX
 
-  - name: AppleClang Xcode-11.4 # based on LLVM 9
+  - name: AppleClang Xcode-11.7 # based on LLVM 9
     stage: "Build & Test"
     os: osx
-    osx_image: xcode11.4 # AppleClang 11.0.3
+    osx_image: xcode11.7 # AppleClang 11.0.3 / same as Xcode11.4/5/6
     env:
     - Coverage: grcov
     workspaces:
