@@ -83,14 +83,18 @@ jobs:
         - sourceline: 'deb https://apt.kitware.com/ubuntu/ focal main'
           key_url: 'https://apt.kitware.com/keys/kitware-archive-latest.asc'
         - sourceline: 'deb https://apt.kitware.com/ubuntu/ focal-rc main'
+        - sourceline:
+            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-10 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
         packages:
         - cmake
+        - clang-10
     script:
     - |
       cd ./build
       ( set -eu
         for CMAKE in ${CMAKE_path[@]}; do test_CMake_generate $CMAKE; done
-        export CXX=clang++
+        export CXX=clang++-10
         for CMAKE in ${CMAKE_path[@]}; do test_CMake_generate $CMAKE; done
       )
 
