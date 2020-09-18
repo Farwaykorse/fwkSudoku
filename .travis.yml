@@ -23,8 +23,6 @@ env:
 # Environment variables:
 # - CXX_lib: library selection.
 #   - libc++  (Linux only, default on OSX.)
-# - CC/CXX_vcpkg: build vcpkg with a different compiler.
-#   Linux minimum: `g++-7`; OSX minimum: `g++-6`; Or clang-8 (with libc++-8).
 # - CONFIGURATION: specifies the build configuration.
 #   When not set both a Debug and a Release configurations are build in single
 #   job session.
@@ -276,14 +274,6 @@ before_install:
     Coverage=""
   fi
 - |
-  # OSX: set Homebrew gcc to gcc@<version>, to prevent version upgrades
-  if [[ "${TRAVIS_OSX_IMAGE:-}" &&
-    ${TRAVIS_OSX_IMAGE} =~ ^xcode(11(\.[1-5])?)$
-  ]]; then
-    brew unlink gcc
-    brew link gcc@9
-  fi
-- |
   # Download vcpkg
   if [[ "${TRAVIS_BUILD_STAGE_NAME}" =~ .*dependencies$ ]]; then
   ( set -euo pipefail
@@ -305,13 +295,8 @@ before_install:
       ( $(vcpkg update) == 'Warning: Different source'*'for vcpkg'* ) ||
       ( $(eval ${GENERATE_SRC_HASH}) != $(< ${VCPKG_SRC_HASH}) ) ]]
     then
-      if [[ ${CC_vcpkg:-} ]];  then eval "CC=${CC_vcpkg}"; fi
-      if [[ ${CXX_vcpkg:-} ]]; then eval "CXX=${CXX_vcpkg}"; fi
       if [[ ${CXX} == clang* && ${CXX_lib:-} ]]; then
         export CXXFLAGS="${CXXFLAGS:-} -stdlib=${CXX_lib}"
-      fi
-      if [[ ${TRAVIS_OS_NAME} == "osx" && ${CXX} == g++-* ]]; then
-        export LDFLAGS="${LDFLAGS:-} -static-libstdc++ -static-libgcc"
       fi
       ./bootstrap-vcpkg.sh
       eval ${GENERATE_SRC_HASH} > ${VCPKG_SRC_HASH}
@@ -449,17 +434,6 @@ install:
     else echo "Non existing command: $1"
     fi
   }
-- |
-  # CMake wrapper (Trusty, Xenial & Bionic); restore default behaviour.
-  if [[ "${TRAVIS_OS_NAME}" == "linux" &&
-        "$(lsb_release --codename)" =~ (trusty|xenial|bionic)$ ]]
-  then
-    if [[ -x $(command -v /usr/local/bin/cmake) ]]; then
-      function cmake { command /usr/local/bin/cmake $@; }
-    elif [[ -x $(command -v /usr/bin/cmake) ]]; then
-      function cmake { command /usr/bin/cmake $@; }
-    fi
-  fi
 - |
   # Build/install libraries
   pushd ${VCPKG_DIR}
