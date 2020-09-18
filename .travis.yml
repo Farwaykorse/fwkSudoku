@@ -74,21 +74,17 @@ jobs:
   - name: CMake versions
     stage: Validation
     env:
-    - CC:  gcc-9 # C++20
-    - CXX: g++-9 # C++20
     - CMake_version: '"3.18.2 3.17.5 3.16.9 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: Linux
     addons:
       apt:
         sources:
-        - sourceline: ppa:ubuntu-toolchain-r/test # C++20
         - sourceline: 'deb https://apt.kitware.com/ubuntu/ focal main'
           key_url: 'https://apt.kitware.com/keys/kitware-archive-latest.asc'
         - sourceline: 'deb https://apt.kitware.com/ubuntu/ focal-rc main'
         packages:
         - cmake
-        - g++-9 # C++20
     script:
     - |
       cd ./build
