@@ -44,18 +44,16 @@ namespace compiletime
 	static_assert(not std::is_const_v<typeT>);
 	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-#if defined(__clang__) || defined(__GNUC__)
+#if defined(_MSC_VER) && _MSC_VER < 1927 && !defined(__clang__)
+	static_assert(not std::is_trivially_copyable_v<typeT>);
+#else
 	static_assert(std::is_trivially_copyable_v<typeT>);
-#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
-	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
+#if !(defined(__clang__) && __clang_major__ < 6) &&                            \
+	!(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10) &&     \
+	!(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif
-#else
-	static_assert(not std::is_trivially_copyable_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900)
-	static_assert(not std::has_unique_object_representations_v<typeT>);
-#endif // __ICL
-#endif // __clang__
+#endif // older compilers
 	static_assert(std::is_standard_layout_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
@@ -157,7 +155,7 @@ namespace Location_Block_compiletime
 	static_assert(not std::is_const_v<typeT>);
 	static_assert(not std::is_volatile_v<typeT>);
 	static_assert(not std::is_trivial_v<typeT>);
-#if defined(__GNUC__) && !defined(__clang__)
+#if !defined(__clang__) && !(defined(_MSC_VER) && _MSC_VER < 1927)
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #else
