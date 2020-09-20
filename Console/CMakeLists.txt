@@ -124,6 +124,9 @@ if(MSVC) # MSVC or simulating MSVC
       # disabled warnings
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
+      $<$<VERSION_LESS_EQUAL:$<CXX_COMPILER_VERSION>,10.0.1>:
+        -Wno-zero-as-null-pointer-constant # C++20 3way-comparison operator
+      >
     >
     $<$<CXX_COMPILER_ID:Intel>:
       /W5
@@ -160,6 +163,16 @@ else()
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
       -Wno-weak-vtables   # exceptions
+      $<$<CXX_COMPILER_ID:Clang>:
+        $<$<VERSION_LESS_EQUAL:$<CXX_COMPILER_VERSION>,10.0.1>:
+          -Wno-zero-as-null-pointer-constant # C++20 3way-comparison operator
+        >
+      >
+      $<$<CXX_COMPILER_ID:AppleClang>:
+        $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,12.0.1>:
+          -Wno-zero-as-null-pointer-constant # C++20 3way-comparison operator
+        >
+      >
     >
     $<$<CXX_COMPILER_ID:GNU>:
       -Wall
