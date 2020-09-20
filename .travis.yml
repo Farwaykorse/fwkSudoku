@@ -129,6 +129,7 @@ jobs:
         packages:
         - clang-10
         - clang-tidy-10
+        - libstdc++-10-dev
 
   - name: Unity-Build
     stage: Validation
@@ -158,16 +159,6 @@ jobs:
         packages:
         - g++-10
 
-  - name: GCC-9 # default on Focal Fossa image
-    stage: "Build & Test"
-    env:
-    - CC:  gcc-9
-    - CXX: g++-9
-    - CMake_version: 3.18.2
-    - Coverage: gcov-9
-    workspaces:
-      use: Linux
-
   - name: Clang-10
     stage: "Build & Test Latest"
     env:
@@ -184,6 +175,7 @@ jobs:
           key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
         packages:
         - clang-10
+        - libstdc++-10-dev
 
   - name: Clang-10 libc++
     stage: "Build & Test Latest"
@@ -243,6 +235,11 @@ jobs:
     script: skip
     after_script: skip
     after_success: skip
+
+  allow_failures:
+  # No three-way-comparison support in libc++-10
+  - name: Clang-10 libc++
+  - name: AppleClang Xcode-12.0
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
