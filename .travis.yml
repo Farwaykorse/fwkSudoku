@@ -129,6 +129,8 @@ jobs:
         packages:
         - clang-10
         - clang-tidy-10
+        - libc++-10-dev
+        - libc++abi-10-dev
 
   - name: Unity-Build
     stage: Validation
@@ -174,6 +176,7 @@ jobs:
           key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
         packages:
         - clang-10
+        - libstdc++-10-dev
 
   - name: Clang-10 libc++
     stage: "Build & Test Latest"
