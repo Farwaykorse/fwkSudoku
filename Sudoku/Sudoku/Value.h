@@ -82,7 +82,8 @@ inline constexpr bool is_valid_option(const Value& value) noexcept
 
 // Test input values
 template<int N>
-bool is_valid(const std::vector<Value>& values) noexcept
+[[deprecated("Use the io-header")]] bool
+	is_valid(const std::vector<Value>& values) noexcept
 {
 	return (
 		!values.empty() &&
