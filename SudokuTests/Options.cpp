@@ -492,30 +492,20 @@ TEST(OptionsDeathTest, isAnswer)
 	U = false; // suppress warning: assigned only once
 }
 
-TEST(OptionsDeathTest, isOption)
-{
-	[[maybe_unused]] bool U{};
-	EXPECT_DEBUG_DEATH({ U = is_option(TE.O_1, Value{0}); }, "Assertion .*");
-#ifndef NDEBUG
-	EXPECT_DEBUG_DEATH({ U = is_option(TE.O_1, Value{15}); }, "Assertion .*");
-#else
-	// std::bitset::test
-	EXPECT_THROW(U = is_option(TE.O_1, Value{15}), std::out_of_range);
-	EXPECT_TRUE(is_option(TE.O_1, Value{0}));
-	EXPECT_FALSE(is_option(TE.A_1, Value{0}));
-#endif         // NDEBUG
-	U = false; // suppress warning: assigned only once
-}
-
 TEST(Options, isOption)
 {
 	static_assert(not noexcept(is_option(TE.O_1, Value{2})));
+	Sudoku::OptionValue<4> value{Value{2}};
+	static_assert(noexcept(is_option(TE.O_1, value)));
 	EXPECT_TRUE(is_option(TE.D_1, Value{4}));
 	EXPECT_TRUE(is_option(TE.O_1, Value{2}));
 	EXPECT_FALSE(is_option(TE.A_2, Value{2}));
 	EXPECT_FALSE(is_option(TE.O_3, Value{1}));
 	EXPECT_TRUE(is_option(TE.O_3, Value{2}));
 	EXPECT_FALSE(is_option(TE.X_0, Value{2})); // incorrect answer flag
+
+	EXPECT_THROW(is_option(TE.O_1, Value{0}), Sudoku::error::invalid_option);
+	EXPECT_THROW(is_option(TE.O_1, Value{10}), Sudoku::error::invalid_option);
 }
 
 TEST(Options, readNext)
@@ -680,7 +670,7 @@ TEST(Options, mfChangeAll)
 	EXPECT_TRUE(TMP.all());
 	EXPECT_EQ(TMP.count_all(), 4U);
 }
-TEST(OptionsDeathTest, mfRemoveOption)
+TEST(Options, mfRemoveOption)
 {
 	Options<4> TMP{};
 	ASSERT_TRUE(TMP.all());
@@ -692,23 +682,25 @@ TEST(OptionsDeathTest, mfRemoveOption)
 	EXPECT_EQ(TMP.remove_option(Value{3}).DebugString(), "10101");
 
 	static_assert(not noexcept(TMP.remove_option(Value{3})));
-	EXPECT_DEBUG_DEATH(TMP.remove_option(Value{0}), "is_valid_option");
-#ifdef NDEBUG
-	EXPECT_EQ(TMP.DebugString(), "10100");
-	EXPECT_THROW(TMP.remove_option(Value{5}), std::out_of_range);
-#else
-	EXPECT_DEBUG_DEATH(TMP.remove_option(Value{5}), "is_valid_option");
-#endif // NDEBUG
-	// check to prevent removing answer
-	TMP.set(Value{3});
-	EXPECT_DEBUG_DEATH(TMP.remove_option(Value{3}), "not Sudoku::is_answer");
+	EXPECT_THROW(TMP.remove_option(Value{0}), Sudoku::error::invalid_option);
+
+	EXPECT_EQ(TMP.DebugString(), "10101");
+	EXPECT_THROW(TMP.remove_option(Value{5}), Sudoku::error::invalid_option);
+
 	// already removed: nothing happens
 	TMP.remove_option(Value{1});
 
 	ASSERT_TRUE(TMP.reset().all()) << "Reset test data failed";
 	EXPECT_EQ(TMP.remove_option(Value{3}).DebugString(), "10111");
 }
-TEST(OptionsDeathTest, mfAdd)
+TEST(OptionsDeathTest, mfRemoveOption)
+{
+	Options<4> TMP{};
+	// check to prevent removing answer
+	TMP.set(Value{3});
+	EXPECT_DEBUG_DEATH(TMP.remove_option(Value{3}), "not Sudoku::is_answer");
+}
+TEST(OptionsTest, mfAdd)
 {
 	Options<4> Opt{std::bitset<5>{"00000"}};
 	ASSERT_TRUE(Opt.is_empty());
@@ -719,13 +711,9 @@ TEST(OptionsDeathTest, mfAdd)
 	EXPECT_EQ(Opt.add(Value{4}).DebugString(), "10010");
 
 	static_assert(not noexcept(Opt.add(Value{4})));
-	EXPECT_DEBUG_DEATH(Opt.add(Value{0}), "is_valid_option");
-#ifdef NDEBUG
-	EXPECT_EQ(Opt.DebugString(), "10011");
-	EXPECT_THROW(Opt.add(Value{5}), std::out_of_range);
-#else
-	EXPECT_DEBUG_DEATH(Opt.add(Value{5}), "is_valid_option");
-#endif // NDEBUG
+	EXPECT_THROW(Opt.add(Value{0}), Sudoku::error::invalid_option);
+	EXPECT_THROW(Opt.add(Value{5}), Sudoku::error::invalid_option);
+	EXPECT_EQ(Opt.DebugString(), "10010");
 }
 TEST(Options, mfAddNocheck)
 {
@@ -737,14 +725,13 @@ TEST(Options, mfAddNocheck)
 	EXPECT_EQ(Opt.add_nocheck(Value{1}).DebugString(), "00010");
 	EXPECT_EQ(Opt.add_nocheck(Value{4}).DebugString(), "10010");
 
-	static_assert(noexcept(Opt.add_nocheck(Value{1})));
-	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{0}), "is_valid_option");
-#ifdef NDEBUG
-	EXPECT_EQ(Opt.DebugString(), "10011");
-	// EXPECT_NO_FATAL_FAILURE(Opt.add_nocheck(Value{5}));
-#else
-	EXPECT_DEBUG_DEATH(Opt.add_nocheck(Value{5}), "is_valid_option");
-#endif // NDEBUG
+	Sudoku::OptionValue<4> value{1u};
+	static_assert(not noexcept(Opt.add_nocheck(Sudoku::OptionValue<4>{1u})));
+	static_assert(noexcept(Opt.add_nocheck(value)));
+	static_assert(not noexcept(Opt.add_nocheck(Value{1})));
+	EXPECT_THROW(Opt.add_nocheck(Value{0}), Sudoku::error::invalid_option);
+	EXPECT_EQ(Opt.DebugString(), "10010");
+	EXPECT_THROW(Opt.add_nocheck(Value{5}), Sudoku::error::invalid_option);
 }
 TEST(Options, mfSet)
 {
@@ -757,13 +744,9 @@ TEST(Options, mfSet)
 	EXPECT_EQ(TMP.set(Value{4}).DebugString(), "10000");
 
 	static_assert(not noexcept(TMP.set(Value{4})));
-	EXPECT_DEBUG_DEATH(TMP.set(Value{0}), "is_valid_option");
-#ifdef NDEBUG
-	EXPECT_EQ(TMP.DebugString(), "00001");
-	EXPECT_THROW(TMP.set(Value{5}), std::out_of_range);
-#else
-	EXPECT_DEBUG_DEATH(TMP.set(Value{5}), "is_valid_option");
-#endif // NDEBUG
+	EXPECT_THROW(TMP.set(Value{0}), Sudoku::error::invalid_option);
+	EXPECT_EQ(TMP.DebugString(), "00000");
+	EXPECT_THROW(TMP.set(Value{5}), Sudoku::error::invalid_option);
 }
 TEST(Options, mfSetNocheck)
 {
@@ -778,13 +761,9 @@ TEST(Options, mfSetNocheck)
 	EXPECT_EQ(TMP.set_nocheck(Value{4}).DebugString(), "10000");
 
 	static_assert(noexcept(TMP.set_nocheck(Value{2})));
-	EXPECT_DEBUG_DEATH(TMP.set_nocheck(Value{0}), "is_valid_option");
-#ifdef NDEBUG
-	EXPECT_EQ(TMP.DebugString(), "00001");
-	// EXPECT_NO_FATAL_FAILURE(TMP.add_nocheck(Value{5}));
-#else
-	EXPECT_DEBUG_DEATH(TMP.set_nocheck(Value{5}), "is_valid_option");
-#endif // NDEBUG
+	EXPECT_THROW(TMP.set_nocheck(Value{0}), Sudoku::error::invalid_option);
+	EXPECT_EQ(TMP.DebugString(), "00000");
+	EXPECT_THROW(TMP.set_nocheck(Value{5}), Sudoku::error::invalid_option);
 }
 
 TEST(OptionsDeathTest, mfBooleanComparison)

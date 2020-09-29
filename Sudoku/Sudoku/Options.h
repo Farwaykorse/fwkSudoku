@@ -9,6 +9,7 @@
 //====--------------------------------------------------------------------====//
 #pragma once
 
+#include "OptionValue.h"
 #include "Size.h"
 #include "Value.h"
 
@@ -46,12 +47,12 @@ public:
 	Options& clear() noexcept; // remove all options
 	Options& reset() noexcept; // set all options
 	Options& flip() noexcept;
-	Options& remove_option(Value const&); // remove single option
+	Options& remove_option(OptionValue<E> const&); // remove single option
 	// TODO Options& remove_option(Value, ...);	// remove mentioned
-	Options& add(Value const&);                  // add single option
-	Options& set(Value const&);                  // set to answer
-	Options& add_nocheck(Value const&) noexcept; // add single option
-	Options& set_nocheck(Value const&) noexcept; // set to answer
+	Options& add(OptionValue<E> const&);                  // add single option
+	Options& set(Value const&);                           // set to answer
+	Options& add_nocheck(OptionValue<E> const&) noexcept; // add single option
+	Options& set_nocheck(Value const&) noexcept;          // set to answer
 
 	[[nodiscard]] constexpr size_t size() const noexcept;
 	[[nodiscard]] size_t count() const noexcept;     // count available options
@@ -122,6 +123,8 @@ template<int E>
 [[nodiscard]] constexpr bool is_answer_fast(Options<E> const&) noexcept;
 template<int E>
 [[nodiscard]] bool is_answer(Options<E> const&, Value const&) noexcept;
+template<int E>
+[[nodiscard]] bool is_option(Options<E> const&, OptionValue<E> const) noexcept;
 template<int E>
 [[nodiscard]] bool is_option(Options<E> const&, Value const);
 template<int E>
@@ -280,30 +283,27 @@ inline Options<E>& Options<E>::flip() noexcept
 
 //	remove single option
 template<int E>
-inline Options<E>& Options<E>::remove_option(Value const& value)
+inline Options<E>& Options<E>::remove_option(OptionValue<E> const& value)
 {
-	assert(is_valid_option<E>(value));
 	assert(not Sudoku::is_answer(*this, value));
 
-	data_.set(static_cast<size_t>(value), false);
+	data_.set(value, false);
 	return *this;
 }
 
 //	add single option
 template<int E>
-inline Options<E>& Options<E>::add(Value const& value)
+inline Options<E>& Options<E>::add(OptionValue<E> const& value)
 {
-	assert(is_valid_option<E>(value));
-	data_.set(static_cast<size_t>(value), true);
+	data_.set(value, true);
 	return *this;
 }
 
 //	add single option
 template<int E>
-inline Options<E>& Options<E>::add_nocheck(Value const& value) noexcept
+inline Options<E>& Options<E>::add_nocheck(OptionValue<E> const& value) noexcept
 {
-	assert(is_valid_option<E>(value));
-	data_[static_cast<size_t>(value)] = true;
+	data_[value] = true;
 	return *this;
 }
 
@@ -404,10 +404,17 @@ inline bool is_answer(Options<E> const& options, Value const& value) noexcept
 
 // check if option available
 template<int E>
-inline bool is_option(const Options<E>& options, const Value value)
+inline bool
+	is_option(const Options<E>& options, OptionValue<E> const value) noexcept
 {
-	assert(is_valid_option<E>(value));
 	return (options.test(value) && not is_answer_fast(options));
+}
+
+// check if option available
+template<int E>
+inline bool is_option(const Options<E>& options, Value const value)
+{
+	return is_option(options, OptionValue<E>{value});
 }
 
 // Test if no options or answers available
