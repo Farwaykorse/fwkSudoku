@@ -24,6 +24,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Location.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Location_Utilities.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Options.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\OptionValue.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\precompiled_basic.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Size.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Strategic\Solver.fwd.h" />

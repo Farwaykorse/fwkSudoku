@@ -60,19 +60,22 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Value.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Strategic\Solver.fwd.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Strategic\Solver.fwd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Strategic\Solver.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Strategic\Solver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Strategic\Solvers_find.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Strategic\Solvers_find.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Strategic\Solvers_remove_option.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Strategic\Solvers_remove_option.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\R-JWolthuis\git\cpp\Sudoku\Sudoku\Strategic\Solvers_set_option.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Strategic\Solvers_set_option.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\OptionValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

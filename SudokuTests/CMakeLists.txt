@@ -43,7 +43,8 @@ target_sources(SudokuTests
     traits.cpp
     Transpose.cpp
     Value.cpp
-)
+    OptionValueTest.cpp
+ )
 
 target_link_libraries(SudokuTests
   PRIVATE
