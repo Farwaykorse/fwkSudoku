@@ -663,24 +663,6 @@ TEST(OptionsTest, mfAdd)
 	EXPECT_THROW(Opt.add(Value{5}), Sudoku::error::invalid_option);
 	EXPECT_EQ(Opt.DebugString(), "10010");
 }
-TEST(Options, mfAddNocheck)
-{
-	Options<4> Opt{std::bitset<5>{"00000"}};
-	// return type
-	static_assert(
-		std::is_same_v<Options<4>&, decltype(Opt.add_nocheck(Value{3}))>);
-
-	EXPECT_EQ(Opt.add_nocheck(Value{1}).DebugString(), "00010");
-	EXPECT_EQ(Opt.add_nocheck(Value{4}).DebugString(), "10010");
-
-	Sudoku::OptionValue<4> value{1u};
-	static_assert(not noexcept(Opt.add_nocheck(Sudoku::OptionValue<4>{1u})));
-	static_assert(noexcept(Opt.add_nocheck(value)));
-	static_assert(not noexcept(Opt.add_nocheck(Value{1})));
-	EXPECT_THROW(Opt.add_nocheck(Value{0}), Sudoku::error::invalid_option);
-	EXPECT_EQ(Opt.DebugString(), "10010");
-	EXPECT_THROW(Opt.add_nocheck(Value{5}), Sudoku::error::invalid_option);
-}
 TEST(Options, mfSet)
 {
 	Options<4> TMP{};
@@ -696,25 +678,6 @@ TEST(Options, mfSet)
 	EXPECT_EQ(TMP.DebugString(), "00000");
 	EXPECT_THROW(TMP.set(Value{5}), Sudoku::error::invalid_option);
 }
-TEST(Options, mfSetNocheck)
-{
-	Options<4> TMP{};
-	ASSERT_TRUE(TMP.all());
-	// return type
-	static_assert(
-		std::is_same_v<Options<4>&, decltype(TMP.set_nocheck(Value{3}))>);
-
-	EXPECT_EQ(TMP.set_nocheck(Value{1}).DebugString(), "00010");
-	EXPECT_TRUE(is_answer(TMP.set_nocheck(Value{2}), Value{2}));
-	EXPECT_EQ(TMP.set_nocheck(Value{4}).DebugString(), "10000");
-
-	EXPECT_THROW(TMP.set_nocheck(Value{0}), Sudoku::error::invalid_option);
-	EXPECT_EQ(TMP.DebugString(), "00000");
-	EXPECT_THROW(TMP.set_nocheck(Value{5}), Sudoku::error::invalid_option);
-	constexpr Sudoku::OptionValue<4> valid_val{2u};
-	static_assert(noexcept(TMP.set_nocheck(valid_val)));
-}
-
 TEST(Options, mfBooleanComparison)
 {
 	[[maybe_unused]] bool U{};

@@ -48,11 +48,8 @@ public:
 	Options& reset() noexcept; // set all options
 	Options& flip() noexcept;  // can create an invalid state
 	Options& remove_option(OptionValue<E>); // remove single option
-	// TODO Options& remove_option(Value, ...);	// remove mentioned
 	Options& add(OptionValue<E>) noexcept;         // add single option
 	Options& set(OptionValue<E>);                  // set to answer
-	Options& add_nocheck(OptionValue<E>) noexcept; // add single option
-	Options& set_nocheck(OptionValue<E>) noexcept; // set to answer
 
 	[[nodiscard]] constexpr size_t size() const noexcept;
 	[[nodiscard]] size_t count() const noexcept;     // count available options
@@ -119,8 +116,6 @@ private:
 
 template<int E>
 [[nodiscard]] bool is_answer(Options<E> const&) noexcept;
-template<int E>
-[[nodiscard]] bool is_answer_fast(Options<E> const&) noexcept;
 template<int E>
 [[nodiscard]] bool is_answer(Options<E> const&, OptionValue<E>) noexcept;
 template<int E>
@@ -298,28 +293,12 @@ inline Options<E>& Options<E>::add(OptionValue<E> const value) noexcept
 	return *this;
 }
 
-//	add single option
-template<int E>
-[[deprecated]] inline Options<E>&
-	Options<E>::add_nocheck(OptionValue<E> const value) noexcept
-{
-	return add(value);
-}
-
 //	set to answer
 template<int E>
 inline Options<E>& Options<E>::set(OptionValue<E> const value)
 {
 	data_.reset(); // all 0 incl. answer-bit
 	return add(value);
-}
-
-//	set to answer
-template<int E>
-[[deprecated]] inline Options<E>&
-	Options<E>::set_nocheck(OptionValue<E> const value) noexcept
-{
-	return set(value);
 }
 
 template<int E>
@@ -385,13 +364,6 @@ template<int E>
 inline bool is_answer(const Options<E>& options) noexcept
 { // convenience function
 	return options.is_answer();
-}
-
-// check if set to answer without validation
-template<int E>
-[[deprecated]] inline bool is_answer_fast(const Options<E>& options) noexcept
-{
-	return is_answer(options);
 }
 
 // check if set to answer value
