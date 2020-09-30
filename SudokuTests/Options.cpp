@@ -130,7 +130,11 @@ namespace compiletime
 
 	// Value
 	static_assert(std::is_constructible_v<Options<3>, Value>);
+#if defined(_MSC_VER) && not defined(__clang__)
 	static_assert(std::is_nothrow_constructible_v<Options<3>, Value>);
+#else
+	static_assert(not std::is_nothrow_constructible_v<Options<3>, Value>);
+#endif
 	static_assert(std::is_assignable_v<Options<3>, Value>);
 	static_assert(not std::is_nothrow_assignable_v<Options<3>, Value>);
 	static_assert(not noexcept(Options<3>{Value{}}));
