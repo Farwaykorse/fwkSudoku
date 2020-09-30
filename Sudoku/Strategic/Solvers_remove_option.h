@@ -110,8 +110,8 @@ int remove_option(
 	const Location<N> loc,
 	const Options mask)
 {
-	assert(is_answer_fast(mask)); // don't remove answer-bit
-	assert(!mask.is_empty());     // useless
+	assert(is_answer(mask));  // don't remove answer-bit
+	assert(!mask.is_empty()); // useless
 
 	auto& item{board.at(loc)};
 	auto changes = gsl::narrow_cast<int, size_t>(item.count_all());

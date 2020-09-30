@@ -36,6 +36,7 @@ namespace SudokuTests::OptionsTest
 {
 using ::Sudoku::Options;
 using ::Sudoku::Value;
+using ::Sudoku::OptionValue;
 
 namespace compiletime
 {
@@ -131,16 +132,22 @@ namespace compiletime
 	static_assert(std::is_constructible_v<Options<3>, Value>);
 	static_assert(std::is_nothrow_constructible_v<Options<3>, Value>);
 	static_assert(std::is_assignable_v<Options<3>, Value>);
-	static_assert(std::is_nothrow_assignable_v<Options<3>, Value>);
-	static_assert(noexcept(Options<3>{Value{}}));
-	static_assert(noexcept(Options<3>{Value{0}}));
-	static_assert(noexcept(Options<3>{Value{9}}));
-	static_assert(noexcept(Options<3>{Value{10}}));
-	static_assert(noexcept(Options<3>() = Value{}));
-	static_assert(noexcept(Options<3>() = Value{0}));
-	static_assert(noexcept(Options<3>() = Value{1}));
-	static_assert(noexcept(Options<3>() = Value{9}));
-	static_assert(noexcept(Options<3>() = Value{10}));
+	static_assert(not std::is_nothrow_assignable_v<Options<3>, Value>);
+	static_assert(not noexcept(Options<3>{Value{}}));
+	static_assert(not noexcept(Options<3>{Value{0}}));
+	static_assert(not noexcept(Options<3>{Value{9}}));
+	static_assert(not noexcept(Options<3>{Value{10}}));
+	static_assert(not noexcept(Options<3>() = Value{}));
+	static_assert(not noexcept(Options<3>() = Value{0}));
+	static_assert(not noexcept(Options<3>() = Value{1}));
+	static_assert(not noexcept(Options<3>() = Value{9}));
+	static_assert(not noexcept(Options<3>() = Value{10}));
+
+	// OptionValue<E>
+	static_assert(std::is_constructible_v<Options<9>, OptionValue<9>>);
+	static_assert(std::is_nothrow_constructible_v<Options<9>, OptionValue<9>>);
+	static_assert(std::is_assignable_v<Options<9>, OptionValue<9>>);
+	static_assert(std::is_nothrow_assignable_v<Options<9>, OptionValue<9>>);
 
 	static_assert(not std::is_constructible_v<Options<3>, int>);
 	static_assert(not std::is_assignable_v<Options<3>, int>);
@@ -276,15 +283,11 @@ TEST(Options, Construction)
 		const auto A_2 = Options<4>{Value{2}};
 		EXPECT_EQ(A_1.DebugString(), "00100");
 		EXPECT_EQ(A_2.DebugString(), "00100");
-		EXPECT_EQ(Options<4>{Value{0}}.DebugString(), "00001"); // [count-0]
+		EXPECT_THROW(Options<4>{Value{0}}, Sudoku::error::invalid_option);
 		EXPECT_EQ(Options<4>{Value{4}}.DebugString(), "10000");
 		EXPECT_EQ(Options<4>{Value{4}}.DebugString(), "10000");
 		EXPECT_EQ(Options<9>{Value{9}}.DebugString(), "1000000000");
 		EXPECT_EQ(Options<9>{Value{2}}.DebugString(), "0000000100");
-
-		static_assert(noexcept(Options<4>{Value{2}}));
-		static_assert(noexcept(Options<4>{Value{4}}));
-		static_assert(noexcept(Options<4>{Value{8}})); // outside
 	}
 	{
 		SCOPED_TRACE("Options& operator=(Value)");
@@ -292,33 +295,20 @@ TEST(Options, Construction)
 		TMP = Value{1}; // set() // clear() // add()
 		EXPECT_EQ(TMP.DebugString(), "00010");
 		EXPECT_EQ((TMP = Value{3}).DebugString(), "01000");
-		EXPECT_EQ((TMP = Value{0}).DebugString(), "00001"); // [count-0]
 	}
-}
-
-TEST(OptionsDeathTest, Construction)
-{
-	const Options<4> D_0{};
-
-	{ // assert serves to catch E+1 case
-		EXPECT_DEBUG_DEATH({ Options<3>{Value{4}}; }, "Assertion .*");
-		EXPECT_DEBUG_DEATH({ Options<3>{Value{5}}; }, "Assertion .*");
-		// debug contains assert( <= )
-		EXPECT_DEBUG_DEATH(Options<4>{Value{5}}, "Assertion .*");
+	{ // catch the E+1 case
+		EXPECT_THROW({ Options<3>{Value{4}}; }, Sudoku::error::invalid_option);
+		EXPECT_THROW({ Options<3>{Value{5}}; }, Sudoku::error::invalid_option);
 
 		Options<4> TMP{};
 		EXPECT_TRUE(TMP.all());
-		EXPECT_DEBUG_DEATH(TMP = Value{6}, "Assertion .*");
-		EXPECT_DEBUG_DEATH(TMP = Value{10}, "Assertion .*");
-#ifdef NDEBUG
-		// outside domain
-		EXPECT_TRUE(Options<4>{Value{5}}.is_empty());
-		EXPECT_TRUE(Options<9>{Value{10}}.is_empty());
-#endif                  // NDEBUG
+		EXPECT_THROW(TMP = Value{6}, Sudoku::error::invalid_option);
+		EXPECT_THROW(TMP = Value{10}, Sudoku::error::invalid_option);
 		TMP = Value{4}; // suppress warning: assigned only once
 		EXPECT_EQ(TMP.DebugString(), "10000");
 	}
 }
+
 
 struct TestElements
 {
@@ -332,7 +322,6 @@ struct TestElements
 	const Options<4> O_4{std::bitset<5>{"11111"}}; // all options
 	const Options<4> E_1{std::bitset<5>{"00000"}}; // empty
 	const Options<4> E_2{std::bitset<5>{"00001"}}; // empty, no answer
-	const Options<4> E_3{Value{0}};                // empty answer "00001"
 	const Options<4> X_0{std::bitset<5>{"11110"}}; // answered, all options
 	const Options<4> X_1{std::bitset<5>{"10100"}}; // answered, 2 options
 };
@@ -384,15 +373,18 @@ TEST(Options, mfCounting)
 
 TEST(Options, testValue)
 {
+	using Sudoku::error::invalid_option;
 	[[maybe_unused]] bool set{};
-	static_assert(not noexcept(TE.O_1.test(Value{2})));
-	EXPECT_NO_THROW(set = TE.O_1.test(Value{0}));
+
+	constexpr OptionValue<4> value{2u};
+	static_assert(noexcept(TE.O_1.test(value)));
+	EXPECT_THROW(set = TE.O_1.test(Value{0}), invalid_option);
 	EXPECT_NO_THROW(set = TE.O_1.test(Value{4}));
-	EXPECT_THROW(set = TE.O_1.test(Value{5}), std::out_of_range);
-	EXPECT_THROW(set = TE.O_1.test(Value{13}), std::out_of_range);
+	EXPECT_THROW(set = TE.O_1.test(Value{5}), invalid_option);
+	EXPECT_THROW(set = TE.O_1.test(Value{13}), invalid_option);
 	EXPECT_NO_THROW(set = Options<9>().test(Value{5}));
 	EXPECT_NO_THROW(set = Options<9>().test(Value{9}));
-	EXPECT_THROW(set = Options<9>().test(Value{10}), std::out_of_range);
+	EXPECT_THROW(set = Options<9>().test(Value{10}), invalid_option);
 	EXPECT_TRUE(TE.O_1.test(Value{2}));
 	EXPECT_TRUE(TE.O_3.test(Value{2}));
 	EXPECT_FALSE(TE.O_3.test(Value{1}));
@@ -425,69 +417,25 @@ TEST(Options, isAnswer)
 		EXPECT_FALSE(is_answer(TE.E_2));
 		EXPECT_FALSE(is_answer(TE.X_0));
 		EXPECT_FALSE(is_answer(TE.X_1));
-		static_assert(noexcept(is_answer(TE.O_1, Value{1})));
+		static_assert(not noexcept(is_answer(TE.O_1, Value{1})));
+		constexpr OptionValue<4> value{1u};
+		static_assert(noexcept(is_answer(TE.O_1, value)));
 	}
 	{ // test for specific answer
-		static_assert(noexcept(is_answer(TE.O_1, Value{1})));
-		static_assert(noexcept(is_answer(TE.A_1, Value{4})));
+		constexpr OptionValue<4> value_1{1u};
+		constexpr OptionValue<4> value_4{4u};
+		static_assert(noexcept(is_answer(TE.O_1, value_1)));
+		static_assert(noexcept(is_answer(TE.A_1, value_4)));
 		// assertion see death tests
 		EXPECT_TRUE(is_answer(TE.A_2, Value{2}));
 		EXPECT_FALSE(is_answer(TE.A_2, Value{3}));
-		EXPECT_FALSE(is_answer(TE.A_1, Value{0}));
 		EXPECT_FALSE(is_answer(TE.O_1, Value{2}));
 		EXPECT_FALSE(is_answer(TE.O_1, Value{2}));
-		EXPECT_FALSE(is_answer(TE.E_1, Value{0}));
-		EXPECT_TRUE(is_answer(TE.E_2, Value{0}));
 	}
-	{ // test if answer flag set
-		constexpr Options<9> ans{Value{2}};
-		static_assert(is_answer_fast(ans), "Failure: constexpr is_answer_fast");
-		static_assert(!ans[Value{0}]); // dependencies
-		static_assert(!ans[Value{1}]); //
-		static_assert(ans[Value{2}]);  //
-
-		static_assert(noexcept(is_answer_fast(TE.O_1)));
-		static_assert(noexcept(is_answer_fast(ans)));
-		static_assert(noexcept(is_answer_fast(Options<9>{Value{}})));
-		static_assert(noexcept(is_answer_fast(Options<9>{Value{0}})));
-		static_assert(noexcept(is_answer_fast(Options<9>{Value{1}})));
-		static_assert(noexcept(is_answer_fast(Options<9>{Value{9}})));
-		static_assert(noexcept(is_answer_fast(Options<9>{Value{10}})));
-
-		static_assert(is_answer_fast(ans), "Failure: constexpr is_answer_fast");
-		static_assert(!is_answer_fast(Options<9>{Value{}}));
-		static_assert(!is_answer_fast(Options<9>{Value{0}}));
-		static_assert(is_answer_fast(Options<9>{Value{1}}));
-		static_assert(is_answer_fast(Options<9>{Value{9}}));
-
-		EXPECT_TRUE(is_answer_fast(TE.A_1));
-		EXPECT_TRUE(is_answer_fast(TE.A_2));
-		EXPECT_FALSE(is_answer_fast(TE.O_1));
-		EXPECT_FALSE(is_answer_fast(TE.O_4));
-		// invalid data:
-		EXPECT_TRUE(is_answer_fast(TE.E_1));  // 00000 false for is_answer
-		EXPECT_FALSE(is_answer_fast(TE.E_2)); // 00001
-		EXPECT_TRUE(is_answer_fast(TE.X_0));  // 11110 false for is_answer
-		EXPECT_TRUE(is_answer_fast(TE.X_1));  // 10100 false for is_answer
-	}
-	U = false; // suppress warning: assigned only once
-}
-
-TEST(OptionsDeathTest, isAnswer)
-{
-	[[maybe_unused]] bool U{};
-
 	{ // convenience function: exactly the same
-		EXPECT_DEBUG_DEATH(
+		EXPECT_THROW(
 			{ U = is_answer(TE.A_1, Value{15}); },
-			"Assertion .*value <= Value.E."); // constructor
-	}
-	{ // test if answer flag set
-#ifndef NDEBUG
-		EXPECT_DEATH(
-			{ U = is_answer_fast(Options<9>{Value{10}}); },
-			"Assertion .*value <= Value.E.");
-#endif // NDEBUG
+			Sudoku::error::invalid_option); // constructor
 	}
 	U = false; // suppress warning: assigned only once
 }
@@ -760,39 +708,31 @@ TEST(Options, mfSetNocheck)
 	EXPECT_TRUE(is_answer(TMP.set_nocheck(Value{2}), Value{2}));
 	EXPECT_EQ(TMP.set_nocheck(Value{4}).DebugString(), "10000");
 
-	static_assert(noexcept(TMP.set_nocheck(Value{2})));
 	EXPECT_THROW(TMP.set_nocheck(Value{0}), Sudoku::error::invalid_option);
 	EXPECT_EQ(TMP.DebugString(), "00000");
 	EXPECT_THROW(TMP.set_nocheck(Value{5}), Sudoku::error::invalid_option);
+	constexpr Sudoku::OptionValue<4> valid_val{2u};
+	static_assert(noexcept(TMP.set_nocheck(valid_val)));
 }
 
-TEST(OptionsDeathTest, mfBooleanComparison)
+TEST(Options, mfBooleanComparison)
 {
 	[[maybe_unused]] bool U{};
 
 	// operator==(Value) const
-	EXPECT_DEBUG_DEATH(
+	EXPECT_THROW(
 		{ U = operator==(TE.A_1, Value{15}); },
-		"Assertion .*Value"); // constructor
-	EXPECT_DEBUG_DEATH({ U = operator==(Value{15}, TE.A_1); }, "Assertion .*");
-#ifdef NDEBUG
-	EXPECT_FALSE(operator==(TE.A_1, Value{15}));
-	EXPECT_FALSE(operator==(Value{15}, TE.A_1));
-	EXPECT_TRUE(operator==(Value{15}, TE.E_1));
-#endif // NDEBUG
+		Sudoku::error::invalid_option); // constructor
+	EXPECT_THROW(
+		{ U = operator==(Value{15}, TE.A_1); }, Sudoku::error::invalid_option);
 
 	// operator!=(Value) const
-	EXPECT_DEBUG_DEATH({ U = operator!=(TE.A_1, Value{15}); }, "Assertion .*");
-	EXPECT_DEBUG_DEATH({ U = operator!=(Value{15}, TE.A_1); }, "Assertion .*");
+	EXPECT_THROW(
+		{ U = operator!=(TE.A_1, Value{15}); }, Sudoku::error::invalid_option);
+	EXPECT_THROW(
+		{ U = operator!=(Value{15}, TE.A_1); }, Sudoku::error::invalid_option);
 	U = false; // suppress warning: assigned only once
-#ifdef NDEBUG
-	EXPECT_TRUE(operator!=(TE.A_1, Value{15}));
-	EXPECT_TRUE(operator!=(Value{15}, TE.A_1));
-	EXPECT_FALSE(operator!=(Value{15}, TE.E_1));
-#endif // NDEBUG
-}
-TEST(Options, mfBooleanComparison)
-{
+
 	// operator==(Value) const
 	static_assert(noexcept(TE.A_1 == Value{1}));
 	static_assert(noexcept(Value{1} == TE.A_1));
@@ -879,7 +819,9 @@ TEST(Options, mfConstOperators)
 	EXPECT_EQ((TE.E_2 & TE.O_1), TE.E_2);
 
 	// constexpr bool operator[](int) const
-	static_assert(noexcept(TE.O_1[Value{2}]));
+	static_assert(not noexcept(TE.O_1[Value{2}]));
+	constexpr OptionValue<4> value{2u};
+	static_assert(noexcept(TE.O_1[value]));
 
 	constexpr Options<4> x{Value{1}};
 	static_assert(x[Value{1}]);
@@ -893,43 +835,15 @@ TEST(Options, mfConstOperators)
 	EXPECT_TRUE(TE.A_2[Value{2}]);
 	EXPECT_TRUE(TE.A_2[Value{1}] == false);
 }
-TEST(OptionsDeathTest, mfConstOperators)
-{
-#ifndef NDEBUG
-	EXPECT_DEATH(
-		{ [[maybe_unused]] bool val = TE.O_3[Value{5}]; }, "Assertion .*");
-#else
-	//! supposed to be noexcept, and no bounds-checks in release-mode
-	//  might still trigger SEH error?
-	[[maybe_unused]] bool val{};
-	EXPECT_NO_THROW(val = TE.O_3[Value{9}]);
-#endif // NDEBUG
-}
-
-TEST(OptionsDeathTest, Operators)
-{
-	// _test-data
-	Options<4> TMP{};
-
-	///// non-const operators /////
-	static_assert(noexcept(TMP.operator[](Value{0}) = true));
-#ifndef NDEBUG
-	EXPECT_DEBUG_DEATH({ TMP[Value{5}] = true; }, "Assertion .*");
-#else
-	//! supposed to be noexcept, and no bounds-checks in release-mode
-	//  might still trigger SEH error?
-	// ASSERT_GT(sizeof(TMP), size_t{1});
-	// EXPECT_NO_THROW(TMP[Value{7}] = true);
-#endif // NDEBUG
-}
-
 TEST(Options, Operators)
 {
 	// _test-data
 	Options<4> TMP{}; // per test, reset this option
 
 	///// non-const operators /////
-	static_assert(noexcept(TMP.operator[](Value{0}) = true));
+	static_assert(not noexcept(TMP.operator[](Value{2}) = true));
+	constexpr OptionValue<4> value{2u};
+	static_assert(noexcept(TMP.operator[](value) = true));
 
 	EXPECT_TRUE(TMP[Value{0}] = true);
 	EXPECT_TRUE(TMP[Value{0}] == true);
@@ -956,19 +870,19 @@ TEST(Options, Operators)
 	// Options operator+(Options&) const		combine options
 	static_assert(noexcept(TE.D_1 + TE.O_4));
 	EXPECT_TRUE(TE.D_1 + TE.O_4 == TE.D_1);
-	EXPECT_TRUE(TE.E_3 + TE.D_1 == TE.D_1);
+	EXPECT_TRUE(TE.E_2 + TE.D_1 == TE.D_1);
 	EXPECT_TRUE(TE.A_2 + TE.E_2 == TE.O_1);
-	EXPECT_TRUE(TE.E_3 + TE.A_2 == TE.O_1);
+	EXPECT_TRUE(TE.E_2 + TE.A_2 == TE.O_1);
 }
 
 TEST(Options, ConstructorTesting)
 {
 	Options<4> TMP{};
-	///// testing the constructors /////
-	EXPECT_TRUE(TE.E_3 == TE.E_2);
 	// copy-assign
 	static_assert(noexcept(TMP.operator=(TE.O_4)));
-	static_assert(noexcept(TMP.operator=(Value{1})));
+	static_assert(not noexcept(TMP.operator=(Value{1})));
+	constexpr OptionValue<4> value{1u};
+	static_assert(noexcept(TMP.operator=(value)));
 
 	TMP = TE.A_2;
 	EXPECT_TRUE(is_answer(TMP, Value{2}));
@@ -1007,7 +921,7 @@ TEST(Options, operatorMinus)
 {
 	const Options<9> all{};
 	const Options<9> empty{std::bitset<10>{"0000000000"}};
-	constexpr Options<9> E_1{Value{0}};
+	const Options<9> E_1{Value{0}};
 	const Options<9> O_0{std::bitset<10>{"0111011011"}};
 	const Options<9> O_1{std::bitset<10>{"0111011010"}};
 	const Options<9> O_2{std::bitset<10>{"1010101110"}};

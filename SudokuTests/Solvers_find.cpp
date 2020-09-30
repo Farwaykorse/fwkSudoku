@@ -486,7 +486,10 @@ TEST(Solver, listWhereOptions)
 	// - vector out-of-memory
 	// - push_back: strong exception guarantee
 	//	 Location is nothrow move constructible
-	static_assert(noexcept(list_where_option<2>(B.row(0), Options{Value{1}})));
+	static_assert(
+		not noexcept(list_where_option<2>(B.row(0), Options{Value{1}})));
+	constexpr Sudoku::OptionValue<4> value{1u};
+	static_assert(noexcept(list_where_option<2>(B.row(0), Options{value})));
 	static_assert(noexcept(list_where_option<2>(B.row(0), B[0][2])));
 	list = list_where_option<2>(B.row(0), Options{Value{0}});
 	list = list_where_option<2>(B.row(0), Options{Value{4}});
@@ -536,8 +539,9 @@ TEST(SolverDeathTest, listWhereOptions)
 	std::vector<loc> list{};
 
 	// caught in Options constructor
-	EXPECT_DEBUG_DEATH(
-		list = list_where_option<2>(B.row(0), Options{Value{5}}), ".*<= Value");
+	EXPECT_THROW(
+		list = list_where_option<2>(B.row(0), Options{Value{5}}),
+		Sudoku::error::invalid_option);
 }
 
 TEST(Solver, listWhereEqual)
@@ -556,14 +560,13 @@ TEST(Solver, listWhereEqual)
 	B[3][0] = set{"10011"};
 	std::vector<loc> list{};
 
-	static_assert(
-		noexcept(list_where_equal<2>(B.row(0), Options<4>{Value{1}})));
+	const Options<4> value{set{"10011"}};
+	static_assert(noexcept(list_where_equal<2>(B.row(0), value)));
 	static_assert(noexcept(list_where_equal<2>(B.row(0), B[0][1])));
 
 	static_assert(std::is_same_v<
 				  std::vector<loc>,
 				  decltype(list_where_equal<2>(B.row(0), Options<4>{}))>);
-	const Options<4> value{set{"10011"}};
 	EXPECT_NO_FATAL_FAILURE(list = list_where_equal<2>(B.row(0), value));
 	EXPECT_EQ(list.size(), size_t{1});
 	EXPECT_EQ(list[0], loc(2));
@@ -681,20 +684,6 @@ TEST(Solver, listWhereSubset)
 	ASSERT_EQ(result.size(), 0U);
 }
 
-TEST(SolverDeathTest, listWhereAnyOption)
-{
-	using ::Sudoku::list_where_any_option;
-	using loc     = Location<2>;
-	using Options = Options<4>;
-	Board<Options, 2> B{};
-	std::vector<loc> list{};
-
-	// caught in Options constructor
-	EXPECT_DEBUG_DEATH(
-		list = list_where_any_option<2>(B.row(0), Options{Value{5}}),
-		".*<= Value");
-}
-
 TEST(Solver, listWhereAnyOption)
 {
 	using ::Sudoku::list_where_any_option;
@@ -713,11 +702,17 @@ TEST(Solver, listWhereAnyOption)
 	// - vector out-of-memory
 	// - push_back: strong exception guarantee
 	//	 Location is nothrow move constructible
-	static_assert(
-		noexcept(list_where_any_option<2>(B.row(0), Options{Value{1}})));
+	const Options value{Value{1}};
+	static_assert(noexcept(list_where_any_option<2>(B.row(0), value)));
 	static_assert(noexcept(list_where_any_option<2>(B.row(0), B[0][2])));
 	list = list_where_any_option<2>(B.row(0), Options{Value{0}});
 	list = list_where_any_option<2>(B.row(0), Options{Value{4}});
+
+	// caught in OptionValue constructor
+	EXPECT_THROW(
+		list = list_where_any_option<2>(B.row(0), Options{Value{5}}),
+		Sudoku::error::invalid_option);
+
 
 	// return type
 	static_assert(

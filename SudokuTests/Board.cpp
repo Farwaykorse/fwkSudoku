@@ -610,7 +610,9 @@ TEST(Board, InBetween)
 
 	Board<Options<4>, 2> board2{};
 	static_assert(noexcept(board2[0][0]));
-	static_assert(noexcept(board2[0][0] = Value{1}));
+	static_assert(not noexcept(board2[0][0] = Value{1}));
+	constexpr Sudoku::OptionValue<4> value{1u};
+	static_assert(noexcept(board2[0][0] = value));
 	board2[2][0] = Value{2};
 	EXPECT_EQ(board2[2][0], Value{2}); // short for is_answer(value)
 	EXPECT_NE(board2[2][0], Value{1});

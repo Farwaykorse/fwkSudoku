@@ -39,31 +39,31 @@ public:
 	Options(int) = delete; // NOLINT: implicit catch all that convert to bitset
 	explicit Options(const bitset&) noexcept; // 0th bit is last in input
 	explicit Options(bitset&&) noexcept;
-	explicit constexpr Options(Value) noexcept;
-	Options& operator=(Value) noexcept;
+	explicit constexpr Options(OptionValue<E>) noexcept;
+	Options& operator=(OptionValue<E>) noexcept;
 	Options& operator=(const bitset&) noexcept;
 	Options& operator=(bitset&&) noexcept;
 
-	Options& clear() noexcept; // remove all options
+	Options& clear() noexcept; // remove all options / invalid state
 	Options& reset() noexcept; // set all options
-	Options& flip() noexcept;
-	Options& remove_option(OptionValue<E> const&); // remove single option
+	Options& flip() noexcept;  // can create an invalid state
+	Options& remove_option(OptionValue<E>); // remove single option
 	// TODO Options& remove_option(Value, ...);	// remove mentioned
-	Options& add(OptionValue<E> const&);                  // add single option
-	Options& set(Value const&);                           // set to answer
-	Options& add_nocheck(OptionValue<E> const&) noexcept; // add single option
-	Options& set_nocheck(Value const&) noexcept;          // set to answer
+	Options& add(OptionValue<E>) noexcept;         // add single option
+	Options& set(OptionValue<E>);                  // set to answer
+	Options& add_nocheck(OptionValue<E>) noexcept; // add single option
+	Options& set_nocheck(OptionValue<E>) noexcept; // set to answer
 
 	[[nodiscard]] constexpr size_t size() const noexcept;
 	[[nodiscard]] size_t count() const noexcept;     // count available options
 	[[nodiscard]] size_t count_all() const noexcept; // count all (incl. answer)
-	[[nodiscard]] bool all() const noexcept;       // test all options available
-	[[nodiscard]] bool test(Value const&) const;   // if an option, or answer
+	[[nodiscard]] bool all() const noexcept; // test all options available
+	[[nodiscard]] constexpr bool test(OptionValue<E>) const noexcept;
 	[[nodiscard]] bool is_answer() const noexcept; // is set to answer
 	[[nodiscard]] bool is_empty() const noexcept;
 
-	[[nodiscard]] constexpr bool operator[](Value const&) const noexcept;
-	auto operator[](Value const&) noexcept;
+	[[nodiscard]] constexpr bool operator[](OptionValue<E>) const noexcept;
+	auto operator[](OptionValue<E>) noexcept;
 
 	[[nodiscard]] friend bool
 		operator==(const Options<E>& left, const Options<E>& right) noexcept
@@ -120,13 +120,15 @@ private:
 template<int E>
 [[nodiscard]] bool is_answer(Options<E> const&) noexcept;
 template<int E>
-[[nodiscard]] constexpr bool is_answer_fast(Options<E> const&) noexcept;
+[[nodiscard]] bool is_answer_fast(Options<E> const&) noexcept;
 template<int E>
-[[nodiscard]] bool is_answer(Options<E> const&, Value const&) noexcept;
+[[nodiscard]] bool is_answer(Options<E> const&, OptionValue<E>) noexcept;
 template<int E>
-[[nodiscard]] bool is_option(Options<E> const&, OptionValue<E> const) noexcept;
+constexpr bool is_answer(Options<E> const&, Value);
 template<int E>
-[[nodiscard]] bool is_option(Options<E> const&, Value const);
+[[nodiscard]] bool is_option(Options<E> const&, OptionValue<E>) noexcept;
+template<int E>
+constexpr bool is_option(Options<E> const&, Value);
 template<int E>
 [[nodiscard]] Value get_answer(Options<E> const&) noexcept;
 template<int N>
@@ -224,18 +226,15 @@ inline Options<E>::Options(bitset&& other) noexcept : data_{other}
 
 //	construct with single option set to answer
 template<int E>
-inline constexpr Options<E>::Options(Value value) noexcept
+inline constexpr Options<E>::Options(OptionValue<E> value) noexcept
 	: data_{impl::exp2_<E>(value)}
 {
-	assert(value <= Value{E});
 }
 
 //	set to answer value
 template<int E>
-inline Options<E>& Options<E>::operator=(Value value) noexcept
+inline Options<E>& Options<E>::operator=(OptionValue<E> value) noexcept
 {
-	assert(value <= Value{E});
-
 	data_ = impl::exp2_<E>(value);
 	return *this;
 }
@@ -283,7 +282,7 @@ inline Options<E>& Options<E>::flip() noexcept
 
 //	remove single option
 template<int E>
-inline Options<E>& Options<E>::remove_option(OptionValue<E> const& value)
+inline Options<E>& Options<E>::remove_option(OptionValue<E> const value)
 {
 	assert(not Sudoku::is_answer(*this, value));
 
@@ -293,34 +292,34 @@ inline Options<E>& Options<E>::remove_option(OptionValue<E> const& value)
 
 //	add single option
 template<int E>
-inline Options<E>& Options<E>::add(OptionValue<E> const& value)
-{
-	data_.set(value, true);
-	return *this;
-}
-
-//	add single option
-template<int E>
-inline Options<E>& Options<E>::add_nocheck(OptionValue<E> const& value) noexcept
+inline Options<E>& Options<E>::add(OptionValue<E> const value) noexcept
 {
 	data_[value] = true;
 	return *this;
 }
 
-//	set to answer
+//	add single option
 template<int E>
-inline Options<E>& Options<E>::set(Value const& value)
+[[deprecated]] inline Options<E>&
+	Options<E>::add_nocheck(OptionValue<E> const value) noexcept
 {
-	clear();
-	return add(value); // if 0: -> not answer = [0] = true
+	return add(value);
 }
 
 //	set to answer
 template<int E>
-inline Options<E>& Options<E>::set_nocheck(Value const& value) noexcept
+inline Options<E>& Options<E>::set(OptionValue<E> const value)
 {
-	clear();
-	return add_nocheck(value);
+	data_.reset(); // all 0 incl. answer-bit
+	return add(value);
+}
+
+//	set to answer
+template<int E>
+[[deprecated]] inline Options<E>&
+	Options<E>::set_nocheck(OptionValue<E> const value) noexcept
+{
+	return set(value);
 }
 
 template<int E>
@@ -369,9 +368,9 @@ inline bool Options<E>::all() const noexcept
 
 //	if an option, or the answer
 template<int E>
-inline bool Options<E>::test(Value const& value) const
+constexpr bool Options<E>::test(OptionValue<E> const value) const noexcept
 {
-	return data_.test(static_cast<size_t>(value));
+	return data_[value];
 }
 
 //	check if set to answer
@@ -390,16 +389,24 @@ inline bool is_answer(const Options<E>& options) noexcept
 
 // check if set to answer without validation
 template<int E>
-inline constexpr bool is_answer_fast(const Options<E>& options) noexcept
+[[deprecated]] inline bool is_answer_fast(const Options<E>& options) noexcept
 {
-	return !options[Value{0}];
+	return is_answer(options);
 }
 
 // check if set to answer value
 template<int E>
-inline bool is_answer(Options<E> const& options, Value const& value) noexcept
+inline bool
+	is_answer(Options<E> const& options, OptionValue<E> const value) noexcept
 {
 	return options == Options<E>{value};
+}
+
+// check if set to answer value
+template<int E>
+constexpr bool is_answer(Options<E> const& options, Value const value)
+{ // For proper template type deduction for OptionValue
+	return is_answer(options, OptionValue<E>{value});
 }
 
 // check if option available
@@ -407,13 +414,13 @@ template<int E>
 inline bool
 	is_option(const Options<E>& options, OptionValue<E> const value) noexcept
 {
-	return (options.test(value) && not is_answer_fast(options));
+	return (options.test(value) && not is_answer(options));
 }
 
 // check if option available
 template<int E>
-inline bool is_option(const Options<E>& options, Value const value)
-{
+constexpr bool is_option(Options<E> const& options, Value const value)
+{ // For proper template type deduction for OptionValue
 	return is_option(options, OptionValue<E>{value});
 }
 
@@ -425,7 +432,7 @@ inline bool Options<E>::is_empty() const noexcept
 }
 
 // determine the answer value, even if not marked
-//   use with is_answer[_fast]() to determine if flagged as answer
+//   use with is_answer() to determine if flagged as answer
 template<int E>
 inline Value get_answer(const Options<E>& options) noexcept
 {
@@ -464,18 +471,16 @@ inline std::vector<Value> available(Options<E> const& options) noexcept(true)
 
 //	no-check access read only
 template<int E>
-inline constexpr bool Options<E>::operator[](Value const& value) const noexcept
+constexpr bool Options<E>::operator[](OptionValue<E> const value) const noexcept
 {
-	assert(value <= Value{E});
-	return data_[static_cast<size_t>(value)];
+	return data_[value];
 }
 
 //	no-check access
 template<int E>
-inline auto Options<E>::operator[](Value const& value) noexcept
+inline auto Options<E>::operator[](OptionValue<E> const value) noexcept
 {
-	assert(value <= Value{E});
-	return data_[static_cast<size_t>(value)];
+	return data_[value];
 }
 
 template<int E>
@@ -549,7 +554,7 @@ inline Options<E> shared(const Options<E>& A, const Options<E>& B) noexcept
 template<int E>
 inline Options<E>& Options<E>::operator-=(const Options& other) noexcept
 {
-	assert(is_answer_fast(other)); // do not remove the answer-bit
+	assert(other.is_answer()); // do not remove the answer-bit
 	const Options tmp = ::Sudoku::XOR(*this, other);
 	data_ &= tmp.data_;
 	return *this;

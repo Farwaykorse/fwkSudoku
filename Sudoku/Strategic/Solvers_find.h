@@ -169,7 +169,7 @@ auto list_where_option( // NOLINT(bugprone-exception-escape)
 		 last != end;
 		 last = std::find_if(last, end, check_option))
 	{
-		if (!is_answer_fast(*last))
+		if (!is_answer(*last))
 		{
 			locations.push_back(last.location());
 		}
@@ -215,7 +215,7 @@ auto list_where_subset( // NOLINT(bugprone-exception-escape)
 	for (int i{}; i < full_size<N>; ++i)
 	{
 		const auto& other = board[Location(i)];
-		if (!is_answer_fast(other) && // exclude processed answers
+		if (!is_answer(other) && // exclude processed answers
 			(other == sample || shared(sample, other) == other))
 		{
 			list.push_back(Location(i));
@@ -241,7 +241,7 @@ auto list_where_subset( // NOLINT(bugprone-exception-escape)
 	for (auto itr = section.cbegin(); itr != end; ++itr)
 	{
 		const auto& other = *itr;
-		if (!is_answer_fast(other) && // exclude processed answers
+		if (!is_answer(other) && // exclude processed answers
 			(other == sample || shared(sample, other) == other))
 		{
 			list.push_back(itr.location());
@@ -264,8 +264,7 @@ auto list_where_any_option( // NOLINT(bugprone-exception-escape)
 	locations.reserve(sample.count_all());
 
 	const auto check_option = [sample](Options O) noexcept {
-		return is_answer_fast(O) ? false
-								 : !(shared(O, sample).count_all() == 0u);
+		return is_answer(O) ? false : !(shared(O, sample).count_all() == 0u);
 	};
 	const auto end = section.cend();
 
@@ -326,8 +325,9 @@ Step 3) XOR [n-1]
 	}
 	// To limit processing time, counting up to N
 	constexpr auto max = size_t{N}; // default: (9x9 board) up-to 3 times
+	constexpr std::bitset<elem_size<N> + 1> begin_state{1u};
 	std::array<Options, max + 1> worker{};
-	worker.fill(Options(Value{0}));
+	worker.fill(Options(begin_state));
 
 	// Collect options by appearance count
 	// worker[n] contains options appearing more than n times (or answer)
@@ -363,7 +363,7 @@ Step 3) XOR [n-1]
 	for (size_t i{max}; i > 1; --i)
 	{
 		worker.at(i).XOR(worker.at(i - 1));
-		worker.at(i) += Options(Value{0}); // set not-answered
+		worker.at(i) += Options(begin_state); // set not-answered
 	}
 	return worker;
 }
@@ -386,8 +386,9 @@ Options appearance_once(const InItr_ begin, const InItr_ end) noexcept
 			traits::iterator_to<InItr_, Options> ||
 			traits::iterator_to<InItr_, const Options>);
 	}
-	Options sum(Value{0});    // helper all used
-	Options worker(Value{0}); // multiple uses OR answer
+	constexpr std::bitset<elem_size<N> + 1> begin_state{1u};
+	Options sum(begin_state);    // helper all used
+	Options worker(begin_state); // multiple uses OR answer
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		if (is_answer(*itr))
@@ -411,8 +412,9 @@ Options appearance_once(SectionT section) noexcept
 		static_assert(Board_Section::traits::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
-	Options sum(Value{0});    // helper all used
-	Options worker(Value{0}); // multiple uses OR answer
+	constexpr std::bitset<elem_size<N> + 1> begin_state{1u};
+	Options sum(begin_state);    // helper all used
+	Options worker(begin_state); // multiple uses OR answer
 	for (const Options& item : section)
 	{
 		if (is_answer(item))

@@ -161,7 +161,7 @@ TEST(SolverDeathTest, removeOptionMask)
 	Board<Options<4>, 2> board{};
 
 	// answer-bit in mask
-	auto mask = Options<4>{Value{0}};
+	auto mask = Options<4>{std::bitset<5>{"00001"}};
 	EXPECT_DEBUG_DEATH(
 		remove_option(board, L2{0}, mask), "Assertion .*is_answer_fast.mask.");
 	mask = Options<4>{};
