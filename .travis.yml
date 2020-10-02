@@ -158,16 +158,6 @@ jobs:
         packages:
         - g++-10
 
-  - name: GCC-9 # default on Focal Fossa image
-    stage: "Build & Test"
-    env:
-    - CC:  gcc-9
-    - CXX: g++-9
-    - CMake_version: 3.18.2
-    - Coverage: gcov-9
-    workspaces:
-      use: Linux
-
   - name: Clang-10
     stage: "Build & Test Latest"
     env:
