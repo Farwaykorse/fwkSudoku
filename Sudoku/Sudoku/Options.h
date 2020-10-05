@@ -109,7 +109,10 @@ public:
 private:
 	bitset data_{};
 
-	constexpr size_t location(size_t value) const noexcept { return value - 1; }
+	[[nodiscard]] constexpr size_t location(size_t value) const noexcept
+	{
+		return value - 1;
+	}
 }; // class Options
 
 //====---- free-functions ------------------------------------------------====//

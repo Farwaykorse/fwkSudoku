@@ -9,6 +9,7 @@
 #include <Sudoku/OptionValue.h> // Class under test
 
 #include <type_traits>
+#include <cstdint>
 
 #include <gtest/gtest.h>
 
@@ -91,16 +92,17 @@ namespace compiletime
 	static_assert(
 		std::is_constructible_v<typeT, OptionValue<2>> &&
 		not std::is_same_v<typeT, OptionValue<2>>);
-	static_assert(std::is_constructible_v<typeT, unsigned short>);
+	static_assert(std::is_constructible_v<typeT, std::uint8_t>);
+	static_assert(std::is_constructible_v<typeT, std::uint16_t>);
 	static_assert(std::is_constructible_v<typeT, unsigned int>);
-	static_assert(std::is_constructible_v<typeT, unsigned long>);
-	static_assert(std::is_constructible_v<typeT, unsigned long long>);
+	static_assert(std::is_constructible_v<typeT, std::uint32_t>);
+	static_assert(std::is_constructible_v<typeT, std::uint64_t>);
 	static_assert(not std::is_constructible_v<typeT, void>);
 	static_assert(not std::is_constructible_v<typeT, bool>);
-	static_assert(not std::is_constructible_v<typeT, short>);
+	static_assert(not std::is_constructible_v<typeT, std::int8_t>);
+	static_assert(not std::is_constructible_v<typeT, std::int16_t>);
 	static_assert(not std::is_constructible_v<typeT, int>);
-	static_assert(not std::is_constructible_v<typeT, long>);
-	static_assert(not std::is_constructible_v<typeT, long long>);
+	static_assert(not std::is_constructible_v<typeT, std::int64_t>);
 	static_assert(not std::is_constructible_v<typeT, char>); // implementation
 	static_assert(not std::is_constructible_v<typeT, signed char>);
 	static_assert(not std::is_constructible_v<typeT, unsigned char>);
@@ -115,11 +117,12 @@ namespace compiletime
 	static_assert(not std::is_nothrow_constructible_v<typeT, Value>);
 	static_assert(not std::is_nothrow_constructible_v<typeT, size_t>);
 	static_assert(not std::is_nothrow_constructible_v<typeT, OptionValue<2>>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, unsigned short>);
+	static_assert(not std::is_nothrow_constructible_v<typeT, std::uint8_t>);
+	static_assert(not std::is_nothrow_constructible_v<typeT, std::uint16_t>);
 	static_assert(not std::is_nothrow_constructible_v<typeT, unsigned int>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, unsigned long>);
+	static_assert(not std::is_nothrow_constructible_v<typeT, std::uint64_t>);
 	static_assert(
-		not std::is_nothrow_constructible_v<typeT, unsigned long long>);
+		not std::is_nothrow_constructible_v<typeT, std::uint64_t>);
 
 	// Implicit conversion (to typeT)
 	static_assert(std::is_convertible_v<Value, typeT>);
@@ -127,10 +130,9 @@ namespace compiletime
 	static_assert(
 		not std::is_convertible_v<OptionValue<2>, typeT> &&
 		not std::is_same_v<typeT, OptionValue<2>>);
-	static_assert(not std::is_convertible_v<unsigned short, typeT>);
+	static_assert(not std::is_convertible_v<std::uint16_t, typeT>);
 	static_assert(not std::is_convertible_v<unsigned int, typeT>);
-	static_assert(not std::is_convertible_v<unsigned long, typeT>);
-	static_assert(not std::is_convertible_v<unsigned long long, typeT>);
+	static_assert(not std::is_convertible_v<std::uint64_t, typeT>);
 
 	// Not-throwing implicit conversion (to typeT)
 	static_assert(not std::is_nothrow_convertible_v<Value, typeT>);
@@ -138,17 +140,17 @@ namespace compiletime
 	// Implicit conversion (from typeT)
 	static_assert(std::is_convertible_v<typeT, Value>);
 	static_assert(std::is_convertible_v<typeT, size_t>);
-	static_assert(std::is_convertible_v<typeT, unsigned short>);
+	static_assert(std::is_convertible_v<typeT, std::uint8_t>);
+	static_assert(std::is_convertible_v<typeT, std::uint16_t>);
 	static_assert(std::is_convertible_v<typeT, unsigned int>);
-	static_assert(std::is_convertible_v<typeT, unsigned long>);
-	static_assert(std::is_convertible_v<typeT, unsigned long long>);
+	static_assert(std::is_convertible_v<typeT, std::uint64_t>);
 	static_assert(
 		not std::is_convertible_v<typeT, OptionValue<2>> &&
 		not std::is_same_v<typeT, OptionValue<2>>);
-	static_assert(not std::is_convertible_v<typeT, short>);
+	static_assert(not std::is_convertible_v<typeT, std::int8_t>);
+	static_assert(not std::is_convertible_v<typeT, std::int16_t>);
 	static_assert(not std::is_convertible_v<typeT, int>);
-	static_assert(not std::is_convertible_v<typeT, long>);
-	static_assert(not std::is_convertible_v<typeT, long long>);
+	static_assert(not std::is_convertible_v<typeT, std::int64_t>);
 	static_assert(not std::is_convertible_v<typeT, bool>);
 	static_assert(not std::is_convertible_v<typeT, char>);
 	static_assert(not std::is_convertible_v<typeT, signed char>);
@@ -157,10 +159,9 @@ namespace compiletime
 	// Not-throwing implicit conversion (from typeT)
 	static_assert(std::is_nothrow_convertible_v<typeT, Value>);
 	static_assert(std::is_nothrow_convertible_v<typeT, size_t>);
-	static_assert(std::is_nothrow_convertible_v<typeT, unsigned short>);
+	static_assert(std::is_nothrow_convertible_v<typeT, std::uint16_t>);
 	static_assert(std::is_nothrow_convertible_v<typeT, unsigned int>);
-	static_assert(std::is_nothrow_convertible_v<typeT, unsigned long>);
-	static_assert(std::is_nothrow_convertible_v<typeT, unsigned long long>);
+	static_assert(std::is_nothrow_convertible_v<typeT, std::uint64_t>);
 
 	// Explicit construction (from typeT)
 	// none
@@ -168,7 +169,7 @@ namespace compiletime
 	// Assignable (to typeT)
 	static_assert(std::is_assignable_v<typeT, Value>);
 	static_assert(not std::is_assignable_v<typeT, size_t>);
-	static_assert(not std::is_assignable_v<typeT, unsigned short>);
+	static_assert(not std::is_assignable_v<typeT, std::uint16_t>);
 
 	static_assert(not std::is_nothrow_assignable_v<typeT, Value>);
 
@@ -180,12 +181,12 @@ namespace compiletime
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);
 
 
-	static_assert(typeT{1u} == typeT{Value{1}});
-	static_assert(typeT{1u} != typeT{2u});
-	static_assert(typeT{1u} < typeT{2u});
-	static_assert(not(typeT{2u} < typeT{1u}));
-	static_assert(typeT{3u} > typeT{2u});
-	static_assert(not(typeT{2u} > typeT{3u}));
+	static_assert(typeT{1U} == typeT{Value{1}});
+	static_assert(typeT{1U} != typeT{2U});
+	static_assert(typeT{1U} < typeT{2U});
+	static_assert(not(typeT{2U} < typeT{1U}));
+	static_assert(typeT{3U} > typeT{2U});
+	static_assert(not(typeT{2U} > typeT{3U}));
 
 
 } // namespace compiletime
@@ -195,8 +196,8 @@ TEST(OptionValueTest, OutsideDomain)
 	EXPECT_THROW(OptionValue<9>{Value{0}}, Sudoku::error::invalid_option);
 	EXPECT_THROW(OptionValue<9>{Value{10}}, Sudoku::error::invalid_option);
 
-	EXPECT_THROW(OptionValue<9>{0u}, Sudoku::error::invalid_option);
-	EXPECT_THROW(OptionValue<9>{10u}, Sudoku::error::invalid_option);
+	EXPECT_THROW(OptionValue<9>{0U}, Sudoku::error::invalid_option);
+	EXPECT_THROW(OptionValue<9>{10U}, Sudoku::error::invalid_option);
 }
 
 } // namespace SudokuTests::OptionValueTest

@@ -35,13 +35,13 @@ public:
 	requires UnsignedNumber<T> explicit constexpr OptionValue(T val)
 		: value_(val)
 	{
-		if (val == T{0u} || val > T{E})
+		if (val == T{0U} || val > T{E})
 			throw Sudoku::error::invalid_option();
 	}
 	// NOLINTNEXTLINE(google-explicit-constructor)
 	constexpr OptionValue(Value val) : value_(val) // NOLINT(runtime/explicit)
 	{
-		if (val == Value{0u} || val > Value{E})
+		if (val == Value{0U} || val > Value{E})
 			throw Sudoku::error::invalid_option();
 	}
 

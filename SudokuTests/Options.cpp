@@ -362,7 +362,7 @@ TEST(Options, testValue)
 	using Sudoku::error::invalid_option;
 	[[maybe_unused]] bool set{};
 
-	constexpr OptionValue<4> value{2u};
+	constexpr OptionValue<4> value{2U};
 	static_assert(noexcept(TE.A_2.test(value)));
 	EXPECT_THROW(set = TE.A_2.test(Value{0}), invalid_option);
 	EXPECT_NO_THROW(set = TE.A_2.test(Value{4}));
@@ -395,12 +395,12 @@ TEST(Options, isAnswer)
 		EXPECT_FALSE(is_answer(TE.O_4));
 		EXPECT_FALSE(is_answer(TE.E_1));
 		static_assert(not noexcept(is_answer(TE.O_2, Value{1})));
-		constexpr OptionValue<4> value{1u};
+		constexpr OptionValue<4> value{1U};
 		static_assert(noexcept(is_answer(TE.O_2, value)));
 	}
 	{ // test for specific answer
-		constexpr OptionValue<4> value_1{1u};
-		constexpr OptionValue<4> value_4{4u};
+		constexpr OptionValue<4> value_1{1U};
+		constexpr OptionValue<4> value_4{4U};
 		static_assert(noexcept(is_answer(TE.O_2, value_1)));
 		static_assert(noexcept(is_answer(TE.A_1, value_4)));
 		// assertion see death tests
@@ -639,7 +639,7 @@ TEST(Options, mfBooleanComparison)
 	U = false; // suppress warning: assigned only once
 
 	// operator==(Value) const
-	constexpr OptionValue<4> val{1u};
+	constexpr OptionValue<4> val{1U};
 	static_assert(noexcept(TE.A_1 == val));
 	static_assert(noexcept(val == TE.A_1));
 	static_assert(not noexcept(TE.A_1 == Value{1}));
@@ -717,7 +717,7 @@ TEST(Options, mfConstOperators)
 
 	// constexpr bool operator[](int) const
 	static_assert(not noexcept(TE.A_2[Value{2}]));
-	constexpr OptionValue<4> value{2u};
+	constexpr OptionValue<4> value{2U};
 	static_assert(noexcept(TE.A_2[value]));
 
 	constexpr Options<4> x{Value{1}};
@@ -738,7 +738,7 @@ TEST(Options, Operators)
 
 	///// non-const operators /////
 	static_assert(not noexcept(TMP.operator[](Value{2}) = true));
-	constexpr OptionValue<4> value{2u};
+	constexpr OptionValue<4> value{2U};
 	static_assert(noexcept(TMP.operator[](value) = true));
 
 	EXPECT_TRUE(TMP[Value{1}] = true);
@@ -777,7 +777,7 @@ TEST(Options, ConstructorTesting)
 	// copy-assign
 	static_assert(noexcept(TMP.operator=(TE.O_4)));
 	static_assert(not noexcept(TMP.operator=(Value{1})));
-	constexpr OptionValue<4> value{1u};
+	constexpr OptionValue<4> value{1U};
 	static_assert(noexcept(TMP.operator=(value)));
 
 	TMP = TE.A_2;
