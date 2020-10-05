@@ -146,6 +146,15 @@ template<int E>
 [[nodiscard]] bool operator!=(OptionValue<E>, const Options<E>&) noexcept;
 
 template<int E>
+[[nodiscard]] bool operator==(Options<E>, Value);
+template<int E>
+[[nodiscard]] bool operator==(Value, Options<E>);
+template<int E>
+[[nodiscard]] bool operator!=(Options<E>, Value);
+template<int E>
+[[nodiscard]] bool operator!=(Value, Options<E>);
+
+template<int E>
 [[nodiscard]] Options<E> XOR(Options<E> const& A, Options<E> const& B) noexcept;
 
 template<int E>
@@ -441,24 +450,48 @@ inline bool operator!=(Options<E> const& left, Options<E> const& right) noexcept
 
 // short for is_answer(value)
 template<int E>
-inline bool operator==(Options<E> const& left, Value const& value) noexcept
+inline bool
+	operator==(Options<E> const& left, OptionValue<E> const value) noexcept
 {
 	return is_answer(left, value);
 }
 template<int E>
-inline bool operator==(Value const& value, Options<E> const& right) noexcept
+inline bool operator==(Options<E> const left, Value const value)
+{
+	return left == OptionValue<E>{value};
+}
+template<int E>
+inline bool
+	operator==(OptionValue<E> const value, Options<E> const& right) noexcept
 {
 	return is_answer(right, value);
 }
 template<int E>
-inline bool operator!=(Options<E> const& left, Value const& value) noexcept
+inline bool operator==(Value const value, Options<E> const option)
+{
+	return option == value;
+}
+template<int E>
+inline bool
+	operator!=(Options<E> const& left, OptionValue<E> const value) noexcept
 {
 	return not(is_answer(left, value));
 }
 template<int E>
-inline bool operator!=(Value const& value, Options<E> const& right) noexcept
+inline bool operator!=(Options<E> const left, Value const value)
+{
+	return left != OptionValue<E>{value};
+}
+template<int E>
+inline bool
+	operator!=(OptionValue<E> const value, Options<E> const& right) noexcept
 {
 	return not(is_answer(right, value));
+}
+template<int E>
+inline bool operator!=(Value const value, Options<E> const option)
+{
+	return option != value;
 }
 
 //	Combine available options (binary OR)
