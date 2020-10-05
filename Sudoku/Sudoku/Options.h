@@ -32,7 +32,7 @@ template<int E>
 class Options
 {
 	static_assert(E >= 1);
-	using bitset = std::bitset<gsl::narrow_cast<size_t>(E + 1)>;
+	using bitset = std::bitset<gsl::narrow_cast<size_t>(E)>;
 
 public:
 	Options() noexcept;
@@ -48,8 +48,8 @@ public:
 	Options& reset() noexcept; // set all options
 	Options& flip() noexcept;  // can create an invalid state
 	Options& remove_option(OptionValue<E>); // remove single option
-	Options& add(OptionValue<E>) noexcept;         // add single option
-	Options& set(OptionValue<E>);                  // set to answer
+	Options& add(OptionValue<E>) noexcept;  // add single option
+	Options& set(OptionValue<E>);           // set to answer
 
 	[[nodiscard]] constexpr size_t size() const noexcept;
 	[[nodiscard]] size_t count() const noexcept;     // count available options
@@ -107,9 +107,9 @@ public:
 	}
 
 private:
-	// 0th bit is "need to solve":
-	// false if answer has been set = inverse of answer
 	bitset data_{};
+
+	constexpr size_t location(size_t value) const noexcept { return value - 1; }
 }; // class Options
 
 //====---- free-functions ------------------------------------------------====//
@@ -137,13 +137,13 @@ template<int E>
 [[nodiscard]] bool operator!=(Options<E> const&, Options<E> const&) noexcept;
 
 template<int E>
-[[nodiscard]] bool operator==(Options<E> const&, Value const&) noexcept;
+[[nodiscard]] bool operator==(Options<E> const&, OptionValue<E>) noexcept;
 template<int E>
-[[nodiscard]] bool operator==(Value const&, Options<E> const&) noexcept;
+[[nodiscard]] bool operator==(OptionValue<E>, Options<E> const&) noexcept;
 template<int E>
-[[nodiscard]] bool operator!=(Options<E> const&, Value const&) noexcept;
+[[nodiscard]] bool operator!=(Options<E> const&, OptionValue<E>) noexcept;
 template<int E>
-[[nodiscard]] bool operator!=(Value const&, const Options<E>&) noexcept;
+[[nodiscard]] bool operator!=(OptionValue<E>, const Options<E>&) noexcept;
 
 template<int E>
 [[nodiscard]] Options<E> XOR(Options<E> const& A, Options<E> const& B) noexcept;
@@ -166,25 +166,25 @@ namespace impl
 {
 	[[nodiscard]] inline constexpr size_t exp2_(size_t value) noexcept
 	{
-		return (value < 1U) ? 1U : (2U * exp2_(--value));
+		return (value < 2U) ? 1U : (2U * exp2_(--value));
 	}
 	static_assert(exp2_(0U) == 0x1U);
-	static_assert(exp2_(1U) == 0x2U);
-	static_assert(exp2_(2U) == 0x4U); //-V112
+	static_assert(exp2_(1U) == 0x1U);
+	static_assert(exp2_(2U) == 0x2U); //-V112
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-	static_assert(exp2_(3U) == 0x8U); // NOLINT(readability-magic-numbers)
+	static_assert(exp2_(3U) == 0x4U); // NOLINT(readability-magic-numbers)
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-	static_assert(exp2_(4U) == 0x10U); // NOLINT(readability-magic-numbers)
+	static_assert(exp2_(4U) == 0x8U); // NOLINT(readability-magic-numbers)
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-	static_assert(exp2_(5U) == 0x20U); // NOLINT(readability-magic-numbers)
+	static_assert(exp2_(5U) == 0x10U); // NOLINT(readability-magic-numbers)
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-	static_assert(exp2_(6U) == 0x40U); // NOLINT(readability-magic-numbers)
+	static_assert(exp2_(6U) == 0x20U); // NOLINT(readability-magic-numbers)
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-	static_assert(exp2_(7U) == 0x80U); // NOLINT(readability-magic-numbers)
+	static_assert(exp2_(7U) == 0x40U); // NOLINT(readability-magic-numbers)
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-	static_assert(exp2_(8U) == 0x100U); // NOLINT(readability-magic-numbers)
+	static_assert(exp2_(8U) == 0x80U); // NOLINT(readability-magic-numbers)
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-	static_assert(exp2_(9U) == 0x200U); // NOLINT(readability-magic-numbers)
+	static_assert(exp2_(9U) == 0x100U); // NOLINT(readability-magic-numbers)
 
 	// generate a bit-mask to use a unique bit per value
 	//   empty for Value outside domain.
@@ -252,8 +252,7 @@ inline Options<E>& Options<E>::operator=(bitset&& other) noexcept
 template<int E>
 inline Options<E>& Options<E>::clear() noexcept
 {
-	data_.reset(); // all false
-	//???	Note: answer-bit unset too -> answered?
+	data_.reset(); // all false == invalid state
 	return *this;
 }
 
@@ -268,9 +267,6 @@ inline Options<E>& Options<E>::reset() noexcept
 template<int E>
 inline Options<E>& Options<E>::flip() noexcept
 {
-	// retain answer flag value
-	data_[0].flip(); // noexcept
-
 	data_.flip(); // noexcept
 	return *this;
 }
@@ -281,7 +277,7 @@ inline Options<E>& Options<E>::remove_option(OptionValue<E> const value)
 {
 	assert(not Sudoku::is_answer(*this, value));
 
-	data_.set(value, false);
+	data_.set(location(value), false);
 	return *this;
 }
 
@@ -289,7 +285,7 @@ inline Options<E>& Options<E>::remove_option(OptionValue<E> const value)
 template<int E>
 inline Options<E>& Options<E>::add(OptionValue<E> const value) noexcept
 {
-	data_[value] = true;
+	data_[location(value)] = true;
 	return *this;
 }
 
@@ -297,7 +293,7 @@ inline Options<E>& Options<E>::add(OptionValue<E> const value) noexcept
 template<int E>
 inline Options<E>& Options<E>::set(OptionValue<E> const value)
 {
-	data_.reset(); // all 0 incl. answer-bit
+	data_.reset(); // all 0
 	return add(value);
 }
 
@@ -305,37 +301,19 @@ template<int E>
 inline constexpr size_t Options<E>::size() const noexcept
 {
 	return data_.size(); // bits
-
-	//??? size() -1 better?
-	// The current implementation works with size() being 1 past the last
-	// element. But this allows for size()-1 options to be stored. The
-	// direct value to location implementation is convenient. The 0th
-	// element in this implementation is just a flag (more could be added).
 }
 
 //	available options
-//	if 1, a not processed answer
 template<int E>
 inline size_t Options<E>::count() const noexcept
 {
-	if (data_[0])
-	{
-		return data_.count() - 1U;
-	}
-	return 0; // NO protection vs incorrect answer bit
+	return data_.count();
 }
 
-//	(!) counts options, including set answers == ignores answer-bit
-//	Returns 1 if {1 option, set as answer} || {1 option, not set as answer}
-//	Returns 0 if {empty} || {no option, but not set as answer}
 template<int E>
-inline size_t Options<E>::count_all() const noexcept
+[[deprecated]] inline size_t Options<E>::count_all() const noexcept
 {
-	if (data_[0])
-	{
-		return data_.count() - 1U;
-	}
-	return data_.count();
+	return count();
 }
 
 // Test if all bits are set
@@ -349,14 +327,14 @@ inline bool Options<E>::all() const noexcept
 template<int E>
 constexpr bool Options<E>::test(OptionValue<E> const value) const noexcept
 {
-	return data_[value];
+	return data_[location(value)];
 }
 
 //	check if set to answer
 template<int E>
 inline bool Options<E>::is_answer() const noexcept
 {
-	return !data_[0] && data_.count() == 1;
+	return data_.count() == 1;
 }
 
 // check if set to answer
@@ -408,7 +386,7 @@ inline bool Options<E>::is_empty() const noexcept
 template<int E>
 inline Value get_answer(const Options<E>& options) noexcept
 {
-	if (options.count_all() == 1)
+	if (is_answer(options))
 	{
 		return read_next(options);
 	}
@@ -445,14 +423,14 @@ inline std::vector<Value> available(Options<E> const& options) noexcept(true)
 template<int E>
 constexpr bool Options<E>::operator[](OptionValue<E> const value) const noexcept
 {
-	return data_[value];
+	return data_[location(value)];
 }
 
 //	no-check access
 template<int E>
 inline auto Options<E>::operator[](OptionValue<E> const value) noexcept
 {
-	return data_[value];
+	return data_[location(value)];
 }
 
 template<int E>
@@ -526,7 +504,6 @@ inline Options<E> shared(const Options<E>& A, const Options<E>& B) noexcept
 template<int E>
 inline Options<E>& Options<E>::operator-=(const Options& other) noexcept
 {
-	assert(other.is_answer()); // do not remove the answer-bit
 	const Options tmp = ::Sudoku::XOR(*this, other);
 	data_ &= tmp.data_;
 	return *this;

@@ -171,7 +171,7 @@ TEST(Solver, sectionExclusive)
 	}
 	// same result as set_section_locals
 	{
-		using set = std::bitset<5>;
+		using set = std::bitset<4>;
 		Board<Options<4>, 2> B{};
 		Board<Options<4>, 2> cB{B};
 		//
@@ -182,8 +182,8 @@ TEST(Solver, sectionExclusive)
 		//
 		// Row
 		//	2 values in row, not in same block
-		B[0][0] = set{"00111"};
-		B[0][2] = set{"00111"};
+		B[0][0] = set{"0011"};
+		B[0][2] = set{"0011"};
 		ASSERT_TRUE(B[0][1].all());
 		ASSERT_TRUE(B[0][3].all());
 		EXPECT_EQ(section_exclusive(B, B.row(0)), 0);
@@ -194,8 +194,8 @@ TEST(Solver, sectionExclusive)
 		EXPECT_TRUE(B[1][0].all());
 		EXPECT_TRUE(B[1][1].all());
 		//	2 values in row, and in same block
-		B[2][0] = set{"11001"};
-		B[2][1] = set{"11001"};
+		B[2][0] = set{"1100"};
+		B[2][1] = set{"1100"};
 		ASSERT_TRUE(B[2][2].all());
 		ASSERT_TRUE(B[2][3].all());
 		ASSERT_TRUE(B[3][2].all());
@@ -214,8 +214,8 @@ TEST(Solver, sectionExclusive)
 		//	1234	1234	1234	1234
 		//
 		B       = cB; // reset board
-		B[0][0] = set{"00111"};
-		B[1][1] = set{"00111"};
+		B[0][0] = set{"0011"};
+		B[1][1] = set{"0011"};
 		EXPECT_EQ(section_exclusive(B, B.block(0)), 0);
 		EXPECT_TRUE(B[0][1].all());
 		EXPECT_TRUE(B[0][3].all());
@@ -223,8 +223,8 @@ TEST(Solver, sectionExclusive)
 		EXPECT_TRUE(B[1][3].all());
 		EXPECT_TRUE(B[3][0].all());
 		// same block, same row
-		B[2][0] = set{"11001"};
-		B[2][1] = set{"11001"};
+		B[2][0] = set{"1100"};
+		B[2][1] = set{"1100"};
 		EXPECT_EQ(section_exclusive(B, B.block(2)), 4);
 		EXPECT_TRUE(B[3][0].all());     // self block
 		EXPECT_TRUE(B[3][1].all());     // self block
@@ -235,8 +235,8 @@ TEST(Solver, sectionExclusive)
 		EXPECT_TRUE(B[0][3].all());
 		// same block, same col
 		B       = cB; // reset board
-		B[0][1] = set{"00111"};
-		B[1][1] = set{"00111"};
+		B[0][1] = set{"0011"};
+		B[1][1] = set{"0011"};
 		EXPECT_EQ(section_exclusive(B, B.block(0)), 4);
 		EXPECT_TRUE(B[0][0].all());     // self block
 		EXPECT_EQ(B[0][1].count(), 2U); // self block
@@ -384,7 +384,7 @@ TEST(Solver, sectionExclusive)
 		EXPECT_EQ(section_exclusive(B1, B1.col(3)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(4)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(5)), 0);
-		EXPECT_EQ(section_exclusive(B1, B1.col(6)), 74);
+		EXPECT_EQ(section_exclusive(B1, B1.col(6)), 67);
 		EXPECT_EQ(section_exclusive(B1, B1.col(7)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(8)), 0);
 		EXPECT_NE(A1, B1);
@@ -395,13 +395,13 @@ TEST(Solver, sectionExclusive)
 		EXPECT_EQ(section_exclusive(B1, B1.block(3)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.block(4)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.block(5)), 0);
-		EXPECT_EQ(section_exclusive(B1, B1.block(6)), 35);
+		EXPECT_EQ(section_exclusive(B1, B1.block(6)), 34);
 		EXPECT_EQ(section_exclusive(B1, B1.block(7)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.block(8)), 0);
 		EXPECT_NE(A1, B1);
 
 		EXPECT_EQ(section_exclusive(B1, B1.row(0)), 0);
-		EXPECT_EQ(section_exclusive(B1, B1.row(1)), 27);
+		EXPECT_EQ(section_exclusive(B1, B1.row(1)), 25);
 		EXPECT_EQ(section_exclusive(B1, B1.row(2)), 15);
 		EXPECT_EQ(section_exclusive(B1, B1.row(3)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.row(4)), 5);
@@ -412,11 +412,11 @@ TEST(Solver, sectionExclusive)
 		EXPECT_NE(A1, B1);
 
 		EXPECT_EQ(section_exclusive(B1, B1.col(0)), 0);
-		EXPECT_EQ(section_exclusive(B1, B1.col(1)), 30);
+		EXPECT_EQ(section_exclusive(B1, B1.col(1)), 25);
 		EXPECT_EQ(section_exclusive(B1, B1.col(2)), 5);
 		EXPECT_EQ(section_exclusive(B1, B1.col(3)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(4)), 0);
-		EXPECT_EQ(section_exclusive(B1, B1.col(5)), 86);
+		EXPECT_EQ(section_exclusive(B1, B1.col(5)), 57);
 		EXPECT_EQ(section_exclusive(B1, B1.col(6)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(7)), 0);
 		EXPECT_EQ(section_exclusive(B1, B1.col(8)), 0);
@@ -470,7 +470,7 @@ TEST(Solver, sectionExclusive)
 		EXPECT_EQ(section_exclusive(B5, B5.row(8)), 5);
 		EXPECT_NE(A5, B5);
 
-		EXPECT_EQ(section_exclusive(B5, B5.col(0)), 16);
+		EXPECT_EQ(section_exclusive(B5, B5.col(0)), 15);
 		EXPECT_EQ(section_exclusive(B5, B5.col(1)), 5);
 		EXPECT_EQ(section_exclusive(B5, B5.col(2)), 7);
 		EXPECT_EQ(section_exclusive(B5, B5.col(3)), 0);
@@ -481,8 +481,8 @@ TEST(Solver, sectionExclusive)
 		EXPECT_EQ(section_exclusive(B5, B5.col(8)), 0);
 		EXPECT_NE(A5, B5);
 
-		EXPECT_EQ(section_exclusive(B5, B5.block(0)), 17);
-		EXPECT_EQ(section_exclusive(B5, B5.block(1)), 98);
+		EXPECT_EQ(section_exclusive(B5, B5.block(0)), 16);
+		EXPECT_EQ(section_exclusive(B5, B5.block(1)), 65);
 		EXPECT_EQ(section_exclusive(B5, B5.block(2)), 0);
 		EXPECT_EQ(section_exclusive(B5, B5.block(3)), 0);
 		EXPECT_EQ(section_exclusive(B5, B5.block(4)), 0);
@@ -607,6 +607,7 @@ TEST(SolverDeathTest, singleOption)
 {
 	using Sudoku::error::invalid_Location;
 	using Sudoku::error::invalid_Board;
+	using Sudoku::error::invalid_option;
 	using L = Location<2>;
 
 	Board<Options<4>, 2> B1;
@@ -618,32 +619,41 @@ TEST(SolverDeathTest, singleOption)
 	EXPECT_DEATH(single_option(B1, L{-1}, Value{1}), "is_valid\\(loc\\)");
 	EXPECT_DEATH(single_option(B1, L{16}, Value{1}), "is_valid\\(loc\\)");
 #else
-	EXPECT_THROW(single_option(B1, L{-1}, Value{1}), invalid_Location);
+	EXPECT_NO_THROW(single_option(B1, L{-1}, Value{1}));
 	EXPECT_THROW(single_option(B1, L{16}, Value{1}), invalid_Location);
 #endif // NDEBUG
-	// invalid Value:
+	   // invalid Value:
+#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		single_option(B1, L{0}, Value{0}), "is_valid<N>\\(value\\)");
-#ifdef NDEBUG
-	EXPECT_THROW(single_option(B1, L(1), Value{1}), invalid_Board);
-	EXPECT_THROW(single_option(B1, L(2), Value{4}), invalid_Board);
-	// thrown by std::bitset
-	EXPECT_THROW(single_option(B1, L{3}, Value{5}), std::out_of_range);
 #else
-	EXPECT_NO_THROW(single_option(B1, L(1), Value{1}));
-	EXPECT_NO_THROW(single_option(B1, L(2), Value{4}));
-	EXPECT_DEBUG_DEATH(
-		single_option(B1, L{0}, Value{5}), "is_valid<N>\\(value\\)");
+	// thrown by OptionValue<x>
+	EXPECT_THROW(single_option(B1, L{3}, Value{5}), invalid_option);
 #endif // NDEBUG
 	// not an option:
 	B1[0][0] = Options<4>{Value{2}};
 #ifndef NDEBUG
-	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{1}), "test\\(value\\)");
-	EXPECT_NO_THROW(single_option(B1, L(0), Value{2}));
-#else
-	EXPECT_THROW(single_option(B1, L{0}, Value{1}), invalid_Board);
-	EXPECT_THROW(single_option(B1, L(0), Value{2}), invalid_Board);
+	EXPECT_DEBUG_DEATH(single_option(B1, L{0}, Value{1}), "is_answer\\(");
 #endif // NDEBUG
+	EXPECT_NO_THROW(single_option(B1, L(0), Value{2}));
+	// More then one option available
+	Board<Options<4>, 2> B3;
+	// clang-format off
+	constexpr std::array<char, 16> v1
+	{
+		// start     // after set_Value
+		0, 2,  0, 0, // 1  2 34  34
+		4, 0,  0, 0, // 4  3 12  12
+		0, 1,  0, 0, // 23 1 234 234
+		0, 0,  0, 0  // 23 4 123 123
+	}; // clang-format on
+	ASSERT_EQ(B3[1][0], Options<4>{}) << "incorrect instantiation";
+	EXPECT_NO_THROW(set_Value(B3, v1.cbegin(), v1.cend()));
+	{ // when more than 1 option available
+		Board<Options<4>, 2> B{};
+		B[1][2] = std::bitset<4>{"1001"}; // 1, 4
+		EXPECT_DEBUG_DEATH(single_option(B, L(1, 2), Value{1}), "is_answer");
+	}
 }
 
 TEST(Solver, singleOption)
@@ -659,9 +669,9 @@ TEST(Solver, singleOption)
 	// is single option (loc, value)
 	B1.clear();
 	ASSERT_EQ(B1[1][0], Options<4>{}) << "incorrect instantiation";
-	B1[0][1] = std::bitset<5>{"00101"}; // 2
-	ASSERT_FALSE(is_answer(B1[0][1], Value{2}));
-	ASSERT_TRUE(is_option(B1[0][1], Value{2}));
+	B1[0][1] = std::bitset<4>{"0010"}; // 2
+	ASSERT_TRUE(is_answer(B1[0][1], Value{2}));
+	ASSERT_FALSE(is_option(B1[0][1], Value{2}));
 	EXPECT_EQ(B1[0][0].count(), 4U);
 	EXPECT_TRUE(B1[0][2].count() == 4U && B1[0][3].count() == 4U);
 	EXPECT_EQ(B1[1][1].count(), 4U);
@@ -695,14 +705,14 @@ TEST(Solver, singleOption)
 	// more than 1 option available
 	ASSERT_NO_THROW(single_option(B2, L(1)));
 	EXPECT_EQ(single_option(B2, L(1)), 0);
-	B2[0][1] = std::bitset<5>{"00101"}; // 2
-	ASSERT_FALSE(is_answer(B2[0][1], Value{2}));
-	ASSERT_TRUE(is_option(B2[0][1], Value{2}));
+	B2[0][1] = std::bitset<4>{"0010"}; // 2
+	ASSERT_TRUE(is_answer(B2[0][1], Value{2}));
+	ASSERT_FALSE(is_option(B2[0][1], Value{2}));
 	EXPECT_EQ(B2[0][0].count(), 4U);
 	EXPECT_TRUE(B2[0][2].count() == 4U && B2[0][3].count() == 4U);
 	EXPECT_EQ(B2[1][1].count(), 4U);
 	EXPECT_TRUE(B2[2][1].count() == 4U && B2[3][1].count() == 4U);
-	EXPECT_EQ(single_option(B2, L(1)), 8);
+	EXPECT_EQ(single_option(B2, L(1)), 7);
 	EXPECT_EQ(B2[0][0].count(), 3U);
 	EXPECT_FALSE(is_option(B2[0][0], Value{2}));
 	EXPECT_FALSE(
@@ -720,32 +730,11 @@ TEST(Solver, singleOption)
 	ASSERT_TRUE(is_answer(B2[2][1], Value{1}));
 	EXPECT_EQ(B2[0][0].count(), 2U);
 	EXPECT_EQ(B2[1][1].count(), 2U);
-	EXPECT_EQ(single_option(B2, L(2, 1)), 17);
+	EXPECT_EQ(single_option(B2, L(2, 1)), 14);
 	EXPECT_TRUE(is_answer(B2[1][1], Value{3}));
 	EXPECT_TRUE(is_answer(B2[0][0], Value{1}));
 	EXPECT_TRUE(is_answer(B2[3][1], Value{4}));
-
-	// set_value, with single_option should give the same result
-	Board<Options<4>, 2> B3;
-	// clang-format off
-	constexpr std::array<char, 16> v1
-	{
-		// start     // after set_Value
-		0, 2,  0, 0, // 1  2 34  34
-		4, 0,  0, 0, // 4  3 12  12
-		0, 1,  0, 0, // 23 1 234 234
-		0, 0,  0, 0  // 23 4 123 123
-	}; // clang-format on
-	ASSERT_EQ(B3[1][0], Options<4>{}) << "incorrect instantiation";
-	EXPECT_NO_THROW(set_Value(B3, v1.cbegin(), v1.cend()));
-	EXPECT_EQ(B1, B3);
-	{ // when more than 1 option available
-		Board<Options<4>, 2> B{};
-		B[1][2] = std::bitset<5>{"10011"}; // 1, 4
-		EXPECT_NO_THROW(single_option(B, L(1, 2), Value{1}));
-	}
 }
-
 TEST(SolverDeathTest, dualOption)
 {
 	using ::Sudoku::error::invalid_Board;
@@ -763,8 +752,8 @@ TEST(SolverDeathTest, dualOption)
 	EXPECT_THROW(dual_option(board, Location<2>{-1}), invalid_Location);
 	EXPECT_THROW(dual_option(board, Location<2>{16}), invalid_Location);
 #endif // NDEBUG
-	board[0][0] = Options<4>{std::bitset<5>{"11001"}};
-	board[3][3] = Options<4>{std::bitset<5>{"10101"}};
+	board[0][0] = Options<4>{std::bitset<4>{"1100"}};
+	board[3][3] = Options<4>{std::bitset<4>{"1010"}};
 	EXPECT_NO_THROW(dual_option(board, Location<2>{0}));
 	EXPECT_NO_THROW(dual_option(board, Location<2>{15}));
 	// count != 2
@@ -785,49 +774,48 @@ TEST(Solver, dualOption)
 	static_assert(not noexcept(dual_option(board, Location<2>())));
 
 	// invalid board
-	board[0][0] = Options<4>{std::bitset<5>{"10101"}};
-	board[0][2] = Options<4>{std::bitset<5>{"10101"}};
-	board[0][3] = Options<4>{std::bitset<5>{"10101"}};
+	board[0][0] = Options<4>{std::bitset<4>{"1010"}};
+	board[0][2] = Options<4>{std::bitset<4>{"1010"}};
+	board[0][3] = Options<4>{std::bitset<4>{"1010"}};
 	EXPECT_THROW(dual_option(board, Location<2>{0}), invalid_Board);
 
 	// return type
 	static_assert(
 		std::is_same_v<int, decltype(dual_option(board, Location<2>()))>);
-
 	board.clear();
-	board[0][1] = Options<4>{std::bitset<5>{"11001"}};
-	board[0][2] = Options<4>{std::bitset<5>{"11001"}};
+	board[0][1] = Options<4>{std::bitset<4>{"1100"}};
+	board[0][2] = Options<4>{std::bitset<4>{"1100"}};
 	EXPECT_EQ(dual_option(board, Location<2>(0, 1)), 4); // same row
 	board.clear();
-	board[0][1] = Options<4>{std::bitset<5>{"11001"}};
-	board[3][1] = Options<4>{std::bitset<5>{"11001"}};
+	board[0][1] = Options<4>{std::bitset<4>{"1100"}};
+	board[3][1] = Options<4>{std::bitset<4>{"1100"}};
 	EXPECT_EQ(dual_option(board, Location<2>(0, 1)), 4); // same col
 	board.clear();
-	board[0][0] = Options<4>{std::bitset<5>{"11001"}};
-	board[1][1] = Options<4>{std::bitset<5>{"11001"}};
+	board[0][0] = Options<4>{std::bitset<4>{"1100"}};
+	board[1][1] = Options<4>{std::bitset<4>{"1100"}};
 	EXPECT_EQ(dual_option(board, Location<2>(1, 1)), 4); // same block
 	board.clear();
-	board[1][0] = Options<4>{std::bitset<5>{"11001"}};
-	board[1][1] = Options<4>{std::bitset<5>{"11001"}};
+	board[1][0] = Options<4>{std::bitset<4>{"1100"}};
+	board[1][1] = Options<4>{std::bitset<4>{"1100"}};
 	EXPECT_EQ(dual_option(board, Location<2>(1, 1)), 8); // same row & block
 	board.clear();
-	board[0][0] = Options<4>{std::bitset<5>{"11001"}};
-	board[1][0] = Options<4>{std::bitset<5>{"11001"}};
+	board[0][0] = Options<4>{std::bitset<4>{"1100"}};
+	board[1][0] = Options<4>{std::bitset<4>{"1100"}};
 	EXPECT_EQ(dual_option(board, Location<2>(0, 0)), 8); // same col & block
 
 	board.clear();
-	board[0][0] = Options<4>{std::bitset<5>{"11001"}};
+	board[0][0] = Options<4>{std::bitset<4>{"1100"}};
 	EXPECT_EQ(dual_option(board, Location<2>(0, 0)), 0);
-	board[1][0] = Options<4>{std::bitset<5>{"10101"}};
+	board[1][0] = Options<4>{std::bitset<4>{"1010"}};
 	EXPECT_EQ(dual_option(board, Location<2>(0, 0)), 0);
-	board[3][3] = Options<4>{std::bitset<5>{"10101"}};
+	board[3][3] = Options<4>{std::bitset<4>{"1010"}};
 	EXPECT_EQ(dual_option(board, Location<2>(0, 0)), 0);
 	EXPECT_EQ(dual_option(board, Location<2>(1, 0)), 0);
 	EXPECT_EQ(dual_option(board, Location<2>(3, 3)), 0);
-	board[3][0] = Options<4>{std::bitset<5>{"10101"}};
+	board[3][0] = Options<4>{std::bitset<4>{"1010"}};
 	EXPECT_EQ(dual_option(board, Location<2>(3, 3)), 4); // same row
-	board[1][1] = Options<4>{std::bitset<5>{"11001"}};
-	EXPECT_EQ(dual_option(board, Location<2>(1, 1)), 50); // same block cascade
+	board[1][1] = Options<4>{std::bitset<4>{"1100"}};
+	EXPECT_EQ(dual_option(board, Location<2>(1, 1)), 34); // same block cascade
 	for (const auto& elem : board)
 	{
 		EXPECT_TRUE(elem.is_answer());
@@ -929,7 +917,7 @@ TEST(Solver, multiOption)
 	EXPECT_EQ(B1[0][0].count(), 3U) << "after 1"; // unchanged
 	EXPECT_EQ(B1[0][8].count(), 6U) << "after 2";
 	EXPECT_EQ(B1[4][4].count(), 9U) << "after 3"; // unchanged
-	EXPECT_EQ(B1[0][8].DebugString(), "1111110001");
+	EXPECT_EQ(B1[0][8].DebugString(), "111111000");
 	// run for col
 	EXPECT_NO_THROW(multi_option(B1, Location<3>{6, 8}))
 		<< "multi_option failed 2";
@@ -937,7 +925,7 @@ TEST(Solver, multiOption)
 	EXPECT_EQ(B1[8][8].count(), 3U) << "after 22"; // unchanged
 	EXPECT_EQ(B1[0][8].count(), 4U) << "after 23";
 	EXPECT_EQ(B1[4][4].count(), 9U) << "after 24"; // unchanged
-	EXPECT_EQ(B1[0][8].DebugString(), "0110110001");
+	EXPECT_EQ(B1[0][8].DebugString(), "011011000");
 
 	// run for block
 	// clang-format off
@@ -961,11 +949,11 @@ TEST(Solver, multiOption)
 	EXPECT_EQ(B2[2][2].count(), 3U) << "before 33";
 	EXPECT_EQ(B2[0][1].count(), 4U) << "before 34";
 	EXPECT_EQ(B2[2][0].count(), 4U) << "before 35";
-	EXPECT_EQ(B2[0][0].DebugString(), "1000100011") << "before 36";
-	EXPECT_EQ(B2[2][0].DebugString(), "1010100011") << "before 37";
+	EXPECT_EQ(B2[0][0].DebugString(), "100010001") << "before 36";
+	EXPECT_EQ(B2[2][0].DebugString(), "101010001") << "before 37";
 	EXPECT_EQ(B2[8][8].count(), 9U) << "before 38";
 	EXPECT_EQ(B2[2][5].count(), 6U) << "before 39";
-	EXPECT_EQ(B2[2][5].DebugString(), "1001111011") << "before 310";
+	EXPECT_EQ(B2[2][5].DebugString(), "100111101") << "before 310";
 	EXPECT_NO_THROW(multi_option(B2, Location<3>(0)))
 		<< "multi_option failed 3";
 	EXPECT_EQ(B2[0][0].count(), 3U) << "after 31";
@@ -973,10 +961,10 @@ TEST(Solver, multiOption)
 	EXPECT_EQ(B2[2][2].count(), 3U) << "after 33";
 	EXPECT_TRUE(is_answer(B2[0][1], Value{2})) << "after 34";
 	EXPECT_TRUE(is_answer(B2[2][0], Value{7})) << "after 35";
-	EXPECT_EQ(B2[0][0].DebugString(), "1000100011") << "after 36";
+	EXPECT_EQ(B2[0][0].DebugString(), "100010001") << "after 36";
 	EXPECT_EQ(B2[8][8].count(), 9U) << "after 38";
 	EXPECT_EQ(B2[2][5].count(), 6U) << "after 39";
-	EXPECT_EQ(B2[2][5].DebugString(), "1001111011") << "after 310";
+	EXPECT_EQ(B2[2][5].DebugString(), "100111101") << "after 310";
 
 	// clang-format off
 	// 9*9 partials forming a set: 3 cells containing (123,12,13)
@@ -1000,11 +988,11 @@ TEST(Solver, multiOption)
 	EXPECT_EQ(B3[0][2].count(), 3U) << "before 43";
 	EXPECT_EQ(B3[0][3].count(), 7U) << "before 44";
 	// EXPECT_EQ(B3[5][1].count(), 6) << "before 45";
-	EXPECT_EQ(B3[0][1].DebugString(), "0000001111") << "before 46";
+	EXPECT_EQ(B3[0][1].DebugString(), "000000111") << "before 46";
 	EXPECT_EQ(B3[6][8].count(), 2U) << "before 47";
 	EXPECT_EQ(B3[7][8].count(), 2U) << "before 48";
 	EXPECT_EQ(B3[8][8].count(), 3U) << "before 49";
-	EXPECT_EQ(B3[8][8].DebugString(), "1001001001") << "before 410";
+	EXPECT_EQ(B3[8][8].DebugString(), "100100100") << "before 410";
 	EXPECT_NO_THROW(multi_option(B3, Location<3>(1)))
 		<< "multi_option failed 4";
 	// row:
@@ -1013,23 +1001,23 @@ TEST(Solver, multiOption)
 	EXPECT_EQ(B3[0][2].count(), 3U) << "after 43"; // unchanged
 	EXPECT_EQ(B3[0][3].count(), 4U) << "after 44";
 	// EXPECT_EQ(B3[5][1].count(), 6) << "after 45"; // unchanged
-	EXPECT_EQ(B3[0][0].DebugString(), "0000000111") << "after 46";
-	EXPECT_EQ(B3[0][1].DebugString(), "0000001111") << "after 47";
-	EXPECT_EQ(B3[0][3].DebugString(), "1101100001") << "after 48";
+	EXPECT_EQ(B3[0][0].DebugString(), "000000011") << "after 46";
+	EXPECT_EQ(B3[0][1].DebugString(), "000000111") << "after 47";
+	EXPECT_EQ(B3[0][3].DebugString(), "110110000") << "after 48";
 }
 
 TEST(SolverDeathTest, multiOption2)
 {
 	using L = Location<2>;
-	using B = std::bitset<5>;
+	using B = std::bitset<4>;
 	Board<Options<4>, 2> board{}; // reused object for full test
 	Board<Options<9>, 3> board_3{};
 
 	// invalid loc
-	board[0][0] = Options<4>{B{"11101"}};
+	board[0][0] = Options<4>{B{"1110"}};
 	EXPECT_NO_THROW(multi_option(board, L{0}));
 	EXPECT_NO_THROW(multi_option(board, L{0}, 3));
-	board[3][3] = Options<4>{B{"11101"}};
+	board[3][3] = Options<4>{B{"1110"}};
 	EXPECT_NO_THROW(multi_option(board, L{15}));
 	EXPECT_NO_THROW(multi_option(board, L{15}, 3));
 #ifndef NDEBUG
@@ -1047,10 +1035,10 @@ TEST(SolverDeathTest, multiOption2)
 	// count > elem_size
 	EXPECT_DEBUG_DEATH(multi_option(board, L{}, 5), "count < elem_size<N>");
 	{ // single_option specialization (count = 1)
-		board[0][0] = Options<4>{B{"01001"}};
+		board[0][0] = Options<4>{B{"0100"}};
 		EXPECT_NO_THROW(multi_option(board, L{0}));
 		EXPECT_NO_THROW(multi_option(board, L{0}, 1));
-		board[3][3] = Options<4>{B{"01001"}};
+		board[3][3] = Options<4>{B{"0100"}};
 		EXPECT_NO_THROW(multi_option(board, L{15}, 1));
 		EXPECT_NO_THROW(multi_option(board, L{15}));
 #ifndef NDEBUG
@@ -1064,10 +1052,10 @@ TEST(SolverDeathTest, multiOption2)
 		EXPECT_NO_THROW(multi_option(board_3, Location<3>{16}));
 	}
 	{ // dual_option specialization
-		board[0][0] = Options<4>{B{"01011"}};
+		board[0][0] = Options<4>{B{"0101"}};
 		EXPECT_NO_THROW(multi_option(board, L{0}));
 		EXPECT_NO_THROW(multi_option(board, L{0}, 2));
-		board[3][3] = Options<4>{B{"01011"}};
+		board[3][3] = Options<4>{B{"0101"}};
 		EXPECT_NO_THROW(multi_option(board, L{15}, 2));
 		EXPECT_NO_THROW(multi_option(board, L{15}));
 #ifndef NDEBUG
@@ -1079,11 +1067,11 @@ TEST(SolverDeathTest, multiOption2)
 #endif // NDEBUG
 	}
 	// count too small
-	board[0][0] = Options<4>{B{"11111"}};
+	board[0][0] = Options<4>{B{"1111"}};
 	EXPECT_DEBUG_DEATH(
 		multi_option(board, L{0}, 3), "item.count\\(\\) == count");
 	// count too large
-	board[0][0] = Options<4>{B{"11001"}};
+	board[0][0] = Options<4>{B{"1100"}};
 	EXPECT_DEBUG_DEATH(
 		multi_option(board, L{0}, 3), "item.count\\(\\) == count");
 }
@@ -1092,7 +1080,7 @@ TEST(Solver, multiOption2)
 {
 	using L = Location<2>;
 	using V = Value;
-	using B = std::bitset<5>;
+	using B = std::bitset<4>;
 	Board<Options<4>, 2> board{}; // reused object for full test
 	Board<Options<9>, 3> board_3{};
 
@@ -1117,10 +1105,10 @@ TEST(Solver, multiOption2)
 #endif // __GNUC__
 
 	{ // sanity check:
-		board_3[0][0] = Options<9>{std::bitset<10>{"1111000001"}};
-		board_3[0][1] = Options<9>{std::bitset<10>{"1111000001"}};
-		board_3[0][2] = Options<9>{std::bitset<10>{"1111000001"}};
-		board_3[0][3] = Options<9>{std::bitset<10>{"1111000001"}};
+		board_3[0][0] = Options<9>{std::bitset<9>{"111100000"}};
+		board_3[0][1] = Options<9>{std::bitset<9>{"111100000"}};
+		board_3[0][2] = Options<9>{std::bitset<9>{"111100000"}};
+		board_3[0][3] = Options<9>{std::bitset<9>{"111100000"}};
 		EXPECT_EQ(multi_option(board_3, Location<3>{0}, 4), 20);
 	}
 
@@ -1135,21 +1123,21 @@ TEST(Solver, multiOption2)
 		}
 	};
 	empty_base();
-	ASSERT_EQ(board[L{10}].count_all(), 0U);
+	ASSERT_EQ(board[L{10}].count(), 0U);
 
 	//====----------------------------------------------------------------====//
 	{ // influence on an isolated row
 		const auto reset_row = [&board] {
-			board.at(L{0}) = B{"01111"};
-			board.at(L{1}) = B{"11111"};
-			board.at(L{2}) = B{"00111"};
-			board.at(L{3}) = B{"00101"};
+			board.at(L{0}) = B{"0111"};
+			board.at(L{1}) = B{"1111"};
+			board.at(L{2}) = B{"0011"};
+			board.at(L{3}) = B{"0010"};
 		};
 		empty_base();
 		reset_row();
 		EXPECT_EQ(multi_option(board, L{1}), 0);    // all set
 		EXPECT_EQ(multi_option(board, L{0}, 4), 0); // as if all set
-		EXPECT_EQ(multi_option(board, L{0}), 4);    // 0,1 -> ans 4
+		EXPECT_EQ(multi_option(board, L{0}), 3);    // 0,1 -> ans 3
 		EXPECT_EQ(board[L{0}].count(), 3U);
 		EXPECT_TRUE(is_answer(board.at(L{1})));
 		EXPECT_TRUE(is_answer(board.at(L{1}), V{4}));
@@ -1161,28 +1149,28 @@ TEST(Solver, multiOption2)
 		reset_row();
 		EXPECT_EQ(multi_option(board, L{2}), 0); // 7 without specialization
 		board.at(L{3}) = B{"00111"};
-		EXPECT_EQ(multi_option(board, L{2}), 7);
+		EXPECT_EQ(multi_option(board, L{2}), 5);
 		EXPECT_TRUE(is_answer(board.at(L{0}), V{3}));
 		EXPECT_TRUE(is_answer(board.at(L{1}), V{4}));
 		EXPECT_EQ(board[L{2}].count(), 2U);
 		EXPECT_EQ(board[L{3}].count(), 2U);
 		// specialization: single option
 		reset_row();
-		EXPECT_EQ(multi_option(board, L{3}), 10);
+		EXPECT_EQ(multi_option(board, L{3}), 6);
 		EXPECT_TRUE(is_answer(board.at(L{2}), V{1}));
-		EXPECT_EQ(board[L{3}].count(), 0U);
+		EXPECT_EQ(board[L{3}].count(), 1U);
 
 		// combined
 		reset_row();
 		EXPECT_FALSE(is_answer(board.at(L{1})));
-		EXPECT_EQ(multi_option(board, L{0}), 4);
+		EXPECT_EQ(multi_option(board, L{0}), 3);
 		EXPECT_TRUE(is_answer(board.at(L{1}), V{4}));
 		EXPECT_EQ(multi_option(board, L{1}), 0);
 		EXPECT_EQ(multi_option(board, L{2}), 0);
 		EXPECT_FALSE(is_answer(board.at(L{0})));
 		EXPECT_FALSE(is_answer(board.at(L{2})));
-		EXPECT_FALSE(is_answer(board.at(L{3})));
-		EXPECT_EQ(multi_option(board, L{3}), 6);
+		EXPECT_TRUE(is_answer(board.at(L{3})));
+		EXPECT_EQ(multi_option(board, L{3}), 3);
 		EXPECT_TRUE(is_answer(board.at(L{0}), V{3}));
 		EXPECT_TRUE(is_answer(board.at(L{2}), V{1}));
 		EXPECT_TRUE(is_answer(board.at(L{3}), V{2}));
@@ -1190,7 +1178,7 @@ TEST(Solver, multiOption2)
 		// different order
 		reset_row();
 		// Setting (0,2) as answer triggers a cascade, removing Value 1 from all
-		EXPECT_EQ(multi_option(board, L{3}), 10);
+		EXPECT_EQ(multi_option(board, L{3}), 6);
 		EXPECT_TRUE(is_answer(board.at(L{0}), V{3}));
 		EXPECT_TRUE(is_answer(board.at(L{1}), V{4}));
 		EXPECT_TRUE(is_answer(board.at(L{2}), V{1}));
@@ -1202,16 +1190,16 @@ TEST(Solver, multiOption2)
 	//====----------------------------------------------------------------====//
 	{ // influence on an isolated col
 		const auto reset_col = [&board] {
-			board.at(L{2, 0}) = B{"01111"};
-			board.at(L{2, 1}) = B{"11111"};
-			board.at(L{2, 2}) = B{"00111"};
-			board.at(L{2, 3}) = B{"00101"};
+			board.at(L{2, 0}) = B{"0111"};
+			board.at(L{2, 1}) = B{"1111"};
+			board.at(L{2, 2}) = B{"0011"};
+			board.at(L{2, 3}) = B{"0010"};
 		};
 		empty_base();
 		reset_col();
 		EXPECT_EQ(multi_option(board, L{2, 1}), 0);    // all set
 		EXPECT_EQ(multi_option(board, L{2, 0}, 4), 0); // as if all set
-		EXPECT_EQ(multi_option(board, L{2, 0}), 4);    // 0,1 -> ans 4
+		EXPECT_EQ(multi_option(board, L{2, 0}), 3);    // 0,1 -> ans 3
 		EXPECT_EQ(board[L(2, 0)].count(), 3U);
 		EXPECT_TRUE(is_answer(board.at(L{2, 1})));
 		EXPECT_TRUE(is_answer(board.at(L{2, 1}), V{4}));
@@ -1223,32 +1211,32 @@ TEST(Solver, multiOption2)
 		reset_col();
 		EXPECT_EQ(multi_option(board, L{2, 2}), 0); // 7 without specialization
 		board.at(L{2, 3}) = B{"00111"};
-		EXPECT_EQ(multi_option(board, L{2, 2}), 7);
+		EXPECT_EQ(multi_option(board, L{2, 2}), 5);
 		EXPECT_TRUE(is_answer(board.at(L{2, 0}), V{3}));
 		EXPECT_TRUE(is_answer(board.at(L{2, 1}), V{4}));
 		EXPECT_EQ(board[L(2, 2)].count(), 2U);
 		EXPECT_EQ(board[L(2, 3)].count(), 2U);
 		// specialization: single option
 		reset_col();
-		EXPECT_EQ(multi_option(board, L{2, 3}), 10);
+		EXPECT_EQ(multi_option(board, L{2, 3}), 6);
 		EXPECT_TRUE(is_answer(board.at(L{2, 2}), V{1}));
-		EXPECT_EQ(board[L(2, 3)].count(), 0U);
+		EXPECT_EQ(board[L(2, 3)].count(), 1U);
 	}
 	//====----------------------------------------------------------------====//
 	{ // influence on an isolated block
 		using LB = ::Sudoku::Location_Block<2>;
 
 		const auto reset_block = [&board] {
-			board.at(LB{2, 0}) = B{"01111"};
-			board.at(LB{2, 1}) = B{"11111"};
-			board.at(LB{2, 2}) = B{"00111"};
-			board.at(LB{2, 3}) = B{"00101"};
+			board.at(LB{2, 0}) = B{"0111"};
+			board.at(LB{2, 1}) = B{"1111"};
+			board.at(LB{2, 2}) = B{"0011"};
+			board.at(LB{2, 3}) = B{"0010"};
 		};
 		empty_base();
 		reset_block();
 		EXPECT_EQ(multi_option(board, L{LB{2, 1}}), 0);    // all set
 		EXPECT_EQ(multi_option(board, L{LB{2, 0}}, 4), 0); // as if all set
-		EXPECT_EQ(multi_option(board, L{LB{2, 0}}), 4);    // 0,1 -> ans 4
+		EXPECT_EQ(multi_option(board, L{LB{2, 0}}), 3);    // 0,1 -> ans 3
 		EXPECT_EQ(board[LB(2, 0)].count(), 3U);
 		EXPECT_TRUE(is_answer(board.at(LB{2, 1})));
 		EXPECT_TRUE(is_answer(board.at(LB{2, 1}), V{4}));
@@ -1259,36 +1247,36 @@ TEST(Solver, multiOption2)
 		// specialization: dual option
 		reset_block();
 		EXPECT_EQ(multi_option(board, L{LB{2, 2}}), 0);
-		board.at(LB{2, 3}) = B{"00111"};
-		EXPECT_EQ(multi_option(board, L{LB{2, 2}}), 7);
+		board.at(LB{2, 3}) = B{"0011"};
+		EXPECT_EQ(multi_option(board, L{LB{2, 2}}), 5);
 		EXPECT_TRUE(is_answer(board.at(LB{2, 0}), V{3}));
 		EXPECT_TRUE(is_answer(board.at(LB{2, 1}), V{4}));
 		EXPECT_EQ(board[LB(2, 2)].count(), 2U);
 		EXPECT_EQ(board[LB(2, 3)].count(), 2U);
 		// specialization: single option
 		reset_block();
-		EXPECT_EQ(multi_option(board, L{LB{2, 3}}), 10);
+		EXPECT_EQ(multi_option(board, L{LB{2, 3}}), 6);
 		EXPECT_TRUE(is_answer(board.at(LB{2, 2}), V{1}));
-		EXPECT_EQ(board[LB(2, 3)].count(), 0U);
+		EXPECT_EQ(board[LB(2, 3)].count(), 1U);
 	}
 	//====----------------------------------------------------------------====//
 	{ // combined removes
 		[&board] {
 			board             = Board<Options<4>, 2>();
-			board.at(L{0, 0}) = B{"01111"};
-			board.at(L{0, 1}) = B{"11111"};
-			board.at(L{0, 2}) = B{"00111"};
-			board.at(L{0, 3}) = B{"00101"};
-			board.at(L{3, 0}) = B{"10000"};
+			board.at(L{0, 0}) = B{"0111"};
+			board.at(L{0, 1}) = B{"1111"};
+			board.at(L{0, 2}) = B{"0011"};
+			board.at(L{0, 3}) = B{"0010"};
+			board.at(L{3, 0}) = B{"1000"};
 		}();
 		EXPECT_EQ(multi_option(board, L{0, 1}), 0); // all set
-		EXPECT_EQ(multi_option(board, L{0, 0}), 8);
+		EXPECT_EQ(multi_option(board, L{0, 0}), 7);
 		EXPECT_TRUE(is_answer(board[0][1], Value{4}));
-		EXPECT_EQ(multi_option(board, L{0, 3}), 17);
+		EXPECT_EQ(multi_option(board, L{0, 3}), 14);
+		EXPECT_EQ(multi_option(board, L{3, 0}), 3);
+		board.at(L{3, 0}) = B{"1000"};
+		EXPECT_TRUE(is_answer(board[3][0]));
 		EXPECT_EQ(multi_option(board, L{3, 0}), 0);
-		board.at(L{3, 0}) = B{"10001"};
-		EXPECT_FALSE(is_answer(board[3][0]));
-		EXPECT_EQ(multi_option(board, L{3, 0}), 4);
 		EXPECT_TRUE(is_answer(board[3][0]));
 	}
 }

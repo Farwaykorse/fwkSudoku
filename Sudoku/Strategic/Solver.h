@@ -56,10 +56,9 @@ inline int single_option(
 	{
 		assert(is_valid(loc));
 		assert(is_valid<N>(value));
-		assert(board.at(loc).test(value));
+		assert(is_answer(board.at(loc), value));
 	}
 	int changes{};
-	changes += set_Value(board, loc, value);
 	changes += remove_option_section(board, board.row(loc), loc, value);
 	changes += remove_option_section(board, board.col(loc), loc, value);
 	changes += remove_option_section(board, board.block(loc), loc, value);
@@ -86,10 +85,6 @@ inline int dual_option(
 
 	int changes{};
 	const Options& item{board.at(loc)};
-	const auto mask = [](Options x) noexcept {
-		x[Value{0}] = false;
-		return x;
-	}(item);
 
 	for (int i{}; i < full_size<N>; ++i)
 	{
@@ -100,18 +95,18 @@ inline int dual_option(
 			if (is_same_row(loc, Location(i)))
 			{
 				changes += remove_option_section(
-					board, board.row(loc), sorted_loc(Location(i)), mask);
+					board, board.row(loc), sorted_loc(Location(i)), item);
 			}
 			else if (is_same_col(loc, Location(i)))
 			{
 				changes += remove_option_section(
-					board, board.col(loc), sorted_loc(Location(i)), mask);
+					board, board.col(loc), sorted_loc(Location(i)), item);
 			}
 			// run not if already answered
 			if (is_same_block(loc, Location(i)) && !item.is_answer())
 			{ // NOTE this is slow
 				changes += remove_option_section(
-					board, board.block(loc), sorted_loc(Location(i)), mask);
+					board, board.block(loc), sorted_loc(Location(i)), item);
 			}
 		}
 	}
@@ -153,10 +148,6 @@ constexpr int multi_option(
 	int changes{};                      // performance counter
 	const Options& item{board.at(loc)}; // input item, to match with
 	assert(item.count() == count);
-	const auto mask = [](Options x) noexcept {
-		x[Value{0}] = false;
-		return x;
-	}(item);
 
 	const auto list = list_where_subset(board, item);
 
@@ -165,18 +156,18 @@ constexpr int multi_option(
 	// Therefore: Remove values for rest of section.
 	if (const auto in_row{get_same_row(loc, list)}; in_row.size() == count)
 	{
-		changes += remove_option_section(board, board.row(loc), in_row, mask);
+		changes += remove_option_section(board, board.row(loc), in_row, item);
 	}
 	if (const auto in_col{get_same_col(loc, list)}; in_col.size() == count)
 	{
-		changes += remove_option_section(board, board.col(loc), in_col, mask);
+		changes += remove_option_section(board, board.col(loc), in_col, item);
 	}
 	if (const auto in_block{get_same_block(loc, list)};
 		in_block.size() == count)
 	{
 		// NOTE this is slow
 		changes +=
-			remove_option_section(board, board.block(loc), in_block, mask);
+			remove_option_section(board, board.block(loc), in_block, item);
 	}
 	return changes;
 }
@@ -217,13 +208,13 @@ inline int section_exclusive(
 	while (i < appearing.size()) // won't run if condition fails
 	{
 		// unique specialization
-		if (appearing[1].count_all() > 0)
+		if (appearing[1].count() > 0)
 		{
 			changes += set_uniques(board, section, appearing[1]);
 			renew_appearing();
 			continue;
 		}
-		if (appearing.at(i).count_all() > 0)
+		if (appearing.at(i).count() > 0)
 		{ // for [row/col]: if in same block: remove from rest block
 			// for [block]: if in same row/col: remove from rest row/col
 			if (const int tmp_ = set_section_locals(

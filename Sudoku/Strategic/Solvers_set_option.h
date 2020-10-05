@@ -72,7 +72,7 @@ inline int set_Value(
 
 	if (not is_answer(elem))
 	{
-		changes = gsl::narrow_cast<int>(elem.count_all());
+		changes = gsl::narrow_cast<int>(elem.count());
 		elem.set(value);
 	}
 	return changes;
@@ -108,13 +108,9 @@ int set_Value(
 
 		if (value != Value{0})
 		{
-			if (not is_valid<N>(value))
-			{
-				throw std::domain_error{"Invalid Value"};
-			}
-
 			if (is_option(board.at(loc), value))
 			{ // update options on board
+				changes += set_Value(board, loc, value);
 				changes += single_option(board, loc, value);
 			}
 			assert(is_answer(board.at(loc), value));
@@ -137,9 +133,9 @@ inline int set_uniques(
 	}
 	int changes{0};
 
-	if (worker.count_all() > 0)
+	if (worker.count() > 0)
 	{
-		for (Value val{1}; val < Value{worker.size()}; ++val)
+		for (Value val{1}; val <= Value{worker.size()}; ++val)
 		{
 			if (worker[val])
 			{
@@ -177,7 +173,9 @@ inline int set_unique(
 	assert(&(*itr) == &board[itr.location()]); // section must be part of board
 	assert(std::find_if(std::next(itr), end, condition) == end); // unique
 
-	return single_option(board, itr.location(), value);
+	int changes = set_Value(board, itr.location(), value);
+	changes += single_option(board, itr.location(), value);
+	return changes;
 }
 
 // for [row/col] per value: if all in same block, remove from rest block
@@ -194,13 +192,13 @@ inline int set_section_locals(
 		assert(rep_count > 1);  // should have been caught by caller
 								// use the set_uniques specialization
 		assert(rep_count <= N); // won't fit in single block-row/col
-		assert(values.count_all() > 0);
+		assert(values.count() > 0);
 	}
 	int changes{0};
 	std::vector<Location<N>> locations{};
 
 	// start at 1, to skip the answer-bit
-	for (Value value{1}; value < Value{values.size()}; ++value)
+	for (Value value{1}; value <= Value{values.size()}; ++value)
 	{
 		if (values[value])
 		{
@@ -231,13 +229,13 @@ inline int set_section_locals(
 		assert(rep_count > 1);  // should have been caught by caller
 								// use the set_uniques specialization
 		assert(rep_count <= N); // won't fit in single block-row/col
-		assert(values.count_all() > 0);
+		assert(values.count() > 0);
 	}
 	int changes{0};
 	std::vector<Location<N>> locations{};
 
 	// start at 1, to skip the answer-bit
-	for (Value value{1}; value < Value{values.size()}; ++value)
+	for (Value value{1}; value <= Value{values.size()}; ++value)
 	{
 		if (values[value])
 		{

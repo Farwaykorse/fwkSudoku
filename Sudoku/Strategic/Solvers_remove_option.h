@@ -68,8 +68,6 @@ int remove_option(
 	const Location<N> loc,
 	const Value value)
 {
-	assert(is_valid<N>(value));
-
 	int changes{};
 	auto& item{board.at(loc)};
 
@@ -110,11 +108,10 @@ int remove_option(
 	const Location<N> loc,
 	const Options mask)
 {
-	assert(is_answer(mask));  // don't remove answer-bit
 	assert(!mask.is_empty()); // useless
 
 	auto& item{board.at(loc)};
-	auto changes = gsl::narrow_cast<int, size_t>(item.count_all());
+	auto changes = gsl::narrow_cast<int, size_t>(item.count());
 	if (!changes)
 	{ // ignore empty elements
 		return 0;
@@ -123,7 +120,7 @@ int remove_option(
 	// remove options
 	item -= mask;
 
-	const auto count = gsl::narrow_cast<int, size_t>(item.count_all());
+	const auto count = gsl::narrow_cast<int, size_t>(item.count());
 	if (count == 0)
 	{ // removed last option
 		throw error::invalid_Board();
