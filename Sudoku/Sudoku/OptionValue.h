@@ -1,30 +1,17 @@
-// An internal bounded version of Sudoku::Value
+//====---- Sudoku/OptionValue.h                                       ----====//
+// An internally used bounded version of Sudoku::Value
+// Implements range checks in a combination of constexpr and exceptions.
 //
+//====--------------------------------------------------------------------====//
 #pragma once
 
+#include "Concepts.h"
 #include "Size.h"
 #include "Value.h"
 #include "exceptions.h"
 
 namespace Sudoku
 {
-template<typename T>
-concept Character = std::is_integral_v<T> &&
-					(std::is_same_v<T, char> || std::is_same_v<T, wchar_t> ||
-					 std::is_same_v<T, char8_t> ||
-					 std::is_same_v<T, char16_t> ||
-					 std::is_same_v<T, char32_t> ||
-					 std::is_same_v<T, unsigned char> ||
-					 std::is_same_v<T, signed char>);
-template<typename T>
-concept Number =
-	std::is_integral_v<T> && not Character<T> && not std::is_same_v<T, bool>;
-template<typename T>
-concept SignedNumber = Number<T>&& std::is_signed_v<T>;
-template<typename T>
-concept UnsignedNumber = Number<T>&& std::is_unsigned_v<T>;
-
-
 template<int E>
 class OptionValue
 {

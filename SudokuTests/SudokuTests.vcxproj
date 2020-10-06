@@ -667,6 +667,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='LLVM_old_Debug|x64'">-Wno-unevaluated-expression %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="Board_Section_traits.cpp" />
+    <ClCompile Include="ConceptsTests.cpp" />
     <ClCompile Include="exceptions.cpp" />
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="Options.cpp" />

@@ -20,6 +20,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Section.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Section_iterator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Board\Section_traits.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Concepts.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\exceptions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Location.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sudoku\Location_Utilities.h" />

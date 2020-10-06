@@ -44,7 +44,8 @@ target_sources(SudokuTests
     Transpose.cpp
     Value.cpp
     OptionValueTest.cpp
- )
+    ConceptsTests.cpp
+)
 
 target_link_libraries(SudokuTests
   PRIVATE
