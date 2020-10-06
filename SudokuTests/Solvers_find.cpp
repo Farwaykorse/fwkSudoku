@@ -501,7 +501,7 @@ TEST(Solver, listWhereOptions)
 	//	 Location is nothrow move constructible
 	static_assert(
 		not noexcept(list_where_option<2>(B.row(0), Options{Value{1}})));
-	constexpr Sudoku::OptionValue<4> value{1u};
+	constexpr Sudoku::OptionValue<4> value{1U};
 	static_assert(noexcept(list_where_option<2>(B.row(0), Options{value})));
 	static_assert(noexcept(list_where_option<2>(B.row(0), B[0][2])));
 	list = list_where_option<2>(B.row(0), Options{Value{4}});

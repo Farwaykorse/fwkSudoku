@@ -19,8 +19,9 @@ concept Character = std::is_integral_v<T> &&
 					 std::is_same_v<T, unsigned char> ||
 					 std::is_same_v<T, signed char>);
 template<typename T>
-concept Number =
-	std::is_integral_v<T> && not Character<T> && not std::is_same_v<T, bool>;
+concept Number = std::is_integral_v<T> && not std::is_same_v<T, bool> &&
+				 (not Character<T> || std::is_same_v<T, std::int8_t> ||
+				  std::is_same_v<T, std::uint8_t>);
 template<typename T>
 concept SignedNumber = Number<T>&& std::is_signed_v<T>;
 template<typename T>

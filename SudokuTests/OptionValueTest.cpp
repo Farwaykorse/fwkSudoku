@@ -9,9 +9,10 @@
 #include <Sudoku/OptionValue.h> // Class under test
 
 #include <type_traits>
-#include <cstdint>
 
 #include <gtest/gtest.h>
+
+#include <cstdint>
 
 
 namespace SudokuTests::OptionValueTest
@@ -92,6 +93,7 @@ namespace compiletime
 	static_assert(
 		std::is_constructible_v<typeT, OptionValue<2>> &&
 		not std::is_same_v<typeT, OptionValue<2>>);
+	// uint8_t is a C-standard typedef
 	static_assert(std::is_constructible_v<typeT, std::uint8_t>);
 	static_assert(std::is_constructible_v<typeT, std::uint16_t>);
 	static_assert(std::is_constructible_v<typeT, unsigned int>);
@@ -105,7 +107,7 @@ namespace compiletime
 	static_assert(not std::is_constructible_v<typeT, std::int64_t>);
 	static_assert(not std::is_constructible_v<typeT, char>); // implementation
 	static_assert(not std::is_constructible_v<typeT, signed char>);
-	static_assert(not std::is_constructible_v<typeT, unsigned char>);
+	static_assert(std::is_constructible_v<typeT, unsigned char>); // uint8_t
 	static_assert(not std::is_constructible_v<typeT, wchar_t>);
 	static_assert(not std::is_constructible_v<typeT, char8_t>);
 	static_assert(not std::is_constructible_v<typeT, char16_t>);
@@ -121,8 +123,7 @@ namespace compiletime
 	static_assert(not std::is_nothrow_constructible_v<typeT, std::uint16_t>);
 	static_assert(not std::is_nothrow_constructible_v<typeT, unsigned int>);
 	static_assert(not std::is_nothrow_constructible_v<typeT, std::uint64_t>);
-	static_assert(
-		not std::is_nothrow_constructible_v<typeT, std::uint64_t>);
+	static_assert(not std::is_nothrow_constructible_v<typeT, std::uint64_t>);
 
 	// Implicit conversion (to typeT)
 	static_assert(std::is_convertible_v<Value, typeT>);
@@ -154,7 +155,7 @@ namespace compiletime
 	static_assert(not std::is_convertible_v<typeT, bool>);
 	static_assert(not std::is_convertible_v<typeT, char>);
 	static_assert(not std::is_convertible_v<typeT, signed char>);
-	static_assert(not std::is_convertible_v<typeT, unsigned char>);
+	static_assert(std::is_convertible_v<typeT, unsigned char>);
 
 	// Not-throwing implicit conversion (from typeT)
 	static_assert(std::is_nothrow_convertible_v<typeT, Value>);

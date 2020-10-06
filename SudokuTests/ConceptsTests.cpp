@@ -16,7 +16,6 @@
 
 namespace SudokuTests::ConceptsTests
 {
-
 namespace CharacterTests
 {
 	using Sudoku::Character;
@@ -66,18 +65,18 @@ namespace NumberTests
 
 	static_assert(not std::is_constructible_v<Test, void>);
 	static_assert(not std::is_constructible_v<Test, bool>);
-	static_assert(not std::is_constructible_v<Test, std::int8_t>); // C-stand.
+	static_assert(std::is_constructible_v<Test, std::int8_t>);
 	static_assert(std::is_constructible_v<Test, std::int16_t>);
 	static_assert(std::is_constructible_v<Test, int>);
 	static_assert(std::is_constructible_v<Test, std::int64_t>);
-	static_assert(not std::is_constructible_v<Test, std::uint8_t>); // C-stand.
+	static_assert(std::is_constructible_v<Test, std::uint8_t>);
 	static_assert(std::is_constructible_v<Test, std::uint16_t>);
 	static_assert(std::is_constructible_v<Test, unsigned int>);
 	static_assert(std::is_constructible_v<Test, std::uint32_t>);
 	static_assert(std::is_constructible_v<Test, std::uint64_t>);
 	static_assert(not std::is_constructible_v<Test, char>);
-	static_assert(not std::is_constructible_v<Test, signed char>); // int8_t
-	static_assert(not std::is_constructible_v<Test, unsigned char>); // uint8_t
+	static_assert(std::is_constructible_v<Test, signed char>);   // int8_t
+	static_assert(std::is_constructible_v<Test, unsigned char>); // uint8_t
 	static_assert(not std::is_constructible_v<Test, wchar_t>);
 	static_assert(not std::is_constructible_v<Test, char8_t>);
 	static_assert(not std::is_constructible_v<Test, char16_t>);
@@ -100,7 +99,7 @@ namespace SignedNumberTests
 
 	static_assert(not std::is_constructible_v<Test, void>);
 	static_assert(not std::is_constructible_v<Test, bool>);
-	static_assert(not std::is_constructible_v<Test, std::int8_t>);
+	static_assert(std::is_constructible_v<Test, std::int8_t>);
 	static_assert(std::is_constructible_v<Test, std::int16_t>);
 	static_assert(std::is_constructible_v<Test, int>);
 	static_assert(std::is_constructible_v<Test, std::int64_t>);
@@ -110,7 +109,7 @@ namespace SignedNumberTests
 	static_assert(not std::is_constructible_v<Test, std::uint32_t>);
 	static_assert(not std::is_constructible_v<Test, std::uint64_t>);
 	static_assert(not std::is_constructible_v<Test, char>);
-	static_assert(not std::is_constructible_v<Test, signed char>); // int8_t
+	static_assert(std::is_constructible_v<Test, signed char>);       // int8_t
 	static_assert(not std::is_constructible_v<Test, unsigned char>); // uint8_t
 	static_assert(not std::is_constructible_v<Test, wchar_t>);
 	static_assert(not std::is_constructible_v<Test, char8_t>);
@@ -138,14 +137,14 @@ namespace UnsignedNumberTests
 	static_assert(not std::is_constructible_v<Test, std::int16_t>);
 	static_assert(not std::is_constructible_v<Test, int>);
 	static_assert(not std::is_constructible_v<Test, std::int64_t>);
-	static_assert(not std::is_constructible_v<Test, std::uint8_t>);
+	static_assert(std::is_constructible_v<Test, std::uint8_t>);
 	static_assert(std::is_constructible_v<Test, std::uint16_t>);
 	static_assert(std::is_constructible_v<Test, unsigned int>);
 	static_assert(std::is_constructible_v<Test, std::uint32_t>);
 	static_assert(std::is_constructible_v<Test, std::uint64_t>);
 	static_assert(not std::is_constructible_v<Test, char>);
 	static_assert(not std::is_constructible_v<Test, signed char>);
-	static_assert(not std::is_constructible_v<Test, unsigned char>);
+	static_assert(std::is_constructible_v<Test, unsigned char>); // uint8_t
 	static_assert(not std::is_constructible_v<Test, wchar_t>);
 	static_assert(not std::is_constructible_v<Test, char8_t>);
 	static_assert(not std::is_constructible_v<Test, char16_t>);
