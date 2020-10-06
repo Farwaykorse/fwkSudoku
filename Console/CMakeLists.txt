@@ -122,6 +122,7 @@ if(MSVC) # MSVC or simulating MSVC
       -Weverything
       -Werror=return-type
       # disabled warnings
+      -Wno-c++20-compat
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
     >
