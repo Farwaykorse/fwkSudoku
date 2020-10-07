@@ -1,5 +1,5 @@
 //====---- Sudoku/OptionValue.h                                       ----====//
-// An internally used bounded version of Sudoku::Value
+// An internally used immutable and bounded version of Sudoku::Value
 // Implements range checks in a combination of constexpr and exceptions.
 //
 //====--------------------------------------------------------------------====//
@@ -58,8 +58,7 @@ public:
 	}
 
 private:
-	size_t value_;
+	const size_t value_;
 };
-
 
 } // namespace Sudoku

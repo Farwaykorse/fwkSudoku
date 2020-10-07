@@ -71,21 +71,21 @@ namespace compiletime
 	static_assert(std::is_trivially_move_constructible_v<typeT>);
 
 	// copy assignment
-	static_assert(std::is_copy_assignable_v<typeT>);
-	static_assert(std::is_nothrow_copy_assignable_v<typeT>);
-	static_assert(std::is_trivially_copy_assignable_v<typeT>);
+	static_assert(not std::is_copy_assignable_v<typeT>);
+	static_assert(not std::is_nothrow_copy_assignable_v<typeT>);
+	static_assert(not std::is_trivially_copy_assignable_v<typeT>);
 
-	static_assert(std::is_move_assignable_v<typeT>);
-	static_assert(std::is_nothrow_move_assignable_v<typeT>);
-	static_assert(std::is_trivially_move_assignable_v<typeT>);
+	static_assert(not std::is_move_assignable_v<typeT>);
+	static_assert(not std::is_nothrow_move_assignable_v<typeT>);
+	static_assert(not std::is_trivially_move_assignable_v<typeT>);
 
 	static_assert(std::is_destructible_v<typeT>);
 	static_assert(std::is_nothrow_destructible_v<typeT>);
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-	static_assert(std::is_swappable_v<typeT>);
-	static_assert(std::is_nothrow_swappable_v<typeT>);
+	static_assert(not std::is_swappable_v<typeT>);
+	static_assert(not std::is_nothrow_swappable_v<typeT>);
 
 	// Explicit construction
 	static_assert(std::is_constructible_v<typeT, Value>);
@@ -168,7 +168,7 @@ namespace compiletime
 	// none
 
 	// Assignable (to typeT)
-	static_assert(std::is_assignable_v<typeT, Value>);
+	static_assert(not std::is_assignable_v<typeT, Value>);
 	static_assert(not std::is_assignable_v<typeT, size_t>);
 	static_assert(not std::is_assignable_v<typeT, std::uint16_t>);
 
