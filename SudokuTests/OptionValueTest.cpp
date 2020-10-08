@@ -41,11 +41,7 @@ namespace compiletime
 	// Type Properties
 	static_assert(not std::is_const_v<typeT>);
 	static_assert(not std::is_volatile_v<typeT>);
-#if defined(_MSC_VER)
 	static_assert(not std::is_trivial_v<typeT>);
-#else
-	static_assert(std::is_trivial_v<typeT>);
-#endif
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
 	static_assert(std::has_unique_object_representations_v<typeT>);
@@ -116,14 +112,14 @@ namespace compiletime
 	static_assert(not std::is_constructible_v<typeT, double>);
 
 	// Not-throwing Explicit construction
-	static_assert(not std::is_nothrow_constructible_v<typeT, Value>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, size_t>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, OptionValue<2>>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, std::uint8_t>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, std::uint16_t>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, unsigned int>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, std::uint64_t>);
-	static_assert(not std::is_nothrow_constructible_v<typeT, std::uint64_t>);
+	static_assert(std::is_nothrow_constructible_v<typeT, Value>);
+	static_assert(std::is_nothrow_constructible_v<typeT, size_t>);
+	static_assert(std::is_nothrow_constructible_v<typeT, OptionValue<2>>);
+	static_assert(std::is_nothrow_constructible_v<typeT, std::uint8_t>);
+	static_assert(std::is_nothrow_constructible_v<typeT, std::uint16_t>);
+	static_assert(std::is_nothrow_constructible_v<typeT, unsigned int>);
+	static_assert(std::is_nothrow_constructible_v<typeT, std::uint64_t>);
+	static_assert(std::is_nothrow_constructible_v<typeT, std::uint64_t>);
 
 	// Implicit conversion (to typeT)
 	static_assert(std::is_convertible_v<Value, typeT>);
@@ -136,7 +132,7 @@ namespace compiletime
 	static_assert(not std::is_convertible_v<std::uint64_t, typeT>);
 
 	// Not-throwing implicit conversion (to typeT)
-	static_assert(not std::is_nothrow_convertible_v<Value, typeT>);
+	static_assert(std::is_nothrow_convertible_v<Value, typeT>);
 
 	// Implicit conversion (from typeT)
 	static_assert(std::is_convertible_v<typeT, Value>);
@@ -192,13 +188,13 @@ namespace compiletime
 
 } // namespace compiletime
 
-TEST(OptionValueTest, OutsideDomain)
+TEST(OptionValueDeathTest, OutsideDomain)
 {
-	EXPECT_THROW(OptionValue<9>{Value{0}}, Sudoku::error::invalid_option);
-	EXPECT_THROW(OptionValue<9>{Value{10}}, Sudoku::error::invalid_option);
+	EXPECT_DEBUG_DEATH(OptionValue<9>{Value{0}}, "val > Value");
+	EXPECT_DEBUG_DEATH(OptionValue<9>{Value{10}}, "val <= Value");
 
-	EXPECT_THROW(OptionValue<9>{0U}, Sudoku::error::invalid_option);
-	EXPECT_THROW(OptionValue<9>{10U}, Sudoku::error::invalid_option);
+	EXPECT_DEBUG_DEATH(OptionValue<9>{0U}, "val > T");
+	EXPECT_DEBUG_DEATH(OptionValue<9>{10U}, "val > T");
 }
 
 } // namespace SudokuTests::OptionValueTest

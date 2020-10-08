@@ -138,13 +138,6 @@ TEST(SolverDeathTest, listWhereOptionSection)
 		list = list_where_option<2>(B.row(0), Value{0}, 1), ".*is_valid");
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(B.row(0), Value{5}, 1), ".*is_valid");
-#else
-	EXPECT_THROW(
-		list = list_where_option<2>(B.row(0), Value{0}, 1),
-		Sudoku::error::invalid_option);
-	EXPECT_THROW(
-		list = list_where_option<2>(B.row(0), Value{5}, 1),
-		Sudoku::error::invalid_option);
 #endif // NDEBUG
 	// invalid row id // board_sections.h
 	EXPECT_DEBUG_DEATH(
@@ -252,8 +245,8 @@ TEST(SolverDeathTest, listWhereOptionItr)
 	B[3][0] = set{"1001"};
 	std::vector<loc> list{};
 
+#ifndef NDEBUG
 	// invalid Value
-#ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(
 			B.row(0).cbegin(), B.row(0).cend(), Value{0}, 1),
@@ -262,18 +255,7 @@ TEST(SolverDeathTest, listWhereOptionItr)
 		list = list_where_option<2>(
 			B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1),
 		".*is_valid");
-#else
-	EXPECT_THROW(
-		list = list_where_option<2>(
-			B.row(0).cbegin(), B.row(0).cend(), Value{0}, 1),
-		Sudoku::error::invalid_option);
-	EXPECT_THROW(
-		list = list_where_option<2>(
-			B.row(0).cbegin(), B.row(0).cend(), Value{5}, 1),
-		Sudoku::error::invalid_option);
-#endif // NDEBUG
-	   // invalid rep_count
-#ifndef NDEBUG
+	// invalid rep_count
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(
 			B.row(1).cbegin(), B.row(1).cend(), Value{3}, -1),
@@ -399,13 +381,6 @@ TEST(SolverDeathTest, listWhereOptionValue)
 		list = list_where_option<2>(B.row(0), Value{0}), ".*is_valid");
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(B.row(0), Value{5}), ".*is_valid");
-#else
-	EXPECT_THROW(
-		list = list_where_option<2>(B.row(0), Value{0}),
-		Sudoku::error::invalid_option);
-	EXPECT_THROW(
-		list = list_where_option<2>(B.row(0), Value{5}),
-		Sudoku::error::invalid_option);
 #endif // NDEBUG
 }
 
@@ -499,8 +474,7 @@ TEST(Solver, listWhereOptions)
 	// - vector out-of-memory
 	// - push_back: strong exception guarantee
 	//	 Location is nothrow move constructible
-	static_assert(
-		not noexcept(list_where_option<2>(B.row(0), Options{Value{1}})));
+	static_assert(noexcept(list_where_option<2>(B.row(0), Options{Value{1}})));
 	constexpr Sudoku::OptionValue<4> value{1U};
 	static_assert(noexcept(list_where_option<2>(B.row(0), Options{value})));
 	static_assert(noexcept(list_where_option<2>(B.row(0), B[0][2])));
@@ -527,6 +501,7 @@ TEST(Solver, listWhereOptions)
 	EXPECT_EQ(list.size(), size_t{0});
 }
 
+#ifndef NDEBUG
 TEST(SolverDeathTest, listWhereOptions)
 { // list_where_option(Section, Options)
 	using ::Sudoku::list_where_option;
@@ -546,10 +521,11 @@ TEST(SolverDeathTest, listWhereOptions)
 	std::vector<loc> list{};
 
 	// caught in Options constructor
-	EXPECT_THROW(
+	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(B.row(0), Options{Value{5}}),
-		Sudoku::error::invalid_option);
+		"val <= Value");
 }
+#endif
 
 TEST(Solver, listWhereEqual)
 {
@@ -705,12 +681,6 @@ TEST(Solver, listWhereAnyOption)
 	static_assert(noexcept(list_where_any_option<2>(B.row(0), B[0][2])));
 	list = list_where_any_option<2>(B.row(0), Options{Value{4}});
 
-	// caught in OptionValue constructor
-	EXPECT_THROW(
-		list = list_where_any_option<2>(B.row(0), Options{Value{5}}),
-		Sudoku::error::invalid_option);
-
-
 	// return type
 	static_assert(
 		std::is_same_v<
@@ -761,7 +731,21 @@ TEST(Solver, listWhereAnyOption)
 		EXPECT_EQ(list[2], loc(3, 2));
 	}
 }
+#ifndef NDEBUG
+TEST(SolverDeathTest, listWhereAnyOption)
+{
+	using ::Sudoku::list_where_any_option;
+	using loc     = Location<2>;
+	using Options = Options<4>;
+	Board<Options, 2> B{};
+	std::vector<loc> list{};
 
+	// caught in OptionValue constructor
+	EXPECT_DEBUG_DEATH(
+		list = list_where_any_option<2>(B.row(0), Options{Value{5}}),
+		"val <= Value");
+}
+#endif
 TEST(Solver, appearanceOnce)
 {
 	using ::Sudoku::appearance_once;

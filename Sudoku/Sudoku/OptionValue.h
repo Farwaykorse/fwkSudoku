@@ -1,14 +1,13 @@
 //====---- Sudoku/OptionValue.h                                       ----====//
 // An internally used immutable and bounded version of Sudoku::Value
-// Implements range checks in a combination of constexpr and exceptions.
 //
 //====--------------------------------------------------------------------====//
 #pragma once
 
 #include "Concepts.h"
-#include "Size.h"
 #include "Value.h"
-#include "exceptions.h"
+
+#include <cassert>
 
 namespace Sudoku
 {
@@ -17,17 +16,16 @@ class OptionValue
 {
 public:
 	template<typename T>
-	requires UnsignedNumber<T> explicit constexpr OptionValue(T val)
+	requires UnsignedNumber<T> explicit constexpr OptionValue(T val) noexcept
 		: value_(val)
 	{
-		if (val == T{0U} || val > T{E})
-			throw Sudoku::error::invalid_option();
+		assert(val > T{0U} && val <= T{E});
 	}
 	// NOLINTNEXTLINE(google-explicit-constructor)
-	constexpr OptionValue(Value val) : value_(val) // NOLINT(runtime/explicit)
+	constexpr OptionValue(Value val) noexcept // NOLINT(runtime/explicit)
+		: value_(val)
 	{
-		if (val == Value{0U} || val > Value{E})
-			throw Sudoku::error::invalid_option();
+		assert(val > Value{0U} && val <= Value{E});
 	}
 
 	// Implicit conversions

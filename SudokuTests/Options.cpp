@@ -130,22 +130,18 @@ namespace compiletime
 
 	// Value
 	static_assert(std::is_constructible_v<Options<3>, Value>);
-#if defined(_MSC_VER) && not defined(__clang__)
 	static_assert(std::is_nothrow_constructible_v<Options<3>, Value>);
-#else
-	static_assert(not std::is_nothrow_constructible_v<Options<3>, Value>);
-#endif
 	static_assert(std::is_assignable_v<Options<3>, Value>);
-	static_assert(not std::is_nothrow_assignable_v<Options<3>, Value>);
-	static_assert(not noexcept(Options<3>{Value{}}));
-	static_assert(not noexcept(Options<3>{Value{0}}));
-	static_assert(not noexcept(Options<3>{Value{9}}));
-	static_assert(not noexcept(Options<3>{Value{10}}));
-	static_assert(not noexcept(Options<3>() = Value{}));
-	static_assert(not noexcept(Options<3>() = Value{0}));
-	static_assert(not noexcept(Options<3>() = Value{1}));
-	static_assert(not noexcept(Options<3>() = Value{9}));
-	static_assert(not noexcept(Options<3>() = Value{10}));
+	static_assert(std::is_nothrow_assignable_v<Options<3>, Value>);
+	static_assert(noexcept(Options<3>{Value{}}));
+	static_assert(noexcept(Options<3>{Value{0}}));
+	static_assert(noexcept(Options<3>{Value{9}}));
+	static_assert(noexcept(Options<3>{Value{10}}));
+	static_assert(noexcept(Options<3>() = Value{}));
+	static_assert(noexcept(Options<3>() = Value{0}));
+	static_assert(noexcept(Options<3>() = Value{1}));
+	static_assert(noexcept(Options<3>() = Value{9}));
+	static_assert(noexcept(Options<3>() = Value{10}));
 
 	// OptionValue<E>
 	static_assert(std::is_constructible_v<Options<9>, OptionValue<9>>);
@@ -287,7 +283,6 @@ TEST(Options, Construction)
 		const auto A_2 = Options<4>{Value{2}};
 		EXPECT_EQ(A_1.DebugString(), "0010");
 		EXPECT_EQ(A_2.DebugString(), "0010");
-		EXPECT_THROW(Options<4>{Value{0}}, Sudoku::error::invalid_option);
 		EXPECT_EQ(Options<4>{Value{4}}.DebugString(), "1000");
 		EXPECT_EQ(Options<4>{Value{4}}.DebugString(), "1000");
 		EXPECT_EQ(Options<9>{Value{9}}.DebugString(), "100000000");
@@ -300,14 +295,20 @@ TEST(Options, Construction)
 		EXPECT_EQ(TMP.DebugString(), "0001");
 		EXPECT_EQ((TMP = Value{3}).DebugString(), "0100");
 	}
+}
+TEST(OptionsDeathTest, Construction)
+{
+	// Value
+	SCOPED_TRACE("Options(Value)");
+	EXPECT_DEBUG_DEATH(Options<4>{Value{0}}, "val > Value");
 	{ // catch the E+1 case
-		EXPECT_THROW({ Options<3>{Value{4}}; }, Sudoku::error::invalid_option);
-		EXPECT_THROW({ Options<3>{Value{5}}; }, Sudoku::error::invalid_option);
+		EXPECT_DEBUG_DEATH({ Options<3>{Value{4}}; }, "val <= Value");
+		EXPECT_DEBUG_DEATH({ Options<3>{Value{5}}; }, "val <= Value");
 
 		Options<4> TMP{};
 		EXPECT_TRUE(TMP.all());
-		EXPECT_THROW(TMP = Value{6}, Sudoku::error::invalid_option);
-		EXPECT_THROW(TMP = Value{10}, Sudoku::error::invalid_option);
+		EXPECT_DEBUG_DEATH(TMP = Value{6}, "val <= Value");
+		EXPECT_DEBUG_DEATH(TMP = Value{10}, "val <= Value");
 		TMP = Value{4}; // suppress warning: assigned only once
 		EXPECT_EQ(TMP.DebugString(), "1000");
 	}
@@ -359,25 +360,30 @@ TEST(Options, mfCounting)
 
 TEST(Options, testValue)
 {
-	using Sudoku::error::invalid_option;
 	[[maybe_unused]] bool set{};
 
 	constexpr OptionValue<4> value{2U};
 	static_assert(noexcept(TE.A_2.test(value)));
-	EXPECT_THROW(set = TE.A_2.test(Value{0}), invalid_option);
 	EXPECT_NO_THROW(set = TE.A_2.test(Value{4}));
-	EXPECT_THROW(set = TE.A_2.test(Value{5}), invalid_option);
-	EXPECT_THROW(set = TE.A_2.test(Value{13}), invalid_option);
 	EXPECT_NO_THROW(set = Options<9>().test(Value{5}));
 	EXPECT_NO_THROW(set = Options<9>().test(Value{9}));
-	EXPECT_THROW(set = Options<9>().test(Value{10}), invalid_option);
 	EXPECT_TRUE(TE.A_2.test(Value{2}));
 	EXPECT_TRUE(TE.O_3.test(Value{2}));
 	EXPECT_FALSE(TE.O_3.test(Value{1}));
 	EXPECT_FALSE(TE.E_1.test(Value{1}));
 	set = false; // suppress warning: assigned only once
 }
+#ifndef NDEBUG
+TEST(OptionsDeathTest, testValue)
+{
+	[[maybe_unused]] bool set{};
+	EXPECT_DEBUG_DEATH(set = TE.A_2.test(Value{0}), "val > Value");
+	EXPECT_DEBUG_DEATH(set = TE.A_2.test(Value{5}), "val <= Value");
+	EXPECT_DEBUG_DEATH(set = TE.A_2.test(Value{13}), "val <= Value");
+	EXPECT_DEBUG_DEATH(set = Options<9>().test(Value{10}), "val <= Value");
 
+}
+#endif
 TEST(Options, isAnswer)
 {
 	[[maybe_unused]] bool U{};
@@ -409,12 +415,6 @@ TEST(Options, isAnswer)
 		EXPECT_FALSE(is_answer(TE.O_2, Value{2}));
 		EXPECT_FALSE(is_answer(TE.O_3, Value{2}));
 	}
-	{ // convenience function: exactly the same
-		EXPECT_THROW(
-			{ U = is_answer(TE.A_1, Value{15}); },
-			Sudoku::error::invalid_option); // constructor
-	}
-	U = false; // suppress warning: assigned only once
 }
 
 TEST(Options, isOption)
@@ -426,11 +426,14 @@ TEST(Options, isOption)
 	EXPECT_FALSE(is_option(TE.A_2, Value{2}));
 	EXPECT_FALSE(is_option(TE.O_3, Value{1}));
 	EXPECT_TRUE(is_option(TE.O_3, Value{2}));
-
-	EXPECT_THROW(is_option(TE.O_2, Value{0}), Sudoku::error::invalid_option);
-	EXPECT_THROW(is_option(TE.O_2, Value{10}), Sudoku::error::invalid_option);
 }
-
+#ifndef NDEBUG
+TEST(OptionsDeathTest, isOption)
+{
+	EXPECT_DEBUG_DEATH(is_option(TE.O_2, Value{0}), "val > Value");
+	EXPECT_DEBUG_DEATH(is_option(TE.O_2, Value{10}), "val <= Value");
+}
+#endif
 TEST(Options, readNext)
 {
 	// must work on const objects
@@ -572,10 +575,6 @@ TEST(Options, mfRemoveOption)
 	EXPECT_EQ(TMP.remove_option(Value{3}).DebugString(), "1010");
 
 	static_assert(not noexcept(TMP.remove_option(Value{3})));
-	EXPECT_THROW(TMP.remove_option(Value{0}), Sudoku::error::invalid_option);
-
-	EXPECT_EQ(TMP.DebugString(), "1010");
-	EXPECT_THROW(TMP.remove_option(Value{5}), Sudoku::error::invalid_option);
 
 	// already removed: nothing happens
 	TMP.remove_option(Value{1});
@@ -583,13 +582,21 @@ TEST(Options, mfRemoveOption)
 	ASSERT_TRUE(TMP.reset().all()) << "Reset test data failed";
 	EXPECT_EQ(TMP.remove_option(Value{3}).DebugString(), "1011");
 }
+#ifndef NDEBUG
 TEST(OptionsDeathTest, mfRemoveOption)
 {
 	Options<4> TMP{};
 	// check to prevent removing answer
 	TMP.set(Value{3});
 	EXPECT_DEBUG_DEATH(TMP.remove_option(Value{3}), "not Sudoku::is_answer");
+	EXPECT_EQ(TMP.DebugString(), "0100");
+
+	// Invalid input
+	EXPECT_DEBUG_DEATH(TMP.remove_option(Value{0}), "val > Value");
+	EXPECT_DEBUG_DEATH(TMP.remove_option(Value{5}), "val <= Value");
+	EXPECT_EQ(TMP.DebugString(), "0100");
 }
+#endif
 TEST(OptionsTest, mfAdd)
 {
 	Options<4> Opt{std::bitset<4>{"0000"}};
@@ -599,12 +606,20 @@ TEST(OptionsTest, mfAdd)
 
 	EXPECT_EQ(Opt.add(Value{1}).DebugString(), "0001");
 	EXPECT_EQ(Opt.add(Value{4}).DebugString(), "1001");
-
-	static_assert(not noexcept(Opt.add(Value{4})));
-	EXPECT_THROW(Opt.add(Value{0}), Sudoku::error::invalid_option);
-	EXPECT_THROW(Opt.add(Value{5}), Sudoku::error::invalid_option);
 	EXPECT_EQ(Opt.DebugString(), "1001");
 }
+#ifndef NDEBUG
+TEST(OptionsDeathTest, mfAdd)
+{
+	Options<4> Opt{std::bitset<4>{"1001"}};
+	static_assert(noexcept(Opt.add(Value{4})));
+
+	EXPECT_DEBUG_DEATH(Opt.add(Value{0}), "val > Value");
+	EXPECT_DEBUG_DEATH(Opt.add(Value{5}), "val <= Value");
+
+	EXPECT_EQ(Opt.DebugString(), "1001");
+}
+#endif
 TEST(Options, mfSet)
 {
 	Options<4> TMP{};
@@ -616,28 +631,19 @@ TEST(Options, mfSet)
 	EXPECT_EQ(TMP.set(Value{4}).DebugString(), "1000");
 
 	static_assert(not noexcept(TMP.set(Value{4})));
-	EXPECT_THROW(TMP.set(Value{0}), Sudoku::error::invalid_option);
-	EXPECT_EQ(TMP.DebugString(), "1000");
-	EXPECT_THROW(TMP.set(Value{5}), Sudoku::error::invalid_option);
 }
+#ifndef NDEBUG
+TEST(OptionsDeathTest, mfSet)
+{
+	Options<4> TMP{std::bitset<4>{"1000"}};
+	ASSERT_EQ(TMP.DebugString(), "1000");
+	EXPECT_DEBUG_DEATH(TMP.set(Value{0}), "val > Value");
+	EXPECT_DEBUG_DEATH(TMP.set(Value{5}), "val <= Value");
+	EXPECT_EQ(TMP.DebugString(), "1000");
+}
+#endif
 TEST(Options, mfBooleanComparison)
 {
-	[[maybe_unused]] bool U{};
-
-	// operator==(Value) const
-	EXPECT_THROW(
-		{ U = operator==(TE.A_1, Value{15}); },
-		Sudoku::error::invalid_option); // constructor
-	EXPECT_THROW(
-		{ U = operator==(Value{15}, TE.A_1); }, Sudoku::error::invalid_option);
-
-	// operator!=(Value) const
-	EXPECT_THROW(
-		{ U = operator!=(TE.A_1, Value{15}); }, Sudoku::error::invalid_option);
-	EXPECT_THROW(
-		{ U = operator!=(Value{15}, TE.A_1); }, Sudoku::error::invalid_option);
-	U = false; // suppress warning: assigned only once
-
 	// operator==(Value) const
 	constexpr OptionValue<4> val{1U};
 	static_assert(noexcept(TE.A_1 == val));
@@ -704,7 +710,21 @@ TEST(Options, mfBooleanComparison)
 	EXPECT_LT(TE.A_2, TE.O_2) << "answer vs unanswered";
 	EXPECT_FALSE(TE.O_2 < TE.A_2) << "answer vs unanswered";
 }
+TEST(OptionsDeathTest, mfBooleanComparison)
+{
+	[[maybe_unused]] bool U{};
 
+	// operator==(Value) const
+	EXPECT_DEBUG_DEATH(
+		{ U = operator==(TE.A_1, Value{15}); },
+		"val <= Value"); // constructor
+	EXPECT_DEBUG_DEATH({ U = operator==(Value{15}, TE.A_1); }, "val <= Value");
+
+	// operator!=(Value) const
+	EXPECT_DEBUG_DEATH({ U = operator!=(TE.A_1, Value{15}); }, "val <= Value");
+	EXPECT_DEBUG_DEATH({ U = operator!=(Value{15}, TE.A_1); }, "val <= Value");
+	U = false; // suppress warning: assigned only once
+}
 TEST(Options, mfConstOperators)
 {
 	// Options operator&(Options&) const		shared options
@@ -716,7 +736,7 @@ TEST(Options, mfConstOperators)
 	EXPECT_EQ((TE.E_1 & TE.A_2), TE.E_1);
 
 	// constexpr bool operator[](int) const
-	static_assert(not noexcept(TE.A_2[Value{2}]));
+	static_assert(noexcept(TE.A_2[Value{2}]));
 	constexpr OptionValue<4> value{2U};
 	static_assert(noexcept(TE.A_2[value]));
 
@@ -737,7 +757,7 @@ TEST(Options, Operators)
 	Options<4> TMP{}; // per test, reset this option
 
 	///// non-const operators /////
-	static_assert(not noexcept(TMP.operator[](Value{2}) = true));
+	static_assert(noexcept(TMP.operator[](Value{2}) = true));
 	constexpr OptionValue<4> value{2U};
 	static_assert(noexcept(TMP.operator[](value) = true));
 
@@ -776,7 +796,7 @@ TEST(Options, ConstructorTesting)
 	Options<4> TMP{};
 	// copy-assign
 	static_assert(noexcept(TMP.operator=(TE.O_4)));
-	static_assert(not noexcept(TMP.operator=(Value{1})));
+	static_assert(noexcept(TMP.operator=(Value{1})));
 	constexpr OptionValue<4> value{1U};
 	static_assert(noexcept(TMP.operator=(value)));
 

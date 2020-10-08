@@ -626,9 +626,6 @@ TEST(SolverDeathTest, singleOption)
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		single_option(B1, L{0}, Value{0}), "is_valid<N>\\(value\\)");
-#else
-	// thrown by OptionValue<x>
-	EXPECT_THROW(single_option(B1, L{3}, Value{5}), invalid_option);
 #endif // NDEBUG
 	// not an option:
 	B1[0][0] = Options<4>{Value{2}};

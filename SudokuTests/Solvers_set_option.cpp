@@ -101,10 +101,6 @@ TEST(SolverDeathTest, setValue)
 		set_Value(board, L{-1}, Value{1}), Sudoku::error::invalid_Location);
 	EXPECT_THROW(
 		set_Value(board, L{16}, Value{1}), Sudoku::error::invalid_Location);
-	EXPECT_THROW(
-		set_Value(board, L{1}, Value{0}), Sudoku::error::invalid_option);
-	EXPECT_THROW(
-		set_Value(board, L{1}, Value{5}), Sudoku::error::invalid_option);
 #endif // NDEBUG}
 }
 
@@ -571,10 +567,6 @@ TEST(SolverDeathTest, setUnique)
 #ifndef NDEBUG
 	EXPECT_DEBUG_DEATH(
 		set_unique(board, board.row(2), Value{12}), "is_valid<N>\\(value\\)");
-#else
-	EXPECT_THROW(
-		set_unique(board, board.row(2), Value{12}),
-		Sudoku::error::invalid_option);
 #endif // NDEBUG
 
 	board = cB1; // reset

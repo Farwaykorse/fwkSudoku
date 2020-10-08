@@ -91,26 +91,24 @@ TEST(Solver, removeOption)
 	EXPECT_EQ(board[2][1].count(), 2U);
 	EXPECT_GT(remove_option(board, Location<2>(2, 1), Value{2}), 1);
 	EXPECT_EQ(board[2][1].count(), 1U);
-	{
-		// remove_option(location, int value)
-		Board<Options<4>, 2> boardW{};
-		ASSERT_EQ(boardW[1][0], Options<4>{}) << "incorrect instantiation";
-
-		// value out of bounds (2-sided)
-		EXPECT_THROW(
-			remove_option(boardW, L2(2), Value{0}),
-			Sudoku::error::invalid_option);
-		EXPECT_THROW(
-			remove_option(boardW, L2{2}, Value{9}),
-			Sudoku::error::invalid_option);
-		// last option (not answer)
-		boardW[0][2] = std::bitset<4>{"0100"}; // 3
-		EXPECT_THROW(
-			remove_option(boardW, L2(2), Value{3}),
-			Sudoku::error::invalid_Board);
-	}
+	// last option (not answer)
+	board[0][2] = std::bitset<4>{"0100"}; // 3
+	EXPECT_THROW(
+		remove_option(board, L2(2), Value{3}), Sudoku::error::invalid_Board);
 }
+#ifndef NDEBUG
+TEST(SolverDeathTest, removeOption)
+{
+	using L2 = Location<2>;
+	// remove_option(location, int value)
+	Board<Options<4>, 2> boardW{};
+	ASSERT_EQ(boardW[1][0], Options<4>{}) << "incorrect instantiation";
 
+	// value out of bounds (2-sided)
+	EXPECT_DEBUG_DEATH(remove_option(boardW, L2(2), Value{0}), "val > Value");
+	EXPECT_DEBUG_DEATH(remove_option(boardW, L2{2}, Value{9}), "val <= Value");
+}
+#endif
 TEST(Solver, removeOptionMask)
 {
 	using L2 = Location<2>;
