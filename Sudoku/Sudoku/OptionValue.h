@@ -15,8 +15,6 @@ namespace Sudoku
 template<int E>
 class OptionValue
 {
-	OptionValue() noexcept = default;
-
 public:
 	template<typename T>
 	requires UnsignedNumber<T> explicit constexpr OptionValue(T val)
