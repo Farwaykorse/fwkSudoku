@@ -185,7 +185,7 @@ TEST(OptionValueDeathTest, OutsideDomain)
 	EXPECT_DEBUG_DEATH(OptionValue<9>{Value{10}}, "val <= Value");
 
 	EXPECT_DEBUG_DEATH(OptionValue<9>{0U}, "val > T");
-	EXPECT_DEBUG_DEATH(OptionValue<9>{10U}, "val > T");
+	EXPECT_DEBUG_DEATH(OptionValue<9>{10U}, "val <= T");
 }
 
 } // namespace SudokuTests::OptionValueTest

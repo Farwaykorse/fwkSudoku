@@ -19,13 +19,15 @@ public:
 	requires UnsignedNumber<T> explicit constexpr OptionValue(T val) noexcept
 		: value_(val)
 	{
-		assert(val > T{0U} && val <= T{E});
+		assert(val > T{0U});
+		assert(val <= T{E});
 	}
 	// NOLINTNEXTLINE(google-explicit-constructor)
 	constexpr OptionValue(Value val) noexcept // NOLINT(runtime/explicit)
 		: value_(val)
 	{
-		assert(val > Value{0U} && val <= Value{E});
+		assert(val > Value{0U});
+		assert(val <= Value{E});
 	}
 
 	// Implicit conversions
