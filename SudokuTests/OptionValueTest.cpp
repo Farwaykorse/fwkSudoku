@@ -177,15 +177,6 @@ namespace compiletime
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);
 
-
-	static_assert(typeT{1U} == typeT{Value{1}});
-	static_assert(typeT{1U} != typeT{2U});
-	static_assert(typeT{1U} < typeT{2U});
-	static_assert(not(typeT{2U} < typeT{1U}));
-	static_assert(typeT{3U} > typeT{2U});
-	static_assert(not(typeT{2U} > typeT{3U}));
-
-
 } // namespace compiletime
 
 TEST(OptionValueDeathTest, OutsideDomain)

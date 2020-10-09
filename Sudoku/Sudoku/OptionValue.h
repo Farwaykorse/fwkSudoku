@@ -42,17 +42,6 @@ public:
 		return static_cast<int>(value_);
 	}
 
-	friend constexpr bool
-		operator==(OptionValue<E> const& a, OptionValue<E> const& b) noexcept
-	{
-		return a.value_ == b.value_;
-	}
-	friend constexpr bool
-		operator<(OptionValue<E> const& a, OptionValue<E> const& b) noexcept
-	{
-		return a.value_ < b.value_;
-	}
-
 private:
 	const size_t value_;
 };
