@@ -205,9 +205,11 @@ namespace impl
 	template<size_t E>
 	constexpr std::bitset<E> all_set() noexcept
 	{
-		if (std::is_constant_evaluated() && E <= 32U)
+		constexpr auto limit_32bit = 32U;
+		constexpr auto limit_64bit = 64U;
+		if (std::is_constant_evaluated() && E <= limit_32bit)
 			return std::bitset<E>{uint32_t{0U} - 1U};
-		if (std::is_constant_evaluated() && E <= 64U)
+		if (std::is_constant_evaluated() && E <= limit_64bit)
 			return std::bitset<E>{uint64_t{0U} - 1U};
 		return std::bitset<E>{}.flip();
 	}
