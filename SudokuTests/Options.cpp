@@ -857,7 +857,6 @@ TEST(Options, External)
 
 TEST(Options, operatorMinus)
 {
-	const Options<9> all{};
 	const Options<9> empty{std::bitset<9>{0b000000000}};
 	const Options<9> E_1{empty};
 	const Options<9> O_0{std::bitset<9>{0b011101101}};

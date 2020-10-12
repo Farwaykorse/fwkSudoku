@@ -339,7 +339,6 @@ TEST(Solver, removeOptionOutsideBlock)
 {
 	using L = Location<2>;
 
-	const Board<Options<4>, 2> cB1;
 	Board<Options<4>, 2> B1;
 
 	// row

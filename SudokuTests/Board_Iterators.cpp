@@ -800,7 +800,6 @@ TEST(BoardIteratorDeathTest, operatorIndirection)
 {
 	test_elements TE{};
 	auto& A = TE.A;
-	Board<Options<4>, 2> Opt{};
 
 	if constexpr (
 		is_input<decltype(A.begin())> && is_input<decltype(A.cbegin())> &&
