@@ -45,7 +45,7 @@ public:
 	Options& flip() noexcept;            // can create an invalid state
 	Options& remove_option(OptionValue<E>); // remove single option
 	Options& add(OptionValue<E>) noexcept;  // add single option
-	Options& set(OptionValue<E>);           // set to answer
+	Options& set(OptionValue<E>) noexcept;  // set to answer
 
 	[[nodiscard]] constexpr size_t size() const noexcept;
 	[[nodiscard]] size_t count() const noexcept;     // count available options
@@ -145,13 +145,13 @@ template<int E>
 [[nodiscard]] bool operator!=(OptionValue<E>, const Options<E>&) noexcept;
 
 template<int E>
-[[nodiscard]] bool operator==(Options<E>, Value);
+[[nodiscard]] bool operator==(Options<E>, Value) noexcept;
 template<int E>
-[[nodiscard]] bool operator==(Value, Options<E>);
+[[nodiscard]] bool operator==(Value, Options<E>) noexcept;
 template<int E>
-[[nodiscard]] bool operator!=(Options<E>, Value);
+[[nodiscard]] bool operator!=(Options<E>, Value) noexcept;
 template<int E>
-[[nodiscard]] bool operator!=(Value, Options<E>);
+[[nodiscard]] bool operator!=(Value, Options<E>) noexcept;
 
 template<int E>
 [[nodiscard]] Options<E> XOR(Options<E> const& A, Options<E> const& B) noexcept;
@@ -310,7 +310,7 @@ inline Options<E>& Options<E>::add(OptionValue<E> const value) noexcept
 
 //	set to answer
 template<int E>
-inline Options<E>& Options<E>::set(OptionValue<E> const value)
+inline Options<E>& Options<E>::set(OptionValue<E> const value) noexcept
 {
 	clear(); // all 0
 	return add(value);
@@ -466,7 +466,7 @@ inline bool
 	return is_answer(left, value);
 }
 template<int E>
-inline bool operator==(Options<E> const left, Value const value)
+inline bool operator==(Options<E> const left, Value const value) noexcept
 {
 	return left == OptionValue<E>{value};
 }
@@ -477,7 +477,7 @@ inline bool
 	return is_answer(right, value);
 }
 template<int E>
-inline bool operator==(Value const value, Options<E> const option)
+inline bool operator==(Value const value, Options<E> const option) noexcept
 {
 	return option == value;
 }
@@ -488,7 +488,7 @@ inline bool
 	return not(is_answer(left, value));
 }
 template<int E>
-inline bool operator!=(Options<E> const left, Value const value)
+inline bool operator!=(Options<E> const left, Value const value) noexcept
 {
 	return left != OptionValue<E>{value};
 }
@@ -499,7 +499,7 @@ inline bool
 	return not(is_answer(right, value));
 }
 template<int E>
-inline bool operator!=(Value const value, Options<E> const option)
+inline bool operator!=(Value const value, Options<E> const option) noexcept
 {
 	return option != value;
 }

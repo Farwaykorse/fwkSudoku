@@ -653,7 +653,7 @@ TEST(Options, mfSet)
 	EXPECT_TRUE(is_answer(TMP.set(Value{2}), Value{2}));
 	EXPECT_EQ(TMP.set(Value{4}).DebugString(), "1000");
 
-	static_assert(not noexcept(TMP.set(Value{4})));
+	static_assert(noexcept(TMP.set(Value{4})));
 }
 #ifndef NDEBUG
 TEST(OptionsDeathTest, mfSet)
@@ -671,8 +671,8 @@ TEST(Options, mfBooleanComparison)
 	constexpr OptionValue<4> val{1U};
 	static_assert(noexcept(TE.A_1 == val));
 	static_assert(noexcept(val == TE.A_1));
-	static_assert(not noexcept(TE.A_1 == Value{1}));
-	static_assert(not noexcept(Value{1} == TE.A_1));
+	static_assert(noexcept(TE.A_1 == Value{1}));
+	static_assert(noexcept(Value{1} == TE.A_1));
 
 	EXPECT_EQ(TE.A_1, val);
 	EXPECT_EQ(val, TE.A_1);
@@ -683,8 +683,8 @@ TEST(Options, mfBooleanComparison)
 	// operator!=(Value) const
 	static_assert(noexcept(TE.A_1 != val));
 	static_assert(noexcept(val != TE.A_1));
-	static_assert(not noexcept(TE.A_1 != Value{1}));
-	static_assert(not noexcept(Value{1} != TE.A_1));
+	static_assert(noexcept(TE.A_1 != Value{1}));
+	static_assert(noexcept(Value{1} != TE.A_1));
 
 	EXPECT_NE(TE.A_1, Value{2});
 	EXPECT_NE(Value{2}, TE.A_1);
