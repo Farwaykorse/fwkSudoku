@@ -252,28 +252,28 @@ TEST(Options, Construction)
 	// std::bitset
 	{
 		SCOPED_TRACE("Options(const bitset&)"); // 0th bit is last in input
-		const std::bitset<4> bit{"1010"};
+		const std::bitset<4> bit{0b1010};
 		const Options<4> Opt{bit};
 		EXPECT_EQ(Opt.size(), size_t{4});
 		EXPECT_EQ(Opt.DebugString(), "1010");
 	}
 	{
 		SCOPED_TRACE("Options(bitset&&)");
-		const Options<4> A_0{std::bitset<4>{"0100"}};
+		const Options<4> A_0{std::bitset<4>{0b0100}};
 		EXPECT_EQ(A_0.size(), size_t{4});
 		EXPECT_EQ(A_0.DebugString(), "0100");
 	}
 	{
 		SCOPED_TRACE("Options& operator=(const bitset&)");
 		Options<4> B_0{};
-		const std::bitset<4> bit{"1101"};
+		const std::bitset<4> bit{0b1101};
 		B_0 = bit;
 		EXPECT_EQ(B_0.DebugString(), "1101");
 	}
 	{
 		SCOPED_TRACE("Options& operator=(bitset&&)");
 		Options<4> B_1{};
-		B_1 = std::bitset<4>{"1101"};
+		B_1 = std::bitset<4>{0b1101};
 		EXPECT_EQ(B_1.DebugString(), "1101");
 	}
 	//===------------------------------------------------------------------===//
@@ -319,13 +319,13 @@ struct TestElements
 {
 	const Options<9> D_0{};                       // default
 	const Options<4> D_1{};                       // default
-	const Options<4> A_1{std::bitset<4>{"0001"}}; // answer = 1
-	const Options<4> A_2{std::bitset<4>{"0010"}}; // answer = 2
-	const Options<4> O_2{std::bitset<4>{"0101"}}; // 2 options 1 & 3
-	const Options<4> O_3{std::bitset<4>{"1110"}}; // 3 options 2,3,4
-	const Options<4> O_4{std::bitset<4>{"1111"}}; // all options
-	const Options<4> O_5{std::bitset<4>{"1010"}}; // 2 options 2 & 4
-	const Options<4> E_1{std::bitset<4>{"0000"}}; // empty
+	const Options<4> A_1{std::bitset<4>{0b0001}}; // answer = 1
+	const Options<4> A_2{std::bitset<4>{0b0010}}; // answer = 2
+	const Options<4> O_2{std::bitset<4>{0b0101}}; // 2 options 1 & 3
+	const Options<4> O_3{std::bitset<4>{0b1110}}; // 3 options 2,3,4
+	const Options<4> O_4{std::bitset<4>{0b1111}}; // all options
+	const Options<4> O_5{std::bitset<4>{0b1010}}; // 2 options 2 & 4
+	const Options<4> E_1{std::bitset<4>{0b0000}}; // empty
 };
 static TestElements TE;
 
@@ -381,7 +381,6 @@ TEST(OptionsDeathTest, testValue)
 	EXPECT_DEBUG_DEATH(set = TE.A_2.test(Value{5}), "val <= Value");
 	EXPECT_DEBUG_DEATH(set = TE.A_2.test(Value{13}), "val <= Value");
 	EXPECT_DEBUG_DEATH(set = Options<9>().test(Value{10}), "val <= Value");
-
 }
 #endif
 TEST(Options, isAnswer)
@@ -509,8 +508,8 @@ TEST(Options, toValue)
 	using ::Sudoku::to_Value;
 
 	const Options<9> all{};
-	const Options<9> empty{std::bitset<9>{"0000000000"}};
-	const Options<9> A_5{std::bitset<9>{"0000100000"}};
+	const Options<9> empty{std::bitset<9>{0b000000000}};
+	const Options<9> A_5{std::bitset<9>{0b000010000}};
 
 	static_assert(noexcept(to_Value<3>(all)));
 	// return type
@@ -599,7 +598,7 @@ TEST(OptionsDeathTest, mfRemoveOption)
 #endif
 TEST(OptionsTest, mfAdd)
 {
-	Options<4> Opt{std::bitset<4>{"0000"}};
+	Options<4> Opt{std::bitset<4>{0b0000}};
 	ASSERT_TRUE(Opt.is_empty());
 	// return type
 	static_assert(std::is_same_v<Options<4>&, decltype(Opt.add(Value{3}))>);
@@ -611,7 +610,7 @@ TEST(OptionsTest, mfAdd)
 #ifndef NDEBUG
 TEST(OptionsDeathTest, mfAdd)
 {
-	Options<4> Opt{std::bitset<4>{"1001"}};
+	Options<4> Opt{std::bitset<4>{0b1001}};
 	static_assert(noexcept(Opt.add(Value{4})));
 
 	EXPECT_DEBUG_DEATH(Opt.add(Value{0}), "val > Value");
@@ -635,7 +634,7 @@ TEST(Options, mfSet)
 #ifndef NDEBUG
 TEST(OptionsDeathTest, mfSet)
 {
-	Options<4> TMP{std::bitset<4>{"1000"}};
+	Options<4> TMP{std::bitset<4>{0b1000}};
 	ASSERT_EQ(TMP.DebugString(), "1000");
 	EXPECT_DEBUG_DEATH(TMP.set(Value{0}), "val > Value");
 	EXPECT_DEBUG_DEATH(TMP.set(Value{5}), "val <= Value");
@@ -669,7 +668,7 @@ TEST(Options, mfBooleanComparison)
 
 	// bool operator==(Options<E>&) const
 	static_assert(noexcept(TE.A_2 == TE.O_2));
-	const Options<4> TMP{std::bitset<4>{"0010"}};
+	const Options<4> TMP{std::bitset<4>{0b0010}};
 	EXPECT_EQ(TE.A_2, TMP);
 	EXPECT_FALSE(TE.A_2 == TE.E_1);
 
@@ -684,7 +683,7 @@ TEST(Options, mfBooleanComparison)
 	static_assert(noexcept(TE.A_2 < TE.O_4));
 #endif // __ICL
 	EXPECT_FALSE(TE.D_1 < TE.O_4) << "both full";
-	EXPECT_FALSE(TE.E_1 < Options<4>(std::bitset<4>{"0000"})) << "both empty";
+	EXPECT_FALSE(TE.E_1 < Options<4>(std::bitset<4>{0b0000})) << "both empty";
 	EXPECT_LT(TE.E_1, TE.D_1) << "empty vs default";
 	EXPECT_FALSE(TE.D_1 < TE.E_1) << "empty vs default";
 	EXPECT_LT(TE.E_1, TE.A_1) << "empty vs answer";
@@ -698,13 +697,13 @@ TEST(Options, mfBooleanComparison)
 	EXPECT_LT(TE.A_1, TE.A_2) << "answer vs answer";
 	EXPECT_FALSE(TE.A_2 < TE.A_1) << "answer vs answer";
 	EXPECT_FALSE(TE.A_2 < TE.A_1) << "both answered";
-	EXPECT_LT(TE.O_2, Options<4>(std::bitset<4>{"1001"})) << "compare values";
+	EXPECT_LT(TE.O_2, Options<4>(std::bitset<4>{0b1001})) << "compare values";
 	EXPECT_LT(
-		Options<6>{std::bitset<6>{"011111"}},
-		Options<6>(std::bitset<6>{"101111"}));
+		Options<6>{std::bitset<6>{0b011111}},
+		Options<6>(std::bitset<6>{0b101111}));
 	EXPECT_FALSE(
-		Options<6>{std::bitset<6>{"101111"}} <
-		Options<6>(std::bitset<6>{"011111"}));
+		Options<6>{std::bitset<6>{0b101111}} <
+		Options<6>(std::bitset<6>{0b011111}));
 	EXPECT_LT(TE.A_2, TE.O_2) << "answer vs unanswered";
 	EXPECT_FALSE(TE.O_2 < TE.A_2) << "answer vs unanswered";
 	EXPECT_LT(TE.A_2, TE.O_2) << "answer vs unanswered";
@@ -814,11 +813,11 @@ TEST(Options, ConstructorTesting)
 
 TEST(Options, External)
 {
-	const Options<4> O_3{std::bitset<4>{"0010"}}; // single option 2
-	const Options<4> E_2{std::bitset<4>{"0000"}}; // empty
+	const Options<4> O_3{std::bitset<4>{0b0010}}; // single option 2
+	const Options<4> E_2{std::bitset<4>{0b0000}}; // empty
 	const Options<4> E_3{E_2};
 	[[maybe_unused]] const Options<4> A_1{Value{1}}; // answer 1
-	const Options<4> A_2{std::bitset<4>{"0010"}};    // answer 2
+	const Options<4> A_2{std::bitset<4>{0b0010}};    // answer 2
 	// XOR(a,b)
 	static_assert(noexcept(XOR(O_3, O_3)));
 	EXPECT_EQ(XOR(E_3, A_2), O_3);
@@ -835,14 +834,14 @@ TEST(Options, External)
 TEST(Options, operatorMinus)
 {
 	const Options<9> all{};
-	const Options<9> empty{std::bitset<9>{"000000000"}};
+	const Options<9> empty{std::bitset<9>{0b000000000}};
 	const Options<9> E_1{empty};
-	const Options<9> O_0{std::bitset<9>{"011101101"}};
-	const Options<9> O_1{std::bitset<9>{"011101101"}};
-	const Options<9> O_2{std::bitset<9>{"101010111"}};
-	const Options<9> A_0{std::bitset<9>{"010101000"}};
+	const Options<9> O_0{std::bitset<9>{0b011101101}};
+	const Options<9> O_1{std::bitset<9>{0b011101101}};
+	const Options<9> O_2{std::bitset<9>{0b101010111}};
+	const Options<9> A_0{std::bitset<9>{0b010101000}};
 	const Options<9> A_1{A_0};
-	const Options<9> A_2{std::bitset<9>{"100010010"}};
+	const Options<9> A_2{std::bitset<9>{0b100010010}};
 
 	auto B_1 = O_1;
 	static_assert(noexcept(B_1 -= O_2));

@@ -64,14 +64,14 @@ TEST(Solver, removeOption)
 	//===------------------------------------------------------------------===//
 
 	// value is not an option -> return 0 (only value is missing)
-	board[0][0] = std::bitset<4>{"1101"};
-	board[1][0] = std::bitset<4>{"1101"};
+	board[0][0] = std::bitset<4>{0b1101};
+	board[1][0] = std::bitset<4>{0b1101};
 	ASSERT_FALSE(is_option(board[0][0], Value{2}));
 	EXPECT_NO_THROW(remove_option(board, Location<2>(0), Value{2}));
 	EXPECT_EQ(remove_option(board, Location<2>(1, 0), Value{2}), 0);
 	// location = answer (not value)
-	board[0][1] = std::bitset<4>{"1000"}; // answer 4
-	board[1][1] = std::bitset<4>{"1000"}; // answer 4
+	board[0][1] = std::bitset<4>{0b1000}; // answer 4
+	board[1][1] = std::bitset<4>{0b1000}; // answer 4
 	EXPECT_NO_THROW(remove_option(board, Location<2>(1), Value{2}));
 	EXPECT_EQ(remove_option(board, Location<2>(1, 1), Value{2}), 0);
 	// location = answer (value)
@@ -92,7 +92,7 @@ TEST(Solver, removeOption)
 	EXPECT_GT(remove_option(board, Location<2>(2, 1), Value{2}), 1);
 	EXPECT_EQ(board[2][1].count(), 1U);
 	// last option (not answer)
-	board[0][2] = std::bitset<4>{"0100"}; // 3
+	board[0][2] = std::bitset<4>{0b0100}; // 3
 	EXPECT_THROW(
 		remove_option(board, L2(2), Value{3}), Sudoku::error::invalid_Board);
 }
@@ -124,7 +124,7 @@ TEST(Solver, removeOptionMask)
 	EXPECT_THROW(remove_option(board, L2{-1}, mask), invalid_Location);
 	EXPECT_THROW(remove_option(board, L2{16}, mask), invalid_Location);
 	// throw when last option removed
-	mask = Options<4>{std::bitset<4>{"1111"}};
+	mask = Options<4>{std::bitset<4>{0b1111}};
 	EXPECT_THROW(remove_option(board, L2{4}, mask), invalid_Board);
 	// TODO throw from single_option?
 
@@ -134,13 +134,13 @@ TEST(Solver, removeOptionMask)
 
 	// return 0 when answered
 	board[0][0] = O2{Value{4}};
-	mask        = O2{std::bitset<4>{"1100"}};
+	mask        = O2{std::bitset<4>{0b1100}};
 	EXPECT_THROW(remove_option(board, L2{0, 0}, mask), invalid_Board);
 	board[1][0] = O2{};
 	EXPECT_EQ(remove_option(board, L2{1, 0}, mask), 2);
 
 	// trigger single_option
-	board[1][1] = O2{std::bitset<4>{"1110"}};
+	board[1][1] = O2{std::bitset<4>{0b1110}};
 	EXPECT_EQ(remove_option(board, L2{1, 1}, mask), 13);
 }
 
@@ -289,10 +289,10 @@ TEST(Solver, removeOptionSection2)
 	Board<Options<4>, 2> B;
 	// row
 	ASSERT_NO_THROW(
-		remove_option_section(B, B.row(0), vL{L(0), L(1)}, vV{b{"0011"}}));
+		remove_option_section(B, B.row(0), vL{L(0), L(1)}, vV{b{0b0011}}));
 	EXPECT_EQ(B[0][3].count(), 2U);
 	EXPECT_EQ(
-		remove_option_section(B, B.row(1), vL{L(1, 0), L(1, 1)}, vV{b{"1100"}}),
+		remove_option_section(B, B.row(1), vL{L(1, 0), L(1, 1)}, vV{b{0b1100}}),
 		4);
 	EXPECT_EQ(B[0][0].count(), 4U);
 	EXPECT_EQ(B[0][1].count(), 4U);
@@ -302,11 +302,11 @@ TEST(Solver, removeOptionSection2)
 	// col
 	B = cB; // reset
 	ASSERT_NO_THROW(
-		remove_option_section(B, B.col(0), vL{L(0), L(1, 0)}, vV{b{"0101"}}));
+		remove_option_section(B, B.col(0), vL{L(0), L(1, 0)}, vV{b{0b0101}}));
 	EXPECT_EQ(B[3][0].count(), 2U);
 	B = cB; // reset
 	EXPECT_EQ(
-		remove_option_section(B, B.col(3), vL{L(0, 3), L(1, 3)}, vV{b{"0110"}}),
+		remove_option_section(B, B.col(3), vL{L(0, 3), L(1, 3)}, vV{b{0b0110}}),
 		4);
 	EXPECT_EQ(B[0][3].count(), 4U);
 	EXPECT_EQ(B[1][3].count(), 4U);
@@ -314,16 +314,16 @@ TEST(Solver, removeOptionSection2)
 	EXPECT_EQ(B[3][3].count(), 2U);
 	B = cB; // reset
 	EXPECT_THROW(
-		remove_option_section(B, B.col(3), vL{L(0, 3), L(1, 3)}, vV{b{"1110"}}),
+		remove_option_section(B, B.col(3), vL{L(0, 3), L(1, 3)}, vV{b{0b1110}}),
 		::Sudoku::error::invalid_Board);
 	// block
 	B = cB; // reset
 	ASSERT_NO_THROW(
-		remove_option_section(B, B.block(0), vL{L(0), L(1)}, vV{b{"0101"}}));
+		remove_option_section(B, B.block(0), vL{L(0), L(1)}, vV{b{0b0101}}));
 	EXPECT_EQ(B[1][0].count(), 2U);
 	EXPECT_EQ(
 		remove_option_section(
-			B, B.block(3), vL{L(2, 2), L(3, 1)}, vV{b{"1010"}}),
+			B, B.block(3), vL{L(2, 2), L(3, 1)}, vV{b{0b1010}}),
 		6);
 	EXPECT_EQ(B[0][0].count(), 4U);
 	EXPECT_EQ(B[0][1].count(), 4U);
@@ -442,11 +442,11 @@ TEST(SolverDeathTest, removeOption2)
 	// ignore is empty
 #ifdef NDEBUG
 	EXPECT_THROW(
-		remove_option_section(B, B.row(0), vL{}, vV{b{"1101"}}),
+		remove_option_section(B, B.row(0), vL{}, vV{b{0b1101}}),
 		Sudoku::error::invalid_Board);
 #else
 	EXPECT_DEBUG_DEATH(
-		remove_option_section(B, B.row(0), vL{}, vV{b{"1101"}}),
+		remove_option_section(B, B.row(0), vL{}, vV{b{0b1101}}),
 		"Assertion .*is_valid\\(ignore\\)");
 #endif // NDEBUG
 	   // values is all
@@ -468,7 +468,7 @@ TEST(SolverDeathTest, removeOption2)
 	// assert at least one ignore-location inside section
 	EXPECT_DEBUG_DEATH(
 		remove_option_section(
-			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, vV{b{"0011"}}),
+			B, B.row(0), vL{L(1, 0), L(1, 1), L(2, 1)}, vV{b{0b0011}}),
 		"Assertion .*is_same_section.*");
 	B = cB; // reset
 

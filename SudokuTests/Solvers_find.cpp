@@ -49,14 +49,14 @@ TEST(Solver, listWhereOptionSection)
 	using set = std::bitset<4>;
 	using loc = Location<2>;
 	Board<Options<4>, 2> B{};
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[3][0] = set{0b1001};
 	std::vector<loc> list{};
 
 	// return type
@@ -70,36 +70,36 @@ TEST(Solver, listWhereOptionSection)
 
 	// no result
 	// - no result: explicit
-	B[2][0] = set{"1101"};
-	B[2][1] = set{"1101"};
-	B[2][2] = set{"1101"};
-	B[2][3] = set{"1101"};
+	B[2][0] = set{0b1101};
+	B[2][1] = set{0b1101};
+	B[2][2] = set{0b1101};
+	B[2][3] = set{0b1101};
 	list    = list_where_option<2>(B.row(2), Value{2}, 4);
 	EXPECT_EQ(list.size(), size_t{0});
 	// - no result: because value is answer
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
 	list    = list_where_option<2>(B.row(0), Value{2}, 4);
 	EXPECT_EQ(list.size(), size_t{0});
 	// incorrect rep_count: too low
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
 
 	list = list_where_option<2>(B.block(0), Value{1}, 3);
 	// normal operation
 	B.clear();
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[3][0] = set{0b1001};
 	list    = list_where_option<2>(B.row(0), Value{1}, 3);
 	EXPECT_EQ(list.size(), size_t{3});
 	EXPECT_EQ(list[0], loc(1));
@@ -122,14 +122,14 @@ TEST(SolverDeathTest, listWhereOptionSection)
 	using set = std::bitset<4>;
 	using loc = Location<2>;
 	Board<Options<4>, 2> B{};
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[3][0] = set{0b1001};
 	std::vector<loc> list{};
 
 	// invalid value
@@ -163,14 +163,14 @@ TEST(Solver, listWhereOptionItr)
 	using set = std::bitset<4>;
 	using loc = Location<2>;
 	Board<Options<4>, 2> B{};
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[3][0] = set{0b1001};
 	std::vector<loc> list{};
 
 	// 2 begin, end, Value, rep_count
@@ -188,10 +188,10 @@ TEST(Solver, listWhereOptionItr)
 
 	// no result
 	// - no result: explicit
-	B[2][0] = set{"1101"};
-	B[2][1] = set{"1101"};
-	B[2][2] = set{"1101"};
-	B[2][3] = set{"1101"};
+	B[2][0] = set{0b1101};
+	B[2][1] = set{0b1101};
+	B[2][2] = set{0b1101};
+	B[2][3] = set{0b1101};
 	list =
 		list_where_option<2>(B.row(2).cbegin(), B.row(2).cend(), Value{2}, 4);
 	EXPECT_EQ(list.size(), size_t{0});
@@ -202,14 +202,14 @@ TEST(Solver, listWhereOptionItr)
 	list = list_where_option<2>(B.block(0), Value{1}, 3);
 	// normal operation
 	B.clear();
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[3][0] = set{0b1001};
 	list =
 		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1}, 3);
 	EXPECT_EQ(list.size(), size_t{3});
@@ -235,14 +235,14 @@ TEST(SolverDeathTest, listWhereOptionItr)
 	using set = std::bitset<4>;
 	using loc = Location<2>;
 	Board<Options<4>, 2> B{};
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[3][0] = set{0b1001};
 	std::vector<loc> list{};
 
 #ifndef NDEBUG
@@ -279,10 +279,10 @@ TEST(SolverDeathTest, listWhereOptionItr)
 		".*rep_count");
 
 	// incorrect rep_count: too low
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
 	EXPECT_DEBUG_DEATH(
 		list = list_where_option<2>(
 			B.row(0).cbegin(), B.row(0).cend(), Value{1}, 2),
@@ -304,14 +304,14 @@ TEST(Solver, listWhereOptionNoRepCount)
 	//	list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1})));
 
 	// row/col/block
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[3][0] = set{0b1001};
 	list = list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1});
 	EXPECT_EQ(list.size(), size_t{3});
 	EXPECT_EQ(list[0], loc(1));
@@ -334,14 +334,14 @@ TEST(Solver, listWhereOptionPartial)
 	using set = std::bitset<4>;
 	using loc = Location<2>;
 	Board<Options<4>, 2> B{};
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[3][0] = set{0b1001};
 	std::vector<loc> list{};
 
 	// partial section
@@ -359,15 +359,15 @@ TEST(SolverDeathTest, listWhereOptionValue)
 	using loc     = Location<2>;
 	using Options = Options<4>;
 	Board<Options, 2> B{};
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[2][1] = set{"1111"}; // incorrect marked as answer
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[2][1] = set{0b1111}; // incorrect marked as answer
+	B[3][0] = set{0b1001};
 	std::vector<loc> list{};
 
 	// exceptions
@@ -391,15 +391,15 @@ TEST(Solver, listWhereOptionValue)
 	using loc     = Location<2>;
 	using Options = Options<4>;
 	Board<Options, 2> B{};
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[2][1] = set{"1111"};
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[2][1] = set{0b1111};
+	B[3][0] = set{0b1001};
 	std::vector<loc> list{};
 
 	// exceptions
@@ -428,14 +428,14 @@ TEST(Solver, listWhereOptionValue)
 	EXPECT_EQ(list.size(), size_t{0});
 
 	// row/col/block
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[3][0] = set{0b1001};
 	list    = list_where_option<2>(B.row(0), Value{1});
 	EXPECT_EQ(list.size(), size_t{3});
 	EXPECT_EQ(list[0], loc(1));
@@ -459,15 +459,15 @@ TEST(Solver, listWhereOptions)
 	using loc     = Location<2>;
 	using Options = Options<4>;
 	Board<Options, 2> B{};
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[2][1] = set{"1111"}; // incorrect marked as answer
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[2][1] = set{0b1111}; // incorrect marked as answer
+	B[3][0] = set{0b1001};
 	std::vector<loc> list{};
 
 	// exceptions
@@ -485,19 +485,19 @@ TEST(Solver, listWhereOptions)
 				  decltype(list_where_option<2>(B.row(0), Options{Value{1}}))>);
 	list = list_where_option<2>(B.row(0), Options{Value{2}});
 	EXPECT_EQ(list.size(), size_t{0});
-	list = list_where_option<2>(B.row(2), Options{set{"00100"}});
+	list = list_where_option<2>(B.row(2), Options{set{0b0010}});
 	EXPECT_EQ(list.size(), size_t{3});
 	// ignore answer-bit in sample
-	list = list_where_option<2>(B.row(0), Options{set{"11010"}});
+	list = list_where_option<2>(B.row(0), Options{set{0b1101}});
 	EXPECT_EQ(list.size(), size_t{2});
 	EXPECT_EQ(list[0], loc{1});
 	EXPECT_EQ(list[1], loc{3});
-	list = list_where_option<2>(B.row(0), Options{set{"11011"}});
+	list = list_where_option<2>(B.row(0), Options{set{0b1101}});
 	EXPECT_EQ(list.size(), size_t{2});
 	EXPECT_EQ(list[0], loc{1});
 	EXPECT_EQ(list[1], loc{3});
 	// Do not return answered locations
-	list = list_where_option<2>(B.row(0), Options{set{"00100"}});
+	list = list_where_option<2>(B.row(0), Options{set{0b0010}});
 	EXPECT_EQ(list.size(), size_t{0});
 }
 
@@ -509,15 +509,15 @@ TEST(SolverDeathTest, listWhereOptions)
 	using loc     = Location<2>;
 	using Options = Options<4>;
 	Board<Options, 2> B{};
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[2][1] = set{"1111"}; // incorrect marked as answer
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[2][1] = set{0b1111}; // incorrect marked as answer
+	B[3][0] = set{0b1001};
 	std::vector<loc> list{};
 
 	// caught in Options constructor
@@ -533,17 +533,17 @@ TEST(Solver, listWhereEqual)
 	using set = std::bitset<4>;
 	using loc = Location<2>;
 	Board<Options<4>, 2> B{};
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	B[1][0] = set{"0101"};
-	B[1][1] = set{"1100"};
-	B[2][0] = set{"1101"};
-	B[3][0] = set{"1001"};
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	B[1][0] = set{0b0101};
+	B[1][1] = set{0b1100};
+	B[2][0] = set{0b1101};
+	B[3][0] = set{0b1001};
 	std::vector<loc> list{};
 
-	const Options<4> value{set{"1001"}};
+	const Options<4> value{set{0b1001}};
 	static_assert(noexcept(list_where_equal<2>(B.row(0), value)));
 	static_assert(noexcept(list_where_equal<2>(B.row(0), B[0][1])));
 
@@ -574,22 +574,22 @@ TEST(Solver, listWhereSubset)
 	using B       = std::bitset<4>;
 	using Options = Options<4>;
 	Board<Options, 2> board{};
-	board.at(L{0})    = B{"0111"};
-	board.at(L{1})    = B{"1111"}; // should be 10000
-	board.at(L{2})    = B{"0011"};
-	board.at(L{3})    = B{"0010"};
-	board.at(L{1, 0}) = B{"0010"}; // answer 2
-	board.at(L{1, 1}) = B{"1111"};
-	board.at(L{1, 2}) = B{"1111"};
-	board.at(L{1, 3}) = B{"1111"};
-	board.at(L{2, 0}) = B{"1111"};
-	board.at(L{2, 1}) = B{"1111"};
-	board.at(L{2, 2}) = B{"1111"};
-	board.at(L{2, 3}) = B{"1111"};
-	board.at(L{3, 0}) = B{"1111"};
-	board.at(L{3, 1}) = B{"1111"};
-	board.at(L{3, 2}) = B{"1111"};
-	board.at(L{3, 3}) = B{"1111"};
+	board.at(L{0})    = B{0b0111};
+	board.at(L{1})    = B{0b1111}; // should be 10000
+	board.at(L{2})    = B{0b0011};
+	board.at(L{3})    = B{0b0010};
+	board.at(L{1, 0}) = B{0b0010}; // answer 2
+	board.at(L{1, 1}) = B{0b1111};
+	board.at(L{1, 2}) = B{0b1111};
+	board.at(L{1, 3}) = B{0b1111};
+	board.at(L{2, 0}) = B{0b1111};
+	board.at(L{2, 1}) = B{0b1111};
+	board.at(L{2, 2}) = B{0b1111};
+	board.at(L{2, 3}) = B{0b1111};
+	board.at(L{3, 0}) = B{0b1111};
+	board.at(L{3, 1}) = B{0b1111};
+	board.at(L{3, 2}) = B{0b1111};
+	board.at(L{3, 3}) = B{0b1111};
 
 	// return type
 	static_assert(std::is_same_v<
@@ -608,7 +608,7 @@ TEST(Solver, listWhereSubset)
 
 	// inputs
 	// normal sample
-	Options item{B{"0011"}};
+	Options item{B{0b0011}};
 	auto result = list_where_subset(board, item);
 	ASSERT_EQ(result.size(), 3U);
 	EXPECT_EQ(result[0], L{2});
@@ -618,7 +618,7 @@ TEST(Solver, listWhereSubset)
 	ASSERT_EQ(result.size(), 4U);
 	EXPECT_EQ(result[0], L{0});
 	EXPECT_EQ(result[2], L{3});
-	result = list_where_subset(board, Options{B{"0010"}});
+	result = list_where_subset(board, Options{B{0b0010}});
 	EXPECT_EQ(result.size(), 2U);
 	// answer sample
 	result = list_where_subset(board, Options{Value{2}});
@@ -629,11 +629,11 @@ TEST(Solver, listWhereSubset)
 	EXPECT_EQ(result[0], L(0));
 	EXPECT_EQ(result[15], L(15));
 	// empty sample
-	result = list_where_subset(board, Options{B{"0000"}});
+	result = list_where_subset(board, Options{B{0b0000}});
 	ASSERT_EQ(result.size(), 0U);
 
 	// only on the row:
-	item               = B{"0011"};
+	item               = B{0b0011};
 	const auto section = board.row(L{0});
 	result             = list_where_subset<2>(section, item);
 	ASSERT_EQ(result.size(), 2U);
@@ -643,7 +643,7 @@ TEST(Solver, listWhereSubset)
 	ASSERT_EQ(result.size(), 3U);
 	EXPECT_EQ(result[0], L{0});
 	EXPECT_EQ(result[2], L{3});
-	result = list_where_subset<2>(section, Options{B{"0010"}});
+	result = list_where_subset<2>(section, Options{B{0b0010}});
 	EXPECT_EQ(result.size(), 1U);
 	// answer sample
 	result = list_where_subset<2>(section, Options{Value{2}});
@@ -654,7 +654,7 @@ TEST(Solver, listWhereSubset)
 	EXPECT_EQ(result[0], L(0));
 	EXPECT_EQ(result[3], L(3));
 	// empty sample
-	result = list_where_subset<2>(section, Options{B{"0000"}});
+	result = list_where_subset<2>(section, Options{B{0b0000}});
 	ASSERT_EQ(result.size(), 0U);
 }
 
@@ -666,11 +666,11 @@ TEST(Solver, listWhereAnyOption)
 	using Options = Options<4>;
 	Board<Options, 2> B{};
 	std::vector<loc> list{};
-	// B[1][0] = set{"0101"};
-	// B[1][1] = set{"1100"};
-	// B[2][0] = set{"1101"};
-	// B[2][1] = set{"1111"}; // incorrect marked as answer
-	// B[3][0] = set{"1001"};
+	// B[1][0] = set{0b0101};
+	// B[1][1] = set{0b1100};
+	// B[2][0] = set{0b1101};
+	// B[2][1] = set{0b1111}; // incorrect marked as answer
+	// B[3][0] = set{0b1001};
 
 	// exceptions
 	// - vector out-of-memory
@@ -686,14 +686,14 @@ TEST(Solver, listWhereAnyOption)
 		std::is_same_v<
 			std::vector<loc>,
 			decltype(list_where_any_option<2>(B.row(0), Options{Value{1}}))>);
-	B[0][0] = set{"0010"}; // ans 2
-	B[0][1] = set{"1101"};
-	B[0][2] = set{"1001"};
-	B[0][3] = set{"1101"};
-	list    = list_where_any_option<2>(B.row(0), Options{set{"1100"}});
+	B[0][0] = set{0b0010}; // ans 2
+	B[0][1] = set{0b1101};
+	B[0][2] = set{0b1001};
+	B[0][3] = set{0b1101};
+	list    = list_where_any_option<2>(B.row(0), Options{set{0b1100}});
 	EXPECT_EQ(list.size(), size_t{3});
 	EXPECT_EQ(list[0], loc{1});
-	list = list_where_any_option<2>(B.row(0), Options{set{"0100"}});
+	list = list_where_any_option<2>(B.row(0), Options{set{0b0100}});
 	EXPECT_EQ(list.size(), size_t{2});
 	if (list.size() > size_t{0})
 	{
@@ -704,17 +704,17 @@ TEST(Solver, listWhereAnyOption)
 		EXPECT_EQ(list[1], loc{3});
 	}
 	// answered
-	list = list_where_any_option<2>(B.row(0), Options{set{"0010"}});
+	list = list_where_any_option<2>(B.row(0), Options{set{0b0010}});
 	EXPECT_EQ(list.size(), size_t{0});
 	// all
-	list = list_where_any_option<2>(B.row(0), Options{set{"1111"}});
+	list = list_where_any_option<2>(B.row(0), Options{set{0b1111}});
 	EXPECT_EQ(list.size(), size_t{3});
 	// col
-	B[0][2] = set{"1110"};
-	B[1][2] = set{"1111"};
-	B[2][2] = set{"1001"};
-	B[3][2] = set{"1101"};
-	list    = list_where_any_option<2>(B.col(2), Options{set{"0010"}});
+	B[0][2] = set{0b1110};
+	B[1][2] = set{0b1111};
+	B[2][2] = set{0b1001};
+	B[3][2] = set{0b1101};
+	list    = list_where_any_option<2>(B.col(2), Options{set{0b0010}});
 	EXPECT_EQ(list.size(), size_t{2});
 	if (list.size() > size_t{0})
 	{
@@ -724,7 +724,7 @@ TEST(Solver, listWhereAnyOption)
 	{
 		EXPECT_EQ(list[1], loc(1, 2));
 	}
-	list = list_where_any_option<2>(B.col(2), Options{set{"0110"}});
+	list = list_where_any_option<2>(B.col(2), Options{set{0b0110}});
 	EXPECT_EQ(list.size(), size_t{3});
 	if (list.size() > size_t{2})
 	{
@@ -896,19 +896,19 @@ TEST(Solver, appearanceSets)
 	using ::Sudoku::appearance_sets;
 	// Example as shown in implementation
 	Board<Options<9>, 3> board{};
-	board[0][0] = std::bitset<9>{"100000001"};
-	board[0][1] = std::bitset<9>{"110100010"};
-	board[0][2] = std::bitset<9>{"010000011"};
-	board[0][3] = std::bitset<9>{"000000011"};
-	board[0][4] = std::bitset<9>{"101100111"};
-	board[0][5] = std::bitset<9>{"000001000"}; // ans 4
-	board[0][6] = std::bitset<9>{"101100110"};
-	board[0][7] = std::bitset<9>{"100110010"};
-	board[0][8] = std::bitset<9>{"010000101"};
-	const Options<9> Ans_0{std::bitset<9>{"000000000"}}; // complete, 1 answer
-	const Options<9> Ans_1{std::bitset<9>{"000010000"}}; // 5 and 1 answer
-	const Options<9> Ans_2{std::bitset<9>{"001000000"}}; // 7, <2 answers
-	const Options<9> Ans_3{std::bitset<9>{"010000100"}}; // 3 8, <3 answers
+	board[0][0] = std::bitset<9>{0b100000001};
+	board[0][1] = std::bitset<9>{0b110100010};
+	board[0][2] = std::bitset<9>{0b010000011};
+	board[0][3] = std::bitset<9>{0b000000011};
+	board[0][4] = std::bitset<9>{0b101100111};
+	board[0][5] = std::bitset<9>{0b000001000}; // ans 4
+	board[0][6] = std::bitset<9>{0b101100110};
+	board[0][7] = std::bitset<9>{0b100110010};
+	board[0][8] = std::bitset<9>{0b010000101};
+	const Options<9> Ans_0{std::bitset<9>{0b000000000}}; // complete, 1 answer
+	const Options<9> Ans_1{std::bitset<9>{0b000010000}}; // 5 and 1 answer
+	const Options<9> Ans_2{std::bitset<9>{0b001000000}}; // 7, <2 answers
+	const Options<9> Ans_3{std::bitset<9>{0b010000100}}; // 3 8, <3 answers
 
 	// Using iterators
 	{
@@ -921,8 +921,8 @@ TEST(Solver, appearanceSets)
 	}
 	// reorder, should give same result
 	// set answer last
-	board[0][8] = std::bitset<9>{"000001000"}; // ans 4
-	board[0][5] = std::bitset<9>{"010000101"};
+	board[0][8] = std::bitset<9>{0b000001000}; // ans 4
+	board[0][5] = std::bitset<9>{0b010000101};
 	{
 		const auto result =
 			appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
@@ -932,8 +932,8 @@ TEST(Solver, appearanceSets)
 		EXPECT_EQ(result[3], Ans_3);
 	}
 	// set unique value last
-	board[0][8] = std::bitset<9>{"100110010"};
-	board[0][7] = std::bitset<9>{"000001000"}; // ans 4
+	board[0][8] = std::bitset<9>{0b100110010};
+	board[0][7] = std::bitset<9>{0b000001000}; // ans 4
 	{
 		const auto result =
 			appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
@@ -943,15 +943,15 @@ TEST(Solver, appearanceSets)
 		EXPECT_EQ(result[3], Ans_3);
 	}
 	// set value appearing 3 times last
-	board[0][0] = std::bitset<9>{"100000001"};
-	board[0][7] = std::bitset<9>{"110100010"}; // 1 -> 7
-	board[0][6] = std::bitset<9>{"010000011"}; // 2 -> 6
-	board[0][3] = std::bitset<9>{"000000011"};
-	board[0][4] = std::bitset<9>{"101100111"};
-	board[0][5] = std::bitset<9>{"000001000"}; // ans 4
-	board[0][2] = std::bitset<9>{"101100110"};
-	board[0][1] = std::bitset<9>{"100110010"};
-	board[0][8] = std::bitset<9>{"010000101"}; // 8 -> 8
+	board[0][0] = std::bitset<9>{0b100000001};
+	board[0][7] = std::bitset<9>{0b110100010}; // 1 -> 7
+	board[0][6] = std::bitset<9>{0b010000011}; // 2 -> 6
+	board[0][3] = std::bitset<9>{0b000000011};
+	board[0][4] = std::bitset<9>{0b101100111};
+	board[0][5] = std::bitset<9>{0b000001000}; // ans 4
+	board[0][2] = std::bitset<9>{0b101100110};
+	board[0][1] = std::bitset<9>{0b100110010};
+	board[0][8] = std::bitset<9>{0b010000101}; // 8 -> 8
 	{
 		const auto result =
 			appearance_sets<3>(board.row(0).cbegin(), board.row(0).cend());
@@ -961,15 +961,15 @@ TEST(Solver, appearanceSets)
 		EXPECT_EQ(result[3], Ans_3);
 	}
 	// Using Sections
-	board[0][0] = std::bitset<9>{"100000001"};
-	board[0][1] = std::bitset<9>{"110100010"};
-	board[0][2] = std::bitset<9>{"010000011"};
-	board[0][3] = std::bitset<9>{"000000011"};
-	board[0][4] = std::bitset<9>{"101100111"};
-	board[0][5] = std::bitset<9>{"000001000"}; // ans 4
-	board[0][6] = std::bitset<9>{"101100110"};
-	board[0][7] = std::bitset<9>{"100110010"};
-	board[0][8] = std::bitset<9>{"010000101"};
+	board[0][0] = std::bitset<9>{0b100000001};
+	board[0][1] = std::bitset<9>{0b110100010};
+	board[0][2] = std::bitset<9>{0b010000011};
+	board[0][3] = std::bitset<9>{0b000000011};
+	board[0][4] = std::bitset<9>{0b101100111};
+	board[0][5] = std::bitset<9>{0b000001000}; // ans 4
+	board[0][6] = std::bitset<9>{0b101100110};
+	board[0][7] = std::bitset<9>{0b100110010};
+	board[0][8] = std::bitset<9>{0b010000101};
 	{
 		const auto result = appearance_sets<3>(board.row(0));
 		EXPECT_EQ(result[0], Ans_0);
@@ -979,8 +979,8 @@ TEST(Solver, appearanceSets)
 	}
 	// reorder, should give same result
 	// set answer last
-	board[0][8] = std::bitset<9>{"000001000"}; // ans 4
-	board[0][5] = std::bitset<9>{"010000101"};
+	board[0][8] = std::bitset<9>{0b000001000}; // ans 4
+	board[0][5] = std::bitset<9>{0b010000101};
 	{
 		const auto result = appearance_sets<3>(board.row(0));
 		EXPECT_EQ(result[0], Ans_0);
@@ -989,8 +989,8 @@ TEST(Solver, appearanceSets)
 		EXPECT_EQ(result[3], Ans_3);
 	}
 	// set unique value last
-	board[0][8] = std::bitset<9>{"100110010"};
-	board[0][7] = std::bitset<9>{"000001000"}; // ans 4
+	board[0][8] = std::bitset<9>{0b100110010};
+	board[0][7] = std::bitset<9>{0b000001000}; // ans 4
 	{
 		const auto result = appearance_sets<3>(board.row(0));
 		EXPECT_EQ(result[0], Ans_0);
@@ -1002,15 +1002,15 @@ TEST(Solver, appearanceSets)
 	// Col
 	// Example as shown in implementation
 	Board<Options<9>, 3> B2{};
-	B2[0][0] = std::bitset<9>{"100000001"};
-	B2[1][0] = std::bitset<9>{"110100010"};
-	B2[2][0] = std::bitset<9>{"010000011"};
-	B2[3][0] = std::bitset<9>{"000000011"};
-	B2[4][0] = std::bitset<9>{"101100111"};
-	B2[5][0] = std::bitset<9>{"000001000"}; // ans 4
-	B2[6][0] = std::bitset<9>{"101100110"};
-	B2[7][0] = std::bitset<9>{"100110010"};
-	B2[8][0] = std::bitset<9>{"010000101"};
+	B2[0][0] = std::bitset<9>{0b100000001};
+	B2[1][0] = std::bitset<9>{0b110100010};
+	B2[2][0] = std::bitset<9>{0b010000011};
+	B2[3][0] = std::bitset<9>{0b000000011};
+	B2[4][0] = std::bitset<9>{0b101100111};
+	B2[5][0] = std::bitset<9>{0b000001000}; // ans 4
+	B2[6][0] = std::bitset<9>{0b101100110};
+	B2[7][0] = std::bitset<9>{0b100110010};
+	B2[8][0] = std::bitset<9>{0b010000101};
 	{ // Using iterators
 		const auto result =
 			appearance_sets<3>(B2.col(0).cbegin(), B2.col(0).cend());
@@ -1030,15 +1030,15 @@ TEST(Solver, appearanceSets)
 	// Block
 	using B = ::Sudoku::Location_Block<3>;
 	Board<Options<9>, 3> B3{};
-	B3[B{2, 0}] = std::bitset<9>{"100000001"};
-	B3[B(2, 1)] = std::bitset<9>{"110100010"};
-	B3[B(2, 2)] = std::bitset<9>{"010000011"};
-	B3[B(2, 3)] = std::bitset<9>{"000000011"};
-	B3[B(2, 4)] = std::bitset<9>{"101100111"};
-	B3[B(2, 5)] = std::bitset<9>{"000001000"}; // ans 4
-	B3[B(2, 6)] = std::bitset<9>{"101100110"};
-	B3[B(2, 7)] = std::bitset<9>{"100110010"};
-	B3[B(2, 8)] = std::bitset<9>{"010000101"};
+	B3[B{2, 0}] = std::bitset<9>{0b100000001};
+	B3[B(2, 1)] = std::bitset<9>{0b110100010};
+	B3[B(2, 2)] = std::bitset<9>{0b010000011};
+	B3[B(2, 3)] = std::bitset<9>{0b000000011};
+	B3[B(2, 4)] = std::bitset<9>{0b101100111};
+	B3[B(2, 5)] = std::bitset<9>{0b000001000}; // ans 4
+	B3[B(2, 6)] = std::bitset<9>{0b101100110};
+	B3[B(2, 7)] = std::bitset<9>{0b100110010};
+	B3[B(2, 8)] = std::bitset<9>{0b010000101};
 	{ // using iterators
 		const auto result =
 			appearance_sets<3>(B3.block(2).cbegin(), B3.block(2).cend());
