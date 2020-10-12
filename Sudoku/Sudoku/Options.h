@@ -207,10 +207,9 @@ namespace impl
 	{
 		if (std::is_constant_evaluated() && E <= 32U)
 			return std::bitset<E>{uint32_t{0U} - 1U};
-		else if (std::is_constant_evaluated() && E <= 64U)
+		if (std::is_constant_evaluated() && E <= 64U)
 			return std::bitset<E>{uint64_t{0U} - 1U};
-		else
-			return std::bitset<E>{}.flip();
+		return std::bitset<E>{}.flip();
 	}
 } // namespace impl
 
