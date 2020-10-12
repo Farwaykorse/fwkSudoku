@@ -159,7 +159,6 @@ namespace compiletime
 	namespace impl
 	{
 		using ::Sudoku::impl::exp2_;
-		using ::Sudoku::impl::all_set;
 
 		static_assert(exp2_(0U) == 0x1U);
 		static_assert(exp2_(1U) == 0x1U);
@@ -183,17 +182,6 @@ namespace compiletime
 		static_assert(exp2_<9>(Value{8}) == 0x80U);
 		static_assert(exp2_<9>(Value{9}) == 0x100U);
 
-		static_assert(all_set(0U) == 0x0U);
-		static_assert(all_set(1U) == 0x1U);
-		static_assert(all_set(2U) == 0x3U);
-		static_assert(all_set(3U) == 0x7U);
-		static_assert(all_set(4U) == 0xFU);
-		static_assert(all_set(5U) == 0x1FU);
-		static_assert(all_set(6U) == 0x3FU);
-		static_assert(all_set(7U) == 0x7FU);
-		static_assert(all_set(8U) == 0xFFU);
-		static_assert(all_set(9U) == 0x1FFU);
-
 		// Outside defined size
 		static_assert(exp2_<9>(Value{10}) == 0U);
 		static_assert(exp2_<4>(Value{5}) == 0U);
@@ -202,6 +190,42 @@ namespace compiletime
 } // namespace compiletime
 TEST(Options, Construction)
 {
+	// constexpr construction
+	{
+		// Default constructor
+		constexpr Options<4> m0{};
+		EXPECT_EQ(m0.DebugString(), "1111");
+		constexpr Options<32> m32{};
+		EXPECT_EQ(m32.DebugString(), "11111111111111111111111111111111");
+		constexpr Options<33> m33{};
+		EXPECT_EQ(m33.DebugString(), "111111111111111111111111111111111");
+		constexpr Options<64> m64{};
+		EXPECT_EQ(
+			m64.DebugString(),
+			"1111111111111111111111111111111111111111111111111111111111111111");
+		// To large
+		Options<65> m65{};
+		EXPECT_EQ(
+			m65.DebugString(),
+			"1111111111111111111111111111111111111111111111111111111111111111"
+			"1");
+		// construction from OptionValue / Value
+		constexpr OptionValue<4> value{Value{1U}};
+		constexpr Options<4> m1{value};
+		EXPECT_EQ(m1.DebugString(), "0001");
+		constexpr Options<4> m2{Value{2U}};
+		EXPECT_EQ(m2.DebugString(), "0010");
+		constexpr Options<4> m3{Value{3U}};
+		EXPECT_EQ(m3.DebugString(), "0100");
+		// construction from std::bitset
+		constexpr std::bitset<4> input{};
+		constexpr Options<4> b1{input};
+		EXPECT_EQ(b1.DebugString(), "0000");
+
+		constexpr std::bitset<4> bitset{0b0110};
+		constexpr Options<4> b2{bitset};
+		EXPECT_EQ(b2.DebugString(), "0110");
+	}
 	const Options<4> D_0{};
 	{
 		SCOPED_TRACE("Default Constructor : Options()");
@@ -252,21 +276,21 @@ TEST(Options, Construction)
 	// std::bitset
 	{
 		SCOPED_TRACE("Options(const bitset&)"); // 0th bit is last in input
-		const std::bitset<4> bit{0b1010};
-		const Options<4> Opt{bit};
+		constexpr std::bitset<4> bit{0b1010};
+		constexpr Options<4> Opt{bit};
 		EXPECT_EQ(Opt.size(), size_t{4});
 		EXPECT_EQ(Opt.DebugString(), "1010");
 	}
 	{
 		SCOPED_TRACE("Options(bitset&&)");
-		const Options<4> A_0{std::bitset<4>{0b0100}};
+		constexpr Options<4> A_0{std::bitset<4>{0b0100}};
 		EXPECT_EQ(A_0.size(), size_t{4});
 		EXPECT_EQ(A_0.DebugString(), "0100");
 	}
 	{
 		SCOPED_TRACE("Options& operator=(const bitset&)");
 		Options<4> B_0{};
-		const std::bitset<4> bit{0b1101};
+		constexpr std::bitset<4> bit{0b1101};
 		B_0 = bit;
 		EXPECT_EQ(B_0.DebugString(), "1101");
 	}
@@ -279,8 +303,8 @@ TEST(Options, Construction)
 	//===------------------------------------------------------------------===//
 	{ // Value
 		SCOPED_TRACE("Options(Value)");
-		const Options<4> A_1{Value{2}}; // set() // clear() // add()
-		const auto A_2 = Options<4>{Value{2}};
+		constexpr Options<4> A_1{Value{2}}; // set() // clear() // add()
+		constexpr auto A_2 = Options<4>{Value{2}};
 		EXPECT_EQ(A_1.DebugString(), "0010");
 		EXPECT_EQ(A_2.DebugString(), "0010");
 		EXPECT_EQ(Options<4>{Value{4}}.DebugString(), "1000");
@@ -507,9 +531,9 @@ TEST(Options, toValue)
 	// specialization for to_Value(..)
 	using ::Sudoku::to_Value;
 
-	const Options<9> all{};
-	const Options<9> empty{std::bitset<9>{0b000000000}};
-	const Options<9> A_5{std::bitset<9>{0b000010000}};
+	constexpr Options<9> all{};
+	constexpr Options<9> empty{std::bitset<9>{0b000000000}};
+	constexpr Options<9> A_5{std::bitset<9>{0b000010000}};
 
 	static_assert(noexcept(to_Value<3>(all)));
 	// return type

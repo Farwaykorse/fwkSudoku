@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 
+#include <type_traits> // is_constant_evaluated
 #include <utility>
 
 #include <cassert>
@@ -30,18 +31,18 @@ class Options
 	using bitset = std::bitset<gsl::narrow_cast<size_t>(E)>;
 
 public:
-	Options() noexcept;
+	constexpr Options() noexcept;
 	Options(int) = delete; // NOLINT: implicit catch all that convert to bitset
-	explicit Options(const bitset&) noexcept; // 0th bit is last in input
-	explicit Options(bitset&&) noexcept;
+	explicit constexpr Options(const bitset&) noexcept;
+	explicit constexpr Options(bitset&&) noexcept;
 	explicit constexpr Options(OptionValue<E>) noexcept;
-	Options& operator=(OptionValue<E>) noexcept;
-	Options& operator=(const bitset&) noexcept;
-	Options& operator=(bitset&&) noexcept;
+	constexpr Options& operator=(OptionValue<E>) noexcept;
+	constexpr Options& operator=(const bitset&) noexcept;
+	constexpr Options& operator=(bitset&&) noexcept;
 
-	Options& clear() noexcept; // remove all options / invalid state
-	Options& reset() noexcept; // set all options
-	Options& flip() noexcept;  // can create an invalid state
+	constexpr Options& clear() noexcept; // remove all options / invalid state
+	constexpr Options& reset() noexcept; // set all options
+	Options& flip() noexcept;            // can create an invalid state
 	Options& remove_option(OptionValue<E>); // remove single option
 	Options& add(OptionValue<E>) noexcept;  // add single option
 	Options& set(OptionValue<E>);           // set to answer
@@ -102,7 +103,7 @@ public:
 	}
 
 private:
-	bitset data_{};
+	bitset data_;
 
 	[[nodiscard]] constexpr size_t location(size_t value) const noexcept
 	{
@@ -200,10 +201,16 @@ namespace impl
 	{
 		return (value > Value{E}) ? 0U : exp2_(static_cast<size_t>(value));
 	}
-	// generate a bit-mask to set all bits in std::bitset
-	[[nodiscard]] inline constexpr size_t all_set(size_t elements) noexcept
+
+	template<size_t E>
+	constexpr std::bitset<E> all_set() noexcept
 	{
-		return (exp2_(++elements) - 1U);
+		if (std::is_constant_evaluated() && E <= 32U)
+			return std::bitset<E>{uint32_t{0U} - 1U};
+		else if (std::is_constant_evaluated() && E <= 64U)
+			return std::bitset<E>{uint64_t{0U} - 1U};
+		else
+			return std::bitset<E>{}.flip();
 	}
 } // namespace impl
 
@@ -211,45 +218,44 @@ namespace impl
 
 //	construct with all options set
 template<int E>
-inline Options<E>::Options() noexcept
-{
-	data_.flip();
-}
-
-template<int E>
-inline Options<E>::Options(const bitset& other) noexcept : data_(other)
+constexpr Options<E>::Options() noexcept : data_(impl::all_set<E>())
 { // empty constructor
 }
 
 template<int E>
-inline Options<E>::Options(bitset&& other) noexcept : data_{other}
+constexpr Options<E>::Options(bitset const& other) noexcept : data_(other)
+{ // empty constructor
+}
+
+template<int E>
+constexpr Options<E>::Options(bitset&& other) noexcept : data_{other}
 { // empty constructor
 }
 
 //	construct with single option set to answer
 template<int E>
-inline constexpr Options<E>::Options(OptionValue<E> value) noexcept
+constexpr Options<E>::Options(OptionValue<E> const value) noexcept
 	: data_{impl::exp2_<E>(value)}
 {
 }
 
 //	set to answer value
 template<int E>
-inline Options<E>& Options<E>::operator=(OptionValue<E> value) noexcept
+constexpr Options<E>& Options<E>::operator=(OptionValue<E> const value) noexcept
 {
 	data_ = impl::exp2_<E>(value);
 	return *this;
 }
 
 template<int E>
-inline Options<E>& Options<E>::operator=(const bitset& other) noexcept
+constexpr Options<E>& Options<E>::operator=(bitset const& other) noexcept
 {
 	data_ = other;
 	return *this;
 }
 
 template<int E>
-inline Options<E>& Options<E>::operator=(bitset&& other) noexcept
+constexpr Options<E>& Options<E>::operator=(bitset&& other) noexcept
 {
 	std::swap(data_, other); // use <utility>
 	return *this;
@@ -257,17 +263,23 @@ inline Options<E>& Options<E>::operator=(bitset&& other) noexcept
 
 //	remove all options
 template<int E>
-inline Options<E>& Options<E>::clear() noexcept
+inline constexpr Options<E>& Options<E>::clear() noexcept
 {
-	data_.reset(); // all false == invalid state
+	if (std::is_constant_evaluated())
+		data_ = std::bitset<size_t{E}>();
+	else
+		data_.reset(); // all false == invalid state
 	return *this;
 }
 
 //	set all options
 template<int E>
-inline Options<E>& Options<E>::reset() noexcept
+constexpr Options<E>& Options<E>::reset() noexcept
 {
-	data_.set(); // all true, default starting state
+	if (std::is_constant_evaluated())
+		data_ = impl::all_set<E>();
+	else
+		data_.set(); // all true, default starting state
 	return *this;
 }
 
@@ -300,7 +312,7 @@ inline Options<E>& Options<E>::add(OptionValue<E> const value) noexcept
 template<int E>
 inline Options<E>& Options<E>::set(OptionValue<E> const value)
 {
-	data_.reset(); // all 0
+	clear(); // all 0
 	return add(value);
 }
 
