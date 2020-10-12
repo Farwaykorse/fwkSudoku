@@ -1,5 +1,6 @@
 //====---- Sudoku/OptionValue.h                                       ----====//
-// An internally used immutable and bounded version of Sudoku::Value
+// An interface type to represent individual options in the Options type.
+// Immutable and bounded, with conversion to the more general Value type.
 //
 //====--------------------------------------------------------------------====//
 #pragma once

@@ -2,11 +2,6 @@
 //
 // Data object containing and managing available options.
 //====--------------------------------------------------------------------====//
-// Templated with element size.
-//
-// The 0-bit is the inverse answer-bit. if [0]==0 the answer is set.
-//
-//====--------------------------------------------------------------------====//
 #pragma once
 
 #include "OptionValue.h"
