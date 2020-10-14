@@ -259,7 +259,59 @@ TEST(Board, Construction)
 		SCOPED_TRACE("Construct from array");
 		constexpr std::array<int, 16> list{
 			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+		[[maybe_unused]] constexpr Board<int, 2> board1{list};
+		[[maybe_unused]] constexpr auto board2 = list;
 		ASSERT_NO_THROW((Board<int, 2>{list}));
+	}
+	{
+		SCOPED_TRACE("Construct from iterators");
+		constexpr std::array<int, 16> long_list{
+			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+		[[maybe_unused]] constexpr std::array<uint16_t, 16> long_u_list{
+			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+		std::vector<int> vector{
+			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+		const Board<Options<4>, 2> board{};
+
+		// Direct copy
+		static_assert(not noexcept(
+			Board<int, 2>(std::begin(long_list), std::end(long_list))));
+		ASSERT_NO_THROW(
+			(Board<int, 2>(std::begin(long_list), std::end(long_list))));
+		static_assert(
+			not noexcept(Board<int, 2>(std::begin(vector), std::end(vector))));
+		ASSERT_NO_THROW((Board<int, 2>(std::begin(vector), std::end(vector))));
+		static_assert(not noexcept(
+			Board<Options<4>, 2>(std::begin(board), std::end(board))));
+		ASSERT_NO_THROW(
+			(Board<Options<4>, 2>(std::begin(board), std::end(board))));
+		Board<int, 2> new_board(std::begin(long_list), std::end(long_list));
+		EXPECT_EQ(new_board[0][3], 3);
+		EXPECT_EQ(new_board[3][3], 15);
+		// Conversion (implicit)
+		static_assert(std::is_convertible_v<int, int16_t>);
+		ASSERT_NO_THROW(
+			(Board<int32_t, 2>(std::begin(long_list), std::end(long_list))));
+		ASSERT_NO_THROW(
+			(Board<int64_t, 2>(std::begin(long_list), std::end(long_list))));
+		// Conversion (explicit)
+		static_assert(not std::is_convertible_v<uint16_t, Value>);
+		static_assert(std::is_constructible_v<Value, uint16_t>);
+		ASSERT_NO_THROW(
+			(Board<Value, 2>(std::begin(long_u_list), std::end(long_u_list))));
+
+		EXPECT_THROW(
+			(Board<int, 2>(std::begin(long_list), std::begin(long_list))),
+			std::length_error);
+		EXPECT_THROW(
+			(Board<int, 2>(std::begin(long_list), std::end(long_list) - 1)),
+			std::length_error);
+		static_assert(not std::is_convertible_v<std::array<Value, 2>, int>);
+		static_assert(not std::is_constructible_v<int, std::array<Value, 2>>);
+		EXPECT_THROW(
+			(Board<std::array<Value, 2>, 2>{
+				std::begin(long_list), std::end(long_list)}),
+			Sudoku::error::unsupported_type);
 	}
 	{
 		SCOPED_TRACE("Construct from Initializer_list");
@@ -288,6 +340,8 @@ TEST(Board, Construction)
 			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
 		EXPECT_THROW((Board<int, 2>{short_list}), std::length_error);
 		EXPECT_THROW((Board<int, 2>{long_list}), std::length_error);
+
+		// NOTE no type conversion through range constructor
 	}
 }
 
