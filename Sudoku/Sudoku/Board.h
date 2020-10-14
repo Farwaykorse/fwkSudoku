@@ -16,6 +16,7 @@
 #include "Location_Utilities.h"
 #include "Size.h"
 #include "exceptions.h"
+#include "traits.h"
 
 #include <gsl/gsl>
 
@@ -61,12 +62,17 @@ public:
 
 	constexpr Board() noexcept;
 	explicit constexpr Board(const T& default_value);
+	template<typename InputIt>
+	Board(InputIt first, InputIt last);
 	// NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
 	constexpr Board(std::array<T, Size> const& list) // NOLINT(runtime/explicit)
 		: board_(list)
 	{
 	}
-	Board(std::initializer_list<T>); // construct from initializer_list
+	Board(std::initializer_list<T> list)
+		: Board(std::begin(list), std::end(list))
+	{
+	}
 
 	void clear();
 
@@ -184,12 +190,29 @@ constexpr Board<T, N>::Board(const T& default_value)
 }
 
 template<typename T, int N>
-Board<T, N>::Board(std::initializer_list<T> list)
+template<typename InputIt>
+Board<T, N>::Board(InputIt const first, InputIt const last)
 {
+	static_assert(is_input<InputIt>);
+
 	valid_dimensions<N>();
-	if (list.size() != size_t{full_size<N>})
-		throw std::length_error{"Invalid length initializer_list"};
-	std::copy(std::begin(list), std::end(list), std::begin(board_));
+	if (last - first != full_size<N>)
+		throw std::length_error{"Invalid length input"};
+
+	if constexpr (iterator_to<InputIt, T> || iterator_implicit_to<InputIt, T>)
+	{
+		std::copy(first, last, std::begin(board_));
+	}
+	else if constexpr (iterator_explicit_to<InputIt, T>)
+	{
+		std::transform(first, last, std::begin(board_), [](auto val) {
+			return static_cast<T>(val);
+		});
+	}
+	else
+	{
+		throw Sudoku::error::unsupported_type();
+	}
 }
 
 //===----------------------------------------------------------------------===//

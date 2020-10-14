@@ -52,5 +52,19 @@ inline namespace traits
 	template<typename ItrT, typename TargetT>
 	inline constexpr bool iterator_to = std::
 		is_same_v<typename std::iterator_traits<ItrT>::value_type, TargetT>;
+
+	// iterator pointing to type implicitly convertible to type
+	template<typename ItrT, typename TargetT>
+	inline constexpr bool iterator_implicit_to = std::is_convertible_v<
+		typename std::iterator_traits<ItrT>::value_type,
+		TargetT>;
+
+	// iterator pointing to type explicitly convertible to type
+	template<typename ItrT, typename TargetT>
+	inline constexpr bool iterator_explicit_to = std::is_constructible_v<
+		TargetT,
+		typename std::iterator_traits<ItrT>::value_type>;
+
+
 } // namespace traits
 } // namespace Sudoku
