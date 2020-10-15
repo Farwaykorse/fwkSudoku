@@ -9,9 +9,6 @@
 
 #include <gsl/gsl>
 
-#include <vector>
-
-#include <algorithm> // all_of
 #include <limits>
 #include <stdexcept>
 #include <type_traits> // is_same
@@ -61,8 +58,6 @@ template<int N>
 constexpr bool is_valid(const Value&) noexcept;
 template<int E>
 inline constexpr bool is_valid_option(const Value&) noexcept;
-template<int N>
-bool is_valid(const std::vector<Value>&) noexcept;
 
 //====--------------------------------------------------------------------====//
 
@@ -78,17 +73,6 @@ template<int E>
 inline constexpr bool is_valid_option(const Value& value) noexcept
 {
 	return value > Value{0} && value <= Value{E};
-}
-
-// Test input values
-template<int N>
-bool is_valid(const std::vector<Value>& values) noexcept
-{
-	return (
-		!values.empty() &&
-		std::all_of(values.cbegin(), values.cend(), [](Value i) {
-			return is_valid<N>(i);
-		}));
 }
 
 //====--------------------------------------------------------------------====//
