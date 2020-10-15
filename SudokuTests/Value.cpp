@@ -100,13 +100,14 @@ namespace compiletime
 	static_assert(std::is_constructible_v<typeT, size_t>);
 	static_assert(not std::is_convertible_v<size_t, typeT>);
 
-	// By implicit conversion to size_t first:
-	static_assert(std::is_constructible_v<typeT, char>);
+	static_assert(not std::is_constructible_v<typeT, char>);
+	static_assert(std::is_constructible_v<typeT, int8_t>);
+	static_assert(std::is_constructible_v<typeT, uint8_t>);
 	static_assert(std::is_constructible_v<typeT, int>);
 	static_assert(std::is_constructible_v<typeT, unsigned int>);
 	static_assert(std::is_constructible_v<typeT, std::uint32_t>);
 	static_assert(std::is_constructible_v<typeT, std::uint64_t>);
-	static_assert(std::is_constructible_v<typeT, bool>); // ... via size_t
+	static_assert(not std::is_constructible_v<typeT, bool>);
 	// explicit construction from Value:
 	static_assert(std::is_constructible_v<size_t, typeT>);
 	static_assert(std::is_nothrow_constructible_v<size_t, typeT>);

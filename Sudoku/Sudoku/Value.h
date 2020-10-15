@@ -5,6 +5,7 @@
 //====--------------------------------------------------------------------====//
 #pragma once
 
+#include "Concepts.h"
 #include "Size.h"
 
 #include <gsl/gsl>
@@ -13,6 +14,7 @@
 #include <stdexcept>
 #include <type_traits> // is_same
 
+#include <cassert>
 #include <cstddef> // size_t
 
 
@@ -22,7 +24,16 @@ class Value
 {
 public:
 	Value() noexcept = default;
-	explicit constexpr Value(size_t val) noexcept : value_(val) {}
+	template<UnsignedNumber T>
+	explicit constexpr Value(T val) noexcept : value_(val)
+	{
+	}
+	template<SignedNumber T>
+	explicit constexpr Value(T val) noexcept : value_(static_cast<size_t>(val))
+	{
+		if (val < 0)
+			assert(false);
+	}
 
 	explicit constexpr operator size_t() const noexcept { return value_; }
 	explicit constexpr operator bool() const noexcept { return value_ != 0; }
