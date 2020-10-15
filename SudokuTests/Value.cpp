@@ -249,32 +249,6 @@ TEST(Value, operatorIncrement)
 	val++;
 	EXPECT_EQ(val, Value{3});
 }
-
-TEST(Value, isValidVector)
-{
-	using ::Sudoku::is_valid;
-	// vector input
-	using list = std::vector<Value>;
-	const std::vector<Value> cList{
-		Value{1}, Value{2}, Value{3}, Value{4}, Value{3}, Value{1}};
-	std::vector<Value> List{cList};
-	EXPECT_FALSE(is_valid<2>(list{})) << "can't be empty";
-	EXPECT_TRUE(is_valid<2>(List));
-	EXPECT_TRUE(is_valid<2>(list{Value{1}}));
-	EXPECT_TRUE(is_valid<2>(list{Value{4}}));
-	EXPECT_FALSE(is_valid<2>(list{Value{0}}));
-	EXPECT_FALSE(is_valid<2>(list{Value{5}}));
-	List.at(2) = Value{0}; // 1, 2, 0, 4, 3, 1
-	EXPECT_FALSE(is_valid<2>(List));
-	// EXPECT_FALSE(is_valid<2>(std::vector<Value>{1, -2, 3, 4, 3, 1}));
-	List.at(2) = Value{3}; // 1, 2, 3, 4, 3, 1
-	List.at(1) = Value{5}; // 1, 5, 3, 4, 3, 1
-	EXPECT_FALSE(is_valid<2>(List));
-
-	static_assert(noexcept(is_valid<2>(cList)));
-	static_assert(noexcept(is_valid<2>(List)));
-}
-
 TEST(Value, toValue)
 {
 	using ::Sudoku::to_Value;
