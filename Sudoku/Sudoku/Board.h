@@ -193,7 +193,11 @@ template<typename T, int N>
 template<typename InputIt>
 Board<T, N>::Board(InputIt const first, InputIt const last)
 {
-	static_assert(is_input<InputIt>);
+	using traits::iterator_to;
+	using traits::iterator_implicit_to;
+	using traits::iterator_explicit_to;
+
+	static_assert(traits::is_input<InputIt>);
 
 	valid_dimensions<N>();
 	if (last - first != full_size<N>)

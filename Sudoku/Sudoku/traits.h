@@ -10,7 +10,7 @@
 
 namespace Sudoku
 {
-inline namespace traits
+namespace traits
 {
 	template<typename T>
 	struct is_int : std::integral_constant<bool, std::is_integral_v<T>>
@@ -66,6 +66,5 @@ inline namespace traits
 	template<typename ItrT, typename TargetT>
 	inline constexpr bool iterator_explicit_to =
 		std::is_constructible_v<TargetT, impl::Target_<ItrT>>;
-
 } // namespace traits
 } // namespace Sudoku

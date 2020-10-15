@@ -85,7 +85,8 @@ public:
 	template<
 		typename idT,
 		typename elT,
-		typename = std::enable_if_t<is_int_v<idT> && is_int_v<elT>>>
+		typename =
+			std::enable_if_t<traits::is_int_v<idT> && traits::is_int_v<elT>>>
 	constexpr Section_iterator(owner_type* owner, idT id, elT elem) noexcept
 		: board_(owner), id_(id), elem_(elem)
 	{
