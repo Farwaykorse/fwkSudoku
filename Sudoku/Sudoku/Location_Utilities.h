@@ -70,8 +70,8 @@ template<
 	int N,
 	typename S,
 	typename = std::enable_if_t<
-		Board_Section::traits::is_Row_v<S> ||
-		Board_Section::traits::is_Col_v<S>>>
+		Board_Section::Section_traits::is_Row_v<S> ||
+		Board_Section::Section_traits::is_Col_v<S>>>
 bool intersect_block(S section, Location<N> block_loc) noexcept;
 
 //===----------------------------------------------------------------------===//
@@ -259,15 +259,15 @@ template<int N, typename S>
 [[nodiscard]] inline constexpr bool
 	is_same_section(const S section, const Location<N> loc) noexcept
 {
-	static_assert(Board_Section::traits::is_Section_v<S>);
+	static_assert(Board_Section::is_Section_v<S>);
 
-	if constexpr (Board_Section::traits::is_Row_v<S>)
+	if constexpr (Board_Section::is_Row_v<S>)
 		return is_same_row(loc, section.cbegin().location());
-	else if constexpr (Board_Section::traits::is_Col_v<S>)
+	else if constexpr (Board_Section::is_Col_v<S>)
 		return is_same_col(loc, section.cbegin().location());
 	else
 	{
-		static_assert(Board_Section::traits::is_Block_v<S>);
+		static_assert(Board_Section::is_Block_v<S>);
 		return is_same_block(loc, section.cbegin().location());
 	}
 }

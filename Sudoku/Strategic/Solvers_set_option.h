@@ -128,7 +128,7 @@ inline int set_uniques(
 	const Options worker)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
 	int changes{0};
@@ -154,7 +154,7 @@ inline int set_unique(
 	const Value value)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid<N>(value));
@@ -187,7 +187,7 @@ inline int set_section_locals(
 	const Options values)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 		assert(rep_count > 1);  // should have been caught by caller
 								// use the set_uniques specialization

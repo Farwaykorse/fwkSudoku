@@ -179,7 +179,7 @@ inline int unique_in_section(
 	const SectionT section)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 	}
 	const auto worker = appearance_once<N>(section);
 	return set_uniques(board, section, worker);
@@ -194,7 +194,7 @@ inline int section_exclusive(
 	const SectionT section)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
 	int changes{}; // performance counter

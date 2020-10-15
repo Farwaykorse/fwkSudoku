@@ -143,7 +143,7 @@ int remove_option_section(
 	const Value value)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
 		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
@@ -173,7 +173,7 @@ inline int remove_option_section(
 	const Value value)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
 		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
@@ -211,7 +211,7 @@ int remove_option_section(
 	const Options& values)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
 		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
@@ -245,9 +245,9 @@ int remove_option_outside_block(
 	const Value value)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(
-			!Board_Section::traits::is_Block_v<SectionT>,
+			!Board_Section::is_Block_v<SectionT>,
 			"remove_option_outside_block is useless on a Block");
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
 		static_assert(traits::is_input<typename SectionT::iterator>);

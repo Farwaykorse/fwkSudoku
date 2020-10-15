@@ -25,9 +25,9 @@ using const_Block = typename ::Sudoku::Board_Section::const_Block<dataT, size>;
 // inline namespace traits
 static_assert(std::is_same_v<
 			  ::Sudoku::Board_Section::is_Section<int>,
-			  ::Sudoku::Board_Section::traits::is_Section<int>>);
+			  ::Sudoku::Board_Section::Section_traits::is_Section<int>>);
 
-using ::Sudoku::Board_Section::traits::is_Section_v;
+using ::Sudoku::Board_Section::Section_traits::is_Section_v;
 static_assert(not is_Section_v<int>);
 static_assert(is_Section_v<Row>);
 static_assert(is_Section_v<Col>);
@@ -36,7 +36,7 @@ static_assert(is_Section_v<const_Row>);
 static_assert(is_Section_v<const_Col>);
 static_assert(is_Section_v<const_Block>);
 
-using ::Sudoku::Board_Section::traits::is_const_Section_v;
+using ::Sudoku::Board_Section::Section_traits::is_const_Section_v;
 static_assert(not is_const_Section_v<int>);
 static_assert(not is_const_Section_v<Row>);
 static_assert(not is_const_Section_v<Col>);
@@ -45,8 +45,8 @@ static_assert(is_const_Section_v<const_Row>);
 static_assert(is_const_Section_v<const_Col>);
 static_assert(is_const_Section_v<const_Block>);
 
-static_assert(::Sudoku::Board_Section::traits::is_Row<Row>::value);
-using ::Sudoku::Board_Section::traits::is_Row_v;
+static_assert(::Sudoku::Board_Section::Section_traits::is_Row<Row>::value);
+using ::Sudoku::Board_Section::Section_traits::is_Row_v;
 static_assert(not is_Row_v<int>);
 static_assert(is_Row_v<Row>);
 static_assert(is_Row_v<const_Row>);
@@ -56,8 +56,8 @@ static_assert(not is_Row_v<Block>);
 static_assert(not is_Row_v<const_Block>);
 
 
-static_assert(::Sudoku::Board_Section::traits::is_Col<Col>::value);
-using ::Sudoku::Board_Section::traits::is_Col_v;
+static_assert(::Sudoku::Board_Section::Section_traits::is_Col<Col>::value);
+using ::Sudoku::Board_Section::Section_traits::is_Col_v;
 static_assert(not is_Col_v<int>);
 static_assert(is_Col_v<Col>);
 static_assert(is_Col_v<const_Col>);
@@ -67,8 +67,8 @@ static_assert(not is_Col_v<Block>);
 static_assert(not is_Col_v<const_Block>);
 
 
-static_assert(::Sudoku::Board_Section::traits::is_Block<Block>::value);
-using ::Sudoku::Board_Section::traits::is_Block_v;
+static_assert(::Sudoku::Board_Section::Section_traits::is_Block<Block>::value);
+using ::Sudoku::Board_Section::Section_traits::is_Block_v;
 static_assert(not is_Block_v<int>);
 static_assert(is_Block_v<Block>);
 static_assert(is_Block_v<const_Block>);

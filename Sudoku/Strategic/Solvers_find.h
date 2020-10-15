@@ -81,7 +81,7 @@ inline auto list_where_option(
 	const ptrdiff_t rep_count /*= elem_size<N>*/)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		assert(rep_count > 0 && rep_count <= elem_size<N>);
 	}
 	const auto begin = section.cbegin();
@@ -155,7 +155,7 @@ auto list_where_option( // NOLINT(bugprone-exception-escape)
 	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 	}
 	std::vector<Location<N>> locations{};
 	locations.reserve(size_t{elem_size<N>});
@@ -185,7 +185,7 @@ auto list_where_equal( // NOLINT(bugprone-exception-escape)
 	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
 	std::vector<Location<N>> locations{};
@@ -231,7 +231,7 @@ auto list_where_subset( // NOLINT(bugprone-exception-escape)
 	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 	}
 	using Location = Location<N>;
 	std::vector<Location> list{};
@@ -256,7 +256,7 @@ auto list_where_any_option( // NOLINT(bugprone-exception-escape)
 	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 	}
 	using Location = Location<N>;
 	std::vector<Location> locations{};
@@ -408,7 +408,7 @@ template<int N, typename Options, typename SectionT>
 Options appearance_once(SectionT section) noexcept
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
 	constexpr std::bitset<elem_size<N>> begin_state{};
