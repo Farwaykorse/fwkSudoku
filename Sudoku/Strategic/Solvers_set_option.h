@@ -126,18 +126,7 @@ int set_Value(
 	{
 		const Location<N> loc(n++); // start at 0!
 
-		// handle different input types
-		Value value{};
-		if constexpr (traits::iterator_to<ItrT, Value>)
-		{
-			value = *itr;
-		}
-		else
-		{
-			value = to_Value<N>(*itr);
-		}
-
-		if (value != Value{0})
+		if (Value value = to_Value<N>(*itr); value)
 		{
 			if (is_option(board.at(loc), value))
 			{ // update options on board
