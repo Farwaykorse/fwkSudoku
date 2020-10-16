@@ -21,6 +21,7 @@
 
 #include <algorithm>   // find_if
 #include <iterator>    // next
+#include <limits>      // numeric_limits
 #include <stdexcept>   // logic_error
 #include <type_traits> // is_base_of
 
@@ -78,6 +79,36 @@ inline int set_Value(
 	return changes;
 }
 
+//====--------------------------------------------------------------------====//
+// Checked conversion to Value
+template<int N, typename T>
+inline constexpr Value to_Value(T val)
+{
+	if constexpr (std::is_same_v<Value, T>)
+	{
+		if (val > static_cast<Value>(elem_size<N>))
+		{
+			throw std::domain_error("Value input too large");
+		}
+		return val;
+	}
+	else if constexpr (std::is_unsigned_v<T>)
+	{
+		static_assert(elem_size<N> < std::numeric_limits<T>::max());
+		return to_Value<N>(static_cast<Value>(val));
+	}
+	else
+	{
+		static_assert(std::is_integral_v<T>);
+		static_assert(std::numeric_limits<T>::max() > elem_size<N>);
+		if (val < 0)
+		{
+			throw std::domain_error("Value can not be negative");
+		}
+		return to_Value<N>(gsl::narrow_cast<size_t>(val));
+	}
+}
+
 // set board_ using a transferable container of values
 template<int N, typename Options, typename ItrT>
 int set_Value(
@@ -119,6 +150,7 @@ int set_Value(
 	assert(n == full_size<N>);
 	return changes;
 }
+//====--------------------------------------------------------------------====//
 
 // Set unique values in section as answer
 template<int N, typename Options, typename SectionT>
