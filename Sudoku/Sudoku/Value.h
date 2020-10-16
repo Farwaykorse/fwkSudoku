@@ -6,7 +6,6 @@
 #pragma once
 
 #include "Concepts.h"
-#include "Size.h"
 
 #include <gsl/gsl>
 
@@ -58,18 +57,6 @@ constexpr bool operator!=(const Value&, const Value&) noexcept;
 constexpr bool operator>(const Value&, const Value&) noexcept;
 constexpr bool operator<=(const Value&, const Value&) noexcept;
 constexpr bool operator>=(const Value&, const Value&) noexcept;
-
-template<int N>
-constexpr bool is_valid(const Value&) noexcept;
-
-//====--------------------------------------------------------------------====//
-
-// Test input value
-template<int N>
-inline constexpr bool is_valid(const Value& value) noexcept
-{
-	return value > Value{0} && value <= Value{elem_size<N>};
-}
 
 //====--------------------------------------------------------------------====//
 constexpr Value& Value::operator++() noexcept

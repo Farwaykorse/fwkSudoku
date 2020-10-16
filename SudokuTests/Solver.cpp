@@ -1329,5 +1329,31 @@ TEST(Solver, solveBoard)
 		unique_in_section(options, options.row(i));
 	}
 }
+TEST(Solver, isValidValue)
+{
+	using ::Sudoku::is_valid;
+
+	EXPECT_FALSE(is_valid<2>(Value{0}));
+	EXPECT_TRUE(is_valid<2>(Value{1}));
+	EXPECT_TRUE(is_valid<2>(Value(4)));
+	EXPECT_FALSE(is_valid<2>(Value{5}));
+	EXPECT_TRUE(is_valid<3>(Value{5}));
+	EXPECT_FALSE(is_valid<3>(Value{16}));
+
+	static_assert(noexcept(is_valid<3>(Value{0})));
+	static_assert(noexcept(is_valid<3>(Value{1})));
+	static_assert(noexcept(is_valid<3>(Value{9})));
+	static_assert(noexcept(is_valid<3>(Value{10})));
+
+	// is constexpr
+	static_assert(!is_valid<2>(Value{0}));
+	static_assert(is_valid<2>(Value{1}));
+	static_assert(is_valid<2>(Value{4}));
+	static_assert(!is_valid<2>(Value{5}));
+	static_assert(!is_valid<3>(Value{0}));
+	static_assert(is_valid<3>(Value{1}));
+	static_assert(is_valid<3>(Value{9}));
+	static_assert(!is_valid<3>(Value{10}));
+}
 
 } // namespace SudokuTests::SolversTest

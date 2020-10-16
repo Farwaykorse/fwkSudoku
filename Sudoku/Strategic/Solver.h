@@ -29,6 +29,13 @@
 
 namespace Sudoku
 {
+// Test input value
+template<int N>
+inline constexpr bool is_valid(const Value& value) noexcept
+{
+	return value > Value{0} && value <= Value{elem_size<N>};
+}
+
 //	Check if only one option remaining
 //	IF true: process answer
 template<int N, typename Options>
