@@ -35,6 +35,8 @@
 
 #include <gtest/gtest.h>
 
+#include <cstdint>
+
 
 namespace SudokuTests::Solvers_find
 {
@@ -750,7 +752,7 @@ TEST(Solver, appearanceOnce)
 {
 	using ::Sudoku::appearance_once;
 	// clang-format off
-	constexpr std::array<char, 16> v1
+	constexpr std::array<uint8_t, 16> v1
 	{
 		// start     // after set_Value
 		0, 0,  1, 0, //
@@ -834,7 +836,7 @@ TEST(Solver, appearanceOnce)
 	//	0	0	1	0	234	234	1	234
 	{
 		Board<Options<4>, 2> B4{};
-		constexpr std::array<char, 16> v4{
+		constexpr std::array<uint8_t, 16> v4{
 			0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 		set_Value(B4, v4.cbegin(), v4.cend());
 		EXPECT_EQ(B4[0][0].count(), 3U);
@@ -869,7 +871,7 @@ TEST(Solver, appearanceOnce)
 	}
 	{ // all set in a section
 		Board<Options<4>, 2> B5{};
-		constexpr std::array<char, 16> v5{
+		constexpr std::array<uint8_t, 16> v5{
 			1, 2, 3, 4, 3, 4, 1, 2, 2, 1, 4, 3, 4, 3, 2, 1};
 		set_Value(B5, v5.cbegin(), v5.cend());
 		EXPECT_TRUE(is_answer(B5[0][0], Value{1}));
@@ -1063,7 +1065,7 @@ TEST(Solver, appearanceSets)
 	//	0	0	1	0	234	234	1	234
 	{
 		Board<Options<4>, 2> B4{};
-		constexpr std::array<char, 16> v4{
+		constexpr std::array<uint8_t, 16> v4{
 			0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 		set_Value(B4, v4.cbegin(), v4.cend());
 		EXPECT_EQ(B4[0][0].count(), 3U);

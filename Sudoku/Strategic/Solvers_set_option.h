@@ -8,6 +8,7 @@
 #include "Solvers_remove_option.h"
 
 #include "Sudoku/Board.h"
+#include "Sudoku/Concepts.h"
 #include "Sudoku/Location.h"
 #include "Sudoku/Location_Utilities.h" // is_same_*
 #include "Sudoku/Options.h"
@@ -81,8 +82,8 @@ inline int set_Value(
 
 //====--------------------------------------------------------------------====//
 // Checked conversion to Value
-template<int N, typename T>
-inline constexpr Value to_Value(T val)
+template<int N, Number T>
+inline constexpr Value to_Value(T const val)
 {
 	if constexpr (std::is_same_v<Value, T>)
 	{
@@ -95,7 +96,7 @@ inline constexpr Value to_Value(T val)
 	else if constexpr (std::is_unsigned_v<T>)
 	{
 		static_assert(elem_size<N> < std::numeric_limits<T>::max());
-		return to_Value<N>(static_cast<Value>(val));
+		return to_Value<N>(Value{val});
 	}
 	else
 	{
@@ -105,8 +106,17 @@ inline constexpr Value to_Value(T val)
 		{
 			throw std::domain_error("Value can not be negative");
 		}
-		return to_Value<N>(gsl::narrow_cast<size_t>(val));
+		return to_Value<N>(Value{val});
 	}
+}
+template<int N>
+inline constexpr Value to_Value(Value const val)
+{
+	if (val > static_cast<Value>(elem_size<N>))
+	{
+		throw std::domain_error("Value input too large");
+	}
+	return val;
 }
 
 // set board_ using a transferable container of values

@@ -31,6 +31,7 @@
 
 #include <gtest/gtest.h>
 
+#include <cstdint>
 
 namespace SudokuTests::Solvers_set_option
 {
@@ -38,6 +39,7 @@ using ::Sudoku::Board;
 using ::Sudoku::Location;
 using ::Sudoku::Options;
 using ::Sudoku::Value;
+using ::std::uint8_t;
 
 TEST(Solver, setValue)
 {
@@ -118,19 +120,19 @@ TEST(Solver, setValueVector)
 		// NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
 		const std::array<Options<4>, 16> optie{};
 		static_assert(!noexcept(set_Value(B1, optie.cbegin(), optie.cend())));
-		constexpr std::array<char, 16> ints{};
+		constexpr std::array<uint8_t, 16> ints{};
 		static_assert(!noexcept(set_Value(B1, ints.cbegin(), ints.cend())));
 
-		constexpr std::array<char, 16> zero{
+		constexpr std::array<uint8_t, 16> zero{
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		Board<Options<4>, 2> B2;
 		EXPECT_EQ(set_Value(B2, zero.cbegin(), zero.cend()), 0);
-		constexpr std::array<char, 16> negative{
+		constexpr std::array<int8_t, 16> negative{
 			0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		EXPECT_THROW(
 			set_Value(B2, negative.cbegin(), negative.cend()),
 			std::domain_error);
-		constexpr std::array<char, 16> wrong{
+		constexpr std::array<uint8_t, 16> wrong{
 			0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		EXPECT_THROW(
 			set_Value(B2, wrong.cbegin(), wrong.cend()), std::domain_error);
@@ -168,7 +170,7 @@ TEST(Solver, setValueVector)
 	}
 	{      // using int as input
 		// clang-format off
-		constexpr std::array<char, 16> v1
+		constexpr std::array<uint8_t, 16> v1
 		{	// start     // after set_Value
 			0, 2,  0, 0, // 1  2 3  4
 			4, 0,  0, 0, // 4  3 12 12
@@ -526,7 +528,7 @@ TEST(Solver, setUnique)
 	using ::Sudoku::set_unique;
 	using L = Location<2>;
 	Board<Options<4>, 2> board{};
-	constexpr std::array<char, 16> v1{
+	constexpr std::array<uint8_t, 16> v1{
 		0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 	set_Value(board, v1.cbegin(), v1.cend());
 	const Board<Options<4>, 2> cB1{board}; // to reset board
@@ -553,7 +555,7 @@ TEST(SolverDeathTest, setUnique)
 {
 	using ::Sudoku::set_unique;
 	Board<Options<4>, 2> board{};
-	constexpr std::array<char, 16> v1{
+	constexpr std::array<uint8_t, 16> v1{
 		0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 	set_Value(board, v1.cbegin(), v1.cend());
 	const Board<Options<4>, 2> cB1{board}; // to reset board
@@ -586,7 +588,7 @@ TEST(Solver, setUniques)
 	//	0	0	1	0	234	234	1	234
 	//
 	Board<Options<4>, 2> B1{};
-	constexpr std::array<char, 16> v1{
+	constexpr std::array<uint8_t, 16> v1{
 		0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0};
 	set_Value(B1, v1.cbegin(), v1.cend());
 	const Board<Options<4>, 2> cB1{B1}; // to reset B1
@@ -662,8 +664,8 @@ TEST(Solver, deathtestSetOption)
 	Board<Options<4>, 2> B{};
 
 	{ // SetValue(Itr, Itr)
-		constexpr std::array<char, 10> v1{};
-		constexpr std::array<char, 18> v2{};
+		constexpr std::array<uint8_t, 10> v1{};
+		constexpr std::array<uint8_t, 18> v2{};
 		// input too short / too long
 		EXPECT_DEBUG_DEATH(
 			set_Value(B, v1.cbegin(), v1.cend()), "Assertion .*");
@@ -697,12 +699,12 @@ TEST(Value, toValue)
 	// static_assert(noexcept(to_Value<3>(Value{0}))); // fails with Clang
 	// static_assert(noexcept(to_Value<3>(Value{9}))); // fails with Clang
 	static_assert(noexcept(Value{10}));
-	static_assert(not(noexcept(to_Value<3>(Value{10}))));
-	static_assert(not(noexcept(to_Value<3>(Value{21}))));
+	static_assert(not(noexcept(to_Value<3>(10U))));
+	static_assert(not(noexcept(to_Value<3>(21U))));
 
-	EXPECT_NO_THROW(to_Value<3>(Value{0}));
-	EXPECT_NO_THROW(to_Value<3>(Value{9}));
-	EXPECT_THROW(to_Value<3>(Value{10}), std::domain_error);
+	EXPECT_NO_THROW(to_Value<3>(0U));
+	EXPECT_NO_THROW(to_Value<3>(9U));
+	EXPECT_THROW(to_Value<3>(10U), std::domain_error);
 
 	// Input: int
 	static_assert(to_Value<3>(0) == Value{0});
@@ -750,22 +752,20 @@ TEST(Value, toValue)
 	static_assert(not(noexcept(to_Value<3>(10L))));
 	static_assert(not(noexcept(to_Value<3>(21L))));
 
-	// Input: char
-	static_assert(to_Value<3>(char{0}) == Value{0});
-	static_assert(to_Value<3>(char{1}) == Value{1});
-	static_assert(to_Value<3>(char{9}) == Value{9});
+	// Input: uint8_t
+	static_assert(to_Value<3>(uint8_t{0}) == Value{0});
+	static_assert(to_Value<3>(uint8_t{1}) == Value{1});
+	static_assert(to_Value<3>(uint8_t{9}) == Value{9});
 	// static_assert(noexcept(to_Value<3>(2))); // fails with Clang
-	static_assert(not(noexcept(to_Value<3>(char{-2}))));
-	static_assert(not(noexcept(to_Value<3>(char{10}))));
-	static_assert(not(noexcept(to_Value<3>(char{21}))));
+	static_assert(not(noexcept(to_Value<3>(int8_t{-2}))));
+	static_assert(not(noexcept(to_Value<3>(int8_t{10}))));
+	static_assert(not(noexcept(to_Value<3>(int8_t{21}))));
 
-	EXPECT_THROW(to_Value<3>(char{-1}), std::domain_error);
-	EXPECT_THROW(to_Value<3>(char{10}), std::domain_error);
+	EXPECT_THROW(to_Value<3>(int8_t{-1}), std::domain_error);
+	EXPECT_THROW(to_Value<3>(int8_t{10}), std::domain_error);
 
 	// Will not compile when elements cannot be represented.
-	using u_char = unsigned char;
-
-	[[maybe_unused]] const Value U = to_Value<15>(u_char{0}); // N < 16
-	[[maybe_unused]] const Value V = to_Value<11>(char{0});   // N < 12
+	[[maybe_unused]] const Value U = to_Value<15>(uint8_t{0}); // N < 16
+	[[maybe_unused]] const Value V = to_Value<11>(uint8_t{0}); // N < 12
 }
 } // namespace SudokuTests::Solvers_set_option
