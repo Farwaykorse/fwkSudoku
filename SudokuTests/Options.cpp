@@ -519,35 +519,22 @@ TEST(Options, available)
 
 TEST(Options, getAnswer)
 {
-	static_assert(noexcept(get_answer(TE.O_2)));
+	constexpr Options<9> all{};
+	constexpr Options<9> empty{std::bitset<9>{0b000000000}};
+	constexpr Options<9> A_5{std::bitset<9>{0b000010000}};
+
+	static_assert(noexcept(get_answer(all)));
+	// return type
+	static_assert(std::is_same_v<Value, decltype(get_answer(all))>);
+
+	EXPECT_EQ(get_answer(all), Value{0});
+	EXPECT_EQ(get_answer(empty), Value{0});
+	EXPECT_EQ(get_answer(A_5), Value{5});
 	EXPECT_EQ(get_answer(TE.A_1), Value{1});
 	EXPECT_EQ(get_answer(TE.A_2), Value{2});
 	EXPECT_EQ(get_answer(TE.O_2), Value{0});
 	EXPECT_EQ(get_answer(TE.E_1), Value{0});
 }
-
-TEST(Options, toValue)
-{
-	// specialization for to_Value(..)
-	using ::Sudoku::to_Value;
-
-	constexpr Options<9> all{};
-	constexpr Options<9> empty{std::bitset<9>{0b000000000}};
-	constexpr Options<9> A_5{std::bitset<9>{0b000010000}};
-
-	static_assert(noexcept(to_Value<3>(all)));
-	// return type
-	static_assert(std::is_same_v<Value, decltype(to_Value<3>(all))>);
-
-	EXPECT_EQ(to_Value<3>(all), Value{0});
-	EXPECT_EQ(to_Value<3>(empty), Value{0});
-	EXPECT_EQ(to_Value<3>(A_5), Value{5});
-	EXPECT_EQ(to_Value<2>(TE.A_1), Value{1});
-	EXPECT_EQ(to_Value<2>(TE.A_2), Value{2});
-	EXPECT_EQ(to_Value<2>(TE.O_2), Value{0});
-	EXPECT_EQ(to_Value<2>(TE.E_1), Value{0});
-}
-
 TEST(Options, mfChangeAll)
 {
 	// Set-up

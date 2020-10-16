@@ -190,12 +190,6 @@ TEST(Solver, setValueVector)
 		EXPECT_EQ(B2[0][2], Value{3});
 		EXPECT_EQ(B2[1][1], Value{3});
 		EXPECT_EQ(B2[3][1], Value{4});
-
-		// using Options as input:
-#if not(defined(__ICL) && __ICL <= 1900 && defined(_DEBUG))
-		Board<Options<4>, 2> B3;
-		EXPECT_EQ(set_Value(B3, B2.cbegin(), B2.cend()), 46);
-#endif // __ICL
 	}
 }
 
