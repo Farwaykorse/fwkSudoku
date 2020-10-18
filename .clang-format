@@ -10,7 +10,7 @@
 ##        ...
 ##        // clang-format on
 ##
-##    Report formatting errors: # Clang 10
+##    Report formatting errors: # Clang 11
 ##        > clang-format --style=file --dry-run --Werror ./**/*.h ./**/*.cpp
 ##    Apply formatting on project:
 ##        > clang-format --i --style=file ./**/*.h ./**/*.cpp
@@ -52,7 +52,9 @@ IndentWidth:             4
 ColumnLimit:             80
 MaxEmptyLinesToKeep:     2
 ContinuationIndentWidth: 4
+IndentCaseBlocks: true # Clang 11
 IndentCaseLabels: false
+IndentExternBlock: AfterExternBlock # Clang 11
 IndentGotoLabels: false # Clang 10
 IndentPPDirectives: None
 AccessModifierOffset: -4
@@ -148,11 +150,13 @@ BraceWrapping:
   AfterEnum:             false
   AfterFunction:         true
   SplitEmptyFunction:    true
+  BeforeLambdaBody:      false # Clang 11
   AfterExternBlock:      true # Clang 6
   AfterControlStatement: Always # Modified Clang 10
   BeforeCatch:           true
   BeforeElse:            true
   AfterCaseLabel:        true # Clang 9
+  BeforeWhile:           false # Clang 11
   IndentBraces:          false
 
 ### Single-Line Statements
@@ -217,6 +221,7 @@ PointerAlignment: Left
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false # Clang 9
 SpaceBeforeRangeBasedForLoopColon: true # Clang 7
+AlignConsecutiveBitFields: true
 
 ## Strings
 BreakStringLiterals: true
