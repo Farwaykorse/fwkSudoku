@@ -112,9 +112,9 @@ jobs:
   - name: Clang-Tidy
     stage: Validation
     env:
-    - CC: clang-10
-    - CXX: clang++-10
-    - CMAKE_CXX_CLANG_TIDY: '"clang-tidy-10;--warnings-as-errors=*"'
+    - CC: clang-11
+    - CXX: clang++-11
+    - CMAKE_CXX_CLANG_TIDY: '"clang-tidy-11;--warnings-as-errors=*"'
     - CONFIGURATION: Debug
     workspaces:
       use: Linux
@@ -122,11 +122,11 @@ jobs:
       apt:
         sources:
         - sourceline:
-            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-10 main'
+            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main'
           key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
         packages:
-        - clang-10
-        - clang-tidy-10
+        - clang-11
+        - clang-tidy-11
 
   - name: Unity-Build
     stage: Validation
