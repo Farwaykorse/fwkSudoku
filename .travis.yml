@@ -254,6 +254,8 @@ jobs:
     script: skip
     after_script: skip
     after_success: skip
+  allow_failures:
+  - name: AppleClang Xcode-12.2
 
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
