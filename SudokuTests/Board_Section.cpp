@@ -468,7 +468,7 @@ namespace swapping
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
-#endif                                                                // __ICL
+#endif // __ICL
 } // namespace swapping
 
 namespace assignment

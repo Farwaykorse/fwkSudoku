@@ -625,7 +625,7 @@ TEST(BoardIterator, construction)
 	EXPECT_TRUE(cI1 != A.cbegin());
 	EXPECT_TRUE(crI1 != A.crbegin());
 #endif // NDEBUG
-	{  // Copy-construct
+	{ // Copy-construct
 		const Board_iterator<int, 2> LI{I1};
 		EXPECT_TRUE(LI == A.begin());
 		const const_Board_iterator<int, 2> cLI{cI1};
@@ -1909,7 +1909,7 @@ TEST(BoardIterator, operatorIntegerAdditionAssignment)
 		static_assert(*(cB.end() += -1) == 20);
 		static_assert((cB.end() += -1) == --cB.end());
 		static_assert((cB.end() += -16) == cB.begin());
-#endif    // __ICL
+#endif // __ICL
 		{ // return reference to iterator
 			auto I = A.begin();
 			EXPECT_TRUE((I += 1) == ++A.begin());
@@ -2311,7 +2311,7 @@ TEST(BoardIterator, operatorIntegerSubstractionAssignment)
 		static_assert((cB.begin() -= 0) == cB.begin());
 		static_assert((cB.begin() -= -1) == ++cB.begin());
 		static_assert((cB.begin() -= -16) == cB.end());
-#endif    // __ICL
+#endif // __ICL
 		{ // return reference to iterator
 			auto I = A.end();
 			EXPECT_TRUE((I -= 1) == --A.end());

@@ -314,7 +314,7 @@ TEST(OptionsDeathTest, Construction)
 		// outside domain
 		EXPECT_TRUE(Options<4>{Value{5}}.is_empty());
 		EXPECT_TRUE(Options<9>{Value{10}}.is_empty());
-#endif                  // NDEBUG
+#endif // NDEBUG
 		TMP = Value{4}; // suppress warning: assigned only once
 		EXPECT_EQ(TMP.DebugString(), "10000");
 	}
@@ -503,7 +503,7 @@ TEST(OptionsDeathTest, isOption)
 	EXPECT_THROW(U = is_option(TE.O_1, Value{15}), std::out_of_range);
 	EXPECT_TRUE(is_option(TE.O_1, Value{0}));
 	EXPECT_FALSE(is_option(TE.A_1, Value{0}));
-#endif         // NDEBUG
+#endif // NDEBUG
 	U = false; // suppress warning: assigned only once
 }
 
