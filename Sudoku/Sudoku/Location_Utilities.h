@@ -165,7 +165,8 @@ template<int N> // NOLINTNEXTLINE(bugprone-exception-escape)
 	const std::vector<Location<N>>& right) noexcept(true)
 { // std::copy_if could throw std::bad_alloc
 	std::vector<Location<N>> output{};
-	const auto predicate = [&left](Location<N> loc) {
+	const auto predicate = [&left](Location<N> loc)
+	{
 		return is_same_row(left, loc);
 	};
 	std::copy_if(
@@ -205,7 +206,8 @@ template<int N> // NOLINTNEXTLINE(bugprone-exception-escape)
 	const std::vector<Location<N>>& right) noexcept(true)
 { // std::copy_if could throw std::bad_alloc
 	std::vector<Location<N>> output{};
-	const auto predicate = [&left](Location<N> loc) {
+	const auto predicate = [&left](Location<N> loc)
+	{
 		return is_same_col(left, loc);
 	};
 	std::copy_if(
@@ -234,9 +236,10 @@ template<int N, typename ItrT>
 		return false;
 
 	const auto itr = begin + 1;
-	return std::all_of(itr, end, [begin](Location<N> i) {
-		return is_same_block<N>(*begin, i);
-	});
+	return std::all_of(
+		itr,
+		end,
+		[begin](Location<N> i) { return is_same_block<N>(*begin, i); });
 }
 
 // return all in same block
@@ -246,7 +249,8 @@ template<int N> // NOLINTNEXTLINE(bugprone-exception-escape)
 	const std::vector<Location<N>>& right) noexcept(true)
 { // std::copy_if could throw std::bad_alloc
 	std::vector<Location<N>> output{};
-	const auto predicate = [&left](Location<N> loc) {
+	const auto predicate = [&left](Location<N> loc)
+	{
 		return is_same_block(left, loc);
 	};
 	std::copy_if(
@@ -292,9 +296,10 @@ template<typename SectionT, int N>
 [[nodiscard]] inline bool is_same_section(
 	SectionT const section, std::vector<Location<N>> const& locs) noexcept
 {
-	return std::any_of(locs.cbegin(), locs.cend(), [section](Location<N> L) {
-		return is_same_section(section, L);
-	});
+	return std::any_of(
+		locs.cbegin(),
+		locs.cend(),
+		[section](Location<N> L) { return is_same_section(section, L); });
 }
 
 } // namespace Sudoku

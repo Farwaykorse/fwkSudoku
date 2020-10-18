@@ -209,9 +209,11 @@ Board<T, N>::Board(InputIt const first, InputIt const last)
 	}
 	else if constexpr (iterator_explicit_to<InputIt, T>)
 	{
-		std::transform(first, last, std::begin(board_), [](auto val) {
-			return static_cast<T>(val);
-		});
+		std::transform(
+			first,
+			last,
+			std::begin(board_),
+			[](auto val) { return static_cast<T>(val); });
 	}
 	else
 	{

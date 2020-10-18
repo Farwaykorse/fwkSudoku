@@ -95,7 +95,8 @@ static void test(const T& B_in, const T& A_in)
 			tSolver_total += tSolver;
 			tTotal_total += tTotal;
 		}
-		const auto time_in_microsec = [](duration t_in) {
+		const auto time_in_microsec = [](duration t_in)
+		{
 			return std::chrono::duration_cast<std::chrono::microseconds>(t_in)
 				.count();
 		};
@@ -164,7 +165,8 @@ static void test(const T& B_in, const T& A_in)
 			tSolver_total += tSolver;
 			tTotal_total += tTotal;
 		}
-		const auto time_in_microsec = [](duration t_in) {
+		const auto time_in_microsec = [](duration t_in)
+		{
 			return std::chrono::duration_cast<std::chrono::microseconds>(t_in)
 				.count();
 		};
