@@ -193,10 +193,11 @@ inline int remove_option_section(
 	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
 	{
 		// TODO is the is_option check really faster?
-		if (is_option(*itr, value) &&
-			std::none_of(begin, end, [L1 = itr.location()](Location<N> L2) {
-				return L1 == L2;
-			})) // <algorithm>
+		if (std::none_of(
+				begin,
+				end,
+				[L1 = itr.location()](Location<N> L2) { return L1 == L2; }) &&
+			is_option(*itr, value)) // <algorithm>
 		{
 			changes += remove_option(board, itr.location(), value);
 		}
@@ -228,10 +229,11 @@ int remove_option_section(
 
 	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
 	{
-		if (not(itr->is_answer()) and
-			std::none_of(begin, end, [L1 = itr.location()](Location<N> L2) {
-				return L1 == L2;
-			})) // <algorithm>
+		if (std::none_of(
+				begin,
+				end,
+				[L1 = itr.location()](Location<N> L2) { return L1 == L2; }) &&
+			not(itr->is_answer())) // <algorithm>
 		{
 			changes += remove_option(board, itr.location(), values);
 		}

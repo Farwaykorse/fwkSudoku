@@ -115,7 +115,8 @@ auto list_where_option(
 	std::vector<Location<N>> locations{};
 	locations.reserve(gsl::narrow_cast<size_t>(rep_count));
 
-	const auto check_option = [value](Options O) {
+	const auto check_option = [value](Options O)
+	{
 		return is_option(O, value);
 	};
 
@@ -160,7 +161,8 @@ auto list_where_option( // NOLINT(bugprone-exception-escape)
 	std::vector<Location<N>> locations{};
 	locations.reserve(size_t{elem_size<N>});
 
-	const auto check_option = [sample](Options O) noexcept {
+	const auto check_option = [sample](Options O) noexcept
+	{
 		return sample == shared(O, sample);
 	};
 	const auto end = section.cend();
@@ -263,7 +265,8 @@ auto list_where_any_option( // NOLINT(bugprone-exception-escape)
 	std::vector<Location> locations{};
 	locations.reserve(sample.count_all());
 
-	const auto check_option = [sample](Options O) noexcept {
+	const auto check_option = [sample](Options O) noexcept
+	{
 		return is_answer_fast(O) ? false
 								 : !(shared(O, sample).count_all() == 0u);
 	};

@@ -109,7 +109,8 @@ TEST(Solver, uniqueInSection)
 	}; // clang-format on
 	Board<Options<4>, 2> B3;
 	// reset
-	const auto reset_B3 = [&]() {
+	const auto reset_B3 = [&]()
+	{
 		B3.clear();
 		ASSERT_TRUE(B3[0][0].all());
 		EXPECT_NO_THROW(set_Value(B3, v3.cbegin(), v3.cend()));
@@ -149,7 +150,8 @@ TEST(Solver, sectionExclusive)
 		}; // clang-format on
 		Board<Options<4>, 2> B3;
 		// reset
-		const auto reset_B3 = [&]() {
+		const auto reset_B3 = [&]()
+		{
 			B3.clear();
 			ASSERT_TRUE(B3[0][0].all());
 			EXPECT_NO_THROW(set_Value(B3, v3.cbegin(), v3.cend()));
@@ -1128,7 +1130,8 @@ TEST(Solver, multiOption2)
 	// Operational testing
 
 	// empty board to limit influence and cascades
-	const auto empty_base = [&board]() {
+	const auto empty_base = [&board]()
+	{
 		for (auto& v : board)
 		{ // start with all set to "00000"
 			v.clear();
@@ -1139,7 +1142,8 @@ TEST(Solver, multiOption2)
 
 	//====----------------------------------------------------------------====//
 	{ // influence on an isolated row
-		const auto reset_row = [&board] {
+		const auto reset_row = [&board]()
+		{
 			board.at(L{0}) = B{"01111"};
 			board.at(L{1}) = B{"11111"};
 			board.at(L{2}) = B{"00111"};
@@ -1201,7 +1205,8 @@ TEST(Solver, multiOption2)
 	}
 	//====----------------------------------------------------------------====//
 	{ // influence on an isolated col
-		const auto reset_col = [&board] {
+		const auto reset_col = [&board]()
+		{
 			board.at(L{2, 0}) = B{"01111"};
 			board.at(L{2, 1}) = B{"11111"};
 			board.at(L{2, 2}) = B{"00111"};
@@ -1238,7 +1243,8 @@ TEST(Solver, multiOption2)
 	{ // influence on an isolated block
 		using LB = ::Sudoku::Location_Block<2>;
 
-		const auto reset_block = [&board] {
+		const auto reset_block = [&board]()
+		{
 			board.at(LB{2, 0}) = B{"01111"};
 			board.at(LB{2, 1}) = B{"11111"};
 			board.at(LB{2, 2}) = B{"00111"};
@@ -1273,7 +1279,8 @@ TEST(Solver, multiOption2)
 	}
 	//====----------------------------------------------------------------====//
 	{ // combined removes
-		[&board] {
+		[&board]()
+		{
 			board             = Board<Options<4>, 2>();
 			board.at(L{0, 0}) = B{"01111"};
 			board.at(L{0, 1}) = B{"11111"};

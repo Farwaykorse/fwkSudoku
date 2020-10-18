@@ -150,7 +150,7 @@ BraceWrapping:
   AfterEnum:             false
   AfterFunction:         true
   SplitEmptyFunction:    true
-  BeforeLambdaBody:      false # Clang 11
+  BeforeLambdaBody:      true # Clang 11
   AfterExternBlock:      true # Clang 6
   AfterControlStatement: Always # Modified Clang 10
   BeforeCatch:           true

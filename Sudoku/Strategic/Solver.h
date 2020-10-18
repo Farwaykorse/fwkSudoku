@@ -79,14 +79,16 @@ inline int dual_option(
 		assert(is_valid(loc));
 		assert(board.at(loc).count() == 2);
 	}
-	const auto sorted_loc = [loc](const Location L) {
+	const auto sorted_loc = [loc](const Location L)
+	{
 		const auto result = std::minmax(loc, L);
 		return std::vector<Location>{result.first, result.second};
 	};
 
 	int changes{};
 	const Options& item{board.at(loc)};
-	const auto mask = [](Options x) noexcept {
+	const auto mask = [](Options x) noexcept
+	{
 		x[Value{0}] = false;
 		return x;
 	}(item);
@@ -153,7 +155,8 @@ constexpr int multi_option(
 	int changes{};                      // performance counter
 	const Options& item{board.at(loc)}; // input item, to match with
 	assert(item.count() == count);
-	const auto mask = [](Options x) noexcept {
+	const auto mask = [](Options x) noexcept
+	{
 		x[Value{0}] = false;
 		return x;
 	}(item);
@@ -210,7 +213,8 @@ inline int section_exclusive(
 
 	size_t i{2};
 	auto appearing             = appearance_sets<N>(section);
-	const auto renew_appearing = [&i, &a = appearing, &section]() {
+	const auto renew_appearing = [&i, &a = appearing, &section]()
+	{
 		i = 2;
 		a = appearance_sets<N>(section);
 	};

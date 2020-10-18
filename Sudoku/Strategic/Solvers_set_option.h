@@ -164,7 +164,8 @@ inline int set_unique(
 		assert(is_valid<N>(value));
 	}
 	const auto end       = section.cend();
-	const auto condition = [value](const Options& O) {
+	const auto condition = [value](const Options& O)
+	{
 		return O.test(value);
 	};
 
