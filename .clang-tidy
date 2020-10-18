@@ -21,7 +21,7 @@
 ##====--------------------------------------------------------------------====##
 ## Please, keep sorted by name. (First configuration then disabling of aliases.)
 ##
-## Updated for Clang-Tidy v10.0.0
+## Updated for Clang-Tidy v11.0.0
 #
 
 ---
@@ -116,17 +116,17 @@ CheckOptions:
   value: '1'
 - key:   readability-braces-around-statements.ShortStatementLines
   value: '3'
-- key:   readability-function-size.LineThreshold
-  value: '-1'
-- key:   readability-function-size.StatementThreshold
-  value: '800'
-- key:   readability-function-size.BranchThreshold
-  value: '-1'
-- key:   readability-function-size.ParameterThreshold
-  value: '-1'
-- key:   readability-function-size.NestingThreshold
-  value: '-1'
-- key:   readability-function-size.VariableThreshold
-  value: '-1'
+#- key:   readability-function-size.LineThreshold
+#  value: '-1'
+#- key:   readability-function-size.StatementThreshold
+#  value: '800'
+#- key:   readability-function-size.BranchThreshold
+#  value: '-1'
+#- key:   readability-function-size.ParameterThreshold
+#  value: '-1'
+#- key:   readability-function-size.NestingThreshold
+#  value: '-1'
+#- key:   readability-function-size.VariableThreshold
+#  value: '-1'
 
 ...
