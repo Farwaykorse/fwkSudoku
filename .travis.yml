@@ -183,8 +183,45 @@ jobs:
     workspaces:
       use: Linux_Bionic
 
-  - name: Clang-10
+  - name: Clang-11
     stage: "Build & Test Latest"
+    env:
+    - CC: clang-11
+    - CXX: clang++-11
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        sources:
+        - sourceline:
+            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
+        packages:
+        - clang-11
+
+  - name: Clang-11 libc++
+    stage: "Build & Test Latest"
+    env:
+    - CC: clang-11
+    - CXX: clang++-11
+    - CXX_lib: libc++
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        sources:
+        - sourceline:
+            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
+        packages:
+        - clang-11
+        - libc++-11-dev
+        - libc++abi-11-dev
+
+  - name: Clang-10
+    stage: "Build & Test"
     env:
     - CC: clang-10
     - CXX: clang++-10
@@ -201,7 +238,7 @@ jobs:
         - clang-10
 
   - name: Clang-10 libc++
-    stage: "Build & Test Latest"
+    stage: "Build & Test"
     env:
     - CC: clang-10
     - CXX: clang++-10
