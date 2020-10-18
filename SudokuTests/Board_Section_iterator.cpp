@@ -396,7 +396,7 @@ TEST(SectionItr, beginEnd)
 	EXPECT_TRUE(cI1 != row.cbegin());
 	EXPECT_TRUE(crI1 != row.crbegin());
 #endif // NDEBUG
-	{  // Copy-construct
+	{ // Copy-construct
 		const Row_iterator<int, 2> LI{I1};
 		EXPECT_TRUE(LI == row.begin());
 		const const_Row_iterator<int, 2> cLI{cI1};
