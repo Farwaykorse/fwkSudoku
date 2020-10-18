@@ -120,6 +120,8 @@ CheckOptions:
   value: '1'
 - key:   performance-inefficient-string-concatenation.StrictMode
   value: '1'
+- key:   portability-restrict-system-includes.Includes
+  value: '*'
 - key:   portability-simd-intrinsics.Suggest
   value: '1'
 - key:   readability-braces-around-statements.ShortStatementLines
