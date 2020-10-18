@@ -160,8 +160,46 @@ jobs:
         packages:
         - g++-10
 
-  - name: Clang-10
+  - name: Clang-11
     stage: "Build & Test Latest"
+    env:
+    - CC: clang-11
+    - CXX: clang++-11
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        sources:
+        - sourceline:
+            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
+        packages:
+        - clang-11
+        - libstdc++-10-dev
+
+  - name: Clang-11 libc++
+    stage: "Build & Test Latest"
+    env:
+    - CC: clang-11
+    - CXX: clang++-11
+    - CXX_lib: libc++
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        sources:
+        - sourceline:
+            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
+        packages:
+        - clang-11
+        - libc++-11-dev
+        - libc++abi-11-dev
+
+  - name: Clang-10
+    stage: "Build & Test"
     env:
     - CC: clang-10
     - CXX: clang++-10
@@ -177,26 +215,6 @@ jobs:
         packages:
         - clang-10
         - libstdc++-10-dev
-
-  - name: Clang-10 libc++
-    stage: "Build & Test Latest"
-    env:
-    - CC: clang-10
-    - CXX: clang++-10
-    - CXX_lib: libc++
-    - Coverage: grcov
-    workspaces:
-      use: Linux
-    addons:
-      apt:
-        sources:
-        - sourceline:
-            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-10 main'
-          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
-        packages:
-        - clang-10
-        - libc++-10-dev
-        - libc++abi-10-dev
 
   - name: AppleClang Xcode-12.2 # based on LLVM 10
     stage: "Build & Test Latest"
