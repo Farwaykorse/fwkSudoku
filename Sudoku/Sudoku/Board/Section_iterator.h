@@ -74,7 +74,6 @@ public:
 	using pointer           = std::conditional_t<is_const, T const*, T*>;
 	using reference         = std::conditional_t<is_const, T const&, T&>;
 	using iterator_category = std::random_access_iterator_tag;
-	using _Unchecked_type   = pointer; // MSVC STL implementation specific
 
 	// Constructors
 	constexpr Section_iterator() noexcept
