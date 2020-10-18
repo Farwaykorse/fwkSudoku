@@ -171,7 +171,7 @@ namespace compiletime
 		static_assert(exp2_(8U) == 0x80U);
 		static_assert(exp2_(9U) == 0x100U);
 
-		static_assert(exp2_<9>(Value{0}) == 0x1U);
+		static_assert(exp2_<9>(Value{0}) == 0x0U);
 		static_assert(exp2_<9>(Value{1}) == 0x1U);
 		static_assert(exp2_<9>(Value{2}) == 0x2U);
 		static_assert(exp2_<9>(Value{3}) == 0x4U);
@@ -639,8 +639,6 @@ TEST(Options, mfSet)
 	EXPECT_EQ(TMP.set(Value{1}).DebugString(), "0001");
 	EXPECT_TRUE(is_answer(TMP.set(Value{2}), Value{2}));
 	EXPECT_EQ(TMP.set(Value{4}).DebugString(), "1000");
-
-	static_assert(noexcept(TMP.set(Value{4})));
 }
 #ifndef NDEBUG
 TEST(OptionsDeathTest, mfSet)

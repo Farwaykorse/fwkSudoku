@@ -203,7 +203,9 @@ namespace impl
 	template<int E>
 	[[nodiscard]] inline constexpr size_t exp2_(Value value) noexcept
 	{
-		return (value > Value{E}) ? 0U : exp2_(static_cast<size_t>(value));
+		return (value == Value{0U} || value > Value{E})
+				   ? 0U
+				   : exp2_(static_cast<size_t>(value));
 	}
 
 	template<size_t E>
