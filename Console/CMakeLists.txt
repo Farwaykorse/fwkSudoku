@@ -125,7 +125,7 @@ if(MSVC) # MSVC or simulating MSVC
       -Wno-c++20-compat
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
-      $<$<VERSION_LESS_EQUAL:$<CXX_COMPILER_VERSION>,10.0.1>:
+      $<$<VERSION_LESS_EQUAL:$<CXX_COMPILER_VERSION>,11.0.0>:
         -Wno-zero-as-null-pointer-constant # C++20 3way-comparison operator
       >
     >
@@ -165,7 +165,7 @@ else()
       -Wno-c++98-compat-pedantic
       -Wno-weak-vtables   # exceptions
       $<$<CXX_COMPILER_ID:Clang>:
-        $<$<VERSION_LESS_EQUAL:$<CXX_COMPILER_VERSION>,10.0.1>:
+        $<$<VERSION_LESS_EQUAL:$<CXX_COMPILER_VERSION>,11.0.0>:
           -Wno-zero-as-null-pointer-constant # C++20 3way-comparison operator
         >
       >
