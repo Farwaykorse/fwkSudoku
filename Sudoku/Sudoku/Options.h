@@ -172,7 +172,13 @@ namespace impl
 {
 	[[nodiscard]] inline constexpr size_t exp2_(size_t value) noexcept
 	{
-		return (value < 2U) ? 1U : (2U * exp2_(--value));
+		size_t out{1U};
+		while (value > 1U)
+		{
+			--value;
+			out += out;
+		}
+		return out;
 	}
 	static_assert(exp2_(0U) == 0x1U);
 	static_assert(exp2_(1U) == 0x1U);
