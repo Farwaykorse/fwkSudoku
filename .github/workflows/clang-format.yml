@@ -1,6 +1,6 @@
 ##====---- GitHub Actions - clang-format                              ----====##
 # Based on install script from: https://apt.llvm.org/
-# LLVM clang-format release 10.0.0 required for `--dry-run`.
+# LLVM clang-format release 11.0.0 required for `--dry-run`.
 #
 name: clang-format
 on:
@@ -25,10 +25,10 @@ on:
 jobs:
   dry-run:
     name: clang-format dry-run
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
-      DIST_VERSION: bionic
-      LLVM_VERSION: 10
+      DIST_VERSION: focal
+      LLVM_VERSION: 11
     steps:
     - uses: actions/checkout@v2
     - name: Install clang-format
