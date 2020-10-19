@@ -65,6 +65,5 @@ inline namespace traits
 		TargetT,
 		typename std::iterator_traits<ItrT>::value_type>;
 
-
 } // namespace traits
 } // namespace Sudoku
