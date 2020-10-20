@@ -68,8 +68,6 @@ int remove_option(
 	const Location<N> loc,
 	const Value value)
 {
-	assert(is_valid<N>(value));
-
 	int changes{};
 	auto& item{board.at(loc)};
 
@@ -110,11 +108,10 @@ int remove_option(
 	const Location<N> loc,
 	const Options mask)
 {
-	assert(is_answer_fast(mask)); // don't remove answer-bit
-	assert(!mask.is_empty());     // useless
+	assert(!mask.is_empty()); // useless
 
 	auto& item{board.at(loc)};
-	auto changes = gsl::narrow_cast<int, size_t>(item.count_all());
+	auto changes = gsl::narrow_cast<int, size_t>(item.count());
 	if (!changes)
 	{ // ignore empty elements
 		return 0;
@@ -123,7 +120,7 @@ int remove_option(
 	// remove options
 	item -= mask;
 
-	const auto count = gsl::narrow_cast<int, size_t>(item.count_all());
+	const auto count = gsl::narrow_cast<int, size_t>(item.count());
 	if (count == 0)
 	{ // removed last option
 		throw error::invalid_Board();
@@ -146,7 +143,7 @@ int remove_option_section(
 	const Value value)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
 		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
@@ -176,7 +173,7 @@ inline int remove_option_section(
 	const Value value)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
 		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
@@ -193,10 +190,11 @@ inline int remove_option_section(
 	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
 	{
 		// TODO is the is_option check really faster?
-		if (is_option(*itr, value) &&
-			std::none_of(begin, end, [L1 = itr.location()](Location<N> L2) {
-				return L1 == L2;
-			})) // <algorithm>
+		if (std::none_of(
+				begin,
+				end,
+				[L1 = itr.location()](Location<N> L2) { return L1 == L2; }) &&
+			is_option(*itr, value)) // <algorithm>
 		{
 			changes += remove_option(board, itr.location(), value);
 		}
@@ -214,7 +212,7 @@ int remove_option_section(
 	const Options& values)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
 		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid(ignore));
@@ -228,10 +226,11 @@ int remove_option_section(
 
 	for (auto itr = section.cbegin(); itr != section.cend(); ++itr)
 	{
-		if (not(itr->is_answer()) and
-			std::none_of(begin, end, [L1 = itr.location()](Location<N> L2) {
-				return L1 == L2;
-			})) // <algorithm>
+		if (std::none_of(
+				begin,
+				end,
+				[L1 = itr.location()](Location<N> L2) { return L1 == L2; }) &&
+			not(itr->is_answer())) // <algorithm>
 		{
 			changes += remove_option(board, itr.location(), values);
 		}
@@ -248,9 +247,9 @@ int remove_option_outside_block(
 	const Value value)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(
-			!Board_Section::traits::is_Block_v<SectionT>,
+			!Board_Section::is_Block_v<SectionT>,
 			"remove_option_outside_block is useless on a Block");
 		static_assert(std::is_same_v<Options, typename SectionT::value_type>);
 		static_assert(traits::is_input<typename SectionT::iterator>);

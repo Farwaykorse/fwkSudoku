@@ -72,7 +72,7 @@ jobs:
   - name: CMake versions
     stage: Validation
     env:
-    - CMake_version: '"3.18.2 3.17.5 3.16.9 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.18.4 3.17.5 3.16.9 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: Linux
     addons:
@@ -99,9 +99,9 @@ jobs:
   - name: CMake versions
     stage: Validation
     os: osx
-    osx_image: xcode12 # AppleClang 12.0.0
+    osx_image: xcode12.2 # AppleClang 12.0.0
     env:
-    - CMake_version: '"3.18.2 3.17.5 3.16.9 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
+    - CMake_version: '"3.18.4 3.17.5 3.16.9 3.15.7 3.14.7 3.13.5 3.12.4 3.12.0"'
     workspaces:
       use: OSX
     script:
@@ -114,9 +114,9 @@ jobs:
   - name: Clang-Tidy
     stage: Validation
     env:
-    - CC: clang-10
-    - CXX: clang++-10
-    - CMAKE_CXX_CLANG_TIDY: '"clang-tidy-10;--warnings-as-errors=*"'
+    - CC: clang-11
+    - CXX: clang++-11
+    - CMAKE_CXX_CLANG_TIDY: '"clang-tidy-11;--warnings-as-errors=*"'
     - CONFIGURATION: Debug
     workspaces:
       use: Linux
@@ -124,19 +124,20 @@ jobs:
       apt:
         sources:
         - sourceline:
-            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-10 main'
+            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main'
           key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
         packages:
-        - clang-10
-        - clang-tidy-10
-        - libstdc++-10-dev
+        - clang-11
+        - clang-tidy-11
+        - libc++-11-dev
+        - libc++abi-11-dev
 
   - name: Unity-Build
     stage: Validation
     env:
     - CC:  gcc-10
     - CXX: g++-10
-    - CMake_version: 3.18.2 # CMAKE_UNITY_BUILD requires at least v3.16.0
+    - CMake_version: 3.18.4 # CMAKE_UNITY_BUILD requires at least v3.16.0
     - UNITY_BUILD: on
     workspaces:
       use: Linux
@@ -150,7 +151,7 @@ jobs:
     env:
     - CC:  gcc-10
     - CXX: g++-10
-    - CMake_version: 3.18.2
+    - CMake_version: 3.18.4
     - Coverage: gcov-10
     workspaces:
       use: Linux
@@ -159,8 +160,46 @@ jobs:
         packages:
         - g++-10
 
-  - name: Clang-10
+  - name: Clang-11
     stage: "Build & Test Latest"
+    env:
+    - CC: clang-11
+    - CXX: clang++-11
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        sources:
+        - sourceline:
+            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
+        packages:
+        - clang-11
+        - libstdc++-10-dev
+
+  - name: Clang-11 libc++
+    stage: "Build & Test Latest"
+    env:
+    - CC: clang-11
+    - CXX: clang++-11
+    - CXX_lib: libc++
+    - Coverage: grcov
+    workspaces:
+      use: Linux
+    addons:
+      apt:
+        sources:
+        - sourceline:
+            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main'
+          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
+        packages:
+        - clang-11
+        - libc++-11-dev
+        - libc++abi-11-dev
+
+  - name: Clang-10
+    stage: "Build & Test"
     env:
     - CC: clang-10
     - CXX: clang++-10
@@ -177,30 +216,10 @@ jobs:
         - clang-10
         - libstdc++-10-dev
 
-  - name: Clang-10 libc++
-    stage: "Build & Test Latest"
-    env:
-    - CC: clang-10
-    - CXX: clang++-10
-    - CXX_lib: libc++
-    - Coverage: grcov
-    workspaces:
-      use: Linux
-    addons:
-      apt:
-        sources:
-        - sourceline:
-            'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-10 main'
-          key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
-        packages:
-        - clang-10
-        - libc++-10-dev
-        - libc++abi-10-dev
-
-  - name: AppleClang Xcode-12.0 # based on LLVM 10
+  - name: AppleClang Xcode-12.2 # based on LLVM 10
     stage: "Build & Test Latest"
     os: osx
-    osx_image: xcode12 # AppleClang 12.0.0
+    osx_image: xcode12.2 # AppleClang 12.0.0 / same as Xcode12
     env:
     - Coverage: grcov
     workspaces:
@@ -227,7 +246,7 @@ jobs:
         paths:
         - ${VCPKG_DIR}
     os: osx
-    osx_image: xcode12
+    osx_image: xcode12.2
     env:
     - MACOSX_DEPLOYMENT_TARGET: '10.15' # minimum supported: xcode11.4 image
     install: skip
@@ -235,6 +254,8 @@ jobs:
     script: skip
     after_script: skip
     after_success: skip
+  allow_failures:
+  - name: AppleClang Xcode-12.2
 
   allow_failures:
   # No three-way-comparison support in libc++-10

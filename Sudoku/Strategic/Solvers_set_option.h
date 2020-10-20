@@ -8,6 +8,7 @@
 #include "Solvers_remove_option.h"
 
 #include "Sudoku/Board.h"
+#include "Sudoku/Concepts.h"
 #include "Sudoku/Location.h"
 #include "Sudoku/Location_Utilities.h" // is_same_*
 #include "Sudoku/Options.h"
@@ -21,6 +22,7 @@
 
 #include <algorithm>   // find_if
 #include <iterator>    // next
+#include <limits>      // numeric_limits
 #include <stdexcept>   // logic_error
 #include <type_traits> // is_base_of
 
@@ -72,10 +74,49 @@ inline int set_Value(
 
 	if (not is_answer(elem))
 	{
-		changes = gsl::narrow_cast<int>(elem.count_all());
-		elem.set_nocheck(value);
+		changes = gsl::narrow_cast<int>(elem.count());
+		elem.set(value);
 	}
 	return changes;
+}
+
+//====--------------------------------------------------------------------====//
+// Checked conversion to Value
+template<int N, Number T>
+inline constexpr Value to_Value(T const val)
+{
+	if constexpr (std::is_same_v<Value, T>)
+	{
+		if (val > static_cast<Value>(elem_size<N>))
+		{
+			throw std::domain_error("Value input too large");
+		}
+		return val;
+	}
+	else if constexpr (std::is_unsigned_v<T>)
+	{
+		static_assert(elem_size<N> < std::numeric_limits<T>::max());
+		return to_Value<N>(Value{val});
+	}
+	else
+	{
+		static_assert(std::is_integral_v<T>);
+		static_assert(std::numeric_limits<T>::max() > elem_size<N>);
+		if (val < 0)
+		{
+			throw std::domain_error("Value can not be negative");
+		}
+		return to_Value<N>(Value{val});
+	}
+}
+template<int N>
+inline constexpr Value to_Value(Value const val)
+{
+	if (val > static_cast<Value>(elem_size<N>))
+	{
+		throw std::domain_error("Value input too large");
+	}
+	return val;
 }
 
 // set board_ using a transferable container of values
@@ -95,26 +136,11 @@ int set_Value(
 	{
 		const Location<N> loc(n++); // start at 0!
 
-		// handle different input types
-		Value value{};
-		if constexpr (traits::iterator_to<ItrT, Value>)
+		if (Value value = to_Value<N>(*itr); value)
 		{
-			value = *itr;
-		}
-		else
-		{
-			value = to_Value<N>(*itr);
-		}
-
-		if (value != Value{0})
-		{
-			if (not is_valid<N>(value))
-			{
-				throw std::domain_error{"Invalid Value"};
-			}
-
 			if (is_option(board.at(loc), value))
 			{ // update options on board
+				changes += set_Value(board, loc, value);
 				changes += single_option(board, loc, value);
 			}
 			assert(is_answer(board.at(loc), value));
@@ -123,6 +149,7 @@ int set_Value(
 	assert(n == full_size<N>);
 	return changes;
 }
+//====--------------------------------------------------------------------====//
 
 // Set unique values in section as answer
 template<int N, typename Options, typename SectionT>
@@ -132,14 +159,14 @@ inline int set_uniques(
 	const Options worker)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
 	int changes{0};
 
-	if (worker.count_all() > 0)
+	if (worker.count() > 0)
 	{
-		for (Value val{1}; val < Value{worker.size()}; ++val)
+		for (Value val{1}; val <= Value{worker.size()}; ++val)
 		{
 			if (worker[val])
 			{
@@ -158,13 +185,14 @@ inline int set_unique(
 	const Value value)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 		static_assert(traits::is_input<typename SectionT::iterator>);
 		assert(is_valid<N>(value));
 	}
 	const auto end       = section.cend();
-	const auto condition = [value](const Options& O) {
+	const auto condition = [value](const Options& O)
+	{
 		return O.test(value);
 	};
 
@@ -177,7 +205,9 @@ inline int set_unique(
 	assert(&(*itr) == &board[itr.location()]); // section must be part of board
 	assert(std::find_if(std::next(itr), end, condition) == end); // unique
 
-	return single_option(board, itr.location(), value);
+	int changes = set_Value(board, itr.location(), value);
+	changes += single_option(board, itr.location(), value);
+	return changes;
 }
 
 // for [row/col] per value: if all in same block, remove from rest block
@@ -189,18 +219,18 @@ inline int set_section_locals(
 	const Options values)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 		assert(rep_count > 1);  // should have been caught by caller
 								// use the set_uniques specialization
 		assert(rep_count <= N); // won't fit in single block-row/col
-		assert(values.count_all() > 0);
+		assert(values.count() > 0);
 	}
 	int changes{0};
 	std::vector<Location<N>> locations{};
 
 	// start at 1, to skip the answer-bit
-	for (Value value{1}; value < Value{values.size()}; ++value)
+	for (Value value{1}; value <= Value{values.size()}; ++value)
 	{
 		if (values[value])
 		{
@@ -231,13 +261,13 @@ inline int set_section_locals(
 		assert(rep_count > 1);  // should have been caught by caller
 								// use the set_uniques specialization
 		assert(rep_count <= N); // won't fit in single block-row/col
-		assert(values.count_all() > 0);
+		assert(values.count() > 0);
 	}
 	int changes{0};
 	std::vector<Location<N>> locations{};
 
 	// start at 1, to skip the answer-bit
-	for (Value value{1}; value < Value{values.size()}; ++value)
+	for (Value value{1}; value <= Value{values.size()}; ++value)
 	{
 		if (values[value])
 		{

@@ -81,7 +81,7 @@ inline auto list_where_option(
 	const ptrdiff_t rep_count /*= elem_size<N>*/)
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		assert(rep_count > 0 && rep_count <= elem_size<N>);
 	}
 	const auto begin = section.cbegin();
@@ -115,7 +115,8 @@ auto list_where_option(
 	std::vector<Location<N>> locations{};
 	locations.reserve(gsl::narrow_cast<size_t>(rep_count));
 
-	const auto check_option = [value](Options O) {
+	const auto check_option = [value](Options O)
+	{
 		return is_option(O, value);
 	};
 
@@ -155,12 +156,13 @@ auto list_where_option( // NOLINT(bugprone-exception-escape)
 	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 	}
 	std::vector<Location<N>> locations{};
 	locations.reserve(size_t{elem_size<N>});
 
-	const auto check_option = [sample](Options O) noexcept {
+	const auto check_option = [sample](Options O) noexcept
+	{
 		return sample == shared(O, sample);
 	};
 	const auto end = section.cend();
@@ -169,7 +171,7 @@ auto list_where_option( // NOLINT(bugprone-exception-escape)
 		 last != end;
 		 last = std::find_if(last, end, check_option))
 	{
-		if (!is_answer_fast(*last))
+		if (!is_answer(*last))
 		{
 			locations.push_back(last.location());
 		}
@@ -185,7 +187,7 @@ auto list_where_equal( // NOLINT(bugprone-exception-escape)
 	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
 	std::vector<Location<N>> locations{};
@@ -205,18 +207,18 @@ auto list_where_equal( // NOLINT(bugprone-exception-escape)
 // All locations where available options are a subset of the sample.
 template<int N, typename Options>
 auto list_where_subset( // NOLINT(bugprone-exception-escape)
-	const Board<Options, N>& board,
-	const Options sample) noexcept(true)
+	Board<Options, N> const& board,
+	Options const sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	using Location = Location<N>;
 	std::vector<Location> list{};
-	list.reserve(sample.count()); // minimum
+	list.reserve(sample.count() * elem_size<N>); // minimum
 
+	// Get Location of each matching element
 	for (int i{}; i < full_size<N>; ++i)
 	{
-		const auto& other = board[Location(i)];
-		if (!is_answer_fast(other) && // exclude processed answers
-			(other == sample || shared(sample, other) == other))
+		auto const& other = board[Location(i)];
+		if (other == sample || shared(sample, other) == other)
 		{
 			list.push_back(Location(i));
 		}
@@ -231,7 +233,7 @@ auto list_where_subset( // NOLINT(bugprone-exception-escape)
 	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 	}
 	using Location = Location<N>;
 	std::vector<Location> list{};
@@ -241,8 +243,7 @@ auto list_where_subset( // NOLINT(bugprone-exception-escape)
 	for (auto itr = section.cbegin(); itr != end; ++itr)
 	{
 		const auto& other = *itr;
-		if (!is_answer_fast(other) && // exclude processed answers
-			(other == sample || shared(sample, other) == other))
+		if (other == sample || shared(sample, other) == other)
 		{
 			list.push_back(itr.location());
 		}
@@ -257,15 +258,15 @@ auto list_where_any_option( // NOLINT(bugprone-exception-escape)
 	const Options sample) noexcept(true)
 { // vector creation and growth could potentially throw, out of memory.
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 	}
 	using Location = Location<N>;
 	std::vector<Location> locations{};
-	locations.reserve(sample.count_all());
+	locations.reserve(sample.count());
 
-	const auto check_option = [sample](Options O) noexcept {
-		return is_answer_fast(O) ? false
-								 : !(shared(O, sample).count_all() == 0u);
+	const auto check_option = [sample](Options O) noexcept
+	{
+		return is_answer(O) ? false : !(shared(O, sample).count() == 0u);
 	};
 	const auto end = section.cend();
 
@@ -326,8 +327,9 @@ Step 3) XOR [n-1]
 	}
 	// To limit processing time, counting up to N
 	constexpr auto max = size_t{N}; // default: (9x9 board) up-to 3 times
+	constexpr std::bitset<elem_size<N>> begin_state{};
 	std::array<Options, max + 1> worker{};
-	worker.fill(Options(Value{0}));
+	worker.fill(Options(begin_state));
 
 	// Collect options by appearance count
 	// worker[n] contains options appearing more than n times (or answer)
@@ -357,13 +359,13 @@ Step 3) XOR [n-1]
 	}
 	// TODO test: can trigger on partial sections; improve?
 	// fails if not all options exist
-	assert(worker[0].count_all() == 0);
+	assert(worker[0].count() == 0);
 
 	// XOR -> worker[n] options appearing n times
 	for (size_t i{max}; i > 1; --i)
 	{
 		worker.at(i).XOR(worker.at(i - 1));
-		worker.at(i) += Options(Value{0}); // set not-answered
+		worker.at(i) += Options(begin_state); // set not-answered
 	}
 	return worker;
 }
@@ -386,8 +388,9 @@ Options appearance_once(const InItr_ begin, const InItr_ end) noexcept
 			traits::iterator_to<InItr_, Options> ||
 			traits::iterator_to<InItr_, const Options>);
 	}
-	Options sum(Value{0});    // helper all used
-	Options worker(Value{0}); // multiple uses OR answer
+	constexpr std::bitset<elem_size<N>> begin_state{};
+	Options sum(begin_state);    // helper all used
+	Options worker(begin_state); // multiple uses OR answer
 	for (auto itr = begin; itr != end; ++itr)
 	{
 		if (is_answer(*itr))
@@ -408,11 +411,12 @@ template<int N, typename Options, typename SectionT>
 Options appearance_once(SectionT section) noexcept
 {
 	{
-		static_assert(Board_Section::traits::is_Section_v<SectionT>);
+		static_assert(Board_Section::is_Section_v<SectionT>);
 		static_assert(std::is_same_v<typename SectionT::value_type, Options>);
 	}
-	Options sum(Value{0});    // helper all used
-	Options worker(Value{0}); // multiple uses OR answer
+	constexpr std::bitset<elem_size<N>> begin_state{};
+	Options sum(begin_state);    // helper all used
+	Options worker(begin_state); // multiple uses OR answer
 	for (const Options& item : section)
 	{
 		if (is_answer(item))

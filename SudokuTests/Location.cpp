@@ -210,7 +210,7 @@ namespace Location_Block_compiletime
 #if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_v<typeT>);         // C++17
 	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
-#endif                                                     // __ICL
+#endif // __ICL
 	// other types
 	static_assert(not std::is_constructible_v<typeT, int>);
 	static_assert(std::is_constructible_v<typeT, Location<3>>);

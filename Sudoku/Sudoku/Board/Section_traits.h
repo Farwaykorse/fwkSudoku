@@ -12,7 +12,7 @@
 
 namespace Sudoku::Board_Section
 {
-inline namespace traits
+inline namespace Section_traits
 {
 	template<typename T>
 	struct is_Section : std::false_type
@@ -109,5 +109,5 @@ inline namespace traits
 	};
 	template<typename T>
 	inline static constexpr bool is_Block_v = is_Block<T>::value;
-} // namespace traits
+} // namespace Section_traits
 } // namespace Sudoku::Board_Section

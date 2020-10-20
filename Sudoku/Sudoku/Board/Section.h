@@ -48,7 +48,9 @@ public:
 	using reverse_iterator       = Section_iterator<T, N, S, is_const, true>;
 	using const_reverse_iterator = Section_iterator<T, N, S, true, true>;
 
-	template<typename idT, typename = std::enable_if_t<is_int_v<idT>>>
+	template<
+		typename idT,
+		typename = std::enable_if_t<Sudoku::traits::is_int_v<idT>>>
 	constexpr Board_Section_(OwnerT board, idT id) noexcept
 		: board_(board), id_(id)
 	{

@@ -17,8 +17,10 @@
 #include <chrono>
 #include <iostream>
 
+#include <cstdint>
 
-template<int N = 3, typename T = std::array<char, Sudoku::full_size<N>>>
+
+template<int N = 3, typename T = std::array<uint8_t, Sudoku::full_size<N>>>
 static void test(const T& B_in, const T& A_in)
 {
 	using Value              = Sudoku::Value;
@@ -27,9 +29,15 @@ static void test(const T& B_in, const T& A_in)
 	Sudoku::Board<Value, N> start;
 	Sudoku::Board<Value, N> answer;
 	std::transform(
-		B_in.cbegin(), B_in.cend(), start.begin(), Sudoku::to_Value<N, char>);
+		B_in.cbegin(),
+		B_in.cend(),
+		start.begin(),
+		Sudoku::to_Value<N, uint8_t>);
 	std::transform(
-		A_in.cbegin(), A_in.cend(), answer.begin(), Sudoku::to_Value<N, char>);
+		A_in.cbegin(),
+		A_in.cend(),
+		answer.begin(),
+		Sudoku::to_Value<N, uint8_t>);
 
 #ifdef _DEBUG
 	constexpr int repeat{1}; // runs (only keep fastest)
@@ -87,7 +95,8 @@ static void test(const T& B_in, const T& A_in)
 			tSolver_total += tSolver;
 			tTotal_total += tTotal;
 		}
-		const auto time_in_microsec = [](duration t_in) {
+		const auto time_in_microsec = [](duration t_in)
+		{
 			return std::chrono::duration_cast<std::chrono::microseconds>(t_in)
 				.count();
 		};
@@ -156,7 +165,8 @@ static void test(const T& B_in, const T& A_in)
 			tSolver_total += tSolver;
 			tTotal_total += tTotal;
 		}
-		const auto time_in_microsec = [](duration t_in) {
+		const auto time_in_microsec = [](duration t_in)
+		{
 			return std::chrono::duration_cast<std::chrono::microseconds>(t_in)
 				.count();
 		};
@@ -186,7 +196,7 @@ static void test(const T& B_in, const T& A_in)
 int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 {
 	// clang-format off
-	constexpr std::array<char, 81> b1
+	constexpr std::array<uint8_t, 81> b1
 	{
 		0, 0, 0,	0, 0, 0,	0, 1, 2,
 		0, 0, 0,	0, 3, 5,	0, 0, 0,
@@ -198,7 +208,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		0, 8, 0,	0, 0, 0,	0, 4, 0,
 		0, 5, 0,	0, 0, 0,	6, 0, 0
 	};
-	constexpr std::array<char, 81> b1a	// requires unique
+	constexpr std::array<uint8_t, 81> b1a	// requires unique
 	{
 		6, 7, 3,	8, 9, 4,	5, 1, 2,
 		9, 1, 2,	7, 3, 5,	4, 8, 6,
@@ -225,7 +235,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 	//	|     4	|		|   3	|	|     4	|      	|   3  	|
 	//	|_ _ _ _|_ _ _9_|_7_ _ _|	|_ _ _ _|_ _ _9_|_7_ _ _|
 	//
-	constexpr std::array<char, 81> b2
+	constexpr std::array<uint8_t, 81> b2
 	{
 		0, 0, 5,	3, 0, 0,	0, 0, 0,
 		8, 0, 0,	0, 0, 0,	0, 2, 0,
@@ -239,7 +249,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		0, 0, 4,	0, 0, 0,	0, 3, 0,
 		0, 0, 0,	0, 0, 9,	7, 0, 0
 	};
-	constexpr std::array<char, 81> b2a // can't solve without guessing
+	constexpr std::array<uint8_t, 81> b2a // can't solve without guessing
 	{
 		1, 4, 5,	3, 2, 7,	6, 9, 8,
 		8, 3, 9,	6, 5, 4,	1, 2, 7,
@@ -268,7 +278,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 	//	|       | 4 1 9 |     5 |	| 2 8 7	| 4 1 9	| 6 3 5	|
 	//	|_ _ _ _|_ _8_ _|_ _7_9_|	|_3_4_5_|_2_8_6_|_1_7_9_|
 	//
-	constexpr std::array<char, 81> b3
+	constexpr std::array<uint8_t, 81> b3
 	{
 		5, 3, 0,	0, 7, 0,	0, 0, 0,
 		6, 0, 0,	1, 9, 5,	0, 0, 0,
@@ -283,7 +293,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		0, 0, 0,	0, 8, 0,	0, 7, 9
 	};
 
-	constexpr std::array<char, 81> b3a			// no unique
+	constexpr std::array<uint8_t, 81> b3a			// no unique
 		// source: https://en.wikipedia.org/wiki/Sudoku
 	{
 		5, 3, 4,	6, 7, 8,	9, 1, 2,	// 0,8=1 random to trigger output
@@ -300,7 +310,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 	};
 	test(b3, b3a);
 
-	constexpr std::array<char, 81> b4
+	constexpr std::array<uint8_t, 81> b4
 	{
 		2, 0, 0,	0, 7, 0,	0, 3, 8,
 		0, 0, 0,	0, 0, 6,	0, 7, 0,
@@ -314,7 +324,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		0, 6, 0,	4, 0, 0,	0, 0, 0,
 		9, 1, 0,	0, 6, 0,	0, 0, 2
 	};
-	constexpr std::array<char, 81> b4a			// no unique
+	constexpr std::array<uint8_t, 81> b4a			// no unique
 	{
 		2, 4, 6,	9, 7, 5,	1, 3, 8,
 		5, 8, 9,	3, 1, 6,	2, 7, 4,
@@ -330,7 +340,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 	};
 	test(b4, b4a);
 
-	constexpr std::array<char, 81> b5
+	constexpr std::array<uint8_t, 81> b5
 	{
 		4, 0, 0,	0, 0, 0,	0, 3, 8,
 		0, 0, 2,	0, 0, 4,	1, 0, 0,
@@ -344,7 +354,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		0, 0, 3,	9, 0, 0,	4, 0, 0,
 		2, 4, 0,	0, 0, 0,	0, 0, 9
 	};
-	constexpr std::array<char, 81> b5a	// requires double_option, not unique
+	constexpr std::array<uint8_t, 81> b5a	// requires double_option, not unique
 	{
 		4, 6, 1,	5, 7, 2,	9, 3, 8,
 		7, 3, 2,	8, 9, 4,	1, 5, 6,
@@ -360,7 +370,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 	};
 	test(b5, b5a);
 
-	constexpr std::array<char, 81> b6
+	constexpr std::array<uint8_t, 81> b6
 	{
 		0, 7, 0,	0, 0, 8,	0, 2, 9,
 		0, 0, 2,	0, 0, 0,	0, 0, 4,
@@ -374,7 +384,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		2, 0, 0,	0, 0, 0,	4, 0, 0,
 		1, 3, 0,	6, 0, 0,	0, 7, 0
 	};
-	constexpr std::array<char, 81> b6a	// requires multi_option (3), not unique
+	constexpr std::array<uint8_t, 81> b6a	// requires multi_option (3), not unique
 	{
 		6, 7, 1,	4, 3, 8,	5, 2, 9,
 		3, 9, 2,	7, 1, 5,	8, 6, 4,
@@ -390,7 +400,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 	};
 	test(b6, b6a);
 
-	constexpr std::array<char, 81> b7
+	constexpr std::array<uint8_t, 81> b7
 	{
 		0, 8, 0,	0, 9, 0,	0, 3, 0,
 		0, 3, 0,	0, 0, 0,	0, 0, 0,
@@ -404,7 +414,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		0, 0, 0,	0, 0, 0,	0, 1, 0,
 		0, 1, 0,	0, 5, 0,	0, 2, 0
 	};
-	constexpr std::array<char, 81> b7a	// incomplete, require unique
+	constexpr std::array<uint8_t, 81> b7a	// incomplete, require unique
 	{
 		0, 8, 0,	0, 9, 0,	0, 3, 0,
 		0, 3, 0,	0, 0, 0,	0, 6, 9,
@@ -421,7 +431,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 	test(b7, b7a);
 
 #if false // unused boards
-	constexpr std::array<char, 81> easiest
+	constexpr std::array<uint8_t, 81> easiest
 	{
 		0, 0, 0,	1, 0, 5,	0, 0, 0,
 		1, 4, 0,	0, 0, 0,	6, 7, 0,
@@ -435,7 +445,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		0, 2, 6,	0, 0, 0,	0, 3, 5,
 		0, 0, 0,	4, 0, 9,	0, 0, 0
 	};
-	constexpr std::array<char, 81> gentle
+	constexpr std::array<uint8_t, 81> gentle
 	{
 		0, 0, 0,	0, 0, 4,	0, 2, 8,
 		4, 0, 6,	0, 0, 0,	0, 0, 5,
@@ -449,7 +459,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		9, 0, 0,	0, 0, 0,	5, 0, 7,
 		6, 7, 0,	4, 0, 0,	0, 0, 0
 	};
-	constexpr std::array<char, 81> moderate
+	constexpr std::array<uint8_t, 81> moderate
 	{
 		4, 0, 0,	0, 1, 0,	0, 0, 0,
 		0, 0, 0,	3, 0, 9,	0, 4, 0,
@@ -463,7 +473,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		0, 3, 0,	6, 0, 8,	0, 0, 0,
 		0, 0, 0,	0, 3, 0,	0, 0, 6
 	};
-	constexpr std::array<char, 81> tough
+	constexpr std::array<uint8_t, 81> tough
 	{
 		3, 0, 9,	0, 0, 0,	4, 0, 0,
 		2, 0, 0,	7, 0, 9,	0, 0, 0,
@@ -478,7 +488,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		0, 0, 6,	0, 0, 0,	1, 0, 4
 	};
 
-	constexpr std::array<char, 81> diagonal
+	constexpr std::array<uint8_t, 81> diagonal
 		// 17 clues and diagonal symmetry
 		// source: https://en.wikipedia.org/wiki/Sudoku_solving_algorithms
 	{
@@ -495,7 +505,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		5, 2, 0,	0, 0, 0,	0, 0, 0
 	};
 
-	constexpr std::array<char, 81> automorphic
+	constexpr std::array<uint8_t, 81> automorphic
 		// 18 clues and two-way diagonal symmetry
 		// source: https://en.wikipedia.org/wiki/Mathematics_of_Sudoku#Automorphic_Sudokus
 	{
@@ -512,7 +522,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		0, 0, 0,	0, 9, 8,	0, 0, 0
 	};
 
-	constexpr std::array<char, 81> automorphic2
+	constexpr std::array<uint8_t, 81> automorphic2
 		// source: https://en.wikipedia.org/wiki/Mathematics_of_Sudoku#Automorphic_Sudokus
 	{
 		0, 0, 0,	5, 6, 0,	0, 3, 4,
@@ -528,7 +538,7 @@ int main() // NOLINT(bugprone-exception-escape) ignore potential for exceptions
 		6, 7, 0,	0, 4, 5,	0, 0, 0
 	};
 
-	constexpr std::array<char, 81> empty
+	constexpr std::array<uint8_t, 81> empty
 	{
 		0, 0, 0,	0, 0, 0,	0, 0, 0,
 		0, 0, 0,	0, 0, 0,	0, 0, 0,

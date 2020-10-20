@@ -43,6 +43,8 @@ target_sources(SudokuTests
     traits.cpp
     Transpose.cpp
     Value.cpp
+    OptionValueTest.cpp
+    ConceptsTests.cpp
 )
 
 target_link_libraries(SudokuTests
@@ -162,7 +164,9 @@ if(MSVC) # MSVC or simulating MSVC
       -Wno-covered-switch-default
       -Wno-global-constructors
       -Wno-used-but-marked-unused
-      -Wno-zero-as-null-pointer-constant
+      $<$<VERSION_LESS_EQUAL:$<CXX_COMPILER_VERSION>,11.0.0>:
+        -Wno-zero-as-null-pointer-constant # C++20 3way-comparison operator
+      >
     >
     $<$<CXX_COMPILER_ID:Intel>:
       /W5
@@ -217,7 +221,7 @@ else()
       -Wno-used-but-marked-unused
       -Wno-weak-vtables           # exceptions.h
       $<$<CXX_COMPILER_ID:Clang>:
-        $<$<VERSION_LESS_EQUAL:$<CXX_COMPILER_VERSION>,10.0.1>:
+        $<$<VERSION_LESS_EQUAL:$<CXX_COMPILER_VERSION>,11.0.0>:
           -Wno-zero-as-null-pointer-constant # C++20 3way-comparison operator
         >
       >

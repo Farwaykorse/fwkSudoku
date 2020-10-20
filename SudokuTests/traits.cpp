@@ -21,11 +21,6 @@
 
 namespace SudokuTests::Traits
 {
-// inline namespace 'traits'
-static_assert(
-	std::is_same_v<::Sudoku::traits::is_int<int>, ::Sudoku::is_int<int>>);
-
-
 using ::Sudoku::traits::is_int;
 using ::Sudoku::traits::is_int_v;
 

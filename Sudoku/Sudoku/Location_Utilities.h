@@ -70,8 +70,8 @@ template<
 	int N,
 	typename S,
 	typename = std::enable_if_t<
-		Board_Section::traits::is_Row_v<S> ||
-		Board_Section::traits::is_Col_v<S>>>
+		Board_Section::Section_traits::is_Row_v<S> ||
+		Board_Section::Section_traits::is_Col_v<S>>>
 bool intersect_block(S section, Location<N> block_loc) noexcept;
 
 //===----------------------------------------------------------------------===//
@@ -165,7 +165,8 @@ template<int N> // NOLINTNEXTLINE(bugprone-exception-escape)
 	const std::vector<Location<N>>& right) noexcept(true)
 { // std::copy_if could throw std::bad_alloc
 	std::vector<Location<N>> output{};
-	const auto predicate = [&left](Location<N> loc) {
+	const auto predicate = [&left](Location<N> loc)
+	{
 		return is_same_row(left, loc);
 	};
 	std::copy_if(
@@ -205,7 +206,8 @@ template<int N> // NOLINTNEXTLINE(bugprone-exception-escape)
 	const std::vector<Location<N>>& right) noexcept(true)
 { // std::copy_if could throw std::bad_alloc
 	std::vector<Location<N>> output{};
-	const auto predicate = [&left](Location<N> loc) {
+	const auto predicate = [&left](Location<N> loc)
+	{
 		return is_same_col(left, loc);
 	};
 	std::copy_if(
@@ -234,9 +236,10 @@ template<int N, typename ItrT>
 		return false;
 
 	const auto itr = begin + 1;
-	return std::all_of(itr, end, [begin](Location<N> i) {
-		return is_same_block<N>(*begin, i);
-	});
+	return std::all_of(
+		itr,
+		end,
+		[begin](Location<N> i) { return is_same_block<N>(*begin, i); });
 }
 
 // return all in same block
@@ -246,7 +249,8 @@ template<int N> // NOLINTNEXTLINE(bugprone-exception-escape)
 	const std::vector<Location<N>>& right) noexcept(true)
 { // std::copy_if could throw std::bad_alloc
 	std::vector<Location<N>> output{};
-	const auto predicate = [&left](Location<N> loc) {
+	const auto predicate = [&left](Location<N> loc)
+	{
 		return is_same_block(left, loc);
 	};
 	std::copy_if(
@@ -259,15 +263,15 @@ template<int N, typename S>
 [[nodiscard]] inline constexpr bool
 	is_same_section(const S section, const Location<N> loc) noexcept
 {
-	static_assert(Board_Section::traits::is_Section_v<S>);
+	static_assert(Board_Section::is_Section_v<S>);
 
-	if constexpr (Board_Section::traits::is_Row_v<S>)
+	if constexpr (Board_Section::is_Row_v<S>)
 		return is_same_row(loc, section.cbegin().location());
-	else if constexpr (Board_Section::traits::is_Col_v<S>)
+	else if constexpr (Board_Section::is_Col_v<S>)
 		return is_same_col(loc, section.cbegin().location());
 	else
 	{
-		static_assert(Board_Section::traits::is_Block_v<S>);
+		static_assert(Board_Section::is_Block_v<S>);
 		return is_same_block(loc, section.cbegin().location());
 	}
 }
@@ -292,9 +296,10 @@ template<typename SectionT, int N>
 [[nodiscard]] inline bool is_same_section(
 	SectionT const section, std::vector<Location<N>> const& locs) noexcept
 {
-	return std::any_of(locs.cbegin(), locs.cend(), [section](Location<N> L) {
-		return is_same_section(section, L);
-	});
+	return std::any_of(
+		locs.cbegin(),
+		locs.cend(),
+		[section](Location<N> L) { return is_same_section(section, L); });
 }
 
 } // namespace Sudoku

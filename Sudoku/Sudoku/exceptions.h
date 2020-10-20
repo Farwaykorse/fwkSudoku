@@ -10,6 +10,17 @@
 
 namespace Sudoku::error
 {
+// Invalid input, unsupported type
+struct unsupported_type : public std::domain_error
+{
+	unsupported_type() noexcept : domain_error{"unsupported_type"} {}
+};
+// Invalid option, outside expected range
+struct invalid_option : public std::domain_error
+{
+	invalid_option() noexcept : domain_error{"invalid_option"} {}
+};
+
 // Conflicting answers, board is not solvable
 struct invalid_Board : public std::logic_error
 {

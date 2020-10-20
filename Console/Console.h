@@ -13,6 +13,7 @@
 #include <sstream>
 #include <utility>
 
+#include <cmath>
 
 namespace Sudoku
 {
@@ -84,22 +85,26 @@ namespace impl
 {
 	[[nodiscard]] constexpr int pow(int const base, int exp)
 	{
-		if (exp == 0)
+		if (std::is_constant_evaluated())
 		{
-			return 1;
+			int out = 1;
+			while (exp > 0)
+			{
+				out = out * --exp;
+			}
+			return out;
 		}
-		return base * pow(base, --exp);
+		return static_cast<int>(std::pow(base, exp));
 	}
 
 	[[nodiscard]] constexpr int charsize(int value, int length)
 	{
 		constexpr int decimal{10};
-		if (value < pow(decimal, length))
+		while (value >= pow(decimal, length))
 		{
-			return length;
+			++length;
 		}
-		++length;
-		return charsize(value, length);
+		return length;
 	}
 
 	[[nodiscard]] constexpr int charsize(int value)

@@ -31,6 +31,93 @@
 
 namespace SudokuTests::errorTests
 {
+TEST(Error, invalidOption)
+{
+	using ::Sudoku::error::invalid_option;
+	{ // Type properties
+		using typeT = invalid_option;
+
+		// Composite Type Categories
+		static_assert(not std::is_fundamental_v<typeT>);
+		static_assert(std::is_object_v<typeT>);
+		static_assert(std::is_compound_v<typeT>);
+
+		static_assert(not std::is_scalar_v<typeT>);
+		static_assert(not std::is_array_v<typeT>);
+		static_assert(not std::is_union_v<typeT>);
+		static_assert(std::is_class_v<typeT>);
+		static_assert(not std::is_reference_v<typeT>);
+		static_assert(not std::is_function_v<typeT>);
+		// Type Properties
+		static_assert(not std::is_const_v<typeT>);
+		static_assert(not std::is_volatile_v<typeT>);
+		static_assert(not std::is_trivial_v<typeT>);            // ++
+		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
+		static_assert(not std::is_standard_layout_v<typeT>);
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
+		static_assert(not std::has_unique_object_representations_v<typeT>);
+#endif
+		static_assert(not std::is_empty_v<typeT>);
+		static_assert(std::is_polymorphic_v<typeT>);  // --
+		static_assert(not std::is_abstract_v<typeT>); // ++
+		static_assert(not std::is_final_v<typeT>);
+#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
+	not(defined(__APPLE__) && defined(__clang__) &&                            \
+		(__clang_major__ < 10 ||                                               \
+		 (__clang_major__ == 9 && __clang_minor__ < 1)))
+		static_assert(not std::is_aggregate_v<typeT>);
+#endif
+
+		static_assert(std::is_base_of_v<std::exception, typeT>);
+		static_assert(std::is_base_of_v<std::logic_error, typeT>);
+		static_assert(std::is_base_of_v<std::domain_error, typeT>);
+		static_assert(std::is_convertible_v<typeT, std::logic_error>);
+
+		// default constructor: typeT()
+		static_assert(std::is_default_constructible_v<typeT>);         // ++
+		static_assert(std::is_nothrow_default_constructible_v<typeT>); // ++
+		static_assert(not std::is_trivially_default_constructible_v<typeT>);
+		// copy constructor: typeT(const typeT&)
+		static_assert(std::is_copy_constructible_v<typeT>);               // ++
+		static_assert(std::is_nothrow_copy_constructible_v<typeT>);       // ++
+		static_assert(not std::is_trivially_copy_constructible_v<typeT>); // ++
+		// move constructor: typeT(typeT&&)
+		static_assert(std::is_move_constructible_v<typeT>);
+		static_assert(std::is_nothrow_move_constructible_v<typeT>);
+		static_assert(not std::is_trivially_move_constructible_v<typeT>);
+		// copy assignment
+		static_assert(std::is_copy_assignable_v<typeT>);               // ++
+		static_assert(std::is_nothrow_copy_assignable_v<typeT>);       // ++
+		static_assert(not std::is_trivially_copy_assignable_v<typeT>); // ++
+		static_assert(std::is_move_assignable_v<typeT>);               // ++
+		static_assert(std::is_nothrow_move_assignable_v<typeT>);       // ++
+		static_assert(not std::is_trivially_move_assignable_v<typeT>); // ++
+		static_assert(std::is_destructible_v<typeT>);                  // ++
+		static_assert(std::is_nothrow_destructible_v<typeT>);          // ++
+		static_assert(not std::is_trivially_destructible_v<typeT>);    // ++
+		static_assert(std::has_virtual_destructor_v<typeT>);           // --
+#if not(defined(__ICL) && __ICL <= 1900)
+		static_assert(std::is_swappable_v<typeT>);         // ++ C++17
+		static_assert(std::is_nothrow_swappable_v<typeT>); // ++ C++17
+#endif
+	}
+
+	const std::string name{"invalid_option"};
+	// const std::string name_wrong{"invalid_chairs"};
+	try
+	{
+		throw invalid_option();
+	}
+	catch (const invalid_option& e)
+	{
+		ASSERT_NE(e.what(), std::nullptr_t{});
+		const size_t length{std::strlen(e.what())};
+		EXPECT_EQ(length, size_t{14});
+		EXPECT_EQ(std::strcmp(e.what(), name.c_str()), 0);
+	}
+}
 TEST(Error, invalidBoard)
 {
 	using ::Sudoku::error::invalid_Board;
