@@ -64,6 +64,5 @@ inline namespace traits
 	inline constexpr bool iterator_explicit_to = std::is_constructible_v<
 		TargetT,
 		typename std::iterator_traits<ItrT>::value_type>;
-
 } // namespace traits
 } // namespace Sudoku
