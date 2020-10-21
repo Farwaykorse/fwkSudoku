@@ -61,7 +61,6 @@ public:
 	[[nodiscard]] friend bool
 		operator==(const Options<E>& left, const Options<E>& right) noexcept
 	{
-		//? operator== what about the 0th 'is answer' bit?
 		return left.data_ == right.data_;
 	}
 	[[nodiscard]] friend bool
