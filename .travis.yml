@@ -257,11 +257,6 @@ jobs:
   allow_failures:
   - name: AppleClang Xcode-12.2
 
-  allow_failures:
-  # No three-way-comparison support in libc++-10
-  - name: Clang-10 libc++
-  - name: AppleClang Xcode-12.0
-
 ##====--------------------------------------------------------------------====##
 ## Install tools and dependencies
 before_install:
