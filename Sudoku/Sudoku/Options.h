@@ -434,8 +434,7 @@ inline auto Options<E>::operator[](OptionValue<E> const value) noexcept
 	return data_[location(value)];
 }
 template<int E>
-inline bool
-	operator==(Options<E> const left, Value const value) noexcept
+inline bool operator==(Options<E> const left, Value const value) noexcept
 {
 	return value != Value{0U} && is_answer(left, OptionValue<E>{value});
 }
