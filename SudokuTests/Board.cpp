@@ -484,8 +484,7 @@ TEST(Board, accessChecked)
 		std::is_trivially_assignable_v<decltype(B1.at(Location<2>(0))), int>);
 	static_assert(
 		std::is_nothrow_assignable_v<decltype(B1.at(Location<2>(0))), int>);
-#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
-							   defined(__GNUC__) && __GNUC__ < 9)
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922)
 	static_assert(noexcept(B1.at(Location<2>(0)) = 2));
 	static_assert(noexcept(B1.at(Location<2>(0)) == 2));
 #else // newer compilers
@@ -518,14 +517,12 @@ TEST(Board, accessChecked)
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 	constexpr Board<int, 2> cexprB = std::array<int, 16>{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
-							   defined(__GNUC__) && __GNUC__ < 9)
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922)
 	static_assert(noexcept(cB.at(Location<2>(0)) == 1));
 #else
 	static_assert(not noexcept(cB.at(Location<2>(0)) == 1));
 #endif
-#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
-							   defined(__GNUC__) && __GNUC__ < 9)
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922)
 	static_assert(noexcept(cexprB.at(Location<2>(0)) == 1));
 #else
 	static_assert(not noexcept(cexprB.at(Location<2>(0)) == 1));
@@ -543,8 +540,7 @@ TEST(Board, accessChecked)
 
 	// at(row, col)
 	// at(row, col)
-#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
-							   defined(__GNUC__) && __GNUC__ < 9)
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922)
 	static_assert(noexcept(B1.at(0, 1) == 1));
 #else
 	static_assert(not noexcept(B1.at(0, 1) == 1));
@@ -568,8 +564,7 @@ TEST(Board, accessChecked)
 	EXPECT_THROW(B1.at(1, -2), invalid_Location);
 	// at(Location) const
 	EXPECT_NO_THROW(tmp = cB.at(2, 1));
-#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
-							   defined(__GNUC__) && __GNUC__ < 9)
+#if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922)
 	static_assert(noexcept(cB.at(0, 1) == 1));
 #else
 	static_assert(not noexcept(cB.at(0, 1) == 1));
