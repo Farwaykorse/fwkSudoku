@@ -51,19 +51,12 @@ namespace properties_Section
 	static_assert(std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
-	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
-#endif
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
-#if not(                                                                       \
-	defined(__APPLE__) && defined(__clang__) &&                                \
-	(__clang_major__ < 10 || (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif
 } // namespace properties_Section
 
 // Board_Section
@@ -109,11 +102,7 @@ namespace type_properties
 	static_assert(std::is_trivially_copyable_v<typeT>);
 #endif // Old MSVC
 	static_assert(not std::is_standard_layout_v<typeT>);
-#if not(                                                                       \
-	defined(__APPLE__) && defined(__clang__) &&                                \
-	(__clang_major__ < 10 || (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
-#endif
 	static_assert(not std::is_empty_v<typeT>);
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);

@@ -54,19 +54,12 @@ TEST(Error, invalidOption)
 		static_assert(not std::is_trivial_v<typeT>);            // ++
 		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 		static_assert(not std::is_standard_layout_v<typeT>);
-#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
-	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 		static_assert(not std::has_unique_object_representations_v<typeT>);
-#endif
 		static_assert(not std::is_empty_v<typeT>);
 		static_assert(std::is_polymorphic_v<typeT>);  // --
 		static_assert(not std::is_abstract_v<typeT>); // ++
 		static_assert(not std::is_final_v<typeT>);
-#if not(                                                                       \
-	defined(__APPLE__) && defined(__clang__) &&                                \
-	(__clang_major__ < 10 || (__clang_major__ == 9 && __clang_minor__ < 1)))
 		static_assert(not std::is_aggregate_v<typeT>);
-#endif
 
 		static_assert(std::is_base_of_v<std::exception, typeT>);
 		static_assert(std::is_base_of_v<std::logic_error, typeT>);
@@ -137,19 +130,12 @@ TEST(Error, invalidBoard)
 		static_assert(not std::is_trivial_v<typeT>);            // ++
 		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 		static_assert(not std::is_standard_layout_v<typeT>);
-#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
-	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 		static_assert(not std::has_unique_object_representations_v<typeT>);
-#endif
 		static_assert(not std::is_empty_v<typeT>);
 		static_assert(std::is_polymorphic_v<typeT>);  // --
 		static_assert(not std::is_abstract_v<typeT>); // ++
 		static_assert(not std::is_final_v<typeT>);
-#if not(                                                                       \
-	defined(__APPLE__) && defined(__clang__) &&                                \
-	(__clang_major__ < 10 || (__clang_major__ == 9 && __clang_minor__ < 1)))
 		static_assert(not std::is_aggregate_v<typeT>);
-#endif
 
 		static_assert(std::is_base_of_v<std::exception, typeT>);
 		static_assert(std::is_base_of_v<std::logic_error, typeT>);
@@ -220,19 +206,12 @@ TEST(Error, invalidLocation)
 		static_assert(not std::is_trivial_v<typeT>);            // ++
 		static_assert(not std::is_trivially_copyable_v<typeT>); // ++
 		static_assert(not std::is_standard_layout_v<typeT>);
-#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
-	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 		static_assert(not std::has_unique_object_representations_v<typeT>);
-#endif
 		static_assert(not std::is_empty_v<typeT>);
 		static_assert(std::is_polymorphic_v<typeT>);  // --
 		static_assert(not std::is_abstract_v<typeT>); // ++
 		static_assert(not std::is_final_v<typeT>);
-#if not(                                                                       \
-	defined(__APPLE__) && defined(__clang__) &&                                \
-	(__clang_major__ < 10 || (__clang_major__ == 9 && __clang_minor__ < 1)))
 		static_assert(not std::is_aggregate_v<typeT>);
-#endif
 
 		static_assert(std::is_base_of_v<std::exception, typeT>);
 		static_assert(std::is_base_of_v<std::logic_error, typeT>);
