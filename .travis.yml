@@ -116,6 +116,7 @@ jobs:
     env:
     - CC: clang-11
     - CXX: clang++-11
+    - CXX_lib: libc++
     - CMAKE_CXX_CLANG_TIDY: '"clang-tidy-11;--warnings-as-errors=*"'
     - CONFIGURATION: Debug
     workspaces:
