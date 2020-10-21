@@ -1090,12 +1090,7 @@ TEST(Solver, multiOption2)
 
 	// error handling
 	static_assert(not noexcept(multi_option(board, L())));
-#if not defined(__clang__) && defined(_MSC_VER) &&                             \
-	_MSC_VER < 1920 // constexpr only in VS2017
-	static_assert(noexcept(multi_option(board, L(), size_t{})));
-#else
 	static_assert(not noexcept(multi_option(board, L(), size_t{})));
-#endif
 
 #if not(defined(__GNUC__) && __GNUC__ <= 10) // constexpr switch not implemented
 	// defaults when count is 0 or all:
