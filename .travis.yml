@@ -116,7 +116,6 @@ jobs:
     env:
     - CC: clang-11
     - CXX: clang++-11
-    - CXX_lib: libc++
     - CMAKE_CXX_CLANG_TIDY: '"clang-tidy-11;--warnings-as-errors=*"'
     - CONFIGURATION: Debug
     workspaces:
@@ -130,8 +129,7 @@ jobs:
         packages:
         - clang-11
         - clang-tidy-11
-        - libc++-11-dev
-        - libc++abi-11-dev
+        - libstdc++-10-dev
 
   - name: Unity-Build
     stage: Validation
