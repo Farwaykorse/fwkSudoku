@@ -48,8 +48,7 @@ namespace compiletime
 #else
 	static_assert(std::is_trivially_copyable_v<typeT>);
 #if !(defined(__clang__) && __clang_major__ < 6) &&                            \
-	!(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10) &&     \
-	!(defined(__ICL) && __ICL <= 1900)
+	!(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif
 #endif // older compilers
@@ -58,10 +57,9 @@ namespace compiletime
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__APPLE__) && defined(__clang__) &&                            \
-		(__clang_major__ < 10 ||                                               \
-		 (__clang_major__ == 9 && __clang_minor__ < 1)))
+#if not(                                                                       \
+	defined(__APPLE__) && defined(__clang__) &&                                \
+	(__clang_major__ < 10 || (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif
 
@@ -121,14 +119,12 @@ namespace compiletime
 	static_assert(not std::is_assignable_v<typeT, int>);
 	static_assert(not std::is_assignable_v<typeT, Location_Block<3>>);
 
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_v<typeT>);         // C++17
 	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
 
 	static_assert(not std::is_swappable_with_v<typeT, Location_Block<3>>);
 	static_assert(
 		not std::is_nothrow_swappable_with_v<typeT, Location_Block<3>>);
-#endif // __ICL
 
 	static_assert(std::is_destructible_v<typeT>);
 	static_assert(std::is_nothrow_destructible_v<typeT>);
@@ -159,21 +155,19 @@ namespace Location_Block_compiletime
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #else
 	static_assert(not std::is_trivially_copyable_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
 	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(not std::has_unique_object_representations_v<typeT>);
-#endif // __ICL && ! clang before 6.0
+#endif // ! clang before 6.0
 #endif // __GNUC__
 	static_assert(std::is_standard_layout_v<typeT>);
 	static_assert(not std::is_empty_v<typeT>); // nothing virtual
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__APPLE__) && defined(__clang__) &&                            \
-		(__clang_major__ < 10 ||                                               \
-		 (__clang_major__ == 9 && __clang_minor__ < 1)))
+#if not(                                                                       \
+	defined(__APPLE__) && defined(__clang__) &&                                \
+	(__clang_major__ < 10 || (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif
 
@@ -206,10 +200,9 @@ namespace Location_Block_compiletime
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_v<typeT>);         // C++17
 	static_assert(not std::is_nothrow_swappable_v<typeT>); // C++17
-#endif // __ICL
+
 	// other types
 	static_assert(not std::is_constructible_v<typeT, int>);
 	static_assert(std::is_constructible_v<typeT, Location<3>>);
@@ -938,27 +931,15 @@ TEST(LocationUtilities, SizeDefinitions)
 	static_assert(base_size<2> == 2);
 	static_assert(elem_size<2> == 4);
 	static_assert(full_size<2> == 16);
-#if defined(__ICL) && __ICL <= 1900
-	EXPECT_TRUE(base_size<2> == 2);
-	EXPECT_TRUE(elem_size<2> == 4);
-	EXPECT_TRUE(full_size<2> == 16);
-#else
 	EXPECT_EQ(base_size<2>, 2);
 	EXPECT_EQ(elem_size<2>, 4);
 	EXPECT_EQ(full_size<2>, 16);
-#endif // __ICL
 	static_assert(base_size<3> == 3);
 	static_assert(elem_size<3> == 9);
 	static_assert(full_size<3> == 81);
-#if defined(__ICL) && __ICL <= 1900
-	EXPECT_TRUE(base_size<3> == 3);
-	EXPECT_TRUE(elem_size<3> == 9);
-	EXPECT_TRUE(full_size<3> == 81);
-#else
 	EXPECT_EQ(base_size<3>, 3);
 	EXPECT_EQ(elem_size<3>, 9);
 	EXPECT_EQ(full_size<3>, 81);
-#endif // __ICL
 	static_assert(base_size<4> == 4);
 	static_assert(elem_size<4> == 16);
 	static_assert(full_size<4> == 256);

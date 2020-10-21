@@ -33,17 +33,10 @@ static_assert(std::is_same_v<
 TEST(Transpose, Instantiate)
 { // encapsulate the variable (Clang warning: missing-variable-declarations)
 	const Board<int, 2> board_test{};
-#if defined(__ICL) && __ICL <= 1900
-	static_assert(not noexcept(transpose_row_col(Board<int, 2>())));
-	static_assert(not noexcept(transpose_row_col(board_test)));
-	static_assert(not noexcept(transpose_row_block(Board<int, 2>())));
-	static_assert(not noexcept(transpose_row_block(board_test)));
-#else
 	static_assert(noexcept(transpose_row_col(Board<int, 2>())));
 	static_assert(noexcept(transpose_row_col(board_test)));
 	static_assert(noexcept(transpose_row_block(Board<int, 2>())));
 	static_assert(noexcept(transpose_row_block(board_test)));
-#endif // __ICL
 }
 
 TEST(Transpose, RowCol)
@@ -52,11 +45,7 @@ TEST(Transpose, RowCol)
 
 	const Board<int, 2> row{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-#if defined(__ICL) && __ICL <= 1900
-	static_assert(not noexcept(transpose_row_col(row)));
-#else
 	static_assert(noexcept(transpose_row_col(row)));
-#endif // __ICL
 	const Board<int, 2> col = transpose_row_col(row);
 	EXPECT_EQ(row[L{0}], col[L{0}]);
 	EXPECT_EQ(row[L{1}], (col[L{1, 0}]));
@@ -301,10 +290,8 @@ namespace test_class
 	static_assert(std::is_move_constructible_v<nomove>);
 	static_assert(!std::is_nothrow_move_constructible_v<nomove>);
 	static_assert(std::is_move_assignable_v<nomove>);
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<nomove>);
 	static_assert(!std::is_nothrow_swappable_v<nomove>);
-#endif // __ICL
 } // namespace test_class
 
 TEST(Transpose, ThrowingMove)

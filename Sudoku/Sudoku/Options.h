@@ -64,12 +64,8 @@ public:
 		return left.data_ == right.data_;
 	}
 	[[nodiscard]] friend bool
-		operator<(const Options<E>& left, const Options<E>& right)
-#if defined(__ICL) && __ICL <= 1900
-			noexcept(false)
-#else
-			noexcept(sizeof(Options<E>) <= sizeof(std::uint64_t))
-#endif // __ICL
+		operator<(const Options<E>& left, const Options<E>& right) noexcept(
+			sizeof(Options<E>) <= sizeof(std::uint64_t))
 	{
 		if constexpr (sizeof(Options<E>) <= sizeof(std::uint32_t))
 		{

@@ -79,10 +79,9 @@ namespace compiletime
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__APPLE__) && defined(__clang__) &&                            \
-		(__clang_major__ < 10 ||                                               \
-		 (__clang_major__ == 9 && __clang_minor__ < 1)))
+#if not(                                                                       \
+	defined(__APPLE__) && defined(__clang__) &&                                \
+	(__clang_major__ < 10 || (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif
 
@@ -115,7 +114,6 @@ namespace compiletime
 	static_assert(std::is_trivially_destructible_v<typeT>);  // ++
 	static_assert(not std::has_virtual_destructor_v<typeT>); // --
 
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<typeT>);                          // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>);                  // C++17
 	static_assert(not std::is_swappable_with_v<typeT, arrayT>);         // C++17
@@ -123,7 +121,6 @@ namespace compiletime
 	static_assert(not std::is_swappable_with_v<typeT, Options<9>>);     // C++17
 	static_assert(
 		not std::is_nothrow_swappable_with_v<typeT, Options<9>>); // C++17
-#endif
 
 	// is_constructible from different types
 	// set to non-default value at initialization
@@ -532,8 +529,7 @@ TEST(Board, accessChecked)
 	static_assert(not noexcept(cB.at(Location<2>(0)) == 1));
 #endif
 #if not defined(__clang__) && (defined(_MSC_VER) && _MSC_VER < 1922 ||         \
-							   defined(__GNUC__) && __GNUC__ < 9) ||           \
-	defined(__ICL)
+							   defined(__GNUC__) && __GNUC__ < 9)
 	static_assert(noexcept(cexprB.at(Location<2>(0)) == 1));
 #else
 	static_assert(not noexcept(cexprB.at(Location<2>(0)) == 1));

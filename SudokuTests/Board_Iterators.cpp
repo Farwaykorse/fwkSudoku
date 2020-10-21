@@ -74,8 +74,7 @@ namespace iterator
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
 	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif
@@ -83,10 +82,9 @@ namespace iterator
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__APPLE__) && defined(__clang__) &&                            \
-		(__clang_major__ < 10 ||                                               \
-		 (__clang_major__ == 9 && __clang_minor__ < 1)))
+#if not(                                                                       \
+	defined(__APPLE__) && defined(__clang__) &&                                \
+	(__clang_major__ < 10 || (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif
 
@@ -119,10 +117,8 @@ namespace iterator
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
-#endif
 
 	// explicit conversion from other iterators
 	static_assert(std::is_constructible_v<typeT, BoardT::iterator>);
@@ -149,13 +145,11 @@ namespace iterator
 	static_assert(not std::is_assignable_v<typeT, bool>);
 	static_assert(not std::is_assignable_v<bool, typeT>);
 
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_with_v<typeT, Location<3>>);  // C++17
 	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
-#endif
 } // namespace iterator
 namespace const_iterator
 {
@@ -182,8 +176,7 @@ namespace const_iterator
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
 	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif
@@ -191,10 +184,9 @@ namespace const_iterator
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__APPLE__) && defined(__clang__) &&                            \
-		(__clang_major__ < 10 ||                                               \
-		 (__clang_major__ == 9 && __clang_minor__ < 1)))
+#if not(                                                                       \
+	defined(__APPLE__) && defined(__clang__) &&                                \
+	(__clang_major__ < 10 || (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif
 
@@ -227,10 +219,8 @@ namespace const_iterator
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
-#endif
 
 	// explicit conversion from other iterators
 	static_assert(std::is_constructible_v<typeT, BoardT::iterator>);
@@ -257,13 +247,11 @@ namespace const_iterator
 	static_assert(not std::is_assignable_v<typeT, bool>);
 	static_assert(not std::is_assignable_v<bool, typeT>);
 
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_with_v<typeT, Location<3>>);  // C++17
 	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
-#endif
 } // namespace const_iterator
 namespace reverse_iterator
 {
@@ -290,8 +278,7 @@ namespace reverse_iterator
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
 	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif
@@ -299,10 +286,9 @@ namespace reverse_iterator
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__APPLE__) && defined(__clang__) &&                            \
-		(__clang_major__ < 10 ||                                               \
-		 (__clang_major__ == 9 && __clang_minor__ < 1)))
+#if not(                                                                       \
+	defined(__APPLE__) && defined(__clang__) &&                                \
+	(__clang_major__ < 10 || (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif
 
@@ -335,10 +321,8 @@ namespace reverse_iterator
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
-#endif
 
 	// explicit conversion from other iterators
 	static_assert(not std::is_constructible_v<typeT, BoardT::iterator>);
@@ -365,13 +349,11 @@ namespace reverse_iterator
 	static_assert(not std::is_assignable_v<typeT, bool>);
 	static_assert(not std::is_assignable_v<bool, typeT>);
 
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_with_v<typeT, Location<3>>);  // C++17
 	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
-#endif
 } // namespace reverse_iterator
 namespace const_reverse_iterator
 {
@@ -398,8 +380,7 @@ namespace const_reverse_iterator
 	static_assert(not std::is_trivial_v<typeT>);
 	static_assert(std::is_trivially_copyable_v<typeT>);
 	static_assert(std::is_standard_layout_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__clang__) && __clang_major__ < 6) &&                          \
+#if not(defined(__clang__) && __clang_major__ < 6) &&                          \
 	not(defined(__APPLE__) && defined(__clang__) && __clang_major__ < 10)
 	static_assert(std::has_unique_object_representations_v<typeT>);
 #endif
@@ -407,10 +388,9 @@ namespace const_reverse_iterator
 	static_assert(not std::is_polymorphic_v<typeT>);
 	static_assert(not std::is_final_v<typeT>);
 	static_assert(not std::is_abstract_v<typeT>);
-#if not(defined(__ICL) && __ICL <= 1900) &&                                    \
-	not(defined(__APPLE__) && defined(__clang__) &&                            \
-		(__clang_major__ < 10 ||                                               \
-		 (__clang_major__ == 9 && __clang_minor__ < 1)))
+#if not(                                                                       \
+	defined(__APPLE__) && defined(__clang__) &&                                \
+	(__clang_major__ < 10 || (__clang_major__ == 9 && __clang_minor__ < 1)))
 	static_assert(not std::is_aggregate_v<typeT>);
 #endif
 
@@ -443,10 +423,8 @@ namespace const_reverse_iterator
 	static_assert(std::is_trivially_destructible_v<typeT>);
 	static_assert(not std::has_virtual_destructor_v<typeT>);
 
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(std::is_swappable_v<typeT>);         // C++17
 	static_assert(std::is_nothrow_swappable_v<typeT>); // C++17
-#endif
 
 	// explicit conversion from other iterators
 	static_assert(not std::is_constructible_v<typeT, BoardT::iterator>);
@@ -473,13 +451,11 @@ namespace const_reverse_iterator
 	static_assert(not std::is_assignable_v<typeT, bool>);
 	static_assert(not std::is_assignable_v<bool, typeT>);
 
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(not std::is_swappable_with_v<typeT, Location<3>>);  // C++17
 	static_assert(not std::is_swappable_with_v<typeT, int>);          // C++17
 	static_assert(not std::is_swappable_with_v<typeT, unsigned int>); // C++17
 	static_assert(not std::is_swappable_with_v<typeT, size_t>);       // C++17
 	static_assert(not std::is_nothrow_swappable_with_v<typeT, int>);  // C++17
-#endif
 } // namespace const_reverse_iterator
 
 namespace iterator_traits
@@ -749,13 +725,9 @@ TEST(BoardIterator, Location)
 	static_assert(cBoard.end().location() == Location<2>{16});
 	static_assert(cBoard.cbegin().location() == Location<2>{0});
 	static_assert(cBoard.cend().location() == Location<2>{16});
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(cBoard.rbegin().location() == Location<2>{15});
-#endif // __ICL
 	static_assert(cBoard.rend().location() == Location<2>{-1});
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(cBoard.crbegin().location() == Location<2>{15});
-#endif // __ICL
 	static_assert(cBoard.crend().location() == Location<2>{-1});
 	// Conversion to Location
 	static_assert(Location<2>{Board_iterator<int, 2>()} == Location<2>{0});
@@ -789,10 +761,8 @@ TEST(BoardIterator, Location)
 		static_assert((Board_iterator<int, 2>() = L{13}).location() == L{13});
 		static_assert((cBoard.begin() = L{13}).location() == L{13});
 		static_assert((cBoard.cbegin() = L{11}).location() == L{11});
-#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert((cBoard.rbegin() = L{1}).location() == L{1});
 		static_assert((cBoard.crbegin() = L{13}).location() == L{13});
-#endif // __ICL
 	}
 }
 
@@ -879,11 +849,9 @@ TEST(BoardIterator, operatorIndirection)
 		EXPECT_EQ(*itr, 9);
 		static_assert(*cBoard.begin() == 5);
 		static_assert(*cBoard.cbegin() == 5);
-#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(*cBoard.rbegin() == 20);
 		static_assert(*cBoard.crbegin() == 20);
-#endif // __ICL
-	   // Input iterator: No guarantee it can be dereferenced more than once
+		// Input iterator: No guarantee it can be dereferenced more than once
 		if constexpr (is_forward<decltype(itr)>)
 		{
 			EXPECT_EQ(*itr, 9);
@@ -1019,13 +987,11 @@ TEST(BoardIterator, operatorPreIncrement)
 		EXPECT_TRUE(++A.rbegin() == ++A.rbegin());
 		EXPECT_FALSE(++A.rbegin() == ++(++A.rbegin()));
 		EXPECT_EQ(*(++A.rbegin()), 14);
-#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(cBoard.rbegin() != ++cBoard.rbegin());
 		static_assert(++cBoard.rbegin() == ++cBoard.rbegin());
 		static_assert(++cBoard.rbegin() != ++(++cBoard.rbegin()));
 		static_assert(*(++cBoard.rbegin()) == 19);
 		static_assert(*(++(++cBoard.rbegin())) == 18);
-#endif // __ICL
 	}
 	else
 		ADD_FAILURE();
@@ -1114,16 +1080,12 @@ TEST(BoardIterator, operatorPostIncrement)
 		EXPECT_EQ(*A.crbegin()++, 15);
 		static_assert(cBoard.begin()++ == cBoard.begin());
 		static_assert(cBoard.cbegin()++ == cBoard.cbegin());
-#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(cBoard.rbegin()++ == cBoard.rbegin());
 		static_assert(cBoard.crbegin()++ == cBoard.crbegin());
-#endif // __ICL
 		static_assert(*cBoard.begin()++ == 5);
 		static_assert(*cBoard.cbegin()++ == 5);
-#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(*cBoard.rbegin()++ == 20);
 		static_assert(*cBoard.crbegin()++ == 20);
-#endif // __ICL
 		static_assert(*((cBoard.begin()++)++)++ == 5);
 	}
 	else
@@ -1208,21 +1170,15 @@ TEST(BoardIterator, operatorEqual)
 	EXPECT_TRUE(cx == A.cbegin());
 	static_assert(cB.begin() == cB.begin());
 	static_assert(cB.cbegin() == cB.cbegin());
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(cB.rbegin() == cB.rbegin());
 	static_assert(cB.crbegin() == cB.crbegin());
-#endif // __ICL
 	static_assert(cB.begin() == cB.cbegin());
-#if not(defined(__ICL) && __ICL <= 1900)
 	static_assert(cB.rbegin() == cB.crbegin());
-#endif // __ICL
 	static_assert(cB.end() == cB.end());
 	static_assert(cB.cend() == cB.cend());
 	static_assert(cB.rend() == cB.rend());
 	static_assert(cB.crend() == cB.crend());
-#if not(                                                                       \
-	defined(__clang__) || defined(__GNUC__) ||                                 \
-	(defined(__ICL) && __ICL <= 1900))
+#if not(defined(__clang__) || defined(__GNUC__))
 	constexpr auto x2 = cB.begin();
 	static_assert(x2 == cB.cbegin());
 #endif // not __clang__
@@ -1476,10 +1432,8 @@ TEST(BoardIterator, ForwardIterator)
 		EXPECT_EQ(*++r, *++(++i));
 		static_assert(*cB.begin()++ == cB[0][0]);
 		static_assert(*cB.cbegin()++ == cB[0][0]);
-#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert(*cB.rbegin()++ == cB[3][3]);
 		static_assert(*cB.crbegin()++ == cB[3][3]);
-#endif // __ICL
 		static_assert(cB.begin() == cB.begin());
 		static_assert(++cB.begin() == ++cB.begin());
 		{ // Algorithm requiring forward_iterator
@@ -1843,10 +1797,8 @@ TEST(BoardIterator, operatorIntegerAdditionAssignment)
 	test_elements TE{};
 	auto& A                         = TE.A;
 	[[maybe_unused]] auto const& cA = TE.cA;
-#if !(defined(__ICL) && __ICL <= 1900)
-	constexpr Board<int, 2> cB = std::array<int, 16>{
-		5, 6, 1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-#endif // __ICL
+	constexpr Board<int, 2> cB      = std::array<int, 16>{
+        5, 6, 1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
@@ -1886,14 +1838,12 @@ TEST(BoardIterator, operatorIntegerAdditionAssignment)
 		EXPECT_EQ(*(A.begin() += 0), 9);
 		EXPECT_TRUE((A.begin() += 1) == ++A.begin());
 		EXPECT_TRUE((A.begin() += 16) == A.end());
-#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert((cB.begin() += -0) == cB.begin());
 		static_assert(*(cB.begin() += -0) == 5);
 		static_assert((cB.begin() += 0) == cB.begin());
 		static_assert(*(cB.begin() += 0) == 5);
 		static_assert((cB.begin() += 1) == ++cB.begin());
 		static_assert((cB.begin() += 16) == cB.end());
-#endif // __ICL
 
 		EXPECT_TRUE((A.end() += 0) == A.end());
 		EXPECT_TRUE((A.end() += -0) == A.end());
@@ -1902,13 +1852,11 @@ TEST(BoardIterator, operatorIntegerAdditionAssignment)
 		EXPECT_TRUE((A.end() += -16) == A.begin());
 		EXPECT_EQ(*(A.end() += -16), 9);
 		EXPECT_EQ(*(A.begin() += 15), 15);
-#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert((cB.end() += -0) == cB.end());
 		static_assert((cB.end() += 0) == cB.end());
 		static_assert(*(cB.end() += -1) == 20);
 		static_assert((cB.end() += -1) == --cB.end());
 		static_assert((cB.end() += -16) == cB.begin());
-#endif // __ICL
 		{ // return reference to iterator
 			auto I = A.begin();
 			EXPECT_TRUE((I += 1) == ++A.begin());
@@ -2262,9 +2210,7 @@ TEST(BoardIterator, operatorIntegerSubstractionAssignment)
 { // operator-=(int)
 	test_elements TE{};
 	auto& A = TE.A;
-#if not(defined(__ICL) && __ICL <= 1900)
 	constexpr Board<int, 2> cB{};
-#endif // __ICL
 
 	if constexpr (
 		is_random<decltype(A.begin())> && is_random<decltype(A.cbegin())> &&
@@ -2292,12 +2238,10 @@ TEST(BoardIterator, operatorIntegerSubstractionAssignment)
 		EXPECT_TRUE((A.end() -= 0) == A.end());
 		EXPECT_TRUE((A.end() -= 1) == --A.end());
 		EXPECT_TRUE((A.end() -= 16) == A.begin());
-#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert((cB.end() -= -0) == cB.end());
 		static_assert((cB.end() -= 0) == cB.end());
 		static_assert((cB.end() -= 1) == --cB.end());
 		static_assert((cB.end() -= 16) == cB.begin());
-#endif // __ICL
 
 		EXPECT_TRUE((A.begin() -= 0) == A.begin());
 		EXPECT_TRUE((A.begin() -= -0) == A.begin());
@@ -2305,12 +2249,10 @@ TEST(BoardIterator, operatorIntegerSubstractionAssignment)
 		EXPECT_EQ(*(A.begin() -= -1), 1);
 		EXPECT_TRUE((A.begin() -= -16) == A.end());
 		EXPECT_EQ(*(A.end() -= 16), 9);
-#if not(defined(__ICL) && __ICL <= 1900)
 		static_assert((cB.begin() -= -0) == cB.begin());
 		static_assert((cB.begin() -= 0) == cB.begin());
 		static_assert((cB.begin() -= -1) == ++cB.begin());
 		static_assert((cB.begin() -= -16) == cB.end());
-#endif // __ICL
 		{ // return reference to iterator
 			auto I = A.end();
 			EXPECT_TRUE((I -= 1) == --A.end());

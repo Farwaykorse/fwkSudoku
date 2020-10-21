@@ -178,10 +178,10 @@ TEST(Solver, listWhereOptionItr)
 	// 2 begin, end, Value, rep_count
 	static_assert(not noexcept(
 		list_where_option<2>(B.row(0).cbegin(), B.row(0).cend(), Value{1}, 3)));
-#if not(defined(__ICL) && __ICL <= 1900 && defined(_DEBUG))
+#if defined(_DEBUG)
 	static_assert(not noexcept(
 		list_where_option<2>(B.row(0).begin(), B.row(0).end(), Value{1}, 3)));
-#endif // __ICL
+#endif
 	// return type
 	static_assert(std::is_same_v<
 				  std::vector<loc>,
